@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /studio
+Disallow: /receipt
+Sitemap: https://sundaftrip.com/sitemap.xml

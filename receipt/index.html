@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Receipt — SUNDAF TRIP</title>
+<meta name="description" content="Cetak / simpan receipt &amp; invoice SUNDAF TRIP — agen perjalanan wisata terpercaya di Jakarta.">
+<meta name="author" content="CV SUNDAF HOLIDAY GROUP">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://sundaftrip.com/receipt/">
+<meta name="theme-color" content="#c2410c">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="SUNDAF TRIP">
+<meta property="og:url" content="https://sundaftrip.com/receipt/">
+<meta property="og:title" content="Receipt — SUNDAF TRIP">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="dns-prefetch" href="https://docs.google.com">
+<link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>
+  (function() {
+    const stored = localStorage.getItem('theme');
+    const dark = stored === 'dark' || (!stored && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+  })();
+</script>
+<link rel="stylesheet" href="/_astro/style.9RfW93T5.css">
+<style>
+  /* Mobile-first: large tap targets, full-width content */
+  .receipt-shell { max-width: 720px; margin: 0 auto; }
+  .receipt-logo { width: 56px; height: 56px; object-fit: contain; }
+
+  /* ---- Print rules ---- */
+  @media print {
+    @page { size: A5 portrait; margin: 14mm; }
+    html, body { background: #fff !important; color: #111 !important; }
+    .print-hide, header.site-header, footer.site-footer { display: none !important; }
+    .receipt-card { border: none !important; box-shadow: none !important; padding: 0 !important; }
+    .container-docs { padding: 0 !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<header class="site-header sticky top-0 z-40 backdrop-blur border-b border-soft" style="background: rgb(var(--surface) / 0.85);">
+  <div class="container-docs">
+    <div class="flex items-center justify-between h-[var(--header-h)]">
+      <a href="/" class="flex items-center gap-2.5 group" aria-label="SUNDAF TRIP">
+        <img src="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png" alt="SUNDAF TRIP" class="h-5 w-auto" onerror="this.style.display='none'">
+        <div class="hidden sm:flex flex-col leading-none">
+          <span class="font-display font-bold text-sm tracking-tight">SUNDAF TRIP</span>
+          <span class="font-mono text-2xs text-ink-4 mt-0.5">#SemuaBisaJalan</span>
+        </div>
+      </a>
+      <div class="flex items-center gap-2">
+        <button id="btnPrintTop" class="btn btn-brand text-xs">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+          Print
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1">
+  <div class="container-docs py-6 sm:py-10">
+    <div class="receipt-shell">
+
+      <!-- Lookup card (shown when no inv) -->
+      <section id="lookupCard" class="card p-5 sm:p-6 mb-6 print-hide hidden">
+        <p class="eyebrow-brand mb-2">Cetak Receipt</p>
+        <h1 class="font-display font-bold text-xl sm:text-2xl mb-2">Cari Receipt / Invoice</h1>
+        <p class="text-sm text-ink-2 mb-4">Masukkan nomor invoice (mis. <code class="font-mono text-xs">INV-12345678</code>) — kami akan tarik datanya otomatis dari spreadsheet.</p>
+        <form id="lookupForm" class="flex flex-col sm:flex-row gap-2">
+          <input id="lookupInput" class="input flex-1" placeholder="INV-XXXXXXXX" autocomplete="off">
+          <button class="btn btn-primary justify-center" type="submit">Cari</button>
+        </form>
+        <p id="lookupStatus" class="text-xs text-ink-3 mt-3"></p>
+      </section>
+
+      <!-- Receipt -->
+      <article id="invoice" class="receipt-card card p-5 sm:p-8 md:p-10 bg-surface">
+
+        <header class="flex items-start justify-between gap-4 sm:gap-6 mb-6 sm:mb-8 pb-5 sm:pb-7 border-b border-soft">
+          <div class="flex items-start gap-3">
+            <img id="recLogo" src="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png"
+                 alt="SUNDAF TRIP" class="receipt-logo" crossorigin="anonymous"
+                 onerror="this.style.display='none'">
+            <div>
+              <p class="font-display font-bold text-base sm:text-lg leading-tight">SUNDAF TRIP</p>
+              <p class="font-mono text-2xs text-ink-4 mt-1">CV SUNDAF HOLIDAY GROUP</p>
+              <p class="text-2xs text-ink-3 leading-relaxed mt-2">
+                Epiwalk Office Suite Lt. 5 A501<br>
+                Jakarta Selatan · NIB 1601260060842
+              </p>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <p class="eyebrow-brand mb-1">Receipt</p>
+            <p class="font-mono text-xs sm:text-sm font-bold" id="invNumber">—</p>
+            <p class="font-mono text-2xs text-ink-4 mt-1" id="invDate">—</p>
+          </div>
+        </header>
+
+        <section class="grid grid-cols-2 gap-4 sm:gap-6 mb-6 text-sm">
+          <div>
+            <p class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em] mb-1">Pemesan</p>
+            <p class="font-medium" id="invName">—</p>
+            <p class="text-ink-3 text-xs sm:text-sm" id="invContact">—</p>
+          </div>
+          <div>
+            <p class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em] mb-1">Status</p>
+            <span class="code-badge-brand" id="invStatus">PENDING</span>
+            <p class="text-2xs text-ink-3 mt-2" id="invNotes"></p>
+          </div>
+        </section>
+
+        <section class="mb-6 -mx-2 sm:mx-0 overflow-x-auto">
+          <table class="w-full text-sm" style="min-width:480px;">
+            <thead>
+              <tr class="border-b border-soft text-ink-3">
+                <th class="text-left py-2 px-2 font-mono text-2xs uppercase tracking-[.14em]">Deskripsi</th>
+                <th class="text-right py-2 px-2 font-mono text-2xs uppercase tracking-[.14em]">Qty</th>
+                <th class="text-right py-2 px-2 font-mono text-2xs uppercase tracking-[.14em]">Harga</th>
+                <th class="text-right py-2 px-2 font-mono text-2xs uppercase tracking-[.14em]">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="invItems">
+              <tr><td class="py-3 px-2" colspan="4"><span class="text-ink-3">Memuat…</span></td></tr>
+            </tbody>
+            <tfoot>
+              <tr class="border-t-2 border-strong">
+                <td colspan="3" class="py-3 px-2 text-right font-mono text-xs text-ink-3">TOTAL</td>
+                <td class="py-3 px-2 text-right font-display font-bold text-lg sm:text-2xl" style="color: rgb(var(--brand));" id="invTotal">Rp 0</td>
+              </tr>
+              <tr id="invPaidRow" class="hidden">
+                <td colspan="3" class="py-1 px-2 text-right font-mono text-xs text-ink-3">DIBAYAR</td>
+                <td class="py-1 px-2 text-right font-mono text-sm" id="invPaid">Rp 0</td>
+              </tr>
+              <tr id="invDueRow" class="hidden">
+                <td colspan="3" class="py-1 px-2 text-right font-mono text-xs text-ink-3">SISA</td>
+                <td class="py-1 px-2 text-right font-mono text-sm" id="invDue">Rp 0</td>
+              </tr>
+            </tfoot>
+          </table>
+        </section>
+
+        <section class="mb-6">
+          <p class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em] mb-2">Pembayaran</p>
+          <div class="card p-4 text-sm" style="background: rgb(var(--surface-subtle));">
+            <p class="text-ink-2 mb-1.5">Transfer ke rekening berikut:</p>
+            <p class="font-mono font-bold">BCA · 1234567890</p>
+            <p class="font-mono text-ink-2 text-xs">a.n. CV SUNDAF HOLIDAY GROUP</p>
+            <p class="text-2xs text-ink-4 mt-2">Konfirmasi pembayaran via WhatsApp setelah transfer.</p>
+          </div>
+        </section>
+
+        <footer class="pt-4 mt-6 border-t border-soft flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p class="font-mono text-2xs text-ink-4">Terima kasih atas kepercayaan Anda — #SemuaBisaJalan</p>
+          <a id="invWaBtn" href="https://wa.me/6281775202759" target="_blank" rel="noopener" class="btn btn-whatsapp text-xs print-hide">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+            Konfirmasi via WhatsApp
+          </a>
+        </footer>
+      </article>
+
+      <!-- Action buttons -->
+      <div class="mt-5 grid grid-cols-2 gap-3 print-hide">
+        <button id="btnPrint" class="btn btn-ghost justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+          Print / Save PDF
+        </button>
+        <button id="btnShare" class="btn btn-ghost justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8 M16 6l-4-4-4 4 M12 2v13"/></svg>
+          Bagikan Link
+        </button>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer border-t border-soft mt-12" style="background: rgb(var(--surface-subtle));">
+  <div class="container-docs py-8 text-center">
+    <img src="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png"
+         alt="SUNDAF" class="mx-auto h-8 w-auto opacity-80 mb-3" loading="lazy"
+         onerror="this.style.display='none'">
+    <p class="font-mono text-2xs text-ink-4">© 2026 SUNDAF TRIP — All rights reserved</p>
+  </div>
+</footer>
+
+<script type="module">
+import { r as loadReceipts, f as fmtIDR } from "/_astro/sheets.CwVe4WeZ.js";
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[c]);
+}
+function fmt(n) {
+  return isFinite(n) ? "Rp " + Number(n).toLocaleString("id-ID") : "Rp 0";
+}
+
+function setUI(data) {
+  const items = data.items;
+  document.getElementById("invNumber").textContent = data.inv;
+  document.getElementById("invDate").textContent = data.date;
+  document.getElementById("invName").textContent = data.name || "—";
+  document.getElementById("invContact").textContent = data.contact || "";
+  document.getElementById("invStatus").textContent = (data.status || "PENDING").toUpperCase();
+  if (data.notes) document.getElementById("invNotes").textContent = data.notes;
+
+  let total = 0;
+  document.getElementById("invItems").innerHTML = items.map((it) => {
+    const sub = (it.qty || 1) * (it.price || 0);
+    total += sub;
+    return `<tr class="border-b border-soft">
+      <td class="py-3 px-2">${esc(it.name)}</td>
+      <td class="py-3 px-2 text-right font-mono text-xs">${it.qty || 1}</td>
+      <td class="py-3 px-2 text-right font-mono text-xs">${fmt(it.price || 0)}</td>
+      <td class="py-3 px-2 text-right font-mono text-xs">${fmt(sub)}</td>
+    </tr>`;
+  }).join("");
+
+  const finalTotal = data.totalOverride > 0 ? data.totalOverride : total;
+  document.getElementById("invTotal").textContent = fmt(finalTotal);
+
+  if (data.paid > 0) {
+    document.getElementById("invPaidRow").classList.remove("hidden");
+    document.getElementById("invPaid").textContent = fmt(data.paid);
+    const due = Math.max(0, finalTotal - data.paid);
+    if (due > 0) {
+      document.getElementById("invDueRow").classList.remove("hidden");
+      document.getElementById("invDue").textContent = fmt(due);
+    }
+  }
+
+  const waText = encodeURIComponent(`Halo SUNDAF TRIP, saya konfirmasi pembayaran untuk ${data.inv} a.n. ${data.name || "—"} (Total ${fmt(finalTotal)})`);
+  document.getElementById("invWaBtn").href = `https://wa.me/6281775202759?text=${waText}`;
+}
+
+function showLookup(msg = "") {
+  document.getElementById("lookupCard").classList.remove("hidden");
+  if (msg) document.getElementById("lookupStatus").textContent = msg;
+}
+
+async function load() {
+  const params = new URLSearchParams(window.location.search);
+  const invQuery = (params.get("inv") || "").trim();
+
+  // Mode A — full data passed via URL (from booking page)
+  const itemsParam = params.get("items");
+  if (itemsParam) {
+    try {
+      const items = JSON.parse(decodeURIComponent(itemsParam));
+      setUI({
+        inv: invQuery || "INV-" + Date.now().toString().slice(-8),
+        date: params.get("date") || new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }),
+        name: params.get("name") || "",
+        contact: params.get("contact") || "",
+        status: params.get("status") || "PENDING",
+        notes: params.get("notes") || "",
+        items,
+        paid: Number(params.get("paid") || "0") || 0,
+        totalOverride: Number(params.get("total") || "0") || 0,
+      });
+      return;
+    } catch (e) { console.warn("items parse failed", e); }
+  }
+
+  // Mode B — query-string fallback (legacy)
+  if (params.get("item") || params.get("name")) {
+    setUI({
+      inv: invQuery || "INV-" + Date.now().toString().slice(-8),
+      date: params.get("date") || new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }),
+      name: params.get("name") || "",
+      contact: params.get("contact") || "",
+      status: params.get("status") || "PENDING",
+      notes: params.get("notes") || "",
+      items: [{ name: params.get("item") || "Paket Wisata", qty: Number(params.get("qty") || "1") || 1, price: Number(params.get("price") || "0") || 0 }],
+      paid: 0, totalOverride: 0,
+    });
+    return;
+  }
+
+  // Mode C — INV lookup against the spreadsheet "receipts" tab
+  if (invQuery) {
+    try {
+      const list = await loadReceipts();
+      const match = list.find((r) => r.inv && r.inv.toLowerCase() === invQuery.toLowerCase());
+      if (match) {
+        const items = [];
+        if (match.package) items.push({ name: match.package, qty: match.qty || 1, price: match.price || 0 });
+        if (match.addons) {
+          // addons: "Insurance:150000; Visa:1500000"  OR  "Insurance 150000, Visa 1500000"
+          match.addons.split(/[,\n;]/).forEach((part) => {
+            const m = part.trim().match(/^(.+?)[:\s]+(\d[\d.]*)/);
+            if (m) items.push({ name: m[1].trim(), qty: 1, price: Number(m[2].replace(/\D/g, "")) || 0 });
+          });
+        }
+        setUI({
+          inv: match.inv,
+          date: match.date || new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }),
+          name: match.name,
+          contact: match.contact,
+          status: match.status,
+          notes: match.notes,
+          items,
+          paid: match.paid || 0,
+          totalOverride: match.total || 0,
+        });
+        return;
+      }
+      showLookup(`Receipt "${invQuery}" tidak ditemukan di spreadsheet.`);
+    } catch (e) {
+      console.error(e);
+      showLookup("Gagal akses spreadsheet. Coba lagi atau hubungi admin.");
+    }
+    return;
+  }
+
+  // Mode D — no params, show lookup form
+  showLookup();
+}
+
+document.getElementById("btnPrint").addEventListener("click", () => window.print());
+document.getElementById("btnPrintTop").addEventListener("click", () => window.print());
+
+document.getElementById("btnShare").addEventListener("click", async () => {
+  const url = window.location.href;
+  if (navigator.share) {
+    try { await navigator.share({ title: "Receipt SUNDAF TRIP", url }); } catch (e) {}
+  } else {
+    try {
+      await navigator.clipboard.writeText(url);
+      const btn = document.getElementById("btnShare");
+      const old = btn.innerHTML;
+      btn.innerHTML = "✓ Link disalin";
+      setTimeout(() => (btn.innerHTML = old), 1500);
+    } catch (e) { alert("Salin link manual: " + url); }
+  }
+});
+
+document.getElementById("lookupForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const v = document.getElementById("lookupInput").value.trim();
+  if (!v) return;
+  window.location.search = "?inv=" + encodeURIComponent(v);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.lucide) window.lucide.createIcons();
+  load();
+});
+</script>
+
+</body>
+</html>

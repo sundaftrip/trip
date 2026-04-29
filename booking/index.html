@@ -1,0 +1,321 @@
+<!DOCTYPE html><html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Booking — SUNDAF TRIP</title>
+<meta name="description" content="Form booking paket wisata SUNDAF TRIP — isi data, pilih tipe tour, langsung dapat invoice.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://sundaftrip.com/booking/">
+<meta name="theme-color" content="#c2410c">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="SUNDAF TRIP">
+<meta property="og:url" content="https://sundaftrip.com/booking/">
+<meta property="og:title" content="Booking — SUNDAF TRIP">
+<meta property="og:image" content="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>
+  (function() {
+    const stored = localStorage.getItem('theme');
+    const dark = stored === 'dark' || (!stored && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+  })();
+</script>
+<link rel="stylesheet" href="/_astro/style.9RfW93T5.css">
+<style>
+  .seg-wrap { display: inline-flex; padding: 4px; border-radius: 12px; background: rgb(var(--surface-muted)); width: 100%; }
+  .seg-btn { flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; transition: all .15s ease; cursor: pointer; border: 0; background: transparent; color: rgb(var(--ink-2, 64 64 70)); }
+  .seg-btn[aria-pressed="true"] { background: rgb(var(--surface)); color: rgb(var(--brand)); box-shadow: 0 1px 2px rgb(0 0 0 / 0.06); }
+  .stepper { display: inline-flex; align-items: center; gap: 0; border: 1px solid rgb(var(--border-soft, 228 228 231)); border-radius: 10px; overflow: hidden; }
+  .stepper button { width: 36px; height: 36px; background: transparent; cursor: pointer; font-size: 18px; line-height: 1; color: rgb(var(--ink-1, 24 24 27)); }
+  .stepper button:hover { background: rgb(var(--surface-muted)); }
+  .stepper input { width: 50px; text-align: center; border: 0; background: transparent; font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace); font-weight: 600; }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { appearance: none; margin: 0; }
+  @media print {
+    .print-hide, header.site-header, footer.site-footer { display: none !important; }
+    .card { border: none !important; box-shadow: none !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<header class="site-header sticky top-0 z-40 backdrop-blur border-b border-soft" style="background: rgb(var(--surface) / 0.85);">
+  <div class="container-docs">
+    <div class="flex items-center justify-between h-[var(--header-h)]">
+      <a href="/" class="flex items-center gap-2.5 group" aria-label="SUNDAF TRIP — Beranda">
+        <img src="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png" alt="SUNDAF TRIP" class="h-5 w-auto" onerror="this.style.display='none'">
+        <div class="hidden sm:flex flex-col leading-none">
+          <span class="font-display font-bold text-sm tracking-tight">SUNDAF TRIP</span>
+          <span class="font-mono text-2xs text-ink-4 mt-0.5">#SemuaBisaJalan</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-7" aria-label="Navigasi utama">
+        <a href="/" class="nav-link">Beranda</a>
+        <a href="/#destinations" class="nav-link">Destinasi</a>
+        <a href="/blog" class="nav-link">Blog</a>
+        <a href="/#about" class="nav-link">Tentang</a>
+      </nav>
+      <a href="https://wa.me/6281775202759" class="btn btn-brand text-xs hidden sm:inline-flex" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+        Chat
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1">
+  <div class="container-docs py-8 sm:py-10">
+    <div class="grid lg:grid-cols-[1fr_360px] gap-8">
+
+      <!-- Left: form -->
+      <div class="max-w-2xl min-w-0">
+        <a id="backLink" href="/#destinations" class="font-mono text-xs text-ink-3 hover:text-ink-1 transition inline-flex items-center gap-1.5 mb-4">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+          kembali
+        </a>
+        <p class="eyebrow-brand mb-3">Booking</p>
+        <h1 class="font-display font-bold text-3xl md:text-4xl tracking-tightest text-balance">Lengkapi pemesanan</h1>
+        <p class="text-ink-2 mt-2">Beberapa langkah pendek. Konfirmasi akhir & pembayaran via WhatsApp.</p>
+
+        <!-- Progress -->
+        <div class="mt-7 flex items-center gap-2">
+          <div class="flex-1 h-1 rounded-full bg-surface-muted overflow-hidden"><div id="progressBar" class="h-full transition-all" style="width:25%; background: rgb(var(--brand));"></div></div>
+          <span class="font-mono text-2xs text-ink-4" id="progressLabel">step 1 / 4</span>
+        </div>
+
+        <!-- ====== STEP 1: Paket & Tipe ====== -->
+        <section class="mt-7 step-panel" data-step="1">
+          <p class="eyebrow mb-3">Langkah 1 · Pilih Paket</p>
+
+          <!-- Picker (only if no ?id=) -->
+          <div id="pkgPickerBox" class="mb-5 hidden">
+            <label class="block text-sm font-medium mb-2">Paket Wisata</label>
+            <select id="pkgSelect" class="input"><option value="">— Memuat…</option></select>
+          </div>
+
+          <!-- Selected package summary -->
+          <div id="pkgSelectedBox" class="card p-4 mb-5 hidden">
+            <div class="flex items-start gap-3">
+              <img id="pkgImg" alt="" class="w-16 h-16 rounded-lg object-cover flex-shrink-0 bg-surface-muted">
+              <div class="min-w-0 flex-1">
+                <p class="font-display font-bold text-sm leading-tight" id="pkgName">—</p>
+                <p class="font-mono text-2xs text-ink-4 mt-1" id="pkgMeta"></p>
+              </div>
+              <a id="pkgChange" href="/#destinations" class="font-mono text-2xs text-ink-3 hover:text-ink-1 underline flex-shrink-0">ganti</a>
+            </div>
+          </div>
+
+          <!-- Type Tour -->
+          <div class="mb-5">
+            <label class="block text-sm font-medium mb-2">Tipe Tour</label>
+            <div class="seg-wrap" role="tablist" aria-label="Tipe Tour">
+              <button id="typeFull" type="button" class="seg-btn" role="tab" aria-pressed="true" data-type="full">Full Package</button>
+              <button id="typeLand" type="button" class="seg-btn" role="tab" aria-pressed="false" data-type="land">Land Tour</button>
+            </div>
+            <p id="typeNote" class="font-mono text-2xs text-ink-4 mt-2 leading-relaxed">Termasuk tiket pesawat PP dari Indonesia.</p>
+          </div>
+
+          <!-- Qty -->
+          <div class="mb-5 flex items-center justify-between">
+            <label class="text-sm font-medium">Jumlah Peserta</label>
+            <div class="stepper">
+              <button id="qtyMinus" type="button" aria-label="Kurangi">−</button>
+              <input id="qtyInput" type="number" inputmode="numeric" value="2" min="1" max="20">
+              <button id="qtyPlus" type="button" aria-label="Tambah">+</button>
+            </div>
+          </div>
+
+          <!-- Live total -->
+          <div class="card p-4 mb-5" style="background: rgb(var(--surface-subtle));">
+            <div class="flex items-baseline justify-between gap-3">
+              <span class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em]">Estimasi Total</span>
+              <span id="step1Total" class="font-display font-bold text-xl" style="color: rgb(var(--brand));">Rp 0</span>
+            </div>
+            <p id="step1Breakdown" class="font-mono text-2xs text-ink-4 mt-1 text-right"></p>
+          </div>
+
+          <button id="btn1Next" class="btn btn-primary justify-center w-full sm:w-auto" disabled>
+            Lanjut · Data Pemesan
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+          </button>
+        </section>
+
+        <!-- ====== STEP 2: Data Pemesan & Paspor ====== -->
+        <section class="mt-7 step-panel hidden" data-step="2">
+          <p class="eyebrow mb-3">Langkah 2 · Data Pemesan</p>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Nama Sesuai Paspor Aktif *</label>
+              <input id="namaPemesan" class="input" placeholder="Tulis persis seperti di paspor" autocomplete="off">
+              <p class="font-mono text-2xs text-ink-4 mt-1.5">Salah ketik di sini = visa bisa ditolak.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-2">No. WhatsApp *</label>
+                <input id="nomorWA" type="tel" class="input" placeholder="08xxxxxxxxxx" inputmode="numeric" autocomplete="off">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Email <span class="text-ink-4 font-normal">(opsional)</span></label>
+                <input id="emailPemesan" type="email" class="input" placeholder="email@contoh.com" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-2">No. Paspor</label>
+                <input id="noPaspor" class="input uppercase" placeholder="A1234567" autocomplete="off">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Berlaku Sampai</label>
+                <input id="masaBerlakuPaspor" class="input" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off" maxlength="10">
+                <p id="dateHint" class="font-mono text-2xs text-ink-4 mt-1.5">Ketik angka saja, format otomatis.</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Catatan Tambahan</label>
+              <textarea id="catatanPemesan" class="input" rows="3" placeholder="Alergi makanan, request kamar, tanggal preferensi, dll."></textarea>
+            </div>
+          </div>
+
+          <div class="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 mt-6">
+            <button class="btn btn-ghost justify-center" data-step-back="1">Kembali</button>
+            <button id="btn2Next" class="btn btn-primary justify-center" disabled>
+              Lanjut · Add-ons
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ====== STEP 3: Add-ons ====== -->
+        <section class="mt-7 step-panel hidden" data-step="3">
+          <p class="eyebrow mb-3">Langkah 3 · Tambahan</p>
+          <p class="text-sm text-ink-2 mb-4">Pilih layanan opsional. Bisa juga dilewati.</p>
+          <div id="addonsList" class="space-y-2"></div>
+          <div class="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 mt-6">
+            <button class="btn btn-ghost justify-center" data-step-back="2">Kembali</button>
+            <button id="btn3Next" class="btn btn-primary justify-center">
+              Lihat Invoice
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ====== STEP 4: Invoice ====== -->
+        <section class="mt-7 step-panel hidden" data-step="4">
+          <p class="eyebrow mb-3">Langkah 4 · Invoice & Konfirmasi</p>
+          <p class="text-sm text-ink-2 mb-4">Cek detail pesanan. Konfirmasi via WhatsApp.</p>
+
+          <article id="invoicePreview" class="card p-5 sm:p-6 md:p-8" style="background: rgb(var(--surface));">
+            <header class="flex items-start justify-between gap-4 mb-6 pb-5 border-b border-soft">
+              <div class="flex items-start gap-3">
+                <img src="https://raw.githubusercontent.com/sundaftrip/SUNDAF/main/sundaf-logo.png" alt="SUNDAF TRIP" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                <div>
+                  <p class="font-display font-bold leading-none">SUNDAF TRIP</p>
+                  <p class="font-mono text-2xs text-ink-4 mt-1">CV SUNDAF HOLIDAY GROUP</p>
+                  <p class="text-2xs text-ink-3 leading-relaxed mt-1.5">Epiwalk Office Suite Lt. 5 A501<br>Jakarta Selatan · NIB 1601260060842</p>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="eyebrow-brand mb-1">Invoice</p>
+                <p class="font-mono text-sm font-bold" id="invPreviewNumber">—</p>
+                <p class="font-mono text-2xs text-ink-4 mt-1" id="invPreviewDate">—</p>
+              </div>
+            </header>
+
+            <section class="grid grid-cols-2 gap-4 mb-6 text-sm">
+              <div>
+                <p class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em] mb-1">Pemesan</p>
+                <p class="font-medium" id="invPreviewName">—</p>
+                <p class="text-ink-3 text-xs" id="invPreviewContact">—</p>
+                <p class="text-ink-3 text-xs" id="invPreviewPaspor"></p>
+              </div>
+              <div>
+                <p class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em] mb-1">Status</p>
+                <span class="code-badge-brand">PENDING</span>
+              </div>
+            </section>
+
+            <section class="mb-6 -mx-1 sm:mx-0 overflow-x-auto">
+              <table class="w-full text-sm" style="min-width: 420px;">
+                <tbody id="invPreviewItems"></tbody>
+                <tfoot>
+                  <tr class="border-t-2 border-strong">
+                    <td colspan="3" class="py-3 text-right font-mono text-xs text-ink-3">TOTAL</td>
+                    <td class="py-3 text-right font-display font-bold text-xl" style="color: rgb(var(--brand));" id="invPreviewTotal">Rp 0</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </section>
+
+            <section class="mb-2">
+              <p class="font-mono text-2xs text-ink-4 uppercase tracking-[.14em] mb-2">Pembayaran</p>
+              <div class="card p-4 text-sm" style="background: rgb(var(--surface-subtle));">
+                <p class="text-ink-2 mb-1.5">Transfer ke rekening berikut:</p>
+                <p class="font-mono font-bold" id="payBank">BCA · 1234567890</p>
+                <p class="font-mono text-ink-2 text-xs" id="payHolder">a.n. CV SUNDAF HOLIDAY GROUP</p>
+                <p class="text-2xs text-ink-4 mt-2">Konfirmasi pembayaran via WhatsApp setelah transfer.</p>
+              </div>
+            </section>
+
+            <footer class="pt-4 mt-6 border-t border-soft">
+              <p class="font-mono text-2xs text-ink-4">Terima kasih atas kepercayaan Anda — #SemuaBisaJalan</p>
+            </footer>
+          </article>
+
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 print-hide">
+            <a id="btnOpenReceipt" href="/receipt/" target="_blank" rel="noopener" class="btn btn-ghost justify-center">
+              Buka Receipt
+            </a>
+            <button id="btnPrint" class="btn btn-ghost justify-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+              Print / PDF
+            </button>
+            <button id="btnCheckout" class="btn btn-whatsapp justify-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+              Konfirmasi WhatsApp
+            </button>
+          </div>
+          <button class="btn btn-ghost w-full mt-3 justify-center text-xs print-hide" data-step-back="3">Kembali ke Add-ons</button>
+        </section>
+      </div>
+
+      <!-- Right: live summary -->
+      <aside class="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
+        <div class="card p-5">
+          <p class="eyebrow mb-3">Ringkasan Pesanan</p>
+          <div id="summaryBody"><p class="text-sm text-ink-3">Pilih paket dulu untuk melihat ringkasan.</p></div>
+          <div id="summaryTotal" class="hidden mt-5 pt-5 border-t border-soft">
+            <div class="flex justify-between items-baseline">
+              <span class="font-mono text-xs text-ink-4">TOTAL ESTIMASI</span>
+              <span class="font-display font-bold text-2xl" style="color: rgb(var(--brand));" id="totalAmount">Rp 0</span>
+            </div>
+            <p class="text-2xs text-ink-4 mt-2">Estimasi sebelum konfirmasi tim.</p>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer border-t border-soft mt-12" style="background: rgb(var(--surface-subtle));">
+  <div class="container-docs py-6 grid sm:grid-cols-2 gap-3 items-center">
+    <p class="font-mono text-2xs text-ink-4">CV SUNDAF HOLIDAY GROUP · NIB 1601260060842 · © 2026</p>
+    <p class="font-mono text-2xs text-ink-4 sm:text-right">
+      <a href="https://wa.me/6281775202759" target="_blank" rel="noopener" class="hover:text-ink-1">WhatsApp +62 817-7520-2759</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:sundaf.group@gmail.com" class="hover:text-ink-1">sundaf.group@gmail.com</a>
+    </p>
+  </div>
+</footer>
+
+<script type="module" src="/_astro/booking.astro_astro_type_script_index_0_lang.Cl4iiovj.js"></script>
+
+</body>
+</html>
