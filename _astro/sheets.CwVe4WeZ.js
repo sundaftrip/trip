@@ -53,8 +53,10 @@ const TABS = {
   },
 };
 
+// `headers=1` paksa GViz pakai baris 1 sebagai header.
+// Tanpa ini, tab dengan kolom semua-teks (text, terms_conditions) suka mis-detect.
 const gvizUrl = (sheetName) =>
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(sheetName)}`;
 const csvUrl = (gid) =>
   `https://docs.google.com/spreadsheets/d/e/${LEGACY_PUB_ID}/pub?gid=${gid}&single=true&output=csv`;
 
@@ -69,12 +71,31 @@ function parseGviz(text) {
     throw new Error(msg || "GViz error");
   }
   if (!obj.table) throw new Error("No table in GViz response");
-  const headers = (obj.table.cols || []).map((c, i) => {
-    let h = String(c.label || c.id || "").trim();
-    if (!h) h = `col_${i}`;
-    return h.toLowerCase().replace(/\s+/g, "_");
+
+  let headers = (obj.table.cols || []).map((c, i) => {
+    const lbl = String(c.label || "").trim();
+    return lbl ? lbl.toLowerCase().replace(/\s+/g, "_") : "";
   });
-  return (obj.table.rows || [])
+  let rows = obj.table.rows || [];
+
+  // Fallback: if headers all empty (GViz failed to detect),
+  // use first data row as headers and skip it.
+  const allEmpty = headers.every((h) => !h);
+  if (allEmpty && rows.length) {
+    const first = rows[0].c || [];
+    headers = first.map((cell, i) => {
+      if (!cell) return `col_${i}`;
+      const v = cell.f != null ? cell.f : cell.v;
+      return v ? String(v).trim().toLowerCase().replace(/\s+/g, "_") : `col_${i}`;
+    });
+    rows = rows.slice(1);
+    console.info("[SUNDAF] gviz used first row as headers (fallback)");
+  }
+
+  // Final safety: name any empty header slot
+  headers = headers.map((h, i) => h || `col_${i}`);
+
+  return rows
     .map((row) => {
       const out = {};
       (row.c || []).forEach((cell, i) => {
