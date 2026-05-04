@@ -1,6 +1,7 @@
 import {
   a as loadPackages,
   c as loadText,
+  q as loadTerms,
   s as sortPackages,
   f as fmtIDR,
   n as toNumber,
@@ -178,6 +179,43 @@ function applyFilter(cat) {
   renderCards(sortPackages(list));
 }
 
+/* ----- Home testimonials ----- */
+function renderHomeTestimonials(terms) {
+  const root = document.getElementById("homeTesti");
+  if (!root) return;
+  // Show global testimonials (pkg_id="*" or empty) — top 6
+  const list = (terms || [])
+    .filter((t) => (t.type || "").toLowerCase() === "testimonial")
+    .filter((t) => !t.pkg_id || t.pkg_id === "*")
+    .slice(0, 6);
+  if (!list.length) {
+    // Hide entire section if no testimonials yet
+    const sec = document.getElementById("testimonials");
+    if (sec) sec.style.display = "none";
+    return;
+  }
+  root.innerHTML = list.map((t) => {
+    const stars = t.stars > 0
+      ? "★".repeat(Math.min(5, Math.round(t.stars))) + "☆".repeat(Math.max(0, 5 - Math.round(t.stars)))
+      : "";
+    const photo = t.photo
+      ? `<img src="${esc(t.photo)}" alt="${esc(t.name)}" class="w-10 h-10 rounded-full object-cover flex-shrink-0">`
+      : `<div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm flex-shrink-0" style="background:rgb(var(--brand));color:#fff;">${esc((t.name || "?").charAt(0).toUpperCase())}</div>`;
+    return `
+      <div class="card p-5">
+        <div class="flex items-center gap-3 mb-3">
+          ${photo}
+          <div class="min-w-0">
+            <p class="font-medium text-sm truncate">${esc(t.name || "Anonymous")}</p>
+            ${stars ? `<p class="text-xs" style="color:#f59e0b;letter-spacing:1px;">${stars}</p>` : ""}
+            ${t.extra ? `<p class="font-mono text-2xs text-ink-4">${esc(t.extra)}</p>` : ""}
+          </div>
+        </div>
+        <p class="text-sm text-ink-2 leading-relaxed italic">"${esc(t.content)}"</p>
+      </div>`;
+  }).join("");
+}
+
 function animateStats() {
   const els = document.querySelectorAll(".stat-number[data-count]");
   if (!els.length) return;
@@ -214,11 +252,19 @@ const init = async () => {
   animateStats();
 
   try {
-    const [packages, cmsText] = await Promise.all([loadPackages(), loadText()]);
-    console.log("[SUNDAF] Packages:", packages.length, "· CMS keys:", Object.keys(cmsText).length);
+    const [pRes, tRes, qRes] = await Promise.allSettled([loadPackages(), loadText(), loadTerms()]);
+    const packages = pRes.status === "fulfilled" ? pRes.value : [];
+    const cmsText  = tRes.status === "fulfilled" ? tRes.value : {};
+    const terms    = qRes.status === "fulfilled" ? qRes.value : [];
+    if (pRes.status === "rejected") console.warn("[SUNDAF] loadPackages failed:", pRes.reason);
+    if (tRes.status === "rejected") console.warn("[SUNDAF] loadText failed:", tRes.reason);
+    if (qRes.status === "rejected") console.warn("[SUNDAF] loadTerms failed:", qRes.reason);
+    console.log("[SUNDAF] home:", packages.length, "pkg ·", Object.keys(cmsText).length, "text ·", terms.length, "terms");
+    if (!packages.length) throw new Error("Tidak ada paket");
     allPackages = packages;
     applyCmsText(cmsText);
     applyFilter("all");
+    renderHomeTestimonials(terms);
     if (window.lucide) window.lucide.createIcons();
   } catch (err) {
     console.error("[SUNDAF] Sheets fetch failed:", err);

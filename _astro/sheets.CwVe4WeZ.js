@@ -7,48 +7,14 @@ const LEGACY_PUB_ID =
   "2PACX-1vTKRP4SnKWgy9HKhRRzJ2pEKtOxRGk5a88lckeGBxN4Hzo378qlltdKN_6rQ_NF9rqCGnpuXZn54AIn";
 
 const TABS = {
-  packages: {
-    name: "packages",
-    altNames: ["Packages", "PACKAGES", "paket", "Paket", "Catalog", "catalog"],
-    gid: "0",
-  },
-  addons: {
-    name: "addons",
-    altNames: ["Addons", "Add-ons", "add_ons", "Add_ons", "addon", "Addon"],
-    gid: "1535546600",
-  },
-  text: {
-    name: "text",
-    altNames: ["Text", "TEXT", "settings", "Settings", "config", "Config", "cms"],
-    gid: "441927481",
-  },
-  blog: {
-    name: "blog",
-    altNames: ["Blog", "BLOG", "Blogs", "blogs", "artikel", "Artikel"],
-    gid: "342839124",
-  },
-  receipts: {
-    name: "receipts",
-    altNames: ["Receipts", "Receipt", "RECEIPTS", "invoice", "Invoice"],
-    gid: "1000",
-  },
+  packages: { name: "packages", altNames: ["Packages"], gid: "0" },
+  addons:   { name: "addons",   altNames: ["Addons"],   gid: "1535546600" },
+  text:     { name: "text",     altNames: ["Text"],     gid: "441927481" },
+  blog:     { name: "blog",     altNames: ["Blog"],     gid: "342839124" },
+  receipts: { name: "receipts", altNames: ["Receipts"], gid: "1000" },
   terms: {
     name: "terms_conditions",
-    altNames: [
-      "Terms_Conditions",
-      "Terms_conditions",
-      "terms_and_conditions",
-      "Terms_and_conditions",
-      "Terms_and_condition",
-      "terms_and_condition",
-      "terms_condition",
-      "Terms_condition",
-      "TermsConditions",
-      "Terms",
-      "terms",
-      "tnc",
-      "TNC",
-    ],
+    altNames: ["Terms_conditions", "terms_and_conditions", "Terms_and_condition", "terms_and_condition", "Terms"],
     gid: "",
   },
 };
@@ -145,7 +111,7 @@ function parseCsv(text) {
   }).filter((r) => Object.values(r).some((v) => v));
 }
 
-async function fetchText(url, timeoutMs = 12000) {
+async function fetchText(url, timeoutMs = 5000) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -158,9 +124,12 @@ async function fetchText(url, timeoutMs = 12000) {
 async function loadTab(tab) {
   const names = [tab.name, ...(tab.altNames || [])];
   let lastErr;
-  for (const name of names) {
+  // Try GViz with progressively shorter timeouts for fallback names
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    const timeout = i === 0 ? 6000 : 3000;
     try {
-      const txt = await fetchText(gvizUrl(name));
+      const txt = await fetchText(gvizUrl(name), timeout);
       const rows = parseGviz(txt);
       if (rows.length) {
         if (name !== tab.name) console.info(`[SUNDAF] tab "${tab.name}" resolved via alt name "${name}"`);
@@ -168,9 +137,9 @@ async function loadTab(tab) {
       }
     } catch (e) { lastErr = e; }
   }
-  // CSV fallback
+  // CSV fallback (legacy published-to-web)
   if (tab.gid) {
-    try { return parseCsv(await fetchText(csvUrl(tab.gid))); }
+    try { return parseCsv(await fetchText(csvUrl(tab.gid), 5000)); }
     catch (e) { lastErr = e; }
   }
   console.warn(`[SUNDAF] tab "${tab.name}" failed: ${lastErr?.message || lastErr}`);

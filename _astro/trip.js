@@ -338,13 +338,30 @@ const init = async () => {
   const params = new URLSearchParams(window.location.search);
   const id = (params.get("id") || "").trim();
 
+  // Hard safety: never let loader hang past 12s — show whatever we have
+  const safety = setTimeout(() => {
+    if (!$("loading").classList.contains("hidden")) {
+      console.warn("[SUNDAF] safety timeout — forcing render");
+      $("loading").classList.add("hidden");
+      if (!pkg) $("notFound").classList.remove("hidden");
+    }
+  }, 12000);
+
   try {
-    const [packages, text, terms] = await Promise.all([loadPackages(), loadText(), loadTerms()]);
-    textKv = text;
-    termsAll = terms;
+    // Use allSettled so one failing tab (e.g. terms_conditions) doesn't block render
+    const [pRes, tRes, qRes] = await Promise.allSettled([loadPackages(), loadText(), loadTerms()]);
+    const packages = pRes.status === "fulfilled" ? pRes.value : [];
+    textKv = tRes.status === "fulfilled" ? tRes.value : {};
+    termsAll = qRes.status === "fulfilled" ? qRes.value : [];
+    if (pRes.status === "rejected") console.warn("[SUNDAF] loadPackages failed:", pRes.reason);
+    if (tRes.status === "rejected") console.warn("[SUNDAF] loadText failed:", tRes.reason);
+    if (qRes.status === "rejected") console.warn("[SUNDAF] loadTerms failed:", qRes.reason);
+    console.log("[SUNDAF] trip data:", packages.length, "pkg ·", Object.keys(textKv).length, "text ·", termsAll.length, "terms");
+
     applyCmsText(textKv);
     pkg = packages.find((p) => p.id === id);
 
+    clearTimeout(safety);
     $("loading").classList.add("hidden");
     if (!pkg) {
       $("notFound").classList.remove("hidden");
@@ -382,6 +399,7 @@ const init = async () => {
     $("mobileCta").classList.remove("hidden");
     if (window.lucide) window.lucide.createIcons();
   } catch (err) {
+    clearTimeout(safety);
     console.error("[SUNDAF] trip detail load failed:", err);
     $("loading").innerHTML = `
       <div class="text-3xl mb-2">⚠️</div>
