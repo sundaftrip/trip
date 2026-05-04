@@ -6,9 +6,10 @@ import {
   n as toNumber,
   isPast,
   isSoldOut,
+  isActive,
 } from "./sheets.CwVe4WeZ.js";
 
-/* ----- CMS text replacement (data-cms="key" → sheet.text.key) ----- */
+/* ----- CMS text replacement ----- */
 function applyCmsText(map) {
   if (!map || !Object.keys(map).length) return;
   document.querySelectorAll("[data-cms]").forEach((el) => {
@@ -16,9 +17,19 @@ function applyCmsText(map) {
     if (!k) return;
     const v = map[k];
     if (v === undefined || v === "") return;
-    if (el.dataset.cmsAttr) el.setAttribute(el.dataset.cmsAttr, v);
-    else if (el.tagName === "IMG") el.src = v;
-    else el.textContent = v;
+    if (el.dataset.cmsAttr) {
+      el.setAttribute(el.dataset.cmsAttr, v);
+    } else if (k.startsWith("contact_phone_")) {
+      el.textContent = v;
+      el.setAttribute("href", "tel:" + v.replace(/\s|-/g, ""));
+    } else if (k === "contact_email") {
+      el.textContent = v;
+      el.setAttribute("href", "mailto:" + v);
+    } else if (el.tagName === "IMG") {
+      el.src = v;
+    } else {
+      el.textContent = v;
+    }
   });
 }
 
@@ -26,38 +37,31 @@ let allPackages = [];
 
 function esc(v) {
   return String(v ?? "").replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   })[c]);
 }
 
-/* lowest meaningful price (promo > land tour > full) */
 function leadPrice(p) {
   const promo = toNumber(p.promo_price);
   const land = toNumber(p.price_land_tour);
   const full = toNumber(p.price);
-  return promo > 0 ? promo : land > 0 ? land : full;
+  return promo > 0 ? promo : full > 0 ? full : land;
 }
 function priceLabel(p) {
   if (toNumber(p.promo_price) > 0) return "Harga promo";
-  if (toNumber(p.price_land_tour) > 0) return "Land tour mulai";
   return "Mulai dari";
 }
 
+/* ---- Pretty status badges ---- */
 function statusBadge(p) {
   if (isPast(p)) {
-    return `<span class="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-mono text-2xs uppercase tracking-[.14em]"
-              style="background:rgb(0 0 0 / 0.65);color:#fff;backdrop-filter:blur(4px);">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+    return `<span style="position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;background:linear-gradient(135deg,rgba(0,0,0,.78),rgba(0,0,0,.62));color:#fff;backdrop-filter:blur(8px);box-shadow:0 4px 12px rgba(0,0,0,.18);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               Past Trip
             </span>`;
   }
   if (isSoldOut(p)) {
-    return `<span class="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-mono text-2xs uppercase tracking-[.14em]"
-              style="background:#0a0a0a;color:#fff;backdrop-filter:blur(4px);">
+    return `<span style="position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;background:#0a0a0a;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25);">
               Sold Out
             </span>`;
   }
@@ -65,43 +69,37 @@ function statusBadge(p) {
 }
 
 function leftBadges(p) {
+  if (!isActive(p)) return "";
   const out = [];
   if (toNumber(p.promo_price) > 0 && toNumber(p.price) > toNumber(p.promo_price)) {
-    out.push(`<span class="inline-flex items-center px-2.5 py-1 rounded-full font-mono text-2xs uppercase tracking-[.14em]"
-                style="background:rgb(var(--brand));color:#fff;">PROMO</span>`);
-  }
-  if (toNumber(p.price_land_tour) > 0 && toNumber(p.price) > 0) {
-    out.push(`<span class="inline-flex items-center px-2.5 py-1 rounded-full font-mono text-2xs uppercase tracking-[.14em]"
-                style="background:rgb(var(--surface) / 0.95);color:rgb(var(--ink-1, 24 24 27));">LAND + FULL</span>`);
-  } else if (p.badge && !isPast(p) && !isSoldOut(p)) {
-    out.push(`<span class="inline-flex items-center px-2.5 py-1 rounded-full font-mono text-2xs uppercase tracking-[.14em]"
-                style="background:rgb(var(--surface) / 0.95);">${esc(p.badge)}</span>`);
+    out.push(`<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;background:linear-gradient(135deg,rgb(var(--brand)),#dc2626);color:#fff;box-shadow:0 4px 12px rgba(220,38,38,.35);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L3 9 L12 9 L8 22 L21 11 L13 11 z"/></svg>
+                Promo
+              </span>`);
+  } else if (p.badge) {
+    out.push(`<span style="display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;background:rgb(var(--surface));color:rgb(var(--ink-1,24 24 27));box-shadow:0 2px 8px rgba(0,0,0,.08);">${esc(p.badge)}</span>`);
   }
   return out.length
-    ? `<div class="absolute top-3 left-3 flex flex-col gap-1.5">${out.join("")}</div>`
+    ? `<div style="position:absolute;top:14px;left:14px;display:flex;flex-direction:column;gap:8px;">${out.join("")}</div>`
     : "";
 }
 
 function chips(p) {
   const items = [];
   if (p.flag || p.country) {
-    items.push(`<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-                  style="background:rgb(var(--surface-muted));">${esc(p.flag || "")} ${esc(p.country || "")}</span>`);
+    items.push(`<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:rgb(var(--surface-muted));font-size:12px;font-weight:500;">${esc(p.flag || "")} ${esc(p.country || "")}</span>`);
   }
   if (p.duration) {
-    items.push(`<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-                  style="background:rgb(var(--surface-muted));">⏱ ${esc(p.duration)}</span>`);
+    items.push(`<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:rgb(var(--surface-muted));font-size:12px;font-weight:500;">⏱ ${esc(p.duration)}</span>`);
   }
   if (p.city_highlight) {
-    const cities = String(p.city_highlight).split(/[,\n;]/).map(s => s.trim()).filter(Boolean);
+    const cities = String(p.city_highlight).split(/[,\n;|]/).map((s) => s.trim()).filter(Boolean);
     if (cities.length) {
-      items.push(`<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-                    style="background:rgb(var(--surface-muted));" title="${esc(cities.join(', '))}">📍 ${esc(cities.slice(0, 2).join(' · '))}${cities.length > 2 ? ` +${cities.length - 2}` : ''}</span>`);
+      items.push(`<span title="${esc(cities.join(', '))}" style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:rgb(var(--surface-muted));font-size:12px;font-weight:500;">📍 ${esc(cities.slice(0, 2).join(' · '))}${cities.length > 2 ? ` +${cities.length - 2}` : ''}</span>`);
     }
   }
-  if (p.halal === "yes" || p.halal === "true" || p.halal === "1" || p.halal === "halal") {
-    items.push(`<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-                  style="background:#ecfdf5;color:#065f46;">🕌 Halal Friendly</span>`);
+  if (["yes", "true", "1", "halal"].includes(p.halal)) {
+    items.push(`<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:#ecfdf5;color:#065f46;font-size:12px;font-weight:500;">🕌 Halal Friendly</span>`);
   }
   return items.join("");
 }
@@ -111,28 +109,23 @@ function seatsLine(p) {
   const n = toNumber(p.seats_left);
   if (!n) return "";
   if (n <= 5) {
-    return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-              style="background:#fef2f2;color:#b91c1c;">🔥 Sisa ${n} seat</span>`;
+    return `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:500;">🔥 Sisa ${n} seat</span>`;
   }
-  return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-            style="background:rgb(var(--surface-muted));">Sisa ${n} seat</span>`;
+  return `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:rgb(var(--surface-muted));font-size:12px;font-weight:500;">Sisa ${n} seat</span>`;
 }
-
-function isActive(p) { return !isPast(p) && !isSoldOut(p); }
 
 function priceArea(p) {
   const lead = leadPrice(p);
   const normal = toNumber(p.price);
-  const showStrike = lead < normal && lead > 0;
+  const showStrike = lead > 0 && normal > 0 && lead < normal;
   return `
-    <p class="font-mono text-2xs text-ink-4 mb-0.5">${priceLabel(p)}</p>
-    <div class="flex items-baseline gap-2 flex-wrap">
-      <p class="font-display font-bold text-lg sm:text-xl" style="color:rgb(var(--brand));">${lead > 0 ? esc(fmtIDR(lead)) : "Hubungi kami"}</p>
-      ${showStrike ? `<p class="font-mono text-2xs text-ink-4 line-through">${esc(fmtIDR(normal))}</p>` : ""}
+    <p style="font-family:ui-monospace,monospace;font-size:10px;color:rgb(var(--ink-4,160 160 170));margin-bottom:2px;">${priceLabel(p)}</p>
+    <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+      <p style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;line-height:1.2;color:rgb(var(--brand));margin:0;">${lead > 0 ? esc(fmtIDR(lead)) : "Hubungi kami"}</p>
+      ${showStrike ? `<p style="font-family:ui-monospace,monospace;font-size:11px;color:rgb(var(--ink-4,160 160 170));text-decoration:line-through;margin:0;">${esc(fmtIDR(normal))}</p>` : ""}
     </div>`;
 }
 
-/* Card renderer — bigger thumbnail, scannable chips, grayscale for past/sold-out */
 function renderCards(list) {
   const root = document.getElementById("packages");
   if (!list.length) {
@@ -144,25 +137,21 @@ function renderCards(list) {
     .map((p) => {
       const inactive = !isActive(p);
       const link = `/trip/?id=${encodeURIComponent(p.id)}`;
-      const ctaLabel = isPast(p)
-        ? "Lihat Cerita"
-        : isSoldOut(p)
-        ? "Lihat Detail"
-        : "Lihat Perjalanan";
+      const ctaLabel = isPast(p) ? "Lihat Cerita" : isSoldOut(p) ? "Lihat Detail" : "Lihat Perjalanan";
       const img = p.hero_img
         ? `<img src="${esc(p.hero_img)}" alt="${esc(p.title)}" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-             style="${inactive ? "filter: grayscale(100%); opacity: .85;" : ""}">`
+             ${inactive ? 'style="filter:grayscale(100%);opacity:.85;"' : ""}>`
         : "";
 
       return `
         <article class="card card-hoverable overflow-hidden flex flex-col group"
-                 ${inactive ? 'style="opacity:.92;"' : ""}>
+                 ${inactive ? 'style="opacity:.94;"' : ""}>
           <a href="${link}" class="block">
             <div class="relative aspect-[4/3] overflow-hidden bg-surface-muted">${img}${leftBadges(p)}${statusBadge(p)}</div>
           </a>
           <div class="p-4 sm:p-5 flex-1 flex flex-col">
-            <div class="flex items-center gap-1.5 mb-3 flex-wrap">${chips(p)}${seatsLine(p)}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">${chips(p)}${seatsLine(p)}</div>
             <h3 class="font-display font-bold text-base sm:text-lg leading-tight tracking-tight mb-1.5 text-balance">
               <a href="${link}" class="hover:text-[rgb(var(--brand))] transition">${esc(p.title || "")}</a>
             </h3>
@@ -192,32 +181,33 @@ function applyFilter(cat) {
 function animateStats() {
   const els = document.querySelectorAll(".stat-number[data-count]");
   if (!els.length) return;
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const el = e.target;
-        const target = parseInt(el.dataset.count || "0", 10);
-        const suffix = el.dataset.suffix || "";
-        const dur = 1400;
-        const t0 = performance.now();
-        io.unobserve(el);
-        const tick = (t) => {
-          const k = Math.min((t - t0) / dur, 1);
-          const eased = k * k * (3 - 2 * k);
-          el.textContent = Math.floor(eased * target) + suffix;
-          if (k < 1) requestAnimationFrame(tick);
-          else el.textContent = target + suffix;
-        };
-        requestAnimationFrame(tick);
-      });
-    },
-    { threshold: 0.4 }
-  );
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.count || "0", 10);
+      const suffix = el.dataset.suffix || "";
+      const dur = 1400;
+      const t0 = performance.now();
+      io.unobserve(el);
+      const tick = (t) => {
+        const k = Math.min((t - t0) / dur, 1);
+        const eased = k * k * (3 - 2 * k);
+        el.textContent = Math.floor(eased * target) + suffix;
+        if (k < 1) requestAnimationFrame(tick);
+        else el.textContent = target + suffix;
+      };
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.4 });
   els.forEach((el) => io.observe(el));
 }
 
 const init = async () => {
+  // Hide the duplicate small stat strip in hero (keep only the big cards in #about)
+  const heroStatStrip = document.querySelector('section[data-astro-cid-j7pv25f6] .mt-12.flex.flex-wrap.items-center');
+  if (heroStatStrip) heroStatStrip.remove();
+
   document.querySelectorAll(".filter-tab").forEach((b) => {
     b.addEventListener("click", () => applyFilter(b.dataset.category || "all"));
   });
@@ -225,7 +215,7 @@ const init = async () => {
 
   try {
     const [packages, cmsText] = await Promise.all([loadPackages(), loadText()]);
-    console.log("[SUNDAF] Packages:", packages.length, "· CMS:", Object.keys(cmsText).length);
+    console.log("[SUNDAF] Packages:", packages.length, "· CMS keys:", Object.keys(cmsText).length);
     allPackages = packages;
     applyCmsText(cmsText);
     applyFilter("all");
