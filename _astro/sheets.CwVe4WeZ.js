@@ -14,13 +14,23 @@ const TABS = {
   receipts: { name: "receipts", altNames: ["Receipts"], gid: "1000" },
   terms: {
     name: "terms_conditions",
-    altNames: ["Terms_conditions", "terms_and_conditions", "Terms_and_condition", "terms_and_condition", "Terms"],
-    gid: "",
+    altNames: [
+      "Terms_conditions",
+      "terms_and_conditions",
+      "Terms_and_conditions",
+      "Terms_and_condition",
+      "terms_and_condition",
+      "Terms",
+      "terms",
+      "tnc",
+      "TnC",
+      "T&C",
+    ],
+    gid: "2050248627",
   },
 };
 
 // `headers=1` paksa GViz pakai baris 1 sebagai header.
-// Tanpa ini, tab dengan kolom semua-teks (text, terms_conditions) suka mis-detect.
 const gvizUrl = (sheetName) =>
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(sheetName)}`;
 const csvUrl = (gid) =>
@@ -44,8 +54,7 @@ function parseGviz(text) {
   });
   let rows = obj.table.rows || [];
 
-  // Fallback: if headers all empty (GViz failed to detect),
-  // use first data row as headers and skip it.
+  // Fallback: if headers all empty, use first data row as headers
   const allEmpty = headers.every((h) => !h);
   if (allEmpty && rows.length) {
     const first = rows[0].c || [];
@@ -58,7 +67,6 @@ function parseGviz(text) {
     console.info("[SUNDAF] gviz used first row as headers (fallback)");
   }
 
-  // Final safety: name any empty header slot
   headers = headers.map((h, i) => h || `col_${i}`);
 
   return rows
@@ -124,7 +132,6 @@ async function fetchText(url, timeoutMs = 5000) {
 async function loadTab(tab) {
   const names = [tab.name, ...(tab.altNames || [])];
   let lastErr;
-  // Try GViz with progressively shorter timeouts for fallback names
   for (let i = 0; i < names.length; i++) {
     const name = names[i];
     const timeout = i === 0 ? 6000 : 3000;
@@ -137,7 +144,7 @@ async function loadTab(tab) {
       }
     } catch (e) { lastErr = e; }
   }
-  // CSV fallback (legacy published-to-web)
+  // CSV fallback
   if (tab.gid) {
     try { return parseCsv(await fetchText(csvUrl(tab.gid), 5000)); }
     catch (e) { lastErr = e; }
@@ -240,6 +247,7 @@ async function loadReceipts() {
 async function loadTerms() {
   try {
     const rows = await loadTab(TABS.terms);
+    console.info("[SUNDAF] terms loaded:", rows.length, "rows");
     return rows.map((r) => ({
       pkg_id: ((r.pkg_id || r.package_id || r.paket_id || "*") || "*").toString().trim(),
       type: (r.type || "").toLowerCase().trim(),
@@ -250,12 +258,12 @@ async function loadTerms() {
       extra: r.extra || "",
     }));
   } catch (e) {
-    console.warn("[SUNDAF] terms_conditions tidak ada / belum ter-load:", e?.message || e);
+    console.warn("[SUNDAF] terms_conditions load failed:", e?.message || e);
     return [];
   }
 }
 
-// ---------- date helpers (auto-past detection) ----------
+// ---------- date helpers ----------
 const ID_MONTHS = {
   jan: 0, januari: 0, january: 0,
   feb: 1, februari: 1, february: 1,
@@ -271,57 +279,32 @@ const ID_MONTHS = {
   des: 11, desember: 11, dec: 11, december: 11,
 };
 
-/* Parse trip_date string and return the LATEST date represented.
- * Handles formats:
- *   "15 - 23 Apr 2026"
- *   "15-23 April 2026"
- *   "15 Apr - 23 Apr 2026"
- *   "Apr 2026"
- *   "April 2026"
- *   "2026-04-23"
- *   "23/04/2026"
- *   "15 Apr 2026 - 23 Apr 2026"
- * Returns Date or null.
- */
 function parseTripEnd(raw) {
   if (!raw) return null;
   const s = String(raw).trim().toLowerCase();
-
-  // ISO yyyy-mm-dd
   const iso = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (iso) return new Date(parseInt(iso[1]), parseInt(iso[2]) - 1, parseInt(iso[3]));
-
-  // dd/mm/yyyy
   const dmy = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
   if (dmy) return new Date(parseInt(dmy[3]), parseInt(dmy[2]) - 1, parseInt(dmy[1]));
-
-  // Find year + month
   const yearMatch = s.match(/(\d{4})/);
   if (!yearMatch) return null;
   const year = parseInt(yearMatch[1]);
-
   const monthRe = new RegExp("\\b(" + Object.keys(ID_MONTHS).join("|") + ")\\b", "g");
   const months = [...s.matchAll(monthRe)].map((m) => ID_MONTHS[m[1]]);
   if (!months.length) return null;
   const lastMonth = months[months.length - 1];
-
-  // Find day numbers (1-31)
   const dayMatches = [...s.matchAll(/\b(\d{1,2})\b/g)]
     .map((m) => parseInt(m[1]))
     .filter((d) => d >= 1 && d <= 31);
-  // Last day before year — heuristically pick the highest day ≤ 31 that's not the year part
   const cleanedDays = dayMatches.filter((d) => d !== parseInt(String(year).slice(-2)));
   const day = cleanedDays.length ? Math.max(...cleanedDays) : 28;
-
   return new Date(year, lastMonth, day);
 }
 
 function isAutoPast(p) {
-  // If status explicitly set, respect it
   const s = (p.status || "").toLowerCase().trim();
   if (s === "past") return true;
-  if (s === "sold-out" || s === "sold out") return false; // still relevant
-  // Otherwise check trip_date
+  if (s === "sold-out" || s === "sold out") return false;
   const end = parseTripEnd(p.trip_date);
   if (!end) return false;
   const today = new Date();
@@ -340,7 +323,7 @@ function isSoldOut(p) {
 function isActive(p) { return !isPast(p) && !isSoldOut(p); }
 
 function sortPackages(list) {
-  const tier = (p) => (isActive(p) ? 1 : isPast(p) ? 2 : 3);
+  const tier = (p) => (isActive(p) ? 1 : isSoldOut(p) ? 2 : isPast(p) ? 3 : 4);
   const yr = (s) => {
     if (!s) return 0;
     const m = String(s).match(/(\d{4})/);
