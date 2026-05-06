@@ -17,7 +17,21 @@ export default async function EditReceiptPage({ params }: { params: Promise<{ id
         <p className="text-sm text-gray-500 dark:text-gray-400">{receipt.receiptNo}</p>
       </div>
       <ReceiptForm
-        receipt={{ ...receipt, tripDate: receipt.tripDate ?? undefined, paymentDate: receipt.paymentDate?.toISOString().slice(0, 10) ?? undefined }}
+        receipt={{
+          id: receipt.id,
+          customerName: receipt.customerName,
+          customerPhone: receipt.customerPhone ?? undefined,
+          customerEmail: receipt.customerEmail ?? undefined,
+          tourId: receipt.tourId,
+          tourTitle: receipt.tourTitle,
+          tripDate: receipt.tripDate ?? undefined,
+          pax: receipt.pax,
+          amount: receipt.amount,
+          paymentMethod: receipt.paymentMethod ?? undefined,
+          paymentDate: receipt.paymentDate?.toISOString().slice(0, 10) ?? undefined,
+          notes: receipt.notes ?? undefined,
+          status: receipt.status,
+        }}
         tours={tours.map((t) => ({ ...t, tripDate: t.tripDate?.toISOString() ?? null, promoPrice: t.promoPrice ?? null }))}
       />
     </div>

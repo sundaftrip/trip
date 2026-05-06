@@ -14,13 +14,27 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
         <p className="text-sm text-gray-500 dark:text-gray-400">{tour.title}</p>
       </div>
       <TourForm tour={{
-        ...tour,
+        id: tour.id,
+        category: tour.category,
+        title: tour.title,
+        country: tour.country,
+        cityHighlight: tour.cityHighlight ?? undefined,
+        price: tour.price,
         promoPrice: tour.promoPrice ?? null,
         priceLandTour: tour.priceLandTour ?? null,
+        seatsLeft: tour.seatsLeft,
+        status: tour.status,
         tripDate: tour.tripDate?.toISOString(),
+        duration: tour.duration ?? undefined,
+        inclusions: tour.inclusions,
+        exclusions: tour.exclusions,
+        gallery: tour.gallery,
+        heroImg: tour.heroImg ?? undefined,
+        badge: tour.badge ?? undefined,
+        notes: tour.notes ?? undefined,
+        visaInfo: tour.visaInfo ?? undefined,
         itinerary: (tour.itinerary as { day: number; title: string; description: string }[]) ?? [],
         addOns: (tour.addOns as { name: string; price: number }[]) ?? [],
-        hotel: undefined,
       }} />
     </div>
   );

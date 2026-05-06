@@ -13,7 +13,15 @@ export default async function EditBlogPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Artikel</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">{post.title}</p>
       </div>
-      <BlogForm post={post} />
+      <BlogForm post={{
+    ...post,
+    excerpt: post.excerpt ?? undefined,
+    cover: post.cover ?? undefined,
+    category: post.category ?? undefined,
+    author: post.author ?? undefined,
+    body: post.body ?? undefined,
+    readTime: post.readTime ?? undefined,
+  }} />
     </div>
   );
 }
