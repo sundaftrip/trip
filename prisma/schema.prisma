@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  EDITOR
+}
+
+enum TourStatus {
+  ACTIVE
+  DRAFT
+  FULL
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(EDITOR)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+  receipts      Receipt[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Tour {
+  id             String     @id @default(cuid())
+  category       String
+  title          String
+  country        String
+  cityHighlight  String?
+  price          Float
+  promoPrice     Float?
+  priceLandTour  Float?
+  seatsLeft      Int        @default(0)
+  status         TourStatus @default(DRAFT)
+  tripDate       DateTime?
+  duration       String?
+  itinerary      Json?
+  inclusions     String[]
+  exclusions     String[]
+  gallery        String[]
+  hotel          Json?
+  visaInfo       String?
+  heroImg        String?
+  badge          String?
+  notes          String?
+  addOns         Json?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  receipts       Receipt[]
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  excerpt   String?
+  cover     String?
+  category  String?
+  date      DateTime @default(now())
+  author    String?
+  body      String?
+  readTime  String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteText {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  valueId   String?
+  valueEn   String?
+  updatedAt DateTime @updatedAt
+}
+
+model Receipt {
+  id           String   @id @default(cuid())
+  receiptNo    String   @unique
+  customerName String
+  customerPhone String?
+  customerEmail String?
+  tourId       String?
+  tourTitle    String
+  tripDate     String?
+  pax          Int      @default(1)
+  amount       Float
+  paymentMethod String?
+  paymentDate  DateTime?
+  notes        String?
+  status       String   @default("UNPAID")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tour         Tour?    @relation(fields: [tourId], references: [id])
+  createdBy    User?    @relation(fields: [createdById], references: [id])
+  createdById  String?
+}
+
+model TermsCondition {
+  id        String   @id @default(cuid())
+  bodyId    String?
+  bodyEn    String?
+  updatedAt DateTime @updatedAt
+}
+
+model CompanyInfo {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
