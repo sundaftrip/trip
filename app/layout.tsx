@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Jost } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
+const jost = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Sundaf Trip — Travel & Wisata Halal",
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${geist.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col">
+    <html lang="id" className={`${jost.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col font-jost">
         <Providers>{children}</Providers>
       </body>
     </html>
