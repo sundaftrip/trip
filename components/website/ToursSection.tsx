@@ -12,27 +12,19 @@ interface Tour {
 export default function ToursSection({ tours }: { tours: Tour[] }) {
   if (tours.length === 0) return null;
   return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-950">
+    <section className="py-24 bg-white dark:bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#2d6a4f" }}>
-              Tour Packages
-            </p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Paket Tour Pilihan</h2>
+            <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-3">Paket Tersedia</p>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Tour Pilihan</h2>
           </div>
-          <Link href="/tours" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold transition-all hover:gap-2.5" style={{ color: "#2d6a4f" }}>
-            Lihat Semua <ArrowRight size={16} />
+          <Link href="/tours" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors group">
+            Semua Tour <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tours.map((tour) => <TourCard key={tour.id} tour={tour} />)}
-        </div>
-        <div className="text-center mt-8 sm:hidden">
-          <Link href="/tours" className="inline-flex items-center gap-2 px-6 py-2.5 border font-semibold rounded-xl transition"
-            style={{ borderColor: "#2d6a4f", color: "#2d6a4f" }}>
-            Lihat Semua Tour <ArrowRight size={16} />
-          </Link>
         </div>
       </div>
     </section>
