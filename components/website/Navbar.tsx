@@ -52,7 +52,8 @@ export default function Navbar() {
                 src="/logo.png"
                 alt="Sundaf Trip"
                 width={130} height={40}
-                className={cn("h-8 w-auto", isDark && "brightness-0 invert")}
+                className="h-8 w-auto"
+                style={isDark ? { filter: "brightness(0) invert(1)" } : undefined}
                 priority
               />
             ) : <div className="h-8 w-28" />}
