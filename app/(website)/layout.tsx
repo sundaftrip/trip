@@ -1,6 +1,7 @@
 import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
 const COLOR_DEFAULTS: Record<string, string> = {
   color_hero: "#0d2018",
@@ -11,10 +12,23 @@ const COLOR_DEFAULTS: Record<string, string> = {
   color_eyebrow: "#6b7280",
 };
 
+const getSiteColors = unstable_cache(
+  async () => {
+    try {
+      const rows = await prisma.companyInfo.findMany({
+        where: { key: { startsWith: "color_" } },
+      });
+      return rows;
+    } catch {
+      return [];
+    }
+  },
+  ["site-colors"],
+  { revalidate: 60 }
+);
+
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const colorRows = await prisma.companyInfo.findMany({
-    where: { key: { startsWith: "color_" } },
-  });
+  const colorRows = await getSiteColors();
 
   const colors = { ...COLOR_DEFAULTS };
   colorRows.forEach((r) => { colors[r.key] = r.value; });
