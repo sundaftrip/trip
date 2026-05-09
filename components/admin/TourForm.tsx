@@ -58,7 +58,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
   const [inclusionInput, setInclusionInput] = useState("");
   const [exclusionInput, setExclusionInput] = useState("");
   const [itineraryItem, setItineraryItem] = useState({ day: 1, title: "", description: "" });
-  const [addOnItem, setAddOnItem] = useState({ name: "", price: 0 });
+  const [addOnItem, setAddOnItem] = useState<{ name: string; price: string | number }>({ name: "", price: "" });
 
   function set(key: keyof TourData, value: unknown) {
     setForm((p) => ({ ...p, [key]: value }));
@@ -219,9 +219,22 @@ export default function TourForm({ tour }: { tour?: TourData }) {
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Itinerary</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
           <input type="number" min={1} placeholder="Hari" className="input" value={itineraryItem.day} onChange={(e) => setItineraryItem((p) => ({ ...p, day: Number(e.target.value) }))} />
-          <input placeholder="Judul" className="input" value={itineraryItem.title} onChange={(e) => setItineraryItem((p) => ({ ...p, title: e.target.value }))} />
+          <input placeholder="Judul" className="input" value={itineraryItem.title}
+            onChange={(e) => setItineraryItem((p) => ({ ...p, title: e.target.value }))}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.currentTarget.nextElementSibling as HTMLInputElement | null)?.focus(); }}} />
           <div className="flex gap-2">
-            <input placeholder="Deskripsi" className="input flex-1" value={itineraryItem.description} onChange={(e) => setItineraryItem((p) => ({ ...p, description: e.target.value }))} />
+            <input placeholder="Deskripsi (Enter untuk tambah)" className="input flex-1" value={itineraryItem.description}
+              onChange={(e) => setItineraryItem((p) => ({ ...p, description: e.target.value }))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (itineraryItem.title) {
+                    const updated = [...(form.itinerary ?? []), itineraryItem].sort((a, b) => a.day - b.day);
+                    set("itinerary", updated);
+                    setItineraryItem({ day: (form.itinerary?.length ?? 0) + 2, title: "", description: "" });
+                  }
+                }
+              }} />
             <button type="button" onClick={() => { if (itineraryItem.title) { set("itinerary", [...(form.itinerary ?? []), itineraryItem].sort((a, b) => a.day - b.day)); setItineraryItem({ day: (form.itinerary?.length ?? 0) + 2, title: "", description: "" }); }}}
               className="px-3 bg-blue-600 text-white rounded-lg">+</button>
           </div>
@@ -243,18 +256,36 @@ export default function TourForm({ tour }: { tour?: TourData }) {
       {/* Add Ons */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Add Ons</h2>
-        <div className="flex gap-3 mb-3">
-          <input placeholder="Nama add-on" className="input flex-1" value={addOnItem.name} onChange={(e) => setAddOnItem((p) => ({ ...p, name: e.target.value }))} />
-          <input type="number" placeholder="Harga" className="input w-36" value={addOnItem.price || ""} onChange={(e) => setAddOnItem((p) => ({ ...p, price: Number(e.target.value) }))} />
-          <button type="button" onClick={() => { if (addOnItem.name) { set("addOns", [...(form.addOns ?? []), addOnItem]); setAddOnItem({ name: "", price: 0 }); }}}
+        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-1">
+          <label className="label text-xs">Nama Add-On</label>
+          <label className="label text-xs">Harga (Rp)</label>
+          <span />
+        </div>
+        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-3">
+          <input placeholder="cth: Airport Transfer" className="input" value={addOnItem.name}
+            onChange={(e) => setAddOnItem((p) => ({ ...p, name: e.target.value }))}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.currentTarget.nextElementSibling as HTMLInputElement | null)?.focus(); }}} />
+          <input type="number" min={0} placeholder="0" className="input" value={addOnItem.price}
+            onChange={(e) => setAddOnItem((p) => ({ ...p, price: e.target.value }))}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (addOnItem.name) {
+                  set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0 }]);
+                  setAddOnItem({ name: "", price: "" });
+                }
+              }
+            }} />
+          <button type="button"
+            onClick={() => { if (addOnItem.name) { set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0 }]); setAddOnItem({ name: "", price: "" }); }}}
             className="px-4 bg-blue-600 text-white rounded-lg text-sm">Tambah</button>
         </div>
         <div className="space-y-2">
           {(form.addOns ?? []).map((item, i) => (
             <div key={i} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg text-sm">
-              <span className="text-gray-900 dark:text-white">{item.name}</span>
+              <span className="font-medium text-gray-900 dark:text-white">{item.name}</span>
               <div className="flex items-center gap-3">
-                <span className="text-gray-600 dark:text-gray-400">Rp {item.price.toLocaleString("id-ID")}</span>
+                <span className="text-gray-600 dark:text-gray-400">Rp {Number(item.price).toLocaleString("id-ID")}</span>
                 <button type="button" onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
               </div>
             </div>

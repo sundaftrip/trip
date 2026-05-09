@@ -13,16 +13,26 @@ interface Props {
 
 export default function ImageUpload({ value, onChange, folder = "sundaftrip", multiple = false }: Props) {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
     setUploading(true);
+    setError(null);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
-    const data = await res.json();
-    onChange(data.url);
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setError(data.error ?? "Gagal upload gambar");
+      } else {
+        onChange(data.url);
+      }
+    } catch {
+      setError("Gagal upload gambar. Periksa koneksi internet.");
+    }
     setUploading(false);
   }
 
@@ -52,6 +62,7 @@ export default function ImageUpload({ value, onChange, folder = "sundaftrip", mu
           {uploading ? "Mengupload..." : multiple ? "Upload Gambar" : "Upload Gambar Hero"}
         </button>
       )}
+      {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
       <input
         ref={inputRef}
         type="file"
