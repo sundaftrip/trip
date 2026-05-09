@@ -22,12 +22,12 @@ export default function HeroSection({ texts }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* Eyebrow */}
-        <p className="text-xs font-medium tracking-[0.2em] uppercase mb-8 text-gray-400 dark:text-gray-600">
+        <p className="text-xs font-medium tracking-[0.2em] uppercase mb-8" style={{ color: "var(--site-eyebrow, #6b7280)" }}>
           CV Sundaf Holiday Group — {t("hero_eyebrow", "Perjalanan Terpercaya")}
         </p>
 
         {/* Main headline */}
-        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.0] tracking-tight text-gray-900 dark:text-white max-w-4xl mb-10">
+        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.0] tracking-tight max-w-4xl mb-10" style={{ color: "var(--site-hero, #0d2018)" }}>
           {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
         </h1>
 
@@ -39,7 +39,7 @@ export default function HeroSection({ texts }: Props) {
           <div className="flex items-center gap-4 shrink-0">
             <Link href="/tours"
               className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white rounded-xl transition-all"
-              style={{ background: "#2d6a4f" }}>
+              style={{ background: "var(--site-accent, #2d6a4f)" }}>
               {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
             </Link>
             <a href="https://wa.me/628111620207" target="_blank" rel="noreferrer"
