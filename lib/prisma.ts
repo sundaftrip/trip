@@ -7,8 +7,8 @@ function buildUrl() {
   if (!url) return url;
   const sep = url.includes("?") ? "&" : "?";
   let out = url;
-  if (!url.includes("connection_limit")) out += `${sep}connection_limit=1`;
-  if (!url.includes("pgbouncer") && !url.includes(":6543")) out += `&pgbouncer=true`;
+  if (!out.includes("connection_limit")) out += `${sep}connection_limit=1`;
+  if (!out.includes("pgbouncer")) out += `&pgbouncer=true`;
   return out;
 }
 
