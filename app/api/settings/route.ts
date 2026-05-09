@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
   const items = await prisma.companyInfo.findMany();
@@ -20,5 +21,6 @@ export async function PUT(req: NextRequest) {
       prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
     )
   );
+  revalidateTag("site-colors");
   return NextResponse.json({ success: true });
 }

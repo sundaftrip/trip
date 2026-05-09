@@ -24,7 +24,7 @@ const getSiteColors = unstable_cache(
     }
   },
   ["site-colors"],
-  { revalidate: 60 }
+  { revalidate: 3600, tags: ["site-colors"] }
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
