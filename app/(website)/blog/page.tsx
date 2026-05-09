@@ -16,7 +16,7 @@ export default async function BlogPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Blog & Tips Travel</h1>
+          <h1 className="text-4xl font-bold mb-3" style={{ color: "var(--site-heading, #111827)" }}>Blog & Tips Travel</h1>
           <p className="text-gray-500 dark:text-gray-400">Artikel, panduan, dan inspirasi perjalanan</p>
         </div>
 
@@ -40,7 +40,7 @@ export default async function BlogPage() {
                   )}
                 </div>
                 <div className="p-5">
-                  <h2 className="font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 transition">{post.title}</h2>
+                  <h2 className="font-bold mb-2 line-clamp-2 transition" style={{ color: "var(--site-blog-title, #111827)" }}>{post.title}</h2>
                   {post.excerpt && <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">{post.excerpt}</p>}
                   <div className="flex items-center justify-between text-xs text-gray-400">
                     <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(post.date)}</span>

@@ -32,7 +32,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
       <div className="p-5">
         <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1.5">{tour.category} · {tour.country}</p>
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2 leading-snug text-[15px]">{tour.title}</h3>
+        <h3 className="font-semibold mb-3 line-clamp-2 leading-snug text-[15px]" style={{ color: "var(--site-tour-title, #111827)" }}>{tour.title}</h3>
 
         <div className="flex flex-wrap gap-3 text-[11px] text-gray-400 mb-4">
           {tour.duration && <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>}
@@ -43,7 +43,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
         <div className="flex items-end justify-between pt-4 border-t border-gray-100 dark:border-gray-900">
           <div>
             {tour.promoPrice && <p className="text-[11px] text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
-            <p className="text-base font-bold" style={{ color: "#2d6a4f" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+            <p className="text-base font-bold" style={{ color: "var(--site-accent, #2d6a4f)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
           </div>
           <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
             Lihat Detail →
