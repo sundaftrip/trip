@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -5,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Calendar, User } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
-export const revalidate = 60;
+
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -6,7 +7,7 @@ import { MapPin, Calendar, Clock, Users, CheckCircle, XCircle, ArrowLeft, Messag
 import { formatCurrency, formatDate } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
 
-export const revalidate = 60;
+
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

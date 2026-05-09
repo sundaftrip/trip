@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import TourCard from "@/components/website/TourCard";
 
-export const revalidate = 60;
+
 
 export default async function ToursPage({
   searchParams,

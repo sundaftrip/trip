@@ -1,10 +1,11 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
-export const revalidate = 60;
+
 
 export default async function BlogPage() {
   const posts = await prisma.blog.findMany({

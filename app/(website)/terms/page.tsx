@@ -1,6 +1,7 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 
-export const revalidate = 3600;
+
 
 export default async function TermsPage() {
   const tc = await prisma.termsCondition.findFirst();
