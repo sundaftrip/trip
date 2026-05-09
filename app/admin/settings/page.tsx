@@ -131,6 +131,17 @@ export default function SettingsPage() {
             Lihat Tour
           </div>
         </div>
+
+        {/* Save button below colors */}
+        <div className="mt-5 flex justify-end">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60"
+          >
+            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Warna"}
+          </button>
+        </div>
       </div>
     </div>
   );

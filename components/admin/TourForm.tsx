@@ -157,7 +157,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Galeri</h2>
         <ImageUpload
           value=""
-          onChange={(url) => set("gallery", [...(form.gallery ?? []), url])}
+          onChange={(url) => setForm((p) => ({ ...p, gallery: [...(p.gallery ?? []), url] }))}
           folder="tours/gallery"
           multiple
         />

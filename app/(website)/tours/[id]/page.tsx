@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Clock, Users, CheckCircle, XCircle, ArrowLeft, MessageCircle } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import GalleryZoom from "@/components/website/GalleryZoom";
 
 export const revalidate = 60;
 
@@ -48,13 +49,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {tour.gallery.length > 0 && (
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Galeri</h2>
-                <div className="grid grid-cols-3 gap-2">
-                  {tour.gallery.slice(0, 6).map((url, i) => (
-                    <div key={i} className="relative h-28 rounded-xl overflow-hidden bg-gray-100">
-                      <Image src={url} alt={`Gallery ${i+1}`} fill className="object-cover hover:scale-105 transition" />
-                    </div>
-                  ))}
-                </div>
+                <GalleryZoom images={tour.gallery} />
               </div>
             )}
 
