@@ -1,9 +1,17 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import AdminSidebar from "@/components/admin/Sidebar";
 import AdminHeader from "@/components/admin/Header";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "";
+
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
   const session = await auth();
   if (!session) redirect("/admin/login");
 
