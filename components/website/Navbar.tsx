@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -45,11 +46,16 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-18">
 
-          <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "#2d6a4f" }}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L14 13H2L8 2Z" fill="white"/></svg>
-            </span>
-            <span className="font-bold text-lg tracking-tight text-gray-900 dark:text-white">Sundaf<span style={{ color: "#2d6a4f" }}>Trip</span></span>
+          <Link href="/" className="flex items-center">
+            {mounted ? (
+              <Image
+                src="/logo.png"
+                alt="Sundaf Trip"
+                width={130} height={40}
+                className={cn("h-8 w-auto", isDark && "brightness-0 invert")}
+                priority
+              />
+            ) : <div className="h-8 w-28" />}
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
