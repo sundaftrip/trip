@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -15,7 +14,6 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -36,26 +34,17 @@ export default function Navbar() {
     localStorage.setItem("lang", next);
   }
 
-  const isDark = mounted && resolvedTheme === "dark";
-
   return (
     <header className={cn(
       "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-      scrolled ? "bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-900" : "bg-transparent"
+      scrolled ? "bg-white/95 backdrop-blur-md border-b border-gray-100" : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-18">
 
           <Link href="/" className="flex items-center">
             {mounted ? (
-              <Image
-                src="/logo.png"
-                alt="Sundaf Trip"
-                width={130} height={40}
-                className="h-8 w-auto"
-                style={isDark ? { filter: "brightness(0) invert(1)" } : undefined}
-                priority
-              />
+              <Image src="/logo.png" alt="Sundaf Trip" width={130} height={40} className="h-8 w-auto" priority />
             ) : <div className="h-8 w-28" />}
           </Link>
 
@@ -65,8 +54,8 @@ export default function Navbar() {
                 className={cn(
                   "text-sm font-medium transition-colors duration-200",
                   scrolled
-                    ? "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                    : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    ? "text-gray-600 hover:text-gray-900"
+                    : "text-gray-700 hover:text-gray-900"
                 )}>
                 {link.label[lang]}
               </Link>
@@ -75,16 +64,9 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <button onClick={toggleLang}
-              className="text-[11px] font-bold px-2 py-1 rounded border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-500 hover:border-gray-400 dark:hover:border-gray-600 transition">
+              className="text-[11px] font-bold px-2 py-1 rounded border border-gray-200 text-gray-500 hover:border-gray-400 transition">
               {lang === "id" ? "EN" : "ID"}
             </button>
-
-            {mounted && (
-              <button onClick={() => setTheme(isDark ? "light" : "dark")}
-                className="p-2 rounded-lg text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition">
-                {isDark ? <Sun size={16} /> : <Moon size={16} />}
-              </button>
-            )}
 
             <Link href="/tours" className="hidden lg:inline-flex px-4 py-2 text-white text-sm font-semibold rounded-xl transition"
               style={{ background: "#2d6a4f" }}>
@@ -92,17 +74,17 @@ export default function Navbar() {
             </Link>
 
             <button onClick={() => setOpen(!open)}
-              className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 transition">
+              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition">
               {open ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
 
         {open && (
-          <div className="lg:hidden border-t border-gray-100 dark:border-gray-900 py-4 space-y-1 bg-white dark:bg-black">
+          <div className="lg:hidden border-t border-gray-100 py-4 space-y-1 bg-white">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white rounded-lg transition">
+                className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition">
                 {link.label[lang]}
               </Link>
             ))}
