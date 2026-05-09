@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
@@ -8,7 +7,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
-            <Image src="/logo-white.png" alt="Sundaf Trip" width={130} height={40} className="h-8 w-auto mb-5 opacity-80" />
+            <div className="flex items-center gap-2 mb-5">
+              <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "#2d6a4f" }}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L14 13H2L8 2Z" fill="white"/></svg>
+              </span>
+              <span className="font-bold text-lg tracking-tight text-white">Sundaf<span style={{ color: "#52a082" }}>Trip</span></span>
+            </div>
             <p className="text-sm leading-relaxed text-gray-600 max-w-xs">
               CV Sundaf Holiday Group — Mitra perjalanan wisata religi dan halal terpercaya.
             </p>
