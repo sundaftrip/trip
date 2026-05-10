@@ -3,8 +3,8 @@ import TextsForm from "@/components/admin/TextsForm";
 
 const TEXT_KEYS = [
   { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"] },
-  { section: "Keunggulan", keys: ["why_1_title", "why_1_desc", "why_2_title", "why_2_desc", "why_3_title", "why_3_desc", "why_4_title", "why_4_desc"] },
-  { section: "Tentang Kami", keys: ["about_title", "about_desc_1", "about_desc_2"] },
+  { section: "Keunggulan (Mengapa Kami)", keys: ["why_title", "why_subtitle", "why_1_title", "why_1_desc", "why_2_title", "why_2_desc", "why_3_title", "why_3_desc"] },
+  { section: "Footer", keys: ["footer_tagline"] },
   { section: "Kontak", keys: ["contact_title", "contact_desc"] },
   { section: "Pembayaran", keys: ["payment_bank_name", "payment_bank_acc", "payment_bank_holder"] },
 ];
