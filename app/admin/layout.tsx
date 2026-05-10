@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
 
-  if (pathname === "/admin/login") {
+  if (pathname === "/admin/login" || pathname.endsWith("/print")) {
     return <AdminProviders>{children}</AdminProviders>;
   }
 
