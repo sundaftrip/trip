@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface ReceiptData {
@@ -22,10 +21,16 @@ interface ReceiptData {
 
 const COMPANY = {
   name: "CV SUNDAF HOLIDAY GROUP",
-  nib: "NIB 1601260060842",
-  address: "Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lt. 5 Unit A501,\nKuningan, Setiabudi, Jakarta Selatan",
+  nib: "1601260060842",
+  address: "Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lt. 5 Unit A501, Kuningan, Setiabudi, Jakarta Selatan",
   phone: "021-22321146 · +62 811 1620 207",
   email: "sundaf.group@gmail.com",
+};
+
+const STATUS_LABEL: Record<string, { label: string; color: string }> = {
+  PAID: { label: "LUNAS", color: "#15803d" },
+  DP: { label: "DOWN PAYMENT", color: "#b45309" },
+  UNPAID: { label: "BELUM BAYAR", color: "#b91c1c" },
 };
 
 export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
@@ -33,109 +38,123 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
     window.print();
   }, []);
 
+  const status = STATUS_LABEL[receipt.status] ?? { label: receipt.status, color: "#374151" };
+
+  const rows = [
+    ["Paket Tour", receipt.tourTitle],
+    ["Tanggal Keberangkatan", receipt.tripDate ? formatDate(receipt.tripDate as Date) : "-"],
+    ["Jumlah Peserta", `${receipt.pax} orang`],
+    ["Metode Pembayaran", receipt.paymentMethod ?? "-"],
+    ["Tanggal Pembayaran", receipt.paymentDate ? formatDate(receipt.paymentDate as Date) : "-"],
+  ] as [string, string][];
+
   return (
     <>
       <style>{`
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f3f4f6; }
         @media print {
-          body { margin: 0; }
+          body { background: white; }
           .no-print { display: none !important; }
-          @page { size: A4; margin: 20mm; }
+          @page { size: A4; margin: 15mm 20mm; }
         }
-        body { font-family: 'Arial', sans-serif; background: #f5f5f5; }
       `}</style>
 
-      <div className="no-print fixed top-4 right-4 z-50">
-        <button onClick={() => window.print()} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium shadow-lg hover:bg-blue-700">
+      {/* Toolbar — hidden on print */}
+      <div className="no-print" style={{ position: "fixed", top: 16, right: 16, zIndex: 50, display: "flex", gap: 8 }}>
+        <button onClick={() => window.print()}
+          style={{ padding: "8px 16px", background: "#2563eb", color: "white", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", border: "none" }}>
           🖨 Print / Simpan PDF
         </button>
-        <button onClick={() => window.history.back()} className="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium shadow-lg hover:bg-gray-300">
+        <button onClick={() => window.history.back()}
+          style={{ padding: "8px 16px", background: "#e5e7eb", color: "#374151", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", border: "none" }}>
           ← Kembali
         </button>
       </div>
 
-      <div className="min-h-screen flex items-start justify-center p-8 bg-gray-100">
-        <div className="w-full max-w-2xl bg-white shadow-xl" id="receipt">
+      {/* Page wrapper */}
+      <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "48px 16px", background: "#f3f4f6" }}>
+        <div style={{ width: "100%", maxWidth: 680, background: "white", boxShadow: "0 4px 24px rgba(0,0,0,0.10)" }}>
+
           {/* Header */}
-          <div className="flex items-start justify-between p-8 border-b-4 border-blue-600">
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "32px 40px 24px", borderBottom: "4px solid #2563eb" }}>
             <div>
-              <Image src="/logo.png" alt="Sundaf Trip" width={160} height={48} className="h-12 w-auto mb-3" />
-              <p className="text-xs text-gray-500 whitespace-pre-line">{COMPANY.address}</p>
-              <p className="text-xs text-gray-500 mt-1">{COMPANY.phone}</p>
-              <p className="text-xs text-gray-500">{COMPANY.email}</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Sundaf Trip" style={{ height: 40, width: "auto", marginBottom: 10 }} />
+              <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.6 }}>
+                <div>{COMPANY.address}</div>
+                <div style={{ marginTop: 2 }}>{COMPANY.phone}</div>
+                <div>{COMPANY.email}</div>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Bukti Pembayaran</p>
-              <p className="text-2xl font-bold text-blue-600 mt-1">{receipt.receiptNo}</p>
-              <p className="text-xs text-gray-500 mt-1">{formatDate(receipt.createdAt)}</p>
-              <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${
-                receipt.status === "PAID" ? "bg-green-100 text-green-700" :
-                receipt.status === "DP" ? "bg-yellow-100 text-yellow-700" :
-                "bg-red-100 text-red-700"
-              }`}>
-                {receipt.status === "PAID" ? "LUNAS" : receipt.status === "DP" ? "DOWN PAYMENT" : "BELUM BAYAR"}
-              </span>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.05em" }}>Bukti Pembayaran</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: "#2563eb", marginTop: 4, letterSpacing: "-0.5px" }}>
+                #{receipt.receiptNo}
+              </div>
+              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>{formatDate(receipt.createdAt)}</div>
+              <div style={{ marginTop: 8, display: "inline-block", padding: "4px 12px", borderRadius: 999, fontSize: 11, fontWeight: 700, color: status.color, background: status.color + "18", border: `1px solid ${status.color}40` }}>
+                {status.label}
+              </div>
             </div>
           </div>
 
           {/* Company & Customer */}
-          <div className="grid grid-cols-2 gap-6 px-8 py-6">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, padding: "24px 40px" }}>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Perusahaan</p>
-              <p className="font-bold text-gray-900">{COMPANY.name}</p>
-              <p className="text-xs text-gray-500">{COMPANY.nib}</p>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Perusahaan</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{COMPANY.name}</div>
+              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>NIB {COMPANY.nib}</div>
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pelanggan</p>
-              <p className="font-bold text-gray-900">{receipt.customerName}</p>
-              {receipt.customerPhone && <p className="text-xs text-gray-500">{receipt.customerPhone}</p>}
-              {receipt.customerEmail && <p className="text-xs text-gray-500">{receipt.customerEmail}</p>}
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Pelanggan</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{receipt.customerName}</div>
+              {receipt.customerPhone && <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>{receipt.customerPhone}</div>}
+              {receipt.customerEmail && <div style={{ fontSize: 11, color: "#6b7280" }}>{receipt.customerEmail}</div>}
             </div>
           </div>
 
-          {/* Tour Detail */}
-          <div className="mx-8 border border-gray-200 rounded-lg overflow-hidden mb-6">
-            <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Detail Pemesanan</p>
+          {/* Order Detail */}
+          <div style={{ margin: "0 40px 24px" }}>
+            <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, overflow: "hidden" }}>
+              <div style={{ background: "#f9fafb", padding: "10px 16px", borderBottom: "1px solid #e5e7eb" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>Detail Pemesanan</span>
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <tbody>
+                  {rows.map(([label, value], i) => (
+                    <tr key={label} style={{ borderBottom: i < rows.length - 1 ? "1px solid #f3f4f6" : "none" }}>
+                      <td style={{ padding: "10px 16px", color: "#6b7280", width: 200 }}>{label}</td>
+                      <td style={{ padding: "10px 16px", color: "#111827", fontWeight: 500 }}>{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <table className="w-full text-sm">
-              <tbody>
-                {[
-                  ["Paket Tour", receipt.tourTitle],
-                  ["Tanggal Keberangkatan", receipt.tripDate ? formatDate(receipt.tripDate as Date) : "-"],
-                  ["Jumlah Peserta", `${receipt.pax} orang`],
-                  ["Metode Pembayaran", receipt.paymentMethod ?? "-"],
-                  ["Tanggal Pembayaran", receipt.paymentDate ? formatDate(receipt.paymentDate as Date) : "-"],
-                ].map(([label, value]) => (
-                  <tr key={label} className="border-b border-gray-100 last:border-0">
-                    <td className="px-4 py-2.5 text-gray-500 w-48">{label}</td>
-                    <td className="px-4 py-2.5 text-gray-900 font-medium">{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
 
           {/* Total */}
-          <div className="mx-8 mb-6">
-            <div className="bg-blue-600 text-white px-6 py-4 rounded-lg flex items-center justify-between">
-              <p className="font-semibold text-lg">Total Pembayaran</p>
-              <p className="text-2xl font-bold">{formatCurrency(receipt.amount)}</p>
+          <div style={{ margin: "0 40px 24px" }}>
+            <div style={{ background: "#2563eb", borderRadius: 10, padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 16, fontWeight: 600, color: "white" }}>Total Pembayaran</span>
+              <span style={{ fontSize: 24, fontWeight: 800, color: "white" }}>{formatCurrency(receipt.amount)}</span>
             </div>
           </div>
 
           {/* Notes */}
           {receipt.notes && (
-            <div className="mx-8 mb-6">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Catatan</p>
-              <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">{receipt.notes}</p>
+            <div style={{ margin: "0 40px 24px" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Catatan</div>
+              <div style={{ fontSize: 12, color: "#374151", background: "#f9fafb", padding: "10px 14px", borderRadius: 6 }}>{receipt.notes}</div>
             </div>
           )}
 
           {/* Footer */}
-          <div className="border-t border-gray-200 px-8 py-4 flex items-center justify-between">
-            <p className="text-xs text-gray-400">Dokumen ini diterbitkan secara elektronik oleh {COMPANY.name}</p>
-            <p className="text-xs text-gray-400">sundaftrip.com</p>
+          <div style={{ borderTop: "1px solid #e5e7eb", padding: "14px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 10, color: "#9ca3af" }}>Dokumen ini diterbitkan secara elektronik oleh {COMPANY.name}</span>
+            <span style={{ fontSize: 10, color: "#9ca3af" }}>sundaftrip.com</span>
           </div>
+
         </div>
       </div>
     </>
