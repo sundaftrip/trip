@@ -35,8 +35,7 @@ export default function AdminSidebar({ role }: { role: string }) {
   return (
     <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0">
       <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
-        <Image src="/logo.png" alt="Sundaf" width={120} height={36} className="h-8 w-auto dark:hidden" />
-        <Image src="/logo-white.png" alt="Sundaf" width={120} height={36} className="h-8 w-auto hidden dark:block" />
+        <Image src="/logo.png" alt="Sundaf" width={120} height={36} className="h-8 w-auto dark:brightness-0 dark:invert" />
       </div>
 
       <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
