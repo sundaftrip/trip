@@ -20,9 +20,9 @@ export function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/admin", req.url));
   }
 
-  const res = NextResponse.next();
-  res.headers.set("x-pathname", pathname);
-  return res;
+  const reqHeaders = new Headers(req.headers);
+  reqHeaders.set("x-pathname", pathname);
+  return NextResponse.next({ request: { headers: reqHeaders } });
 }
 
 export const config = {
