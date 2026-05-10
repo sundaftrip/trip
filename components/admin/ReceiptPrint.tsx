@@ -54,9 +54,18 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, Helvetica, sans-serif; background: #f3f4f6; }
         @media print {
-          body { background: white; }
-          .no-print { display: none !important; }
           @page { size: A4; margin: 15mm 20mm; }
+          .no-print { display: none !important; }
+          body { background: white !important; }
+          /* Hide everything, show only receipt */
+          body * { visibility: hidden !important; }
+          #receipt-print, #receipt-print * { visibility: visible !important; }
+          #receipt-print {
+            position: fixed !important;
+            top: 0 !important; left: 0 !important;
+            width: 100% !important;
+            background: white !important;
+          }
         }
       `}</style>
 
@@ -73,7 +82,7 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
       </div>
 
       {/* Page wrapper */}
-      <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "48px 16px", background: "#f3f4f6" }}>
+      <div id="receipt-print" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "48px 16px", background: "#f3f4f6" }}>
         <div style={{ width: "100%", maxWidth: 680, background: "white", boxShadow: "0 4px 24px rgba(0,0,0,0.10)" }}>
 
           {/* Header */}
