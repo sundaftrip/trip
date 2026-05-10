@@ -22,8 +22,8 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection texts={texts} />
-      <WhySection texts={texts} />
       <ToursSection tours={tours} />
+      <WhySection texts={texts} />
       <BlogSection posts={posts} />
       <ContactSection texts={texts} />
     </>
