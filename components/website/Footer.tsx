@@ -1,22 +1,27 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
-async function getFooterData() {
-  try {
-    const [texts, info] = await Promise.all([
-      prisma.siteText.findMany({ where: { key: { in: ["footer_tagline"] } } }),
-      prisma.companyInfo.findMany({ where: { key: { startsWith: "company_" } } }),
-    ]);
-    const t: Record<string, string> = {};
-    texts.forEach((x) => { t[x.key] = x.valueId ?? ""; });
-    const c: Record<string, string> = {};
-    info.forEach((x) => { c[x.key] = x.value; });
-    return { t, c };
-  } catch {
-    return { t: {}, c: {} };
-  }
-}
+const getFooterData = unstable_cache(
+  async () => {
+    try {
+      const [texts, info] = await Promise.all([
+        prisma.siteText.findMany({ where: { key: { in: ["footer_tagline"] } } }),
+        prisma.companyInfo.findMany({ where: { key: { startsWith: "company_" } } }),
+      ]);
+      const t: Record<string, string> = {};
+      texts.forEach((x) => { t[x.key] = x.valueId ?? ""; });
+      const c: Record<string, string> = {};
+      info.forEach((x) => { c[x.key] = x.value; });
+      return { t, c };
+    } catch {
+      return { t: {}, c: {} };
+    }
+  },
+  ["footer-data"],
+  { revalidate: 3600, tags: ["footer-data", "site-colors"] }
+);
 
 export default async function Footer() {
   const { t, c } = await getFooterData();

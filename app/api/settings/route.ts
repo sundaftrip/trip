@@ -22,5 +22,6 @@ export async function PUT(req: NextRequest) {
     )
   );
   revalidateTag("site-colors");
+  revalidateTag("footer-data");
   return NextResponse.json({ success: true });
 }
