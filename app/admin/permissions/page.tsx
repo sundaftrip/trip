@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Shield, Save, RotateCcw } from "lucide-react";
-import { ALL_PERMISSION_KEYS, DEFAULT_PERMISSIONS, PERMISSION_LABELS } from "@/lib/permissions";
+import { ALL_PERMISSION_KEYS, DEFAULT_PERMISSIONS, PERMISSION_LABELS } from "@/lib/permission-keys";
 
 const SECTIONS = ["Tour", "Receipt", "Blog", "Konten"];
 const ROLES = ["ADMIN", "EDITOR"];
@@ -14,6 +14,7 @@ export default function PermissionsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch("/api/permissions")
@@ -38,9 +39,24 @@ export default function PermissionsPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    await fetch("/api/permissions", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(perms) });
-    setSaving(false);
-    setSaved(true);
+    setError("");
+    try {
+      const res = await fetch("/api/permissions", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(perms),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error ?? "Gagal menyimpan");
+      } else {
+        setSaved(true);
+      }
+    } catch {
+      setError("Koneksi gagal, coba lagi");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleReset = (role: string) => {
@@ -68,6 +84,12 @@ export default function PermissionsPage() {
           {saving ? "Menyimpan..." : saved ? "Tersimpan ✓" : "Simpan Perubahan"}
         </button>
       </div>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400">
+          {error}
+        </div>
+      )}
 
       {/* Note for SUPERADMIN */}
       <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-sm text-amber-700 dark:text-amber-400">
