@@ -120,6 +120,10 @@ body {
 .logo-dark {
   filter: brightness(0) invert(1);
 }
+/* Logo inverted only when dark class is active (for themed light-bg navbars/footers) */
+.dark .logo-theme {
+  filter: brightness(0) invert(1);
+}
 
 /* Hero CSS animations — no JS blocking */
 @keyframes hero-up {
@@ -256,13 +260,14 @@ body {
 
 /* ─── PIXEL ART THEME UTILITIES ─── */
 :root {
-  --px-bg:      #f0eeff;
+  /* bg = very light tint of accent, border/shadow follow accent */
+  --px-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 7%, #ffffff);
   --px-card:    #ffffff;
-  --px-border:  #1a1a2e;
-  --px-shadow:  #1a1a2e;
+  --px-border:  var(--site-accent, #1a1a2e);
+  --px-shadow:  var(--site-accent, #1a1a2e);
   --px-text:    #1a1a2e;
   --px-subtext: #4a4870;
-  --px-grid:    rgba(26,26,46,0.05);
+  --px-grid:    color-mix(in srgb, var(--site-accent, #1a1a2e) 8%, transparent);
   --px-red:     #e74c3c;
   --px-yellow:  #f1c40f;
   --px-cyan:    #00b4d8;
@@ -270,13 +275,13 @@ body {
   --px-green:   #2ecc71;
 }
 .dark {
-  --px-bg:      #0f0f23;
-  --px-card:    #1a1a38;
-  --px-border:  #c8c8ff;
-  --px-shadow:  rgba(200,200,255,0.55);
+  --px-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #0a0a18);
+  --px-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 8%, #12121e);
+  --px-border:  color-mix(in srgb, var(--site-accent, #2d6a4f) 65%, white);
+  --px-shadow:  color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, white);
   --px-text:    #e8e8ff;
   --px-subtext: #9898c8;
-  --px-grid:    rgba(200,200,255,0.04);
+  --px-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, transparent);
 }
 .px-card {
   border: 2px solid var(--px-border);

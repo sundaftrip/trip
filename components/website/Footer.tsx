@@ -57,7 +57,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--kw-border)" }}>
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -104,7 +104,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--tr-border)" }}>
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -157,7 +157,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>NIB {nib}</p>}
             {/* Pixel color blocks */}
