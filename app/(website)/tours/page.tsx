@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import TourCard from "@/components/website/TourCard";
-import { getContinent, CONTINENT_ORDER } from "@/lib/continents";
+import { getContinent, CONTINENT_ORDER, normalizeCountry } from "@/lib/continents";
 
 export default async function ToursPage({
   searchParams,
@@ -30,12 +30,13 @@ export default async function ToursPage({
     }),
   ]);
 
-  // Build continent → countries map from available data
+  // Build continent → countries map, normalizing country names for consistent grouping
   const continentCountries: Record<string, string[]> = {};
   allTours.forEach(({ country }) => {
-    const continent = getContinent(country);
+    const canonical = normalizeCountry(country);
+    const continent = getContinent(canonical);
     if (!continentCountries[continent]) continentCountries[continent] = [];
-    if (!continentCountries[continent].includes(country)) continentCountries[continent].push(country);
+    if (!continentCountries[continent].includes(canonical)) continentCountries[continent].push(canonical);
   });
 
   const availableContinents = CONTINENT_ORDER.filter((c) => continentCountries[c]?.length > 0);
@@ -44,7 +45,7 @@ export default async function ToursPage({
   let filteredTours = tours;
   if (params.continent && !params.country) {
     const countriesInContinent = continentCountries[params.continent] ?? [];
-    filteredTours = tours.filter((t) => countriesInContinent.includes(t.country));
+    filteredTours = tours.filter((t) => countriesInContinent.includes(normalizeCountry(t.country)));
   }
 
   // Sort: active & future first, expired/sold-out last
