@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidateTag } from "next/cache";
+import { checkPermission } from "@/lib/permissions";
+import { logActivity } from "@/lib/activityLog";
 
 export async function GET() {
   const items = await prisma.companyInfo.findMany();
@@ -12,10 +14,16 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   const session = await auth();
-  if (!session || session.user.role !== "SUPERADMIN")
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body: Record<string, string> = await req.json();
+
+  const isColorChange = Object.keys(body).some((k) => k.startsWith("color_") || k.startsWith("site_"));
+  const permKey = isColorChange ? "color_edit" : "company_edit";
+
+  if (!await checkPermission(session, permKey))
+    return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
+
   await Promise.all(
     Object.entries(body).map(([key, value]) =>
       prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
@@ -23,5 +31,12 @@ export async function PUT(req: NextRequest) {
   );
   (revalidateTag as unknown as (t: string) => void)("site-colors");
   (revalidateTag as unknown as (t: string) => void)("footer-data");
+
+  await logActivity({
+    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+    userRole: session.user.role, action: "UPDATE", resource: "SETTINGS",
+    detail: isColorChange ? "Update warna/tema" : "Update info perusahaan",
+  });
+
   return NextResponse.json({ success: true });
 }
