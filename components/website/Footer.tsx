@@ -42,7 +42,7 @@ export default async function Footer() {
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <span className="inline-flex items-center bg-white rounded px-3 py-1.5" style={{ marginBottom: 20 }}>
+            <span className="logo-dark-sweep" style={{ marginBottom: 20 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto" }} />
             </span>
