@@ -16,10 +16,11 @@ const INFO_FIELDS = [
 ];
 
 const THEMES = [
-  { key: "classic", label: "Classic", desc: "Minimalis & bersih. Tipografi besar, latar putih.", feature: null },
-  { key: "vibrant", label: "Catalog", desc: "Katalog premium. Layout split-screen editorial.", feature: "theme_vibrant" },
-  { key: "bold", label: "Bold", desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi.", feature: "theme_bold" },
-  { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.", feature: "theme_tropical" },
+  { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
+  { key: "vibrant",  label: "Catalog",  desc: "Katalog premium. Layout split-screen editorial.",                      feature: "theme_vibrant" },
+  { key: "bold",     label: "Bold",     desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi.",             feature: "theme_bold" },
+  { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.",          feature: "theme_tropical" },
+  { key: "kawaii",   label: "Kawaii",   desc: "Retro cute pastel. Border bulat, hati melayang, peach aesthetic.",     feature: "theme_kawaii" },
 ];
 
 export default function SettingsPage() {
@@ -191,7 +192,7 @@ export default function SettingsPage() {
         </div>
         <p className="text-xs text-gray-500 mb-5">Pilih tampilan layout halaman utama</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {THEMES.map(({ key, label, desc, feature }) => {
             const unlocked = !feature || isFeatureEnabled(feature);
             const active = (data["site_theme"] ?? "classic") === key;
@@ -243,6 +244,16 @@ export default function SettingsPage() {
                         <div className="h-2 w-16 rounded border border-black bg-[#10b981]" style={{ boxShadow: "1px 1px 0 0 #000" }} />
                       </div>
                     )}
+                    {key === "kawaii" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2" style={{ background: "#fef4ee" }}>
+                        <div className="flex gap-1 items-center mb-1.5">
+                          <span className="text-xs" style={{ color: "#d4754e" }}>♡</span>
+                          <div className="h-4 w-10 rounded-full border bg-[#fce7f3]" style={{ borderColor: "#d4754e", boxShadow: "1px 1px 0 0 #d4754e" }} />
+                          <span className="text-[9px]" style={{ color: "#d4754e" }}>✦</span>
+                        </div>
+                        <div className="h-5 w-16 rounded-full border font-black text-[8px] flex items-center justify-center" style={{ background: "#d4754e", borderColor: "#d4754e", boxShadow: "1px 1px 0 0 #d4754e", color: "white" }}>Lihat Tour</div>
+                      </div>
+                    )}
                     {!unlocked && (
                       <div className="absolute inset-0 bg-gray-100/70 dark:bg-gray-900/70 flex items-center justify-center rounded-lg">
                         <Lock size={16} className="text-gray-400" />
@@ -267,7 +278,7 @@ export default function SettingsPage() {
         {PLAN !== "pro" && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Tema Catalog, Bold & Tropical tersedia di paket Pro. Hubungi admin untuk upgrade.
+              Tema Catalog, Bold, Tropical & Kawaii tersedia di paket Pro. Hubungi admin untuk upgrade.
             </p>
           </div>
         )}

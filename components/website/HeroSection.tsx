@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii";
   featuredImage?: string | null;
 }
 
@@ -26,55 +26,111 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName} — ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
 
-  /* ── TROPICAL ── */
-  if (theme === "tropical") return (
+  /* ── KAWAII ── */
+  if (theme === "kawaii") return (
     <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
-      style={{ background: "#fffdf7" }}>
-      {/* Floating decorative blobs */}
-      <div className="absolute top-28 right-8 lg:right-28 w-40 h-40 rounded-full border-2 border-black tr-float-1 pointer-events-none" style={{ background: "#d1fae5" }} />
-      <div className="absolute top-52 right-2 lg:right-12 w-20 h-20 rounded-full border-2 border-black tr-float-2 pointer-events-none" style={{ background: "#bfdbfe" }} />
-      <div className="absolute bottom-14 left-4 lg:left-20 w-28 h-28 rounded-full border-2 border-black tr-float-3 pointer-events-none" style={{ background: "#fef3c7" }} />
-      <div className="absolute bottom-28 right-[38%] w-10 h-10 rounded-full border-2 border-black tr-float-4 pointer-events-none" style={{ background: "#fce7f3" }} />
-      <div className="absolute top-36 left-[45%] w-7 h-7 rounded-full border-2 border-black tr-float-2 pointer-events-none" style={{ background: "#ede9fe" }} />
+      style={{ background: "var(--kw-bg)" }}>
+      {/* Floating cute decorations */}
+      <span className="absolute top-32 right-12 lg:right-32 text-5xl kw-float-1 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.55 }}>♡</span>
+      <span className="absolute top-48 right-[35%] text-3xl kw-float-2 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.4 }}>✦</span>
+      <span className="absolute bottom-20 left-12 lg:left-24 text-4xl kw-float-3 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.45 }}>★</span>
+      <span className="absolute top-40 left-[42%] text-2xl kw-float-4 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.35 }}>✨</span>
+      <span className="absolute bottom-36 right-[22%] text-3xl kw-float-2 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.4, animationDelay: "1s" }}>♡</span>
+      <span className="absolute top-28 left-8 text-xl kw-float-3 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.3 }}>◇</span>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        {/* Eyebrow sticker */}
         <div className="mb-8 hero-fade-up">
-          <span className="tr-pill" style={{ background: "#d1fae5" }}>
+          <span className="kw-pill" style={{ background: "var(--kw-peach)", color: "var(--kw-text)" }}>
             ✈ {eyebrow}
           </span>
         </div>
 
-        {/* Big heading */}
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
-          style={{ color: "#1a1a1a" }}>
+          style={{ color: "var(--kw-text)" }}>
           {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          <span className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>
         </h1>
 
-        {/* Floating info tags */}
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
-          <span className="tr-pill" style={{ background: "#dbeafe" }}>
+          <span className="kw-pill" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>
             🗺️ {t("hero_subtitle", "Destinasi Pilihan")}
           </span>
-          <span className="tr-pill" style={{ background: "#fce7f3", transform: "rotate(-2deg)" }}>
-            🌴 Paket Lengkap
+          <span className="kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-1.5deg)" }}>
+            🌸 Paket Lengkap
           </span>
-          <span className="tr-pill" style={{ background: "#fef3c7", transform: "rotate(1.5deg)" }}>
+          <span className="kw-pill" style={{ background: "var(--kw-sun)", color: "var(--kw-text)", transform: "rotate(1deg)" }}>
             ⭐ Terpercaya
           </span>
         </div>
 
-        {/* CTA buttons */}
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/tours"
+            className="kw-btn px-8 py-4 text-sm font-black"
+            style={{ background: "var(--kw-border)", color: "#ffffff" }}>
+            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              className="kw-btn px-8 py-4 text-sm font-black"
+              style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
+              💬 WhatsApp
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
+      style={{ background: "var(--tr-bg)" }}>
+      {/* Floating decorative blobs */}
+      <div className="absolute top-28 right-8 lg:right-28 w-40 h-40 rounded-full border-2 tr-float-1 pointer-events-none"
+        style={{ background: "var(--tr-mint)", borderColor: "var(--tr-border)" }} />
+      <div className="absolute top-52 right-2 lg:right-12 w-20 h-20 rounded-full border-2 tr-float-2 pointer-events-none"
+        style={{ background: "var(--tr-sky)", borderColor: "var(--tr-border)" }} />
+      <div className="absolute bottom-14 left-4 lg:left-20 w-28 h-28 rounded-full border-2 tr-float-3 pointer-events-none"
+        style={{ background: "var(--tr-sun)", borderColor: "var(--tr-border)" }} />
+      <div className="absolute bottom-28 right-[38%] w-10 h-10 rounded-full border-2 tr-float-4 pointer-events-none"
+        style={{ background: "var(--tr-pink)", borderColor: "var(--tr-border)" }} />
+      <div className="absolute top-36 left-[45%] w-7 h-7 rounded-full border-2 tr-float-2 pointer-events-none"
+        style={{ background: "var(--tr-grape)", borderColor: "var(--tr-border)" }} />
+
+      <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="mb-8 hero-fade-up">
+          <span className="tr-pill" style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>
+            ✈ {eyebrow}
+          </span>
+        </div>
+
+        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
+          style={{ color: "var(--tr-text)" }}>
+          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+        </h1>
+
+        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+          <span className="tr-pill" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>
+            🗺️ {t("hero_subtitle", "Destinasi Pilihan")}
+          </span>
+          <span className="tr-pill" style={{ background: "var(--tr-pink)", color: "var(--tr-text)", transform: "rotate(-2deg)" }}>
+            🌴 Paket Lengkap
+          </span>
+          <span className="tr-pill" style={{ background: "var(--tr-sun)", color: "var(--tr-text)", transform: "rotate(1.5deg)" }}>
+            ⭐ Terpercaya
+          </span>
+        </div>
+
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/tours"
             className="tr-btn px-8 py-4 text-sm font-black"
-            style={{ background: "#10b981", color: "#1a1a1a" }}>
+            style={{ background: "#10b981", color: "var(--tr-bg)" }}>
             {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
           </Link>
           {waNumber && (
             <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
               className="tr-btn px-8 py-4 text-sm font-black"
-              style={{ background: "white", color: "#1a1a1a" }}>
+              style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
               💬 WhatsApp
             </a>
           )}

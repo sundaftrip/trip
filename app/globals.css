@@ -20,11 +20,65 @@
 :root {
   --background: #ffffff;
   --foreground: #0d0d0d;
+
+  /* ── Tropical vars ── */
+  --tr-bg:      #fffdf7;
+  --tr-border:  #1a1a1a;
+  --tr-shadow:  #1a1a1a;
+  --tr-text:    #1a1a1a;
+  --tr-subtext: #4b5563;
+  --tr-card:    #ffffff;
+  --tr-mint:    #d1fae5;
+  --tr-sky:     #dbeafe;
+  --tr-sun:     #fef3c7;
+  --tr-pink:    #fce7f3;
+  --tr-grape:   #ede9fe;
+  --tr-peach:   #fed7aa;
+
+  /* ── Kawaii vars ── */
+  --kw-bg:      #fef4ee;
+  --kw-border:  #d4754e;
+  --kw-shadow:  #d4754e;
+  --kw-text:    #3d1e0e;
+  --kw-subtext: #7c4534;
+  --kw-card:    #fff8f4;
+  --kw-blush:   #fce7f3;
+  --kw-sky:     #dbeafe;
+  --kw-mint:    #d1fae5;
+  --kw-sun:     #fef3c7;
+  --kw-peach:   #fde8d8;
 }
 
 .dark {
   --background: #080f0a;
   --foreground: #f0f7f3;
+
+  /* ── Tropical dark ── */
+  --tr-bg:      #131208;
+  --tr-border:  #d9d4bc;
+  --tr-shadow:  #d9d4bc;
+  --tr-text:    #f0ead6;
+  --tr-subtext: #9ca3af;
+  --tr-card:    #1e1d0e;
+  --tr-mint:    #064e3b;
+  --tr-sky:     #1e3a5f;
+  --tr-sun:     #78350f;
+  --tr-pink:    #500724;
+  --tr-grape:   #2e1065;
+  --tr-peach:   #7c2d12;
+
+  /* ── Kawaii dark ── */
+  --kw-bg:      #1a0c08;
+  --kw-border:  #f0a878;
+  --kw-shadow:  #f0a878;
+  --kw-text:    #fde8d0;
+  --kw-subtext: #c47840;
+  --kw-card:    #2a1408;
+  --kw-blush:   #500724;
+  --kw-sky:     #1e3a5f;
+  --kw-mint:    #064e3b;
+  --kw-sun:     #78350f;
+  --kw-peach:   #3d1a0c;
 }
 
 body {
@@ -85,21 +139,21 @@ body {
 
 /* ─── TROPICAL THEME UTILITIES ─── */
 .tr-card {
-  border: 2px solid #1a1a1a;
+  border: 2px solid var(--tr-border);
   border-radius: 20px;
-  box-shadow: 4px 4px 0 0 #1a1a1a;
-  background: white;
+  box-shadow: 4px 4px 0 0 var(--tr-shadow);
+  background: var(--tr-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .tr-card:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 #1a1a1a;
+  box-shadow: 6px 6px 0 0 var(--tr-shadow);
 }
 .tr-pill {
-  border: 1.5px solid #1a1a1a;
+  border: 1.5px solid var(--tr-border);
   border-radius: 999px;
   font-weight: 800;
-  box-shadow: 2px 2px 0 0 #1a1a1a;
+  box-shadow: 2px 2px 0 0 var(--tr-shadow);
   padding: 3px 12px;
   font-size: 11px;
   line-height: 1.5;
@@ -111,21 +165,78 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 2.5px solid #1a1a1a;
+  border: 2.5px solid var(--tr-border);
   border-radius: 999px;
   font-weight: 900;
-  box-shadow: 4px 4px 0 0 #1a1a1a;
+  box-shadow: 4px 4px 0 0 var(--tr-shadow);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
   text-decoration: none;
 }
 .tr-btn:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 #1a1a1a;
+  box-shadow: 6px 6px 0 0 var(--tr-shadow);
 }
 .tr-btn:active {
   transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 0 #1a1a1a;
+  box-shadow: 1px 1px 0 0 var(--tr-shadow);
+}
+
+/* ─── KAWAII THEME UTILITIES ─── */
+.kw-card {
+  border: 2px solid var(--kw-border);
+  border-radius: 24px;
+  box-shadow: 4px 4px 0 0 var(--kw-shadow);
+  background: var(--kw-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.kw-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--kw-shadow);
+}
+.kw-pill {
+  border: 1.5px solid var(--kw-border);
+  border-radius: 999px;
+  font-weight: 800;
+  box-shadow: 2px 2px 0 0 var(--kw-shadow);
+  padding: 3px 12px;
+  font-size: 11px;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.kw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2.5px solid var(--kw-border);
+  border-radius: 999px;
+  font-weight: 900;
+  box-shadow: 4px 4px 0 0 var(--kw-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.kw-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--kw-shadow);
+}
+.kw-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 0 var(--kw-shadow);
+}
+@keyframes kw-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-10px) rotate(8deg); }
+  66%       { transform: translateY(-5px) rotate(-4deg); }
+}
+.kw-float-1 { animation: kw-float 3.0s ease-in-out 0s   infinite; }
+.kw-float-2 { animation: kw-float 3.8s ease-in-out 0.6s infinite; }
+.kw-float-3 { animation: kw-float 3.4s ease-in-out 1.2s infinite; }
+.kw-float-4 { animation: kw-float 4.2s ease-in-out 0.3s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .kw-float-1, .kw-float-2, .kw-float-3, .kw-float-4 { animation: none; }
 }
 @keyframes tr-float {
   0%, 100% { transform: translateY(0px); }

@@ -30,19 +30,54 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
-  /* ── TROPICAL ── */
-  if (theme === "tropical") {
-    const cardBgs = ["#d1fae5", "#dbeafe", "#fef3c7", "#fce7f3"];
+  /* ── KAWAII ── */
+  if (theme === "kawaii") {
+    const cardBgs = ["var(--kw-peach)", "var(--kw-sky)", "var(--kw-mint)", "var(--kw-blush)"];
     return (
-      <section className="py-24" style={{ background: "#fffdf7" }}>
+      <section className="py-24" style={{ background: "var(--kw-bg)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateIn>
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
               <div>
-                <span className="tr-pill mb-3 inline-flex" style={{ background: "#ede9fe" }}>🌟 Keunggulan Kami</span>
-                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "#1a1a1a" }}>{title}</h2>
+                <span className="kw-pill mb-3 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>✦ Keunggulan Kami</span>
+                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--kw-text)" }}>{title}</h2>
               </div>
-              <p className="text-sm text-gray-500 max-w-xs leading-relaxed">{subtitle}</p>
+              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--kw-subtext)" }}>{subtitle}</p>
+            </div>
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100}>
+                <div className="kw-card p-7 h-full" style={{ background: cardBgs[i] }}>
+                  <p className="text-5xl font-black mb-3" style={{ color: "rgba(0,0,0,0.06)" }}>0{i + 1}</p>
+                  <div className="w-11 h-11 rounded-2xl border-2 flex items-center justify-center mb-4"
+                    style={{ background: "var(--kw-card)", borderColor: "var(--kw-border)", boxShadow: "2px 2px 0 0 var(--kw-shadow)" }}>
+                    <Icon size={20} style={{ color: "var(--kw-border)" }} />
+                  </div>
+                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: "var(--kw-text)" }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--kw-subtext)" }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ── TROPICAL ── */
+  if (theme === "tropical") {
+    const cardBgs = ["var(--tr-mint)", "var(--tr-sky)", "var(--tr-sun)", "var(--tr-pink)"];
+    return (
+      <section className="py-24" style={{ background: "var(--tr-bg)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateIn>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+              <div>
+                <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>🌟 Keunggulan Kami</span>
+                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--tr-text)" }}>{title}</h2>
+              </div>
+              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--tr-subtext)" }}>{subtitle}</p>
             </div>
           </AnimateIn>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -50,12 +85,12 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
               <AnimateIn key={title} delay={i * 100}>
                 <div className="tr-card p-7 h-full" style={{ background: cardBgs[i] }}>
                   <p className="text-5xl font-black mb-3" style={{ color: "rgba(0,0,0,0.08)" }}>0{i + 1}</p>
-                  <div className="w-11 h-11 rounded-2xl border-2 border-black flex items-center justify-center bg-white mb-4"
-                    style={{ boxShadow: "2px 2px 0 0 #1a1a1a" }}>
-                    <Icon size={20} style={{ color: "#1a1a1a" }} />
+                  <div className="w-11 h-11 rounded-2xl border-2 flex items-center justify-center mb-4"
+                    style={{ background: "var(--tr-card)", borderColor: "var(--tr-border)", boxShadow: "2px 2px 0 0 var(--tr-shadow)" }}>
+                    <Icon size={20} style={{ color: "var(--tr-text)" }} />
                   </div>
-                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: "#1a1a1a" }}>{title}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: "#4b5563" }}>{desc}</p>
+                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: "var(--tr-text)" }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--tr-subtext)" }}>{desc}</p>
                 </div>
               </AnimateIn>
             ))}
