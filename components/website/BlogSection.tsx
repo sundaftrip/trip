@@ -17,28 +17,154 @@ interface Props {
 export default function BlogSection({ posts, theme = "classic" }: Props) {
   if (posts.length === 0) return null;
 
-  const sectionBg =
-    theme === "bold" ? "bg-gray-950" :
-    "bg-gray-50 dark:bg-gray-950";
+  /* ── KAWAII ── */
+  if (theme === "kawaii") return (
+    <section className="py-24" style={{ background: "var(--kw-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="kw-pill mb-3 inline-flex" style={{ background: "var(--kw-mint)", color: "var(--kw-text)" }}>✦ Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--kw-text)" }}>Tips &amp; Inspirasi</h2>
+            </div>
+            <Link href="/blog" className="kw-pill font-black" style={{ background: "var(--kw-border)", color: "#ffffff" }}>
+              Semua Artikel →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block kw-card overflow-hidden group">
+                <div className="relative h-44 overflow-hidden rounded-t-[22px] border-b-2" style={{ borderColor: "var(--kw-border)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--kw-peach)" }}>✈️</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-2deg)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5" style={{ background: "var(--kw-card)" }}>
+                  <h3 className="font-black mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--kw-text)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--kw-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--kw-subtext)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 
-  const headingColor =
-    theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <section className="py-24" style={{ background: "var(--tr-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>📰 Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--tr-text)" }}>Tips &amp; Inspirasi</h2>
+            </div>
+            <Link href="/blog" className="tr-pill font-black" style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+              Semua Artikel →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block tr-card overflow-hidden group">
+                <div className="relative h-44 overflow-hidden rounded-t-[18px] border-b-2" style={{ borderColor: "var(--tr-border)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--tr-mint)" }}>✈️</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 tr-pill" style={{ background: "var(--tr-peach)", color: "var(--tr-text)", transform: "rotate(-2deg)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5" style={{ background: "var(--tr-card)" }}>
+                  <h3 className="font-black mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--tr-text)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--tr-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--tr-subtext)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 
-  const subColor =
-    theme === "bold" ? "text-gray-600" : "text-gray-400";
+  /* ── PIXEL ── */
+  if (theme === "pixel") return (
+    <section className="py-24 relative" style={{
+      background: "var(--px-bg)",
+      backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+      backgroundSize: "24px 24px",
+    }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► JURNAL</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>TIPS &amp; INSPIRASI</h2>
+            </div>
+            <Link href="/blog" className="px-btn px-4 py-2 text-xs" style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+              SEMUA ARTIKEL ►
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block px-card overflow-hidden group">
+                <div className="relative h-44 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover" />
+                    : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--px-cyan)", opacity: 0.3 }}>✈️</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5" style={{ background: "var(--px-card)" }}>
+                  <h3 className="font-black mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--px-text)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[10px]" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 
-  const linkColor =
-    theme === "bold"
-      ? "text-gray-500 hover:text-white"
-      : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white";
-
-  const cardBg =
-    theme === "bold"
-      ? "bg-gray-900 border-gray-800 hover:border-gray-700"
-      : "bg-white dark:bg-black border-gray-100 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700";
-
-  const titleColor =
-    theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
+  /* ── CLASSIC / VIBRANT / BOLD ── */
+  const sectionBg = theme === "bold" ? "bg-gray-950" : "bg-gray-50 dark:bg-gray-950";
+  const headingColor = theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
+  const subColor = theme === "bold" ? "text-gray-600" : "text-gray-400";
+  const linkColor = theme === "bold" ? "text-gray-500 hover:text-white" : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white";
+  const cardBg = theme === "bold"
+    ? "bg-gray-900 border-gray-800 hover:border-gray-700"
+    : "bg-white dark:bg-black border-gray-100 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700";
+  const titleColor = theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
 
   return (
     <section className={`py-24 ${sectionBg}`}>

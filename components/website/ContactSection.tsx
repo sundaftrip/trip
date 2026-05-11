@@ -6,9 +6,10 @@ import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   company: Record<string, string>;
+  theme?: string;
 }
 
-export default function ContactSection({ texts, company }: Props) {
+export default function ContactSection({ texts, company, theme = "classic" }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
   useEffect(() => {
     const stored = localStorage.getItem("lang") as "id" | "en" | null;
@@ -16,32 +17,238 @@ export default function ContactSection({ texts, company }: Props) {
   }, []);
 
   const t = (key: string, fallback: string) => texts[key]?.[lang] || fallback;
-  const bankName = texts["payment_bank_name"]?.id || "";
-  const bankAcc = texts["payment_bank_acc"]?.id || "";
+  const bankName   = texts["payment_bank_name"]?.id || "";
+  const bankAcc    = texts["payment_bank_acc"]?.id || "";
   const bankHolder = texts["payment_bank_holder"]?.id || "";
 
-  const wa = company["company_whatsapp"] || "";
-  const email = company["company_email"] || "";
-  const phone = company["company_phone"] || "";
+  const wa      = company["company_whatsapp"] || "";
+  const email   = company["company_email"] || "";
+  const phone   = company["company_phone"] || "";
   const address = company["company_address"] || "";
 
   const contacts = [
-    address && { Icon: MapPin, label: "Alamat", value: address },
-    phone && { Icon: Phone, label: "Telepon", value: phone },
-    wa && { Icon: MessageCircle, label: "WhatsApp", value: wa.startsWith("62") ? `+${wa}` : wa },
-    email && { Icon: Mail, label: "Email", value: email },
-  ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string }[];
+    address && { Icon: MapPin,        label: "Alamat",    value: address, href: null },
+    phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
+    wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: `https://wa.me/${wa}` },
+    email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
+  ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
 
   const waMsg = encodeURIComponent(lang === "id" ? "Halo, saya ingin konsultasi paket tour" : "Hello, I'd like to inquire about tour packages");
 
+  const headLabel = lang === "id" ? "Hubungi Kami" : "Contact Us";
+  const ctaLabel  = lang === "id" ? "Konsultasi Gratis" : "Free Consultation";
+  const ctaTitle  = lang === "id" ? "Bicara langsung dengan tim kami." : "Talk directly with our team.";
+  const ctaDesc   = lang === "id" ? "Kami bantu pilihkan paket sesuai kebutuhan dan anggaran Anda." : "We help you choose the right package for your needs and budget.";
+  const waLabel   = lang === "id" ? "WhatsApp Sekarang" : "WhatsApp Now";
+  const bankLabel = lang === "id" ? "Rekening Pembayaran" : "Payment Account";
+
+  /* ── KAWAII ── */
+  if (theme === "kawaii") return (
+    <section id="contact" className="py-24" style={{ background: "var(--kw-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 max-w-xl">
+          <span className="kw-pill mb-3 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>♡ {headLabel}</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--kw-text)" }}>
+            {t("contact_title", "Siap Membantu Perjalanan Anda")}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--kw-subtext)" }}>
+            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {contacts.map(({ Icon, label, value, href }) => (
+              <div key={label} className="kw-card p-5 flex items-start gap-4" style={{ background: "var(--kw-peach)" }}>
+                <div className="w-9 h-9 rounded-full border-2 flex items-center justify-center shrink-0"
+                  style={{ background: "var(--kw-card)", borderColor: "var(--kw-border)", boxShadow: "2px 2px 0 0 var(--kw-shadow)" }}>
+                  <Icon size={14} style={{ color: "var(--kw-border)" }} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--kw-subtext)" }}>{label}</p>
+                  {href
+                    ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: "var(--kw-text)" }}>{value}</a>
+                    : <p className="text-sm font-black leading-relaxed" style={{ color: "var(--kw-text)" }}>{value}</p>}
+                </div>
+              </div>
+            ))}
+            {bankAcc && (
+              <div className="kw-card p-5" style={{ background: "var(--kw-sky)" }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--kw-subtext)" }}>{bankLabel}</p>
+                {bankName && <p className="text-xs mb-1" style={{ color: "var(--kw-subtext)" }}>{bankName}</p>}
+                <p className="text-xl font-black font-mono" style={{ color: "var(--kw-text)" }}>{bankAcc}</p>
+                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--kw-subtext)" }}>a/n {bankHolder}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="kw-card p-10 flex flex-col justify-between" style={{ background: "var(--kw-border)", borderColor: "var(--kw-border)" }}>
+            <div>
+              <span className="kw-pill mb-6 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)", borderColor: "var(--kw-text)" }}>
+                ✦ {ctaLabel}
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white">{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed text-white/70">{ctaDesc}</p>
+            </div>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 kw-btn px-6 py-3.5 text-sm font-black self-start"
+                style={{ background: "var(--kw-card)", color: "var(--kw-border)", borderColor: "var(--kw-card)" }}>
+                <MessageCircle size={16} /> {waLabel} ♡
+              </a>
+            ) : (
+              <p className="mt-10 text-sm text-white/40">{email}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <section id="contact" className="py-24" style={{ background: "var(--tr-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 max-w-xl">
+          <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-pink)", color: "var(--tr-text)" }}>🌍 {headLabel}</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--tr-text)" }}>
+            {t("contact_title", "Siap Membantu Perjalanan Anda")}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--tr-subtext)" }}>
+            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {contacts.map(({ Icon, label, value, href }, i) => {
+              const bgs = ["var(--tr-mint)", "var(--tr-sky)", "var(--tr-peach)", "var(--tr-pink)"];
+              return (
+                <div key={label} className="tr-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
+                  <div className="w-9 h-9 rounded-xl border-2 flex items-center justify-center shrink-0"
+                    style={{ background: "var(--tr-card)", borderColor: "var(--tr-border)", boxShadow: "2px 2px 0 0 var(--tr-shadow)" }}>
+                    <Icon size={14} style={{ color: "var(--tr-text)" }} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--tr-subtext)" }}>{label}</p>
+                    {href
+                      ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: "var(--tr-text)" }}>{value}</a>
+                      : <p className="text-sm font-black leading-relaxed" style={{ color: "var(--tr-text)" }}>{value}</p>}
+                  </div>
+                </div>
+              );
+            })}
+            {bankAcc && (
+              <div className="tr-card p-5" style={{ background: "var(--tr-sun)" }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--tr-subtext)" }}>{bankLabel}</p>
+                {bankName && <p className="text-xs mb-1" style={{ color: "var(--tr-subtext)" }}>{bankName}</p>}
+                <p className="text-xl font-black font-mono" style={{ color: "var(--tr-text)" }}>{bankAcc}</p>
+                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--tr-subtext)" }}>a/n {bankHolder}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="tr-card p-10 flex flex-col justify-between" style={{ background: "var(--tr-text)", borderColor: "var(--tr-border)" }}>
+            <div>
+              <span className="tr-pill mb-6 inline-flex" style={{ background: "var(--tr-mint)", color: "var(--tr-text)", borderColor: "var(--tr-border)" }}>
+                🌴 {ctaLabel}
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white">{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed text-white/60">{ctaDesc}</p>
+            </div>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 tr-btn px-6 py-3.5 text-sm font-black self-start"
+                style={{ background: "var(--site-accent)", color: "#ffffff", borderColor: "var(--site-accent)" }}>
+                <MessageCircle size={16} /> {waLabel}
+              </a>
+            ) : (
+              <p className="mt-10 text-sm text-white/40">{email}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── PIXEL ── */
+  if (theme === "pixel") return (
+    <section id="contact" className="py-24 relative" style={{
+      background: "var(--px-bg)",
+      backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+      backgroundSize: "24px 24px",
+    }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 max-w-xl">
+          <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>► {headLabel.toUpperCase()}</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
+            {t("contact_title", "Siap Membantu Perjalanan Anda")}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
+            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {contacts.map(({ Icon, label, value, href }, i) => {
+              const bgs = ["var(--px-cyan)", "var(--px-yellow)", "var(--px-purple)", "var(--px-green)"];
+              const fgs = ["var(--px-text)", "var(--px-text)", "#ffffff", "var(--px-text)"];
+              return (
+                <div key={label} className="px-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
+                  <div className="w-9 h-9 border-2 flex items-center justify-center shrink-0"
+                    style={{ background: "var(--px-card)", borderColor: "var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)" }}>
+                    <Icon size={14} style={{ color: "var(--px-border)" }} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: fgs[i % fgs.length], fontFamily: "monospace", opacity: 0.7 }}>{label}</p>
+                    {href
+                      ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: fgs[i % fgs.length], fontFamily: "monospace" }}>{value}</a>
+                      : <p className="text-sm font-black leading-relaxed" style={{ color: fgs[i % fgs.length], fontFamily: "monospace" }}>{value}</p>}
+                  </div>
+                </div>
+              );
+            })}
+            {bankAcc && (
+              <div className="px-card p-5" style={{ background: "var(--px-card)" }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankLabel.toUpperCase()}</p>
+                {bankName && <p className="text-xs mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankName}</p>}
+                <p className="text-xl font-black font-mono" style={{ color: "var(--px-text)" }}>{bankAcc}</p>
+                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>A/N {bankHolder.toUpperCase()}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="px-card p-10 flex flex-col justify-between" style={{ background: "var(--px-border)", borderColor: "var(--px-border)" }}>
+            <div>
+              <span className="px-pill mb-6 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-text)", borderColor: "var(--px-text)" }}>
+                ► {ctaLabel.toUpperCase()}
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white" style={{ fontFamily: "monospace" }}>{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed text-white/60" style={{ fontFamily: "monospace" }}>{ctaDesc}</p>
+            </div>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 px-btn px-6 py-3.5 text-xs self-start"
+                style={{ background: "var(--site-accent)", color: "#ffffff", borderColor: "var(--px-card)" }}>
+                <MessageCircle size={16} /> {waLabel.toUpperCase()} ►
+              </a>
+            ) : (
+              <p className="mt-10 text-sm text-white/40 font-mono">{email}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── CLASSIC / VIBRANT / BOLD ── */
   return (
     <section id="contact" className="py-24 bg-white dark:bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="mb-16 max-w-xl">
-          <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-4">
-            {lang === "id" ? "Hubungi Kami" : "Contact Us"}
-          </p>
+          <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-4">{headLabel}</p>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             {t("contact_title", "Siap Membantu Perjalanan Anda")}
           </h2>
@@ -52,21 +259,21 @@ export default function ContactSection({ texts, company }: Props) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="space-y-6">
-            {contacts.map(({ Icon, label, value }) => (
+            {contacts.map(({ Icon, label, value, href }) => (
               <div key={label} className="flex items-start gap-4 pb-6 border-b border-gray-100 dark:border-gray-900 last:border-0">
                 <Icon size={16} className="mt-0.5 shrink-0 text-gray-400" />
                 <div>
                   <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-1">{label}</p>
-                  <p className="text-sm text-gray-900 dark:text-white font-medium">{value}</p>
+                  {href
+                    ? <a href={href} className="text-sm text-gray-900 dark:text-white font-medium hover:underline">{value}</a>
+                    : <p className="text-sm text-gray-900 dark:text-white font-medium">{value}</p>}
                 </div>
               </div>
             ))}
 
             {bankAcc && (
               <div className="pt-2">
-                <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-3">
-                  {lang === "id" ? "Rekening Pembayaran" : "Payment Account"}
-                </p>
+                <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-3">{bankLabel}</p>
                 {bankName && <p className="text-xs text-gray-500 mb-0.5">{bankName}</p>}
                 <p className="text-xl font-bold text-gray-900 dark:text-white font-mono">{bankAcc}</p>
                 {bankHolder && <p className="text-xs text-gray-400 mt-0.5">a/n {bankHolder}</p>}
@@ -76,23 +283,15 @@ export default function ContactSection({ texts, company }: Props) {
 
           <div className="flex flex-col justify-between bg-gray-950 dark:bg-gray-900 rounded-2xl p-10 text-white">
             <div>
-              <p className="text-xs tracking-[0.15em] uppercase mb-6" style={{ color: "#7abea4" }}>
-                {lang === "id" ? "Konsultasi Gratis" : "Free Consultation"}
-              </p>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug">
-                {lang === "id" ? "Bicara langsung dengan tim kami." : "Talk directly with our team."}
-              </h3>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-                {lang === "id"
-                  ? "Kami bantu pilihkan paket sesuai kebutuhan dan anggaran Anda."
-                  : "We help you choose the right package for your needs and budget."}
-              </p>
+              <p className="text-xs tracking-[0.15em] uppercase mb-6" style={{ color: "#7abea4" }}>{ctaLabel}</p>
+              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug">{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{ctaDesc}</p>
             </div>
             {wa ? (
               <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
                 className="mt-10 inline-flex items-center gap-2 px-6 py-3.5 text-sm font-bold rounded-xl transition-all self-start"
-                style={{ background: "#2d6a4f", color: "#ffffff" }}>
-                <MessageCircle size={16} /> WhatsApp Sekarang
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+                <MessageCircle size={16} /> {waLabel}
               </a>
             ) : (
               <p className="mt-10 text-sm opacity-40">{email}</p>

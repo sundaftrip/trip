@@ -57,9 +57,9 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
           --site-eyebrow: #9ca3af;
         }
       `}</style>
-      <Navbar logo={logo} />
+      <Navbar logo={logo} theme={theme} />
       <main className="flex-1" data-theme={theme}>{children}</main>
-      <Footer />
+      <Footer theme={theme} />
     </>
   );
 }

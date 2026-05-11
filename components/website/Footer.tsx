@@ -23,24 +23,192 @@ const getFooterData = unstable_cache(
   { revalidate: 3600, tags: ["footer-data", "site-colors"] }
 );
 
-export default async function Footer() {
+const navLinks = [["Beranda", "/"], ["Paket Tour", "/tours"], ["Blog", "/blog"], ["Syarat & Ketentuan", "/terms"]];
+
+export default async function Footer({ theme = "classic" }: { theme?: string }) {
   const { t, c } = await getFooterData();
 
-  const tagline = t["footer_tagline"] || "";
-  const name = c["company_name"] || "";
-  const logo = c["company_logo"] || "";
-  const nib = c["company_nib"] || "";
-  const address = c["company_address"] || "";
-  const phone = c["company_phone"] || "";
+  const tagline  = t["footer_tagline"] || "";
+  const name     = c["company_name"] || "";
+  const logo     = c["company_logo"] || "";
+  const nib      = c["company_nib"] || "";
+  const address  = c["company_address"] || "";
+  const phone    = c["company_phone"] || "";
   const whatsapp = c["company_whatsapp"] || "";
-  const email = c["company_email"] || "";
+  const email    = c["company_email"] || "";
 
+  const contacts = [
+    address  && { Icon: MapPin, label: "Alamat", value: address, href: null },
+    phone    && { Icon: Phone,  label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
+    whatsapp && { Icon: Phone,  label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
+    email    && { Icon: Mail,   label: "Email", value: email, href: `mailto:${email}` },
+  ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
+
+  /* ── KAWAII ── */
+  if (theme === "kawaii") return (
+    <footer className="border-t-2 relative overflow-hidden"
+      style={{ background: "var(--kw-bg)", borderColor: "var(--kw-border)", boxShadow: "0 -4px 0 0 var(--kw-shadow)" }}>
+      {/* Floating decorations */}
+      <span className="absolute top-8 right-16 text-4xl pointer-events-none kw-float-1 select-none" style={{ color: "var(--kw-border)", opacity: 0.25 }}>♡</span>
+      <span className="absolute bottom-10 left-12 text-3xl pointer-events-none kw-float-3 select-none" style={{ color: "var(--kw-border)", opacity: 0.2 }}>✦</span>
+      <span className="absolute top-12 left-[40%] text-2xl pointer-events-none kw-float-2 select-none" style={{ color: "var(--kw-border)", opacity: 0.18 }}>★</span>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--kw-border)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>NIB {nib}</p>}
+          </div>
+
+          <div>
+            <span className="kw-pill mb-5 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>✦ Navigasi</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm font-semibold hover:opacity-70 transition-opacity" style={{ color: "var(--kw-subtext)" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="kw-pill mb-5 inline-flex" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>♡ Kontak</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--kw-border)" }} />
+                  {href
+                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--kw-subtext)" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--kw-subtext)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--kw-subtext)" }}>
+          <p>© {new Date().getFullYear()} {name} ♡</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <footer className="border-t-2"
+      style={{ background: "var(--tr-bg)", borderColor: "var(--tr-border)", boxShadow: "0 -4px 0 0 var(--tr-shadow)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--tr-border)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>NIB {nib}</p>}
+          </div>
+
+          <div>
+            <span className="tr-pill mb-5 inline-flex" style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>🌿 Navigasi</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm font-semibold hover:opacity-70 transition-opacity" style={{ color: "var(--tr-subtext)" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="tr-pill mb-5 inline-flex" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>🌏 Kontak</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--tr-text)" }} />
+                  {href
+                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--tr-subtext)" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--tr-subtext)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--tr-subtext)" }}>
+          <p>© {new Date().getFullYear()} {name}</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
+  /* ── PIXEL ── */
+  if (theme === "pixel") return (
+    <footer className="border-t-2"
+      style={{
+        background: "var(--px-bg)",
+        backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+        backgroundSize: "24px 24px",
+        borderColor: "var(--px-border)",
+        boxShadow: "0 -4px 0 0 var(--px-shadow)",
+      }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>NIB {nib}</p>}
+            {/* Pixel color blocks */}
+            <div className="flex gap-2 mt-5">
+              {["var(--px-red)","var(--px-yellow)","var(--px-cyan)","var(--px-purple)","var(--px-green)"].map((c, i) => (
+                <div key={i} className="w-5 h-5 border-2" style={{ background: c, borderColor: "var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)" }} />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>NAVIGASI</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm font-black hover:opacity-70 transition-opacity uppercase"
+                    style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>KONTAK</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--px-border)" }} />
+                  {href
+                    ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
+          <p>© {new Date().getFullYear()} {name} [ALL RIGHTS RESERVED]</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
+  /* ── CLASSIC / VIBRANT / BOLD (dark footer) ── */
   return (
     <footer className="bg-gray-950 text-gray-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={logo || "/logo.png"} alt={name} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
             {tagline && <p className="text-sm leading-relaxed text-gray-600 max-w-xs">{tagline}</p>}
@@ -50,7 +218,7 @@ export default async function Footer() {
           <div>
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5">Navigasi</h3>
             <ul className="space-y-3 text-sm">
-              {[["Beranda", "/"], ["Paket Tour", "/tours"], ["Blog", "/blog"], ["Syarat & Ketentuan", "/terms"]].map(([label, href]) => (
+              {navLinks.map(([label, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-gray-600 hover:text-white transition-colors">{label}</Link>
                 </li>
@@ -61,37 +229,21 @@ export default async function Footer() {
           <div>
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5">Kontak</h3>
             <ul className="space-y-3 text-sm">
-              {address && (
-                <li className="flex items-start gap-2.5">
-                  <MapPin size={13} className="mt-0.5 shrink-0 text-gray-700" />
-                  <span className="text-gray-600 leading-relaxed">{address}</span>
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2.5">
+                  <Icon size={13} className="mt-0.5 shrink-0 text-gray-700" />
+                  {href
+                    ? <a href={href} className="text-gray-600 hover:text-white transition-colors leading-relaxed">{value}</a>
+                    : <span className="text-gray-600 leading-relaxed">{value}</span>}
                 </li>
-              )}
-              {phone && (
-                <li className="flex items-center gap-2.5">
-                  <Phone size={13} className="text-gray-700 shrink-0" />
-                  <a href={`tel:${phone.replace(/\D/g, "")}`} className="text-gray-600 hover:text-white transition-colors">{phone}</a>
-                </li>
-              )}
-              {whatsapp && (
-                <li className="flex items-center gap-2.5">
-                  <Phone size={13} className="text-gray-700 shrink-0" />
-                  <a href={`https://wa.me/${whatsapp}`} className="text-gray-600 hover:text-white transition-colors">WhatsApp</a>
-                </li>
-              )}
-              {email && (
-                <li className="flex items-center gap-2.5">
-                  <Mail size={13} className="text-gray-700 shrink-0" />
-                  <a href={`mailto:${email}`} className="text-gray-600 hover:text-white transition-colors">{email}</a>
-                </li>
-              )}
+              ))}
             </ul>
           </div>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-700">
           <p>© {new Date().getFullYear()} {name}</p>
-          {c["company_website"] ? <p>{c["company_website"]}</p> : null}
+          {c["company_website"] && <p>{c["company_website"]}</p>}
         </div>
       </div>
     </footer>

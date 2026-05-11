@@ -60,7 +60,7 @@ export default async function HomePage() {
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />
       <TestimonialSection items={testimonials} theme={theme} />
-      <ContactSection texts={texts} company={company} />
+      <ContactSection texts={texts} company={company} theme={theme} />
     </>
   );
 }

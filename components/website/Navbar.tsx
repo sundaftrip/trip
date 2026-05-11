@@ -14,7 +14,7 @@ const navLinks = [
   { href: "/#contact", label: { id: "Kontak", en: "Contact" } },
 ];
 
-export default function Navbar({ logo }: { logo?: string }) {
+export default function Navbar({ logo, theme = "classic" }: { logo?: string; theme?: string }) {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
@@ -38,6 +38,205 @@ export default function Navbar({ logo }: { logo?: string }) {
 
   const isDark = mounted && resolvedTheme === "dark";
 
+  /* ── KAWAII ── */
+  if (theme === "kawaii") return (
+    <header className="fixed top-0 inset-x-0 z-50 border-b-2"
+      style={{ background: "var(--kw-bg)", borderColor: "var(--kw-border)", boxShadow: "0 4px 0 0 var(--kw-shadow)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40} className="h-8 w-auto" priority />
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="kw-pill font-black hover:opacity-75 transition-opacity"
+                style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLang} className="kw-pill font-black"
+              style={{ background: "var(--kw-peach)", color: "var(--kw-text)" }}>
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="kw-pill" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>
+                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex kw-btn px-4 py-2 text-xs font-black"
+              style={{ background: "var(--kw-border)", color: "#ffffff" }}>
+              {lang === "id" ? "Lihat Tour ♡" : "See Tours ♡"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden kw-pill"
+              style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
+              {open ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="lg:hidden border-t-2 py-4 space-y-1"
+            style={{ borderColor: "var(--kw-border)", background: "var(--kw-bg)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 font-black text-sm" style={{ color: "var(--kw-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="kw-btn px-5 py-2.5 text-xs font-black w-full justify-center"
+                style={{ background: "var(--kw-border)", color: "#ffffff" }}>
+                {lang === "id" ? "Lihat Tour ♡" : "See Tours ♡"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <header className="fixed top-0 inset-x-0 z-50 border-b-2"
+      style={{ background: "var(--tr-bg)", borderColor: "var(--tr-border)", boxShadow: "0 4px 0 0 var(--tr-shadow)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40} className="h-8 w-auto" priority />
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="tr-pill font-black hover:opacity-75 transition-opacity"
+                style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLang} className="tr-pill font-black"
+              style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="tr-pill" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>
+                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex tr-btn px-4 py-2 text-xs font-black"
+              style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+              {lang === "id" ? "Lihat Tour 🌴" : "See Tours 🌴"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden tr-pill"
+              style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
+              {open ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="lg:hidden border-t-2 py-4 space-y-1"
+            style={{ borderColor: "var(--tr-border)", background: "var(--tr-bg)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 font-black text-sm" style={{ color: "var(--tr-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="tr-btn px-5 py-2.5 text-xs font-black w-full justify-center"
+                style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+                {lang === "id" ? "Lihat Tour 🌴" : "See Tours 🌴"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
+  /* ── PIXEL ── */
+  if (theme === "pixel") return (
+    <header className="fixed top-0 inset-x-0 z-50 border-b-2"
+      style={{
+        background: "var(--px-bg)",
+        backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+        backgroundSize: "16px 16px",
+        borderColor: "var(--px-border)",
+        boxShadow: "0 4px 0 0 var(--px-shadow)",
+      }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40} className="h-8 w-auto" priority />
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="px-pill hover:opacity-75 transition-opacity"
+                style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLang} className="px-pill"
+              style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>
+                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex px-btn px-4 py-2 text-xs"
+              style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+              {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden px-pill"
+              style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+              {open ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="lg:hidden border-t-2 py-4 space-y-1"
+            style={{ borderColor: "var(--px-border)", background: "var(--px-bg)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 font-black text-sm" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="px-btn px-5 py-2.5 text-xs w-full justify-center"
+                style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+                {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
+  /* ── CLASSIC / VIBRANT / BOLD ── */
   return (
     <header className={cn(
       "fixed top-0 inset-x-0 z-50 transition-all duration-300",
