@@ -1,4 +1,7 @@
-import { Star, Quote } from "lucide-react";
+"use client";
+
+import { useRef, useState, useEffect } from "react";
+import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import AnimateIn from "./AnimateIn";
 
 interface Testimonial {
@@ -21,61 +24,152 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function Avatar({ avatar, name, size = "md" }: { avatar: string | null; name: string; size?: "sm" | "md" }) {
-  const cls = size === "sm" ? "w-9 h-9 text-sm" : "w-12 h-12 text-base";
-  if (avatar) return <img src={avatar} alt={name} className={`${cls} rounded-full object-cover shrink-0`} />;
+function Avatar({ avatar, name }: { avatar: string | null; name: string }) {
+  if (avatar) return <img src={avatar} alt={name} className="w-11 h-11 rounded-full object-cover shrink-0" />;
   return (
-    <div className={`${cls} rounded-full flex items-center justify-center font-bold shrink-0`}
-      style={{ background: "var(--site-accent,#2d6a4f)", color: "white" }}>
+    <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
+      style={{ background: "var(--site-accent,#2d6a4f)" }}>
       {name.charAt(0).toUpperCase()}
     </div>
   );
 }
 
+/* ─── Carousel core ─── */
+function Carousel({ items, renderCard, darkDots = false }: {
+  items: Testimonial[];
+  renderCard: (item: Testimonial, active: boolean) => React.ReactNode;
+  darkDots?: boolean;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState(0);
+
+  function scrollToIndex(index: number) {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.children[index] as HTMLElement;
+    if (!card) return;
+    track.scrollTo({ left: card.offsetLeft - 24, behavior: "smooth" });
+  }
+
+  function prev() { scrollToIndex(Math.max(0, current - 1)); }
+  function next() { scrollToIndex(Math.min(items.length - 1, current + 1)); }
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const handler = () => {
+      const cards = Array.from(track.children) as HTMLElement[];
+      let closest = 0;
+      let minDist = Infinity;
+      cards.forEach((card, i) => {
+        const dist = Math.abs(card.offsetLeft - track.scrollLeft - 24);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      setCurrent(closest);
+    };
+    track.addEventListener("scroll", handler, { passive: true });
+    return () => track.removeEventListener("scroll", handler);
+  }, []);
+
+  return (
+    <div>
+      {/* Track — 75% card width + 25% peek */}
+      <div
+        ref={trackRef}
+        className="flex gap-4 overflow-x-auto pb-2"
+        style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none", msOverflowStyle: "none", paddingLeft: 24, paddingRight: 24 }}
+      >
+        {items.map((item, i) => (
+          <div key={item.id} className="shrink-0" style={{ scrollSnapAlign: "start", width: "75%" }}>
+            {renderCard(item, i === current)}
+          </div>
+        ))}
+        {/* right spacer so last card can snap to start */}
+        <div className="shrink-0" style={{ width: "calc(25% - 40px)" }} />
+      </div>
+
+      {/* Controls */}
+      <div className="flex items-center justify-between mt-6 px-6">
+        {/* Dots */}
+        <div className="flex gap-2">
+          {items.map((_, i) => (
+            <button key={i} onClick={() => scrollToIndex(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === current
+                  ? `w-6 ${darkDots ? "bg-white" : "bg-gray-900 dark:bg-white"}`
+                  : `w-2 ${darkDots ? "bg-white/30" : "bg-gray-300 dark:bg-gray-700"}`
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Prev / Next */}
+        <div className="flex gap-2">
+          <button onClick={prev} disabled={current === 0}
+            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
+              darkDots
+                ? "border-white/30 text-white hover:bg-white/10"
+                : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            }`}>
+            <ChevronLeft size={16} />
+          </button>
+          <button onClick={next} disabled={current === items.length - 1}
+            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
+              darkDots
+                ? "border-white/30 text-white hover:bg-white/10"
+                : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            }`}>
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main section ─── */
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
   /* ── CLASSIC ── */
   if (theme === "classic") return (
-    <section className="py-24 bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <div className="mb-12">
-            <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-3">Testimoni</p>
-            <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: "var(--site-heading,#111827)" }}>
-              Kata Mereka
-            </h2>
-          </div>
+    <section className="py-24 bg-white dark:bg-black overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-3">Testimoni</p>
+          <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: "var(--site-heading,#111827)" }}>
+            Kata Mereka
+          </h2>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item, i) => (
-            <AnimateIn key={item.id} delay={i * 80}>
-              <div className="bg-gray-50 dark:bg-gray-950 rounded-2xl p-6 border border-gray-100 dark:border-gray-900 h-full flex flex-col">
-                <Stars rating={item.rating} />
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mt-4 flex-1">
-                  &ldquo;{item.content}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 mt-5 pt-5 border-t border-gray-100 dark:border-gray-900">
-                  <Avatar avatar={item.avatar} name={item.name} />
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
-                    {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
-                  </div>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`bg-gray-50 dark:bg-gray-950 rounded-2xl p-6 border transition-all duration-300 h-full flex flex-col ${
+              active ? "border-gray-300 dark:border-gray-700 shadow-md" : "border-gray-100 dark:border-gray-900"
+            }`}>
+              <Stars rating={item.rating} />
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mt-4 flex-1">
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-5 border-t border-gray-100 dark:border-gray-900">
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
+                  {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
                 </div>
               </div>
-            </AnimateIn>
-          ))}
-        </div>
+            </div>
+          )} />
+        </AnimateIn>
       </div>
     </section>
   );
 
   /* ── CATALOG (vibrant) ── */
   if (theme === "vibrant") return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+    <section className="py-24 bg-gray-50 dark:bg-gray-950 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <div className="flex items-end justify-between">
             <div>
               <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-2">Testimoni</p>
               <h2 className="text-3xl lg:text-4xl font-black" style={{ color: "var(--site-heading,#111827)" }}>
@@ -90,79 +184,59 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             </div>
           </div>
         </AnimateIn>
-
-        {/* Featured first testimonial */}
-        {items[0] && (
-          <AnimateIn>
-            <div className="rounded-3xl p-8 mb-6 relative overflow-hidden" style={{ background: "var(--site-accent,#2d6a4f)" }}>
-              <Quote size={64} className="absolute top-4 right-8 text-white/10" />
-              <Stars rating={items[0].rating} />
-              <p className="text-white text-lg font-medium leading-relaxed mt-4 mb-6 max-w-2xl relative z-10">
-                &ldquo;{items[0].content}&rdquo;
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`rounded-3xl p-7 relative overflow-hidden transition-all duration-300 h-full flex flex-col ${
+              active
+                ? "shadow-2xl scale-[1.01]"
+                : "opacity-80"
+            }`} style={{ background: active ? "var(--site-accent,#2d6a4f)" : "white" }}>
+              <Quote size={48} className={`absolute top-4 right-6 ${active ? "text-white/10" : "text-gray-100"}`} />
+              <Stars rating={item.rating} />
+              <p className={`text-sm leading-relaxed mt-4 flex-1 relative z-10 ${active ? "text-white font-medium" : "text-gray-600"}`}>
+                &ldquo;{item.content}&rdquo;
               </p>
-              <div className="flex items-center gap-3">
-                <Avatar avatar={items[0].avatar} name={items[0].name} size="md" />
+              <div className="flex items-center gap-3 mt-5 pt-5 border-t relative z-10" style={{ borderColor: active ? "rgba(255,255,255,0.2)" : "#f3f4f6" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="font-bold text-white">{items[0].name}</p>
-                  {items[0].role && <p className="text-sm text-white/70">{items[0].role}</p>}
+                  <p className={`font-bold text-sm ${active ? "text-white" : "text-gray-900"}`}>{item.name}</p>
+                  {item.role && <p className={`text-xs ${active ? "text-white/70" : "text-gray-400"}`}>{item.role}</p>}
                 </div>
               </div>
             </div>
-          </AnimateIn>
-        )}
-
-        {items.length > 1 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {items.slice(1).map((item, i) => (
-              <AnimateIn key={item.id} delay={i * 70}>
-                <div className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
-                  <Stars rating={item.rating} />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mt-3 flex-1">
-                    &ldquo;{item.content}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-2.5 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                    <Avatar avatar={item.avatar} name={item.name} size="sm" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
-                      {item.role && <p className="text-[11px] text-gray-400">{item.role}</p>}
-                    </div>
-                  </div>
-                </div>
-              </AnimateIn>
-            ))}
-          </div>
-        )}
+          )} />
+        </AnimateIn>
       </div>
     </section>
   );
 
   /* ── BOLD ── */
   return (
-    <section className="py-24 bg-gray-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <h2 className="text-3xl lg:text-5xl font-black text-white mb-16">Kata Mereka</h2>
+    <section className="py-24 bg-gray-950 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <h2 className="text-3xl lg:text-5xl font-black text-white">Kata Mereka</h2>
         </AnimateIn>
-        <div className="space-y-0 divide-y divide-gray-800">
-          {items.map((item, i) => (
-            <AnimateIn key={item.id} delay={i * 70} direction="left">
-              <div className="py-8 flex flex-col sm:flex-row sm:items-center gap-6 group hover:bg-gray-900 px-4 -mx-4 rounded-xl transition-colors duration-300">
-                <div className="shrink-0 text-center sm:w-32">
-                  <Avatar avatar={item.avatar} name={item.name} />
-                  <p className="text-xs font-semibold text-white mt-2">{item.name}</p>
-                  {item.role && <p className="text-[10px] text-gray-600">{item.role}</p>}
-                  <div className="flex justify-center mt-1"><Stars rating={item.rating} /></div>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`rounded-2xl p-6 transition-all duration-300 h-full flex flex-col ${
+              active ? "bg-gray-800 border border-gray-700" : "bg-gray-900 border border-gray-800 opacity-70"
+            }`} style={{ borderLeft: active ? `4px solid var(--site-accent,#2d6a4f)` : "4px solid transparent" }}>
+              <Quote size={20} className="mb-3" style={{ color: "var(--site-accent,#2d6a4f)" }} />
+              <p className="text-gray-300 text-sm leading-relaxed flex-1">
+                {item.content}
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-5 border-t border-gray-700">
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-semibold text-white">{item.name}</p>
+                  {item.role && <p className="text-xs text-gray-500">{item.role}</p>}
                 </div>
-                <div className="flex-1">
-                  <Quote size={20} className="mb-3" style={{ color: "var(--site-accent,#2d6a4f)" }} />
-                  <p className="text-gray-300 leading-relaxed text-sm sm:text-base">
-                    {item.content}
-                  </p>
-                </div>
+                <div className="ml-auto"><Stars rating={item.rating} /></div>
               </div>
-            </AnimateIn>
-          ))}
-        </div>
+            </div>
+          )} darkDots />
+        </AnimateIn>
       </div>
     </section>
   );
