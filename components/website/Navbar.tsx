@@ -50,14 +50,15 @@ export default function Navbar({ logo }: { logo?: string }) {
 
           <Link href="/" className="flex items-center">
             {mounted ? (
-              <Image
-                src={logo || "/logo.png"}
-                alt="Logo"
-                width={130} height={40}
-                className="h-8 w-auto transition-all duration-300"
-                style={isDark ? { filter: "brightness(0) invert(1)" } : undefined}
-                priority
-              />
+              <span className={isDark ? "inline-flex items-center bg-white rounded px-2 py-0.5" : undefined}>
+                <Image
+                  src={logo || "/logo.png"}
+                  alt="Logo"
+                  width={130} height={40}
+                  className="h-8 w-auto transition-all duration-300"
+                  priority
+                />
+              </span>
             ) : <div className="h-8 w-28" />}
           </Link>
 
