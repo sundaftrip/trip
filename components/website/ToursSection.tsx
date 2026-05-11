@@ -54,7 +54,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="tr-pill mb-4 inline-flex" style={{ background: "var(--tr-sun)", color: "var(--tr-text)" }}>🌏 Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--tr-text)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="tr-pill font-black" style={{ background: "#10b981", color: "var(--tr-bg)" }}>
+            <Link href="/tours" className="tr-pill font-black" style={{ background: "var(--site-accent)", color: "#fff" }}>
               Semua Tour →
             </Link>
           </div>
