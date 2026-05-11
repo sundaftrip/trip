@@ -151,68 +151,119 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
   return (
     <div className={`tr-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      {/* Image area */}
-      <div className="relative h-52 overflow-hidden rounded-t-[18px] border-b-2 border-black">
+      <div className="relative h-52 overflow-hidden rounded-t-[18px] border-b-2"
+        style={{ borderColor: "var(--tr-border)" }}>
         {tour.heroImg
           ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-          : <div className="flex items-center justify-center h-full text-gray-300" style={{ background: "#f0fdf4" }}><MapPin size={28} /></div>}
+          : <div className="flex items-center justify-center h-full text-gray-300" style={{ background: "var(--tr-mint)" }}><MapPin size={28} /></div>}
 
-        {/* Price sticker */}
         {!isDimmed && (
-          <div className="absolute bottom-3 right-3 tr-pill font-black text-[#1a1a1a]"
-            style={{ background: priceColor, transform: "rotate(2deg)" }}>
+          <div className="absolute bottom-3 right-3 tr-pill font-black"
+            style={{ background: priceColor, transform: "rotate(2deg)", color: "var(--tr-text)" }}>
             {formatCurrency(tour.promoPrice ?? tour.price)}
           </div>
         )}
-
-        {/* Badge sticker */}
         {tour.badge && !isDimmed && (
-          <div className="absolute top-3 left-3 tr-pill text-[#1a1a1a]"
-            style={{ background: badgeColor, transform: "rotate(-2deg)" }}>
+          <div className="absolute top-3 left-3 tr-pill"
+            style={{ background: badgeColor, transform: "rotate(-2deg)", color: "var(--tr-text)" }}>
             {tour.badge}
           </div>
         )}
-
-        {/* Sold out / expired overlay */}
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[18px]">
-            <span className="tr-pill" style={{ background: "white", color: "#1a1a1a" }}>
+            <span className="tr-pill" style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
               {isFull ? "✋ Sold Out" : "✅ Trip Selesai"}
             </span>
           </div>
         )}
       </div>
 
-      {/* Content */}
       <div className="p-5">
-        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "#9ca3af" }}>
+        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--tr-subtext)" }}>
           {tour.category} · {tour.country}
         </p>
-        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "#1a1a1a" }}>
+        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--tr-text)" }}>
           {tour.title}
         </h3>
-
-        {/* Info pills */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tour.duration && (
-            <span className="tr-pill" style={{ background: "#d1fae5", color: "#1a1a1a" }}>⏱ {tour.duration}</span>
+            <span className="tr-pill" style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>⏱ {tour.duration}</span>
           )}
           {tour.tripDate && (
-            <span className="tr-pill" style={{ background: "#dbeafe", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+            <span className="tr-pill" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
           )}
-          <span className="tr-pill" style={{ background: "#fce7f3", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat</span>
+          <span className="tr-pill" style={{ background: "var(--tr-pink)", color: "var(--tr-text)" }}>👤 {tour.seatsLeft} seat</span>
         </div>
-
-        {/* Promo original price */}
         {tour.promoPrice && (
           <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
         )}
-
         {!isDimmed && (
-          <div className="pt-3 border-t-2 border-dashed border-gray-200 flex items-center justify-between">
-            <span className="text-xs font-black text-gray-400">Lihat detail →</span>
+          <div className="pt-3 border-t-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <span className="text-xs font-black" style={{ color: "var(--tr-subtext)" }}>Lihat detail →</span>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  return (
+    <div className={`kw-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden rounded-t-[22px] border-b-2"
+        style={{ borderColor: "var(--kw-border)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full" style={{ background: "var(--kw-peach)", color: "var(--kw-border)" }}><MapPin size={28} /></div>}
+
+        {/* Heart badge */}
+        {!isDimmed && (
+          <div className="absolute top-3 right-3 w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-black"
+            style={{ background: "var(--kw-card)", borderColor: "var(--kw-border)", color: "var(--kw-border)" }}>♡</div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 kw-pill"
+            style={{ background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-2deg)" }}>
+            {tour.badge}
+          </div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[22px]">
+            <span className="kw-pill" style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
+              {isFull ? "✋ Sold Out" : "✅ Trip Selesai"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5">
+        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--kw-subtext)" }}>
+          {tour.category} · {tour.country}
+        </p>
+        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--kw-text)" }}>
+          {tour.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="kw-pill" style={{ background: "var(--kw-mint)", color: "var(--kw-text)" }}>⏱ {tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="kw-pill" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>👤 {tour.seatsLeft} seat</span>
+        </div>
+        {tour.promoPrice && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        )}
+        <div className="pt-3 border-t-2 border-dashed flex items-center justify-between"
+          style={{ borderColor: "var(--kw-border)" }}>
+          <p className="font-black text-base" style={{ color: "var(--kw-border)" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </p>
+          {!isDimmed && <span className="text-xs font-black" style={{ color: "var(--kw-subtext)" }}>Lihat →</span>}
+        </div>
       </div>
     </div>
   );
@@ -228,6 +279,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   if (theme === "vibrant") card = <VibrantCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "bold") card = <BoldCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "kawaii") card = <KawaiiCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

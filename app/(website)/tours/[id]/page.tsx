@@ -24,7 +24,20 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   companyRows.forEach((c) => { company[c.key] = c.value; });
   const waNumber = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
-  const isTropical = (company["site_theme"] ?? "classic") === "tropical";
+  const siteTheme = company["site_theme"] ?? "classic";
+  const isTropical = siteTheme === "tropical";
+  const isKawaii   = siteTheme === "kawaii";
+  const isOutlined = isTropical || isKawaii;
+
+  /* theme-aware CSS values */
+  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : "";
+  const tBg   = isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : undefined;
+  const tText = isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : undefined;
+  const tCard = isTropical ? "var(--tr-card)"  : isKawaii ? "var(--kw-card)" : undefined;
+  const tMint = isTropical ? "var(--tr-mint)"  : isKawaii ? "var(--kw-mint)" : undefined;
+  const tSun  = isTropical ? "var(--tr-sun)"   : isKawaii ? "var(--kw-sun)"  : undefined;
+  const tSub  = isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : undefined;
+  const tBdr  = isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : undefined;
 
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
   const addOns = (tour.addOns as { name: string; price: number }[]) ?? [];
@@ -34,30 +47,31 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const waMessage = encodeURIComponent(`${greeting}, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.`);
 
   /* shared shorthand helpers */
-  const secTitle = isTropical
-    ? "text-2xl font-black" + " " + "text-[#1a1a1a]"
+  const secTitle = isOutlined
+    ? "text-2xl font-black"
     : "text-xl font-bold text-gray-900 dark:text-white";
 
   return (
-    <div className="min-h-screen pt-16" style={isTropical ? { background: "#fffdf7" } : undefined}>
+    <div className="min-h-screen pt-16" style={isOutlined ? { background: tBg } : undefined}>
       {/* Hero */}
-      <div className={`relative h-72 lg:h-96 ${isTropical ? "border-b-2 border-black" : "bg-gray-200 dark:bg-gray-800"}`}>
+      <div className={`relative h-72 lg:h-96 ${isOutlined ? "border-b-2" : "bg-gray-200 dark:bg-gray-800"}`}
+        style={isOutlined ? { borderColor: tBdr } : undefined}>
         {tour.heroImg && <Image src={tour.heroImg} alt={tour.title} fill className="object-cover" priority />}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-10 max-w-7xl mx-auto">
           {tour.badge && (
-            isTropical
-              ? <span className="tr-pill mb-3 inline-flex" style={{ background: "#fef3c7", color: "#1a1a1a" }}>{tour.badge}</span>
+            isOutlined
+              ? <span className={`${pfx}-pill mb-3 inline-flex`} style={{ background: tSun, color: tText }}>{tour.badge}</span>
               : <span className="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full mb-3">{tour.badge}</span>
           )}
-          <h1 className={`text-3xl lg:text-4xl mb-2 ${isTropical ? "font-black text-white" : "font-bold text-white"}`}>{tour.title}</h1>
+          <h1 className={`text-3xl lg:text-4xl mb-2 ${isOutlined ? "font-black text-white" : "font-bold text-white"}`}>{tour.title}</h1>
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            {isTropical ? (
+            {isOutlined ? (
               <>
-                <span className="tr-pill" style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>📍 {tour.country}{tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}</span>
-                {tour.duration && <span className="tr-pill" style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>⏱ {tour.duration}</span>}
-                {tour.tripDate && <span className="tr-pill" style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate)}</span>}
-                <span className="tr-pill" style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat tersisa</span>
+                <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>📍 {tour.country}{tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}</span>
+                {tour.duration && <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>⏱ {tour.duration}</span>}
+                {tour.tripDate && <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate)}</span>}
+                <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat tersisa</span>
               </>
             ) : (
               <span className="flex flex-wrap gap-4 text-white/80">
@@ -73,8 +87,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <Link href="/tours"
-          className={`inline-flex items-center gap-1 text-sm mb-8 transition ${isTropical ? "tr-pill font-black" : "text-gray-500 hover:text-blue-600"}`}
-          style={isTropical ? { background: "white", color: "#1a1a1a" } : undefined}>
+          className={`inline-flex items-center gap-1 text-sm mb-8 transition ${isOutlined ? `${pfx}-pill font-black` : "text-gray-500 hover:text-blue-600"}`}
+          style={isOutlined ? { background: tCard, color: tText } : undefined}>
           <ArrowLeft size={16} /> Kembali ke Daftar Tour
         </Link>
 
@@ -84,7 +98,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Gallery */}
             {tour.gallery.length > 0 && (
               <div>
-                <h2 className={`${secTitle} mb-4`}>{isTropical ? "📷 Galeri" : "Galeri"}</h2>
+                <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined ? "📷 Galeri" : "Galeri"}
+                </h2>
                 <GalleryZoom images={tour.gallery} />
               </div>
             )}
@@ -92,8 +108,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Inclusions & Exclusions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {tour.inclusions.length > 0 && (
-                <div className={isTropical ? "tr-card p-5" : ""}>
-                  <h2 className={`${secTitle} mb-3`}>{isTropical ? "✅ Sudah Termasuk" : "Sudah Termasuk"}</h2>
+                <div className={isOutlined ? `${pfx}-card p-5` : ""}>
+                  <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
+                    {isOutlined ? "✅ Sudah Termasuk" : "Sudah Termasuk"}
+                  </h2>
                   <ul className="space-y-2">
                     {tour.inclusions.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -104,8 +122,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               )}
               {tour.exclusions.length > 0 && (
-                <div className={isTropical ? "tr-card p-5" : ""}>
-                  <h2 className={`${secTitle} mb-3`}>{isTropical ? "❌ Tidak Termasuk" : "Tidak Termasuk"}</h2>
+                <div className={isOutlined ? `${pfx}-card p-5` : ""}>
+                  <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
+                    {isOutlined ? "❌ Tidak Termasuk" : "Tidak Termasuk"}
+                  </h2>
                   <ul className="space-y-2">
                     {tour.exclusions.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -120,11 +140,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Itinerary */}
             {itinerary.length > 0 && (
               <div>
-                <h2 className={`${secTitle} mb-4`}>{isTropical ? "🗺️ Itinerary" : "Itinerary"}</h2>
+                <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined ? "🗺️ Itinerary" : "Itinerary"}
+                </h2>
                 <div className="space-y-3">
                   {itinerary.map((item) => (
-                    <div key={item.day} className={`flex gap-4 ${isTropical ? "tr-card p-4" : ""}`}>
-                      {!isTropical && (
+                    <div key={item.day} className={`flex gap-4 ${isOutlined ? `${pfx}-card p-4` : ""}`}>
+                      {!isOutlined && (
                         <div className="flex flex-col items-center">
                           <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0">
                             {item.day}
@@ -132,12 +154,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
                         </div>
                       )}
-                      <div className={isTropical ? "flex gap-4 w-full" : "pb-6"}>
-                        {isTropical && (
-                          <span className="tr-pill shrink-0" style={{ background: "#d1fae5", color: "#1a1a1a" }}>Hari {item.day}</span>
+                      <div className={isOutlined ? "flex gap-4 w-full" : "pb-6"}>
+                        {isOutlined && (
+                          <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
                         )}
                         <div>
-                          <h3 className={`font-${isTropical ? "black" : "semibold"} text-gray-900 dark:text-white`}>{item.title}</h3>
+                          <h3 className={`font-${isOutlined ? "black" : "semibold"} text-gray-900 dark:text-white`}
+                            style={isOutlined ? { color: tText } : undefined}>{item.title}</h3>
                           {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
                         </div>
                       </div>
@@ -150,12 +173,15 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Hotel */}
             {hotelInfo && Object.keys(hotelInfo).length > 0 && (
               <div>
-                <h2 className={`${secTitle} mb-4`}>{isTropical ? "🏨 Hotel" : "Hotel"}</h2>
-                <div className={isTropical ? "tr-card p-4" : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
+                <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined ? "🏨 Hotel" : "Hotel"}
+                </h2>
+                <div className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
                   {Object.entries(hotelInfo).map(([k, v]) => (
-                    <div key={k} className="flex justify-between py-2 border-b border-dashed border-gray-200 last:border-0 text-sm">
+                    <div key={k} className="flex justify-between py-2 border-b border-dashed border-gray-200 dark:border-gray-700 last:border-0 text-sm">
                       <span className="text-gray-500 capitalize">{k}</span>
-                      <span className={`font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>{v}</span>
+                      <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
+                        style={isOutlined ? { color: tText } : undefined}>{v}</span>
                     </div>
                   ))}
                 </div>
@@ -165,9 +191,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Visa Info */}
             {tour.visaInfo && (
               <div>
-                <h2 className={`${secTitle} mb-3`}>{isTropical ? "🛂 Informasi Visa" : "Informasi Visa"}</h2>
-                <p className={`text-sm leading-relaxed p-4 ${isTropical ? "tr-card" : "text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl"}`}
-                  style={isTropical ? { background: "#dbeafe", color: "#1e3a5f" } : undefined}>
+                <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined ? "🛂 Informasi Visa" : "Informasi Visa"}
+                </h2>
+                <p className={`text-sm leading-relaxed p-4 ${isOutlined ? `${pfx}-card` : "text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl"}`}
+                  style={isOutlined ? { background: "var(--tr-sky)", color: tSub } : undefined}>
                   {tour.visaInfo}
                 </p>
               </div>
@@ -176,9 +204,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Notes */}
             {tour.notes && (
               <div>
-                <h2 className={`${secTitle} mb-3`}>{isTropical ? "📋 Catatan Penting" : "Catatan Penting"}</h2>
-                <p className={`text-sm leading-relaxed p-4 ${isTropical ? "tr-card" : "text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl"}`}
-                  style={isTropical ? { background: "#fef3c7", color: "#713f12" } : undefined}>
+                <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined ? "📋 Catatan Penting" : "Catatan Penting"}
+                </h2>
+                <p className={`text-sm leading-relaxed p-4 ${isOutlined ? `${pfx}-card` : "text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl"}`}
+                  style={isOutlined ? { background: tSun, color: tSub } : undefined}>
                   {tour.notes}
                 </p>
               </div>
@@ -187,14 +217,14 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
           {/* Sidebar Booking */}
           <div className="lg:sticky lg:top-24 h-fit">
-            <div className={isTropical ? "tr-card p-6" : "bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"}>
+            <div className={isOutlined ? `${pfx}-card p-6` : "bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"}>
               {/* Price */}
               <div className="mb-5">
-                {isTropical
+                {isOutlined
                   ? (
                     <div className="mb-3">
                       <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga per orang</p>
-                      <span className="tr-pill text-lg font-black" style={{ background: "#d1fae5", color: "#1a1a1a", fontSize: "1.5rem", padding: "8px 20px" }}>
+                      <span className={`${pfx}-pill font-black`} style={{ background: tMint, color: tText, fontSize: "1.5rem", padding: "8px 20px" }}>
                         {formatCurrency(tour.promoPrice ?? tour.price)}
                       </span>
                       {tour.promoPrice && (
@@ -202,7 +232,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                       )}
                       {tour.priceLandTour && (
                         <p className="text-xs mt-1">
-                          <span className="tr-pill" style={{ background: "#fef3c7", color: "#1a1a1a" }}>Land Tour: {formatCurrency(tour.priceLandTour)}</span>
+                          <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Land Tour: {formatCurrency(tour.priceLandTour)}</span>
                         </p>
                       )}
                     </div>
@@ -218,51 +248,58 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
               {/* CTA */}
               {tour.status === "FULL" ? (
-                <div className={`w-full py-3 text-center font-black mb-3 ${isTropical ? "tr-card" : "bg-red-100 text-red-700 rounded-xl"}`}
-                  style={isTropical ? { background: "#fee2e2", color: "#991b1b" } : undefined}>
+                <div className={`w-full py-3 text-center font-black mb-3 ${isOutlined ? `${pfx}-card` : "bg-red-100 text-red-700 rounded-xl"}`}
+                  style={isOutlined ? { background: "#fee2e2", color: "#991b1b" } : undefined}>
                   ✋ FULLY BOOKED
                 </div>
               ) : (
                 <a href={`https://wa.me/${waNumber}?text=${waMessage}`} target="_blank" rel="noreferrer"
-                  className={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition ${isTropical ? "tr-btn" : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
-                  style={isTropical ? { background: "#10b981", color: "#1a1a1a", justifyContent: "center" } : undefined}>
+                  className={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
+                  style={isOutlined ? { background: "#10b981", color: tBg, justifyContent: "center" } : undefined}>
                   💬 Pesan via WhatsApp
                 </a>
               )}
 
-              <div className={`text-xs text-center mb-5 ${isTropical ? "font-black text-gray-400" : "text-gray-400"}`}>
+              <div className="text-xs text-center mb-5 font-black text-gray-400">
                 Konsultasi gratis · Tanpa biaya tambahan
               </div>
 
               {/* Tour details grid */}
-              <div className={`space-y-2 text-sm pt-4 ${isTropical ? "border-t-2 border-dashed border-black/10" : "border-t border-gray-100 dark:border-gray-800"}`}>
+              <div className={`space-y-2 text-sm pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
+                style={isOutlined ? { borderColor: tBdr } : undefined}>
                 {tour.tripDate && (
                   <div className="flex justify-between">
-                    <span className="text-gray-500">{isTropical ? "✈ Keberangkatan" : "Keberangkatan"}</span>
-                    <span className={`font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>{formatDate(tour.tripDate)}</span>
+                    <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "✈ Keberangkatan" : "Keberangkatan"}</span>
+                    <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
+                      style={isOutlined ? { color: tText } : undefined}>{formatDate(tour.tripDate)}</span>
                   </div>
                 )}
                 {tour.duration && (
                   <div className="flex justify-between">
-                    <span className="text-gray-500">{isTropical ? "⏱ Durasi" : "Durasi"}</span>
-                    <span className={`font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>{tour.duration}</span>
+                    <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "⏱ Durasi" : "Durasi"}</span>
+                    <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
+                      style={isOutlined ? { color: tText } : undefined}>{tour.duration}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-gray-500">{isTropical ? "👤 Sisa Seat" : "Sisa Seat"}</span>
-                  <span className={`font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>{tour.seatsLeft}</span>
+                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "👤 Sisa Seat" : "Sisa Seat"}</span>
+                  <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
+                    style={isOutlined ? { color: tText } : undefined}>{tour.seatsLeft}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">{isTropical ? "🏷️ Kategori" : "Kategori"}</span>
-                  <span className={`font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>{tour.category}</span>
+                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "🏷️ Kategori" : "Kategori"}</span>
+                  <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
+                    style={isOutlined ? { color: tText } : undefined}>{tour.category}</span>
                 </div>
               </div>
 
               {/* Add Ons */}
               {addOns.length > 0 && (
-                <div className={`mt-4 pt-4 ${isTropical ? "border-t-2 border-dashed border-black/10" : "border-t border-gray-100 dark:border-gray-800"}`}>
-                  <p className={`text-xs uppercase tracking-wider mb-2 ${isTropical ? "font-black text-gray-500" : "font-semibold text-gray-500"}`}>
-                    {isTropical ? "🎁 Add Ons" : "Add Ons"}
+                <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
+                  style={isOutlined ? { borderColor: tBdr } : undefined}>
+                  <p className={`text-xs uppercase tracking-wider mb-2 ${isOutlined ? "font-black" : "font-semibold text-gray-500"}`}
+                    style={isOutlined ? { color: tSub } : undefined}>
+                    {isOutlined ? "🎁 Add Ons" : "Add Ons"}
                   </p>
                   <div className="space-y-1.5">
                     {addOns.map((item) => (

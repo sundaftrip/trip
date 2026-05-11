@@ -18,17 +18,43 @@ interface Props {
 export default function ToursSection({ tours, theme = "classic" }: Props) {
   if (tours.length === 0) return null;
 
-  /* ── TROPICAL layout ── */
-  if (theme === "tropical") return (
-    <section className="py-24" style={{ background: "#fffdf7" }}>
+  /* ── KAWAII layout ── */
+  if (theme === "kawaii") return (
+    <section className="py-24" style={{ background: "var(--kw-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
           <div className="flex items-end justify-between mb-14">
             <div>
-              <span className="tr-pill mb-4 inline-flex" style={{ background: "#fef3c7" }}>🌏 Paket Tersedia</span>
-              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "#1a1a1a" }}>Tour Pilihan</h2>
+              <span className="kw-pill mb-4 inline-flex" style={{ background: "var(--kw-sun)", color: "var(--kw-text)" }}>✦ Paket Tersedia</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--kw-text)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="tr-pill font-black transition-transform" style={{ background: "#10b981", color: "#1a1a1a" }}>
+            <Link href="/tours" className="kw-pill font-black" style={{ background: "var(--kw-border)", color: "#ffffff" }}>
+              Semua Tour →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="kawaii" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── TROPICAL layout ── */
+  if (theme === "tropical") return (
+    <section className="py-24" style={{ background: "var(--tr-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-14">
+            <div>
+              <span className="tr-pill mb-4 inline-flex" style={{ background: "var(--tr-sun)", color: "var(--tr-text)" }}>🌏 Paket Tersedia</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--tr-text)" }}>Tour Pilihan</h2>
+            </div>
+            <Link href="/tours" className="tr-pill font-black" style={{ background: "#10b981", color: "var(--tr-bg)" }}>
               Semua Tour →
             </Link>
           </div>
