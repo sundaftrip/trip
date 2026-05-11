@@ -1,9 +1,2 @@
 import { handlers } from "@/lib/auth";
-
-export async function GET(req: Request) {
-  return handlers.GET(req);
-}
-
-export async function POST(req: Request) {
-  return handlers.POST(req);
-}
+export const { GET, POST } = handlers;
