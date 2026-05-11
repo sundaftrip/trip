@@ -22,6 +22,7 @@ const THEMES = [
   { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.",          feature: "theme_tropical" },
   { key: "kawaii",   label: "Kawaii",   desc: "Retro cute pastel. Border bulat, hati melayang, peach aesthetic.",     feature: "theme_kawaii" },
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
+  { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
 ];
 
 export default function SettingsPage() {
@@ -265,6 +266,23 @@ export default function SettingsPage() {
                         <div className="h-5 w-16 border font-black text-[8px] flex items-center justify-center" style={{ background: currentAccent, borderColor: "#1a1a2e", boxShadow: "2px 2px 0 0 #1a1a2e", color: "white", fontFamily: "monospace" }}>TOUR →</div>
                       </div>
                     )}
+                    {key === "globe" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fef9f0" }}>
+                        {/* floating landmark emoji decorations */}
+                        <span className="absolute top-1.5 right-2 text-[11px]" style={{ opacity: 0.55 }}>🗼</span>
+                        <span className="absolute top-4 left-2 text-[9px]"   style={{ opacity: 0.45 }}>🕌</span>
+                        <span className="absolute top-1 right-7 text-[8px]"  style={{ opacity: 0.4 }}>✈️</span>
+                        {/* pill badge */}
+                        <div className="flex gap-1 mb-1.5">
+                          <div className="h-4 px-2 rounded-full text-[7px] font-black flex items-center" style={{ background: "#56c7e0", color: "#111827" }}>🗺️ Destinasi</div>
+                          <div className="h-4 px-1.5 rounded-full text-[7px] font-black flex items-center" style={{ background: "#f5a623", color: "#111827" }}>⭐</div>
+                        </div>
+                        {/* CTA button */}
+                        <div className="h-5 w-16 rounded-lg text-[8px] font-black flex items-center justify-center text-white shadow-md" style={{ background: currentAccent }}>
+                          Lihat Tour ✈
+                        </div>
+                      </div>
+                    )}
                     {!unlocked && (
                       <div className="absolute inset-0 bg-gray-100/70 dark:bg-gray-900/70 flex items-center justify-center rounded-lg">
                         <Lock size={16} className="text-gray-400" />
@@ -289,7 +307,7 @@ export default function SettingsPage() {
         {PLAN !== "pro" && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Tema Catalog, Bold, Tropical, Kawaii & Pixel Art tersedia di paket Pro. Hubungi admin untuk upgrade.
+              Tema Catalog, Bold, Tropical, Kawaii, Pixel Art & Globe tersedia di paket Pro. Hubungi admin untuk upgrade.
             </p>
           </div>
         )}
