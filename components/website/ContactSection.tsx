@@ -180,7 +180,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 max-w-xl">
-          <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>► {headLabel.toUpperCase()}</span>
+          <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► {headLabel.toUpperCase()}</span>
           <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
             {t("contact_title", "Siap Membantu Perjalanan Anda")}
           </h2>
@@ -221,7 +221,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
 
           <div className="px-card p-10 flex flex-col justify-between" style={{ background: "var(--px-border)", borderColor: "var(--px-border)" }}>
             <div>
-              <span className="px-pill mb-6 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-text)", borderColor: "var(--px-text)" }}>
+              <span className="px-pill mb-6 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)", borderColor: "var(--px-text)" }}>
                 ► {ctaLabel.toUpperCase()}
               </span>
               <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white" style={{ fontFamily: "monospace" }}>{ctaTitle}</h3>

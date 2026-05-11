@@ -124,7 +124,7 @@ export default async function BlogPage() {
                     ? <Image src={post.cover} alt={post.title} fill className="object-cover" />
                     : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--px-cyan)", opacity: 0.3 }}>✈️</div>}
                   {post.category && (
-                    <span className="absolute top-3 left-3 px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+                    <span className="absolute top-3 left-3 px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
                       {post.category}
                     </span>
                   )}

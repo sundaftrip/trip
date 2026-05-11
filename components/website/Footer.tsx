@@ -169,7 +169,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           </div>
 
           <div>
-            <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>NAVIGASI</span>
+            <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>NAVIGASI</span>
             <ul className="space-y-3 mt-3">
               {navLinks.map(([label, href]) => (
                 <li key={href}>
@@ -181,7 +181,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           </div>
 
           <div>
-            <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>KONTAK</span>
+            <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-yellow)", color: "#111827" }}>KONTAK</span>
             <ul className="space-y-3 mt-3">
               {contacts.map(({ Icon, label, value, href }) => (
                 <li key={label} className="flex items-start gap-2">

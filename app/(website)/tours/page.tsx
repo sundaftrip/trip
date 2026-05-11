@@ -115,7 +115,7 @@ export default async function ToursPage({
             <>
               {isKawaii   && <span className="kw-pill mb-3 inline-flex" style={{ background: "var(--kw-peach)", color: "var(--kw-text)" }}>✈ Semua Paket</span>}
               {isTropical && <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>🌍 Semua Paket</span>}
-              {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>► SEMUA PAKET</span>}
+              {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► SEMUA PAKET</span>}
               <h1 className={`text-4xl font-black mt-3 mb-2 ${isPixel ? "font-mono" : ""}`} style={{ color: headColor, fontFamily: isPixel ? "monospace" : undefined }}>
                 {isPixel ? "PAKET TOUR" : "Paket Tour"}
               </h1>

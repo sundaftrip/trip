@@ -159,13 +159,13 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 tr-pill font-black"
-            style={{ background: priceColor, transform: "rotate(2deg)", color: "var(--tr-text)" }}>
+            style={{ background: priceColor, transform: "rotate(2deg)", color: "#111827" }}>
             {formatCurrency(tour.promoPrice ?? tour.price)}
           </div>
         )}
         {tour.badge && !isDimmed && (
           <div className="absolute top-3 left-3 tr-pill"
-            style={{ background: badgeColor, transform: "rotate(-2deg)", color: "var(--tr-text)" }}>
+            style={{ background: badgeColor, transform: "rotate(-2deg)", color: "#111827" }}>
             {tour.badge}
           </div>
         )}
@@ -300,13 +300,13 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {/* Pixel price tag */}
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 px-pill font-black"
-            style={{ background: accentColor, color: "var(--px-text)", transform: "none" }}>
+            style={{ background: accentColor, color: "#111827", transform: "none" }}>
             {formatCurrency(tour.promoPrice ?? tour.price)}
           </div>
         )}
         {tour.badge && !isDimmed && (
           <div className="absolute top-3 left-3 px-pill"
-            style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+            style={{ background: "var(--px-yellow)", color: "#111827" }}>
             ★ {tour.badge}
           </div>
         )}
@@ -328,10 +328,10 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         </h3>
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tour.duration && (
-            <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>⏱ {tour.duration}</span>
+            <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>⏱ {tour.duration}</span>
           )}
           {tour.tripDate && (
-            <span className="px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+            <span className="px-pill" style={{ background: "var(--px-yellow)", color: "#111827" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
           )}
           <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>👤 {tour.seatsLeft} SEAT</span>
         </div>

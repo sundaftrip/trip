@@ -251,7 +251,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="mb-8 hero-fade-up">
-          <span className="px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+          <span className="px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
             ► {eyebrow}
           </span>
         </div>
@@ -262,13 +262,13 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
-          <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>
+          <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
             [MAP] {t("hero_subtitle", "Destinasi Pilihan")}
           </span>
           <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>
             [PKG] Paket Lengkap
           </span>
-          <span className="px-pill" style={{ background: "var(--px-green)", color: "var(--px-text)" }}>
+          <span className="px-pill" style={{ background: "var(--px-green)", color: "#111827" }}>
             [★★★] Terpercaya
           </span>
         </div>

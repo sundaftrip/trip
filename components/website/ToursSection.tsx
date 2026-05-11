@@ -29,7 +29,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
         <AnimateIn>
           <div className="flex items-end justify-between mb-14">
             <div>
-              <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>► PAKET TERSEDIA</span>
+              <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>► PAKET TERSEDIA</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>TOUR PILIHAN</h2>
             </div>
             <Link href="/tours" className="px-btn px-5 py-2.5 text-sm" style={{ background: "var(--site-accent)", color: "#ffffff" }}>

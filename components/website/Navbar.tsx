@@ -197,12 +197,12 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
           <div className="flex items-center gap-2">
             <button onClick={toggleLang} className="px-pill"
-              style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+              style={{ background: "var(--px-yellow)", color: "#111827" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
               <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>
+                className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}

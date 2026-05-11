@@ -49,7 +49,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             className={`inline-flex items-center gap-1.5 mb-8 text-sm font-black transition-opacity hover:opacity-70 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : "px-pill"}`}
             style={isKawaii ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                  : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
-                 : { background: "var(--px-cyan)", color: "var(--px-text)" }}>
+                 : { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
             <ArrowLeft size={14} /> Kembali ke Blog
           </Link>
         ) : (
@@ -64,7 +64,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             <span className={`inline-flex mb-4 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : "px-pill"}`}
               style={isKawaii ? { background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-1.5deg)" }
                    : isTropical ? { background: "var(--tr-peach)", color: "var(--tr-text)" }
-                   : { background: "var(--px-yellow)", color: "var(--px-text)" }}>
+                   : { background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
               {post.category}
             </span>
           ) : (

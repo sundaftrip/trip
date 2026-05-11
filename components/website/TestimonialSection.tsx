@@ -140,7 +140,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
     }}>
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
-          <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>► TESTIMONI</span>
+          <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► TESTIMONI</span>
           <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>KATA MEREKA</h2>
         </AnimateIn>
         <AnimateIn delay={100}>
