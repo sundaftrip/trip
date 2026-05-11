@@ -62,6 +62,33 @@ body {
 }
 .dark .label { color: #d1d5db; }
 
+/* Logo golden brush animation for dark mode */
+@keyframes golden-brush {
+  0%   { transform: translateX(-100%) skewX(-20deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(350%) skewX(-20deg); opacity: 0; }
+}
+.logo-dark-sweep {
+  position: relative;
+  display: inline-flex;
+  filter: brightness(0) invert(1);
+}
+.logo-dark-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 215, 0, 0.55) 50%,
+    rgba(255, 180, 0, 0.3) 55%,
+    transparent 70%
+  );
+  animation: golden-brush 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* Prose dark overrides */
 .dark .prose { color: #cbd5e1; }
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f1f5f9; }

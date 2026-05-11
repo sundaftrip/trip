@@ -50,12 +50,12 @@ export default function Navbar({ logo }: { logo?: string }) {
 
           <Link href="/" className="flex items-center">
             {mounted ? (
-              <span className={isDark ? "inline-flex items-center bg-white rounded px-2 py-0.5" : undefined}>
+              <span className={isDark ? "logo-dark-sweep" : "inline-flex"}>
                 <Image
                   src={logo || "/logo.png"}
                   alt="Logo"
                   width={130} height={40}
-                  className="h-8 w-auto transition-all duration-300"
+                  className="h-8 w-auto"
                   priority
                 />
               </span>
