@@ -91,7 +91,9 @@ export default function AdminShell({ role, user, logo, children }: Props) {
       {/* Sidebar — desktop */}
       <aside className="hidden lg:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-col shrink-0">
         <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
-          <Image src={logo || "/logo.png"} alt="Logo" width={120} height={36} className="h-8 w-auto dark:brightness-0 dark:invert" />
+          <span className="inline-flex items-center dark:bg-white dark:rounded dark:px-2 dark:py-0.5">
+            <Image src={logo || "/logo.png"} alt="Logo" width={120} height={36} className="h-8 w-auto" />
+          </span>
         </div>
         <NavLinks />
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">
@@ -105,7 +107,9 @@ export default function AdminShell({ role, user, logo, children }: Props) {
           <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
           <aside className="relative z-50 w-72 bg-white dark:bg-gray-800 flex flex-col h-full shadow-xl">
             <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
-              <Image src={logo || "/logo.png"} alt="Logo" width={100} height={30} className="h-7 w-auto dark:brightness-0 dark:invert" />
+              <span className="inline-flex items-center dark:bg-white dark:rounded dark:px-2 dark:py-0.5">
+                <Image src={logo || "/logo.png"} alt="Logo" width={100} height={30} className="h-7 w-auto" />
+              </span>
               <button onClick={() => setSidebarOpen(false)} className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <X size={18} />
               </button>
