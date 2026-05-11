@@ -269,6 +269,85 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+/* ─── Pixel Art card ─── */
+const PIXEL_COLORS = ["var(--px-red)", "var(--px-yellow)", "var(--px-cyan)", "var(--px-purple)", "var(--px-green)"];
+function hashPixelColor(str: string, offset = 0) {
+  let h = offset * 31;
+  for (let i = 0; i < str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
+  return PIXEL_COLORS[Math.abs(h) % PIXEL_COLORS.length];
+}
+
+function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  const accentColor = hashPixelColor(tour.id, 0);
+
+  return (
+    <div className={`px-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}
+      style={{
+        backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+        backgroundSize: "16px 16px",
+      }}>
+      {/* Image */}
+      <div className="relative h-52 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover" style={{ imageRendering: "auto", transition: "none" }} />
+          : <div className="flex items-center justify-center h-full text-gray-300"
+              style={{ background: accentColor, opacity: 0.2 }}>
+              <MapPin size={28} />
+            </div>}
+
+        {/* Pixel price tag */}
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 px-pill font-black"
+            style={{ background: accentColor, color: "var(--px-text)", transform: "none" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 px-pill"
+            style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+            ★ {tour.badge}
+          </div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="px-pill" style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+              {isFull ? "✖ SOLD OUT" : "✔ SELESAI"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5" style={{ background: "var(--px-card)" }}>
+        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
+          [{tour.category}] {tour.country}
+        </p>
+        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--px-text)" }}>
+          {tour.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>⏱ {tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>👤 {tour.seatsLeft} SEAT</span>
+        </div>
+        {tour.promoPrice && (
+          <p className="text-[11px] text-gray-400 line-through mb-1" style={{ fontFamily: "monospace" }}>{formatCurrency(tour.price)}</p>
+        )}
+        {!isDimmed && (
+          <div className="pt-3 border-t-2 flex items-center justify-between" style={{ borderColor: "var(--px-border)" }}>
+            <span className="text-xs font-black" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>LIHAT DETAIL ►</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -280,6 +359,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "bold") card = <BoldCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "kawaii") card = <KawaiiCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

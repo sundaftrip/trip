@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel";
   featuredImage?: string | null;
 }
 
@@ -222,6 +222,70 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               </a>
             )}
           </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── PIXEL ART ── */
+  if (theme === "pixel") return (
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
+      style={{
+        background: "var(--px-bg)",
+        backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+        backgroundSize: "24px 24px",
+      }}>
+      {/* Floating pixel blocks */}
+      <div className="absolute top-32 right-16 lg:right-36 w-8 h-8 px-float-1 pointer-events-none"
+        style={{ background: "var(--px-red)", border: "2px solid var(--px-border)", boxShadow: "3px 3px 0 0 var(--px-shadow)", opacity: 0.7 }} />
+      <div className="absolute top-56 right-[30%] w-5 h-5 px-float-2 pointer-events-none"
+        style={{ background: "var(--px-yellow)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.65 }} />
+      <div className="absolute bottom-24 left-16 lg:left-32 w-6 h-6 px-float-3 pointer-events-none"
+        style={{ background: "var(--px-cyan)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.6 }} />
+      <div className="absolute top-44 left-[42%] w-4 h-4 px-float-4 pointer-events-none"
+        style={{ background: "var(--px-purple)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.55 }} />
+      <div className="absolute bottom-40 right-[20%] w-7 h-7 px-float-2 pointer-events-none"
+        style={{ background: "var(--px-green)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.6, animationDelay: "1s" }} />
+      <div className="absolute top-28 left-8 w-4 h-4 px-float-3 pointer-events-none"
+        style={{ background: "var(--px-red)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.45, animationDelay: "0.8s" }} />
+
+      <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="mb-8 hero-fade-up">
+          <span className="px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-text)" }}>
+            ► {eyebrow}
+          </span>
+        </div>
+
+        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
+          style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
+          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+        </h1>
+
+        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+          <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>
+            [MAP] {t("hero_subtitle", "Destinasi Pilihan")}
+          </span>
+          <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>
+            [PKG] Paket Lengkap
+          </span>
+          <span className="px-pill" style={{ background: "var(--px-green)", color: "var(--px-text)" }}>
+            [★★★] Terpercaya
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/tours"
+            className="px-btn px-8 py-4 text-sm"
+            style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+            {t("hero_btn", "LIHAT TOUR")} ►
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              className="px-btn px-8 py-4 text-sm"
+              style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+              [WA] CHAT KAMI
+            </a>
+          )}
         </div>
       </div>
     </section>

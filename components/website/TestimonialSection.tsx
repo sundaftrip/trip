@@ -131,6 +131,41 @@ function Carousel({ items, renderCard, darkDots = false }: {
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
+  /* ── PIXEL ── */
+  if (theme === "pixel") return (
+    <section className="py-24 overflow-hidden relative" style={{
+      background: "var(--px-bg)",
+      backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+      backgroundSize: "24px 24px",
+    }}>
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-text)" }}>► TESTIMONI</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>KATA MEREKA</h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`px-card p-6 flex flex-col h-full transition-all duration-100 ${active ? "" : "opacity-70"}`}
+              style={{ background: active ? "var(--px-yellow)" : "var(--px-card)" }}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
+                style={{ borderColor: "var(--px-border)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-black" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>{item.name}</p>
+                  {item.role && <p className="text-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <section className="py-24 overflow-hidden" style={{ background: "var(--kw-bg)" }}>

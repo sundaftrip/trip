@@ -27,17 +27,18 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const siteTheme = company["site_theme"] ?? "classic";
   const isTropical = siteTheme === "tropical";
   const isKawaii   = siteTheme === "kawaii";
-  const isOutlined = isTropical || isKawaii;
+  const isPixel    = siteTheme === "pixel";
+  const isOutlined = isTropical || isKawaii || isPixel;
 
   /* theme-aware CSS values */
-  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : "";
-  const tBg   = isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : undefined;
-  const tText = isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : undefined;
-  const tCard = isTropical ? "var(--tr-card)"  : isKawaii ? "var(--kw-card)" : undefined;
-  const tMint = isTropical ? "var(--tr-mint)"  : isKawaii ? "var(--kw-mint)" : undefined;
-  const tSun  = isTropical ? "var(--tr-sun)"   : isKawaii ? "var(--kw-sun)"  : undefined;
-  const tSub  = isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : undefined;
-  const tBdr  = isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : undefined;
+  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : isPixel ? "px" : "";
+  const tBg   = isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : isPixel ? "var(--px-bg)"   : undefined;
+  const tText = isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : isPixel ? "var(--px-text)" : undefined;
+  const tCard = isTropical ? "var(--tr-card)"  : isKawaii ? "var(--kw-card)" : isPixel ? "var(--px-card)" : undefined;
+  const tMint = isTropical ? "var(--tr-mint)"  : isKawaii ? "var(--kw-mint)" : isPixel ? "var(--px-cyan)" : undefined;
+  const tSun  = isTropical ? "var(--tr-sun)"   : isKawaii ? "var(--kw-sun)"  : isPixel ? "var(--px-yellow)" : undefined;
+  const tSub  = isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : undefined;
+  const tBdr  = isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : undefined;
 
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
   const addOns = (tour.addOns as { name: string; price: number }[]) ?? [];
@@ -51,8 +52,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ? "text-2xl font-black"
     : "text-xl font-bold text-gray-900 dark:text-white";
 
+  const pixelGridStyle = isPixel ? {
+    backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+    backgroundSize: "24px 24px",
+  } : {};
+
   return (
-    <div className="min-h-screen pt-16" style={isOutlined ? { background: tBg } : undefined}>
+    <div className="min-h-screen pt-16" style={isOutlined ? { background: tBg, ...pixelGridStyle } : undefined}>
       {/* Hero */}
       <div className={`relative h-72 lg:h-96 ${isOutlined ? "border-b-2" : "bg-gray-200 dark:bg-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}>

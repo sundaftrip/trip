@@ -30,6 +30,46 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
+  /* ── PIXEL ── */
+  if (theme === "pixel") {
+    const pixelBgs = ["var(--px-red)", "var(--px-yellow)", "var(--px-cyan)", "var(--px-purple)"];
+    const pixelFgs = ["#ffffff", "var(--px-text)", "var(--px-text)", "#ffffff"];
+    return (
+      <section className="py-24 relative" style={{
+        background: "var(--px-bg)",
+        backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
+        backgroundSize: "24px 24px",
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateIn>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+              <div>
+                <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► KEUNGGULAN</span>
+                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>{title}</h2>
+              </div>
+              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{subtitle}</p>
+            </div>
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100}>
+                <div className="px-card p-7 h-full" style={{ background: pixelBgs[i] }}>
+                  <p className="text-4xl font-black mb-3" style={{ color: "rgba(0,0,0,0.12)", fontFamily: "monospace" }}>0{i + 1}</p>
+                  <div className="w-11 h-11 border-2 flex items-center justify-center mb-4"
+                    style={{ background: "var(--px-card)", borderColor: "var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)" }}>
+                    <Icon size={20} style={{ color: pixelBgs[i] }} />
+                  </div>
+                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: pixelFgs[i] }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: pixelFgs[i], opacity: 0.8 }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   /* ── KAWAII ── */
   if (theme === "kawaii") {
     const cardBgs = ["var(--kw-peach)", "var(--kw-sky)", "var(--kw-mint)", "var(--kw-blush)"];

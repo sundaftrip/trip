@@ -8,6 +8,7 @@ export const PLAN_FEATURES: Record<string, Plan> = {
   theme_bold: "pro",
   theme_tropical: "pro",
   theme_kawaii: "pro",
+  theme_pixel: "pro",
   color_schemes: "pro",
 };
 
