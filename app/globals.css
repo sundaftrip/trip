@@ -143,6 +143,16 @@ body {
   .tr-float-1, .tr-float-2, .tr-float-3, .tr-float-4 { animation: none; }
 }
 
+/* ─── PHOTO PRESET FILTER ───
+   Applied automatically when data-photo-preset is set on <main>.
+   Targets all tour card images, gallery images, hero images.
+   Use `no-preset` class on any <img> to opt out.
+*/
+main[data-photo-preset]:not([data-photo-preset="none"]) img:not(.no-preset) {
+  filter: var(--photo-filter, none);
+  transition: filter 0.3s ease;
+}
+
 /* Prose dark overrides */
 .dark .prose { color: #cbd5e1; }
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f1f5f9; }
