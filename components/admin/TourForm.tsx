@@ -32,6 +32,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
   const router = useRouter();
   const isEdit = !!tour?.id;
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState<TourData>({
     category: tour?.category ?? "",
     title: tour?.title ?? "",
@@ -81,11 +82,21 @@ export default function TourForm({ tour }: { tour?: TourData }) {
       body: JSON.stringify(payload),
     });
     setLoading(false);
-    if (res.ok) router.push("/admin/tours");
+    if (res.ok) {
+      router.push("/admin/tours");
+    } else {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Gagal menyimpan. Coba lagi.");
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
+      {error && (
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
+          ⛔ {error}
+        </div>
+      )}
       {/* Basic Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Informasi Dasar</h2>
