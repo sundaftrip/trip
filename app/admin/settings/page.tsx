@@ -102,22 +102,40 @@ export default function SettingsPage() {
 
       {/* Color Scheme */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <div className="mb-5">
-          <h2 className="font-semibold text-gray-900 dark:text-white">Skema Warna</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Pilih satu skema — semua warna website berubah sekaligus.</p>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="font-semibold text-gray-900 dark:text-white">Skema Warna</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Pilih satu skema — semua warna website berubah sekaligus.</p>
+          </div>
+          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
+            isFeatureEnabled("color_schemes")
+              ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+              : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+          }`}>
+            {isFeatureEnabled("color_schemes") ? "✦ PRO" : "BASIC"}
+          </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {!isFeatureEnabled("color_schemes") && (
+          <div className="mb-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
+            <Lock size={14} className="text-amber-600 shrink-0" />
+            <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+              Skema warna tersedia di paket Pro. Hubungi admin untuk upgrade.
+            </p>
+          </div>
+        )}
+
+        <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 ${!isFeatureEnabled("color_schemes") ? "opacity-50 pointer-events-none select-none" : ""}`}>
           {COLOR_SCHEMES.map((scheme) => {
             const isActive = activeScheme === scheme.id;
             return (
               <button key={scheme.id} type="button" onClick={() => applyScheme(scheme.id)}
+                disabled={!isFeatureEnabled("color_schemes")}
                 className={`text-left rounded-xl border-2 overflow-hidden transition-all duration-200 ${
                   isActive
                     ? "border-blue-500 shadow-md shadow-blue-100 dark:shadow-none scale-[1.02]"
                     : "border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:scale-[1.01]"
                 }`}>
-                {/* Swatch strip */}
                 <div className="flex h-10">
                   {scheme.swatch.map((color, i) => (
                     <div key={i} className="flex-1" style={{ background: color }} />

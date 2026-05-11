@@ -6,6 +6,7 @@ export const PLAN: Plan =
 export const PLAN_FEATURES: Record<string, Plan> = {
   theme_vibrant: "pro",
   theme_bold: "pro",
+  color_schemes: "pro",
 };
 
 export function isFeatureEnabled(feature: string): boolean {
