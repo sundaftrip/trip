@@ -21,11 +21,12 @@ export default async function BlogPage() {
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
   const isPixel    = theme === "pixel";
-  const isOutlined = isKawaii || isTropical || isPixel;
+  const isGlobe    = theme === "globe";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe;
 
-  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : undefined;
-  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : undefined;
+  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : undefined;
+  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : undefined;
+  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : undefined;
 
   const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
@@ -45,6 +46,7 @@ export default async function BlogPage() {
               {isKawaii   && <span className="kw-pill mb-3 inline-flex" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>✦ Jurnal</span>}
               {isTropical && <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>📰 Jurnal</span>}
               {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► JURNAL</span>}
+              {isGlobe    && <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-lavender)", color: "var(--gl-on-lavender)", borderColor: "transparent" }}>🗺️ Jurnal</span>}
               <h1 className="text-4xl font-black mt-3 mb-2" style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
                 {isPixel ? "BLOG & TIPS TRAVEL" : "Blog & Tips Travel"}
               </h1>
@@ -64,6 +66,31 @@ export default async function BlogPage() {
           <div className="text-center py-24" style={{ color: subClr ?? "var(--color-gray-400)" }}>
             <p className="text-4xl mb-3">📝</p>
             <p>Belum ada artikel yang dipublish.</p>
+          </div>
+        ) : isGlobe ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="block gl-card overflow-hidden group">
+                <div className="relative h-48 overflow-hidden rounded-t-[18px]">
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>✈️</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 gl-pill" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", transform: "rotate(-2deg)", borderColor: "transparent" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h2 className="font-black mb-2 line-clamp-2" style={{ color: "var(--gl-text)" }}>{post.title}</h2>
+                  {post.excerpt && <p className="text-sm line-clamp-2 mb-4" style={{ color: "var(--gl-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-xs" style={{ color: "var(--gl-subtext)" }}>
+                    <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         ) : isKawaii ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

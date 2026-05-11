@@ -349,6 +349,91 @@ body {
   .px-float-1, .px-float-2, .px-float-3, .px-float-4 { animation: none; }
 }
 
+/* ─── GLOBE / WORLD LANDMARKS THEME ─── */
+:root {
+  --gl-bg:       color-mix(in srgb, var(--site-accent, #2d6a4f) 5%, #fef9f0);
+  --gl-card:     #ffffff;
+  --gl-border:   color-mix(in srgb, var(--site-accent, #2d6a4f) 70%, #ffffff);
+  --gl-shadow:   color-mix(in srgb, var(--site-accent, #2d6a4f) 18%, transparent);
+  --gl-text:     #1a2a3a;
+  --gl-subtext:  #5a7a9a;
+  /* landmark accent colors — fixed, never invert in dark */
+  --gl-sky:      #56c7e0;
+  --gl-amber:    #f5a623;
+  --gl-coral:    #e8533a;
+  --gl-grass:    #4aad52;
+  --gl-lavender: #a78bfa;
+  /* text-on-landmark: always contrast-safe */
+  --gl-on-sky:      #111827;
+  --gl-on-amber:    #111827;
+  --gl-on-coral:    #ffffff;
+  --gl-on-grass:    #111827;
+  --gl-on-lavender: #ffffff;
+}
+.dark {
+  --gl-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #0d1b2a);
+  --gl-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 8%, #112032);
+  --gl-border:  color-mix(in srgb, var(--site-accent, #2d6a4f) 65%, white);
+  --gl-shadow:  color-mix(in srgb, var(--site-accent, #2d6a4f) 28%, transparent);
+  --gl-text:    #d8eef8;
+  --gl-subtext: #7aaac8;
+}
+.gl-card {
+  border: 1.5px solid color-mix(in srgb, var(--gl-border) 40%, transparent);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px var(--gl-shadow), 0 1px 4px rgba(0,0,0,0.06);
+  background: var(--gl-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.gl-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 52px var(--gl-shadow), 0 4px 12px rgba(0,0,0,0.10);
+}
+.gl-pill {
+  border: 1.5px solid color-mix(in srgb, var(--gl-border) 55%, transparent);
+  border-radius: 999px;
+  font-weight: 800;
+  box-shadow: 0 2px 8px var(--gl-shadow);
+  padding: 3px 14px;
+  font-size: 11px;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.gl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid var(--gl-border);
+  border-radius: 14px;
+  font-weight: 900;
+  box-shadow: 0 4px 18px var(--gl-shadow);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.gl-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px var(--gl-shadow);
+}
+.gl-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px var(--gl-shadow);
+}
+@keyframes gl-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  30%       { transform: translateY(-14px) rotate(3deg); }
+  70%       { transform: translateY(-7px) rotate(-2deg); }
+}
+.gl-float-1 { animation: gl-float 4.2s ease-in-out 0s   infinite; }
+.gl-float-2 { animation: gl-float 5.5s ease-in-out 0.9s infinite; }
+.gl-float-3 { animation: gl-float 4.8s ease-in-out 1.6s infinite; }
+.gl-float-4 { animation: gl-float 6.2s ease-in-out 0.4s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .gl-float-1, .gl-float-2, .gl-float-3, .gl-float-4 { animation: none; }
+}
+
 /* Prose dark overrides */
 .dark .prose { color: #cbd5e1; }
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f1f5f9; }

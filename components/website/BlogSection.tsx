@@ -17,6 +17,52 @@ interface Props {
 export default function BlogSection({ posts, theme = "classic" }: Props) {
   if (posts.length === 0) return null;
 
+  /* ── GLOBE ── */
+  if (theme === "globe") return (
+    <section className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
+      <span className="absolute top-6 right-8 text-5xl pointer-events-none select-none gl-float-1" style={{ opacity: 0.1 }}>🕌</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>🗺️ Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>Tips &amp; Inspirasi</h2>
+            </div>
+            <Link href="/blog" className="gl-pill font-black" style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "transparent" }}>
+              Semua Artikel →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block gl-card overflow-hidden group">
+                <div className="relative h-44 overflow-hidden rounded-t-[18px]">
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-4xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>✈️</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 gl-pill" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", transform: "rotate(-2deg)", borderColor: "transparent" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="font-black mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--gl-text)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--gl-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--gl-subtext)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <section className="py-24" style={{ background: "var(--kw-bg)" }}>

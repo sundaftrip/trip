@@ -74,6 +74,35 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── GLOBE layout ── */
+  if (theme === "globe") return (
+    <section className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
+      {/* subtle landmark deco */}
+      <span className="absolute top-8 right-10 text-6xl pointer-events-none select-none gl-float-2" style={{ opacity: 0.12 }}>🗼</span>
+      <span className="absolute bottom-10 left-8 text-5xl pointer-events-none select-none gl-float-3" style={{ opacity: 0.1 }}>🏛️</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-14">
+            <div>
+              <span className="gl-pill mb-4 inline-flex" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }}>✈ Paket Tersedia</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>Tour Pilihan</h2>
+            </div>
+            <Link href="/tours" className="gl-pill font-black" style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "transparent" }}>
+              Semua Tour →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="globe" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── TROPICAL layout ── */
   if (theme === "tropical") return (
     <section className="py-24" style={{ background: "var(--tr-bg)" }}>

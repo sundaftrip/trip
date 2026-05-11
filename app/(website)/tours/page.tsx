@@ -67,11 +67,13 @@ export default async function ToursPage({
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
   const isPixel    = theme === "pixel";
-  const isOutlined = isKawaii || isTropical || isPixel;
+  const isGlobe    = theme === "globe";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe;
 
   const pageBg = isKawaii   ? "var(--kw-bg)"
                : isTropical ? "var(--tr-bg)"
                : isPixel    ? "var(--px-bg)"
+               : isGlobe    ? "var(--gl-bg)"
                : undefined;
 
   const pageGrid = isPixel ? {
@@ -82,11 +84,13 @@ export default async function ToursPage({
   const headColor = isKawaii   ? "var(--kw-text)"
                   : isTropical ? "var(--tr-text)"
                   : isPixel    ? "var(--px-text)"
+                  : isGlobe    ? "var(--gl-text)"
                   : undefined;
 
   const subColor = isKawaii   ? "var(--kw-subtext)"
                  : isTropical ? "var(--tr-subtext)"
                  : isPixel    ? "var(--px-subtext)"
+                 : isGlobe    ? "var(--gl-subtext)"
                  : undefined;
 
   /* pill builders for filter chips */
@@ -94,12 +98,14 @@ export default async function ToursPage({
     if (isKawaii)   return { className: "kw-pill font-black", style: { background: "var(--kw-border)", color: "#fff", ...(extra ? { transform: extra } : {}) } };
     if (isTropical) return { className: "tr-pill font-black", style: { background: "var(--site-accent)", color: "#fff" } };
     if (isPixel)    return { className: "px-pill font-black", style: { background: "var(--site-accent)", color: "#fff" } };
+    if (isGlobe)    return { className: "gl-pill font-black", style: { background: "var(--gl-border)", color: "#fff", borderColor: "transparent" } };
     return { className: "px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white", style: {} };
   }
   function pillInactive() {
     if (isKawaii)   return { className: "kw-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--kw-card)", color: "var(--kw-text)" } };
     if (isTropical) return { className: "tr-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--tr-card)", color: "var(--tr-text)" } };
     if (isPixel)    return { className: "px-pill hover:opacity-80 transition-opacity", style: { background: "var(--px-card)", color: "var(--px-text)" } };
+    if (isGlobe)    return { className: "gl-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--gl-card)", color: "var(--gl-text)" } };
     return { className: "px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-blue-400", style: {} };
   }
 
@@ -116,6 +122,7 @@ export default async function ToursPage({
               {isKawaii   && <span className="kw-pill mb-3 inline-flex" style={{ background: "var(--kw-peach)", color: "var(--kw-text)" }}>✈ Semua Paket</span>}
               {isTropical && <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>🌍 Semua Paket</span>}
               {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► SEMUA PAKET</span>}
+              {isGlobe    && <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>🌍 Semua Paket</span>}
               <h1 className={`text-4xl font-black mt-3 mb-2 ${isPixel ? "font-mono" : ""}`} style={{ color: headColor, fontFamily: isPixel ? "monospace" : undefined }}>
                 {isPixel ? "PAKET TOUR" : "Paket Tour"}
               </h1>
@@ -162,7 +169,7 @@ export default async function ToursPage({
         {/* Country sub-filter */}
         {activeContinent && countriesForActive.length > 1 && (
           <div className={`flex flex-wrap gap-2 mb-6 pl-2 ml-1 ${isOutlined ? "border-l-2" : "border-l-2 border-gray-200 dark:border-gray-700"}`}
-            style={isOutlined ? { borderColor: isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : "var(--px-border)" } : undefined}>
+            style={isOutlined ? { borderColor: isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : "var(--px-border)" } : undefined}>
             <a href={buildUrl({ continent: activeContinent, country: undefined })} {...(!params.country ? pillActive() : pillInactive())}>
               Semua {activeContinent}
             </a>

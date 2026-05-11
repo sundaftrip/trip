@@ -30,6 +30,43 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
+  /* ── GLOBE ── */
+  if (theme === "globe") {
+    const cardBgs = ["var(--gl-sky)", "var(--gl-amber)", "var(--gl-coral)", "var(--gl-grass)"];
+    const cardFgs = ["var(--gl-on-sky)", "var(--gl-on-amber)", "var(--gl-on-coral)", "var(--gl-on-grass)"];
+    return (
+      <section className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
+        <span className="absolute bottom-8 right-6 text-5xl pointer-events-none select-none gl-float-2" style={{ opacity: 0.1 }}>🏰</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <AnimateIn>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+              <div>
+                <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-coral)", color: "var(--gl-on-coral)", borderColor: "transparent" }}>🏆 Keunggulan Kami</span>
+                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>{title}</h2>
+              </div>
+              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--gl-subtext)" }}>{subtitle}</p>
+            </div>
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100}>
+                <div className="gl-card p-7 h-full" style={{ background: cardBgs[i] }}>
+                  <p className="text-5xl font-black mb-3" style={{ color: "rgba(0,0,0,0.08)" }}>0{i + 1}</p>
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4"
+                    style={{ background: "rgba(255,255,255,0.7)", boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}>
+                    <Icon size={20} style={{ color: "#1a2a3a" }} />
+                  </div>
+                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: cardFgs[i] }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: cardFgs[i], opacity: 0.85 }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   /* ── PIXEL ── */
   if (theme === "pixel") {
     const pixelBgs = ["var(--px-red)", "var(--px-yellow)", "var(--px-cyan)", "var(--px-purple)"];

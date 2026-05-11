@@ -17,13 +17,14 @@ export default async function TermsPage() {
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
   const isPixel    = theme === "pixel";
-  const isOutlined = isKawaii || isTropical || isPixel;
+  const isGlobe    = theme === "globe";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe;
 
-  const pageBg = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : undefined;
-  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : undefined;
-  const cardBg  = isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : undefined;
-  const bdrClr  = isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : undefined;
+  const pageBg = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : undefined;
+  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : undefined;
+  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : undefined;
+  const cardBg  = isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : isGlobe ? "var(--gl-card)" : undefined;
+  const bdrClr  = isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : undefined;
 
   const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
@@ -41,6 +42,7 @@ export default async function TermsPage() {
             {isKawaii   && <span className="kw-pill mb-4 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>♡ Legal</span>}
             {isTropical && <span className="tr-pill mb-4 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>📋 Legal</span>}
             {isPixel    && <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► LEGAL</span>}
+            {isGlobe    && <span className="gl-pill mb-4 inline-flex" style={{ background: "var(--gl-coral)", color: "var(--gl-on-coral)", borderColor: "transparent" }}>📋 Legal</span>}
             <h1 className="text-3xl font-black mt-3 mb-2" style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
               {isPixel ? "SYARAT & KETENTUAN" : "Syarat & Ketentuan"}
             </h1>
@@ -54,8 +56,13 @@ export default async function TermsPage() {
         )}
 
         {tc?.bodyId ? (
-          isOutlined ? (
-            <div className={`border-2 p-8 prose max-w-none`}
+          isGlobe ? (
+            <div className="gl-card p-8 prose max-w-none"
+              style={{ background: cardBg, color: headClr }}>
+              <div dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
+            </div>
+          ) : isOutlined ? (
+            <div className="border-2 p-8 prose max-w-none"
               style={{ background: cardBg, borderColor: bdrClr, color: headClr,
                        boxShadow: `4px 4px 0 0 ${bdrClr}`, fontFamily: isPixel ? "monospace" : undefined }}>
               <div dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
@@ -64,7 +71,11 @@ export default async function TermsPage() {
             <div className="prose prose-blue dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
           )
         ) : (
-          isOutlined ? (
+          isGlobe ? (
+            <div className="gl-card p-8 text-center" style={{ background: cardBg, color: subClr }}>
+              <p>Syarat &amp; Ketentuan akan segera tersedia.</p>
+            </div>
+          ) : isOutlined ? (
             <div className="border-2 p-8 text-center" style={{ borderColor: bdrClr, background: cardBg, color: subClr }}>
               <p>Syarat &amp; Ketentuan akan segera tersedia.</p>
             </div>

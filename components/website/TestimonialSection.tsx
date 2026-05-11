@@ -131,6 +131,37 @@ function Carousel({ items, renderCard, darkDots = false }: {
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
+  /* ── GLOBE ── */
+  if (theme === "globe") return (
+    <section className="py-24 overflow-hidden" style={{ background: "var(--gl-bg)" }}>
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-lavender)", color: "var(--gl-on-lavender)", borderColor: "transparent" }}>🌍 Testimoni</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>Kata Mereka</h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`gl-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+              style={{ background: active ? "#fef9c3" : "var(--gl-card)" }}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: active ? "#1a2a3a" : "var(--gl-subtext)" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4 border-t"
+                style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-black" style={{ color: active ? "#1a2a3a" : "var(--gl-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-xs" style={{ color: active ? "#5a7a9a" : "var(--gl-subtext)" }}>{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   /* ── PIXEL ── */
   if (theme === "pixel") return (
     <section className="py-24 overflow-hidden relative" style={{

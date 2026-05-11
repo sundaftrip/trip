@@ -103,6 +103,71 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
     </header>
   );
 
+  /* ── GLOBE / WORLD LANDMARKS ── */
+  if (theme === "globe") return (
+    <header className="fixed top-0 inset-x-0 z-50"
+      style={{ background: "var(--gl-card)", borderBottom: "1.5px solid color-mix(in srgb, var(--gl-border) 30%, transparent)", boxShadow: "0 4px 24px var(--gl-shadow)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
+              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="gl-pill hover:opacity-80 transition-opacity font-black"
+                style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLang} className="gl-pill font-black"
+              style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>
+                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex gl-btn px-4 py-2 text-xs font-black"
+              style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
+              {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden gl-pill"
+              style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
+              {open ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="lg:hidden border-t py-4 space-y-1"
+            style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)", background: "var(--gl-card)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 font-black text-sm" style={{ color: "var(--gl-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="gl-btn px-5 py-2.5 text-xs font-black w-full justify-center"
+                style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
+                {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
   /* ── TROPICAL ── */
   if (theme === "tropical") return (
     <header className="fixed top-0 inset-x-0 z-50 border-b-2"

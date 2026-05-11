@@ -96,6 +96,54 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     </footer>
   );
 
+  /* ── GLOBE / WORLD LANDMARKS ── */
+  if (theme === "globe") return (
+    <footer style={{ background: "var(--gl-card)", borderTop: "1.5px solid color-mix(in srgb, var(--gl-border) 25%, transparent)", boxShadow: "0 -8px 32px var(--gl-shadow)" }}>
+      {/* Landmark decorations */}
+      <span className="absolute pointer-events-none select-none gl-float-2" style={{ right: "5%", bottom: "30%", opacity: 0.08, fontSize: "5rem" }}>🗼</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 20%, transparent)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--gl-subtext)" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--gl-subtext)" }}>NIB {nib}</p>}
+          </div>
+
+          <div>
+            <span className="gl-pill mb-5 inline-flex" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>🗺️ Navigasi</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm font-semibold hover:opacity-70 transition-opacity" style={{ color: "var(--gl-subtext)" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="gl-pill mb-5 inline-flex" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }}>✈ Kontak</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--gl-border)" }} />
+                  {href
+                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--gl-subtext)" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--gl-subtext)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--gl-subtext)" }}>
+          <p>© {new Date().getFullYear()} {name} 🌍</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
   /* ── TROPICAL ── */
   if (theme === "tropical") return (
     <footer className="border-t-2"

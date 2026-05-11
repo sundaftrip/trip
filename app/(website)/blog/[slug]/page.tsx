@@ -24,13 +24,14 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
   const isPixel    = theme === "pixel";
-  const isOutlined = isKawaii || isTropical || isPixel;
+  const isGlobe    = theme === "globe";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe;
 
-  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : undefined;
-  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : undefined;
-  const cardBg  = isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : undefined;
-  const bdrClr  = isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : undefined;
+  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : undefined;
+  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : undefined;
+  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : undefined;
+  const cardBg  = isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : isGlobe ? "var(--gl-card)" : undefined;
+  const bdrClr  = isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : undefined;
 
   const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
@@ -46,10 +47,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         {/* Back link */}
         {isOutlined ? (
           <Link href="/blog"
-            className={`inline-flex items-center gap-1.5 mb-8 text-sm font-black transition-opacity hover:opacity-70 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : "px-pill"}`}
-            style={isKawaii ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
+            className={`inline-flex items-center gap-1.5 mb-8 text-sm font-black transition-opacity hover:opacity-70 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isGlobe ? "gl-pill" : "px-pill"}`}
+            style={isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                  : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
-                 : { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
+                 : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
+                 :               { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
             <ArrowLeft size={14} /> Kembali ke Blog
           </Link>
         ) : (
@@ -61,10 +63,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         {/* Category badge */}
         {post.category && (
           isOutlined ? (
-            <span className={`inline-flex mb-4 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : "px-pill"}`}
-              style={isKawaii ? { background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-1.5deg)" }
+            <span className={`inline-flex mb-4 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isGlobe ? "gl-pill" : "px-pill"}`}
+              style={isKawaii   ? { background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-1.5deg)" }
                    : isTropical ? { background: "var(--tr-peach)", color: "var(--tr-text)" }
-                   : { background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
+                   : isGlobe    ? { background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }
+                   :               { background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
               {post.category}
             </span>
           ) : (
@@ -90,16 +93,23 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
         {/* Cover image */}
         {post.cover && (
-          <div className={`relative h-72 lg:h-96 mb-10 overflow-hidden ${isOutlined ? "border-2" : "rounded-2xl"}`}
-            style={isOutlined ? { borderColor: bdrClr, boxShadow: `4px 4px 0 0 ${bdrClr}` } : undefined}>
+          <div className={`relative h-72 lg:h-96 mb-10 overflow-hidden ${isGlobe ? "rounded-2xl" : isOutlined ? "border-2" : "rounded-2xl"}`}
+            style={isGlobe    ? { boxShadow: "0 8px 32px var(--gl-shadow)" }
+                 : isOutlined ? { borderColor: bdrClr, boxShadow: `4px 4px 0 0 ${bdrClr}` }
+                 : undefined}>
             <Image src={post.cover} alt={post.title} fill className="object-cover" priority />
           </div>
         )}
 
         {/* Body */}
         {post.body && (
-          isOutlined ? (
-            <div className={`rounded-none p-8 border-2 prose max-w-none`}
+          isGlobe ? (
+            <div className="gl-card p-8 prose max-w-none"
+              style={{ background: cardBg, color: headClr }}>
+              <div dangerouslySetInnerHTML={{ __html: post.body }} />
+            </div>
+          ) : isOutlined ? (
+            <div className="rounded-none p-8 border-2 prose max-w-none"
               style={{ background: cardBg, borderColor: bdrClr, color: headClr }}>
               <div dangerouslySetInnerHTML={{ __html: post.body }} />
             </div>

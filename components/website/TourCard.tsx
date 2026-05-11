@@ -348,6 +348,77 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+/* ─── Globe / World Landmarks card ─── */
+const GL_BADGE_COLORS = ["#e0f2fe", "#fef9c3", "#dcfce7", "#fce7f3", "#ede9fe", "#ffedd5"];
+function hashGlobeColor(str: string, offset = 0) {
+  let h = offset * 31;
+  for (let i = 0; i < str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
+  return GL_BADGE_COLORS[Math.abs(h) % GL_BADGE_COLORS.length];
+}
+
+function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  const badgeColor = hashGlobeColor(tour.id, 0);
+
+  return (
+    <div className={`gl-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden rounded-t-[18px]">
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>🌍</div>}
+
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 gl-pill font-black"
+            style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", transform: "rotate(2deg)", borderColor: "transparent", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 gl-pill"
+            style={{ background: badgeColor, color: "#111827", transform: "rotate(-2deg)", borderColor: "transparent" }}>
+            {tour.badge}
+          </div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[18px]">
+            <span className="gl-pill" style={{ background: "var(--gl-card)", color: "var(--gl-text)", borderColor: "transparent" }}>
+              {isFull ? "🙅 Sold Out" : "✅ Trip Selesai"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5">
+        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--gl-subtext)" }}>
+          {tour.category} · {tour.country}
+        </p>
+        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--gl-text)" }}>
+          {tour.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>⏱ {tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="gl-pill" style={{ background: "#dcfce7", color: "#111827", borderColor: "transparent" }}>👤 {tour.seatsLeft} seat</span>
+        </div>
+        {tour.promoPrice && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        )}
+        {!isDimmed && (
+          <div className="pt-3 border-t flex items-center justify-between"
+            style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)" }}>
+            <span className="text-xs font-black" style={{ color: "var(--gl-subtext)" }}>Lihat detail →</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -360,6 +431,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "kawaii") card = <KawaiiCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

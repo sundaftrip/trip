@@ -42,6 +42,74 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const waLabel   = lang === "id" ? "WhatsApp Sekarang" : "WhatsApp Now";
   const bankLabel = lang === "id" ? "Rekening Pembayaran" : "Payment Account";
 
+  /* ── GLOBE ── */
+  if (theme === "globe") return (
+    <section id="contact" className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
+      <span className="absolute top-8 right-10 text-5xl pointer-events-none select-none gl-float-3" style={{ opacity: 0.1 }}>🗽</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="mb-16 max-w-xl">
+          <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>✈ {headLabel}</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>
+            {t("contact_title", "Siap Membantu Perjalanan Anda")}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--gl-subtext)" }}>
+            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {contacts.map(({ Icon, label, value, href }, i) => {
+              const bgs  = ["var(--gl-sky)", "#fef9c3", "#dcfce7", "var(--gl-lavender)"];
+              const fgs  = ["var(--gl-on-sky)", "#111827", "#111827", "var(--gl-on-lavender)"];
+              return (
+                <div key={label} className="gl-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: "rgba(255,255,255,0.75)", boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}>
+                    <Icon size={14} style={{ color: "#1a2a3a" }} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: fgs[i % fgs.length], opacity: 0.7 }}>{label}</p>
+                    {href
+                      ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: fgs[i % fgs.length] }}>{value}</a>
+                      : <p className="text-sm font-black leading-relaxed" style={{ color: fgs[i % fgs.length] }}>{value}</p>}
+                  </div>
+                </div>
+              );
+            })}
+            {bankAcc && (
+              <div className="gl-card p-5" style={{ background: "var(--gl-amber)" }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--gl-on-amber)", opacity: 0.7 }}>{bankLabel}</p>
+                {bankName && <p className="text-xs mb-1" style={{ color: "var(--gl-on-amber)", opacity: 0.8 }}>{bankName}</p>}
+                <p className="text-xl font-black font-mono" style={{ color: "var(--gl-on-amber)" }}>{bankAcc}</p>
+                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--gl-on-amber)", opacity: 0.8 }}>a/n {bankHolder}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="gl-card p-10 flex flex-col justify-between" style={{ background: "var(--gl-border)", borderColor: "var(--gl-border)" }}>
+            <div>
+              <span className="gl-pill mb-6 inline-flex" style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", borderColor: "rgba(255,255,255,0.4)" }}>
+                🌍 {ctaLabel}
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white">{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed text-white/70">{ctaDesc}</p>
+            </div>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 gl-btn px-6 py-3.5 text-sm font-black self-start"
+                style={{ background: "var(--gl-card)", color: "var(--gl-border)", borderColor: "var(--gl-card)" }}>
+                <MessageCircle size={16} /> {waLabel} ✈
+              </a>
+            ) : (
+              <p className="mt-10 text-sm text-white/40">{email}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <section id="contact" className="py-24" style={{ background: "var(--kw-bg)" }}>
