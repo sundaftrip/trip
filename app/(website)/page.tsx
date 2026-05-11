@@ -5,23 +5,25 @@ import WhySection from "@/components/website/WhySection";
 import ToursSection from "@/components/website/ToursSection";
 import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
+import TestimonialSection from "@/components/website/TestimonialSection";
 
 async function getData() {
-  const [texts, tours, posts, companyRows] = await Promise.all([
+  const [texts, tours, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
     prisma.tour.findMany({ where: { status: "ACTIVE" }, take: 6, orderBy: { createdAt: "desc" } }),
     prisma.blog.findMany({ where: { published: true }, take: 3, orderBy: { date: "desc" } }),
     prisma.companyInfo.findMany(),
+    prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  return { texts: t, tours, posts, company, companyRows };
+  return { texts: t, tours, posts, company, companyRows, testimonials };
 }
 
 export default async function HomePage() {
-  const { texts, tours, posts, company, companyRows } = await getData();
+  const { texts, tours, posts, company, companyRows, testimonials } = await getData();
   const wa = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
@@ -32,6 +34,7 @@ export default async function HomePage() {
       <ToursSection tours={tours} theme={theme} />
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />
+      <TestimonialSection items={testimonials} theme={theme} />
       <ContactSection texts={texts} company={company} />
     </>
   );

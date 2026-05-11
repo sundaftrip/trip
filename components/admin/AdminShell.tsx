@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity,
+  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tours", label: "Tour", icon: Map },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
+  { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
   { href: "/admin/terms", label: "Syarat & Ketentuan", icon: FileText },
