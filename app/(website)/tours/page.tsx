@@ -2,8 +2,6 @@ export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import TourCard from "@/components/website/TourCard";
 
-
-
 export default async function ToursPage({
   searchParams,
 }: {
@@ -18,6 +16,15 @@ export default async function ToursPage({
     prisma.tour.findMany({ where, orderBy: { tripDate: "asc" } }),
     prisma.tour.findMany({ distinct: ["category"], select: { category: true }, where: { status: { in: ["ACTIVE", "FULL"] } } }),
   ]);
+
+  // Sort: active & future first, expired/sold-out last
+  const now = new Date();
+  const sorted = [...tours].sort((a, b) => {
+    const aDown = a.status === "FULL" || (!!a.tripDate && a.tripDate < now);
+    const bDown = b.status === "FULL" || (!!b.tripDate && b.tripDate < now);
+    if (aDown === bDown) return 0;
+    return aDown ? 1 : -1;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24">
@@ -40,7 +47,7 @@ export default async function ToursPage({
           ))}
         </div>
 
-        {tours.length === 0 ? (
+        {sorted.length === 0 ? (
           <div className="text-center py-24 text-gray-400">
             <p className="text-4xl mb-3">🔍</p>
             <p className="font-medium">Tidak ada tour yang tersedia</p>
@@ -48,9 +55,9 @@ export default async function ToursPage({
           </div>
         ) : (
           <>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{tours.length} paket ditemukan</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{sorted.length} paket ditemukan</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {tours.map((tour) => <TourCard key={tour.id} tour={tour} />)}
+              {sorted.map((tour) => <TourCard key={tour.id} tour={tour} />)}
             </div>
           </>
         )}

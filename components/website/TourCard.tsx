@@ -11,21 +11,30 @@ interface Tour {
 }
 
 export default function TourCard({ tour }: { tour: Tour }) {
-  return (
-    <Link href={`/tours/${tour.id}`}
-      className="group block bg-white dark:bg-black border border-gray-100 dark:border-gray-900 rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-gray-700 hover:-translate-y-0.5 transition-all duration-300">
+  const now = new Date();
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
+  const isFull = tour.status === "FULL";
+  const isDimmed = isExpired || isFull;
+
+  const card = (
+    <div className={`group block bg-white dark:bg-black border border-gray-100 dark:border-gray-900 rounded-2xl overflow-hidden transition-all duration-300 ${isDimmed ? "grayscale opacity-60 cursor-default" : "hover:border-gray-300 dark:hover:border-gray-700 hover:-translate-y-0.5"}`}>
       <div className="relative h-52 bg-gray-100 dark:bg-gray-900 overflow-hidden">
         {tour.heroImg
           ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="flex items-center justify-center h-full text-gray-300 dark:text-gray-700"><MapPin size={28} /></div>}
-        {tour.badge && (
+        {tour.badge && !isDimmed && (
           <span className="absolute top-3 left-3 px-2.5 py-1 text-white text-[11px] font-semibold rounded-full" style={{ background: "#2d6a4f" }}>
             {tour.badge}
           </span>
         )}
-        {tour.status === "FULL" && (
+        {isFull && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <span className="px-4 py-1.5 border border-white text-white text-xs font-semibold rounded-full tracking-widest uppercase">Full</span>
+            <span className="px-4 py-1.5 border border-white text-white text-xs font-semibold rounded-full tracking-widest uppercase">Sold Out</span>
+          </div>
+        )}
+        {isExpired && !isFull && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="px-4 py-1.5 border border-white text-white text-xs font-semibold rounded-full tracking-widest uppercase">Trip Selesai</span>
           </div>
         )}
       </div>
@@ -45,11 +54,16 @@ export default function TourCard({ tour }: { tour: Tour }) {
             {tour.promoPrice && <p className="text-[11px] text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
             <p className="text-base font-bold" style={{ color: "var(--site-accent, #2d6a4f)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
           </div>
-          <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-            Lihat Detail →
-          </span>
+          {!isDimmed && (
+            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+              Lihat Detail →
+            </span>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
+
+  if (isDimmed) return card;
+  return <Link href={`/tours/${tour.id}`}>{card}</Link>;
 }

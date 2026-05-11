@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Clock, Users, CheckCircle, XCircle, ArrowLeft, MessageCircle } from "lucide-react";
@@ -13,6 +13,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const tour = await prisma.tour.findUnique({ where: { id } });
   if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
+
+  const now = new Date();
+  if (tour.tripDate && tour.tripDate < now) redirect("/tours");
 
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
   const addOns = (tour.addOns as { name: string; price: number }[]) ?? [];
