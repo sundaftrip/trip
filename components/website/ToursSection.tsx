@@ -18,6 +18,32 @@ interface Props {
 export default function ToursSection({ tours, theme = "classic" }: Props) {
   if (tours.length === 0) return null;
 
+  /* ── TROPICAL layout ── */
+  if (theme === "tropical") return (
+    <section className="py-24" style={{ background: "#fffdf7" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-14">
+            <div>
+              <span className="tr-pill mb-4 inline-flex" style={{ background: "#fef3c7" }}>🌏 Paket Tersedia</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "#1a1a1a" }}>Tour Pilihan</h2>
+            </div>
+            <Link href="/tours" className="tr-pill font-black transition-transform" style={{ background: "#10b981", color: "#1a1a1a" }}>
+              Semua Tour →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="tropical" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   const sectionBg =
     theme === "bold" ? "bg-black" :
     theme === "vibrant" ? "bg-white dark:bg-gray-950" :

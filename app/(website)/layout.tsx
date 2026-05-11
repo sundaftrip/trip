@@ -38,7 +38,7 @@ const getSiteConfig = unstable_cache(
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const { colors, logo } = await getSiteConfig();
+  const { colors, logo, theme } = await getSiteConfig();
 
   const cssVars =
     Object.entries(colors)
@@ -58,7 +58,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         }
       `}</style>
       <Navbar logo={logo} />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1" data-theme={theme}>{children}</main>
       <Footer />
     </>
   );

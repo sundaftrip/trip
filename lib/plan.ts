@@ -6,6 +6,7 @@ export const PLAN: Plan =
 export const PLAN_FEATURES: Record<string, Plan> = {
   theme_vibrant: "pro",
   theme_bold: "pro",
+  theme_tropical: "pro",
   color_schemes: "pro",
 };
 

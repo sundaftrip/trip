@@ -30,6 +30,41 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
+  /* ── TROPICAL ── */
+  if (theme === "tropical") {
+    const cardBgs = ["#d1fae5", "#dbeafe", "#fef3c7", "#fce7f3"];
+    return (
+      <section className="py-24" style={{ background: "#fffdf7" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateIn>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+              <div>
+                <span className="tr-pill mb-3 inline-flex" style={{ background: "#ede9fe" }}>🌟 Keunggulan Kami</span>
+                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "#1a1a1a" }}>{title}</h2>
+              </div>
+              <p className="text-sm text-gray-500 max-w-xs leading-relaxed">{subtitle}</p>
+            </div>
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100}>
+                <div className="tr-card p-7 h-full" style={{ background: cardBgs[i] }}>
+                  <p className="text-5xl font-black mb-3" style={{ color: "rgba(0,0,0,0.08)" }}>0{i + 1}</p>
+                  <div className="w-11 h-11 rounded-2xl border-2 border-black flex items-center justify-center bg-white mb-4"
+                    style={{ boxShadow: "2px 2px 0 0 #1a1a1a" }}>
+                    <Icon size={20} style={{ color: "#1a1a1a" }} />
+                  </div>
+                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: "#1a1a1a" }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "#4b5563" }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   /* ── CLASSIC ── */
   if (theme === "classic") return (
     <section className="py-24 bg-gray-50 dark:bg-gray-950">

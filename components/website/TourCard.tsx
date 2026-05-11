@@ -133,6 +133,91 @@ function BoldCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+/* ─── Tropical card ─── */
+const STICKER_PALETTES = [
+  "#d1fae5", "#dbeafe", "#fef3c7", "#fce7f3", "#ede9fe", "#fed7aa", "#cffafe",
+];
+function hashColor(str: string, offset = 0) {
+  let h = offset * 31;
+  for (let i = 0; i < str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
+  return STICKER_PALETTES[Math.abs(h) % STICKER_PALETTES.length];
+}
+
+function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const priceColor = hashColor(tour.id, 0);
+  const badgeColor = hashColor(tour.id, 3);
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+
+  return (
+    <div className={`tr-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      {/* Image area */}
+      <div className="relative h-52 overflow-hidden rounded-t-[18px] border-b-2 border-black">
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full text-gray-300" style={{ background: "#f0fdf4" }}><MapPin size={28} /></div>}
+
+        {/* Price sticker */}
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 tr-pill font-black text-[#1a1a1a]"
+            style={{ background: priceColor, transform: "rotate(2deg)" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+
+        {/* Badge sticker */}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 tr-pill text-[#1a1a1a]"
+            style={{ background: badgeColor, transform: "rotate(-2deg)" }}>
+            {tour.badge}
+          </div>
+        )}
+
+        {/* Sold out / expired overlay */}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[18px]">
+            <span className="tr-pill" style={{ background: "white", color: "#1a1a1a" }}>
+              {isFull ? "✋ Sold Out" : "✅ Trip Selesai"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "#9ca3af" }}>
+          {tour.category} · {tour.country}
+        </p>
+        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "#1a1a1a" }}>
+          {tour.title}
+        </h3>
+
+        {/* Info pills */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="tr-pill" style={{ background: "#d1fae5", color: "#1a1a1a" }}>⏱ {tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="tr-pill" style={{ background: "#dbeafe", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="tr-pill" style={{ background: "#fce7f3", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat</span>
+        </div>
+
+        {/* Promo original price */}
+        {tour.promoPrice && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        )}
+
+        {!isDimmed && (
+          <div className="pt-3 border-t-2 border-dashed border-gray-200 flex items-center justify-between">
+            <span className="text-xs font-black text-gray-400">Lihat detail →</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -142,6 +227,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   let card;
   if (theme === "vibrant") card = <VibrantCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "bold") card = <BoldCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

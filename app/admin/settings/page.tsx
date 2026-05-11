@@ -19,6 +19,7 @@ const THEMES = [
   { key: "classic", label: "Classic", desc: "Minimalis & bersih. Tipografi besar, latar putih.", feature: null },
   { key: "vibrant", label: "Catalog", desc: "Katalog premium. Layout split-screen editorial.", feature: "theme_vibrant" },
   { key: "bold", label: "Bold", desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi.", feature: "theme_bold" },
+  { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.", feature: "theme_tropical" },
 ];
 
 export default function SettingsPage() {
@@ -233,6 +234,15 @@ export default function SettingsPage() {
                         <div className="h-1 w-14 rounded bg-gray-700" />
                       </div>
                     )}
+                    {key === "tropical" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2" style={{ background: "#fffdf7" }}>
+                        <div className="flex gap-1 mb-1">
+                          <div className="h-4 w-12 rounded-full border border-black bg-[#d1fae5]" style={{ boxShadow: "1px 1px 0 0 #000" }} />
+                          <div className="h-4 w-8 rounded-full border border-black bg-[#dbeafe]" style={{ boxShadow: "1px 1px 0 0 #000" }} />
+                        </div>
+                        <div className="h-2 w-16 rounded border border-black bg-[#10b981]" style={{ boxShadow: "1px 1px 0 0 #000" }} />
+                      </div>
+                    )}
                     {!unlocked && (
                       <div className="absolute inset-0 bg-gray-100/70 dark:bg-gray-900/70 flex items-center justify-center rounded-lg">
                         <Lock size={16} className="text-gray-400" />
@@ -257,7 +267,7 @@ export default function SettingsPage() {
         {PLAN !== "pro" && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Tema Catalog & Bold tersedia di paket Pro. Hubungi admin untuk upgrade.
+              Tema Catalog, Bold & Tropical tersedia di paket Pro. Hubungi admin untuk upgrade.
             </p>
           </div>
         )}

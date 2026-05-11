@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold";
+  theme?: "classic" | "vibrant" | "bold" | "tropical";
   featuredImage?: string | null;
 }
 
@@ -25,6 +25,63 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   const eyebrow = companyName
     ? `${companyName} — ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
+
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
+      style={{ background: "#fffdf7" }}>
+      {/* Floating decorative blobs */}
+      <div className="absolute top-28 right-8 lg:right-28 w-40 h-40 rounded-full border-2 border-black tr-float-1 pointer-events-none" style={{ background: "#d1fae5" }} />
+      <div className="absolute top-52 right-2 lg:right-12 w-20 h-20 rounded-full border-2 border-black tr-float-2 pointer-events-none" style={{ background: "#bfdbfe" }} />
+      <div className="absolute bottom-14 left-4 lg:left-20 w-28 h-28 rounded-full border-2 border-black tr-float-3 pointer-events-none" style={{ background: "#fef3c7" }} />
+      <div className="absolute bottom-28 right-[38%] w-10 h-10 rounded-full border-2 border-black tr-float-4 pointer-events-none" style={{ background: "#fce7f3" }} />
+      <div className="absolute top-36 left-[45%] w-7 h-7 rounded-full border-2 border-black tr-float-2 pointer-events-none" style={{ background: "#ede9fe" }} />
+
+      <div className="max-w-7xl mx-auto w-full relative z-10">
+        {/* Eyebrow sticker */}
+        <div className="mb-8 hero-fade-up">
+          <span className="tr-pill" style={{ background: "#d1fae5" }}>
+            ✈ {eyebrow}
+          </span>
+        </div>
+
+        {/* Big heading */}
+        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
+          style={{ color: "#1a1a1a" }}>
+          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+        </h1>
+
+        {/* Floating info tags */}
+        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+          <span className="tr-pill" style={{ background: "#dbeafe" }}>
+            🗺️ {t("hero_subtitle", "Destinasi Pilihan")}
+          </span>
+          <span className="tr-pill" style={{ background: "#fce7f3", transform: "rotate(-2deg)" }}>
+            🌴 Paket Lengkap
+          </span>
+          <span className="tr-pill" style={{ background: "#fef3c7", transform: "rotate(1.5deg)" }}>
+            ⭐ Terpercaya
+          </span>
+        </div>
+
+        {/* CTA buttons */}
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/tours"
+            className="tr-btn px-8 py-4 text-sm font-black"
+            style={{ background: "#10b981", color: "#1a1a1a" }}>
+            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              className="tr-btn px-8 py-4 text-sm font-black"
+              style={{ background: "white", color: "#1a1a1a" }}>
+              💬 WhatsApp
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 
   /* ── CATALOG (vibrant) ── */
   if (theme === "vibrant") return (

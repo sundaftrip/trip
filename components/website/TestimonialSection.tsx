@@ -131,6 +131,36 @@ function Carousel({ items, renderCard, darkDots = false }: {
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
+  /* ── TROPICAL ── */
+  if (theme === "tropical") return (
+    <section className="py-24 overflow-hidden" style={{ background: "#fffdf7" }}>
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <span className="tr-pill mb-3 inline-flex" style={{ background: "#fce7f3" }}>💬 Testimoni</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "#1a1a1a" }}>Kata Mereka</h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`tr-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+              style={{ background: active ? "#d1fae5" : "white" }}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "#374151" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2 border-dashed border-black/10">
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-black" style={{ color: "#1a1a1a" }}>{item.name}</p>
+                  {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   /* ── CLASSIC ── */
   if (theme === "classic") return (
     <section className="py-24 bg-white dark:bg-black overflow-hidden">
