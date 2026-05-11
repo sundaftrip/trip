@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X,
+  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +24,8 @@ const navItems = [
 const adminItems = [
   { href: "/admin/users", label: "Pengguna", icon: Users },
   { href: "/admin/settings", label: "Pengaturan", icon: Settings },
+  { href: "/admin/permissions", label: "Izin Akses", icon: Shield },
+  { href: "/admin/logs", label: "Log Aktivitas", icon: Activity },
 ];
 
 interface Props {
