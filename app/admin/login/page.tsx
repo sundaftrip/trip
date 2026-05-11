@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -11,6 +11,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [logo, setLogo] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings").then((r) => r.json()).then((d) => setLogo(d.company_logo || ""));
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,7 +40,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
         <div className="flex justify-center mb-8">
-          <Image src="/logo.png" alt="Sundaf Trip" width={160} height={48} className="h-12 w-auto" />
+          <Image src={logo || "/logo.png"} alt="Logo" width={160} height={48} className="h-12 w-auto" />
         </div>
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
           Masuk ke CMS

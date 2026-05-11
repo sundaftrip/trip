@@ -21,6 +21,12 @@ const COLOR_FIELDS = [
   { key: "color_eyebrow", label: "Teks Kecil (Eyebrow)", default: "#6b7280", hint: "Teks kecil di atas judul hero" },
 ];
 
+const THEMES = [
+  { key: "classic", label: "Classic", desc: "Minimalis & bersih. Tipografi besar, latar putih." },
+  { key: "vibrant", label: "Vibrant", desc: "Warna penuh semangat. Hero dengan gradien warna aksen." },
+  { key: "bold", label: "Bold", desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi." },
+];
+
 export default function SettingsPage() {
   const [data, setData] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -46,6 +52,16 @@ export default function SettingsPage() {
     setData((d) => ({ ...d, [key]: defaultVal }));
   }
 
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const { url } = await res.json();
+    setData((d) => ({ ...d, company_logo: url }));
+  }
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
@@ -65,6 +81,17 @@ export default function SettingsPage() {
       {/* Company Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-5">
         <h2 className="font-semibold text-gray-900 dark:text-white">Informasi Perusahaan</h2>
+
+        {/* Logo Upload */}
+        <div>
+          <label className="label">Logo Perusahaan</label>
+          {data["company_logo"] && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={data["company_logo"]} alt="Logo" className="h-12 w-auto mb-2 object-contain" />
+          )}
+          <input type="file" accept="image/*" onChange={handleLogoUpload} className="text-sm text-gray-500" />
+        </div>
+
         {INFO_FIELDS.map(({ key, label }) => (
           <div key={key}>
             <label className="label">{label}</label>
@@ -140,6 +167,71 @@ export default function SettingsPage() {
             className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60"
           >
             {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Warna"}
+          </button>
+        </div>
+      </div>
+
+      {/* Theme Selector */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Tema Website</h2>
+        <p className="text-xs text-gray-500 mb-4">Pilih tampilan hero halaman utama</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {THEMES.map(({ key, label, desc }) => {
+            const active = (data["site_theme"] ?? "classic") === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setData((d) => ({ ...d, site_theme: key }))}
+                className={`text-left p-4 rounded-xl border-2 transition ${
+                  active
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {/* Mini preview */}
+                <div
+                  className={`h-16 rounded-lg mb-3 overflow-hidden ${
+                    key === "classic"
+                      ? "bg-white border border-gray-200"
+                      : key === "vibrant"
+                      ? "bg-gradient-to-br from-emerald-500 to-teal-600"
+                      : "bg-gray-900"
+                  }`}
+                >
+                  <div
+                    className={`h-full flex items-end p-2 ${
+                      key === "classic" ? "" : "items-center justify-center"
+                    }`}
+                  >
+                    <div
+                      className={`${
+                        key === "classic"
+                          ? "h-2 w-16 rounded bg-gray-900"
+                          : "h-2 w-20 rounded bg-white/80"
+                      }`}
+                    />
+                  </div>
+                </div>
+                <p
+                  className={`text-sm font-semibold mb-0.5 ${
+                    active ? "text-blue-600" : "text-gray-900 dark:text-white"
+                  }`}
+                >
+                  {label}
+                </p>
+                <p className="text-xs text-gray-500">{desc}</p>
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60"
+          >
+            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Tema"}
           </button>
         </div>
       </div>

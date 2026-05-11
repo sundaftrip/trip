@@ -17,16 +17,18 @@ async function getData() {
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  return { texts: t, tours, posts, company };
+  return { texts: t, tours, posts, company, companyRows };
 }
 
 export default async function HomePage() {
-  const { texts, tours, posts, company } = await getData();
+  const { texts, tours, posts, company, companyRows } = await getData();
   const wa = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
+  const themeRow = companyRows.find((r) => r.key === "site_theme");
+  const theme = (themeRow?.value || "classic") as "classic" | "vibrant" | "bold";
   return (
     <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} />
+      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <ToursSection tours={tours} />
       <WhySection texts={texts} />
       <BlogSection posts={posts} />

@@ -14,7 +14,7 @@ const navLinks = [
   { href: "/#contact", label: { id: "Kontak", en: "Contact" } },
 ];
 
-export default function Navbar() {
+export default function Navbar({ logo }: { logo?: string }) {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
@@ -51,8 +51,8 @@ export default function Navbar() {
           <Link href="/" className="flex items-center">
             {mounted ? (
               <Image
-                src="/logo.png"
-                alt="Sundaf Trip"
+                src={logo || "/logo.png"}
+                alt="Logo"
                 width={130} height={40}
                 className="h-8 w-auto transition-all duration-300"
                 style={isDark ? { filter: "brightness(0) invert(1)" } : undefined}
@@ -87,7 +87,7 @@ export default function Navbar() {
 
             <Link href="/tours"
               className="hidden lg:inline-flex px-4 py-2 text-white text-sm font-semibold rounded-xl transition"
-              style={{ background: "#2d6a4f" }}>
+              style={{ background: "var(--site-accent, #2d6a4f)" }}>
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
 
