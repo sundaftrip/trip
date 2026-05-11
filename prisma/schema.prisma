@@ -26,6 +26,7 @@ model User {
   email         String    @unique
   password      String
   role          Role      @default(EDITOR)
+  permissions   Json?
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
