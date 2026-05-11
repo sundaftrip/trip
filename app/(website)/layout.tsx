@@ -2,7 +2,6 @@ import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
-import { getPresetById } from "@/lib/photo-presets";
 
 const COLOR_DEFAULTS: Record<string, string> = {
   color_hero: "#0d2018",
@@ -19,21 +18,19 @@ const getSiteConfig = unstable_cache(
   async () => {
     try {
       const rows = await prisma.companyInfo.findMany({
-        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme", "photo_preset"] } },
+        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme"] } },
       });
       const colors = { ...COLOR_DEFAULTS };
       let logo = "";
       let theme = "classic";
-      let photoPreset = "none";
       rows.forEach((r) => {
         if (r.key === "company_logo") logo = r.value;
         else if (r.key === "site_theme") theme = r.value;
-        else if (r.key === "photo_preset") photoPreset = r.value;
         else colors[r.key] = r.value;
       });
-      return { colors, logo, theme, photoPreset };
+      return { colors, logo, theme };
     } catch {
-      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic", photoPreset: "none" };
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic" };
     }
   },
   ["site-config"],
@@ -41,20 +38,17 @@ const getSiteConfig = unstable_cache(
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const { colors, logo, theme, photoPreset } = await getSiteConfig();
+  const { colors, logo, theme } = await getSiteConfig();
 
   const cssVars =
     Object.entries(colors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
       .join(" ") + ` --site-accent: ${colors["color_accent"] ?? "#2d6a4f"};`;
 
-  const preset = getPresetById(photoPreset);
-  const photoFilterVar = preset.filter !== "none" ? `--photo-filter: ${preset.filter};` : "";
-
   return (
     <>
       <style>{`
-        :root { ${cssVars} ${photoFilterVar} }
+        :root { ${cssVars} }
         .dark {
           --site-hero: #ffffff;
           --site-heading: #f9fafb;
@@ -64,7 +58,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         }
       `}</style>
       <Navbar logo={logo} />
-      <main className="flex-1" data-theme={theme} data-photo-preset={photoPreset}>{children}</main>
+      <main className="flex-1" data-theme={theme}>{children}</main>
       <Footer />
     </>
   );
