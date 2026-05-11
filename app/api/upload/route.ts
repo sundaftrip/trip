@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
   const file = formData.get("file") as File;
-  const folder = (formData.get("folder") as string) || "sundaftrip";
+  const folder = (formData.get("folder") as string) || process.env.CLOUDINARY_FOLDER || "travel";
 
   if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
 

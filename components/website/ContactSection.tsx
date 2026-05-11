@@ -5,9 +5,10 @@ import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
+  company: Record<string, string>;
 }
 
-export default function ContactSection({ texts }: Props) {
+export default function ContactSection({ texts, company }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
   useEffect(() => {
     const stored = localStorage.getItem("lang") as "id" | "en" | null;
@@ -15,15 +16,28 @@ export default function ContactSection({ texts }: Props) {
   }, []);
 
   const t = (key: string, fallback: string) => texts[key]?.[lang] || fallback;
-  const bankName = texts["payment_bank_name"]?.id || "BCA";
-  const bankAcc = texts["payment_bank_acc"]?.id || "-";
-  const bankHolder = texts["payment_bank_holder"]?.id || "CV SUNDAF HOLIDAY GROUP";
+  const bankName = texts["payment_bank_name"]?.id || "";
+  const bankAcc = texts["payment_bank_acc"]?.id || "";
+  const bankHolder = texts["payment_bank_holder"]?.id || "";
+
+  const wa = company["company_whatsapp"] || "";
+  const email = company["company_email"] || "";
+  const phone = company["company_phone"] || "";
+  const address = company["company_address"] || "";
+
+  const contacts = [
+    address && { Icon: MapPin, label: "Alamat", value: address },
+    phone && { Icon: Phone, label: "Telepon", value: phone },
+    wa && { Icon: MessageCircle, label: "WhatsApp", value: wa.startsWith("62") ? `+${wa}` : wa },
+    email && { Icon: Mail, label: "Email", value: email },
+  ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string }[];
+
+  const waMsg = encodeURIComponent(lang === "id" ? "Halo, saya ingin konsultasi paket tour" : "Hello, I'd like to inquire about tour packages");
 
   return (
     <section id="contact" className="py-24 bg-white dark:bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
         <div className="mb-16 max-w-xl">
           <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-4">
             {lang === "id" ? "Hubungi Kami" : "Contact Us"}
@@ -37,14 +51,8 @@ export default function ContactSection({ texts }: Props) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Contacts */}
           <div className="space-y-6">
-            {[
-              { Icon: MapPin, label: "Alamat", value: "Epiwalk Office Suite Lt. 5 Unit A501, Kuningan, Jakarta Selatan" },
-              { Icon: Phone, label: "Telepon", value: "021-22321146" },
-              { Icon: MessageCircle, label: "WhatsApp", value: "+62 811 1620 207" },
-              { Icon: Mail, label: "Email", value: "sundaf.group@gmail.com" },
-            ].map(({ Icon, label, value }) => (
+            {contacts.map(({ Icon, label, value }) => (
               <div key={label} className="flex items-start gap-4 pb-6 border-b border-gray-100 dark:border-gray-900 last:border-0">
                 <Icon size={16} className="mt-0.5 shrink-0 text-gray-400" />
                 <div>
@@ -54,18 +62,18 @@ export default function ContactSection({ texts }: Props) {
               </div>
             ))}
 
-            {/* Payment */}
-            <div className="pt-2">
-              <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-3">
-                {lang === "id" ? "Rekening Pembayaran" : "Payment Account"}
-              </p>
-              <p className="text-xs text-gray-500 mb-0.5">{bankName}</p>
-              <p className="text-xl font-bold text-gray-900 dark:text-white font-mono">{bankAcc}</p>
-              <p className="text-xs text-gray-400 mt-0.5">a/n {bankHolder}</p>
-            </div>
+            {bankAcc && (
+              <div className="pt-2">
+                <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-3">
+                  {lang === "id" ? "Rekening Pembayaran" : "Payment Account"}
+                </p>
+                {bankName && <p className="text-xs text-gray-500 mb-0.5">{bankName}</p>}
+                <p className="text-xl font-bold text-gray-900 dark:text-white font-mono">{bankAcc}</p>
+                {bankHolder && <p className="text-xs text-gray-400 mt-0.5">a/n {bankHolder}</p>}
+              </div>
+            )}
           </div>
 
-          {/* CTA */}
           <div className="flex flex-col justify-between bg-gray-950 dark:bg-gray-900 rounded-2xl p-10 text-white">
             <div>
               <p className="text-xs tracking-[0.15em] uppercase mb-6" style={{ color: "#7abea4" }}>
@@ -80,12 +88,15 @@ export default function ContactSection({ texts }: Props) {
                   : "We help you choose the right package for your needs and budget."}
               </p>
             </div>
-            <a href="https://wa.me/628111620207?text=Halo Sundaf Trip, saya ingin konsultasi paket tour"
-              target="_blank" rel="noreferrer"
-              className="mt-10 inline-flex items-center gap-2 px-6 py-3.5 text-sm font-bold rounded-xl transition-all self-start"
-              style={{ background: "#2d6a4f", color: "#ffffff" }}>
-              <MessageCircle size={16} /> WhatsApp Sekarang
-            </a>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 inline-flex items-center gap-2 px-6 py-3.5 text-sm font-bold rounded-xl transition-all self-start"
+                style={{ background: "#2d6a4f", color: "#ffffff" }}>
+                <MessageCircle size={16} /> WhatsApp Sekarang
+              </a>
+            ) : (
+              <p className="mt-10 text-sm opacity-40">{email}</p>
+            )}
           </div>
         </div>
 

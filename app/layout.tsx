@@ -5,15 +5,17 @@ import Providers from "@/components/Providers";
 
 const jost = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
 
+const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Travel & Wisata";
+const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Sundaf Trip — Travel & Wisata Halal",
-  description: "Paket wisata religi, umroh, haji, dan city tour terpercaya bersama CV Sundaf Holiday Group.",
-  keywords: "umroh, haji, wisata halal, travel, sundaf trip",
+  title: appName,
+  description: `Paket wisata religi, umroh, haji, dan city tour terpercaya bersama ${appName}.`,
   openGraph: {
-    title: "Sundaf Trip",
-    description: "Paket wisata religi dan halal terpercaya",
-    url: "https://sundaftrip.com",
-    siteName: "Sundaf Trip",
+    title: appName,
+    description: `Paket wisata religi dan halal terpercaya`,
+    url: siteUrl,
+    siteName: appName,
     locale: "id_ID",
     type: "website",
   },

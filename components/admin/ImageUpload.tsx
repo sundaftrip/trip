@@ -11,7 +11,7 @@ interface Props {
   multiple?: boolean;
 }
 
-export default function ImageUpload({ value, onChange, folder = "sundaftrip", multiple = false }: Props) {
+export default function ImageUpload({ value, onChange, folder = "travel", multiple = false }: Props) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);

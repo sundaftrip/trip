@@ -11,17 +11,26 @@ import GalleryZoom from "@/components/website/GalleryZoom";
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const tour = await prisma.tour.findUnique({ where: { id } });
+  const [tour, companyRows] = await Promise.all([
+    prisma.tour.findUnique({ where: { id } }),
+    prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name"] } } }),
+  ]);
   if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
 
   const now = new Date();
   if (tour.tripDate && tour.tripDate < now) redirect("/tours");
 
+  const company: Record<string, string> = {};
+  companyRows.forEach((c) => { company[c.key] = c.value; });
+  const waNumber = company["company_whatsapp"] || "";
+  const companyName = company["company_name"] || "";
+
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
   const addOns = (tour.addOns as { name: string; price: number }[]) ?? [];
   const hotelInfo = tour.hotel as Record<string, string> | null;
 
-  const waMessage = encodeURIComponent(`Halo Sundaf Trip, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.`);
+  const greeting = companyName ? `Halo ${companyName}` : "Halo";
+  const waMessage = encodeURIComponent(`${greeting}, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.`);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 pt-16">
@@ -159,7 +168,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {tour.status === "FULL" ? (
                 <div className="w-full py-3 bg-red-100 text-red-700 font-bold rounded-xl text-center mb-3">FULLY BOOKED</div>
               ) : (
-                <a href={`https://wa.me/628111620207?text=${waMessage}`} target="_blank" rel="noreferrer"
+                <a href={`https://wa.me/${waNumber}?text=${waMessage}`} target="_blank" rel="noreferrer"
                   className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl mb-3 transition">
                   <MessageCircle size={18} /> Pesan via WhatsApp
                 </a>

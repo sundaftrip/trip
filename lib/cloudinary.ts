@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import { CLOUDINARY_FOLDER } from "@/lib/site-config";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -6,9 +7,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function uploadImage(file: string, folder = "sundaftrip") {
+export async function uploadImage(file: string, folder?: string) {
   const result = await cloudinary.uploader.upload(file, {
-    folder,
+    folder: folder ?? CLOUDINARY_FOLDER,
     resource_type: "auto",
   });
   return result.secure_url;

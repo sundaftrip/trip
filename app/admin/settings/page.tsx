@@ -123,9 +123,9 @@ export default function SettingsPage() {
         {/* Preview */}
         <div className="mt-6 p-4 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
           <p className="text-xs text-gray-400 mb-3 uppercase tracking-wider font-medium">Preview</p>
-          <p className="text-xs mb-1" style={{ color: data["color_eyebrow"] ?? "#6b7280" }}>CV SUNDAF HOLIDAY GROUP — PERJALANAN TERPERCAYA</p>
+          <p className="text-xs mb-1" style={{ color: data["color_eyebrow"] ?? "#6b7280" }}>{data["company_name"] || "NAMA PERUSAHAAN"} — PERJALANAN TERPERCAYA</p>
           <p className="text-2xl font-bold mb-2" style={{ color: data["color_hero"] ?? "#0d2018" }}>Wujudkan Perjalanan Impian Anda</p>
-          <p className="text-sm font-semibold mb-1" style={{ color: data["color_heading"] ?? "#111827" }}>Kenapa Sundaf Trip?</p>
+          <p className="text-sm font-semibold mb-1" style={{ color: data["color_heading"] ?? "#111827" }}>Mengapa Kami?</p>
           <p className="text-sm" style={{ color: data["color_blog_title"] ?? "#111827" }}>Judul Artikel Blog</p>
           <div className="mt-2 inline-flex px-3 py-1.5 rounded-lg text-white text-sm font-semibold" style={{ background: data["color_accent"] ?? "#2d6a4f" }}>
             Lihat Tour

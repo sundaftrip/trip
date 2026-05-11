@@ -93,7 +93,7 @@ export default function AdminShell({ role, user, children }: Props) {
         </div>
         <NavLinks />
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-center text-gray-400">CV Sundaf Holiday Group</p>
+          <p className="text-xs text-center text-gray-400">Travel CMS</p>
         </div>
       </aside>
 
@@ -110,7 +110,7 @@ export default function AdminShell({ role, user, children }: Props) {
             </div>
             <NavLinks onClose={() => setSidebarOpen(false)} />
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs text-center text-gray-400">CV Sundaf Holiday Group</p>
+              <p className="text-xs text-center text-gray-400">Travel CMS</p>
             </div>
           </aside>
         </div>
@@ -126,7 +126,7 @@ export default function AdminShell({ role, user, children }: Props) {
               className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
               <Menu size={20} />
             </button>
-            <h2 className="text-sm text-gray-500 dark:text-gray-400 font-medium">Sundaf CMS</h2>
+            <h2 className="text-sm text-gray-500 dark:text-gray-400 font-medium">Admin CMS</h2>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">

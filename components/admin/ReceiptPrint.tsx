@@ -19,13 +19,14 @@ interface ReceiptData {
   createdAt: Date;
 }
 
-const COMPANY = {
-  name: "CV SUNDAF HOLIDAY GROUP",
-  nib: "1601260060842",
-  address: "Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lt. 5 Unit A501, Kuningan, Setiabudi, Jakarta Selatan",
-  phone: "021-22321146 · +62 811 1620 207",
-  email: "sundaf.group@gmail.com",
-};
+interface CompanyInfo {
+  name?: string;
+  nib?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+}
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   PAID: { label: "LUNAS", color: "#15803d" },
@@ -33,10 +34,8 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   UNPAID: { label: "BELUM BAYAR", color: "#b91c1c" },
 };
 
-export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
-  useEffect(() => {
-    window.print();
-  }, []);
+export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptData; company: CompanyInfo }) {
+  useEffect(() => { window.print(); }, []);
 
   const status = STATUS_LABEL[receipt.status] ?? { label: receipt.status, color: "#374151" };
 
@@ -57,7 +56,6 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
           @page { size: A4; margin: 15mm 20mm; }
           .no-print { display: none !important; }
           body { background: white !important; }
-          /* Hide everything, show only receipt */
           body * { visibility: hidden !important; }
           #receipt-print, #receipt-print * { visibility: visible !important; }
           #receipt-print {
@@ -69,7 +67,6 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
         }
       `}</style>
 
-      {/* Toolbar — hidden on print */}
       <div className="no-print" style={{ position: "fixed", top: 16, right: 16, zIndex: 50, display: "flex", gap: 8 }}>
         <button onClick={() => window.print()}
           style={{ padding: "8px 16px", background: "#2563eb", color: "white", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", border: "none" }}>
@@ -81,7 +78,6 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
         </button>
       </div>
 
-      {/* Page wrapper */}
       <div id="receipt-print" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "48px 16px", background: "#f3f4f6" }}>
         <div style={{ width: "100%", maxWidth: 680, background: "white", boxShadow: "0 4px 24px rgba(0,0,0,0.10)" }}>
 
@@ -89,11 +85,11 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "32px 40px 24px", borderBottom: "4px solid #2563eb" }}>
             <div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Sundaf Trip" style={{ height: 40, width: "auto", marginBottom: 10 }} />
+              <img src="/logo.png" alt={company.name ?? "Logo"} style={{ height: 40, width: "auto", marginBottom: 10 }} />
               <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.6 }}>
-                <div>{COMPANY.address}</div>
-                <div style={{ marginTop: 2 }}>{COMPANY.phone}</div>
-                <div>{COMPANY.email}</div>
+                {company.address && <div>{company.address}</div>}
+                {company.phone && <div style={{ marginTop: 2 }}>{company.phone}</div>}
+                {company.email && <div>{company.email}</div>}
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
@@ -112,8 +108,8 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, padding: "24px 40px" }}>
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Perusahaan</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{COMPANY.name}</div>
-              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>NIB {COMPANY.nib}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{company.name ?? "-"}</div>
+              {company.nib && <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>NIB {company.nib}</div>}
             </div>
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Pelanggan</div>
@@ -150,7 +146,6 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
             </div>
           </div>
 
-          {/* Notes */}
           {receipt.notes && (
             <div style={{ margin: "0 40px 24px" }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Catatan</div>
@@ -160,8 +155,8 @@ export default function ReceiptPrint({ receipt }: { receipt: ReceiptData }) {
 
           {/* Footer */}
           <div style={{ borderTop: "1px solid #e5e7eb", padding: "14px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 10, color: "#9ca3af" }}>Dokumen ini diterbitkan secara elektronik oleh {COMPANY.name}</span>
-            <span style={{ fontSize: 10, color: "#9ca3af" }}>sundaftrip.com</span>
+            <span style={{ fontSize: 10, color: "#9ca3af" }}>Dokumen ini diterbitkan secara elektronik oleh {company.name ?? "-"}</span>
+            <span style={{ fontSize: 10, color: "#9ca3af" }}>{company.website ?? ""}</span>
           </div>
 
         </div>
