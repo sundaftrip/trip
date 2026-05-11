@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { PLAN, isFeatureEnabled } from "@/lib/plan";
 import { COLOR_SCHEMES } from "@/lib/color-schemes";
-import { PHOTO_PRESETS } from "@/lib/photo-presets";
 import { Lock } from "lucide-react";
 
 const INFO_FIELDS = [
@@ -277,94 +276,6 @@ export default function SettingsPage() {
           <button onClick={handleSave} disabled={saving}
             className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
             {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Tema"}
-          </button>
-        </div>
-      </div>
-
-      {/* Photo Preset */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="font-semibold text-gray-900 dark:text-white">Preset Foto</h2>
-          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
-            isFeatureEnabled("color_schemes")
-              ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-              : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
-          }`}>
-            {isFeatureEnabled("color_schemes") ? "✦ PRO" : "BASIC"}
-          </span>
-        </div>
-        <p className="text-xs text-gray-500 mb-5">
-          Filter otomatis diaplikasikan ke semua foto tour & galeri — tanpa edit satu-satu.
-        </p>
-
-        {!isFeatureEnabled("color_schemes") && (
-          <div className="mb-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
-            <Lock size={14} className="text-amber-600 shrink-0" />
-            <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Preset foto tersedia di paket Pro. Hubungi admin untuk upgrade.
-            </p>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {PHOTO_PRESETS.map((preset) => {
-            const isPro = preset.id !== "none";
-            const locked = !isFeatureEnabled("color_schemes") && isPro;
-            const active = (data["photo_preset"] ?? "none") === preset.id;
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                disabled={locked}
-                onClick={() => !locked && setData((d) => ({ ...d, photo_preset: preset.id }))}
-                className={`text-left rounded-xl border-2 overflow-hidden transition-all duration-200 ${
-                  locked ? "opacity-55 cursor-not-allowed border-gray-200 dark:border-gray-700" :
-                  active ? "border-blue-500 shadow-md shadow-blue-100 dark:shadow-none scale-[1.02]" :
-                  "border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:scale-[1.01]"
-                }`}
-              >
-                {/* Swatch preview with filter applied */}
-                <div className="h-16 relative overflow-hidden" style={{ background: "#e5e7eb" }}>
-                  {/* Simulated photo strip — colour gradients show the filter effect */}
-                  <div
-                    className="absolute inset-0 flex"
-                    style={{ filter: preset.filter !== "none" ? preset.filter : undefined }}
-                  >
-                    <div className="flex-1" style={{ background: "linear-gradient(135deg,#4ade80 0%,#22c55e 50%,#16a34a 100%)" }} />
-                    <div className="flex-1" style={{ background: "linear-gradient(135deg,#60a5fa 0%,#3b82f6 50%,#1d4ed8 100%)" }} />
-                    <div className="flex-1" style={{ background: "linear-gradient(135deg,#fb923c 0%,#f97316 50%,#ea580c 100%)" }} />
-                  </div>
-                  {active && !locked && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-blue-500/20">
-                      <span className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">✓</span>
-                    </div>
-                  )}
-                  {locked && (
-                    <div className="absolute inset-0 bg-gray-100/60 dark:bg-gray-900/60 flex items-center justify-center">
-                      <Lock size={14} className="text-gray-400" />
-                    </div>
-                  )}
-                </div>
-                <div className="p-2.5 flex items-start justify-between gap-1">
-                  <div>
-                    <p className={`text-xs font-semibold leading-none mb-1 ${active && !locked ? "text-blue-600" : "text-gray-900 dark:text-white"}`}>
-                      {preset.emoji} {preset.label}
-                    </p>
-                    <p className="text-[10px] text-gray-400 leading-snug">{preset.desc}</p>
-                  </div>
-                  {locked && (
-                    <span className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">PRO</span>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 flex justify-end">
-          <button onClick={handleSave} disabled={saving}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Preset"}
           </button>
         </div>
       </div>
