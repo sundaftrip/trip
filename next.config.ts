@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
   images: {
@@ -7,9 +6,27 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 31536000,
   },
-  turbopack: {
-    root: path.resolve(__dirname),
+  compress: true,
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+        ],
+      },
+      {
+        source: "/(.*)\\.(jpg|jpeg|png|gif|ico|svg|webp|avif|woff|woff2)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
   },
 };
 

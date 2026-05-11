@@ -49,17 +49,13 @@ export default function Navbar({ logo }: { logo?: string }) {
         <div className="flex items-center justify-between h-16 lg:h-18">
 
           <Link href="/" className="flex items-center">
-            {mounted ? (
-              <span className={isDark ? "logo-dark-sweep" : "inline-flex"}>
-                <Image
-                  src={logo || "/logo.png"}
-                  alt="Logo"
-                  width={130} height={40}
-                  className="h-8 w-auto"
-                  priority
-                />
-              </span>
-            ) : <div className="h-8 w-28" />}
+            <Image
+              src={logo || "/logo.png"}
+              alt="Logo"
+              width={130} height={40}
+              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`}
+              priority
+            />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
