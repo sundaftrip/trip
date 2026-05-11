@@ -255,7 +255,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               ) : (
                 <a href={`https://wa.me/${waNumber}?text=${waMessage}`} target="_blank" rel="noreferrer"
                   className={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
-                  style={isOutlined ? { background: "#10b981", color: tBg, justifyContent: "center" } : undefined}>
+                  style={isOutlined ? { background: "var(--site-accent)", color: "#fff", justifyContent: "center" } : undefined}>
                   💬 Pesan via WhatsApp
                 </a>
               )}

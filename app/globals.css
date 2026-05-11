@@ -35,10 +35,10 @@
   --tr-grape:   #ede9fe;
   --tr-peach:   #fed7aa;
 
-  /* ── Kawaii vars ── */
+  /* ── Kawaii vars ── border/shadow follow color scheme accent ── */
   --kw-bg:      #fef4ee;
-  --kw-border:  #d4754e;
-  --kw-shadow:  #d4754e;
+  --kw-border:  var(--site-accent, #d4754e);
+  --kw-shadow:  var(--site-accent, #d4754e);
   --kw-text:    #3d1e0e;
   --kw-subtext: #7c4534;
   --kw-card:    #fff8f4;
@@ -67,10 +67,10 @@
   --tr-grape:   #2e1065;
   --tr-peach:   #7c2d12;
 
-  /* ── Kawaii dark ── */
+  /* ── Kawaii dark ── border lightened for visibility on dark bg ── */
   --kw-bg:      #1a0c08;
-  --kw-border:  #f0a878;
-  --kw-shadow:  #f0a878;
+  --kw-border:  color-mix(in srgb, var(--site-accent, #d4754e) 65%, white);
+  --kw-shadow:  color-mix(in srgb, var(--site-accent, #d4754e) 65%, white);
   --kw-text:    #fde8d0;
   --kw-subtext: #c47840;
   --kw-card:    #2a1408;

@@ -124,7 +124,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/tours"
             className="tr-btn px-8 py-4 text-sm font-black"
-            style={{ background: "#10b981", color: "var(--tr-bg)" }}>
+            style={{ background: "var(--site-accent)", color: "#fff" }}>
             {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
           </Link>
           {waNumber && (
