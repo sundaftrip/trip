@@ -77,6 +77,16 @@ export default function SettingsPage() {
     setData((d) => ({ ...d, admin_logo: url }));
   }
 
+  async function handleFaviconUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const { url } = await res.json();
+    setData((d) => ({ ...d, favicon_logo: url }));
+  }
+
   const currentAccent = data["color_accent"] ?? "#2d6a4f";
   const currentHero = data["color_hero"] ?? "#0d2018";
   const currentEyebrow = data["color_eyebrow"] ?? "#6b7280";
@@ -97,15 +107,37 @@ export default function SettingsPage() {
       {/* Company Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-5">
         <h2 className="font-semibold text-gray-900 dark:text-white">Informasi Perusahaan</h2>
+        {/* Logo Website (Navbar) */}
         <div>
-          <label className="label">Logo Website & Favicon</label>
-          <p className="text-xs text-gray-400 mb-2">Tampil di tab browser, OG image (share WA/IG), dan navbar website.</p>
+          <label className="label">Logo Website (Navbar)</label>
+          <p className="text-xs text-gray-400 mb-2">Tampil di navbar website & OG image share. Gunakan PNG transparan agar tampil rapi di dark mode.</p>
           {data["company_logo"] && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto mb-3 object-contain" />
+            <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto mb-3 object-contain bg-gray-700 rounded p-1" />
           )}
           <input type="file" accept="image/*" onChange={handleLogoUpload} className="text-sm text-gray-500" />
         </div>
+
+        {/* Favicon */}
+        <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+          <label className="label">Favicon (Ikon Tab Browser)</label>
+          <p className="text-xs text-gray-400 mb-2">Ikon kecil di tab browser. Kosongkan untuk pakai Logo Website sebagai favicon.</p>
+          {data["favicon_logo"] && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={data["favicon_logo"]} alt="Favicon" className="h-10 w-10 mb-3 object-contain border border-gray-200 dark:border-gray-600 rounded-lg p-1" />
+          )}
+          <div className="flex items-center gap-3">
+            <input type="file" accept="image/*" onChange={handleFaviconUpload} className="text-sm text-gray-500" />
+            {data["favicon_logo"] && (
+              <button type="button" onClick={() => setData((d) => ({ ...d, favicon_logo: "" }))}
+                className="text-xs text-red-500 hover:text-red-700 transition">
+                Hapus
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Logo Admin */}
         <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
           <label className="label">Logo Admin Panel (Sidebar)</label>
           <p className="text-xs text-gray-400 mb-2">Tampil di sidebar kiri halaman admin. Kosongkan untuk pakai Logo Website.</p>

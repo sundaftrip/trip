@@ -7,10 +7,11 @@ export const dynamic = "force-dynamic";
 
 export default async function Icon() {
   try {
-    const logoRow = await prisma.companyInfo.findFirst({
-      where: { key: "company_logo" },
+    const rows = await prisma.companyInfo.findMany({
+      where: { key: { in: ["favicon_logo", "company_logo"] } },
     });
-    const logoUrl = logoRow?.value;
+    const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+    const logoUrl = map["favicon_logo"] || map["company_logo"];
 
     if (logoUrl) {
       return new ImageResponse(
