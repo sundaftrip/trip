@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import HeroSection from "@/components/website/HeroSection";
 import WhySection from "@/components/website/WhySection";
@@ -22,15 +23,39 @@ async function getData() {
   return { texts: t, tours, posts, company, companyRows, testimonials };
 }
 
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const rows = await prisma.companyInfo.findMany({ where: { key: { in: ["company_name", "company_website"] } } });
+    const c: Record<string, string> = {};
+    rows.forEach((r) => { c[r.key] = r.value; });
+    const name = c["company_name"] || "Travel";
+    return {
+      title: `${name} — Paket Wisata Terpercaya`,
+      description: `${name} menyediakan paket wisata terpercaya dengan pelayanan terbaik.`,
+      openGraph: { title: `${name} — Paket Wisata`, type: "website" },
+    };
+  } catch {
+    return { title: "Travel — Paket Wisata Terpercaya" };
+  }
+}
+
 export default async function HomePage() {
   const { texts, tours, posts, company, companyRows, testimonials } = await getData();
   const wa = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
   const theme = (themeRow?.value || "classic") as "classic" | "vibrant" | "bold";
+
+  // Fetch featured image server-side for vibrant theme (no client fetch needed)
+  let featuredImage: string | null = null;
+  if (theme === "vibrant" && tours.length > 0) {
+    const featured = tours.find((t) => t.heroImg) ?? tours[0];
+    featuredImage = featured?.heroImg ?? null;
+  }
+
   return (
     <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
+      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} featuredImage={featuredImage} />
       <ToursSection tours={tours} theme={theme} />
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />
