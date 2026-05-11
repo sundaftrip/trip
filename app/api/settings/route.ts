@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest) {
       prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
     )
   );
-  revalidateTag("site-colors");
-  revalidateTag("footer-data");
+  (revalidateTag as unknown as (t: string) => void)("site-colors");
+  (revalidateTag as unknown as (t: string) => void)("footer-data");
   return NextResponse.json({ success: true });
 }
