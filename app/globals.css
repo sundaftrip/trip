@@ -21,13 +21,13 @@
   --background: #ffffff;
   --foreground: #0d0d0d;
 
-  /* ── Tropical vars ── */
-  --tr-bg:      #fffdf7;
-  --tr-border:  #1a1a1a;
-  --tr-shadow:  #1a1a1a;
+  /* ── Tropical vars ── border/shadow/bg follow color scheme accent ── */
+  --tr-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #fffdf7);
+  --tr-border:  var(--site-accent, #1a1a1a);
+  --tr-shadow:  var(--site-accent, #1a1a1a);
   --tr-text:    #1a1a1a;
   --tr-subtext: #4b5563;
-  --tr-card:    #ffffff;
+  --tr-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #ffffff);
   --tr-mint:    #d1fae5;
   --tr-sky:     #dbeafe;
   --tr-sun:     #fef3c7;
@@ -35,31 +35,31 @@
   --tr-grape:   #ede9fe;
   --tr-peach:   #fed7aa;
 
-  /* ── Kawaii vars ── border/shadow follow color scheme accent ── */
-  --kw-bg:      #fef4ee;
+  /* ── Kawaii vars ── border/shadow/bg follow color scheme accent ── */
+  --kw-bg:      color-mix(in srgb, var(--site-accent, #d4754e) 8%, #fff8f0);
   --kw-border:  var(--site-accent, #d4754e);
   --kw-shadow:  var(--site-accent, #d4754e);
-  --kw-text:    #3d1e0e;
-  --kw-subtext: #7c4534;
-  --kw-card:    #fff8f4;
-  --kw-blush:   #fce7f3;
+  --kw-text:    #2a1200;
+  --kw-subtext: #6b3a1f;
+  --kw-card:    color-mix(in srgb, var(--site-accent, #d4754e) 4%, #ffffff);
+  --kw-blush:   color-mix(in srgb, var(--site-accent, #d4754e) 12%, #ffffff);
   --kw-sky:     #dbeafe;
   --kw-mint:    #d1fae5;
   --kw-sun:     #fef3c7;
-  --kw-peach:   #fde8d8;
+  --kw-peach:   color-mix(in srgb, var(--site-accent, #d4754e) 18%, #ffffff);
 }
 
 .dark {
   --background: #080f0a;
   --foreground: #f0f7f3;
 
-  /* ── Tropical dark ── */
-  --tr-bg:      #131208;
-  --tr-border:  #d9d4bc;
-  --tr-shadow:  #d9d4bc;
+  /* ── Tropical dark ── border lightened, bg tinted with accent ── */
+  --tr-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 14%, #0d0d08);
+  --tr-border:  color-mix(in srgb, var(--site-accent, #2d6a4f) 65%, white);
+  --tr-shadow:  color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, white);
   --tr-text:    #f0ead6;
   --tr-subtext: #9ca3af;
-  --tr-card:    #1e1d0e;
+  --tr-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, #1a1a0e);
   --tr-mint:    #064e3b;
   --tr-sky:     #1e3a5f;
   --tr-sun:     #78350f;
@@ -67,18 +67,18 @@
   --tr-grape:   #2e1065;
   --tr-peach:   #7c2d12;
 
-  /* ── Kawaii dark ── border lightened for visibility on dark bg ── */
-  --kw-bg:      #1a0c08;
+  /* ── Kawaii dark ── border lightened, bg tinted with accent ── */
+  --kw-bg:      color-mix(in srgb, var(--site-accent, #d4754e) 14%, #150808);
   --kw-border:  color-mix(in srgb, var(--site-accent, #d4754e) 65%, white);
-  --kw-shadow:  color-mix(in srgb, var(--site-accent, #d4754e) 65%, white);
+  --kw-shadow:  color-mix(in srgb, var(--site-accent, #d4754e) 55%, white);
   --kw-text:    #fde8d0;
   --kw-subtext: #c47840;
-  --kw-card:    #2a1408;
+  --kw-card:    color-mix(in srgb, var(--site-accent, #d4754e) 10%, #2a1408);
   --kw-blush:   #500724;
   --kw-sky:     #1e3a5f;
   --kw-mint:    #064e3b;
   --kw-sun:     #78350f;
-  --kw-peach:   #3d1a0c;
+  --kw-peach:   color-mix(in srgb, var(--site-accent, #d4754e) 25%, #3d1a0c);
 }
 
 body {
