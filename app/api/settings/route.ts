@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { revalidateTag } from "next/cache";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { PLAN, PLAN_FEATURES } from "@/lib/plan";
 
 export async function GET() {
   const items = await prisma.companyInfo.findMany();
@@ -17,6 +18,15 @@ export async function PUT(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body: Record<string, string> = await req.json();
+
+  // Block plan-locked features
+  if (body.site_theme && body.site_theme !== "classic") {
+    const featureKey = `theme_${body.site_theme}`;
+    const requiredPlan = PLAN_FEATURES[featureKey];
+    if (requiredPlan === "pro" && PLAN !== "pro") {
+      return NextResponse.json({ error: "Tema ini memerlukan paket Pro" }, { status: 403 });
+    }
+  }
 
   const isColorChange = Object.keys(body).some((k) => k.startsWith("color_") || k.startsWith("site_"));
   const permKey = isColorChange ? "color_edit" : "company_edit";

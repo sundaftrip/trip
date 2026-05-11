@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PLAN, isFeatureEnabled } from "@/lib/plan";
+import { Lock } from "lucide-react";
 
 const INFO_FIELDS = [
   { key: "company_name", label: "Nama Perusahaan" },
@@ -22,9 +24,9 @@ const COLOR_FIELDS = [
 ];
 
 const THEMES = [
-  { key: "classic", label: "Classic", desc: "Minimalis & bersih. Tipografi besar, latar putih." },
-  { key: "vibrant", label: "Vibrant", desc: "Warna penuh semangat. Hero dengan gradien warna aksen." },
-  { key: "bold", label: "Bold", desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi." },
+  { key: "classic", label: "Classic", desc: "Minimalis & bersih. Tipografi besar, latar putih.", feature: null },
+  { key: "vibrant", label: "Vibrant", desc: "Warna penuh semangat. Hero dengan gradien warna aksen.", feature: "theme_vibrant" },
+  { key: "bold", label: "Bold", desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi.", feature: "theme_bold" },
 ];
 
 export default function SettingsPage() {
@@ -173,58 +175,71 @@ export default function SettingsPage() {
 
       {/* Theme Selector */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Tema Website</h2>
-        <p className="text-xs text-gray-500 mb-4">Pilih tampilan hero halaman utama</p>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="font-semibold text-gray-900 dark:text-white">Tema Website</h2>
+          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
+            PLAN === "pro"
+              ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+              : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+          }`}>
+            {PLAN === "pro" ? "✦ PRO" : "BASIC"}
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">Pilih tampilan halaman utama website</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {THEMES.map(({ key, label, desc }) => {
+          {THEMES.map(({ key, label, desc, feature }) => {
+            const unlocked = !feature || isFeatureEnabled(feature);
             const active = (data["site_theme"] ?? "classic") === key;
             return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setData((d) => ({ ...d, site_theme: key }))}
-                className={`text-left p-4 rounded-xl border-2 transition ${
-                  active
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                }`}
-              >
-                {/* Mini preview */}
-                <div
-                  className={`h-16 rounded-lg mb-3 overflow-hidden ${
-                    key === "classic"
-                      ? "bg-white border border-gray-200"
-                      : key === "vibrant"
-                      ? "bg-gradient-to-br from-emerald-500 to-teal-600"
-                      : "bg-gray-900"
+              <div key={key} className="relative">
+                <button
+                  type="button"
+                  disabled={!unlocked}
+                  onClick={() => unlocked && setData((d) => ({ ...d, site_theme: key }))}
+                  className={`w-full text-left p-4 rounded-xl border-2 transition ${
+                    !unlocked
+                      ? "opacity-60 cursor-not-allowed border-gray-200 dark:border-gray-700"
+                      : active
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                      : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                   }`}
                 >
-                  <div
-                    className={`h-full flex items-end p-2 ${
-                      key === "classic" ? "" : "items-center justify-center"
-                    }`}
-                  >
-                    <div
-                      className={`${
-                        key === "classic"
-                          ? "h-2 w-16 rounded bg-gray-900"
-                          : "h-2 w-20 rounded bg-white/80"
-                      }`}
-                    />
+                  {/* Mini preview */}
+                  <div className={`h-16 rounded-lg mb-3 overflow-hidden relative ${
+                    key === "classic" ? "bg-white border border-gray-200" :
+                    key === "vibrant" ? "bg-gradient-to-br from-emerald-500 to-teal-600" :
+                    "bg-gray-900"
+                  }`}>
+                    <div className={`h-full flex p-2 ${key === "classic" ? "items-end" : "items-center justify-center"}`}>
+                      <div className={`rounded ${key === "classic" ? "h-2 w-16 bg-gray-900" : "h-2 w-20 bg-white/80"}`} />
+                    </div>
+                    {!unlocked && (
+                      <div className="absolute inset-0 bg-gray-100/60 dark:bg-gray-900/60 flex items-center justify-center rounded-lg">
+                        <Lock size={18} className="text-gray-400" />
+                      </div>
+                    )}
                   </div>
-                </div>
-                <p
-                  className={`text-sm font-semibold mb-0.5 ${
-                    active ? "text-blue-600" : "text-gray-900 dark:text-white"
-                  }`}
-                >
-                  {label}
-                </p>
-                <p className="text-xs text-gray-500">{desc}</p>
-              </button>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <p className={`text-sm font-semibold ${active && unlocked ? "text-blue-600" : "text-gray-900 dark:text-white"}`}>
+                      {label}
+                    </p>
+                    {!unlocked && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">PRO</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500">{desc}</p>
+                </button>
+              </div>
             );
           })}
         </div>
+        {PLAN !== "pro" && (
+          <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+            <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+              Tema Vibrant & Bold tersedia di paket Pro. Hubungi admin untuk upgrade.
+            </p>
+          </div>
+        )}
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}
