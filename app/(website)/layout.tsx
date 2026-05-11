@@ -47,7 +47,16 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
 
   return (
     <>
-      <style>{`:root { ${cssVars} }`}</style>
+      <style>{`
+        :root { ${cssVars} }
+        .dark {
+          --site-hero: #ffffff;
+          --site-heading: #f9fafb;
+          --site-tour-title: #f3f4f6;
+          --site-blog-title: #f3f4f6;
+          --site-eyebrow: #9ca3af;
+        }
+      `}</style>
       <Navbar logo={logo} />
       <main className="flex-1">{children}</main>
       <Footer />
