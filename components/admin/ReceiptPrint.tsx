@@ -26,6 +26,7 @@ interface CompanyInfo {
   phone?: string;
   email?: string;
   website?: string;
+  logo?: string;
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -85,7 +86,7 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "32px 40px 24px", borderBottom: "4px solid #2563eb" }}>
             <div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt={company.name ?? "Logo"} style={{ height: 40, width: "auto", marginBottom: 10 }} />
+              <img src={company.logo || "/logo.png"} alt={company.name ?? "Logo"} style={{ height: 40, width: "auto", marginBottom: 10 }} />
               <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.6 }}>
                 {company.address && <div>{company.address}</div>}
                 {company.phone && <div style={{ marginTop: 2 }}>{company.phone}</div>}

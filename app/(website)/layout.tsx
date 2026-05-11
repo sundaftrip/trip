@@ -12,35 +12,43 @@ const COLOR_DEFAULTS: Record<string, string> = {
   color_eyebrow: "#6b7280",
 };
 
-const getSiteColors = unstable_cache(
+const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
+
+const getSiteConfig = unstable_cache(
   async () => {
     try {
       const rows = await prisma.companyInfo.findMany({
-        where: { key: { startsWith: "color_" } },
+        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme"] } },
       });
-      return rows;
+      const colors = { ...COLOR_DEFAULTS };
+      let logo = "";
+      let theme = "classic";
+      rows.forEach((r) => {
+        if (r.key === "company_logo") logo = r.value;
+        else if (r.key === "site_theme") theme = r.value;
+        else colors[r.key] = r.value;
+      });
+      return { colors, logo, theme };
     } catch {
-      return [];
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic" };
     }
   },
-  ["site-colors"],
+  ["site-config"],
   { revalidate: 3600, tags: ["site-colors"] }
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const colorRows = await getSiteColors();
+  const { colors, logo } = await getSiteConfig();
 
-  const colors = { ...COLOR_DEFAULTS };
-  colorRows.forEach((r) => { colors[r.key] = r.value; });
-
-  const cssVars = Object.entries(colors)
-    .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
-    .join(" ");
+  const cssVars =
+    Object.entries(colors)
+      .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
+      .join(" ") + ` --site-accent: ${colors["color_accent"] ?? "#2d6a4f"};`;
 
   return (
     <>
       <style>{`:root { ${cssVars} }`}</style>
-      <Navbar />
+      <Navbar logo={logo} />
       <main className="flex-1">{children}</main>
       <Footer />
     </>

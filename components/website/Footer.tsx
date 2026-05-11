@@ -26,13 +26,14 @@ const getFooterData = unstable_cache(
 export default async function Footer() {
   const { t, c } = await getFooterData();
 
-  const tagline = t["footer_tagline"] || "CV Sundaf Holiday Group — Mitra perjalanan wisata religi dan halal terpercaya.";
-  const name = c["company_name"] || "CV Sundaf Holiday Group";
-  const nib = c["company_nib"] || "1601260060842";
-  const address = c["company_address"] || "Epiwalk Office Suite Lt. 5, Kuningan, Jakarta Selatan";
-  const phone = c["company_phone"] || "021-22321146";
-  const whatsapp = c["company_whatsapp"] || "628111620207";
-  const email = c["company_email"] || "sundaf.group@gmail.com";
+  const tagline = t["footer_tagline"] || "";
+  const name = c["company_name"] || "";
+  const logo = c["company_logo"] || "";
+  const nib = c["company_nib"] || "";
+  const address = c["company_address"] || "";
+  const phone = c["company_phone"] || "";
+  const whatsapp = c["company_whatsapp"] || "";
+  const email = c["company_email"] || "";
 
   return (
     <footer className="bg-gray-950 text-gray-500">
@@ -40,9 +41,11 @@ export default async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Sundaf Trip" style={{ height: 32, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />
-            <p className="text-sm leading-relaxed text-gray-600 max-w-xs">{tagline}</p>
-            <p className="text-xs text-gray-700 mt-3">NIB {nib}</p>
+            {logo && <img src={logo} alt={name} style={{ height: 32, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {!logo && <img src="/logo.png" alt={name} style={{ height: 32, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />}
+            {tagline && <p className="text-sm leading-relaxed text-gray-600 max-w-xs">{tagline}</p>}
+            {nib && <p className="text-xs text-gray-700 mt-3">NIB {nib}</p>}
           </div>
 
           <div>
@@ -59,31 +62,37 @@ export default async function Footer() {
           <div>
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5">Kontak</h3>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2.5">
-                <MapPin size={13} className="mt-0.5 shrink-0 text-gray-700" />
-                <span className="text-gray-600 leading-relaxed">{address}</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Phone size={13} className="text-gray-700 shrink-0" />
-                <a href={`tel:${phone.replace(/\D/g, "")}`} className="text-gray-600 hover:text-white transition-colors">{phone}</a>
-              </li>
+              {address && (
+                <li className="flex items-start gap-2.5">
+                  <MapPin size={13} className="mt-0.5 shrink-0 text-gray-700" />
+                  <span className="text-gray-600 leading-relaxed">{address}</span>
+                </li>
+              )}
+              {phone && (
+                <li className="flex items-center gap-2.5">
+                  <Phone size={13} className="text-gray-700 shrink-0" />
+                  <a href={`tel:${phone.replace(/\D/g, "")}`} className="text-gray-600 hover:text-white transition-colors">{phone}</a>
+                </li>
+              )}
               {whatsapp && (
                 <li className="flex items-center gap-2.5">
                   <Phone size={13} className="text-gray-700 shrink-0" />
                   <a href={`https://wa.me/${whatsapp}`} className="text-gray-600 hover:text-white transition-colors">WhatsApp</a>
                 </li>
               )}
-              <li className="flex items-center gap-2.5">
-                <Mail size={13} className="text-gray-700 shrink-0" />
-                <a href={`mailto:${email}`} className="text-gray-600 hover:text-white transition-colors">{email}</a>
-              </li>
+              {email && (
+                <li className="flex items-center gap-2.5">
+                  <Mail size={13} className="text-gray-700 shrink-0" />
+                  <a href={`mailto:${email}`} className="text-gray-600 hover:text-white transition-colors">{email}</a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-700">
           <p>© {new Date().getFullYear()} {name}</p>
-          <p>sundaftrip.com</p>
+          {c["company_website"] ? <p>{c["company_website"]}</p> : null}
         </div>
       </div>
     </footer>
