@@ -16,8 +16,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     return <AdminProviders>{children}</AdminProviders>;
   }
 
-  const logoRow = await prisma.companyInfo.findUnique({ where: { key: "company_logo" } });
-  const logo = logoRow?.value || "";
+  const logoRows = await prisma.companyInfo.findMany({
+    where: { key: { in: ["admin_logo", "company_logo"] } },
+  });
+  const logoMap = Object.fromEntries(logoRows.map((r) => [r.key, r.value]));
+  const logo = logoMap["admin_logo"] || logoMap["company_logo"] || "";
 
   return (
     <AdminProviders>

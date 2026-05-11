@@ -67,6 +67,16 @@ export default function SettingsPage() {
     setData((d) => ({ ...d, company_logo: url }));
   }
 
+  async function handleAdminLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const { url } = await res.json();
+    setData((d) => ({ ...d, admin_logo: url }));
+  }
+
   const currentAccent = data["color_accent"] ?? "#2d6a4f";
   const currentHero = data["color_hero"] ?? "#0d2018";
   const currentEyebrow = data["color_eyebrow"] ?? "#6b7280";
@@ -88,12 +98,30 @@ export default function SettingsPage() {
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-5">
         <h2 className="font-semibold text-gray-900 dark:text-white">Informasi Perusahaan</h2>
         <div>
-          <label className="label">Logo Perusahaan</label>
+          <label className="label">Logo Website & Favicon</label>
+          <p className="text-xs text-gray-400 mb-2">Tampil di tab browser, OG image (share WA/IG), dan navbar website.</p>
           {data["company_logo"] && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto mb-3 object-contain" />
           )}
           <input type="file" accept="image/*" onChange={handleLogoUpload} className="text-sm text-gray-500" />
+        </div>
+        <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+          <label className="label">Logo Admin Panel (Sidebar)</label>
+          <p className="text-xs text-gray-400 mb-2">Tampil di sidebar kiri halaman admin. Kosongkan untuk pakai Logo Website.</p>
+          {data["admin_logo"] && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={data["admin_logo"]} alt="Admin Logo" className="h-14 w-auto mb-3 object-contain bg-gray-800 rounded p-2" />
+          )}
+          <div className="flex items-center gap-3">
+            <input type="file" accept="image/*" onChange={handleAdminLogoUpload} className="text-sm text-gray-500" />
+            {data["admin_logo"] && (
+              <button type="button" onClick={() => setData((d) => ({ ...d, admin_logo: "" }))}
+                className="text-xs text-red-500 hover:text-red-700 transition">
+                Hapus
+              </button>
+            )}
+          </div>
         </div>
         {INFO_FIELDS.map(({ key, label }) => (
           <div key={key}>
