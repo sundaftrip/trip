@@ -29,9 +29,9 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
-      <ToursSection tours={tours} />
-      <WhySection texts={texts} />
-      <BlogSection posts={posts} />
+      <ToursSection tours={tours} theme={theme} />
+      <WhySection texts={texts} theme={theme} />
+      <BlogSection posts={posts} theme={theme} />
       <ContactSection texts={texts} company={company} />
     </>
   );

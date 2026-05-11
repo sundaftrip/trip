@@ -41,9 +41,9 @@ export default async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {logo && <img src={logo} alt={name} style={{ height: 32, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />}
+            {logo && <img src={logo} alt={name} style={{ height: 52, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {!logo && <img src="/logo.png" alt={name} style={{ height: 32, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />}
+            {!logo && <img src="/logo.png" alt={name} style={{ height: 52, width: "auto", marginBottom: 20, filter: "brightness(0) invert(0.8)" }} />}
             {tagline && <p className="text-sm leading-relaxed text-gray-600 max-w-xs">{tagline}</p>}
             {nib && <p className="text-xs text-gray-700 mt-3">NIB {nib}</p>}
           </div>
