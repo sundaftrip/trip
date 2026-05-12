@@ -103,13 +103,16 @@ export default function RichTextEditor({ value, onChange }: Props) {
   // keep editorRef in sync so handlePaste can access latest editor instance
   useEffect(() => { (editorRef as React.MutableRefObject<typeof editor>).current = editor; }, [editor]);
 
-  // Sync external value changes only on mount (avoid overwriting mid-edit)
+  // Load initial content once the first non-empty value arrives
+  // (handles async parent fetches where value starts as "")
+  const loadedRef = useRef(false);
   useEffect(() => {
-    if (editor && value && value !== editor.getHTML()) {
+    if (!editor || loadedRef.current || !value) return;
+    loadedRef.current = true;
+    if (value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [editor, value]);
 
   if (!editor) return null;
 
