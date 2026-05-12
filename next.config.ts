@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.rbth.com" },
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "fastly.picsum.photos" },
+      { protocol: "https", hostname: "images.pexels.com" },
+      { protocol: "https", hostname: "**.pexels.com" },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
