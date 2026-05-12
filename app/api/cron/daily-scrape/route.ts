@@ -4,7 +4,7 @@ import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
 
-const DESTINATIONS = ["russia", "europe", "japan", "turkey", "thailand", "bali", "middle east", "vietnam"];
+const DESTINATIONS = ["russia", "kazakhstan", "kyrgyzstan", "uzbekistan", "tajikistan"];
 const SUBREDDITS = ["travel", "solotravel", "backpacking"];
 
 const REDDIT_HEADERS = {
