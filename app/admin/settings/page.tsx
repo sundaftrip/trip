@@ -122,7 +122,12 @@ export default function SettingsPage() {
             <p className="text-xs text-gray-400 mb-3">Navbar, sidebar admin, OG image. Gunakan PNG transparan.</p>
             <div className="h-20 flex items-center justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 mb-3 overflow-hidden">
               {data["company_logo"]
-                ? <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto object-contain" /> // eslint-disable-line @next/next/no-img-element
+                ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto object-contain" />
+                  </>
+                )
                 : <span className="text-xs text-gray-400">Belum ada logo</span>}
             </div>
             <input type="file" accept="image/*" onChange={handleLogoUpload} className="text-xs text-gray-500" />
@@ -136,7 +141,8 @@ export default function SettingsPage() {
               {data["favicon_logo"]
                 ? (
                   <div className="flex flex-col items-center gap-1">
-                    <img src={data["favicon_logo"]} alt="Favicon" className="h-10 w-10 object-contain rounded-lg" /> // eslint-disable-line @next/next/no-img-element
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={data["favicon_logo"]} alt="Favicon" className="h-10 w-10 object-contain rounded-lg" />
                     <button type="button" onClick={() => setData((d) => ({ ...d, favicon_logo: "" }))}
                       className="text-[10px] text-red-500 hover:text-red-700">Hapus</button>
                   </div>
