@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
-
-export const maxDuration = 60;
 import slugify from "slugify";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
+
+export const maxDuration = 60;
 
 function estimateReadTime(html: string): string {
   const words = html.replace(/<[^>]+>/g, "").split(/\s+/).length;
@@ -22,6 +22,22 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
   return slug;
 }
 
+async function fetchOgImage(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    const m = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
+      || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/i);
+    return m ? m[1] : "";
+  } catch {
+    return "";
+  }
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,36 +48,49 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "GROQ_API_KEY belum diset di .env.local" }, { status: 500 });
   }
 
-  const { sourceUrl, sourcePlatform, subreddit, originalTitle, originalBody } = await req.json();
+  const { sourceUrl, sourcePlatform, subreddit, originalTitle, originalBody, coverImage } = await req.json();
 
   if (!originalTitle || !originalBody) {
     return NextResponse.json({ error: "originalTitle dan originalBody diperlukan" }, { status: 400 });
   }
 
-  // Strip HTML from body before sending to AI
   const cleanBody = originalBody
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
     .replace(/\s+/g, " ").trim();
 
-  const prompt = `Kamu adalah penulis blog perjalanan profesional untuk sundaftrip.com, sebuah travel agency Indonesia yang fokus pada destinasi wisata internasional.
+  const prompt = `Kamu adalah penulis blog perjalanan profesional untuk sundaftrip.com, travel agency Indonesia yang fokus pada destinasi wisata internasional.
 
-Tugas: Berdasarkan topik/judul berikut, tulis artikel blog Bahasa Indonesia yang menarik:
-- Gaya: personal, hangat, inspiratif — seperti cerita dari teman yang baru pulang traveling
-- SEO: sebutkan nama destinasi secara natural di awal, tengah, dan akhir
-- Struktur: pembuka menarik → informasi/tips utama → tips praktis → penutup inspiratif
-- Panjang: 600–900 kata
-- Kembangkan sendiri berdasarkan pengetahuanmu tentang topik ini
+Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG, MENDALAM, dan MENARIK (1200–1800 kata).
+
+Panduan gaya:
+- Personal dan hangat — seperti cerita teman yang baru pulang traveling
+- Gunakan detail sensoris: aroma, suara, pemandangan, rasa makanan, suhu udara
+- Sisipkan fakta menarik yang tidak umum diketahui
+- Ajak pembaca membayangkan diri mereka di sana
+- Hindari kalimat klise seperti "destinasi yang menakjubkan" atau "pemandangan yang indah"
+- Gunakan humor ringan dan anekdot kecil untuk menghidupkan cerita
+
+Struktur WAJIB (gunakan heading HTML):
+1. <p> Opening hook — 1 paragraf pembuka yang langsung menarik, jangan mulai dengan nama destinasi
+2. <h2> Mengapa [Destinasi] Berbeda dari yang Kamu Bayangkan — latar belakang & daya tarik unik (2-3 paragraf)
+3. <h2> Pengalaman yang Akan Kamu Ceritakan Seumur Hidup — 3 sub-bagian masing-masing dengan <h3> (tiap sub-bagian 2 paragraf)
+4. <h2> Tips Praktis Agar Perjalananmu Lancar — min. 6 tips spesifik dalam <ul><li>
+5. <h2> Kuliner & Budaya yang Wajib Kamu Cicipi — makanan lokal, tradisi unik, kebiasaan penduduk (2 paragraf)
+6. <h2> Rencanakan Perjalananmu Sekarang — waktu terbaik berkunjung, durasi ideal, estimasi budget kasar
+7. <p> Penutup — 1 paragraf inspiratif yang mengajak pembaca untuk segera mewujudkan impian
+
+SEO: Sebut nama destinasi minimal 8 kali secara natural di seluruh artikel.
 
 Topik:
 JUDUL: ${originalTitle}
 INFO TAMBAHAN: ${cleanBody || originalTitle}
 
-PENTING: Kembalikan HANYA JSON dengan format PERSIS seperti ini, gunakan single quote dalam HTML:
-{"title":"judul artikel","excerpt":"ringkasan singkat","category":"Eropa","body":"<p>paragraf...</p><h2>subjudul</h2><p>isi...</p>"}
+PENTING: Kembalikan HANYA JSON dengan format PERSIS seperti ini, gunakan single quote untuk atribut HTML:
+{"title":"judul artikel menarik","excerpt":"ringkasan 1-2 kalimat","category":"Eropa","imageKeywords":"travel,russia,city,culture","body":"<p>...</p><h2>...</h2><h3>...</h3><ul><li>...</li></ul>..."}
 
-Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.`;
+imageKeywords: 3-5 kata bahasa Inggris dipisah koma, cocok untuk mencari foto artikel ini.`;
 
   let aiText: string;
   try {
@@ -69,8 +98,8 @@ Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-      max_tokens: 2048,
+      temperature: 0.75,
+      max_tokens: 4096,
     });
     aiText = completion.choices[0]?.message?.content ?? "";
   } catch (err) {
@@ -78,20 +107,17 @@ Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.
     return NextResponse.json({ error: `Groq AI error: ${msg}` }, { status: 500 });
   }
 
-  let parsed: { title: string; excerpt: string; category: string; body: string };
+  let parsed: { title: string; excerpt: string; category: string; body: string; imageKeywords?: string };
   try {
     const cleaned = aiText.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("No JSON found");
 
     let jsonStr = jsonMatch[0];
-    // Fix common AI JSON mistakes: unescaped double quotes inside string values
-    // Extract body field separately since it may contain HTML with quotes
     const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)"\s*\}/);
     let bodyContent = "";
     if (bodyMatch) {
       bodyContent = bodyMatch[1];
-      // Remove body from jsonStr, parse the rest, then add body back
       jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"\s*\}/, '"body":"__BODY__"}');
     }
 
@@ -99,7 +125,6 @@ Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.
     if (bodyContent) parsed.body = bodyContent.replace(/\\n/g, "\n").replace(/\\"/g, '"');
     if (!parsed.body) parsed.body = `<p>${cleanBody || originalTitle}</p>`;
   } catch {
-    // Last resort: try to extract fields with regex
     try {
       const title = aiText.match(/"title"\s*:\s*"([^"]+)"/)?.[1] ?? originalTitle;
       const excerpt = aiText.match(/"excerpt"\s*:\s*"([^"]+)"/)?.[1] ?? "";
@@ -113,6 +138,19 @@ Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.
     }
   }
 
+  // ── Resolve cover image ──────────────────────────────────────────────────
+  let cover = (coverImage as string | undefined) ?? "";
+
+  if (!cover && sourceUrl) {
+    cover = await fetchOgImage(sourceUrl);
+  }
+
+  if (!cover && parsed.imageKeywords) {
+    // Picsum with a seed derived from title so same article always gets same photo
+    const seed = parsed.title.length + parsed.title.charCodeAt(0);
+    cover = `https://picsum.photos/seed/${seed}/1200/630`;
+  }
+
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });
   const slug = await generateUniqueSlug(baseSlug);
 
@@ -123,6 +161,7 @@ Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.
       excerpt: parsed.excerpt,
       category: parsed.category,
       body: parsed.body,
+      cover: cover || null,
       readTime: estimateReadTime(parsed.body),
       published: false,
       author: "Tim Sundaftrip",

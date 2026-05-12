@@ -21,8 +21,22 @@ function extractTag(xml: string, tag: string): string {
   return stripHtml(m[1].replace(/<!\[CDATA\[/g, "").replace(/\]\]>/g, "")).trim();
 }
 
+function extractImageFromBlock(block: string): string {
+  // Try media:content url="..."
+  const mc = block.match(/<media:content[^>]+url="([^"]+)"/i);
+  if (mc) return mc[1];
+  // Try enclosure url="..." with image type
+  const enc = block.match(/<enclosure[^>]+url="([^"]+)"[^>]+type="image[^"]*"/i)
+    || block.match(/<enclosure[^>]+type="image[^"]*"[^>]+url="([^"]+)"/i);
+  if (enc) return enc[1];
+  // Try media:thumbnail
+  const thumb = block.match(/<media:thumbnail[^>]+url="([^"]+)"/i);
+  if (thumb) return thumb[1];
+  return "";
+}
+
 function parseRss(xml: string) {
-  const items: { title: string; link: string; author: string; description: string }[] = [];
+  const items: { title: string; link: string; author: string; description: string; coverImage: string }[] = [];
   const itemRe = /<item[\s>]([\s\S]*?)<\/item>/gi;
   let match;
   while ((match = itemRe.exec(xml)) !== null) {
@@ -30,6 +44,7 @@ function parseRss(xml: string) {
     const title = extractTag(block, "title");
     const description = extractTag(block, "description");
     const author = extractTag(block, "dc:creator") || extractTag(block, "author") || "RBTH Indonesia";
+    const coverImage = extractImageFromBlock(block);
 
     let link = extractTag(block, "link");
     if (!link) {
@@ -38,7 +53,7 @@ function parseRss(xml: string) {
     }
 
     if (title && link.startsWith("http") && (description.length > 20 || title.length > 20)) {
-      items.push({ title, link, author, description: description || title });
+      items.push({ title, link, author, description: description || title, coverImage });
     }
   }
   return items;
@@ -75,7 +90,6 @@ export async function POST(req: NextRequest) {
 
   let parsed = parseRss(xml);
 
-  // Filter by keyword if provided
   if (keyword.trim()) {
     const kw = keyword.toLowerCase();
     parsed = parsed.filter(
@@ -92,6 +106,7 @@ export async function POST(req: NextRequest) {
       subreddit: "RBTH Indonesia",
       originalTitle: p.title,
       originalBody: `${p.title}\n\n${p.description}`,
+      coverImage: p.coverImage,
       author: p.author,
       score: null,
       numComments: null,

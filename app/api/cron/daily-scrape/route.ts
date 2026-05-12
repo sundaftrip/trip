@@ -51,34 +51,74 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
   return slug;
 }
 
+async function fetchOgImage(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    const m = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
+      || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/i);
+    return m ? m[1] : "";
+  } catch {
+    return "";
+  }
+}
+
 async function rewriteArticle(title: string, body: string) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
   const prompt = `Kamu adalah penulis blog perjalanan profesional untuk sundaftrip.com — travel agency Indonesia yang fokus pada destinasi wisata internasional.
 
-Tugas: Rewrite artikel berikut menjadi blog post Bahasa Indonesia yang:
-- Gaya: personal, hangat, inspiratif — seperti cerita dari teman yang baru pulang traveling
-- SEO: sebutkan nama destinasi secara natural
-- Struktur: pembuka menarik → isi cerita/informasi → tips praktis → penutup inspiratif
-- Panjang: 600–900 kata
-- Jangan menyebut sumber aslinya
+Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG, MENDALAM, dan MENARIK (1200–1800 kata).
+
+Panduan gaya:
+- Personal dan hangat — seperti cerita teman yang baru pulang traveling
+- Gunakan detail sensoris: aroma, suara, pemandangan, rasa makanan, suhu udara
+- Sisipkan fakta menarik yang tidak umum diketahui
+- Ajak pembaca membayangkan diri mereka di sana
+- Hindari kalimat klise seperti "destinasi yang menakjubkan" atau "pemandangan yang indah"
+
+Struktur WAJIB (gunakan heading HTML):
+1. <p> Opening hook — 1 paragraf pembuka yang langsung menarik
+2. <h2> Mengapa [Destinasi] Berbeda dari yang Kamu Bayangkan — 2-3 paragraf
+3. <h2> Pengalaman yang Akan Kamu Ceritakan Seumur Hidup — 3 sub-bagian dengan <h3>
+4. <h2> Tips Praktis Agar Perjalananmu Lancar — min. 6 tips dalam <ul><li>
+5. <h2> Kuliner & Budaya yang Wajib Kamu Cicipi — 2 paragraf
+6. <h2> Rencanakan Perjalananmu Sekarang — waktu terbaik, durasi ideal, estimasi budget
+7. <p> Penutup inspiratif
+
+SEO: Sebut nama destinasi minimal 8× secara natural.
 
 Artikel asli:
 JUDUL: ${title}
 ISI: ${body}
 
 Kembalikan HANYA JSON valid:
-{"title":"...","excerpt":"...","category":"Eropa/Asia/Amerika/Timur Tengah/Afrika/Oseania/Tips Travel","body":"<p>...HTML...</p>"}`;
+{"title":"...","excerpt":"...","category":"Eropa/Asia/Amerika/Timur Tengah/Afrika/Oseania/Tips Travel","imageKeywords":"travel,city,culture","body":"<p>...</p><h2>...</h2>..."}`;
 
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    max_tokens: 2048,
+    temperature: 0.75,
+    max_tokens: 4096,
   });
   const text = completion.choices[0]?.message?.content ?? "";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("Invalid AI response");
-  return JSON.parse(jsonMatch[0]) as { title: string; excerpt: string; category: string; body: string };
+
+  let jsonStr = jsonMatch[0];
+  const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)"\s*\}/);
+  let bodyContent = "";
+  if (bodyMatch) {
+    bodyContent = bodyMatch[1];
+    jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"\s*\}/, '"body":"__BODY__"}');
+  }
+  const result = JSON.parse(jsonStr) as { title: string; excerpt: string; category: string; imageKeywords?: string; body: string };
+  if (bodyContent) result.body = bodyContent.replace(/\\n/g, "\n").replace(/\\"/g, '"');
+  return result;
 }
 
 export async function GET(req: NextRequest) {
@@ -119,6 +159,13 @@ export async function GET(req: NextRequest) {
     try {
       const rewritten = await rewriteArticle(article.title, `${article.title}\n\n${article.description}`);
 
+      // Resolve cover image: og:image from article page → Picsum fallback
+      let cover = await fetchOgImage(article.link);
+      if (!cover) {
+        const seed = rewritten.title.length + rewritten.title.charCodeAt(0);
+        cover = `https://picsum.photos/seed/${seed}/1200/630`;
+      }
+
       const baseSlug = slugify(rewritten.title, { lower: true, strict: true, locale: "id" });
       const slug = await generateUniqueSlug(baseSlug);
       const readTime = estimateReadTime(rewritten.body);
@@ -130,8 +177,9 @@ export async function GET(req: NextRequest) {
           excerpt: rewritten.excerpt,
           category: rewritten.category,
           body: rewritten.body,
+          cover,
           readTime,
-          published: true, // auto-publish
+          published: true,
           author: "Tim Sundaftrip",
         },
       });

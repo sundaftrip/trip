@@ -8,13 +8,13 @@ export interface ScrapedPost {
   subreddit?: string;
   originalTitle: string;
   originalBody: string;
+  coverImage?: string;
   score?: number;
   author?: string;
   numComments?: number;
   alreadyImported: boolean;
   importStatus?: string | null;
   blogId?: string | null;
-  // used during rewrite flow
   rewriteStatus?: "idle" | "loading" | "done" | "error";
   rewriteError?: string;
 }

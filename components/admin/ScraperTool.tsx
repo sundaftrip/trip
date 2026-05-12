@@ -85,6 +85,7 @@ export default function ScraperTool() {
           subreddit: post.subreddit,
           originalTitle: post.originalTitle,
           originalBody: post.originalBody,
+          coverImage: post.coverImage ?? "",
         }),
       });
 
