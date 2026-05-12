@@ -168,7 +168,6 @@ body {
   gap: 4px;
 }
 .tr-btn {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
   border: 2.5px solid var(--tr-border);
@@ -213,7 +212,6 @@ body {
   gap: 4px;
 }
 .kw-btn {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
   border: 2.5px solid var(--kw-border);
@@ -315,7 +313,6 @@ body {
   letter-spacing: 0.06em;
 }
 .px-btn {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
   border: 2px solid var(--px-border);
@@ -404,7 +401,6 @@ body {
   gap: 4px;
 }
 .gl-btn {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
   border: 1.5px solid var(--gl-border);
@@ -506,7 +502,6 @@ body {
 
 /* ── Elegant CTA button ── */
 .mp-btn {
-  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.6rem;
@@ -687,7 +682,6 @@ body {
   background: transparent;
 }
 .at-btn {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
   border: 1px solid var(--at-border);
@@ -706,7 +700,6 @@ body {
   background: var(--at-text);
   color: var(--at-bg);
   border: 1px solid var(--at-text);
-  display: inline-flex;
   align-items: center;
   gap: 8px;
   border-radius: 4px;
