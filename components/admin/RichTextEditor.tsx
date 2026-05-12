@@ -168,7 +168,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
   }
 
   function insertTable(rows: number, cols: number) {
-    editor.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run();
+    editor?.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run();
   }
 
   const inTable = editor.isActive("table");
