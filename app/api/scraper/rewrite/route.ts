@@ -112,7 +112,7 @@ async function fetchFullArticle(url: string): Promise<string> {
 async function fetchPexelsImages(keywords: string, count = 5): Promise<{ url: string; photographer: string; photographerUrl: string }[]> {
   if (!process.env.PEXELS_API_KEY) return [];
   try {
-    const query = encodeURIComponent(keywords.split(",")[0].trim());
+    const query = encodeURIComponent(keywords.replace(/,/g, " ").trim().slice(0, 60));
     const res = await fetch(
       `https://api.pexels.com/v1/search?query=${query}&per_page=${count}&orientation=landscape`,
       { headers: { Authorization: process.env.PEXELS_API_KEY }, signal: AbortSignal.timeout(8000) }
@@ -199,9 +199,12 @@ export async function POST(req: NextRequest) {
 
   const prompt = `Kamu adalah traveler Indonesia yang pernah mengunjungi tempat ini dan sekarang nulis cerita di blog pribadi sundaftrip.com.
 
-PERAN KAMU: Kamu SUDAH pergi ke tempat ini. Ceritakan pengalamanmu sendiri. Kalau ada detail yang perlu dikarang (nama hotel, nama restoran, percakapan, harga), karang yang masuk akal dan spesifik. JANGAN tulis hal-hal generik.
+PERAN KAMU: Kamu SUDAH pergi ke tempat ini. Ceritakan pengalamanmu sendiri dengan detail yang konkret dan personal.
 
-LARANGAN KERAS: Jangan gunakan tanda "—" (em dash) sama sekali. Manusia Indonesia tidak nulis pakai tanda itu. Ganti dengan koma, titik, atau kalimat baru.
+LARANGAN KERAS (langgar ini = artikel gagal total):
+1. Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.
+2. JANGAN PERNAH mengarang fakta yang bisa dicek di Google atau Maps: alamat gedung, nama jalan, nomor jalan, syarat visa resmi (dokumen apa saja), biaya resmi kedutaan/pemerintah, jam operasional resmi. Kalau sumber tidak menyebutkannya, tulis "cek situs resmi kedutaan" atau "konfirmasi langsung". LEBIH BAIK tidak sebut daripada salah.
+3. Yang BOLEH dikarang untuk memperkaya cerita: nama karakter pendukung kecil (bukan pejabat), percakapan personal, perasaan/reaksi, estimasi harga makanan/warung lokal (bukan tarif resmi), nama penginapan kecil, urutan kejadian personal.
 
 ═══ PERBEDAAN TULISAN BAGUS VS JELEK ═══
 
@@ -255,9 +258,11 @@ STRUKTUR:
 <p>[worth it atau tidak, siapa yang cocok ke sini, kapan waktu terbaik]</p>
 
 FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
-{"title":"judul artikel menarik dan natural","excerpt":"2-3 kalimat santai yang bikin orang penasaran untuk baca","category":"Eropa","imageKeywords":"travel,city,adventure,local"}
+{"title":"judul artikel menarik dan natural","excerpt":"2-3 kalimat santai yang bikin orang penasaran untuk baca","category":"Eropa","imageKeywords":"moscow kremlin red square russia winter"}
 ---BODY---
-<p>isi artikel HTML di sini</p>`;
+<p>isi artikel HTML di sini</p>
+
+PENTING untuk imageKeywords: isi dengan NAMA TEMPAT dan OBJEK SPESIFIK yang ada di artikel — supaya foto yang muncul relevan. Contoh bagus: "moscow kremlin russia winter", "tokyo shibuya japan night street", "bali rice terrace ubud indonesia". JANGAN tulis kata generik seperti travel, passport, visa, city, culture, adventure, food — kata itu menghasilkan foto yang tidak nyambung dengan artikel.`;
 
   let aiText: string;
   try {

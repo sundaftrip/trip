@@ -42,7 +42,7 @@ async function mirrorToCloudinary(imageUrl: string): Promise<string> {
 async function fetchPexelsImages(keywords: string, count = 5): Promise<{ url: string; photographer: string; photographerUrl: string }[]> {
   if (!process.env.PEXELS_API_KEY) return [];
   try {
-    const query = encodeURIComponent(keywords.split(",")[0].trim());
+    const query = encodeURIComponent(keywords.replace(/,/g, " ").trim().slice(0, 60));
     const res = await fetch(
       `https://api.pexels.com/v1/search?query=${query}&per_page=${count}&orientation=landscape`,
       { headers: { Authorization: process.env.PEXELS_API_KEY }, signal: AbortSignal.timeout(8000) }
@@ -101,7 +101,10 @@ CONTOH GAYA TULISAN YANG HARUS KAMU TIRU:
 
 Yang bikin cerita itu bagus: hook langsung, waktu spesifik, kesalahan diakui, karakter pendukung, momen tak terduga, harga nyata, emosi hadir tapi tidak lebay.
 
-LARANGAN KERAS: Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.
+LARANGAN KERAS (langgar ini = artikel gagal total):
+1. Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.
+2. JANGAN PERNAH mengarang fakta yang bisa dicek di Google atau Maps: alamat gedung, nama jalan, nomor jalan, syarat visa resmi (dokumen apa saja), biaya resmi kedutaan/pemerintah, jam operasional resmi. Kalau tidak tahu persis, tulis "cek situs resmi" atau "konfirmasi langsung ke kedutaan". LEBIH BAIK tidak sebut daripada salah.
+3. Yang BOLEH dikarang: nama karakter pendukung kecil, percakapan personal, perasaan, estimasi harga makanan/warung lokal, nama penginapan kecil, urutan kejadian personal.
 
 TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti contoh. Target 1500-2000 kata.
 
@@ -126,9 +129,11 @@ Topik: ${title}
 Bahan (kembangkan, perkaya, jangan copy-paste): ${content || title}
 
 FORMAT OUTPUT:
-{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"travel,city,culture"}
+{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"moscow kremlin red square russia winter"}
 ---BODY---
-<p>isi artikel HTML di sini</p>`;
+<p>isi artikel HTML di sini</p>
+
+PENTING untuk imageKeywords: isi dengan NAMA TEMPAT dan OBJEK SPESIFIK — supaya foto yang dicari di Pexels relevan. Contoh: "tokyo shibuya japan night", "bali rice terrace ubud", "istanbul grand bazaar turkey". JANGAN tulis kata generik seperti travel, passport, visa, city, culture.`;
 
   const message = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
