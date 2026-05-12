@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/", label: { id: "Beranda", en: "Home" } },
   { href: "/tours", label: { id: "Paket Tour", en: "Tours" } },
   { href: "/blog", label: { id: "Blog", en: "Blog" } },
+  { href: "/about", label: { id: "Tentang Kami", en: "About" } },
   { href: "/#contact", label: { id: "Kontak", en: "Contact" } },
 ];
 

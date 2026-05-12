@@ -23,7 +23,7 @@ const getFooterData = unstable_cache(
   { revalidate: 3600, tags: ["footer-data", "site-colors"] }
 );
 
-const navLinks = [["Beranda", "/"], ["Paket Tour", "/tours"], ["Blog", "/blog"], ["Syarat & Ketentuan", "/terms"]];
+const navLinks = [["Beranda", "/"], ["Paket Tour", "/tours"], ["Blog", "/blog"], ["Tentang Kami", "/about"], ["FAQ", "/faq"], ["Syarat & Ketentuan", "/terms"]];
 
 export default async function Footer({ theme = "classic" }: { theme?: string }) {
   const { t, c } = await getFooterData();
