@@ -432,7 +432,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 mp-pill font-black"
-            style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)", boxShadow: "2px 2px 0 0 var(--mp-border)" }}>
+            style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)", boxShadow: "2px 2px 0 0 var(--mp-border)" }}>
             {formatCurrency(tour.promoPrice ?? tour.price)}
           </div>
         )}
@@ -463,9 +463,9 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
             <span className="mp-pill" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>{tour.duration}</span>
           )}
           {tour.tripDate && (
-            <span className="mp-pill" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
+            <span className="mp-pill" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
           )}
-          <span className="mp-pill" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>{tour.seatsLeft} seat</span>
+          <span className="mp-pill" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>{tour.seatsLeft} seat</span>
         </div>
         {tour.promoPrice && (
           <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>

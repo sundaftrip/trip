@@ -286,62 +286,69 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   /* ── MAP / ATLAS ── */
   if (theme === "map") return (
     <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
-      style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "32px 32px" }}>
+      style={{ background: "var(--mp-bg)" }}>
 
-      {/* CSS terrain rings — top-right corner */}
-      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full border-2 pointer-events-none mp-terrain-1" style={{ borderColor: "var(--mp-border)" }} />
-      <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full border pointer-events-none mp-terrain-2"   style={{ borderColor: "var(--mp-border)" }} />
-      <div className="absolute -top-8  -right-8  w-48 h-48 rounded-full border pointer-events-none mp-terrain-3"   style={{ borderColor: "var(--mp-border)" }} />
+      {/* Animated lat/lon grid overlay */}
+      <div className="absolute inset-0 mp-grid-bg pointer-events-none" />
 
-      {/* CSS terrain rings — bottom-left corner */}
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full border-2 pointer-events-none mp-terrain-2" style={{ borderColor: "var(--mp-border)" }} />
-      <div className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full border pointer-events-none mp-terrain-1"   style={{ borderColor: "var(--mp-border)" }} />
+      {/* Parchment land silhouette — large organic shape, top-right */}
+      <div className="absolute -top-32 right-0 w-[55%] h-[110%] pointer-events-none hidden lg:block"
+        style={{ background: "var(--mp-land)", clipPath: "polygon(18% 0%, 100% 0%, 100% 100%, 8% 100%, 0% 60%, 5% 30%)", opacity: 0.72 }} />
 
-      {/* CSS route line across hero */}
-      <div className="absolute top-48 left-0 right-0 mp-route pointer-events-none" style={{ opacity: 0.35 }} />
+      {/* Contour rings inside the land area */}
+      <div className="absolute top-16 right-[15%] w-64 h-64 rounded-full border pointer-events-none mp-terrain-1" style={{ borderColor: "var(--mp-border)", opacity: 0.15 }} />
+      <div className="absolute top-28 right-[20%] w-44 h-44 rounded-full border pointer-events-none mp-terrain-2" style={{ borderColor: "var(--mp-border)", opacity: 0.12 }} />
+      <div className="absolute top-40 right-[26%] w-28 h-28 rounded-full border pointer-events-none mp-terrain-3" style={{ borderColor: "var(--mp-border)", opacity: 0.10 }} />
 
-      {/* CSS pulsing pins on route */}
-      <div className="absolute top-[186px] left-[20%] mp-pin pointer-events-none" />
-      <div className="absolute top-[186px] left-[50%] mp-pin pointer-events-none" style={{ animationDelay: "0.7s" }} />
-      <div className="absolute top-[186px] left-[80%] mp-pin pointer-events-none" style={{ animationDelay: "1.4s" }} />
+      {/* Sea route line + location pins */}
+      <div className="absolute top-56 left-0 w-[55%] mp-route pointer-events-none" style={{ opacity: 0.5 }} />
+      <div className="absolute mp-pin pointer-events-none" style={{ top: "220px", left: "18%" }} />
+      <div className="absolute mp-pin pointer-events-none" style={{ top: "220px", left: "35%", animationDelay: "0.8s" }} />
+      <div className="absolute mp-pin pointer-events-none" style={{ top: "220px", left: "50%", animationDelay: "1.6s" }} />
 
-      {/* CSS compass top-right */}
-      <div className="absolute top-28 right-16 lg:right-40 mp-compass hidden lg:block" style={{ width: 52, height: 52 }} />
+      {/* Compass rose — bottom-right of land area */}
+      <div className="absolute bottom-12 right-[8%] mp-compass hidden lg:flex items-center justify-center" style={{ width: 56, height: 56 }}>
+        <div className="mp-compass-n" />
+        <div className="mp-compass-c" />
+      </div>
+
+      {/* Outer frame border — like a real map */}
+      <div className="absolute inset-3 border pointer-events-none hidden lg:block" style={{ borderColor: "color-mix(in srgb, var(--mp-border) 30%, transparent)" }} />
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="mb-8 hero-fade-up">
-          <span className="mp-pill" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>
+          <span className="mp-pill" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
             {eyebrow}
           </span>
         </div>
 
-        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
-          style={{ color: "var(--mp-text)", fontFamily: "Georgia, 'Times New Roman', serif" }}>
+        <h1 className="text-[clamp(2.8rem,8vw,6.5rem)] leading-[0.95] tracking-tight max-w-3xl mb-10 hero-fade-up"
+          style={{ color: "var(--mp-text)", fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 900 }}>
           {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
         </h1>
 
-        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
-          <span className="mp-pill" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>
+        <div className="flex flex-wrap gap-2.5 mb-12 hero-fade-up">
+          <span className="mp-pill" style={{ background: "color-mix(in srgb, var(--mp-water) 30%, var(--mp-land))", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
             {t("hero_subtitle", "Destinasi Pilihan")}
           </span>
-          <span className="mp-pill" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>
+          <span className="mp-pill" style={{ background: "color-mix(in srgb, var(--mp-water) 30%, var(--mp-land))", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
             Paket Lengkap
           </span>
-          <span className="mp-pill" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+          <span className="mp-pill" style={{ background: "color-mix(in srgb, var(--mp-water) 30%, var(--mp-land))", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
             Terpercaya
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/tours"
-            className="mp-btn px-8 py-4 text-sm"
-            style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+            className="mp-btn px-8 py-4 text-sm font-bold"
+            style={{ background: "var(--mp-accent)", color: "#ffffff", borderColor: "var(--mp-border)" }}>
             {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
           </Link>
           {waNumber && (
             <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-              className="mp-btn px-8 py-4 text-sm"
-              style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+              className="mp-btn px-8 py-4 text-sm font-bold"
+              style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
               WhatsApp
             </a>
           )}

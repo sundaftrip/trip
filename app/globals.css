@@ -434,171 +434,207 @@ body {
   .gl-float-1, .gl-float-2, .gl-float-3, .gl-float-4 { animation: none; }
 }
 
-/* ─── MAP / ATLAS THEME ─── */
+/* ─── MAP / VINTAGE CARTOGRAPHY THEME ─── */
 :root {
-  --mp-bg:       color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #f4efe6);
-  --mp-card:     #faf6ee;
-  --mp-border:   color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, #b8956a);
-  --mp-shadow:   color-mix(in srgb, var(--site-accent, #2d6a4f) 18%, rgba(120,80,30,0.18));
-  --mp-text:     #2c1e10;
-  --mp-subtext:  #7a5c3a;
-  --mp-olive:    color-mix(in srgb, var(--site-accent, #2d6a4f) 80%, #8fa656);
-  --mp-sand:     #d4aa6a;
-  --mp-rust:     #c46b3a;
-  --mp-navy:     #2d4a6b;
-  --mp-water:    #a8c9d8;
-  --mp-grid:     rgba(100,70,30,0.07);
-  --mp-on-olive: #f5efe3;
-  --mp-on-sand:  #2c1e10;
-  --mp-on-rust:  #ffffff;
-  --mp-on-navy:  #ffffff;
-  --mp-on-water: #0d1f2d;
+  /* Parchment land + muted ocean blue — inspired by vintage atlas */
+  --mp-bg:       #cfdce8;          /* ocean blue background */
+  --mp-land:     #f0e6cc;          /* parchment/land color */
+  --mp-card:     #f5eedc;          /* card = aged parchment */
+  --mp-ink:      #2e3f5c;          /* dark navy ink */
+  --mp-border:   #3d5473;          /* map border color */
+  --mp-text:     #1e2d45;          /* deep navy text */
+  --mp-subtext:  #5a6e88;          /* softer navy subtext */
+  --mp-accent:   color-mix(in srgb, var(--site-accent, #2d6a4f) 70%, #3d5473);
+  --mp-water:    #7a9ab5;          /* ocean fill */
+  --mp-grid:     rgba(62,84,115,0.12); /* lat/lon grid lines */
+  --mp-frame:    #3d5473;          /* outer frame / border */
+  --mp-shadow:   rgba(30,45,69,0.18);
+  /* accent colors for pills/badges */
+  --mp-cream:    #f0e6cc;
+  --mp-rust:     #a0522d;
+  --mp-on-ink:   #f0e6cc;
+  --mp-on-rust:  #fff8f0;
+  --mp-on-water: #1e2d45;
+  --mp-on-accent: #ffffff;
 }
-@variant dark {
-  :root {
-    --mp-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, #12100a);
-    --mp-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #1e1810);
-    --mp-border:  color-mix(in srgb, var(--site-accent, #2d6a4f) 50%, #8a6a3a);
-    --mp-shadow:  color-mix(in srgb, var(--site-accent, #2d6a4f) 25%, rgba(0,0,0,0.4));
-    --mp-text:    #e8dcc8;
-    --mp-subtext: #a8926e;
-    --mp-grid:    rgba(200,170,110,0.05);
-  }
+.dark {
+  --mp-bg:      #0f1d30;
+  --mp-land:    #1c2d44;
+  --mp-card:    #162236;
+  --mp-ink:     #7a9ab5;
+  --mp-border:  #4a6a8a;
+  --mp-text:    #c8daea;
+  --mp-subtext: #7090aa;
+  --mp-water:   #1e3550;
+  --mp-grid:    rgba(122,154,181,0.08);
+  --mp-frame:   #4a6a8a;
+  --mp-shadow:  rgba(0,0,0,0.5);
+  --mp-cream:   #1c2d44;
+  --mp-on-ink:  #c8daea;
+  --mp-on-water: #c8daea;
 }
 
-/* ── Map card — parchment with grid lines ── */
+/* ── Vintage card — clean, elegant, no pixel-art chunky shadow ── */
 .mp-card {
-  border: 1.5px solid var(--mp-border);
-  border-radius: 4px;
+  border: 1px solid var(--mp-border);
+  border-radius: 6px;
   background: var(--mp-card);
-  background-image:
-    linear-gradient(var(--mp-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--mp-grid) 1px, transparent 1px);
-  background-size: 28px 28px;
-  box-shadow: 3px 3px 0 0 var(--mp-border), 0 6px 24px var(--mp-shadow);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 12px var(--mp-shadow), 0 0 0 3px color-mix(in srgb, var(--mp-border) 15%, transparent);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
 }
 .mp-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 3px 8px 0 0 var(--mp-border), 0 16px 40px var(--mp-shadow);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px var(--mp-shadow), 0 0 0 3px color-mix(in srgb, var(--mp-border) 30%, transparent);
 }
 
-/* ── Map label / pill ── */
+/* ── Cartographic label — small caps, serif feel ── */
 .mp-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.22rem 0.7rem;
-  border: 1.5px solid var(--mp-border);
-  border-radius: 2px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  gap: 0.35rem;
+  padding: 0.2rem 0.8rem;
+  border: 1px solid var(--mp-border);
+  border-radius: 999px;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-/* ── Map button ── */
+/* ── Elegant CTA button ── */
 .mp-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.5rem;
-  border: 2px solid var(--mp-border);
-  border-radius: 3px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 3px 3px 0 0 var(--mp-border);
+  padding: 0.65rem 1.6rem;
+  border: 1.5px solid var(--mp-border);
+  border-radius: 6px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px var(--mp-shadow);
 }
 .mp-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 0 var(--mp-border);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--mp-shadow);
 }
 
-/* ── CSS animated route line ── */
+/* ── Animated latitude/longitude grid overlay ── */
+@keyframes mp-grid-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+.mp-grid-bg {
+  background-image:
+    linear-gradient(var(--mp-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mp-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: mp-grid-drift 24s linear infinite;
+}
+
+/* ── Animated sea route (dotted course line) ── */
+@keyframes mp-route-sail {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -60; }
+}
 @keyframes mp-route-march {
   from { background-position: 0 0; }
-  to   { background-position: 48px 0; }
+  to   { background-position: 60px 0; }
 }
 .mp-route {
-  height: 2px;
+  height: 1.5px;
   background-image: repeating-linear-gradient(
     90deg,
-    var(--mp-navy) 0, var(--mp-navy) 8px,
-    transparent 8px, transparent 16px
+    var(--mp-water) 0, var(--mp-water) 10px,
+    transparent 10px, transparent 20px
   );
-  animation: mp-route-march 1.4s linear infinite;
+  animation: mp-route-march 2s linear infinite;
 }
 
-/* ── CSS pulsing location pin ── */
+/* ── Pulsing location dot (like a cartographic marker) ── */
 @keyframes mp-ping {
-  0%   { transform: scale(1);   opacity: 0.75; }
-  100% { transform: scale(2.8); opacity: 0; }
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(3.2); opacity: 0; }
 }
 .mp-pin {
   position: relative;
   display: inline-block;
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--mp-rust);
+  border: 1.5px solid var(--mp-on-rust);
 }
 .mp-pin::after {
   content: '';
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: 50%;
-  border: 2px solid var(--mp-rust);
-  animation: mp-ping 2s ease-out infinite;
+  border: 1px solid var(--mp-rust);
+  animation: mp-ping 2.4s ease-out infinite;
 }
 
-/* ── Compass needle sway ── */
-@keyframes mp-compass-sway {
-  0%, 100% { transform: translateX(-50%) rotate(-14deg); }
-  50%       { transform: translateX(-50%) rotate(14deg); }
+/* ── Compass rose spin (slow, elegant) ── */
+@keyframes mp-compass-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
+@keyframes mp-compass-sway {
+  0%, 100% { transform: translateX(-50%) rotate(-10deg); }
+  50%       { transform: translateX(-50%) rotate(10deg); }
+}
+/* Outer ring of compass rose */
 .mp-compass {
   position: relative;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--mp-border);
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
+  border: 1px solid var(--mp-border);
   background: var(--mp-card);
+  box-shadow: 0 2px 8px var(--mp-shadow);
 }
-.mp-compass::before {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  width: 2px;
-  height: 14px;
-  background: linear-gradient(to bottom, var(--mp-rust) 50%, var(--mp-navy) 50%);
-  transform-origin: bottom center;
-  transform: translateX(-50%) rotate(0deg);
-  animation: mp-compass-sway 4s ease-in-out infinite;
-}
+/* Compass outer decorative ring */
 .mp-compass::after {
   content: '';
   position: absolute;
-  inset: 50%;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--mp-border) 40%, transparent);
+}
+/* North needle */
+.mp-compass-n {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 2px;
+  height: 20px;
+  transform-origin: bottom center;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, var(--mp-rust) 55%, var(--mp-water) 55%);
+  animation: mp-compass-sway 5s ease-in-out infinite;
+}
+/* Center dot */
+.mp-compass-c {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 6px; height: 6px;
+  margin: -3px;
   border-radius: 50%;
   background: var(--mp-border);
 }
 
-/* ── Terrain ring pulse (background decoration) ── */
+/* ── Terrain contour rings ── */
 @keyframes mp-terrain {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50%       { opacity: 0.45; transform: scale(1.04); }
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 0.32; }
 }
-.mp-terrain-1 { animation: mp-terrain 5s ease-in-out 0s   infinite; }
-.mp-terrain-2 { animation: mp-terrain 6.5s ease-in-out 1s  infinite; }
-.mp-terrain-3 { animation: mp-terrain 4.8s ease-in-out 2s  infinite; }
+.mp-terrain-1 { animation: mp-terrain 6s   ease-in-out 0s   infinite; }
+.mp-terrain-2 { animation: mp-terrain 8s   ease-in-out 1.5s infinite; }
+.mp-terrain-3 { animation: mp-terrain 5.5s ease-in-out 3s   infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .mp-route, .mp-pin::after, .mp-compass::before,
+  .mp-grid-bg, .mp-route, .mp-pin::after, .mp-compass-n,
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
