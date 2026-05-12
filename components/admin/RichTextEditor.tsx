@@ -5,7 +5,11 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
-import { Bold, Italic, List, ListOrdered, Link2, Image as ImageIcon, Heading2, Heading3, Quote } from "lucide-react";
+import Highlight from "@tiptap/extension-highlight";
+import {
+  Bold, Italic, List, ListOrdered, Link2,
+  Image as ImageIcon, Heading2, Heading3, Quote, Highlighter,
+} from "lucide-react";
 import { useEffect, useRef } from "react";
 
 /* ── Markdown-to-HTML converter for paste ── */
@@ -26,7 +30,7 @@ function markdownToHtml(text: string): string | null {
     lines.some((l) => /^#{1,4}\s/.test(l.trim())) ||
     /\*\*[^*]+\*\*/.test(text) || /__[^_]+__/.test(text);
 
-  if (!hasMd) return null;   // nothing to convert → let Tiptap handle as plain text
+  if (!hasMd) return null;
 
   let html = "";
   let inUl = false;
@@ -66,7 +70,6 @@ interface Props {
 }
 
 export default function RichTextEditor({ value, onChange }: Props) {
-  // Keep onChange ref fresh so onUpdate never has stale closure
   const onChangeRef = useRef(onChange);
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
 
@@ -78,6 +81,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
       Image,
       Link.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder: "Tulis konten artikel di sini..." }),
+      Highlight.configure({ multicolor: false }),
     ],
     content: value,
     onUpdate: ({ editor }) => onChangeRef.current(editor.getHTML()),
@@ -85,14 +89,9 @@ export default function RichTextEditor({ value, onChange }: Props) {
       handlePaste(_view, event) {
         const html  = event.clipboardData?.getData("text/html")  ?? "";
         const plain = event.clipboardData?.getData("text/plain") ?? "";
-
-        // If clipboard already has real HTML (e.g. from Word / browser), let Tiptap handle
         if (html.trim()) return false;
-
-        // Try to convert markdown plain text → HTML
         const converted = markdownToHtml(plain);
-        if (!converted) return false;  // plain prose — let Tiptap handle
-
+        if (!converted) return false;
         event.preventDefault();
         editorRef.current?.commands.insertContent(converted);
         return true;
@@ -100,18 +99,13 @@ export default function RichTextEditor({ value, onChange }: Props) {
     },
   });
 
-  // keep editorRef in sync so handlePaste can access latest editor instance
   useEffect(() => { (editorRef as React.MutableRefObject<typeof editor>).current = editor; }, [editor]);
 
-  // Load initial content once the first non-empty value arrives
-  // (handles async parent fetches where value starts as "")
   const loadedRef = useRef(false);
   useEffect(() => {
     if (!editor || loadedRef.current || !value) return;
     loadedRef.current = true;
-    if (value !== editor.getHTML()) {
-      editor.commands.setContent(value);
-    }
+    if (value !== editor.getHTML()) editor.commands.setContent(value);
   }, [editor, value]);
 
   if (!editor) return null;
@@ -126,39 +120,61 @@ export default function RichTextEditor({ value, onChange }: Props) {
     if (url) editor?.chain().focus().setImage({ src: url }).run();
   }
 
+  /* ── Toolbar groups ── */
   const tools = [
-    { icon: Bold,        cmd: () => editor.chain().focus().toggleBold().run(),                 active: editor.isActive("bold"),              title: "Bold" },
-    { icon: Italic,      cmd: () => editor.chain().focus().toggleItalic().run(),               active: editor.isActive("italic"),            title: "Italic" },
-    { icon: Heading2,    cmd: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),  active: editor.isActive("heading",{level:2}), title: "H2" },
-    { icon: Heading3,    cmd: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),  active: editor.isActive("heading",{level:3}), title: "H3" },
-    { icon: List,        cmd: () => editor.chain().focus().toggleBulletList().run(),           active: editor.isActive("bulletList"),        title: "Bullet list" },
-    { icon: ListOrdered, cmd: () => editor.chain().focus().toggleOrderedList().run(),          active: editor.isActive("orderedList"),       title: "Ordered list" },
-    { icon: Quote,       cmd: () => editor.chain().focus().toggleBlockquote().run(),           active: editor.isActive("blockquote"),        title: "Quote" },
-    { icon: Link2,       cmd: addLink,                                                         active: editor.isActive("link"),             title: "Link" },
-    { icon: ImageIcon,   cmd: addImage,                                                        active: false,                               title: "Image" },
+    /* Inline formats — apply to selection only */
+    { icon: Bold,        cmd: () => editor.chain().focus().toggleBold().run(),        active: editor.isActive("bold"),           title: "Bold",         group: 1 },
+    { icon: Italic,      cmd: () => editor.chain().focus().toggleItalic().run(),      active: editor.isActive("italic"),         title: "Italic",       group: 1 },
+    { icon: Highlighter, cmd: () => editor.chain().focus().toggleHighlight().run(),   active: editor.isActive("highlight"),      title: "Highlight",    group: 1 },
+
+    /* Block formats — apply to current paragraph */
+    { icon: Heading2,    cmd: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), active: editor.isActive("heading",{level:2}), title: "H2", group: 2 },
+    { icon: Heading3,    cmd: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), active: editor.isActive("heading",{level:3}), title: "H3", group: 2 },
+    { icon: List,        cmd: () => editor.chain().focus().toggleBulletList().run(),  active: editor.isActive("bulletList"),     title: "Bullet list",  group: 2 },
+    { icon: ListOrdered, cmd: () => editor.chain().focus().toggleOrderedList().run(),active: editor.isActive("orderedList"),    title: "Ordered list", group: 2 },
+    { icon: Quote,       cmd: () => editor.chain().focus().toggleBlockquote().run(), active: editor.isActive("blockquote"),    title: "Blockquote",   group: 2 },
+
+    /* Insert */
+    { icon: Link2,       cmd: addLink,   active: editor.isActive("link"), title: "Link",  group: 3 },
+    { icon: ImageIcon,   cmd: addImage,  active: false,                   title: "Image", group: 3 },
   ];
+
+  let lastGroup = 0;
 
   return (
     <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-      <div className="flex flex-wrap gap-1 p-2 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
-        {tools.map((tool) => (
-          <button
-            key={tool.title}
-            type="button"
-            title={tool.title}
-            /* onMouseDown + preventDefault keeps editor focus intact;
-               onClick fires AFTER blur so the selection is already gone */
-            onMouseDown={(e) => { e.preventDefault(); tool.cmd(); }}
-            className={`p-1.5 rounded transition ${
-              tool.active
-                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
-            }`}
-          >
-            <tool.icon size={16} />
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center gap-0.5 p-2 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+        {tools.map((tool) => {
+          const divider = tool.group !== lastGroup && lastGroup !== 0;
+          lastGroup = tool.group;
+          return (
+            <span key={tool.title} className="contents">
+              {divider && <span className="w-px h-5 bg-gray-300 dark:bg-gray-500 mx-1 shrink-0" />}
+              <button
+                type="button"
+                title={tool.title}
+                onMouseDown={(e) => { e.preventDefault(); tool.cmd(); }}
+                className={`p-1.5 rounded transition ${
+                  tool.active
+                    ? tool.title === "Highlight"
+                      ? "bg-yellow-200 dark:bg-yellow-500/30 text-yellow-700 dark:text-yellow-300"
+                      : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+                }`}
+              >
+                <tool.icon size={16} />
+              </button>
+            </span>
+          );
+        })}
       </div>
+
+      {/* Highlight renders as <mark> — style it here */}
+      <style>{`
+        .ProseMirror mark { background: #fef08a; color: inherit; border-radius: 2px; padding: 0 2px; }
+        .dark .ProseMirror mark { background: #854d0e; color: #fef9c3; }
+      `}</style>
+
       <EditorContent
         editor={editor}
         className="prose prose-sm dark:prose-invert max-w-none p-4 min-h-[300px] [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[280px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0"
