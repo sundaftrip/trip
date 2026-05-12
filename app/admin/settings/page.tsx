@@ -15,6 +15,28 @@ const INFO_FIELDS = [
   { key: "company_website", label: "Website" },
 ];
 
+const FONTS = [
+  { key: "jost",          label: "Jost",             desc: "Modern & geometris — default",        sample: "Perjalanan Impian" },
+  { key: "plus-jakarta",  label: "Plus Jakarta Sans", desc: "Kontemporer, sedikit rounded",        sample: "Perjalanan Impian" },
+  { key: "dm-sans",       label: "DM Sans",           desc: "Bersih & ramah, mudah dibaca",        sample: "Perjalanan Impian" },
+  { key: "outfit",        label: "Outfit",            desc: "Geometris & modern, elegan",          sample: "Perjalanan Impian" },
+  { key: "nunito",        label: "Nunito",            desc: "Bulat & hangat, kesan ramah",         sample: "Perjalanan Impian" },
+  { key: "playfair",      label: "Playfair Display",  desc: "Serif elegan, kesan premium & mewah", sample: "Perjalanan Impian" },
+  { key: "raleway",       label: "Raleway",           desc: "Tipis & elegan, lifestyle & travel",  sample: "Perjalanan Impian" },
+  { key: "poppins",       label: "Poppins",           desc: "Populer & friendly, sangat terbaca",  sample: "Perjalanan Impian" },
+];
+
+const FONT_CSS_VAR: Record<string, string> = {
+  jost:          "var(--font-jost)",
+  "plus-jakarta": "var(--font-plus-jakarta)",
+  "dm-sans":     "var(--font-dm-sans)",
+  outfit:        "var(--font-outfit)",
+  nunito:        "var(--font-nunito)",
+  playfair:      "var(--font-playfair)",
+  raleway:       "var(--font-raleway)",
+  poppins:       "var(--font-poppins)",
+};
+
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
   { key: "vibrant",  label: "Catalog",  desc: "Katalog premium. Layout split-screen editorial.",                      feature: "theme_vibrant" },
@@ -388,6 +410,56 @@ export default function SettingsPage() {
           <button onClick={handleSave} disabled={saving}
             className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
             {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Tema"}
+          </button>
+        </div>
+      </div>
+
+      {/* Font Selector */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div className="mb-5">
+          <h2 className="font-semibold text-gray-900 dark:text-white">Font Website</h2>
+          <p className="text-xs text-gray-500 mt-1">Pilih tipografi untuk seluruh halaman website</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {FONTS.map(({ key, label, desc, sample }) => {
+            const active = (data["site_font"] ?? "jost") === key;
+            const cssVar = FONT_CSS_VAR[key];
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setData((d) => ({ ...d, site_font: key }))}
+                className={`text-left px-4 py-3.5 rounded-xl border-2 transition-all ${
+                  active
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                }`}
+              >
+                <p
+                  className="text-xl font-bold mb-0.5 leading-tight"
+                  style={{ fontFamily: cssVar }}
+                >
+                  {sample}
+                </p>
+                <div className="flex items-center justify-between mt-1">
+                  <div>
+                    <p className={`text-xs font-semibold ${active ? "text-blue-600" : "text-gray-800 dark:text-white"}`}>{label}</p>
+                    <p className="text-[10px] text-gray-400 leading-snug">{desc}</p>
+                  </div>
+                  {active && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 shrink-0">Aktif</span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          <button onClick={handleSave} disabled={saving}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
+            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Font"}
           </button>
         </div>
       </div>

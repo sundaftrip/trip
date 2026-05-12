@@ -14,23 +14,37 @@ const COLOR_DEFAULTS: Record<string, string> = {
 
 const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
 
+/* Map font key → CSS variable (loaded in root layout via next/font) */
+const FONT_CSS_VAR: Record<string, string> = {
+  jost:          "var(--font-jost)",
+  "plus-jakarta": "var(--font-plus-jakarta)",
+  "dm-sans":     "var(--font-dm-sans)",
+  outfit:        "var(--font-outfit)",
+  nunito:        "var(--font-nunito)",
+  playfair:      "var(--font-playfair)",
+  raleway:       "var(--font-raleway)",
+  poppins:       "var(--font-poppins)",
+};
+
 const getSiteConfig = unstable_cache(
   async () => {
     try {
       const rows = await prisma.companyInfo.findMany({
-        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme"] } },
+        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme", "site_font"] } },
       });
       const colors = { ...COLOR_DEFAULTS };
       let logo = "";
       let theme = "classic";
+      let font = "jost";
       rows.forEach((r) => {
         if (r.key === "company_logo") logo = r.value;
         else if (r.key === "site_theme") theme = r.value;
+        else if (r.key === "site_font") font = r.value;
         else colors[r.key] = r.value;
       });
-      return { colors, logo, theme };
+      return { colors, logo, theme, font };
     } catch {
-      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic" };
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic", font: "jost" };
     }
   },
   ["site-config"],
@@ -38,12 +52,15 @@ const getSiteConfig = unstable_cache(
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const { colors, logo, theme } = await getSiteConfig();
+  const { colors, logo, theme, font } = await getSiteConfig();
 
+  const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
   const cssVars =
     Object.entries(colors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
-      .join(" ") + ` --site-accent: ${colors["color_accent"] ?? "#2d6a4f"};`;
+      .join(" ") +
+    ` --site-accent: ${colors["color_accent"] ?? "#2d6a4f"};` +
+    ` --site-font-family: ${fontFamily};`;
 
   return (
     <>
