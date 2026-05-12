@@ -171,7 +171,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   /* ── ATLAS ── */
   if (theme === "atlas") return (
     <header className="fixed top-0 inset-x-0 z-50 border-b at-grid-bg"
-      style={{ background: "var(--at-bg)", borderColor: "var(--at-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
+      style={{ backgroundColor: "var(--at-bg)", borderColor: "var(--at-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">

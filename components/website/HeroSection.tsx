@@ -437,7 +437,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   /* ── ATLAS ── */
   if (theme === "atlas") return (
     <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4 at-grid-bg"
-      style={{ background: "var(--at-bg)" }}>
+      style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="mb-8 hero-fade-up">
           <span className="at-pill" style={{ color: "var(--at-text)" }}>

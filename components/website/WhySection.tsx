@@ -74,7 +74,7 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="py-24 at-grid-bg" style={{ background: "var(--at-bg)" }}>
+    <section className="py-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">

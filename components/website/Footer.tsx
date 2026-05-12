@@ -147,7 +147,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
     <footer className="border-t at-grid-bg"
-      style={{ background: "var(--at-bg)", borderColor: "var(--at-border)" }}>
+      style={{ backgroundColor: "var(--at-bg)", borderColor: "var(--at-border)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "var(--at-border)" }}>
           <div className="md:col-span-2">
