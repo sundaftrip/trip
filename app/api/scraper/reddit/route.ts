@@ -69,9 +69,7 @@ async function tryReddit(
 async function generateAiTopics(keyword: string): Promise<
   { title: string; url: string; preview: string; score: number; numComments: number }[]
 > {
-  if (!process.env.GROQ_API_KEY) return [];
-
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
   const destination = keyword || "destinasi wisata populer";
 
   const completion = await groq.chat.completions.create({
@@ -97,20 +95,16 @@ Kembalikan HANYA array JSON valid:
   const text = completion.choices[0]?.message?.content ?? "";
   const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
   const match = cleaned.match(/\[[\s\S]*\]/);
-  if (!match) return [];
+  if (!match) throw new Error("AI tidak mengembalikan JSON array yang valid");
 
-  try {
-    const items = JSON.parse(match[0]) as { title: string; preview: string }[];
-    return items.slice(0, 10).map((item, i) => ({
-      title: item.title,
-      url: `ai://generated/${Date.now()}-${i}`,
-      preview: item.preview,
-      score: 0,
-      numComments: 0,
-    }));
-  } catch {
-    return [];
-  }
+  const items = JSON.parse(match[0]) as { title: string; preview: string }[];
+  return items.slice(0, 10).map((item, i) => ({
+    title: item.title,
+    url: `ai://generated/${Date.now()}-${i}`,
+    preview: item.preview,
+    score: 0,
+    numComments: 0,
+  }));
 }
 
 export async function POST(req: NextRequest) {
@@ -118,6 +112,10 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!await checkPermission(session, "scraper_run"))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
+
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json({ error: "GROQ_API_KEY belum diset di environment variables Vercel" }, { status: 500 });
+  }
 
   const body = await req.json();
   const { keyword = "" } = body;
@@ -151,19 +149,16 @@ export async function POST(req: NextRequest) {
 
   // Fall back to AI-generated topics if Reddit returned nothing
   if (allPosts.length === 0) {
-    const aiTopics = await generateAiTopics(keyword);
-    for (const t of aiTopics) {
-      allPosts.push({ ...t, subreddit: "AI Generated", source: "ai" });
-    }
-    source = "ai";
-    if (allPosts.length > 0) {
+    try {
+      const aiTopics = await generateAiTopics(keyword);
+      for (const t of aiTopics) {
+        allPosts.push({ ...t, subreddit: "AI Generated", source: "ai" });
+      }
+      source = "ai";
       warning = `Reddit tidak tersedia saat ini. Menampilkan ${allPosts.length} ide artikel yang dibuat AI — klik Rewrite untuk menghasilkan artikel lengkap.`;
-    } else {
-      return NextResponse.json({
-        results: [],
-        total: 0,
-        warning: "Tidak ada konten ditemukan. Pastikan GROQ_API_KEY sudah diset.",
-      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return NextResponse.json({ error: `Gagal generate topik AI: ${msg}` }, { status: 500 });
     }
   }
 
