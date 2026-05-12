@@ -9,11 +9,13 @@ export default function TermsPage() {
   const [lang, setLang] = useState<"id" | "en">("id");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     fetch("/api/terms").then((r) => r.json()).then((d) => {
       setBodyId(d.bodyId ?? "");
       setBodyEn(d.bodyEn ?? "");
+      setReady(true);
     });
   }, []);
 
@@ -61,10 +63,12 @@ export default function TermsPage() {
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        {lang === "id" ? (
-          <RichTextEditor value={bodyId} onChange={setBodyId} />
+        {!ready ? (
+          <div className="min-h-[300px] flex items-center justify-center text-gray-400 text-sm">Memuat konten...</div>
+        ) : lang === "id" ? (
+          <RichTextEditor key="id" value={bodyId} onChange={setBodyId} />
         ) : (
-          <RichTextEditor value={bodyEn} onChange={setBodyEn} />
+          <RichTextEditor key="en" value={bodyEn} onChange={setBodyEn} />
         )}
       </div>
     </div>
