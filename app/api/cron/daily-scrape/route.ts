@@ -70,9 +70,7 @@ function injectImagesIntoBody(body: string, images: { url: string; photographer:
       const img = images[imgIdx];
       result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
         `<img src="${img.url}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" />` +
-        `<figcaption style="font-size:0.75rem;color:#888;padding:6px 10px;">` +
-        `Photo by <a href="${img.photographerUrl}" target="_blank" rel="noopener">${img.photographer}</a> on Pexels` +
-        `</figcaption></figure>\n`;
+        `</figure>\n`;
       imgIdx++;
     }
   }
@@ -116,6 +114,8 @@ WAJIB ADA (masukkan natural ke dalam cerita):
 - Harga dalam Rupiah
 - Tips dari pengalaman nyata, bukan generik
 - Visa, transportasi dari Indonesia, SIM card — diceritakan, bukan dilist
+
+HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat atau frasa yang paling penting atau wajib diingat. Contoh: <mark>Visa on arrival untuk Indonesia berlaku 30 hari dan bisa diperpanjang sekali.</mark> Jangan lebihkan — hanya kalimat yang benar-benar krusial.
 
 STRUKTUR HTML:
 <p>[Hook pembuka]</p>

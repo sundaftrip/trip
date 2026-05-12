@@ -145,9 +145,7 @@ function injectImagesIntoBody(
       const img = images[imgIdx];
       result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
         `<img src="${img.url}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" />` +
-        `<figcaption style="font-size:0.75rem;color:#888;padding:6px 10px;">` +
-        `Photo by <a href="${img.photographerUrl}" target="_blank" rel="noopener">${img.photographer}</a> on Pexels` +
-        `</figcaption></figure>\n`;
+        `</figure>\n`;
       imgIdx++;
     }
   }
@@ -242,6 +240,8 @@ Gunakan fakta dari bahan referensi ini sebagai dasar, lalu KEMBANGKAN dengan det
 ${sourceContent || originalTitle}
 
 Target: 1500-2000 kata. Minimal 5 paragraf panjang. Setiap klaim harus spesifik — bukan "beberapa hari" tapi "3 hari"; bukan "cukup mahal" tapi "sekitar Rp 450.000 per malam"; bukan "naik transportasi umum" tapi "naik metro lini 4, turun di Stasiun Bastille".
+
+HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat atau frasa yang paling penting, mengejutkan, atau wajib diingat pembaca. Contoh: <mark>Tiket kereta dari Tokyo ke Osaka naik Shinkansen sekitar Rp 850.000 sekali jalan.</mark> Jangan lebihkan — hanya kalimat yang benar-benar krusial.
 
 STRUKTUR:
 <p>[Hook — 1 kalimat langsung ke inti atau momen paling menarik]</p>
