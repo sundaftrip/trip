@@ -15,7 +15,7 @@ const REDDIT_HEADERS = {
 async function fetchRedditPosts(keyword: string, subreddit: string): Promise<{ title: string; url: string; body: string }[]> {
   const q = encodeURIComponent(keyword);
   const res = await fetch(
-    `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&sort=top&t=month&limit=25&restrict_sr=1`,
+    `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&sort=new&t=year&limit=25&restrict_sr=1`,
     { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(12000) }
   );
   if (!res.ok) throw new Error(`Reddit HTTP ${res.status}`);
@@ -109,21 +109,39 @@ TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti
 WAJIB ADA (masukkan natural ke dalam cerita):
 - Hook kuat di paragraf pertama
 - Waktu spesifik (jam berapa, hari ke berapa)
+- Tahun 2024 atau 2025 — JANGAN gunakan tahun sebelum 2023
 - Kesalahan atau hal yang tidak berjalan sesuai rencana
 - Momen tak terduga
 - Harga dalam Rupiah
-- Tips dari pengalaman nyata, bukan generik
+- Nama aplikasi spesifik jika relevan (Klook, Airalo, Wise, Booking.com, dll)
 - Visa, transportasi dari Indonesia, SIM card — diceritakan, bukan dilist
 
 HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat atau frasa yang paling penting atau wajib diingat. Contoh: <mark>Visa on arrival untuk Indonesia berlaku 30 hari dan bisa diperpanjang sekali.</mark> Jangan lebihkan — hanya kalimat yang benar-benar krusial.
 
+JUDUL BAGIAN — WAJIB KREATIF DAN KONTEKSTUAL:
+DILARANG pakai judul generik yang muncul di setiap artikel. Setiap h2 harus spesifik untuk topik ini.
+
+Untuk bagian tips, pilih salah satu atau buat sendiri yang lebih baik:
+- "Yang Tidak Akan Saya Ulangi"
+- "Hal-Hal yang Baru Saya Tahu Setelah Pulang"
+- "Kalau Saya Pergi Lagi, Ini yang Akan Saya Lakukan Beda"
+- "Kesalahan yang Bisa Kamu Hindari"
+- "Yang Tidak Ada di Blog Mana Pun"
+
+Untuk bagian kesimpulan, pilih salah satu atau buat sendiri:
+- "Jadi, Worth It Nggak?"
+- "Saya Akan Balik Lagi?"
+- "Untuk Siapa Perjalanan Ini Cocok"
+- "Jujur Saja: [nama tempat] Itu..."
+- "Ekspektasi vs Realita"
+
 STRUKTUR HTML:
 <p>[Hook pembuka]</p>
-<h2>[Bagian persiapan — judul kontekstual]</h2><p>[isi detail]</p>
-<h2>[Bagian perjalanan harian — min 600 kata]</h2><p>[isi detail]</p>
-<h2>[Bagian makanan/transportasi/akomodasi]</h2><p>[isi detail]</p>
-<h2>Tips yang Beneran Berguna</h2><ul><li>[tip spesifik]</li>...</ul>
-<h2>[Kesimpulan jujur]</h2><p>[isi]</p>
+<h2>[Judul kontekstual spesifik untuk topik ini]</h2><p>[isi detail]</p>
+<h2>[Judul kontekstual spesifik]</h2><p>[isi detail]</p>
+<h2>[Judul kontekstual spesifik]</h2><p>[isi detail]</p>
+<h2>[Judul tips kreatif — BUKAN "Tips yang Beneran Berguna"]</h2><ul><li>[tip spesifik]</li>...</ul>
+<h2>[Judul kesimpulan kreatif — BUKAN "Kesimpulan jujur"]</h2><p>[isi]</p>
 
 Topik: ${title}
 Bahan (kembangkan, perkaya, jangan copy-paste): ${content || title}
