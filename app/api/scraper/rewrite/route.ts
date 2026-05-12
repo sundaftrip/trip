@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import Anthropic from "@anthropic-ai/sdk";
 import slugify from "slugify";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
@@ -185,8 +185,8 @@ export async function POST(req: NextRequest) {
   if (!await checkPermission(session, "scraper_rewrite"))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
-  if (!process.env.GROQ_API_KEY) {
-    return NextResponse.json({ error: "GROQ_API_KEY belum diset di .env.local" }, { status: 500 });
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: "ANTHROPIC_API_KEY belum diset di environment variables" }, { status: 500 });
   }
 
   const { sourceUrl, sourcePlatform, subreddit, originalTitle, originalBody, coverImage } = await req.json();
@@ -267,17 +267,16 @@ FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
 
   let aiText: string;
   try {
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.75,
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 8192,
+      messages: [{ role: "user", content: prompt }],
     });
-    aiText = completion.choices[0]?.message?.content ?? "";
+    aiText = message.content[0].type === "text" ? message.content[0].text : "";
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: `Groq AI error: ${msg}` }, { status: 500 });
+    return NextResponse.json({ error: `Claude AI error: ${msg}` }, { status: 500 });
   }
 
   let parsed: { title: string; excerpt: string; category: string; body: string; imageKeywords?: string };
