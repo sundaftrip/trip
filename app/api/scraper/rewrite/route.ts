@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
+import cloudinary from "@/lib/cloudinary";
 
 export const maxDuration = 60;
 
@@ -20,6 +21,19 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
     slug = `${baseSlug}-${counter++}`;
   }
   return slug;
+}
+
+async function mirrorToCloudinary(imageUrl: string): Promise<string> {
+  try {
+    const result = await cloudinary.uploader.upload(imageUrl, {
+      folder: "blog-scraper",
+      resource_type: "image",
+      timeout: 15000,
+    });
+    return result.secure_url;
+  } catch {
+    return imageUrl; // fallback ke URL asli jika upload gagal
+  }
 }
 
 async function fetchFullArticle(url: string): Promise<string> {
@@ -250,19 +264,27 @@ imageKeywords: 3-5 kata bahasa Inggris dipisah koma, cocok untuk mencari foto ar
     }
   }
 
-  // ── Resolve images ───────────────────────────────────────────────────────
-  const articleImages = sourceUrl ? await fetchArticleImages(sourceUrl) : [];
+  // ── Resolve & mirror images ke Cloudinary ────────────────────────────────
+  const rawImages = sourceUrl ? await fetchArticleImages(sourceUrl) : [];
+
+  // Upload semua ke Cloudinary secara paralel (max 5)
+  const cloudinaryImages = await Promise.all(
+    rawImages.slice(0, 5).map((img) => mirrorToCloudinary(img))
+  );
 
   let cover = (coverImage as string | undefined) ?? "";
-  if (!cover && articleImages.length > 0) cover = articleImages[0];
-  if (!cover && sourceUrl) cover = await fetchOgImage(sourceUrl);
+  if (!cover && cloudinaryImages.length > 0) cover = cloudinaryImages[0];
+  if (!cover && sourceUrl) {
+    const og = await fetchOgImage(sourceUrl);
+    cover = og ? await mirrorToCloudinary(og) : "";
+  }
   if (!cover && parsed.imageKeywords) {
     const seed = parsed.title.length + parsed.title.charCodeAt(0);
     cover = `https://picsum.photos/seed/${seed}/1200/630`;
   }
 
-  // Inject remaining images throughout the article body
-  parsed.body = injectImagesIntoBody(parsed.body, articleImages);
+  // Inject gambar (sudah Cloudinary) ke dalam body artikel
+  parsed.body = injectImagesIntoBody(parsed.body, cloudinaryImages);
 
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });
   const slug = await generateUniqueSlug(baseSlug);
