@@ -14,6 +14,9 @@ export const PERMISSION_LABELS: Record<string, { label: string; section: string 
   text_edit:      { label: "Edit Teks Website",      section: "Konten" },
   color_edit:     { label: "Edit Warna & Tema",      section: "Konten" },
   company_edit:   { label: "Edit Info Perusahaan",   section: "Konten" },
+  scraper_view:   { label: "Lihat Scraper",          section: "Scraper" },
+  scraper_run:    { label: "Jalankan Scraper",       section: "Scraper" },
+  scraper_rewrite:{ label: "AI Rewrite Konten",      section: "Scraper" },
 };
 
 export const ALL_PERMISSION_KEYS = Object.keys(PERMISSION_LABELS);
@@ -24,11 +27,13 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     receipt_view: true, receipt_create: true, receipt_edit: true, receipt_delete: true,
     blog_create: true,  blog_edit: true,  blog_delete: true,  blog_publish: true,
     text_edit: true,    color_edit: true, company_edit: true,
+    scraper_view: true, scraper_run: true, scraper_rewrite: true,
   },
   EDITOR: {
     tour_create: false, tour_edit: true,  tour_delete: false, tour_status: false,
     receipt_view: true, receipt_create: true, receipt_edit: true, receipt_delete: false,
     blog_create: true,  blog_edit: true,  blog_delete: false, blog_publish: false,
     text_edit: true,    color_edit: false, company_edit: false,
+    scraper_view: true, scraper_run: false, scraper_rewrite: false,
   },
 };

@@ -94,19 +94,34 @@ model Tour {
 }
 
 model Blog {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  title     String
-  excerpt   String?
-  cover     String?
-  category  String?
-  date      DateTime @default(now())
-  author    String?
-  body      String?
-  readTime  String?
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  title          String
+  excerpt        String?
+  cover          String?
+  category       String?
+  date           DateTime        @default(now())
+  author         String?
+  body           String?
+  readTime       String?
+  published      Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  scrapedContent ScrapedContent?
+}
+
+model ScrapedContent {
+  id             String   @id @default(cuid())
+  sourceUrl      String   @unique
+  sourcePlatform String
+  subreddit      String?
+  originalTitle  String
+  originalBody   String
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  blog           Blog?    @relation(fields: [blogId], references: [id])
+  blogId         String?  @unique
 }
 
 model SiteText {
