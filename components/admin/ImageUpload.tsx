@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { Upload, X, AlertCircle } from "lucide-react";
-import Image from "next/image";
 
 interface Props {
   value: string;
@@ -100,7 +99,8 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
     <div>
       {!multiple && value ? (
         <div className="relative w-48 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-          <Image src={value} alt="Preview" fill className="object-cover" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt="Preview" className="w-full h-full object-cover" />
           <button type="button" onClick={() => onChange("")}
             className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition">
             <X size={12} />
