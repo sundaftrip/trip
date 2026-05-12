@@ -308,8 +308,8 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={logo || "/logo.png"} alt={name} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
-            {tagline && <p className="text-sm leading-relaxed text-gray-600 max-w-xs">{tagline}</p>}
-            {nib && <p className="text-xs text-gray-700 mt-3">NIB {nib}</p>}
+            {tagline && <p className="text-sm leading-relaxed text-gray-500 max-w-xs">{tagline}</p>}
+            {nib && <p className="text-xs text-gray-500 mt-3">NIB {nib}</p>}
           </div>
 
           <div>
