@@ -640,6 +640,92 @@ body {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
+/* ─── ATLAS THEME UTILITIES ─── */
+:root {
+  --at-bg:      #ffffff;
+  --at-card:    #ffffff;
+  --at-border:  #1a1a1a;
+  --at-text:    #0a0a0a;
+  --at-subtext: #6b7280;
+  --at-grid:    rgba(0,0,0,0.06);
+  --at-shadow:  rgba(0,0,0,0.06);
+  --at-muted:   #f5f5f5;
+}
+.dark {
+  --at-bg:      #0a0a0a;
+  --at-card:    #111111;
+  --at-border:  rgba(255,255,255,0.18);
+  --at-text:    #f5f5f5;
+  --at-subtext: #9ca3af;
+  --at-grid:    rgba(255,255,255,0.05);
+  --at-shadow:  rgba(0,0,0,0.4);
+  --at-muted:   #1a1a1a;
+}
+.at-card {
+  border: 1px solid var(--at-border);
+  border-radius: 4px;
+  background: var(--at-card);
+  box-shadow: 0 1px 4px var(--at-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.at-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--at-shadow);
+}
+.at-pill {
+  border: 1px solid var(--at-border);
+  border-radius: 2px;
+  font-weight: 600;
+  padding: 2px 10px;
+  font-size: 10px;
+  line-height: 1.6;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+}
+.at-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--at-border);
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.at-btn:hover {
+  background: var(--at-text);
+  color: var(--at-bg);
+}
+.at-btn-solid {
+  background: var(--at-text);
+  color: var(--at-bg);
+  border: 1px solid var(--at-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.at-btn-solid:hover {
+  background: transparent;
+  color: var(--at-text);
+}
+.at-grid-bg {
+  background-image:
+    linear-gradient(var(--at-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--at-grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
 /* Prose dark overrides */
 .dark .prose { color: #cbd5e1; }
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f1f5f9; }

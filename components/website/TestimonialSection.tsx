@@ -162,6 +162,36 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
     </section>
   );
 
+  /* ── ATLAS ── */
+  if (theme === "atlas") return (
+    <section className="py-24 overflow-hidden at-grid-bg" style={{ background: "var(--at-bg)" }}>
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Testimoni</span>
+          <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Kata Mereka</h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`at-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-60"}`}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--at-subtext)" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4 border-t"
+                style={{ borderColor: "var(--at-border)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "var(--at-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-xs" style={{ color: "var(--at-subtext)" }}>{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   /* ── MAP / ATLAS ── */
   if (theme === "map") return (
     <section className="py-24 overflow-hidden relative"

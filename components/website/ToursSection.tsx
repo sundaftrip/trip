@@ -103,6 +103,32 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── ATLAS ── */
+  if (theme === "atlas") return (
+    <section className="py-24 at-grid-bg" style={{ background: "var(--at-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-14">
+            <div>
+              <span className="at-pill mb-4 inline-flex" style={{ color: "var(--at-subtext)" }}>Paket Tersedia</span>
+              <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Tour Pilihan</h2>
+            </div>
+            <Link href="/tours" className="at-btn px-5 py-2.5 text-sm" style={{ color: "var(--at-text)" }}>
+              Semua Tour <ArrowRight size={14} />
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="atlas" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── MAP / ATLAS ── */
   if (theme === "map") return (
     <section className="py-24 relative overflow-hidden"

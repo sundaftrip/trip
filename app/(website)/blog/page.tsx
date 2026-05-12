@@ -23,16 +23,18 @@ export default async function BlogPage() {
   const isPixel    = theme === "pixel";
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap;
+  const isAtlas    = theme === "atlas";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas;
 
-  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : undefined;
-  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : undefined;
+  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : isAtlas ? "var(--at-bg)" : undefined;
+  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isAtlas ? "var(--at-text)" : undefined;
+  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
 
   const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
     backgroundSize: "24px 24px",
-  } : isMap ? { backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" } : {};
+  } : isMap ? { backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }
+    : isAtlas ? { backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)", backgroundSize: "32px 32px" } : {};
 
   const wrapperStyle = pageBg ? { background: pageBg, ...pixelGrid } : undefined;
 
@@ -48,6 +50,7 @@ export default async function BlogPage() {
               {isTropical && <span className="tr-pill mb-3 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>📰 Jurnal</span>}
               {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► JURNAL</span>}
               {isGlobe    && <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-lavender)", color: "var(--gl-on-lavender)", borderColor: "transparent" }}>🗺️ Jurnal</span>}
+              {isAtlas    && <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Jurnal</span>}
               <h1 className="text-4xl font-black mt-3 mb-2" style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
                 {isPixel ? "BLOG & TIPS TRAVEL" : "Blog & Tips Travel"}
               </h1>
@@ -161,6 +164,31 @@ export default async function BlogPage() {
                   <h2 className="font-black mb-2 line-clamp-2" style={{ color: "var(--px-text)" }}>{post.title}</h2>
                   {post.excerpt && <p className="text-sm line-clamp-2 mb-4" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{post.excerpt}</p>}
                   <div className="flex items-center justify-between text-[10px]" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
+                    <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : isAtlas ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="block at-card overflow-hidden group">
+                <div className="relative h-48 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 at-pill" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h2 className="font-semibold mb-2 line-clamp-2" style={{ color: "var(--at-text)" }}>{post.title}</h2>
+                  {post.excerpt && <p className="text-sm line-clamp-2 mb-4" style={{ color: "var(--at-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-xs" style={{ color: "var(--at-subtext)" }}>
                     <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(post.date)}</span>
                     {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
                   </div>

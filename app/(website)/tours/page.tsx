@@ -69,13 +69,15 @@ export default async function ToursPage({
   const isPixel    = theme === "pixel";
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap;
+  const isAtlas    = theme === "atlas";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas;
 
   const pageBg = isKawaii   ? "var(--kw-bg)"
                : isTropical ? "var(--tr-bg)"
                : isPixel    ? "var(--px-bg)"
                : isGlobe    ? "var(--gl-bg)"
                : isMap      ? "var(--mp-bg)"
+               : isAtlas    ? "var(--at-bg)"
                : undefined;
 
   const pageGrid = isPixel ? {
@@ -84,6 +86,9 @@ export default async function ToursPage({
   } : isMap ? {
     backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)",
     backgroundSize: "28px 28px",
+  } : isAtlas ? {
+    backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)",
+    backgroundSize: "32px 32px",
   } : {};
 
   const headColor = isKawaii   ? "var(--kw-text)"
@@ -91,6 +96,7 @@ export default async function ToursPage({
                   : isPixel    ? "var(--px-text)"
                   : isGlobe    ? "var(--gl-text)"
                   : isMap      ? "var(--mp-text)"
+                  : isAtlas    ? "var(--at-text)"
                   : undefined;
 
   const subColor = isKawaii   ? "var(--kw-subtext)"
@@ -98,6 +104,7 @@ export default async function ToursPage({
                  : isPixel    ? "var(--px-subtext)"
                  : isGlobe    ? "var(--gl-subtext)"
                  : isMap      ? "var(--mp-subtext)"
+                 : isAtlas    ? "var(--at-subtext)"
                  : undefined;
 
   /* pill builders for filter chips */
@@ -107,6 +114,7 @@ export default async function ToursPage({
     if (isPixel)    return { className: "px-pill font-black", style: { background: "var(--site-accent)", color: "#fff" } };
     if (isGlobe)    return { className: "gl-pill font-black", style: { background: "var(--gl-border)", color: "#fff", borderColor: "transparent" } };
     if (isMap)      return { className: "mp-pill font-black", style: { background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" } };
+    if (isAtlas)    return { className: "at-pill font-semibold", style: { background: "var(--at-text)", color: "var(--at-bg)" } };
     return { className: "px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white", style: {} };
   }
   function pillInactive() {
@@ -115,6 +123,7 @@ export default async function ToursPage({
     if (isPixel)    return { className: "px-pill hover:opacity-80 transition-opacity", style: { background: "var(--px-card)", color: "var(--px-text)" } };
     if (isGlobe)    return { className: "gl-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--gl-card)", color: "var(--gl-text)" } };
     if (isMap)      return { className: "mp-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" } };
+    if (isAtlas)    return { className: "at-pill hover:opacity-80 transition-opacity", style: { color: "var(--at-text)" } };
     return { className: "px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-blue-400", style: {} };
   }
 
@@ -133,6 +142,7 @@ export default async function ToursPage({
               {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► SEMUA PAKET</span>}
               {isGlobe    && <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>🌍 Semua Paket</span>}
               {isMap      && <span className="mp-pill mb-3 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Semua Paket</span>}
+              {isAtlas    && <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Semua Paket</span>}
               <h1 className={`text-4xl font-black mt-3 mb-2 ${isPixel ? "font-mono" : ""}`} style={{ color: headColor, fontFamily: isPixel ? "monospace" : undefined }}>
                 {isPixel ? "PAKET TOUR" : "Paket Tour"}
               </h1>
@@ -179,7 +189,7 @@ export default async function ToursPage({
         {/* Country sub-filter */}
         {activeContinent && countriesForActive.length > 1 && (
           <div className={`flex flex-wrap gap-2 mb-6 pl-2 ml-1 ${isOutlined ? "border-l-2" : "border-l-2 border-gray-200 dark:border-gray-700"}`}
-            style={isOutlined ? { borderColor: isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : "var(--px-border)" } : undefined}>
+            style={isOutlined ? { borderColor: isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : isAtlas ? "var(--at-border)" : "var(--px-border)" } : undefined}>
             <a href={buildUrl({ continent: activeContinent, country: undefined })} {...(!params.country ? pillActive() : pillInactive())}>
               Semua {activeContinent}
             </a>

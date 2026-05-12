@@ -72,6 +72,38 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
     );
   }
 
+  /* ── ATLAS ── */
+  if (theme === "atlas") return (
+    <section className="py-24 at-grid-bg" style={{ background: "var(--at-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+            <div>
+              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Keunggulan Kami</span>
+              <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>{title}</h2>
+            </div>
+            <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>{subtitle}</p>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {items.map(({ title, desc, Icon }, i) => (
+            <AnimateIn key={title} delay={i * 100}>
+              <div className="at-card p-7 h-full">
+                <p className="text-5xl font-bold mb-3" style={{ color: "var(--at-muted)" }}>0{i + 1}</p>
+                <div className="w-11 h-11 border flex items-center justify-center mb-4"
+                  style={{ background: "var(--at-muted)", borderColor: "var(--at-border)" }}>
+                  <Icon size={20} style={{ color: "var(--at-text)" }} />
+                </div>
+                <h3 className="font-semibold text-sm leading-snug mb-2" style={{ color: "var(--at-text)" }}>{title}</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>{desc}</p>
+              </div>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── MAP / ATLAS ── */
   if (theme === "map") {
     const cardBgs = ["var(--mp-water)", "var(--mp-land)", "var(--mp-rust)", "var(--mp-accent)"];

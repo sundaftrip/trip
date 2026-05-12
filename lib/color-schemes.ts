@@ -124,6 +124,17 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       color_accent: "#0d9488", color_eyebrow: "#2dd4bf",
     },
   },
+  {
+    id: "mono",
+    name: "Mono",
+    desc: "Hitam & putih bersih",
+    swatch: ["#000000", "#1a1a1a", "#6b7280", "#f5f5f5"],
+    colors: {
+      color_hero: "#000000", color_heading: "#0a0a0a",
+      color_tour_title: "#0a0a0a", color_blog_title: "#0a0a0a",
+      color_accent: "#1a1a1a", color_eyebrow: "#6b7280",
+    },
+  },
 ];
 
 export const DEFAULT_SCHEME_ID = "forest";

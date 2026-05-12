@@ -26,18 +26,20 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   const isPixel    = theme === "pixel";
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap;
+  const isAtlas    = theme === "atlas";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas;
 
-  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : undefined;
-  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : undefined;
-  const cardBg  = isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : isGlobe ? "var(--gl-card)" : isMap ? "var(--mp-card)" : undefined;
-  const bdrClr  = isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : isMap ? "var(--mp-border)" : undefined;
+  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : isAtlas ? "var(--at-bg)" : undefined;
+  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isAtlas ? "var(--at-text)" : undefined;
+  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
+  const cardBg  = isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : isGlobe ? "var(--gl-card)" : isMap ? "var(--mp-card)" : isAtlas ? "var(--at-card)" : undefined;
+  const bdrClr  = isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : isMap ? "var(--mp-border)" : isAtlas ? "var(--at-border)" : undefined;
 
   const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
     backgroundSize: "24px 24px",
-  } : isMap ? { backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" } : {};
+  } : isMap ? { backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }
+    : isAtlas ? { backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)", backgroundSize: "32px 32px" } : {};
 
   const wrapperStyle = pageBg ? { background: pageBg, ...pixelGrid } : undefined;
 
@@ -48,10 +50,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         {/* Back link */}
         {isOutlined ? (
           <Link href="/blog"
-            className={`inline-flex items-center gap-1.5 mb-8 text-sm font-black transition-opacity hover:opacity-70 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isGlobe ? "gl-pill" : "px-pill"}`}
+            className={`inline-flex items-center gap-1.5 mb-8 text-sm font-black transition-opacity hover:opacity-70 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isGlobe ? "gl-pill" : isAtlas ? "at-pill" : "px-pill"}`}
             style={isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                  : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
                  : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
+                 : isAtlas    ? { color: "var(--at-text)" }
                  :               { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
             <ArrowLeft size={14} /> Kembali ke Blog
           </Link>
@@ -64,10 +67,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         {/* Category badge */}
         {post.category && (
           isOutlined ? (
-            <span className={`inline-flex mb-4 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isGlobe ? "gl-pill" : "px-pill"}`}
+            <span className={`inline-flex mb-4 ${isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isGlobe ? "gl-pill" : isAtlas ? "at-pill" : "px-pill"}`}
               style={isKawaii   ? { background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-1.5deg)" }
                    : isTropical ? { background: "var(--tr-peach)", color: "var(--tr-text)" }
                    : isGlobe    ? { background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }
+                   : isAtlas    ? { color: "var(--at-subtext)" }
                    :               { background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
               {post.category}
             </span>

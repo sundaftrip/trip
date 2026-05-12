@@ -144,6 +144,53 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     </footer>
   );
 
+  /* ── ATLAS ── */
+  if (theme === "atlas") return (
+    <footer className="border-t at-grid-bg"
+      style={{ background: "var(--at-bg)", borderColor: "var(--at-border)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "var(--at-border)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--at-subtext)" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--at-subtext)" }}>NIB {nib}</p>}
+          </div>
+
+          <div>
+            <span className="at-pill mb-5 inline-flex" style={{ color: "var(--at-subtext)" }}>Navigasi</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-subtext)" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="at-pill mb-5 inline-flex" style={{ color: "var(--at-subtext)" }}>Kontak</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--at-border)" }} />
+                  {href
+                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--at-subtext)" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--at-subtext)" }}>
+          <p>© {new Date().getFullYear()} {name}</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
   /* ── MAP / ATLAS ── */
   if (theme === "map") return (
     <footer className="relative overflow-hidden border-t-2"

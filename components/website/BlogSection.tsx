@@ -63,6 +63,51 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── ATLAS ── */
+  if (theme === "atlas") return (
+    <section className="py-24 at-grid-bg" style={{ background: "var(--at-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Tips &amp; Inspirasi</h2>
+            </div>
+            <Link href="/blog" className="at-btn px-4 py-2 text-sm" style={{ color: "var(--at-text)" }}>
+              Semua Artikel <ArrowRight size={14} />
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block at-card overflow-hidden group">
+                <div className="relative h-44 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 at-pill" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="font-semibold mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--at-text)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--at-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--at-subtext)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── MAP / ATLAS ── */
   if (theme === "map") return (
     <section className="py-24 relative overflow-hidden"

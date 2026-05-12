@@ -46,6 +46,7 @@ const THEMES = [
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
   { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
+  { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
 ];
 
 export default function SettingsPage() {
@@ -374,6 +375,26 @@ export default function SettingsPage() {
                         {/* CTA */}
                         <div className="h-5 w-16 border-2 text-[8px] font-black flex items-center justify-center relative z-10" style={{ borderColor: "#b8956a", background: currentAccent, color: "#fff", boxShadow: "2px 2px 0 #b8956a" }}>
                           Jelajahi
+                        </div>
+                      </div>
+                    )}
+                    {key === "atlas" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#ffffff" }}>
+                        {/* grid lines */}
+                        <div className="absolute inset-0 rounded-lg" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.06) 1px,transparent 1px)", backgroundSize: "10px 10px" }} />
+                        {/* thin card */}
+                        <div className="absolute top-3 left-3 right-3 h-8 border rounded" style={{ background: "#ffffff", borderColor: "#1a1a1a" }}>
+                          <div className="absolute inset-x-2 top-1.5 h-1 rounded-sm bg-gray-900 w-10" />
+                          <div className="absolute inset-x-2 bottom-1.5 h-0.5 rounded-sm bg-gray-300 w-8" />
+                        </div>
+                        {/* pill label */}
+                        <div className="flex gap-1 mb-1.5 relative z-10">
+                          <div className="h-4 px-1.5 text-[7px] font-semibold flex items-center border" style={{ background: "transparent", borderColor: "#1a1a1a", color: "#0a0a0a", borderRadius: "2px" }}>PAKET</div>
+                          <div className="h-4 px-1.5 text-[7px] font-semibold flex items-center border" style={{ background: "transparent", borderColor: "#1a1a1a", color: "#0a0a0a", borderRadius: "2px" }}>TOUR</div>
+                        </div>
+                        {/* CTA */}
+                        <div className="h-5 w-16 border text-[8px] font-semibold flex items-center justify-center relative z-10" style={{ borderColor: "#1a1a1a", background: "#0a0a0a", color: "#ffffff", borderRadius: "4px" }}>
+                          Lihat Tour
                         </div>
                       </div>
                     )}

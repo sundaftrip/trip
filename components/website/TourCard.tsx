@@ -481,6 +481,68 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+
+  return (
+    <div className={`at-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
+
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 at-pill font-semibold"
+            style={{ background: "var(--at-text)", color: "var(--at-bg)" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 at-pill"
+            style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
+            {tour.badge}
+          </div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="at-pill" style={{ background: "var(--at-card)", color: "var(--at-text)" }}>
+              {isFull ? "Sold Out" : "Trip Selesai"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--at-subtext)" }}>
+          {tour.category} · {tour.country}
+        </p>
+        <h3 className="font-semibold text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--at-text)" }}>
+          {tour.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{tour.seatsLeft} seat</span>
+        </div>
+        {tour.promoPrice && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        )}
+        {!isDimmed && (
+          <div className="pt-3 border-t flex items-center justify-between"
+            style={{ borderColor: "var(--at-border)" }}>
+            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--at-subtext)" }}>Lihat detail →</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -495,6 +557,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

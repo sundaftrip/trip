@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
   featuredImage?: string | null;
 }
 
@@ -427,6 +427,51 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               className="px-btn px-8 py-4 text-sm"
               style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
               [WA] CHAT KAMI
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── ATLAS ── */
+  if (theme === "atlas") return (
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4 at-grid-bg"
+      style={{ background: "var(--at-bg)" }}>
+      <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="mb-8 hero-fade-up">
+          <span className="at-pill" style={{ color: "var(--at-text)" }}>
+            {eyebrow}
+          </span>
+        </div>
+
+        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
+          style={{ color: "var(--at-text)" }}>
+          <TitleWords />
+        </h1>
+
+        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+            {t("hero_subtitle", "Destinasi Pilihan")}
+          </span>
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+            Paket Lengkap
+          </span>
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+            Terpercaya
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/tours"
+            className="at-btn-solid px-8 py-4 text-sm">
+            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              className="at-btn px-8 py-4 text-sm"
+              style={{ color: "var(--at-text)" }}>
+              WhatsApp
             </a>
           )}
         </div>
