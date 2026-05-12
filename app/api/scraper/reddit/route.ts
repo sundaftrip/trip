@@ -10,31 +10,68 @@ const REDDIT_HEADERS = {
   "Accept": "application/json",
 };
 
+type RedditPost = {
+  data: {
+    title: string;
+    selftext: string;
+    url: string;
+    permalink: string;
+    score: number;
+    num_comments: number;
+    is_self: boolean;
+  };
+};
+
+async function fetchSubredditTop(
+  subreddit: string,
+  period: "month" | "year" = "month"
+): Promise<RedditPost[]> {
+  const apiUrl = `https://www.reddit.com/r/${subreddit}/top.json?t=${period}&limit=50`;
+  const res = await fetch(apiUrl, { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(12000) });
+  if (!res.ok) throw new Error(`Reddit HTTP ${res.status}`);
+  const json = await res.json();
+  return (json?.data?.children ?? []) as RedditPost[];
+}
+
 async function searchReddit(
   keyword: string,
   subreddit: string
 ): Promise<{ title: string; url: string; preview: string; score: number; numComments: number }[]> {
-  const q = encodeURIComponent(keyword || "travel experience");
-  const apiUrl = `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&sort=top&t=month&limit=25&restrict_sr=1`;
+  let posts: RedditPost[] = [];
 
-  const res = await fetch(apiUrl, { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(12000) });
-  if (!res.ok) throw new Error(`Reddit API HTTP ${res.status}`);
+  // Try keyword search first
+  if (keyword.trim()) {
+    try {
+      const q = encodeURIComponent(keyword);
+      const apiUrl = `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&sort=top&t=year&limit=50&restrict_sr=1`;
+      const res = await fetch(apiUrl, { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(12000) });
+      if (res.ok) {
+        const json = await res.json();
+        posts = (json?.data?.children ?? []) as RedditPost[];
+      }
+    } catch {
+      // fall through to top posts
+    }
+  }
 
-  const json = await res.json();
-  const posts = (json?.data?.children ?? []) as {
-    data: {
-      title: string;
-      selftext: string;
-      url: string;
-      permalink: string;
-      score: number;
-      num_comments: number;
-      is_self: boolean;
-    };
-  }[];
+  // Fall back to top posts if search returned nothing
+  if (posts.length === 0) {
+    posts = await fetchSubredditTop(subreddit, "month");
+    if (posts.length === 0) {
+      posts = await fetchSubredditTop(subreddit, "year");
+    }
+  }
 
+  const kw = keyword.toLowerCase();
   return posts
-    .filter((p) => p.data.is_self && p.data.selftext && p.data.selftext.length > 150)
+    .filter((p) => {
+      if (!p.data.is_self || !p.data.selftext || p.data.selftext.length < 100) return false;
+      if (!kw) return true;
+      return (
+        p.data.title.toLowerCase().includes(kw) ||
+        p.data.selftext.toLowerCase().includes(kw)
+      );
+    })
     .map((p) => ({
       title: p.data.title,
       url: `https://www.reddit.com${p.data.permalink}`,
@@ -86,7 +123,7 @@ export async function POST(req: NextRequest) {
       results: [],
       total: 0,
       warning: keyword
-        ? `Tidak ada postingan ditemukan untuk "${keyword}". Coba keyword lain.`
+        ? `Tidak ada postingan ditemukan untuk "${keyword}". Coba keyword lebih spesifik, contoh: "france", "tokyo", "bali budget".`
         : "Tidak ada postingan ditemukan dari Reddit.",
       errors,
     });
