@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import Anthropic from "@anthropic-ai/sdk";
 import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
@@ -52,7 +52,7 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
 }
 
 async function rewriteArticle(title: string, content: string) {
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
   const prompt = `Kamu adalah traveler Indonesia yang nulis blog perjalanan di sundaftrip.com. Tulisanmu jujur, detail, dan terasa seperti cerita dari teman — bukan artikel media.
 
@@ -88,14 +88,13 @@ FORMAT OUTPUT:
 ---BODY---
 <p>isi artikel HTML di sini</p>`;
 
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.75,
+  const message = await anthropic.messages.create({
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 8192,
+    messages: [{ role: "user", content: prompt }],
   });
 
-  const text = completion.choices[0]?.message?.content ?? "";
+  const text = message.content[0].type === "text" ? message.content[0].text : "";
   const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
 
   const sepIdx = cleaned.indexOf("---BODY---");
@@ -129,8 +128,8 @@ export async function GET(req: NextRequest) {
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!process.env.GROQ_API_KEY) {
-    return NextResponse.json({ error: "GROQ_API_KEY tidak diset" }, { status: 500 });
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: "ANTHROPIC_API_KEY tidak diset" }, { status: 500 });
   }
 
   const TARGET_COUNT = 2;
