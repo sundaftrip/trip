@@ -3,11 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Calendar, Clock, Users, CheckCircle, XCircle, ArrowLeft, MessageCircle } from "lucide-react";
+import {
+  MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
+  ArrowLeft, MessageCircle, Camera, Building2, FileText,
+  ClipboardList, Plane, Tag, Package, Ban, Route,
+} from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
-
-
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -31,7 +33,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const isAtlas    = siteTheme === "atlas";
   const isOutlined = isTropical || isKawaii || isPixel || isAtlas;
 
-  /* theme-aware CSS values */
   const pfx   = isTropical ? "tr" : isKawaii ? "kw" : isPixel ? "px" : isAtlas ? "at" : "";
   const tBg   = isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : isPixel ? "var(--px-bg)"   : isAtlas ? "var(--at-bg)"   : undefined;
   const tText = isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : isPixel ? "var(--px-text)" : isAtlas ? "var(--at-text)" : undefined;
@@ -48,9 +49,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const greeting = companyName ? `Halo ${companyName}` : "Halo";
   const waMessage = encodeURIComponent(`${greeting}, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.`);
 
-  /* shared shorthand helpers */
   const secTitle = isOutlined
-    ? "text-2xl font-black"
+    ? "text-2xl font-black flex items-center gap-2"
     : "text-xl font-bold text-gray-900 dark:text-white";
 
   const pixelGridStyle = isPixel ? {
@@ -61,8 +61,14 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     backgroundSize: "32px 32px",
   } : {};
 
+  /* Helper: icon+label for sidebar rows (outlined themes) */
+  const sidebarLabel = (icon: React.ReactNode, label: string) =>
+    isOutlined ? (
+      <span className="flex items-center gap-1.5">{icon}{label}</span>
+    ) : label;
+
   return (
-    <div className="min-h-screen pt-16" style={isOutlined ? { background: tBg, ...pixelGridStyle } : undefined}>
+    <div className="min-h-screen pt-16" style={isOutlined ? { backgroundColor: tBg, ...pixelGridStyle } : undefined}>
       {/* Hero */}
       <div className={`relative h-72 lg:h-96 ${isOutlined ? "border-b-2" : "bg-gray-200 dark:bg-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}>
@@ -78,10 +84,22 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           <div className="flex flex-wrap items-center gap-3 text-sm">
             {isOutlined ? (
               <>
-                <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>📍 {tour.country}{tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}</span>
-                {tour.duration && <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>⏱ {tour.duration}</span>}
-                {tour.tripDate && <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate)}</span>}
-                <span className={`${pfx}-pill`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat tersisa</span>
+                <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
+                  <MapPin size={12} />{tour.country}{tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}
+                </span>
+                {tour.duration && (
+                  <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
+                    <Clock size={12} />{tour.duration}
+                  </span>
+                )}
+                {tour.tripDate && (
+                  <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
+                    <Calendar size={12} />{formatDate(tour.tripDate)}
+                  </span>
+                )}
+                <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
+                  <Users size={12} />{tour.seatsLeft} seat tersisa
+                </span>
               </>
             ) : (
               <span className="flex flex-wrap gap-4 text-white/80">
@@ -105,11 +123,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+
             {/* Gallery */}
             {tour.gallery.length > 0 && (
               <div>
                 <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined ? "📷 Galeri" : "Galeri"}
+                  {isOutlined && <Camera size={18} />} Galeri
                 </h2>
                 <GalleryZoom images={tour.gallery} />
               </div>
@@ -120,7 +139,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {tour.inclusions.length > 0 && (
                 <div className={isOutlined ? `${pfx}-card p-5` : ""}>
                   <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                    {isOutlined ? "✅ Sudah Termasuk" : "Sudah Termasuk"}
+                    {isOutlined && <CheckCircle size={18} />} Sudah Termasuk
                   </h2>
                   <ul className="space-y-2">
                     {tour.inclusions.map((item, i) => (
@@ -134,7 +153,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {tour.exclusions.length > 0 && (
                 <div className={isOutlined ? `${pfx}-card p-5` : ""}>
                   <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                    {isOutlined ? "❌ Tidak Termasuk" : "Tidak Termasuk"}
+                    {isOutlined && <XCircle size={18} />} Tidak Termasuk
                   </h2>
                   <ul className="space-y-2">
                     {tour.exclusions.map((item, i) => (
@@ -150,33 +169,67 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Itinerary */}
             {itinerary.length > 0 && (
               <div>
-                <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined ? "🗺️ Itinerary" : "Itinerary"}
+                <h2 className={`${secTitle} mb-6`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined && <Route size={18} />} Itinerary
                 </h2>
-                <div className="space-y-3">
-                  {itinerary.map((item) => (
-                    <div key={item.day} className={`flex gap-4 ${isOutlined ? `${pfx}-card p-4` : ""}`}>
-                      {!isOutlined && (
+
+                {isAtlas ? (
+                  /* Atlas: clean vertical timeline — black & white */
+                  <div className="space-y-0">
+                    {itinerary.map((item, idx) => (
+                      <div key={item.day} className="flex gap-5">
+                        <div className="flex flex-col items-center">
+                          <div
+                            className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-xs font-bold flex items-center justify-center shrink-0"
+                            style={{ borderColor: "var(--at-border)", color: "var(--at-text)" }}
+                          >
+                            {String(item.day).padStart(2, "0")}
+                          </div>
+                          {idx < itinerary.length - 1 && (
+                            <div className="w-px flex-1 bg-black/10 dark:bg-white/10 my-1 min-h-8" />
+                          )}
+                        </div>
+                        <div className="pb-8 pt-1.5 flex-1">
+                          <h3 className="font-semibold text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
+                          {item.description && (
+                            <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : isOutlined ? (
+                  /* Other outlined themes: card + pill badge */
+                  <div className="space-y-3">
+                    {itinerary.map((item) => (
+                      <div key={item.day} className={`flex gap-4 ${pfx}-card p-4`}>
+                        <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
+                        <div>
+                          <h3 className="font-black" style={{ color: tText }}>{item.title}</h3>
+                          {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Classic: blue circle + vertical line */
+                  <div className="space-y-3">
+                    {itinerary.map((item) => (
+                      <div key={item.day} className="flex gap-4">
                         <div className="flex flex-col items-center">
                           <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0">
                             {item.day}
                           </span>
                           <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
                         </div>
-                      )}
-                      <div className={isOutlined ? "flex gap-4 w-full" : "pb-6"}>
-                        {isOutlined && (
-                          <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
-                        )}
-                        <div>
-                          <h3 className={`font-${isOutlined ? "black" : "semibold"} text-gray-900 dark:text-white`}
-                            style={isOutlined ? { color: tText } : undefined}>{item.title}</h3>
+                        <div className="pb-6">
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
                           {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -184,7 +237,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {hotelInfo && Object.keys(hotelInfo).length > 0 && (
               <div>
                 <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined ? "🏨 Hotel" : "Hotel"}
+                  {isOutlined && <Building2 size={18} />} Hotel
                 </h2>
                 <div className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
                   {Object.entries(hotelInfo).map(([k, v]) => (
@@ -202,10 +255,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {tour.visaInfo && (
               <div>
                 <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined ? "🛂 Informasi Visa" : "Informasi Visa"}
+                  {isOutlined && <FileText size={18} />} Informasi Visa
                 </h2>
                 <p className={`text-sm leading-relaxed p-4 ${isOutlined ? `${pfx}-card` : "text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl"}`}
-                  style={isOutlined ? { background: "var(--tr-sky)", color: tSub } : undefined}>
+                  style={isOutlined ? { color: tSub } : undefined}>
                   {tour.visaInfo}
                 </p>
               </div>
@@ -215,7 +268,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {tour.notes && (
               <div>
                 <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined ? "📋 Catatan Penting" : "Catatan Penting"}
+                  {isOutlined && <ClipboardList size={18} />} Catatan Penting
                 </h2>
                 <p className={`text-sm leading-relaxed p-4 ${isOutlined ? `${pfx}-card` : "text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl"}`}
                   style={isOutlined ? { background: tSun, color: tSub } : undefined}>
@@ -230,43 +283,42 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             <div className={isOutlined ? `${pfx}-card p-6` : "bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"}>
               {/* Price */}
               <div className="mb-5">
-                {isOutlined
-                  ? (
-                    <div className="mb-3">
-                      <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga per orang</p>
-                      <span className={`${pfx}-pill font-black`} style={{ background: tMint, color: tText, fontSize: "1.5rem", padding: "8px 20px" }}>
-                        {formatCurrency(tour.promoPrice ?? tour.price)}
-                      </span>
-                      {tour.promoPrice && (
-                        <p className="text-sm text-gray-400 line-through mt-2">{formatCurrency(tour.price)}</p>
-                      )}
-                      {tour.priceLandTour && (
-                        <p className="text-xs mt-1">
-                          <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Land Tour: {formatCurrency(tour.priceLandTour)}</span>
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="mb-4">
-                      <p className="text-xs text-gray-400 mb-1">Harga per orang</p>
-                      <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-                      {tour.promoPrice && <p className="text-sm text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
-                      {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Land Tour: {formatCurrency(tour.priceLandTour)}</p>}
-                    </div>
-                  )}
+                {isOutlined ? (
+                  <div className="mb-3">
+                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga per orang</p>
+                    <span className={`${pfx}-pill font-black`} style={{ background: tMint, color: tText, fontSize: "1.5rem", padding: "8px 20px" }}>
+                      {formatCurrency(tour.promoPrice ?? tour.price)}
+                    </span>
+                    {tour.promoPrice && (
+                      <p className="text-sm text-gray-400 line-through mt-2">{formatCurrency(tour.price)}</p>
+                    )}
+                    {tour.priceLandTour && (
+                      <p className="text-xs mt-1">
+                        <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Land Tour: {formatCurrency(tour.priceLandTour)}</span>
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-400 mb-1">Harga per orang</p>
+                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+                    {tour.promoPrice && <p className="text-sm text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
+                    {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Land Tour: {formatCurrency(tour.priceLandTour)}</p>}
+                  </div>
+                )}
               </div>
 
               {/* CTA */}
               {tour.status === "FULL" ? (
-                <div className={`w-full py-3 text-center font-black mb-3 ${isOutlined ? `${pfx}-card` : "bg-red-100 text-red-700 rounded-xl"}`}
+                <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-red-100 text-red-700 rounded-xl"}`}
                   style={isOutlined ? { background: "#fee2e2", color: "#991b1b" } : undefined}>
-                  ✋ FULLY BOOKED
+                  <Ban size={16} /> FULLY BOOKED
                 </div>
               ) : (
                 <a href={`https://wa.me/${waNumber}?text=${waMessage}`} target="_blank" rel="noreferrer"
                   className={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
                   style={isOutlined ? { background: "var(--site-accent)", color: "#fff", justifyContent: "center" } : undefined}>
-                  💬 Pesan via WhatsApp
+                  <MessageCircle size={18} /> Pesan via WhatsApp
                 </a>
               )}
 
@@ -279,25 +331,33 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 style={isOutlined ? { borderColor: tBdr } : undefined}>
                 {tour.tripDate && (
                   <div className="flex justify-between">
-                    <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "✈ Keberangkatan" : "Keberangkatan"}</span>
+                    <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
+                      {sidebarLabel(<Plane size={12} />, "Keberangkatan")}
+                    </span>
                     <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
                       style={isOutlined ? { color: tText } : undefined}>{formatDate(tour.tripDate)}</span>
                   </div>
                 )}
                 {tour.duration && (
                   <div className="flex justify-between">
-                    <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "⏱ Durasi" : "Durasi"}</span>
+                    <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
+                      {sidebarLabel(<Clock size={12} />, "Durasi")}
+                    </span>
                     <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
                       style={isOutlined ? { color: tText } : undefined}>{tour.duration}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "👤 Sisa Seat" : "Sisa Seat"}</span>
+                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
+                    {sidebarLabel(<Users size={12} />, "Sisa Seat")}
+                  </span>
                   <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
                     style={isOutlined ? { color: tText } : undefined}>{tour.seatsLeft}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>{isOutlined ? "🏷️ Kategori" : "Kategori"}</span>
+                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
+                    {sidebarLabel(<Tag size={12} />, "Kategori")}
+                  </span>
                   <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
                     style={isOutlined ? { color: tText } : undefined}>{tour.category}</span>
                 </div>
@@ -307,9 +367,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {addOns.length > 0 && (
                 <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
                   style={isOutlined ? { borderColor: tBdr } : undefined}>
-                  <p className={`text-xs uppercase tracking-wider mb-2 ${isOutlined ? "font-black" : "font-semibold text-gray-500"}`}
+                  <p className={`text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 ${isOutlined ? "font-black" : "font-semibold text-gray-500"}`}
                     style={isOutlined ? { color: tSub } : undefined}>
-                    {isOutlined ? "🎁 Add Ons" : "Add Ons"}
+                    {isOutlined && <Package size={12} />} Add Ons
                   </p>
                   <div className="space-y-1.5">
                     {addOns.map((item) => (
