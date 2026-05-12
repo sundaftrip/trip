@@ -61,7 +61,9 @@ CONTOH GAYA TULISAN YANG HARUS KAMU TIRU:
 
 Yang bikin cerita itu bagus: hook langsung, waktu spesifik, kesalahan diakui, karakter pendukung, momen tak terduga, harga nyata, emosi hadir tapi tidak lebay.
 
-TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti contoh. Target 1500–2000 kata.
+LARANGAN KERAS: Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.
+
+TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti contoh. Target 1500-2000 kata.
 
 WAJIB ADA (masukkan natural ke dalam cerita):
 - Hook kuat di paragraf pertama

@@ -207,7 +207,9 @@ export async function POST(req: NextRequest) {
 
   const prompt = `Kamu adalah traveler Indonesia yang pernah mengunjungi tempat ini dan sekarang nulis cerita di blog pribadi sundaftrip.com.
 
-PERAN KAMU: Kamu SUDAH pergi ke tempat ini. Ceritakan pengalamanmu sendiri. Kalau ada detail yang perlu dikarang — nama hotel, nama restoran, percakapan, harga — karang yang masuk akal dan spesifik. JANGAN tulis hal-hal generik.
+PERAN KAMU: Kamu SUDAH pergi ke tempat ini. Ceritakan pengalamanmu sendiri. Kalau ada detail yang perlu dikarang (nama hotel, nama restoran, percakapan, harga), karang yang masuk akal dan spesifik. JANGAN tulis hal-hal generik.
+
+LARANGAN KERAS: Jangan gunakan tanda "—" (em dash) sama sekali. Manusia Indonesia tidak nulis pakai tanda itu. Ganti dengan koma, titik, atau kalimat baru.
 
 ═══ PERBEDAAN TULISAN BAGUS VS JELEK ═══
 
