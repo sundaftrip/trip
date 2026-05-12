@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import Groq from "groq-sdk";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
-const SUBREDDITS = ["travel", "solotravel", "backpacking", "TravelHacks", "digitalnomad"];
+const SUBREDDITS = ["travel", "solotravel", "backpacking"];
 
 const REDDIT_HEADERS = {
   "User-Agent": "Mozilla/5.0 (compatible; sundaftrip-bot/1.0; +https://sundaftrip.com)",
@@ -14,7 +15,6 @@ type RedditPost = {
   data: {
     title: string;
     selftext: string;
-    url: string;
     permalink: string;
     score: number;
     num_comments: number;
@@ -22,48 +22,33 @@ type RedditPost = {
   };
 };
 
-async function fetchSubredditTop(
-  subreddit: string,
-  period: "month" | "year" = "month"
-): Promise<RedditPost[]> {
-  const apiUrl = `https://www.reddit.com/r/${subreddit}/top.json?t=${period}&limit=50`;
-  const res = await fetch(apiUrl, { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(12000) });
-  if (!res.ok) throw new Error(`Reddit HTTP ${res.status}`);
-  const json = await res.json();
-  return (json?.data?.children ?? []) as RedditPost[];
-}
-
-async function searchReddit(
+async function tryReddit(
   keyword: string,
   subreddit: string
 ): Promise<{ title: string; url: string; preview: string; score: number; numComments: number }[]> {
-  let posts: RedditPost[] = [];
+  // Try top posts (more reliable than search from server)
+  const periods: ("month" | "year")[] = ["month", "year"];
+  let rawPosts: RedditPost[] = [];
 
-  // Try keyword search first
-  if (keyword.trim()) {
+  for (const period of periods) {
     try {
-      const q = encodeURIComponent(keyword);
-      const apiUrl = `https://www.reddit.com/r/${subreddit}/search.json?q=${q}&sort=top&t=year&limit=50&restrict_sr=1`;
-      const res = await fetch(apiUrl, { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(12000) });
-      if (res.ok) {
-        const json = await res.json();
-        posts = (json?.data?.children ?? []) as RedditPost[];
-      }
+      const res = await fetch(
+        `https://www.reddit.com/r/${subreddit}/top.json?t=${period}&limit=50`,
+        { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(10000) }
+      );
+      if (!res.ok) continue;
+      const json = await res.json();
+      rawPosts = (json?.data?.children ?? []) as RedditPost[];
+      if (rawPosts.length > 0) break;
     } catch {
-      // fall through to top posts
+      continue;
     }
   }
 
-  // Fall back to top posts if search returned nothing
-  if (posts.length === 0) {
-    posts = await fetchSubredditTop(subreddit, "month");
-    if (posts.length === 0) {
-      posts = await fetchSubredditTop(subreddit, "year");
-    }
-  }
+  if (rawPosts.length === 0) return [];
 
   const kw = keyword.toLowerCase();
-  return posts
+  return rawPosts
     .filter((p) => {
       if (!p.data.is_self || !p.data.selftext || p.data.selftext.length < 100) return false;
       if (!kw) return true;
@@ -81,6 +66,53 @@ async function searchReddit(
     }));
 }
 
+async function generateAiTopics(keyword: string): Promise<
+  { title: string; url: string; preview: string; score: number; numComments: number }[]
+> {
+  if (!process.env.GROQ_API_KEY) return [];
+
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  const destination = keyword || "destinasi wisata populer";
+
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "user",
+        content: `Kamu adalah traveler Indonesia yang sering nulis blog perjalanan.
+Buat 10 ide artikel blog perjalanan tentang "${destination}" yang menarik dan informatif.
+Setiap artikel harus punya sudut pandang unik — pengalaman nyata, tips praktis, atau cerita seru.
+
+Kembalikan HANYA array JSON valid:
+[
+  {"title": "judul artikel santai dan natural", "preview": "2-3 kalimat ringkasan isi artikel, gaya cerita personal"},
+  ...
+]`,
+      },
+    ],
+    temperature: 0.8,
+    max_tokens: 2000,
+  });
+
+  const text = completion.choices[0]?.message?.content ?? "";
+  const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+  const match = cleaned.match(/\[[\s\S]*\]/);
+  if (!match) return [];
+
+  try {
+    const items = JSON.parse(match[0]) as { title: string; preview: string }[];
+    return items.slice(0, 10).map((item, i) => ({
+      title: item.title,
+      url: `ai://generated/${Date.now()}-${i}`,
+      preview: item.preview,
+      score: 0,
+      numComments: 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -90,69 +122,77 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { keyword = "" } = body;
 
-  const allThreads: {
+  // Try Reddit across multiple subreddits
+  const allPosts: {
     title: string;
     url: string;
     preview: string;
     score: number;
     numComments: number;
     subreddit: string;
+    source: "reddit" | "ai";
   }[] = [];
 
-  const errors: string[] = [];
-
-  // Search across multiple subreddits in parallel
-  const targets = keyword.trim() ? SUBREDDITS.slice(0, 3) : SUBREDDITS.slice(0, 2);
   await Promise.all(
-    targets.map(async (sub) => {
-      try {
-        const posts = await searchReddit(keyword, sub);
-        for (const p of posts) {
-          if (!allThreads.some((t) => t.url === p.url)) {
-            allThreads.push({ ...p, subreddit: sub });
-          }
+    SUBREDDITS.map(async (sub) => {
+      const posts = await tryReddit(keyword, sub);
+      for (const p of posts) {
+        if (!allPosts.some((x) => x.url === p.url)) {
+          allPosts.push({ ...p, subreddit: sub, source: "reddit" });
         }
-      } catch (err) {
-        errors.push(`r/${sub}: ${err instanceof Error ? err.message : String(err)}`);
       }
     })
   );
 
-  if (allThreads.length === 0) {
-    return NextResponse.json({
-      results: [],
-      total: 0,
-      warning: keyword
-        ? `Tidak ada postingan ditemukan untuk "${keyword}". Coba keyword lebih spesifik, contoh: "france", "tokyo", "bali budget".`
-        : "Tidak ada postingan ditemukan dari Reddit.",
-      errors,
-    });
+  allPosts.sort((a, b) => b.score - a.score);
+
+  let warning: string | undefined;
+  let source: "reddit" | "ai" = "reddit";
+
+  // Fall back to AI-generated topics if Reddit returned nothing
+  if (allPosts.length === 0) {
+    const aiTopics = await generateAiTopics(keyword);
+    for (const t of aiTopics) {
+      allPosts.push({ ...t, subreddit: "AI Generated", source: "ai" });
+    }
+    source = "ai";
+    if (allPosts.length > 0) {
+      warning = `Reddit tidak tersedia saat ini. Menampilkan ${allPosts.length} ide artikel yang dibuat AI — klik Rewrite untuk menghasilkan artikel lengkap.`;
+    } else {
+      return NextResponse.json({
+        results: [],
+        total: 0,
+        warning: "Tidak ada konten ditemukan. Pastikan GROQ_API_KEY sudah diset.",
+      });
+    }
   }
 
-  // Sort by score desc
-  allThreads.sort((a, b) => b.score - a.score);
-
-  // Check which URLs already imported
-  const existingUrls = await prisma.scrapedContent.findMany({
-    where: { sourceUrl: { in: allThreads.map((t) => t.url) } },
-    select: { sourceUrl: true, status: true, blogId: true },
-  });
+  // Check which URLs already imported (skip ai:// URLs)
+  const realUrls = allPosts.filter((p) => !p.url.startsWith("ai://")).map((p) => p.url);
+  const existingUrls =
+    realUrls.length > 0
+      ? await prisma.scrapedContent.findMany({
+          where: { sourceUrl: { in: realUrls } },
+          select: { sourceUrl: true, status: true, blogId: true },
+        })
+      : [];
   const existingMap = new Map(existingUrls.map((e) => [e.sourceUrl, e]));
 
-  const results = allThreads.map((t) => ({
+  const results = allPosts.map((t) => ({
     sourceUrl: t.url,
-    sourcePlatform: "reddit",
+    sourcePlatform: t.source === "ai" ? "ai-generated" : "reddit",
     subreddit: t.subreddit,
     originalTitle: t.title,
     originalBody: t.preview,
     coverImage: "",
-    author: "Reddit Traveler",
-    score: t.score,
-    numComments: t.numComments,
+    author: t.source === "ai" ? "AI Generated" : "Reddit Traveler",
+    score: t.score || null,
+    numComments: t.numComments || null,
     alreadyImported: existingMap.has(t.url),
     importStatus: existingMap.get(t.url)?.status ?? null,
     blogId: existingMap.get(t.url)?.blogId ?? null,
+    isAiGenerated: t.source === "ai",
   }));
 
-  return NextResponse.json({ results, total: results.length, errors: errors.length ? errors : undefined });
+  return NextResponse.json({ results, total: results.length, source, warning });
 }

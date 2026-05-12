@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, RefreshCw, CheckCircle, Clock } from "lucide-react";
+import { ExternalLink, RefreshCw, CheckCircle, Clock, Sparkles } from "lucide-react";
 
 export interface ScrapedPost {
   sourceUrl: string;
@@ -15,6 +15,7 @@ export interface ScrapedPost {
   alreadyImported: boolean;
   importStatus?: string | null;
   blogId?: string | null;
+  isAiGenerated?: boolean;
   rewriteStatus?: "idle" | "loading" | "done" | "error";
   rewriteError?: string;
 }
@@ -56,26 +57,31 @@ export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Pro
             <h3 className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-2 leading-snug">
               {post.originalTitle}
             </h3>
-            <a
-              href={post.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 text-gray-400 hover:text-blue-500 transition"
-              title="Lihat sumber"
-            >
-              <ExternalLink size={14} />
-            </a>
+            {post.isAiGenerated ? (
+              <span className="shrink-0 inline-flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-1.5 py-0.5 rounded font-medium">
+                <Sparkles size={11} /> AI
+              </span>
+            ) : (
+              <a
+                href={post.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 text-gray-400 hover:text-blue-500 transition"
+                title="Lihat sumber"
+              >
+                <ExternalLink size={14} />
+              </a>
+            )}
           </div>
 
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
             <span className="capitalize bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded font-medium">
-              {post.sourcePlatform}
+              {post.isAiGenerated ? "AI Idea" : post.sourcePlatform}
             </span>
-            {post.subreddit && <span>r/{post.subreddit}</span>}
-            {post.author && <span>oleh u/{post.author}</span>}
-            {post.score != null && <span>↑ {post.score.toLocaleString()}</span>}
-            {post.numComments != null && <span>{post.numComments} komentar</span>}
+            {!post.isAiGenerated && post.subreddit && <span>r/{post.subreddit}</span>}
+            {!post.isAiGenerated && post.score != null && <span>↑ {post.score.toLocaleString()}</span>}
+            {!post.isAiGenerated && post.numComments != null && <span>{post.numComments} komentar</span>}
           </div>
 
           {/* Preview */}
