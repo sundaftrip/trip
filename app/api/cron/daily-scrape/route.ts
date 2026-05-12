@@ -197,7 +197,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "ANTHROPIC_API_KEY tidak diset" }, { status: 500 });
   }
 
-  const TARGET_COUNT = 2;
+  const TARGET_COUNT = 1;
   const published: string[] = [];
   const errors: string[] = [];
 
