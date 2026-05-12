@@ -96,7 +96,7 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
                   <p className="text-5xl font-black mb-3" style={{ color: "rgba(0,0,0,0.08)" }}>0{i + 1}</p>
                   <div className="w-11 h-11 border-2 flex items-center justify-center mb-4"
                     style={{ background: "var(--mp-card)", borderColor: "var(--mp-border)", boxShadow: "2px 2px 0 0 var(--mp-border)" }}>
-                    <Icon size={20} style={{ color: cardBgs[i] }} />
+                    <Icon size={20} style={{ color: "var(--mp-ink)" }} />
                   </div>
                   <h3 className="font-black text-sm leading-snug mb-2" style={{ color: cardFgs[i] }}>{title}</h3>
                   <p className="text-xs leading-relaxed" style={{ color: cardFgs[i], opacity: 0.85 }}>{desc}</p>

@@ -460,7 +460,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         </h3>
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tour.duration && (
-            <span className="mp-pill" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>{tour.duration}</span>
+            <span className="mp-pill" style={{ background: "var(--mp-ink)", color: "var(--mp-on-ink)", borderColor: "var(--mp-border)" }}>{tour.duration}</span>
           )}
           {tour.tripDate && (
             <span className="mp-pill" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
