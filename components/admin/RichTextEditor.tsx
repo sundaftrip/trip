@@ -8,6 +8,58 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { Bold, Italic, List, ListOrdered, Link2, Image as ImageIcon, Heading2, Heading3, Quote } from "lucide-react";
 import { useEffect, useRef } from "react";
 
+/* ── Markdown-to-HTML converter for paste ── */
+function applyInline(text: string): string {
+  return text
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*([^*]+)\*/g,     "<em>$1</em>")
+    .replace(/__([^_]+)__/g,     "<strong>$1</strong>")
+    .replace(/_([^_]+)_/g,       "<em>$1</em>");
+}
+
+function markdownToHtml(text: string): string | null {
+  const lines = text.split("\n");
+  const hasMd =
+    lines.some((l) => /^[-*•]\s/.test(l.trim())) ||
+    lines.some((l) => /^\d+\.\s/.test(l.trim())) ||
+    lines.some((l) => /^#{1,4}\s/.test(l.trim())) ||
+    /\*\*[^*]+\*\*/.test(text) || /__[^_]+__/.test(text);
+
+  if (!hasMd) return null;   // nothing to convert → let Tiptap handle as plain text
+
+  let html = "";
+  let inUl = false;
+  let inOl = false;
+
+  const closeList = () => {
+    if (inUl) { html += "</ul>"; inUl = false; }
+    if (inOl) { html += "</ol>"; inOl = false; }
+  };
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const t    = line.trim();
+
+    if (/^#{1,4}\s/.test(t)) {
+      closeList();
+      const lvl = Math.min((t.match(/^(#{1,4})/)?.[1].length ?? 1) + 1, 4);
+      html += `<h${lvl}>${applyInline(t.replace(/^#{1,4}\s/, ""))}</h${lvl}>`;
+    } else if (/^[-*•]\s/.test(t)) {
+      if (!inUl) { closeList(); html += "<ul>"; inUl = true; }
+      html += `<li>${applyInline(t.replace(/^[-*•]\s/, ""))}</li>`;
+    } else if (/^\d+\.\s/.test(t)) {
+      if (!inOl) { closeList(); html += "<ol>"; inOl = true; }
+      html += `<li>${applyInline(t.replace(/^\d+\.\s/, ""))}</li>`;
+    } else {
+      closeList();
+      html += t === "" ? "" : `<p>${applyInline(t)}</p>`;
+    }
+  }
+  closeList();
+  return html || null;
+}
+
 interface Props {
   value: string;
   onChange: (val: string) => void;
@@ -18,6 +70,8 @@ export default function RichTextEditor({ value, onChange }: Props) {
   const onChangeRef = useRef(onChange);
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
 
+  const editorRef = useRef<ReturnType<typeof useEditor>>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -27,7 +81,27 @@ export default function RichTextEditor({ value, onChange }: Props) {
     ],
     content: value,
     onUpdate: ({ editor }) => onChangeRef.current(editor.getHTML()),
+    editorProps: {
+      handlePaste(_view, event) {
+        const html  = event.clipboardData?.getData("text/html")  ?? "";
+        const plain = event.clipboardData?.getData("text/plain") ?? "";
+
+        // If clipboard already has real HTML (e.g. from Word / browser), let Tiptap handle
+        if (html.trim()) return false;
+
+        // Try to convert markdown plain text → HTML
+        const converted = markdownToHtml(plain);
+        if (!converted) return false;  // plain prose — let Tiptap handle
+
+        event.preventDefault();
+        editorRef.current?.commands.insertContent(converted);
+        return true;
+      },
+    },
   });
+
+  // keep editorRef in sync so handlePaste can access latest editor instance
+  useEffect(() => { (editorRef as React.MutableRefObject<typeof editor>).current = editor; }, [editor]);
 
   // Sync external value changes only on mount (avoid overwriting mid-edit)
   useEffect(() => {
