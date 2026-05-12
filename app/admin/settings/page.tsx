@@ -414,61 +414,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Foto Destinasi */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-5">
-        <div>
-          <h2 className="font-semibold text-gray-900 dark:text-white">Foto Halaman Destinasi</h2>
-          <p className="text-xs text-gray-400 mt-0.5">Foto hero untuk halaman destinasi spesifik. Ukuran ideal: 1600×900px.</p>
-        </div>
-        <div>
-          <label className="label">Murmansk — Aurora Borealis</label>
-          <p className="text-xs text-gray-400 mb-3">Ditampilkan di <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">/destinations/murmansk</code>. Upload foto aurora asli di sini.</p>
-          <div className="relative h-36 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 mb-3 overflow-hidden">
-            {data["dest_murmansk_hero"] ? (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={data["dest_murmansk_hero"]} alt="Murmansk hero" className="w-full h-full object-cover" />
-                <button type="button"
-                  onClick={() => setData((d) => ({ ...d, dest_murmansk_hero: "" }))}
-                  className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs rounded-lg font-medium hover:bg-red-600">
-                  Hapus
-                </button>
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full gap-1">
-                <span className="text-2xl">🌌</span>
-                <span className="text-xs text-gray-400">Belum ada foto — sedang pakai gradient aurora</span>
-              </div>
-            )}
-          </div>
-          <input type="file" accept="image/*"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              const fd = new FormData();
-              fd.append("file", file);
-              const res = await fetch("/api/upload", { method: "POST", body: fd });
-              const { url } = await res.json();
-              setData((d) => ({ ...d, dest_murmansk_hero: url }));
-            }}
-            className="text-xs text-gray-500" />
-          {data["dest_murmansk_hero"] && (
-            <div className="mt-2">
-              <label className="label text-[11px]">Atau tempel URL langsung</label>
-              <input className="input text-xs" value={data["dest_murmansk_hero"] ?? ""}
-                onChange={(e) => setData((d) => ({ ...d, dest_murmansk_hero: e.target.value }))}
-                placeholder="https://..." />
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end">
-          <button onClick={handleSave} disabled={saving}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Foto"}
-          </button>
-        </div>
-      </div>
-
       {/* Font Selector */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <div className="mb-5">
