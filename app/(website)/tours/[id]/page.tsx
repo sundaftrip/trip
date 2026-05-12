@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
@@ -11,6 +12,47 @@ import {
 import { formatCurrency, formatDate } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import TourShareButtons from "@/components/website/TourShareButtons";
+
+const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+
+/* ── generateMetadata — og:image dari heroImg tour ───────────────── */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const [tour, companyRow] = await Promise.all([
+    prisma.tour.findUnique({
+      where: { id },
+      select: { title: true, heroImg: true, notes: true, visaInfo: true, country: true },
+    }),
+    prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
+  ]);
+  if (!tour) return {};
+
+  const companyName = companyRow?.value ?? "Sundaftrip";
+  const description = tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country} bersama ${companyName}`;
+
+  return {
+    title: tour.title,
+    description,
+    openGraph: {
+      title: tour.title,
+      description,
+      url: `${siteUrl}/tours/${id}`,
+      type: "website",
+      siteName: companyName,
+      ...(tour.heroImg ? { images: [{ url: tour.heroImg, width: 1200, height: 630, alt: tour.title }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: tour.title,
+      description,
+      ...(tour.heroImg ? { images: [tour.heroImg] } : {}),
+    },
+  };
+}
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -68,8 +110,40 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
       <span className="flex items-center gap-1.5">{icon}{label}</span>
     ) : label;
 
+  /* ── #4: JSON-LD TouristTrip schema ──────────────────────────── */
+  const tourJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    name: tour.title,
+    description: tour.notes ?? tour.visaInfo ?? undefined,
+    touristType: tour.category,
+    image: tour.heroImg ? [tour.heroImg] : undefined,
+    ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
+    ...(tour.duration ? { duration: tour.duration } : {}),
+    offers: {
+      "@type": "Offer",
+      price: String(tour.promoPrice ?? tour.price),
+      priceCurrency: "IDR",
+      availability:
+        tour.status === "FULL"
+          ? "https://schema.org/SoldOut"
+          : "https://schema.org/InStock",
+      url: `${siteUrl}/tours/${tour.id}`,
+    },
+    provider: {
+      "@type": "Organization",
+      name: companyName,
+      url: siteUrl,
+    },
+  };
+
   return (
     <div className="min-h-screen pt-16" style={isOutlined ? { backgroundColor: tBg, ...pixelGridStyle } : undefined}>
+      {/* JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
+      />
       {/* Hero */}
       <div className={`relative h-72 lg:h-96 ${isOutlined ? "border-b-2" : "bg-gray-200 dark:bg-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}>
