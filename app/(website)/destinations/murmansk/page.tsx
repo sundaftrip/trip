@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 async function getData() {
   const [companyRows, tours, relatedPosts] = await Promise.all([
-    prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "site_theme"] } } }),
+    prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "site_theme", "dest_murmansk_hero"] } } }),
     prisma.tour.findMany({
       where: {
         status: { in: ["ACTIVE", "FULL"] },
@@ -60,6 +60,7 @@ async function getData() {
   return {
     wa: company["company_whatsapp"] ?? "",
     theme: company["site_theme"] ?? "classic",
+    heroImage: company["dest_murmansk_hero"] ?? "",
     tours,
     relatedPosts,
   };
@@ -91,7 +92,7 @@ const FAQ = [
 ];
 
 export default async function MurmanskPage() {
-  const { wa, theme, tours, relatedPosts } = await getData();
+  const { wa, theme, heroImage, tours, relatedPosts } = await getData();
 
   /* ── theme helpers (same pattern as tours/page.tsx) ── */
   const isKawaii   = theme === "kawaii";
@@ -141,8 +142,13 @@ export default async function MurmanskPage() {
 
       {/* ── HERO ── */}
       <div className="relative h-[65vh] min-h-[440px] flex items-end pt-24">
-        {/* Themed hero background */}
-        {isOutlined ? (
+        {/* Hero background: foto asli → gradient aurora → theme bg */}
+        {heroImage ? (
+          <>
+            <Image src={heroImage} alt="Murmansk Aurora Borealis" fill className="object-cover" priority />
+            <div className="absolute inset-0 bg-black/50" />
+          </>
+        ) : isOutlined ? (
           <div className="absolute inset-0" style={{ background: pageBg }} />
         ) : (
           <>
