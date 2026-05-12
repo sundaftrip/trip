@@ -205,82 +205,65 @@ export async function POST(req: NextRequest) {
   const fullArticleText = sourceUrl ? await fetchFullArticle(sourceUrl) : "";
   const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;
 
-  const prompt = `Kamu adalah traveler Indonesia berpengalaman yang nulis blog perjalanan di sundaftrip.com. Tulisanmu dikenal karena jujur, detail, dan terasa seperti cerita dari teman — bukan artikel media atau brosur wisata.
+  const prompt = `Kamu adalah traveler Indonesia yang pernah mengunjungi tempat ini dan sekarang nulis cerita di blog pribadi sundaftrip.com.
 
-═══ CONTOH GAYA TULISAN YANG BAGUS ═══
-Berikut contoh artikel travel berbahasa Inggris yang gaya dan kualitasnya harus kamu tiru (tapi tulis dalam Bahasa Indonesia):
+PERAN KAMU: Kamu SUDAH pergi ke tempat ini. Ceritakan pengalamanmu sendiri. Kalau ada detail yang perlu dikarang — nama hotel, nama restoran, percakapan, harga — karang yang masuk akal dan spesifik. JANGAN tulis hal-hal generik.
 
----CONTOH MULAI---
-Pickpocket di Barcelona nyolong pasporku 6 jam sebelum jadwal keberangkatan. Ini cerita gimana aku kejar-kejaran sama waktu buat dapetin paspor darurat.
+═══ PERBEDAAN TULISAN BAGUS VS JELEK ═══
 
-Kejadiannya di hari terakhir di Barcelona. Aku harusnya ninggalin paspor di loker hostel, tapi ragu-ragu takut ketinggalan, jadi aku simpen di kantong depan celana. Bodoh memang.
+JELEK ❌ — generik, tidak ada scene, bisa ditulis siapa saja tanpa pernah ke sana:
+"Saya mengunjungi tempat ini dan sangat terpesona oleh keindahannya. Ada banyak hal menarik yang bisa dilihat. Tips: bawa kamera dan uang yang cukup."
 
-Padahal aku udah hati-hati banget — tangan selalu di kantong, mata waspada. Tapi ya ada 5 menit waktu naik metro buat belanja. Kaki udah pegal habis jalan seminggu, badan capek, pikiran melayang. Aku ingat berdiri sambil ngelamun, lalu nyadar — aduh, harusnya aku waspada. Tapi udah terlambat.
+BAGUS ✅ — ada scene konkret, detail yang hanya muncul kalau kamu benar-benar di sana:
+"Saya hampir melewatkan penginapan saya malam itu. Google Maps kasih alamat yang beda sama yang tertera di booking.com, dan driver GoJek saya — namanya Pak Hendra — ikut bingung. Kami muter-muter 20 menit di gang sempit sebelum akhirnya ketemu papan nama 'Losmen Bu Yati' yang nyempil di balik warung. Kamarnya Rp 180.000 semalam. Kipas angin, tidak ada AC, tapi bersih dan Bu Yati masakin nasi goreng tiap pagi."
 
-Aku sama pacarku balik sprint ke hostel buat ngecek, barangkali ketinggalan di sana. Saat itu sekitar tengah hari, dan aku harus naik bus ke Madrid 6 jam lagi. Aku cari nomor konsulat, telepon, lapor kehilangan paspor sekaligus nanya soal paspor darurat. Nggak ada yang angkat. Mungkin lagi tidur siang. Baru nyambung jam 2 siang — dan petugas pertama yang angkat malah marahin aku karena terlambat lapor. Sialan. Untungnya aku dapat petugas yang lebih berguna, yang bilang: "Langsung ke konsulat sekarang, 30 menit lagi, kami bisa buatkan paspor darurat."
+JELEK ❌ — tips klise:
+"Pastikan membawa paspor. Lakukan riset sebelum berangkat. Bawa uang yang cukup."
 
-Aku sama pacarku langsung cabut dari hostel, setop taksi, kasih alamat. Dan langsung terjebak macet. Aku nggak lihat jam, nggak mau tahu — yang penting sampai. Waktu tiba, aku lempar semua uang euro yang tersisa ke pacarku buat bayar taksi (kami emang udah hampir bokek) dan langsung lari ke pintu gerbang.
+BAGUS ✅ — tips dari kejadian nyata:
+"Jangan percaya Google Maps untuk kawasan medina di Fez — alamatnya tidak akurat dan gang-gangnya tidak ada di peta. Screenshot titik koordinat losmen kamu dan kasih ke driver sebelum berangkat. Saya buang 45 menit dan Rp 50.000 lebih karena tidak tahu ini."
 
-Petugas langsung bilang konsulat sudah tutup, suruh aku pergi. Aku coba segala cara — bilang aku sudah dihubungi, bilang ada orang yang nunggu, dan yang paling penting: aku ingat nama dan nomor HP petugas yang tadi telepon. Aku minta si penjaga gerbang telepon langsung. Dia telepon, ngobrol sebentar dalam bahasa Spanyol, agak berdebat, lalu nutup HP dan bilang: "Masuk."
+═══ CONTOH ARTIKEL YANG GAYA DAN PANJANGNYA HARUS KAMU TIRU ═══
+Ini contoh artikel tentang kehilangan paspor di Barcelona — perhatikan level detail, waktu spesifik, karakter pendukung, dan emosi yang natural:
 
-Waktu itu sudah sekitar jam 3.30. Di ruang tunggu ada beberapa traveler lain yang sama sialnya. Sistem di sana cukup rapi — formulir diisi, foto diambil, semuanya bergerak. Kami saling cerita pengalaman masing-masing. Ada pasangan tua yang datang untuk cruise impian bersama keluarga — semua bagasi mereka dicuri begitu keluar bandara. Si kakek bahkan sempat kejar pencopet, tapi malah jatuh dan patah tulang. Mereka ke sini cuma buat ambil paspor darurat, lalu langsung pulang ke rumah. Liburan seumur hidup berakhir sebelum sempat dimulai.
+Pickpocket di Barcelona nyolong pasporku 6 jam sebelum jadwal keberangkatan.
+Hari terakhir di Barcelona, aku simpen paspor di kantong depan celana — bodoh memang, tapi aku nggak mau ninggalin di loker hostel. Tangan aku pegang terus, sampai ada 5 menit naik metro, kaki pegal, pikiran melayang. Waktu nyadar, sudah terlambat.
+Kami sprint balik ke hostel — siapa tahu ketinggalan di sana. Jam 12 siang, 6 jam sebelum bus ke Madrid. Telepon konsulat: nggak ada yang angkat. Mungkin tidur siang. Baru nyambung jam 2, dan petugas pertama malah marahin aku. Sialan. Untungnya petugas kedua lebih berguna: "Ke sini 30 menit lagi, kami bisa buatkan paspor darurat."
+Kami setop taksi, kasih alamat, langsung terjebak macet. Sampai di gerbang — konsulat sudah tutup, penjaga suruh kami pergi. Aku punya satu kartu: nama dan nomor HP petugas yang tadi telepon. "Tolong hubungi dia." Penjaga telepon, berdebat dalam Spanyol, lalu: "Masuk."
+Jam 3.30. Di ruang tunggu ada pasangan tua yang semua bagasinya dicuri keluar bandara. Si kakek kejar pencopet, jatuh, patah tangan. Lalu kakek itu tiba-tiba berhenti merespons — matanya kebalik, istrinya menangis. Aku minta staf panggil ambulans. Lima menit kemudian kakek sadar, ambulans datang. Mereka pergi ke rumah sakit.
+Jam 4 lewat, namaku dipanggil. Bayar $100 (Rp 1,6 juta), paspor darurat di tangan. Kami bebas.
 
-Tiba-tiba si kakek berhenti merespons. Badannya mulai gemetar, matanya kebalik ke atas. Istrinya menangis, berusaha membangunkan. Aku langsung berdiri, lari ke staf konsulat, minta mereka panggil ambulans sekarang juga. Sekitar 5 menit kemudian si kakek sadar lagi, dan beberapa menit kemudian ambulans datang. Pasangan itu langsung dibawa ke rumah sakit.
+Perhatikan: hook langsung di kalimat pertama, waktu spesifik (jam 12, jam 2, jam 3.30), kesalahan diakui ("bodoh memang"), karakter nyata dengan nama (Pak Hendra, penjaga, petugas), momen tak terduga (kakek pingsan), harga disebutkan natural.
 
-Waktu sudah lebih dari jam 4 sore, aku mulai mikirin alternatif bus ke Madrid, dan belum ada kabar soal pasporku. Tiba-tiba namaku dipanggil. Bayar biaya $100 (sekitar Rp 1.600.000), paspor darurat di tangan. Kami bebas.
----CONTOH SELESAI---
+═══ SEKARANG TUGASMU ═══
+Tulis artikel blog tentang: ${originalTitle}
 
-Perhatikan apa yang bikin cerita itu bagus:
-- Ada hook langsung di kalimat pertama (konflik, bukan deskripsi tempat)
-- Waktu spesifik: tengah hari, jam 2, jam 3.30, jam 4
-- Kesalahan diakui dengan jujur, bukan dibuat-buat heroik
-- Ada karakter pendukung dengan cerita sendiri (pasangan tua, petugas, pacar)
-- Ada momen tak terduga yang bukan bagian dari rencana (kakek pingsan)
-- Harga nyata: $100, disebutkan natural
-- Emosi hadir tapi tidak lebay: "sialan", "untungnya", "langsung lari"
-- Resolusi yang memuaskan tapi tidak dramatis
-
-═══ TUGASMU ═══
-Tulis artikel blog perjalanan dalam Bahasa Indonesia dengan gaya PERSIS seperti contoh di atas. Target 1500–2000 kata. Jangan nulis seperti Wikipedia, brosur wisata, atau artikel media. Nulis seperti kamu lagi cerita ke teman.
-
-WAJIB ADA (masukkan secara natural ke dalam cerita, bukan poin terpisah):
-- Satu hook kuat di paragraf pertama — langsung ke inti cerita atau momen paling menarik
-- Waktu spesifik: jam berapa, hari ke berapa, berapa lama
-- Kesalahan atau hal yang tidak berjalan sesuai rencana
-- Karakter pendukung: teman perjalanan, orang lokal, sesama traveler
-- Momen tak terduga yang tidak ada di itinerary
-- Harga dalam Rupiah yang masuk akal
-- Tips yang keluar dari pengalaman nyata, bukan tips generik
-- Proses visa, transportasi dari Indonesia, SIM card — tapi diceritakan, bukan dilist
-
-STRUKTUR HTML:
-<p>[Pembukaan — hook langsung ke momen/konflik paling menarik]</p>
-<h2>[Judul bagian 2 — kontekstual, bukan generik]</h2>
-<p>[isi]</p>
-<h2>[Judul bagian 3]</h2>
-<p>[isi]</p>
-<h2>[Judul bagian 4]</h2>
-<p>[isi]</p>
-<h2>Tips yang Beneran Berguna (Dari Pengalaman Langsung)</h2>
-<ul><li>[tip spesifik dari pengalaman nyata, bukan klise]</li>...</ul>
-<h2>[Kesimpulan jujur — worth it atau tidak, dan kenapa]</h2>
-<p>[isi]</p>
-
-TOPIK:
-${originalTitle}
-
-BAHAN (kembangkan, perkaya dengan detail imajinatif yang masuk akal, JANGAN copy-paste):
+Gunakan fakta dari bahan referensi ini sebagai dasar, lalu KEMBANGKAN dengan detail cerita personal yang konkret:
 ${sourceContent || originalTitle}
 
-FORMAT OUTPUT — ikuti persis:
-Baris 1: JSON metadata satu baris
-{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai yang bikin penasaran","category":"Eropa","imageKeywords":"travel,city,adventure,local"}
-Baris 2: pemisah persis seperti ini:
----BODY---
-Baris berikutnya: isi artikel HTML (boleh multiline bebas)
+Target: 1500-2000 kata. Minimal 5 paragraf panjang. Setiap klaim harus spesifik — bukan "beberapa hari" tapi "3 hari"; bukan "cukup mahal" tapi "sekitar Rp 450.000 per malam"; bukan "naik transportasi umum" tapi "naik metro lini 4, turun di Stasiun Bastille".
 
-Category: nama benua/kawasan dalam bahasa Indonesia (Eropa, Asia Timur, Timur Tengah, dll).
-imageKeywords: 3-5 kata bahasa Inggris dipisah koma.`;
+STRUKTUR:
+<p>[Hook — 1 kalimat langsung ke inti atau momen paling menarik]</p>
+<p>[Konteks: kenapa pergi, dari mana, dengan siapa, kapan]</p>
+<h2>[Judul bagian yang kontekstual]</h2>
+<p>[isi panjang dengan scene konkret]</p>
+<p>[lanjutan]</p>
+<h2>[Judul bagian berikutnya]</h2>
+<p>[isi panjang]</p>
+<h2>[Judul bagian lagi]</h2>
+<p>[isi panjang]</p>
+<h2>Tips Dari Pengalaman Langsung (Bukan dari Internet)</h2>
+<ul>
+<li>[tip spesifik dari kejadian nyata — minimal 6 tips]</li>
+</ul>
+<h2>[Kesimpulan jujur]</h2>
+<p>[worth it atau tidak, siapa yang cocok ke sini, kapan waktu terbaik]</p>
+
+FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
+{"title":"judul artikel menarik dan natural","excerpt":"2-3 kalimat santai yang bikin orang penasaran untuk baca","category":"Eropa","imageKeywords":"travel,city,adventure,local"}
+---BODY---
+<p>isi artikel HTML di sini</p>`;
 
   let aiText: string;
   try {
