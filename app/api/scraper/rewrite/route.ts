@@ -241,23 +241,43 @@ ${sourceContent || originalTitle}
 
 Target: 1500-2000 kata. Minimal 5 paragraf panjang. Setiap klaim harus spesifik — bukan "beberapa hari" tapi "3 hari"; bukan "cukup mahal" tapi "sekitar Rp 450.000 per malam"; bukan "naik transportasi umum" tapi "naik metro lini 4, turun di Stasiun Bastille".
 
+TAHUN: Gunakan tahun 2024 atau 2025 dalam cerita. JANGAN gunakan tahun sebelum 2023. Informasi harga, aplikasi, dan layanan harus terasa current — sebut nama aplikasi spesifik seperti Klook, Airalo, Wise, Google Maps, Booking.com, dll jika relevan.
+
 HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat atau frasa yang paling penting, mengejutkan, atau wajib diingat pembaca. Contoh: <mark>Tiket kereta dari Tokyo ke Osaka naik Shinkansen sekitar Rp 850.000 sekali jalan.</mark> Jangan lebihkan — hanya kalimat yang benar-benar krusial.
+
+JUDUL BAGIAN — WAJIB KREATIF DAN KONTEKSTUAL:
+Setiap h2 harus spesifik untuk topik artikel ini. DILARANG pakai judul generik yang muncul di setiap artikel.
+
+Untuk bagian tips, pilih salah satu yang paling cocok dengan isi artikel (atau buat sendiri yang lebih baik):
+- "Yang Tidak Akan Saya Ulangi"
+- "Hal-Hal yang Baru Saya Tahu Setelah Pulang"
+- "Kalau Saya Pergi Lagi, Ini yang Akan Saya Lakukan Beda"
+- "Kesalahan yang Bisa Kamu Hindari"
+- "Yang Tidak Ada di Blog Mana Pun"
+- "Catatan Penting yang Saya Pelajari dengan Cara Susah"
+
+Untuk bagian kesimpulan, pilih salah satu atau buat sendiri:
+- "Jadi, Worth It Nggak?"
+- "Saya Akan Balik Lagi?"
+- "Untuk Siapa Perjalanan Ini Cocok"
+- "Jujur Saja: [nama tempat] Itu..."
+- "Ekspektasi vs Realita"
 
 STRUKTUR:
 <p>[Hook — 1 kalimat langsung ke inti atau momen paling menarik]</p>
-<p>[Konteks: kenapa pergi, dari mana, dengan siapa, kapan]</p>
-<h2>[Judul bagian yang kontekstual]</h2>
+<p>[Konteks: kenapa pergi, dari mana, dengan siapa, kapan — gunakan tahun 2024 atau 2025]</p>
+<h2>[Judul kontekstual spesifik untuk topik ini]</h2>
 <p>[isi panjang dengan scene konkret]</p>
 <p>[lanjutan]</p>
-<h2>[Judul bagian berikutnya]</h2>
+<h2>[Judul kontekstual spesifik]</h2>
 <p>[isi panjang]</p>
-<h2>[Judul bagian lagi]</h2>
+<h2>[Judul kontekstual spesifik]</h2>
 <p>[isi panjang]</p>
-<h2>Tips Dari Pengalaman Langsung (Bukan dari Internet)</h2>
+<h2>[Judul tips yang kreatif — BUKAN "Tips Dari Pengalaman Langsung"]</h2>
 <ul>
 <li>[tip spesifik dari kejadian nyata — minimal 6 tips]</li>
 </ul>
-<h2>[Kesimpulan jujur]</h2>
+<h2>[Judul kesimpulan yang kreatif — BUKAN "Kesimpulan jujur"]</h2>
 <p>[worth it atau tidak, siapa yang cocok ke sini, kapan waktu terbaik]</p>
 
 FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
