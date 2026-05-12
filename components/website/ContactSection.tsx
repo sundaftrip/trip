@@ -110,6 +110,76 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     </section>
   );
 
+  /* ── MAP / ATLAS ── */
+  if (theme === "map") return (
+    <section id="contact" className="py-24 relative overflow-hidden"
+      style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
+      {/* CSS route line decoration */}
+      <div className="mp-route absolute top-40 left-0 right-0 pointer-events-none" style={{ opacity: 0.2 }} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="mb-16 max-w-xl">
+          <span className="mp-pill mb-3 inline-flex" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>{headLabel}</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>
+            {t("contact_title", "Siap Membantu Perjalanan Anda")}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--mp-subtext)" }}>
+            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {contacts.map(({ Icon, label, value, href }, i) => {
+              const bgs = ["var(--mp-water)", "var(--mp-sand)", "var(--mp-olive)", "var(--mp-navy)"];
+              const fgs = ["var(--mp-on-water)", "var(--mp-on-sand)", "var(--mp-on-olive)", "var(--mp-on-navy)"];
+              return (
+                <div key={label} className="mp-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
+                  <div className="w-9 h-9 border-2 flex items-center justify-center shrink-0"
+                    style={{ background: "var(--mp-card)", borderColor: "var(--mp-border)", boxShadow: "2px 2px 0 0 var(--mp-border)" }}>
+                    <Icon size={14} style={{ color: "var(--mp-text)" }} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: fgs[i % fgs.length], opacity: 0.7 }}>{label}</p>
+                    {href
+                      ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: fgs[i % fgs.length] }}>{value}</a>
+                      : <p className="text-sm font-black leading-relaxed" style={{ color: fgs[i % fgs.length] }}>{value}</p>}
+                  </div>
+                </div>
+              );
+            })}
+            {bankAcc && (
+              <div className="mp-card p-5" style={{ background: "var(--mp-rust)" }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--mp-on-rust)", opacity: 0.7 }}>{bankLabel}</p>
+                {bankName && <p className="text-xs mb-1" style={{ color: "var(--mp-on-rust)", opacity: 0.8 }}>{bankName}</p>}
+                <p className="text-xl font-black font-mono" style={{ color: "var(--mp-on-rust)" }}>{bankAcc}</p>
+                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--mp-on-rust)", opacity: 0.8 }}>a/n {bankHolder}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="mp-card p-10 flex flex-col justify-between" style={{ background: "var(--mp-olive)", borderColor: "var(--mp-border)" }}>
+            <div>
+              <span className="mp-pill mb-6 inline-flex" style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", borderColor: "rgba(255,255,255,0.4)" }}>
+                {ctaLabel}
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug" style={{ color: "var(--mp-on-olive)" }}>{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--mp-on-olive)", opacity: 0.75 }}>{ctaDesc}</p>
+            </div>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 mp-btn px-6 py-3.5 text-sm self-start"
+                style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+                <MessageCircle size={16} /> {waLabel}
+              </a>
+            ) : (
+              <p className="mt-10 text-sm" style={{ color: "var(--mp-on-olive)", opacity: 0.5 }}>{email}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <section id="contact" className="py-24" style={{ background: "var(--kw-bg)" }}>

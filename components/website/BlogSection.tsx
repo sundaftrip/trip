@@ -63,6 +63,52 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── MAP / ATLAS ── */
+  if (theme === "map") return (
+    <section className="py-24 relative overflow-hidden"
+      style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="mp-pill mb-3 inline-flex" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>Tips &amp; Inspirasi</h2>
+            </div>
+            <Link href="/blog" className="mp-pill font-black" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+              Semua Artikel →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block mp-card overflow-hidden group">
+                <div className="relative h-44 overflow-hidden border-b-2" style={{ borderColor: "var(--mp-border)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="h-full" style={{ background: "var(--mp-water)", opacity: 0.3 }} />}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 mp-pill" style={{ background: "var(--mp-rust)", color: "var(--mp-on-rust)", borderColor: "var(--mp-border)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="font-black mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--mp-subtext)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--mp-subtext)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <section className="py-24" style={{ background: "var(--kw-bg)" }}>

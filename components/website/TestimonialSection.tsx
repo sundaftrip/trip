@@ -162,6 +162,38 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
     </section>
   );
 
+  /* ── MAP / ATLAS ── */
+  if (theme === "map") return (
+    <section className="py-24 overflow-hidden relative"
+      style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <span className="mp-pill mb-3 inline-flex" style={{ background: "var(--mp-navy)", color: "var(--mp-on-navy)", borderColor: "var(--mp-border)" }}>Testimoni</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>Kata Mereka</h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`mp-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+              style={{ background: active ? "var(--mp-sand)" : "var(--mp-card)" }}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: active ? "var(--mp-on-sand)" : "var(--mp-subtext)" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
+                style={{ borderColor: "var(--mp-border)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-black" style={{ color: active ? "var(--mp-on-sand)" : "var(--mp-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-xs" style={{ color: active ? "var(--mp-on-sand)" : "var(--mp-subtext)", opacity: 0.8 }}>{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   /* ── PIXEL ── */
   if (theme === "pixel") return (
     <section className="py-24 overflow-hidden relative" style={{

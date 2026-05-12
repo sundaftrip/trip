@@ -23,6 +23,7 @@ const THEMES = [
   { key: "kawaii",   label: "Kawaii",   desc: "Retro cute pastel. Border bulat, hati melayang, peach aesthetic.",     feature: "theme_kawaii" },
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
   { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
+  { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
 ];
 
 export default function SettingsPage() {
@@ -95,41 +96,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Company Info */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-5">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 dark:text-white">Informasi Perusahaan</h2>
-        {/* Logo Utama */}
-        <div>
-          <label className="label">Logo Utama</label>
-          <p className="text-xs text-gray-400 mb-2">
-            Dipakai di: navbar website, sidebar admin, OG image, login page. Gunakan PNG transparan.
-          </p>
-          {data["company_logo"] && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto mb-3 object-contain bg-gray-700 rounded-lg p-2" />
-          )}
-          <input type="file" accept="image/*" onChange={handleLogoUpload} className="text-sm text-gray-500" />
-        </div>
-
-        {/* Favicon */}
-        <div className="pt-3 border-t border-gray-100 dark:border-gray-700">
-          <label className="label">Favicon <span className="font-normal text-gray-400">(ikon tab browser)</span></label>
-          <p className="text-xs text-gray-400 mb-2">
-            Ikon kecil di tab browser &amp; bookmark. Sebaiknya versi ikon kotak. Kosongkan → pakai Logo Utama.
-          </p>
-          {data["favicon_logo"] ? (
-            <div className="flex items-center gap-4 mb-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={data["favicon_logo"]} alt="Favicon" className="h-10 w-10 object-contain border border-gray-200 dark:border-gray-600 rounded-lg p-1" />
-              <button type="button" onClick={() => setData((d) => ({ ...d, favicon_logo: "" }))}
-                className="text-xs text-red-500 hover:text-red-700 transition">
-                Hapus
-              </button>
-            </div>
-          ) : (
-            <p className="text-xs italic text-gray-400 mb-2">Menggunakan Logo Utama</p>
-          )}
-          <input type="file" accept="image/*" onChange={handleFaviconUpload} className="text-sm text-gray-500" />
-        </div>
         {INFO_FIELDS.map(({ key, label }) => (
           <div key={key}>
             <label className="label">{label}</label>
@@ -137,6 +105,47 @@ export default function SettingsPage() {
               onChange={(e) => setData({ ...data, [key]: e.target.value })} />
           </div>
         ))}
+      </div>
+
+      {/* Branding / Logo */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-5">
+        <div>
+          <h2 className="font-semibold text-gray-900 dark:text-white">Branding</h2>
+          <p className="text-xs text-gray-400 mt-0.5">Logo yang dipakai di seluruh tampilan website dan admin.</p>
+        </div>
+
+        {/* Logo Utama + Favicon side by side */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Logo Utama */}
+          <div>
+            <label className="label">Logo Utama</label>
+            <p className="text-xs text-gray-400 mb-3">Navbar, sidebar admin, OG image. Gunakan PNG transparan.</p>
+            <div className="h-20 flex items-center justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 mb-3 overflow-hidden">
+              {data["company_logo"]
+                ? <img src={data["company_logo"]} alt="Logo" className="h-14 w-auto object-contain" /> // eslint-disable-line @next/next/no-img-element
+                : <span className="text-xs text-gray-400">Belum ada logo</span>}
+            </div>
+            <input type="file" accept="image/*" onChange={handleLogoUpload} className="text-xs text-gray-500" />
+          </div>
+
+          {/* Favicon */}
+          <div>
+            <label className="label">Favicon <span className="font-normal text-gray-400 text-xs">(ikon tab)</span></label>
+            <p className="text-xs text-gray-400 mb-3">Ikon kotak kecil di tab browser. Kosong → pakai Logo Utama.</p>
+            <div className="h-20 flex items-center justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 mb-3 overflow-hidden">
+              {data["favicon_logo"]
+                ? (
+                  <div className="flex flex-col items-center gap-1">
+                    <img src={data["favicon_logo"]} alt="Favicon" className="h-10 w-10 object-contain rounded-lg" /> // eslint-disable-line @next/next/no-img-element
+                    <button type="button" onClick={() => setData((d) => ({ ...d, favicon_logo: "" }))}
+                      className="text-[10px] text-red-500 hover:text-red-700">Hapus</button>
+                  </div>
+                )
+                : <span className="text-xs text-gray-400">Pakai Logo Utama</span>}
+            </div>
+            <input type="file" accept="image/*" onChange={handleFaviconUpload} className="text-xs text-gray-500" />
+          </div>
+        </div>
       </div>
 
       {/* Color Scheme */}
@@ -318,6 +327,28 @@ export default function SettingsPage() {
                         </div>
                       </div>
                     )}
+                    {key === "map" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#f4efe6" }}>
+                        {/* grid lines */}
+                        <div className="absolute inset-0 rounded-lg" style={{ backgroundImage: "linear-gradient(rgba(100,70,30,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(100,70,30,0.07) 1px,transparent 1px)", backgroundSize: "14px 14px" }} />
+                        {/* CSS pin markers */}
+                        <div className="absolute top-3 left-5 w-2 h-2 rounded-full" style={{ background: "#c46b3a", boxShadow: "0 0 0 2px #c46b3a44" }} />
+                        <div className="absolute top-5 right-6 w-1.5 h-1.5 rounded-full" style={{ background: "#2d4a6b", boxShadow: "0 0 0 2px #2d4a6b44" }} />
+                        {/* CSS compass */}
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full border" style={{ borderColor: "#b8956a", background: "#faf6ee" }} />
+                        {/* route dashed line */}
+                        <div className="absolute top-[18px] left-6 right-8 h-px" style={{ backgroundImage: "repeating-linear-gradient(90deg,#2d4a6b 0,#2d4a6b 4px,transparent 4px,transparent 8px)" }} />
+                        {/* pill label */}
+                        <div className="flex gap-1 mb-1.5 relative z-10">
+                          <div className="h-4 px-1.5 text-[7px] font-black flex items-center border" style={{ background: "#faf6ee", borderColor: "#b8956a", color: "#2c1e10" }}>RUTE</div>
+                          <div className="h-4 px-1.5 text-[7px] font-black flex items-center" style={{ background: "#d4aa6a", color: "#2c1e10" }}>ATLAS</div>
+                        </div>
+                        {/* CTA */}
+                        <div className="h-5 w-16 border-2 text-[8px] font-black flex items-center justify-center relative z-10" style={{ borderColor: "#b8956a", background: currentAccent, color: "#fff", boxShadow: "2px 2px 0 #b8956a" }}>
+                          Jelajahi
+                        </div>
+                      </div>
+                    )}
                     {!unlocked && (
                       <div className="absolute inset-0 bg-gray-100/70 dark:bg-gray-900/70 flex items-center justify-center rounded-lg">
                         <Lock size={16} className="text-gray-400" />
@@ -342,7 +373,7 @@ export default function SettingsPage() {
         {PLAN !== "pro" && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Tema Catalog, Bold, Tropical, Kawaii, Pixel Art & Globe tersedia di paket Pro. Hubungi admin untuk upgrade.
+              Tema Catalog, Bold, Tropical, Kawaii, Pixel Art, Globe & Atlas Map tersedia di paket Pro. Hubungi admin untuk upgrade.
             </p>
           </div>
         )}

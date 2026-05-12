@@ -235,9 +235,9 @@ export default function TourForm({ tour }: { tour?: TourData }) {
           {editingItineraryIdx !== null && (
             <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">✏️ Mode Edit — Hari {itineraryItem.day}</p>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-[5rem_1fr_2fr] gap-3">
             <input
-              type="number" min={1} placeholder="Hari" className="input"
+              type="number" min={1} placeholder="Hari" className="input text-center"
               value={itineraryItem.day}
               onChange={(e) => setItineraryItem((p) => ({ ...p, day: Number(e.target.value) }))}
             />
@@ -301,8 +301,8 @@ export default function TourForm({ tour }: { tour?: TourData }) {
           {(form.itinerary ?? []).map((item, i) => (
             <div key={i}
               className={`flex items-start gap-3 px-4 py-3 rounded-lg border transition-colors ${editingItineraryIdx === i ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20" : "border-transparent bg-gray-50 dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
-              <span className="text-xs font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded shrink-0">
-                Hari {item.day}
+              <span className="text-xs font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded shrink-0 min-w-[3.2rem] text-center">
+                {item.day}
               </span>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm text-gray-900 dark:text-white">{item.title}</p>

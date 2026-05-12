@@ -434,6 +434,174 @@ body {
   .gl-float-1, .gl-float-2, .gl-float-3, .gl-float-4 { animation: none; }
 }
 
+/* ─── MAP / ATLAS THEME ─── */
+:root {
+  --mp-bg:       color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #f4efe6);
+  --mp-card:     #faf6ee;
+  --mp-border:   color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, #b8956a);
+  --mp-shadow:   color-mix(in srgb, var(--site-accent, #2d6a4f) 18%, rgba(120,80,30,0.18));
+  --mp-text:     #2c1e10;
+  --mp-subtext:  #7a5c3a;
+  --mp-olive:    color-mix(in srgb, var(--site-accent, #2d6a4f) 80%, #8fa656);
+  --mp-sand:     #d4aa6a;
+  --mp-rust:     #c46b3a;
+  --mp-navy:     #2d4a6b;
+  --mp-water:    #a8c9d8;
+  --mp-grid:     rgba(100,70,30,0.07);
+  --mp-on-olive: #f5efe3;
+  --mp-on-sand:  #2c1e10;
+  --mp-on-rust:  #ffffff;
+  --mp-on-navy:  #ffffff;
+  --mp-on-water: #0d1f2d;
+}
+@variant dark {
+  :root {
+    --mp-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, #12100a);
+    --mp-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #1e1810);
+    --mp-border:  color-mix(in srgb, var(--site-accent, #2d6a4f) 50%, #8a6a3a);
+    --mp-shadow:  color-mix(in srgb, var(--site-accent, #2d6a4f) 25%, rgba(0,0,0,0.4));
+    --mp-text:    #e8dcc8;
+    --mp-subtext: #a8926e;
+    --mp-grid:    rgba(200,170,110,0.05);
+  }
+}
+
+/* ── Map card — parchment with grid lines ── */
+.mp-card {
+  border: 1.5px solid var(--mp-border);
+  border-radius: 4px;
+  background: var(--mp-card);
+  background-image:
+    linear-gradient(var(--mp-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mp-grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  box-shadow: 3px 3px 0 0 var(--mp-border), 0 6px 24px var(--mp-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.mp-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 3px 8px 0 0 var(--mp-border), 0 16px 40px var(--mp-shadow);
+}
+
+/* ── Map label / pill ── */
+.mp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.7rem;
+  border: 1.5px solid var(--mp-border);
+  border-radius: 2px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── Map button ── */
+.mp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  border: 2px solid var(--mp-border);
+  border-radius: 3px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 3px 3px 0 0 var(--mp-border);
+}
+.mp-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 0 var(--mp-border);
+}
+
+/* ── CSS animated route line ── */
+@keyframes mp-route-march {
+  from { background-position: 0 0; }
+  to   { background-position: 48px 0; }
+}
+.mp-route {
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--mp-navy) 0, var(--mp-navy) 8px,
+    transparent 8px, transparent 16px
+  );
+  animation: mp-route-march 1.4s linear infinite;
+}
+
+/* ── CSS pulsing location pin ── */
+@keyframes mp-ping {
+  0%   { transform: scale(1);   opacity: 0.75; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.mp-pin {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--mp-rust);
+}
+.mp-pin::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--mp-rust);
+  animation: mp-ping 2s ease-out infinite;
+}
+
+/* ── Compass needle sway ── */
+@keyframes mp-compass-sway {
+  0%, 100% { transform: translateX(-50%) rotate(-14deg); }
+  50%       { transform: translateX(-50%) rotate(14deg); }
+}
+.mp-compass {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--mp-border);
+  border-radius: 50%;
+  background: var(--mp-card);
+}
+.mp-compass::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 2px;
+  height: 14px;
+  background: linear-gradient(to bottom, var(--mp-rust) 50%, var(--mp-navy) 50%);
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(0deg);
+  animation: mp-compass-sway 4s ease-in-out infinite;
+}
+.mp-compass::after {
+  content: '';
+  position: absolute;
+  inset: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: var(--mp-border);
+}
+
+/* ── Terrain ring pulse (background decoration) ── */
+@keyframes mp-terrain {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(1.04); }
+}
+.mp-terrain-1 { animation: mp-terrain 5s ease-in-out 0s   infinite; }
+.mp-terrain-2 { animation: mp-terrain 6.5s ease-in-out 1s  infinite; }
+.mp-terrain-3 { animation: mp-terrain 4.8s ease-in-out 2s  infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-route, .mp-pin::after, .mp-compass::before,
+  .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
+}
+
 /* Prose dark overrides */
 .dark .prose { color: #cbd5e1; }
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f1f5f9; }

@@ -144,6 +144,55 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     </footer>
   );
 
+  /* ── MAP / ATLAS ── */
+  if (theme === "map") return (
+    <footer className="relative overflow-hidden border-t-2"
+      style={{ background: "var(--mp-card)", borderColor: "var(--mp-border)", boxShadow: "0 -3px 0 0 var(--mp-border), 0 -8px 24px var(--mp-shadow)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
+      {/* CSS compass decoration */}
+      <div className="absolute bottom-8 right-8 mp-compass pointer-events-none" style={{ width: 48, height: 48, opacity: 0.35 }} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--mp-border)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--mp-subtext)" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--mp-subtext)" }}>NIB {nib}</p>}
+          </div>
+
+          <div>
+            <span className="mp-pill mb-5 inline-flex" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>Navigasi</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm font-semibold hover:opacity-70 transition-opacity" style={{ color: "var(--mp-subtext)" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="mp-pill mb-5 inline-flex" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>Kontak</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--mp-border)" }} />
+                  {href
+                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--mp-subtext)" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--mp-subtext)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--mp-subtext)" }}>
+          <p>© {new Date().getFullYear()} {name}</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
   /* ── TROPICAL ── */
   if (theme === "tropical") return (
     <footer className="border-t-2"

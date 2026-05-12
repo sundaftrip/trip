@@ -168,6 +168,71 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
     </header>
   );
 
+  /* ── MAP / ATLAS ── */
+  if (theme === "map") return (
+    <header className="fixed top-0 inset-x-0 z-50"
+      style={{ background: "var(--mp-card)", borderBottom: "2px solid var(--mp-border)", boxShadow: "0 3px 0 0 var(--mp-border), 0 6px 24px var(--mp-shadow)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-2">
+            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
+              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-1.5">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="mp-pill hover:opacity-75 transition-opacity"
+                style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLang} className="mp-pill"
+              style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="mp-pill" style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex mp-btn text-xs"
+              style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+              {lang === "id" ? "Lihat Tour" : "See Tours"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden mp-pill"
+              style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+              {open ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="lg:hidden border-t-2 py-4 space-y-1"
+            style={{ borderColor: "var(--mp-border)", background: "var(--mp-card)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 font-bold text-sm uppercase tracking-wide" style={{ color: "var(--mp-text)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="mp-btn text-xs w-full justify-center"
+                style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+                {lang === "id" ? "Lihat Tour" : "See Tours"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
   /* ── TROPICAL ── */
   if (theme === "tropical") return (
     <header className="fixed top-0 inset-x-0 z-50 border-b-2"

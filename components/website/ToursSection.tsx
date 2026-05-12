@@ -103,6 +103,36 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── MAP / ATLAS ── */
+  if (theme === "map") return (
+    <section className="py-24 relative overflow-hidden"
+      style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
+      {/* CSS terrain ring decoration */}
+      <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full border-2 pointer-events-none mp-terrain-2" style={{ borderColor: "var(--mp-border)", opacity: 0.5 }} />
+      <div className="mp-route absolute top-28 left-0 right-0 pointer-events-none" style={{ opacity: 0.2 }} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-14">
+            <div>
+              <span className="mp-pill mb-4 inline-flex" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>Paket Tersedia</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>Tour Pilihan</h2>
+            </div>
+            <Link href="/tours" className="mp-pill font-black" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+              Semua Tour →
+            </Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="map" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── TROPICAL layout ── */
   if (theme === "tropical") return (
     <section className="py-24" style={{ background: "var(--tr-bg)" }}>

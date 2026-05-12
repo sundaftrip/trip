@@ -419,6 +419,68 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+
+  return (
+    <div className={`mp-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden border-b-2" style={{ borderColor: "var(--mp-border)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full" style={{ background: "var(--mp-water)", opacity: 0.4 }} />}
+
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 mp-pill font-black"
+            style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)", boxShadow: "2px 2px 0 0 var(--mp-border)" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 mp-pill"
+            style={{ background: "var(--mp-rust)", color: "var(--mp-on-rust)", borderColor: "var(--mp-border)" }}>
+            {tour.badge}
+          </div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="mp-pill" style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+              {isFull ? "Sold Out" : "Trip Selesai"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5">
+        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--mp-subtext)" }}>
+          {tour.category} · {tour.country}
+        </p>
+        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>
+          {tour.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="mp-pill" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>{tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="mp-pill" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="mp-pill" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>{tour.seatsLeft} seat</span>
+        </div>
+        {tour.promoPrice && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        )}
+        {!isDimmed && (
+          <div className="pt-3 border-t-2 flex items-center justify-between"
+            style={{ borderColor: "var(--mp-border)" }}>
+            <span className="text-xs font-black uppercase tracking-wide" style={{ color: "var(--mp-subtext)" }}>Lihat detail →</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -432,6 +494,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "kawaii") card = <KawaiiCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
