@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
 import cloudinary from "@/lib/cloudinary";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 function estimateReadTime(html: string): string {
   const words = html.replace(/<[^>]+>/g, "").split(/\s+/).length;
@@ -193,8 +193,11 @@ export async function POST(req: NextRequest) {
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
     .replace(/\s+/g, " ").trim();
 
-  // Fetch full article text from source URL so AI has real content to rewrite
-  const fullArticleText = sourceUrl ? await fetchFullArticle(sourceUrl) : "";
+  // Fetch full article and pre-fetch Pexels images in parallel using title as initial keyword
+  const [fullArticleText, preFetchedImages] = await Promise.all([
+    sourceUrl ? fetchFullArticle(sourceUrl) : Promise.resolve(""),
+    fetchPexelsImages(originalTitle, 5),
+  ]);
   const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;
 
   const prompt = `Kamu adalah traveler Indonesia yang pernah mengunjungi tempat ini dan sekarang nulis cerita di blog pribadi sundaftrip.com.
@@ -317,14 +320,16 @@ PENTING untuk imageKeywords: isi dengan NAMA TEMPAT dan OBJEK SPESIFIK yang ada 
     parsed = { title, excerpt, category, body };
   }
 
-  // ── Ambil foto dari Pexels berdasarkan imageKeywords ────────────────────
+  // Use Claude's imageKeywords for a better search; if different from title, re-fetch
   const keywords = parsed.imageKeywords || parsed.title;
-  const pexelsImages = await fetchPexelsImages(keywords, 5);
+  const pexelsImages = keywords.toLowerCase() !== originalTitle.toLowerCase()
+    ? await fetchPexelsImages(keywords, 5)
+    : preFetchedImages;
 
-  // Mirror cover ke Cloudinary
+  // Use Pexels URL directly as cover (stable CDN, no need to mirror)
   let cover = (coverImage as string | undefined) ?? "";
   if (!cover && pexelsImages.length > 0) {
-    cover = await mirrorToCloudinary(pexelsImages[0].url);
+    cover = pexelsImages[0].url;
   }
   if (!cover) {
     const seed = parsed.title.length + parsed.title.charCodeAt(0);

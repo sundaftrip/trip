@@ -89,12 +89,24 @@ export default function ScraperTool() {
         }),
       });
 
-      const data = await res.json();
+      let data: { error?: string; blog?: { id: string } } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.sourceUrl === post.sourceUrl
+              ? { ...p, rewriteStatus: "error", rewriteError: `Server error ${res.status} — kemungkinan timeout, coba lagi` }
+              : p
+          )
+        );
+        return;
+      }
       if (!res.ok) {
         setPosts((prev) =>
           prev.map((p) =>
             p.sourceUrl === post.sourceUrl
-              ? { ...p, rewriteStatus: "error", rewriteError: data.error || "Gagal" }
+              ? { ...p, rewriteStatus: "error", rewriteError: data.error || `HTTP ${res.status}` }
               : p
           )
         );
@@ -108,11 +120,12 @@ export default function ScraperTool() {
             : p
         )
       );
-    } catch {
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Gagal koneksi";
       setPosts((prev) =>
         prev.map((p) =>
           p.sourceUrl === post.sourceUrl
-            ? { ...p, rewriteStatus: "error", rewriteError: "Gagal koneksi" }
+            ? { ...p, rewriteStatus: "error", rewriteError: msg }
             : p
         )
       );
