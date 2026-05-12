@@ -10,7 +10,7 @@ async function getSiteTheme() {
 
 export default async function TermsPage() {
   const [tc, theme] = await Promise.all([
-    prisma.termsCondition.findFirst(),
+    prisma.termsCondition.findFirst().catch(() => null),
     getSiteTheme(),
   ]);
 
@@ -58,18 +58,18 @@ export default async function TermsPage() {
 
         {tc?.bodyId ? (
           isGlobe ? (
-            <div className="gl-card p-8 prose max-w-none"
+            <div className="gl-card p-8 prose dark:prose-invert max-w-none"
               style={{ background: cardBg, color: headClr }}>
               <div dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
             </div>
           ) : isOutlined ? (
-            <div className="border-2 p-8 prose max-w-none"
+            <div className={`border-2 p-8 prose max-w-none ${isPixel ? "font-mono" : ""}`}
               style={{ background: cardBg, borderColor: bdrClr, color: headClr,
-                       boxShadow: `4px 4px 0 0 ${bdrClr}`, fontFamily: isPixel ? "monospace" : undefined }}>
+                       boxShadow: `4px 4px 0 0 ${bdrClr}` }}>
               <div dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
             </div>
           ) : (
-            <div className="prose prose-blue dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
+            <div className="prose prose-slate dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: tc.bodyId }} />
           )
         ) : (
           isGlobe ? (
