@@ -1,103 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
+import Groq from "groq-sdk";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
-const WV_API = "https://en.wikivoyage.org/w/api.php";
+const WV = "https://en.wikivoyage.org/w/api.php";
 
-type WVPage = {
-  pageid: number;
-  title: string;
-  snippet?: string;
-  extract?: string;
-};
-
-async function searchWikivoyage(keyword: string, limit = 50): Promise<WVPage[]> {
-  const url = new URL(WV_API);
-  url.searchParams.set("action", "query");
-  url.searchParams.set("list", "search");
-  url.searchParams.set("srsearch", keyword || "travel destination");
-  url.searchParams.set("srnamespace", "0");
-  url.searchParams.set("srlimit", String(limit));
-  url.searchParams.set("srprop", "snippet|titlesnippet");
+async function wvFetch(params: Record<string, string>): Promise<unknown> {
+  const url = new URL(WV);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   url.searchParams.set("format", "json");
-  url.searchParams.set("origin", "*");
-
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
+  const res = await fetch(url.toString(), {
+    headers: { "User-Agent": "sundaftrip-bot/1.0 (https://sundaftrip.com)" },
+    signal: AbortSignal.timeout(12000),
+  });
   if (!res.ok) throw new Error(`Wikivoyage HTTP ${res.status}`);
-  const json = await res.json();
-  return (json?.query?.search ?? []) as WVPage[];
+  return res.json();
 }
 
-async function listWikivoyageCategory(category: string, limit = 200): Promise<WVPage[]> {
-  const url = new URL(WV_API);
-  url.searchParams.set("action", "query");
-  url.searchParams.set("list", "categorymembers");
-  url.searchParams.set("cmtitle", `Category:${category}`);
-  url.searchParams.set("cmlimit", String(limit));
-  url.searchParams.set("cmtype", "page");
-  url.searchParams.set("format", "json");
-  url.searchParams.set("origin", "*");
+type WVPage = { pageid: number; title: string; snippet?: string };
 
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error(`Wikivoyage category HTTP ${res.status}`);
-  const json = await res.json();
-  return ((json?.query?.categorymembers ?? []) as { pageid: number; title: string }[]).map((p) => ({
-    pageid: p.pageid,
-    title: p.title,
-    snippet: "",
-  }));
+async function searchWikivoyage(q: string, limit: number): Promise<WVPage[]> {
+  const json = await wvFetch({ action: "query", list: "search", srsearch: q, srnamespace: "0", srlimit: String(limit), srprop: "snippet" }) as { query?: { search?: WVPage[] } };
+  return json?.query?.search ?? [];
 }
 
-async function fetchWikivoyageExtracts(pageids: number[]): Promise<Map<number, string>> {
-  const url = new URL(WV_API);
-  url.searchParams.set("action", "query");
-  url.searchParams.set("prop", "extracts");
-  url.searchParams.set("exintro", "1");
-  url.searchParams.set("exchars", "600");
-  url.searchParams.set("pageids", pageids.join("|"));
-  url.searchParams.set("format", "json");
-  url.searchParams.set("origin", "*");
+async function allPages(limit: number, from = ""): Promise<WVPage[]> {
+  const params: Record<string, string> = { action: "query", list: "allpages", apnamespace: "0", aplimit: String(limit), apfilterredir: "nonredirects" };
+  if (from) params.apfrom = from;
+  const json = await wvFetch(params) as { query?: { allpages?: WVPage[] } };
+  return json?.query?.allpages ?? [];
+}
 
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) return new Map();
-  const json = await res.json();
-  const pages = json?.query?.pages ?? {};
+async function fetchExtracts(pageids: number[]): Promise<Map<number, string>> {
+  const json = await wvFetch({ action: "query", prop: "extracts", exintro: "1", exchars: "800", pageids: pageids.join("|") }) as { query?: { pages?: Record<string, { extract?: string }> } };
   const map = new Map<number, string>();
-  for (const [id, page] of Object.entries(pages)) {
-    const extract = ((page as { extract?: string }).extract ?? "")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 600);
-    map.set(Number(id), extract);
+  for (const [id, page] of Object.entries(json?.query?.pages ?? {})) {
+    const text = (page.extract ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 800);
+    if (text.length > 30) map.set(Number(id), text);
   }
   return map;
 }
 
-// Category → Wikivoyage category name mapping
-const CATEGORY_MAP: Record<string, string[]> = {
-  europe: ["Europe", "Countries_in_Europe"],
-  asia: ["Asia", "Countries_in_Asia"],
-  japan: ["Japan"],
-  russia: ["Russia"],
-  turkey: ["Turkey"],
-  thailand: ["Thailand"],
-  bali: ["Bali"],
-  vietnam: ["Vietnam"],
-  france: ["France"],
-  italy: ["Italy"],
-  germany: ["Germany"],
-  "middle east": ["Middle_East"],
-  africa: ["Africa"],
-  "south america": ["South_America"],
-  australia: ["Australia"],
-  "new zealand": ["New_Zealand"],
-  usa: ["United_States_of_America"],
-  canada: ["Canada"],
-  india: ["India"],
-  china: ["China"],
-};
+async function generateAiTopics(keyword: string): Promise<WVPage[]> {
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [{
+      role: "user",
+      content: `Buat 50 ide judul artikel blog travel tentang "${keyword || "destinasi wisata populer dunia"}".
+Setiap judul harus unik, spesifik, dan menarik — nama kota/negara/aktivitas konkret.
+Contoh: "Tokyo", "Santorini", "Backpacking Vietnam 2 Minggu", "Safari di Kenya", "Malam Pertama di Istanbul"
+
+Kembalikan HANYA array JSON: ["judul1","judul2",...]`,
+    }],
+    temperature: 0.9,
+    max_tokens: 2000,
+  });
+  const text = completion.choices[0]?.message?.content ?? "";
+  const match = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").match(/\[[\s\S]*\]/);
+  if (!match) return [];
+  const titles = JSON.parse(match[0]) as string[];
+  return titles.slice(0, 50).map((title, i) => ({ pageid: -(i + 1), title, snippet: "" }));
+}
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -107,96 +72,104 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
   const { keyword = "" } = body;
-  const kw = keyword.trim().toLowerCase();
+  const kw = keyword.trim();
 
   let pages: WVPage[] = [];
-  const errors: string[] = [];
+  let source: "wikivoyage" | "ai" = "wikivoyage";
+  let wvError = "";
 
-  // 1. Try category listing first (more results, no keyword restriction)
-  const categories = kw ? (CATEGORY_MAP[kw] ?? []) : ["Europe", "Asia", "Countries_in_Asia", "Countries_in_Europe"];
-  if (categories.length > 0) {
-    await Promise.all(
-      categories.map(async (cat) => {
-        try {
-          const catPages = await listWikivoyageCategory(cat, 200);
-          pages.push(...catPages);
-        } catch (err) {
-          errors.push(`Category ${cat}: ${err}`);
+  // Try Wikivoyage
+  try {
+    if (kw) {
+      // Search by keyword + broader search
+      const [exact, broad] = await Promise.all([
+        searchWikivoyage(kw, 100),
+        searchWikivoyage(`${kw} travel guide`, 50),
+      ]);
+      const seen = new Set<number>();
+      for (const p of [...exact, ...broad]) {
+        if (!seen.has(p.pageid)) { seen.add(p.pageid); pages.push(p); }
+      }
+    } else {
+      // No keyword — get all pages spread across alphabet
+      const starts = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"];
+      const batches = await Promise.all(starts.map((s) => allPages(25, s)));
+      const seen = new Set<number>();
+      for (const batch of batches) {
+        for (const p of batch) {
+          if (!seen.has(p.pageid)) { seen.add(p.pageid); pages.push(p); }
         }
-      })
+      }
+    }
+  } catch (err) {
+    wvError = err instanceof Error ? err.message : String(err);
+  }
+
+  // Fall back to AI if Wikivoyage failed or returned nothing
+  if (pages.length === 0) {
+    if (!process.env.GROQ_API_KEY) {
+      return NextResponse.json({
+        error: `Wikivoyage gagal (${wvError || "tidak ada hasil"}) dan GROQ_API_KEY belum diset. Set GROQ_API_KEY di Vercel environment variables.`,
+      }, { status: 500 });
+    }
+    try {
+      pages = await generateAiTopics(kw);
+      source = "ai";
+    } catch (aiErr) {
+      return NextResponse.json({
+        error: `Wikivoyage: ${wvError || "kosong"}. AI fallback: ${aiErr instanceof Error ? aiErr.message : String(aiErr)}`,
+      }, { status: 500 });
+    }
+  }
+
+  // Fetch extracts for Wikivoyage pages (skip AI pages with negative ids)
+  const realPages = pages.filter((p) => p.pageid > 0);
+  const extractMap = new Map<number, string>();
+  if (realPages.length > 0) {
+    // Batch 50 at a time
+    await Promise.all(
+      Array.from({ length: Math.ceil(realPages.length / 50) }, (_, i) =>
+        fetchExtracts(realPages.slice(i * 50, i * 50 + 50).map((p) => p.pageid))
+          .then((m) => { for (const [id, text] of m) extractMap.set(id, text); })
+          .catch(() => {})
+      )
     );
   }
 
-  // 2. Also search by keyword to fill in gaps
-  try {
-    const searchLimit = kw ? 100 : 50;
-    const searchResults = await searchWikivoyage(kw || "travel city destination", searchLimit);
-    for (const p of searchResults) {
-      if (!pages.some((x) => x.pageid === p.pageid)) pages.push(p);
-    }
-  } catch (err) {
-    errors.push(`Search: ${err}`);
-  }
+  // Build source URLs
+  const toUrl = (title: string) =>
+    `https://en.wikivoyage.org/wiki/${encodeURIComponent(title.replace(/ /g, "_"))}`;
 
-  // Deduplicate
-  const seen = new Set<number>();
-  pages = pages.filter((p) => {
-    if (seen.has(p.pageid)) return false;
-    seen.add(p.pageid);
-    return true;
-  });
-
-  if (pages.length === 0) {
-    return NextResponse.json({
-      results: [],
-      total: 0,
-      warning: kw
-        ? `Tidak ada artikel ditemukan untuk "${keyword}". Coba keyword seperti "japan", "europe", "bali".`
-        : "Tidak ada artikel ditemukan dari Wikivoyage.",
-      errors,
-    });
-  }
-
-  // Fetch extracts for up to 50 pages at a time (API limit)
-  const extractMap = new Map<number, string>();
-  const chunks = [];
-  for (let i = 0; i < Math.min(pages.length, 200); i += 50) {
-    chunks.push(pages.slice(i, i + 50).map((p) => p.pageid));
-  }
-  await Promise.all(
-    chunks.map(async (ids) => {
-      const map = await fetchWikivoyageExtracts(ids);
-      for (const [id, extract] of map) extractMap.set(id, extract);
-    })
-  );
-
-  // Check already imported
-  const pageUrls = pages.map((p) => `https://en.wikivoyage.org/wiki/${encodeURIComponent(p.title.replace(/ /g, "_"))}`);
-  const existingUrls = await prisma.scrapedContent.findMany({
-    where: { sourceUrl: { in: pageUrls } },
-    select: { sourceUrl: true, status: true, blogId: true },
-  });
+  const realUrls = realPages.map((p) => toUrl(p.title));
+  const existingUrls = realUrls.length > 0
+    ? await prisma.scrapedContent.findMany({ where: { sourceUrl: { in: realUrls } }, select: { sourceUrl: true, status: true, blogId: true } })
+    : [];
   const existingMap = new Map(existingUrls.map((e) => [e.sourceUrl, e]));
 
   const results = pages.map((p) => {
-    const wvUrl = `https://en.wikivoyage.org/wiki/${encodeURIComponent(p.title.replace(/ /g, "_"))}`;
-    const extract = extractMap.get(p.pageid) || p.snippet?.replace(/<[^>]+>/g, " ").trim() || p.title;
+    const isAi = p.pageid < 0;
+    const url = isAi ? `ai://generated/${Date.now()}${p.pageid}` : toUrl(p.title);
+    const preview = extractMap.get(p.pageid) || p.snippet?.replace(/<[^>]+>/g, " ").trim() || p.title;
     return {
-      sourceUrl: wvUrl,
-      sourcePlatform: "wikivoyage",
-      subreddit: "Wikivoyage",
+      sourceUrl: url,
+      sourcePlatform: isAi ? "ai-generated" : "wikivoyage",
+      subreddit: isAi ? "AI Generated" : "Wikivoyage",
       originalTitle: p.title,
-      originalBody: extract,
+      originalBody: preview,
       coverImage: "",
-      author: "Wikivoyage Contributors",
+      author: isAi ? "AI Generated" : "Wikivoyage",
       score: null,
       numComments: null,
-      alreadyImported: existingMap.has(wvUrl),
-      importStatus: existingMap.get(wvUrl)?.status ?? null,
-      blogId: existingMap.get(wvUrl)?.blogId ?? null,
-      isAiGenerated: false,
+      alreadyImported: existingMap.has(url),
+      importStatus: existingMap.get(url)?.status ?? null,
+      blogId: existingMap.get(url)?.blogId ?? null,
+      isAiGenerated: isAi,
     };
   });
 
-  return NextResponse.json({ results, total: results.length, source: "wikivoyage", errors: errors.length ? errors : undefined });
+  const warning = source === "ai"
+    ? `Wikivoyage tidak tersedia (${wvError || "kosong"}). Menampilkan ${results.length} topik AI — klik Rewrite untuk buat artikel.`
+    : undefined;
+
+  return NextResponse.json({ results, total: results.length, source, warning });
 }
