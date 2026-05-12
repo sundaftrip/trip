@@ -38,6 +38,27 @@ async function mirrorToCloudinary(imageUrl: string): Promise<string> {
 
 async function fetchFullArticle(url: string): Promise<string> {
   try {
+    // Wikivoyage: use API for clean text extraction
+    if (url.includes("wikivoyage.org/wiki/")) {
+      const title = decodeURIComponent(url.split("/wiki/")[1] ?? "");
+      if (title) {
+        const apiUrl = `https://en.wikivoyage.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(title)}&format=json&origin=*`;
+        const apiRes = await fetch(apiUrl, { signal: AbortSignal.timeout(10000) });
+        if (apiRes.ok) {
+          const json = await apiRes.json();
+          const pages = json?.query?.pages ?? {};
+          const page = Object.values(pages)[0] as { extract?: string } | undefined;
+          if (page?.extract) {
+            return page.extract
+              .replace(/<[^>]+>/g, " ")
+              .replace(/\s+/g, " ")
+              .trim()
+              .slice(0, 6000);
+          }
+        }
+      }
+    }
+
     const res = await fetch(url, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
       signal: AbortSignal.timeout(12000),
@@ -247,8 +268,12 @@ Topik: ${originalTitle}
 Bahan referensi (kembangkan dan perkaya, jangan copy-paste):
 ${sourceContent || originalTitle}
 
-PENTING: Kembalikan HANYA JSON valid satu baris (tidak ada newline di luar string):
-{"title":"judul artikel menarik dan natural","excerpt":"ringkasan 2-3 kalimat gaya santai yang bikin orang pengen baca","category":"Eropa","imageKeywords":"travel,destination,journey,local","body":"<p>...</p>"}
+FORMAT OUTPUT — ikuti persis:
+Baris 1: JSON metadata (tanpa field body)
+{"title":"judul artikel","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"travel,destination,journey,local"}
+Baris 2: garis pemisah persis seperti ini:
+---BODY---
+Baris 3 dst: isi artikel HTML lengkap (boleh multiline, tidak perlu di-escape)
 
 imageKeywords: 3-5 kata bahasa Inggris dipisah koma. Category: nama benua/kawasan (Eropa, Asia, Timur Tengah, dll).`;
 
@@ -270,32 +295,40 @@ imageKeywords: 3-5 kata bahasa Inggris dipisah koma. Category: nama benua/kawasa
   let parsed: { title: string; excerpt: string; category: string; body: string; imageKeywords?: string };
   try {
     const cleaned = aiText.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
-    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON found");
 
-    let jsonStr = jsonMatch[0];
-    const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)"\s*\}/);
-    let bodyContent = "";
-    if (bodyMatch) {
-      bodyContent = bodyMatch[1];
-      jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"\s*\}/, '"body":"__BODY__"}');
+    // Primary: separator format  {"meta"}\n---BODY---\n<html>
+    const sepIdx = cleaned.indexOf("---BODY---");
+    if (sepIdx !== -1) {
+      const metaPart = cleaned.slice(0, sepIdx).trim();
+      const bodyPart = cleaned.slice(sepIdx + 10).trim();
+      const jsonMatch = metaPart.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No JSON before ---BODY---");
+      parsed = JSON.parse(jsonMatch[0]);
+      parsed.body = bodyPart || `<p>${cleanBody || originalTitle}</p>`;
+    } else {
+      // Fallback: body embedded in JSON — extract before parsing
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No JSON found");
+      let jsonStr = jsonMatch[0];
+      // Extract body field content before JSON.parse to avoid escape issues
+      const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);
+      let bodyContent = "";
+      if (bodyMatch) {
+        bodyContent = bodyMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"');
+        jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"(\s*[,}])/, '"body":"__BODY__"$1');
+      }
+      parsed = JSON.parse(jsonStr);
+      if (bodyContent) parsed.body = bodyContent;
+      if (!parsed.body || parsed.body === "__BODY__") parsed.body = `<p>${cleanBody || originalTitle}</p>`;
     }
-
-    parsed = JSON.parse(jsonStr);
-    if (bodyContent) parsed.body = bodyContent.replace(/\\n/g, "\n").replace(/\\"/g, '"');
-    if (!parsed.body) parsed.body = `<p>${cleanBody || originalTitle}</p>`;
   } catch {
-    try {
-      const title = aiText.match(/"title"\s*:\s*"([^"]+)"/)?.[1] ?? originalTitle;
-      const excerpt = aiText.match(/"excerpt"\s*:\s*"([^"]+)"/)?.[1] ?? "";
-      const category = aiText.match(/"category"\s*:\s*"([^"]+)"/)?.[1] ?? "Tips Travel";
-      parsed = { title, excerpt, category, body: `<p>${cleanBody || originalTitle}</p>` };
-    } catch {
-      return NextResponse.json(
-        { error: "AI mengembalikan format tidak valid", raw: aiText.slice(0, 500) },
-        { status: 500 }
-      );
-    }
+    // Last resort: regex-extract individual fields
+    const title = aiText.match(/"title"\s*:\s*"([^"]+)"/)?.[1] ?? originalTitle;
+    const excerpt = aiText.match(/"excerpt"\s*:\s*"([^"]+)"/)?.[1] ?? "";
+    const category = aiText.match(/"category"\s*:\s*"([^"]+)"/)?.[1] ?? "Tips Travel";
+    const sepIdx = aiText.indexOf("---BODY---");
+    const body = sepIdx !== -1 ? aiText.slice(sepIdx + 10).trim() : `<p>${cleanBody || originalTitle}</p>`;
+    parsed = { title, excerpt, category, body };
   }
 
   // ── Resolve & mirror images ke Cloudinary ────────────────────────────────

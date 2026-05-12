@@ -1,111 +1,103 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
-const SUBREDDITS = ["travel", "solotravel", "backpacking"];
+const WV_API = "https://en.wikivoyage.org/w/api.php";
 
-const REDDIT_HEADERS = {
-  "User-Agent": "Mozilla/5.0 (compatible; sundaftrip-bot/1.0; +https://sundaftrip.com)",
-  "Accept": "application/json",
+type WVPage = {
+  pageid: number;
+  title: string;
+  snippet?: string;
+  extract?: string;
 };
 
-type RedditPost = {
-  data: {
-    title: string;
-    selftext: string;
-    permalink: string;
-    score: number;
-    num_comments: number;
-    is_self: boolean;
-  };
-};
+async function searchWikivoyage(keyword: string, limit = 50): Promise<WVPage[]> {
+  const url = new URL(WV_API);
+  url.searchParams.set("action", "query");
+  url.searchParams.set("list", "search");
+  url.searchParams.set("srsearch", keyword || "travel destination");
+  url.searchParams.set("srnamespace", "0");
+  url.searchParams.set("srlimit", String(limit));
+  url.searchParams.set("srprop", "snippet|titlesnippet");
+  url.searchParams.set("format", "json");
+  url.searchParams.set("origin", "*");
 
-async function tryReddit(
-  keyword: string,
-  subreddit: string
-): Promise<{ title: string; url: string; preview: string; score: number; numComments: number }[]> {
-  // Try top posts (more reliable than search from server)
-  const periods: ("month" | "year")[] = ["month", "year"];
-  let rawPosts: RedditPost[] = [];
-
-  for (const period of periods) {
-    try {
-      const res = await fetch(
-        `https://www.reddit.com/r/${subreddit}/top.json?t=${period}&limit=50`,
-        { headers: REDDIT_HEADERS, signal: AbortSignal.timeout(10000) }
-      );
-      if (!res.ok) continue;
-      const json = await res.json();
-      rawPosts = (json?.data?.children ?? []) as RedditPost[];
-      if (rawPosts.length > 0) break;
-    } catch {
-      continue;
-    }
-  }
-
-  if (rawPosts.length === 0) return [];
-
-  const kw = keyword.toLowerCase();
-  return rawPosts
-    .filter((p) => {
-      if (!p.data.is_self || !p.data.selftext || p.data.selftext.length < 100) return false;
-      if (!kw) return true;
-      return (
-        p.data.title.toLowerCase().includes(kw) ||
-        p.data.selftext.toLowerCase().includes(kw)
-      );
-    })
-    .map((p) => ({
-      title: p.data.title,
-      url: `https://www.reddit.com${p.data.permalink}`,
-      preview: p.data.selftext.slice(0, 600),
-      score: p.data.score,
-      numComments: p.data.num_comments,
-    }));
+  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`Wikivoyage HTTP ${res.status}`);
+  const json = await res.json();
+  return (json?.query?.search ?? []) as WVPage[];
 }
 
-async function generateAiTopics(keyword: string): Promise<
-  { title: string; url: string; preview: string; score: number; numComments: number }[]
-> {
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-  const destination = keyword || "destinasi wisata populer";
+async function listWikivoyageCategory(category: string, limit = 200): Promise<WVPage[]> {
+  const url = new URL(WV_API);
+  url.searchParams.set("action", "query");
+  url.searchParams.set("list", "categorymembers");
+  url.searchParams.set("cmtitle", `Category:${category}`);
+  url.searchParams.set("cmlimit", String(limit));
+  url.searchParams.set("cmtype", "page");
+  url.searchParams.set("format", "json");
+  url.searchParams.set("origin", "*");
 
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [
-      {
-        role: "user",
-        content: `Kamu adalah traveler Indonesia yang sering nulis blog perjalanan.
-Buat 10 ide artikel blog perjalanan tentang "${destination}" yang menarik dan informatif.
-Setiap artikel harus punya sudut pandang unik — pengalaman nyata, tips praktis, atau cerita seru.
-
-Kembalikan HANYA array JSON valid:
-[
-  {"title": "judul artikel santai dan natural", "preview": "2-3 kalimat ringkasan isi artikel, gaya cerita personal"},
-  ...
-]`,
-      },
-    ],
-    temperature: 0.8,
-    max_tokens: 2000,
-  });
-
-  const text = completion.choices[0]?.message?.content ?? "";
-  const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
-  const match = cleaned.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error("AI tidak mengembalikan JSON array yang valid");
-
-  const items = JSON.parse(match[0]) as { title: string; preview: string }[];
-  return items.slice(0, 10).map((item, i) => ({
-    title: item.title,
-    url: `ai://generated/${Date.now()}-${i}`,
-    preview: item.preview,
-    score: 0,
-    numComments: 0,
+  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`Wikivoyage category HTTP ${res.status}`);
+  const json = await res.json();
+  return ((json?.query?.categorymembers ?? []) as { pageid: number; title: string }[]).map((p) => ({
+    pageid: p.pageid,
+    title: p.title,
+    snippet: "",
   }));
 }
+
+async function fetchWikivoyageExtracts(pageids: number[]): Promise<Map<number, string>> {
+  const url = new URL(WV_API);
+  url.searchParams.set("action", "query");
+  url.searchParams.set("prop", "extracts");
+  url.searchParams.set("exintro", "1");
+  url.searchParams.set("exchars", "600");
+  url.searchParams.set("pageids", pageids.join("|"));
+  url.searchParams.set("format", "json");
+  url.searchParams.set("origin", "*");
+
+  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) return new Map();
+  const json = await res.json();
+  const pages = json?.query?.pages ?? {};
+  const map = new Map<number, string>();
+  for (const [id, page] of Object.entries(pages)) {
+    const extract = ((page as { extract?: string }).extract ?? "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 600);
+    map.set(Number(id), extract);
+  }
+  return map;
+}
+
+// Category → Wikivoyage category name mapping
+const CATEGORY_MAP: Record<string, string[]> = {
+  europe: ["Europe", "Countries_in_Europe"],
+  asia: ["Asia", "Countries_in_Asia"],
+  japan: ["Japan"],
+  russia: ["Russia"],
+  turkey: ["Turkey"],
+  thailand: ["Thailand"],
+  bali: ["Bali"],
+  vietnam: ["Vietnam"],
+  france: ["France"],
+  italy: ["Italy"],
+  germany: ["Germany"],
+  "middle east": ["Middle_East"],
+  africa: ["Africa"],
+  "south america": ["South_America"],
+  australia: ["Australia"],
+  "new zealand": ["New_Zealand"],
+  usa: ["United_States_of_America"],
+  canada: ["Canada"],
+  india: ["India"],
+  china: ["China"],
+};
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -113,81 +105,98 @@ export async function POST(req: NextRequest) {
   if (!await checkPermission(session, "scraper_run"))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
-  if (!process.env.GROQ_API_KEY) {
-    return NextResponse.json({ error: "GROQ_API_KEY belum diset di environment variables Vercel" }, { status: 500 });
-  }
-
   const body = await req.json();
   const { keyword = "" } = body;
+  const kw = keyword.trim().toLowerCase();
 
-  // Try Reddit across multiple subreddits
-  const allPosts: {
-    title: string;
-    url: string;
-    preview: string;
-    score: number;
-    numComments: number;
-    subreddit: string;
-    source: "reddit" | "ai";
-  }[] = [];
+  let pages: WVPage[] = [];
+  const errors: string[] = [];
 
-  await Promise.all(
-    SUBREDDITS.map(async (sub) => {
-      const posts = await tryReddit(keyword, sub);
-      for (const p of posts) {
-        if (!allPosts.some((x) => x.url === p.url)) {
-          allPosts.push({ ...p, subreddit: sub, source: "reddit" });
+  // 1. Try category listing first (more results, no keyword restriction)
+  const categories = kw ? (CATEGORY_MAP[kw] ?? []) : ["Europe", "Asia", "Countries_in_Asia", "Countries_in_Europe"];
+  if (categories.length > 0) {
+    await Promise.all(
+      categories.map(async (cat) => {
+        try {
+          const catPages = await listWikivoyageCategory(cat, 200);
+          pages.push(...catPages);
+        } catch (err) {
+          errors.push(`Category ${cat}: ${err}`);
         }
-      }
+      })
+    );
+  }
+
+  // 2. Also search by keyword to fill in gaps
+  try {
+    const searchLimit = kw ? 100 : 50;
+    const searchResults = await searchWikivoyage(kw || "travel city destination", searchLimit);
+    for (const p of searchResults) {
+      if (!pages.some((x) => x.pageid === p.pageid)) pages.push(p);
+    }
+  } catch (err) {
+    errors.push(`Search: ${err}`);
+  }
+
+  // Deduplicate
+  const seen = new Set<number>();
+  pages = pages.filter((p) => {
+    if (seen.has(p.pageid)) return false;
+    seen.add(p.pageid);
+    return true;
+  });
+
+  if (pages.length === 0) {
+    return NextResponse.json({
+      results: [],
+      total: 0,
+      warning: kw
+        ? `Tidak ada artikel ditemukan untuk "${keyword}". Coba keyword seperti "japan", "europe", "bali".`
+        : "Tidak ada artikel ditemukan dari Wikivoyage.",
+      errors,
+    });
+  }
+
+  // Fetch extracts for up to 50 pages at a time (API limit)
+  const extractMap = new Map<number, string>();
+  const chunks = [];
+  for (let i = 0; i < Math.min(pages.length, 200); i += 50) {
+    chunks.push(pages.slice(i, i + 50).map((p) => p.pageid));
+  }
+  await Promise.all(
+    chunks.map(async (ids) => {
+      const map = await fetchWikivoyageExtracts(ids);
+      for (const [id, extract] of map) extractMap.set(id, extract);
     })
   );
 
-  allPosts.sort((a, b) => b.score - a.score);
-
-  let warning: string | undefined;
-  let source: "reddit" | "ai" = "reddit";
-
-  // Fall back to AI-generated topics if Reddit returned nothing
-  if (allPosts.length === 0) {
-    try {
-      const aiTopics = await generateAiTopics(keyword);
-      for (const t of aiTopics) {
-        allPosts.push({ ...t, subreddit: "AI Generated", source: "ai" });
-      }
-      source = "ai";
-      warning = `Reddit tidak tersedia saat ini. Menampilkan ${allPosts.length} ide artikel yang dibuat AI — klik Rewrite untuk menghasilkan artikel lengkap.`;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      return NextResponse.json({ error: `Gagal generate topik AI: ${msg}` }, { status: 500 });
-    }
-  }
-
-  // Check which URLs already imported (skip ai:// URLs)
-  const realUrls = allPosts.filter((p) => !p.url.startsWith("ai://")).map((p) => p.url);
-  const existingUrls =
-    realUrls.length > 0
-      ? await prisma.scrapedContent.findMany({
-          where: { sourceUrl: { in: realUrls } },
-          select: { sourceUrl: true, status: true, blogId: true },
-        })
-      : [];
+  // Check already imported
+  const pageUrls = pages.map((p) => `https://en.wikivoyage.org/wiki/${encodeURIComponent(p.title.replace(/ /g, "_"))}`);
+  const existingUrls = await prisma.scrapedContent.findMany({
+    where: { sourceUrl: { in: pageUrls } },
+    select: { sourceUrl: true, status: true, blogId: true },
+  });
   const existingMap = new Map(existingUrls.map((e) => [e.sourceUrl, e]));
 
-  const results = allPosts.map((t) => ({
-    sourceUrl: t.url,
-    sourcePlatform: t.source === "ai" ? "ai-generated" : "reddit",
-    subreddit: t.subreddit,
-    originalTitle: t.title,
-    originalBody: t.preview,
-    coverImage: "",
-    author: t.source === "ai" ? "AI Generated" : "Reddit Traveler",
-    score: t.score || null,
-    numComments: t.numComments || null,
-    alreadyImported: existingMap.has(t.url),
-    importStatus: existingMap.get(t.url)?.status ?? null,
-    blogId: existingMap.get(t.url)?.blogId ?? null,
-    isAiGenerated: t.source === "ai",
-  }));
+  const results = pages.map((p) => {
+    const wvUrl = `https://en.wikivoyage.org/wiki/${encodeURIComponent(p.title.replace(/ /g, "_"))}`;
+    const extract = extractMap.get(p.pageid) || p.snippet?.replace(/<[^>]+>/g, " ").trim() || p.title;
+    return {
+      sourceUrl: wvUrl,
+      sourcePlatform: "wikivoyage",
+      subreddit: "Wikivoyage",
+      originalTitle: p.title,
+      originalBody: extract,
+      coverImage: "",
+      author: "Wikivoyage Contributors",
+      score: null,
+      numComments: null,
+      alreadyImported: existingMap.has(wvUrl),
+      importStatus: existingMap.get(wvUrl)?.status ?? null,
+      blogId: existingMap.get(wvUrl)?.blogId ?? null,
+      isAiGenerated: false,
+    };
+  });
 
-  return NextResponse.json({ results, total: results.length, source, warning });
+  return NextResponse.json({ results, total: results.length, source: "wikivoyage", errors: errors.length ? errors : undefined });
 }
