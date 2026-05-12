@@ -109,53 +109,45 @@ async function fetchFullArticle(url: string): Promise<string> {
   }
 }
 
-async function fetchArticleImages(url: string): Promise<string[]> {
+async function fetchPexelsImages(keywords: string, count = 5): Promise<{ url: string; photographer: string; photographerUrl: string }[]> {
+  if (!process.env.PEXELS_API_KEY) return [];
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
-      signal: AbortSignal.timeout(12000),
-    });
+    const query = encodeURIComponent(keywords.split(",")[0].trim());
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${query}&per_page=${count}&orientation=landscape`,
+      { headers: { Authorization: process.env.PEXELS_API_KEY }, signal: AbortSignal.timeout(8000) }
+    );
     if (!res.ok) return [];
-    const html = await res.text();
-
-    const imgs: string[] = [];
-
-    // og:image first
-    const og = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
-      || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/i);
-    if (og) imgs.push(og[1]);
-
-    // All <img> tags with reasonable src
-    const imgRe = /<img[^>]+src="(https?:\/\/[^"]+\.(jpg|jpeg|png|webp)[^"]*)"/gi;
-    let m;
-    while ((m = imgRe.exec(html)) !== null) {
-      const src = m[1];
-      if (!imgs.includes(src) && !src.includes("logo") && !src.includes("icon") && !src.includes("avatar")) {
-        imgs.push(src);
-      }
-      if (imgs.length >= 6) break;
-    }
-
-    return imgs;
+    const json = await res.json() as { photos: { src: { large2x: string }; photographer: string; photographer_url: string }[] };
+    return (json.photos ?? []).map((p) => ({
+      url: p.src.large2x,
+      photographer: p.photographer,
+      photographerUrl: p.photographer_url,
+    }));
   } catch {
     return [];
   }
 }
 
-function injectImagesIntoBody(body: string, images: string[]): string {
-  if (images.length <= 1) return body; // cover already handles first image
+function injectImagesIntoBody(
+  body: string,
+  images: { url: string; photographer: string; photographerUrl: string }[]
+): string {
+  if (images.length === 0) return body;
 
-  // Split at </h2> boundaries to insert images between sections
   const sections = body.split(/(<\/h2>)/i);
-  const extraImgs = images.slice(1); // skip first (used as cover)
   let imgIdx = 0;
   let result = "";
 
   for (let i = 0; i < sections.length; i++) {
     result += sections[i];
-    // After every </h2>, inject an image if available
-    if (/^<\/h2>$/i.test(sections[i]) && imgIdx < extraImgs.length) {
-      result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;"><img src="${extraImgs[imgIdx]}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" /></figure>\n`;
+    if (/^<\/h2>$/i.test(sections[i]) && imgIdx < images.length) {
+      const img = images[imgIdx];
+      result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
+        `<img src="${img.url}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" />` +
+        `<figcaption style="font-size:0.75rem;color:#888;padding:6px 10px;">` +
+        `Photo by <a href="${img.photographerUrl}" target="_blank" rel="noopener">${img.photographer}</a> on Pexels` +
+        `</figcaption></figure>\n`;
       imgIdx++;
     }
   }
@@ -320,27 +312,22 @@ FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
     parsed = { title, excerpt, category, body };
   }
 
-  // ── Resolve & mirror images ke Cloudinary ────────────────────────────────
-  const rawImages = sourceUrl ? await fetchArticleImages(sourceUrl) : [];
+  // ── Ambil foto dari Pexels berdasarkan imageKeywords ────────────────────
+  const keywords = parsed.imageKeywords || parsed.title;
+  const pexelsImages = await fetchPexelsImages(keywords, 5);
 
-  // Upload semua ke Cloudinary secara paralel (max 5)
-  const cloudinaryImages = await Promise.all(
-    rawImages.slice(0, 5).map((img) => mirrorToCloudinary(img))
-  );
-
+  // Mirror cover ke Cloudinary
   let cover = (coverImage as string | undefined) ?? "";
-  if (!cover && cloudinaryImages.length > 0) cover = cloudinaryImages[0];
-  if (!cover && sourceUrl) {
-    const og = await fetchOgImage(sourceUrl);
-    cover = og ? await mirrorToCloudinary(og) : "";
+  if (!cover && pexelsImages.length > 0) {
+    cover = await mirrorToCloudinary(pexelsImages[0].url);
   }
-  if (!cover && parsed.imageKeywords) {
+  if (!cover) {
     const seed = parsed.title.length + parsed.title.charCodeAt(0);
     cover = `https://picsum.photos/seed/${seed}/1200/630`;
   }
 
-  // Inject gambar (sudah Cloudinary) ke dalam body artikel
-  parsed.body = injectImagesIntoBody(parsed.body, cloudinaryImages);
+  // Inject foto ke dalam body artikel (setelah setiap h2)
+  parsed.body = injectImagesIntoBody(parsed.body, pexelsImages.slice(1));
 
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });
   const slug = await generateUniqueSlug(baseSlug);
@@ -354,7 +341,7 @@ FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
       body: parsed.body,
       cover: cover || null,
       readTime: estimateReadTime(parsed.body),
-      published: false,
+      published: true,
       author: "Tim Sundaftrip",
     },
   });

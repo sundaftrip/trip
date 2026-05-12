@@ -39,6 +39,46 @@ async function mirrorToCloudinary(imageUrl: string): Promise<string> {
   }
 }
 
+async function fetchPexelsImages(keywords: string, count = 5): Promise<{ url: string; photographer: string; photographerUrl: string }[]> {
+  if (!process.env.PEXELS_API_KEY) return [];
+  try {
+    const query = encodeURIComponent(keywords.split(",")[0].trim());
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${query}&per_page=${count}&orientation=landscape`,
+      { headers: { Authorization: process.env.PEXELS_API_KEY }, signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return [];
+    const json = await res.json() as { photos: { src: { large2x: string }; photographer: string; photographer_url: string }[] };
+    return (json.photos ?? []).map((p) => ({
+      url: p.src.large2x,
+      photographer: p.photographer,
+      photographerUrl: p.photographer_url,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+function injectImagesIntoBody(body: string, images: { url: string; photographer: string; photographerUrl: string }[]): string {
+  if (images.length === 0) return body;
+  const sections = body.split(/(<\/h2>)/i);
+  let imgIdx = 0;
+  let result = "";
+  for (let i = 0; i < sections.length; i++) {
+    result += sections[i];
+    if (/^<\/h2>$/i.test(sections[i]) && imgIdx < images.length) {
+      const img = images[imgIdx];
+      result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
+        `<img src="${img.url}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" />` +
+        `<figcaption style="font-size:0.75rem;color:#888;padding:6px 10px;">` +
+        `Photo by <a href="${img.photographerUrl}" target="_blank" rel="noopener">${img.photographer}</a> on Pexels` +
+        `</figcaption></figure>\n`;
+      imgIdx++;
+    }
+  }
+  return result;
+}
+
 function estimateReadTime(html: string): string {
   const words = html.replace(/<[^>]+>/g, "").split(/\s+/).length;
   return `${Math.max(1, Math.round(words / 200))} menit`;
@@ -165,8 +205,19 @@ export async function GET(req: NextRequest) {
     try {
       const rewritten = await rewriteArticle(post.title, post.body);
 
-      const seed = rewritten.title.length + rewritten.title.charCodeAt(0);
-      const cover = `https://picsum.photos/seed/${seed}/1200/630`;
+      const keywords = (rewritten as { imageKeywords?: string }).imageKeywords || rewritten.title;
+      const pexelsImages = await fetchPexelsImages(keywords, 5);
+
+      let cover = "";
+      if (pexelsImages.length > 0) {
+        cover = await mirrorToCloudinary(pexelsImages[0].url);
+      }
+      if (!cover) {
+        const seed = rewritten.title.length + rewritten.title.charCodeAt(0);
+        cover = `https://picsum.photos/seed/${seed}/1200/630`;
+      }
+
+      const body = injectImagesIntoBody(rewritten.body, pexelsImages.slice(1));
 
       const baseSlug = slugify(rewritten.title, { lower: true, strict: true, locale: "id" });
       const slug = await generateUniqueSlug(baseSlug);
@@ -177,7 +228,7 @@ export async function GET(req: NextRequest) {
           title: rewritten.title,
           excerpt: rewritten.excerpt,
           category: rewritten.category,
-          body: rewritten.body,
+          body,
           cover,
           readTime: estimateReadTime(rewritten.body),
           published: true,
