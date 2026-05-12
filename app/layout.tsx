@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: name,
       template: `%s — ${name}`,
     },
-    description: `Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis. Panduan visa, itinerary, dan tips dari traveler Indonesia yang sudah ke sana — bukan agen, tapi teman yang pernah merasakannya.`,
+    description: `Spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis. Dari visa sampai itinerary, semua dirancang untuk traveler Indonesia.`,
     openGraph: {
       title: name,
       description: `Spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia`,
