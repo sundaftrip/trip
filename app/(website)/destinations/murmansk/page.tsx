@@ -73,12 +73,12 @@ const QUICK_FACTS = [
 ];
 
 const ACTIVITIES = [
-  { emoji: "🌌", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
-  { emoji: "🚢", title: "Kapal Pemecah Es Atomik", desc: "Naik kapal nuklir pemecah es dan keluar ke Samudra Arktik. Literally pengalaman yang gak ada duanya di bumi." },
-  { emoji: "🐕", title: "Husky Sledding", desc: "Berkeliling hutan bersalju ditarik anjing husky. Suara sepatu salju, napas anjing, dan sepi yang adem — healing level dewa." },
-  { emoji: "🐟", title: "Memancing di Atas Es", desc: "Mancing di danau yang membeku, duduk di atas lapisan es tebal. Kalau dapat ikan, langsung dimasak di sana." },
-  { emoji: "🏔️", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
-  { emoji: "🌅", title: "Polar Night", desc: "Desember–Januari, matahari gak terbit sama sekali selama berminggu-minggu. Aneh banget, tapi justru itu yang bikin auranya makin spektakuler." },
+  { img: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&h=350&fit=crop&q=80", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
+  { img: "https://images.unsplash.com/photo-1578836537282-3171d77f8632?w=600&h=350&fit=crop&q=80", title: "Kapal Pemecah Es Atomik", desc: "Naik kapal nuklir pemecah es dan keluar ke Samudra Arktik. Literally pengalaman yang gak ada duanya di bumi." },
+  { img: "https://images.unsplash.com/photo-1548777123-e216912df7d8?w=600&h=350&fit=crop&q=80", title: "Husky Sledding", desc: "Berkeliling hutan bersalju ditarik anjing husky. Suara sepatu salju, napas anjing, dan sepi yang adem — healing level dewa." },
+  { img: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&h=350&fit=crop&q=80", title: "Memancing di Atas Es", desc: "Mancing di danau yang membeku, duduk di atas lapisan es tebal. Kalau dapat ikan, langsung dimasak di sana." },
+  { img: "https://images.unsplash.com/photo-1553525553-65d33f0e8b4b?w=600&h=350&fit=crop&q=80", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
+  { img: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600&h=350&fit=crop&q=80", title: "Polar Night", desc: "Desember–Januari, matahari gak terbit sama sekali selama berminggu-minggu. Aneh banget, tapi justru itu yang bikin auranya makin spektakuler." },
 ];
 
 const FAQ = [
@@ -215,7 +215,7 @@ export default async function MurmanskPage() {
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
             Kenapa Murmansk, Bukan Finlandia atau Norwegia?
           </h2>
-          <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`} style={{ color: subClr }}>
+          <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-100" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>
             <p>Jujur, kalau lo mau lihat aurora, Finlandia dan Norwegia memang lebih &quot;mainstream&quot;. Lebih banyak travel agency, lebih mudah diakses. Tapi justru itu masalahnya — lo bakal ketemu ratusan turis lain yang sama-sama angkat HP buat foto langit yang sama.</p>
             <p>Murmansk menawarkan sesuatu yang berbeda: <strong>keaslian</strong>. Ini kota industri Arktik yang nyata, bukan desa wisata yang didesain buat turis. Penduduknya keras tapi hangat, landscape-nya brutal tapi cantik, dan auranya? Sama spektakularnya — tapi lo bisa nikmatin tanpa berdesakan.</p>
             <p>Plus: Murmansk adalah kota terbesar di dunia yang berada di dalam Lingkar Arktik. Infrastrukturnya jauh lebih lengkap dari yang lo bayangkan — ada hotel proper, restoran, dan transportasi yang berfungsi meski di tengah badai salju -25°C.</p>
@@ -264,11 +264,15 @@ export default async function MurmanskPage() {
             Apa yang Bisa Lo Lakuin di Murmansk
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACTIVITIES.map(({ emoji, title, desc }) => (
-              <div key={title} className={`${cardClass} p-5`} style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
-                <div className="text-3xl mb-3">{emoji}</div>
-                <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{title}</h3>
-                <p className={`text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{desc}</p>
+            {ACTIVITIES.map(({ img, title, desc }) => (
+              <div key={title} className={`${cardClass} overflow-hidden`} style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
+                <div className="relative h-40 w-full overflow-hidden">
+                  <Image src={img} alt={title} fill className="object-cover transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                </div>
+                <div className="p-5">
+                  <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{title}</h3>
+                  <p className={`text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-200" : ""}`} style={{ color: subClr }}>{desc}</p>
+                </div>
               </div>
             ))}
           </div>
