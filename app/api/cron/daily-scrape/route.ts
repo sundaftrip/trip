@@ -54,47 +54,39 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
 async function rewriteArticle(title: string, content: string) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
 
-  const prompt = `Kamu adalah traveler Indonesia berpengalaman yang sudah keliling 30+ negara dan nulis blog perjalanan detail di sundaftrip.com.
+  const prompt = `Kamu adalah traveler Indonesia yang nulis blog perjalanan di sundaftrip.com. Tulisanmu jujur, detail, dan terasa seperti cerita dari teman — bukan artikel media.
 
-TUGAS: Tulis artikel blog perjalanan PANJANG dan DETAIL dalam Bahasa Indonesia. Target minimal 1500 kata, idealnya 2000+ kata.
+CONTOH GAYA TULISAN YANG HARUS KAMU TIRU:
+"Pickpocket di Barcelona nyolong pasporku 6 jam sebelum jadwal keberangkatan. Ini cerita gimana aku kejar-kejaran sama waktu buat dapetin paspor darurat. Kejadiannya di hari terakhir di Barcelona. Aku harusnya ninggalin paspor di loker hostel, tapi ragu-ragu takut ketinggalan, jadi aku simpen di kantong depan celana. Bodoh memang. Padahal aku udah hati-hati banget — tangan selalu di kantong. Tapi ada 5 menit waktu naik metro, kaki udah pegal habis jalan seminggu, pikiran melayang. Aku ingat berdiri sambil ngelamun, lalu nyadar — aduh, harusnya aku waspada. Tapi udah terlambat. Aku langsung telepon konsulat. Nggak ada yang angkat. Mungkin lagi tidur siang. Baru nyambung jam 2 siang dan petugas pertama malah marahin aku. Sialan. Untungnya ada petugas lain yang bilang ke konsulat 30 menit lagi. Kami sprint keluar hostel, setop taksi, terjebak macet, tiba di gerbang — dan langsung disuruh balik karena sudah tutup. Aku bilang ada orang yang nunggu, bahkan kasih nama petugasnya. Si penjaga telepon, berdebat dalam Spanyol, lalu: 'Masuk.' Di ruang tunggu ada pasangan tua yang mau cruise impian tapi semua bagasi dicuri. Si kakek kejar pencopet, jatuh, patah tangan. Tiba-tiba kakek itu berhenti merespons, matanya kebalik. Aku langsung minta staf panggil ambulans. Lima menit kemudian ambulans datang. Namaku dipanggil jam 4 lebih. Bayar $100 (sekitar Rp 1,6 juta), paspor darurat di tangan. Kami bebas."
 
-GAYA: Orang pertama ("saya"/"aku"), santai tapi informatif, penuh detail nyata — nama tempat, harga IDR, nama transportasi, nama makanan. Bukan brosur wisata, bukan Wikipedia. Boleh curhat, salah langkah, momen tak terduga.
+Yang bikin cerita itu bagus: hook langsung, waktu spesifik, kesalahan diakui, karakter pendukung, momen tak terduga, harga nyata, emosi hadir tapi tidak lebay.
 
-WAJIB ADA (tulis secara natural):
-- Booking tiket: maskapai, harga IDR, transit
-- Visa: proses, biaya, durasi
-- Bandara → kota: transportasi, harga
-- Akomodasi: nama area, harga per malam IDR
-- SIM card: provider, harga, sinyal
-- Transportasi lokal: aplikasi, biaya harian
-- Makanan: nama makanan, tempat, harga, pendapat jujur
-- Momen spesifik tak terduga
-- Budget total kasar dalam IDR
-- Tips keamanan spesifik (scam, area berbahaya, dll)
-- Waktu terbaik vs waktu yang dihindari
+TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti contoh. Target 1500–2000 kata.
+
+WAJIB ADA (masukkan natural ke dalam cerita):
+- Hook kuat di paragraf pertama
+- Waktu spesifik (jam berapa, hari ke berapa)
+- Kesalahan atau hal yang tidak berjalan sesuai rencana
+- Momen tak terduga
+- Harga dalam Rupiah
+- Tips dari pengalaman nyata, bukan generik
+- Visa, transportasi dari Indonesia, SIM card — diceritakan, bukan dilist
 
 STRUKTUR HTML:
-<p>[Pembukaan — hook menarik]</p>
-<h2>Persiapan dan Keberangkatan dari Indonesia</h2>
-<p>[Detail booking, visa, keberangkatan — min 300 kata]</p>
-<h2>Pertama Kali Sampai: Kesan Awal</h2>
-<p>[Bandara, transportasi ke kota, first impression jujur]</p>
-<h2>Jalan-Jalan Harian: Dari Pagi Sampai Malam</h2>
-<p>[Kronologis hari per hari — bagian TERPANJANG, min 600 kata, cerita spesifik bukan generik]</p>
-<h2>Soal Makan: Wajib Coba Ini</h2>
-<p>[Rekomendasi dengan nama, tempat, harga]</p>
-<h2>Transportasi, Akomodasi, dan Internet</h2>
-<p>[Detail praktis dengan angka nyata]</p>
-<h2>Tips Penting Sebelum Pergi</h2>
-<ul><li>[min 6 tips spesifik dan actionable]</li></ul>
-<h2>Worth It Nggak? Penilaian Jujur Saya</h2>
-<p>[Kesimpulan jujur dengan kelebihan dan kekurangan]</p>
+<p>[Hook pembuka]</p>
+<h2>[Bagian persiapan — judul kontekstual]</h2><p>[isi detail]</p>
+<h2>[Bagian perjalanan harian — min 600 kata]</h2><p>[isi detail]</p>
+<h2>[Bagian makanan/transportasi/akomodasi]</h2><p>[isi detail]</p>
+<h2>Tips yang Beneran Berguna</h2><ul><li>[tip spesifik]</li>...</ul>
+<h2>[Kesimpulan jujur]</h2><p>[isi]</p>
 
 Topik: ${title}
-Bahan (kembangkan, jangan copy-paste): ${content || title}
+Bahan (kembangkan, perkaya, jangan copy-paste): ${content || title}
 
-Kembalikan HANYA JSON valid:
-{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"travel,city,culture","body":"<p>...</p>"}`;
+FORMAT OUTPUT:
+{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"travel,city,culture"}
+---BODY---
+<p>isi artikel HTML di sini</p>`;
 
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
@@ -105,18 +97,30 @@ Kembalikan HANYA JSON valid:
 
   const text = completion.choices[0]?.message?.content ?? "";
   const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+
+  const sepIdx = cleaned.indexOf("---BODY---");
+  if (sepIdx !== -1) {
+    const metaPart = cleaned.slice(0, sepIdx).trim();
+    const bodyPart = cleaned.slice(sepIdx + 10).trim();
+    const jsonMatch = metaPart.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON before ---BODY---");
+    const result = JSON.parse(jsonMatch[0]) as { title: string; excerpt: string; category: string; imageKeywords?: string; body: string };
+    result.body = bodyPart;
+    return result;
+  }
+
+  // Fallback: body embedded in JSON
   const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("Invalid AI response");
-
   let jsonStr = jsonMatch[0];
-  const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)"\s*\}/);
+  const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);
   let bodyContent = "";
   if (bodyMatch) {
-    bodyContent = bodyMatch[1];
-    jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"\s*\}/, '"body":"__BODY__"}');
+    bodyContent = bodyMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"');
+    jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"(\s*[,}])/, '"body":"__BODY__"$1');
   }
   const result = JSON.parse(jsonStr) as { title: string; excerpt: string; category: string; imageKeywords?: string; body: string };
-  if (bodyContent) result.body = bodyContent.replace(/\\n/g, "\n").replace(/\\"/g, '"');
+  if (bodyContent) result.body = bodyContent;
   return result;
 }
 

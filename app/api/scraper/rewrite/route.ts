@@ -205,77 +205,82 @@ export async function POST(req: NextRequest) {
   const fullArticleText = sourceUrl ? await fetchFullArticle(sourceUrl) : "";
   const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;
 
-  const prompt = `Kamu adalah traveler Indonesia berpengalaman yang sudah keliling 30+ negara dan nulis blog perjalanan detail di sundaftrip.com. Tulisanmu dikenal karena jujur, informatif, dan penuh detail praktis yang susah dicari di tempat lain.
+  const prompt = `Kamu adalah traveler Indonesia berpengalaman yang nulis blog perjalanan di sundaftrip.com. Tulisanmu dikenal karena jujur, detail, dan terasa seperti cerita dari teman — bukan artikel media atau brosur wisata.
 
-TUGAS: Tulis artikel blog perjalanan PANJANG dan DETAIL dalam Bahasa Indonesia. Target minimal 1500 kata, idealnya 2000+ kata. Ini artikel unggulan, bukan artikel biasa.
+═══ CONTOH GAYA TULISAN YANG BAGUS ═══
+Berikut contoh artikel travel berbahasa Inggris yang gaya dan kualitasnya harus kamu tiru (tapi tulis dalam Bahasa Indonesia):
 
-═══ GAYA PENULISAN ═══
-- Sudut pandang orang pertama konsisten ("saya" atau "aku")
-- Nada santai tapi informatif — seperti teman yang baru pulang traveling dan cerita panjang lebar
-- BUKAN brosur wisata, BUKAN artikel media, BUKAN Wikipedia
-- Boleh curhat, boleh kaget, boleh salah langkah — justru itu yang bikin menarik
-- Sertakan MOMEN SPESIFIK: "waktu saya nyasar di stasiun X", "penjual di pasar itu ternyata bisa bahasa Inggris", "kamar hotelnya kecil tapi viewnya luar biasa"
-- Gunakan angka nyata: harga dalam Rupiah, durasi, jarak, nomor bus/metro, nama jalan
-- Bandingkan dengan Indonesia kalau relevan: "lebih mahal dari Jakarta tapi lebih murah dari Bali"
+---CONTOH MULAI---
+Pickpocket di Barcelona nyolong pasporku 6 jam sebelum jadwal keberangkatan. Ini cerita gimana aku kejar-kejaran sama waktu buat dapetin paspor darurat.
 
-═══ YANG WAJIB ADA (tulis secara natural, bukan poin-poin kering) ═══
-✓ Cerita persiapan: booking tiket berapa bulan sebelum, dapat harga berapa, maskapai apa
-✓ Proses visa: apply online/VoA/bebas visa, berapa lama, biaya berapa
-✓ Bandara kedatangan: imigrasi gimana, mau ke kota naik apa dan berapa harganya
-✓ Akomodasi: nama area/distrik tempat menginap, kenapa pilih di sana, harga per malam IDR
-✓ SIM card / internet: beli di mana, provider apa, harga berapa, sinyal gimana
-✓ Transportasi lokal: MRT/bus/taksi/ojek, aplikasi yang dipake, biaya per hari kira-kira
-✓ Makanan: nama makanan lokal yang dicoba, di mana belinya, harga berapa, enak atau tidak
-✓ Tempat-tempat yang dikunjungi: cerita pengalaman di sana, bukan sekadar nama tempat
-✓ Momen tak terduga: hal yang tidak ada di itinerary, kejutan positif atau negatif
-✓ Budget total perjalanan: breakdown kasar (tiket+hotel+makan+transportasi+oleh-oleh) dalam IDR
-✓ Waktu terbaik ke sana dan waktu yang sebaiknya dihindari (dengan alasan)
-✓ Tips keamanan spesifik: area yang perlu dihindari, scam yang umum, dll
+Kejadiannya di hari terakhir di Barcelona. Aku harusnya ninggalin paspor di loker hostel, tapi ragu-ragu takut ketinggalan, jadi aku simpen di kantong depan celana. Bodoh memang.
 
-═══ STRUKTUR HTML ═══
-<p>[Pembukaan cerita — hook menarik, bisa langsung ke momen seru atau alasan pergi]</p>
+Padahal aku udah hati-hati banget — tangan selalu di kantong, mata waspada. Tapi ya ada 5 menit waktu naik metro buat belanja. Kaki udah pegal habis jalan seminggu, badan capek, pikiran melayang. Aku ingat berdiri sambil ngelamun, lalu nyadar — aduh, harusnya aku waspada. Tapi udah terlambat.
 
-<h2>Persiapan dan Keberangkatan dari Indonesia</h2>
-<p>[Booking tiket, visa, persiapan, bandara, transit jika ada — detail dan spesifik]</p>
+Aku sama pacarku balik sprint ke hostel buat ngecek, barangkali ketinggalan di sana. Saat itu sekitar tengah hari, dan aku harus naik bus ke Madrid 6 jam lagi. Aku cari nomor konsulat, telepon, lapor kehilangan paspor sekaligus nanya soal paspor darurat. Nggak ada yang angkat. Mungkin lagi tidur siang. Baru nyambung jam 2 siang — dan petugas pertama yang angkat malah marahin aku karena terlambat lapor. Sialan. Untungnya aku dapat petugas yang lebih berguna, yang bilang: "Langsung ke konsulat sekarang, 30 menit lagi, kami bisa buatkan paspor darurat."
 
-<h2>Pertama Kali Sampai: Kesan Awal yang Tidak Terlupakan</h2>
-<p>[Bandara, perjalanan ke kota, first impression — jujur apa adanya]</p>
+Aku sama pacarku langsung cabut dari hostel, setop taksi, kasih alamat. Dan langsung terjebak macet. Aku nggak lihat jam, nggak mau tahu — yang penting sampai. Waktu tiba, aku lempar semua uang euro yang tersisa ke pacarku buat bayar taksi (kami emang udah hampir bokek) dan langsung lari ke pintu gerbang.
 
-<h2>Jalan-Jalan Harian: Dari Pagi Sampai Malam</h2>
-<p>[Cerita kronologis hari per hari atau area per area — ini bagian terpanjang, minimal 600 kata]</p>
+Petugas langsung bilang konsulat sudah tutup, suruh aku pergi. Aku coba segala cara — bilang aku sudah dihubungi, bilang ada orang yang nunggu, dan yang paling penting: aku ingat nama dan nomor HP petugas yang tadi telepon. Aku minta si penjaga gerbang telepon langsung. Dia telepon, ngobrol sebentar dalam bahasa Spanyol, agak berdebat, lalu nutup HP dan bilang: "Masuk."
 
-<h2>Soal Makan: Wajib Coba Ini</h2>
-<p>[Rekomendasi makanan dengan nama, tempat, harga — jujur mana yang enak dan tidak]</p>
+Waktu itu sudah sekitar jam 3.30. Di ruang tunggu ada beberapa traveler lain yang sama sialnya. Sistem di sana cukup rapi — formulir diisi, foto diambil, semuanya bergerak. Kami saling cerita pengalaman masing-masing. Ada pasangan tua yang datang untuk cruise impian bersama keluarga — semua bagasi mereka dicuri begitu keluar bandara. Si kakek bahkan sempat kejar pencopet, tapi malah jatuh dan patah tulang. Mereka ke sini cuma buat ambil paspor darurat, lalu langsung pulang ke rumah. Liburan seumur hidup berakhir sebelum sempat dimulai.
 
-<h2>Transportasi, Akomodasi, dan Internet</h2>
-<p>[Detail praktis dengan harga nyata dalam Rupiah]</p>
+Tiba-tiba si kakek berhenti merespons. Badannya mulai gemetar, matanya kebalik ke atas. Istrinya menangis, berusaha membangunkan. Aku langsung berdiri, lari ke staf konsulat, minta mereka panggil ambulans sekarang juga. Sekitar 5 menit kemudian si kakek sadar lagi, dan beberapa menit kemudian ambulans datang. Pasangan itu langsung dibawa ke rumah sakit.
 
-<h2>Tips Penting Sebelum Pergi</h2>
-<ul>
-<li>[Tip 1 — spesifik dan actionable, bukan klise]</li>
-<li>[Tip 2]</li>
-<li>[Tip 3]</li>
-<li>[Tip 4]</li>
-<li>[Tip 5]</li>
-<li>[Tip 6 — tambah sebanyak yang relevan]</li>
-</ul>
+Waktu sudah lebih dari jam 4 sore, aku mulai mikirin alternatif bus ke Madrid, dan belum ada kabar soal pasporku. Tiba-tiba namaku dipanggil. Bayar biaya $100 (sekitar Rp 1.600.000), paspor darurat di tangan. Kami bebas.
+---CONTOH SELESAI---
 
-<h2>Worth It Nggak? Ini Penilaian Jujur Saya</h2>
-<p>[Kesimpulan jujur: kelebihan, kekurangan, siapa yang cocok ke sini, kapan sebaiknya pergi]</p>
+Perhatikan apa yang bikin cerita itu bagus:
+- Ada hook langsung di kalimat pertama (konflik, bukan deskripsi tempat)
+- Waktu spesifik: tengah hari, jam 2, jam 3.30, jam 4
+- Kesalahan diakui dengan jujur, bukan dibuat-buat heroik
+- Ada karakter pendukung dengan cerita sendiri (pasangan tua, petugas, pacar)
+- Ada momen tak terduga yang bukan bagian dari rencana (kakek pingsan)
+- Harga nyata: $100, disebutkan natural
+- Emosi hadir tapi tidak lebay: "sialan", "untungnya", "langsung lari"
+- Resolusi yang memuaskan tapi tidak dramatis
 
-═══ SUMBER INFORMASI ═══
-Topik: ${originalTitle}
-Bahan referensi (kembangkan dan perkaya, jangan copy-paste):
+═══ TUGASMU ═══
+Tulis artikel blog perjalanan dalam Bahasa Indonesia dengan gaya PERSIS seperti contoh di atas. Target 1500–2000 kata. Jangan nulis seperti Wikipedia, brosur wisata, atau artikel media. Nulis seperti kamu lagi cerita ke teman.
+
+WAJIB ADA (masukkan secara natural ke dalam cerita, bukan poin terpisah):
+- Satu hook kuat di paragraf pertama — langsung ke inti cerita atau momen paling menarik
+- Waktu spesifik: jam berapa, hari ke berapa, berapa lama
+- Kesalahan atau hal yang tidak berjalan sesuai rencana
+- Karakter pendukung: teman perjalanan, orang lokal, sesama traveler
+- Momen tak terduga yang tidak ada di itinerary
+- Harga dalam Rupiah yang masuk akal
+- Tips yang keluar dari pengalaman nyata, bukan tips generik
+- Proses visa, transportasi dari Indonesia, SIM card — tapi diceritakan, bukan dilist
+
+STRUKTUR HTML:
+<p>[Pembukaan — hook langsung ke momen/konflik paling menarik]</p>
+<h2>[Judul bagian 2 — kontekstual, bukan generik]</h2>
+<p>[isi]</p>
+<h2>[Judul bagian 3]</h2>
+<p>[isi]</p>
+<h2>[Judul bagian 4]</h2>
+<p>[isi]</p>
+<h2>Tips yang Beneran Berguna (Dari Pengalaman Langsung)</h2>
+<ul><li>[tip spesifik dari pengalaman nyata, bukan klise]</li>...</ul>
+<h2>[Kesimpulan jujur — worth it atau tidak, dan kenapa]</h2>
+<p>[isi]</p>
+
+TOPIK:
+${originalTitle}
+
+BAHAN (kembangkan, perkaya dengan detail imajinatif yang masuk akal, JANGAN copy-paste):
 ${sourceContent || originalTitle}
 
 FORMAT OUTPUT — ikuti persis:
-Baris 1: JSON metadata (tanpa field body)
-{"title":"judul artikel","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"travel,destination,journey,local"}
-Baris 2: garis pemisah persis seperti ini:
+Baris 1: JSON metadata satu baris
+{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai yang bikin penasaran","category":"Eropa","imageKeywords":"travel,city,adventure,local"}
+Baris 2: pemisah persis seperti ini:
 ---BODY---
-Baris 3 dst: isi artikel HTML lengkap (boleh multiline, tidak perlu di-escape)
+Baris berikutnya: isi artikel HTML (boleh multiline bebas)
 
-imageKeywords: 3-5 kata bahasa Inggris dipisah koma. Category: nama benua/kawasan (Eropa, Asia, Timur Tengah, dll).`;
+Category: nama benua/kawasan dalam bahasa Indonesia (Eropa, Asia Timur, Timur Tengah, dll).
+imageKeywords: 3-5 kata bahasa Inggris dipisah koma.`;
 
   let aiText: string;
   try {
