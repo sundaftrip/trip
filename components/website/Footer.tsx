@@ -171,7 +171,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           </div>
 
           <div>
-            <span className="mp-pill mb-5 inline-flex" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>Kontak</span>
+            <span className="mp-pill mb-5 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Kontak</span>
             <ul className="space-y-3 mt-3">
               {contacts.map(({ Icon, label, value, href }) => (
                 <li key={label} className="flex items-start gap-2">

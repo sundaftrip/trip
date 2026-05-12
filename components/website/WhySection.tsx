@@ -69,8 +69,8 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
 
   /* ── MAP / ATLAS ── */
   if (theme === "map") {
-    const cardBgs = ["var(--mp-water)", "var(--mp-sand)", "var(--mp-rust)", "var(--mp-olive)"];
-    const cardFgs = ["var(--mp-on-water)", "var(--mp-on-sand)", "var(--mp-on-rust)", "var(--mp-on-olive)"];
+    const cardBgs = ["var(--mp-water)", "var(--mp-land)", "var(--mp-rust)", "var(--mp-accent)"];
+    const cardFgs = ["var(--mp-on-water)", "var(--mp-text)", "var(--mp-on-rust)", "var(--mp-on-accent)"];
     return (
       <section className="py-24 relative overflow-hidden"
         style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>

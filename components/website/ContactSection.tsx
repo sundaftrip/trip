@@ -130,8 +130,8 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }, i) => {
-              const bgs = ["var(--mp-water)", "var(--mp-sand)", "var(--mp-olive)", "var(--mp-navy)"];
-              const fgs = ["var(--mp-on-water)", "var(--mp-on-sand)", "var(--mp-on-olive)", "var(--mp-on-navy)"];
+              const bgs = ["var(--mp-water)", "var(--mp-land)", "var(--mp-accent)", "var(--mp-navy)"];
+              const fgs = ["var(--mp-on-water)", "var(--mp-text)", "var(--mp-on-accent)", "var(--mp-on-ink)"];
               return (
                 <div key={label} className="mp-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
                   <div className="w-9 h-9 border-2 flex items-center justify-center shrink-0"
@@ -157,13 +157,13 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="mp-card p-10 flex flex-col justify-between" style={{ background: "var(--mp-olive)", borderColor: "var(--mp-border)" }}>
+          <div className="mp-card p-10 flex flex-col justify-between" style={{ background: "var(--mp-accent)", borderColor: "var(--mp-border)" }}>
             <div>
               <span className="mp-pill mb-6 inline-flex" style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", borderColor: "rgba(255,255,255,0.4)" }}>
                 {ctaLabel}
               </span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug" style={{ color: "var(--mp-on-olive)" }}>{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--mp-on-olive)", opacity: 0.75 }}>{ctaDesc}</p>
+              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug" style={{ color: "var(--mp-on-accent)" }}>{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--mp-on-accent)", opacity: 0.75 }}>{ctaDesc}</p>
             </div>
             {wa ? (
               <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
@@ -172,7 +172,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
                 <MessageCircle size={16} /> {waLabel}
               </a>
             ) : (
-              <p className="mt-10 text-sm" style={{ color: "var(--mp-on-olive)", opacity: 0.5 }}>{email}</p>
+              <p className="mt-10 text-sm" style={{ color: "var(--mp-on-accent)", opacity: 0.5 }}>{email}</p>
             )}
           </div>
         </div>

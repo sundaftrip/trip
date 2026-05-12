@@ -191,7 +191,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
           <div className="flex items-center gap-2">
             <button onClick={toggleLang} className="mp-pill"
-              style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>
+              style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
@@ -201,7 +201,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               </button>
             )}
             <Link href="/tours" className="hidden lg:inline-flex mp-btn text-xs"
-              style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+              style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
             <button onClick={() => setOpen(!open)} className="lg:hidden mp-pill"
@@ -223,7 +223,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="mp-btn text-xs w-full justify-center"
-                style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+                style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
             </div>

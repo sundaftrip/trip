@@ -114,10 +114,10 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
         <AnimateIn>
           <div className="flex items-end justify-between mb-14">
             <div>
-              <span className="mp-pill mb-4 inline-flex" style={{ background: "var(--mp-sand)", color: "var(--mp-on-sand)", borderColor: "var(--mp-border)" }}>Paket Tersedia</span>
+              <span className="mp-pill mb-4 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="mp-pill font-black" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+            <Link href="/tours" className="mp-pill font-black" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
               Semua Tour →
             </Link>
           </div>

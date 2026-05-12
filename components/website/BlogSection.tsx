@@ -74,7 +74,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <span className="mp-pill mb-3 inline-flex" style={{ background: "var(--mp-water)", color: "var(--mp-on-water)", borderColor: "var(--mp-border)" }}>Jurnal</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>Tips &amp; Inspirasi</h2>
             </div>
-            <Link href="/blog" className="mp-pill font-black" style={{ background: "var(--mp-olive)", color: "var(--mp-on-olive)", borderColor: "var(--mp-border)" }}>
+            <Link href="/blog" className="mp-pill font-black" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
               Semua Artikel →
             </Link>
           </div>
