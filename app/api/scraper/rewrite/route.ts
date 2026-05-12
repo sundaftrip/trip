@@ -74,6 +74,60 @@ async function fetchFullArticle(url: string): Promise<string> {
   }
 }
 
+async function fetchArticleImages(url: string): Promise<string[]> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) return [];
+    const html = await res.text();
+
+    const imgs: string[] = [];
+
+    // og:image first
+    const og = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
+      || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/i);
+    if (og) imgs.push(og[1]);
+
+    // All <img> tags with reasonable src
+    const imgRe = /<img[^>]+src="(https?:\/\/[^"]+\.(jpg|jpeg|png|webp)[^"]*)"/gi;
+    let m;
+    while ((m = imgRe.exec(html)) !== null) {
+      const src = m[1];
+      if (!imgs.includes(src) && !src.includes("logo") && !src.includes("icon") && !src.includes("avatar")) {
+        imgs.push(src);
+      }
+      if (imgs.length >= 6) break;
+    }
+
+    return imgs;
+  } catch {
+    return [];
+  }
+}
+
+function injectImagesIntoBody(body: string, images: string[]): string {
+  if (images.length <= 1) return body; // cover already handles first image
+
+  // Split at </h2> boundaries to insert images between sections
+  const sections = body.split(/(<\/h2>)/i);
+  const extraImgs = images.slice(1); // skip first (used as cover)
+  let imgIdx = 0;
+  let result = "";
+
+  for (let i = 0; i < sections.length; i++) {
+    result += sections[i];
+    // After every </h2>, inject an image if available
+    if (/^<\/h2>$/i.test(sections[i]) && imgIdx < extraImgs.length) {
+      result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;"><img src="${extraImgs[imgIdx]}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" /></figure>\n`;
+      imgIdx++;
+    }
+  }
+
+  return result;
+}
+
 async function fetchOgImage(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
@@ -196,18 +250,19 @@ imageKeywords: 3-5 kata bahasa Inggris dipisah koma, cocok untuk mencari foto ar
     }
   }
 
-  // ── Resolve cover image ──────────────────────────────────────────────────
+  // ── Resolve images ───────────────────────────────────────────────────────
+  const articleImages = sourceUrl ? await fetchArticleImages(sourceUrl) : [];
+
   let cover = (coverImage as string | undefined) ?? "";
-
-  if (!cover && sourceUrl) {
-    cover = await fetchOgImage(sourceUrl);
-  }
-
+  if (!cover && articleImages.length > 0) cover = articleImages[0];
+  if (!cover && sourceUrl) cover = await fetchOgImage(sourceUrl);
   if (!cover && parsed.imageKeywords) {
-    // Picsum with a seed derived from title so same article always gets same photo
     const seed = parsed.title.length + parsed.title.charCodeAt(0);
     cover = `https://picsum.photos/seed/${seed}/1200/630`;
   }
+
+  // Inject remaining images throughout the article body
+  parsed.body = injectImagesIntoBody(parsed.body, articleImages);
 
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });
   const slug = await generateUniqueSlug(baseSlug);
