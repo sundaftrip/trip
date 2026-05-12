@@ -22,6 +22,58 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
   return slug;
 }
 
+async function fetchFullArticle(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+
+    // Try to extract article body from common content containers
+    const containers = [
+      /<article[^>]*>([\s\S]*?)<\/article>/i,
+      /<div[^>]+class="[^"]*article[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+      /<div[^>]+class="[^"]*text[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+      /<main[^>]*>([\s\S]*?)<\/main>/i,
+    ];
+
+    let body = "";
+    for (const re of containers) {
+      const m = html.match(re);
+      if (m && m[1].length > 300) { body = m[1]; break; }
+    }
+    if (!body) body = html;
+
+    // Strip scripts, styles, nav, footer, aside
+    body = body
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<nav[\s\S]*?<\/nav>/gi, "")
+      .replace(/<footer[\s\S]*?<\/footer>/gi, "")
+      .replace(/<aside[\s\S]*?<\/aside>/gi, "")
+      .replace(/<header[\s\S]*?<\/header>/gi, "");
+
+    // Convert block tags to newlines then strip all tags
+    const text = body
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>/gi, "\n\n")
+      .replace(/<\/h[1-6]>/gi, "\n\n")
+      .replace(/<\/li>/gi, "\n")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
+    // Limit to ~4000 chars to keep within token budget
+    return text.slice(0, 4000);
+  } catch {
+    return "";
+  }
+}
+
 async function fetchOgImage(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
@@ -60,6 +112,10 @@ export async function POST(req: NextRequest) {
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
     .replace(/\s+/g, " ").trim();
 
+  // Fetch full article text from source URL so AI has real content to rewrite
+  const fullArticleText = sourceUrl ? await fetchFullArticle(sourceUrl) : "";
+  const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;
+
   const prompt = `Kamu adalah travel blogger Indonesia gaul yang nulis buat sundaftrip.com. Gaya nulis lo santai, jujur, kadang lebay dikit — tapi tetap informatif dan bikin orang pengen langsung booking.
 
 Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG dan ASIK DIBACA (1200–1800 kata).
@@ -86,7 +142,8 @@ SEO: Sebut nama destinasi minimal 8× secara natural.
 
 Topik:
 JUDUL: ${originalTitle}
-INFO TAMBAHAN: ${cleanBody || originalTitle}
+ISI ARTIKEL ASLI (rewrite ini, jangan copy-paste):
+${sourceContent || originalTitle}
 
 PENTING: Kembalikan HANYA JSON dengan format PERSIS seperti ini, gunakan single quote untuk atribut HTML:
 {"title":"judul artikel menarik","excerpt":"ringkasan 1-2 kalimat","category":"Eropa","imageKeywords":"travel,russia,city,culture","body":"<p>...</p><h2>...</h2><h3>...</h3><ul><li>...</li></ul>..."}
