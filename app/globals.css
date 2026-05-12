@@ -650,3 +650,11 @@ body {
 /* ── Highlight / mark — website rendering ── */
 .prose mark { background: #fef08a; color: #1a1a1a; border-radius: 3px; padding: 0 3px; }
 .dark .prose mark { background: #854d0e; color: #fef9c3; }
+
+/* ── Table — website rendering ── */
+.prose table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; font-size: 0.9rem; }
+.prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.65rem 1rem; text-align: left; vertical-align: top; }
+.prose th { background: #f9fafb; font-weight: 600; color: #111827; }
+.prose td { color: #374151; }
+.dark .prose th { background: #1e293b; color: #f1f5f9; border-color: #334155; }
+.dark .prose td { color: #cbd5e1; border-color: #334155; }
