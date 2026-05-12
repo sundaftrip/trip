@@ -160,7 +160,7 @@ export default function ScraperTool() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Scraper Konten</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Ambil thread perjalanan dari <strong>TripAdvisor Forums</strong>, lalu rewrite dengan AI menjadi artikel blog bergaya pengalaman pribadi.
+          Ambil postingan perjalanan dari <strong>Reddit</strong> (r/travel, r/solotravel, dll), lalu rewrite dengan AI menjadi artikel blog bergaya pengalaman pribadi.
         </p>
       </div>
 
@@ -188,8 +188,8 @@ export default function ScraperTool() {
           <div className="flex items-center gap-3 p-4 rounded-xl border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/20">
             <Rss className="text-blue-500 shrink-0" size={22} />
             <div>
-              <p className="font-semibold text-sm text-gray-900 dark:text-white">TripAdvisor Forums</p>
-              <p className="text-xs text-gray-500">tripadvisor.com — diskusi perjalanan nyata dari traveler dunia</p>
+              <p className="font-semibold text-sm text-gray-900 dark:text-white">Reddit Travel Communities</p>
+              <p className="text-xs text-gray-500">r/travel · r/solotravel · r/backpacking — cerita perjalanan nyata dari traveler dunia</p>
             </div>
           </div>
 
@@ -286,7 +286,7 @@ export default function ScraperTool() {
           {!loading && posts.length === 0 && !error && (
             <div className="text-center py-12 text-gray-400 dark:text-gray-600">
               <Search size={40} className="mx-auto mb-3 opacity-40" />
-              <p className="text-sm">Masukkan destinasi lalu klik "Cari Konten" untuk mengambil thread dari TripAdvisor Forums</p>
+              <p className="text-sm">Masukkan destinasi lalu klik "Cari Konten" untuk mengambil postingan dari Reddit</p>
             </div>
           )}
         </>
