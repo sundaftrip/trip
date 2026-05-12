@@ -16,7 +16,12 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     if (stored) setLang(stored);
   }, []);
 
-  const t = (key: string, fallback: string) => texts[key]?.[lang] || fallback;
+  const t = (key: string, fallback: string) => {
+    const val = texts[key];
+    if (!val) return fallback;
+    if (lang === "en") return val.en || val.id || fallback;
+    return val.id || val.en || fallback;
+  };
   const bankName   = texts["payment_bank_name"]?.id || "";
   const bankAcc    = texts["payment_bank_acc"]?.id || "";
   const bankHolder = texts["payment_bank_holder"]?.id || "";

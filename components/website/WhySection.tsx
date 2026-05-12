@@ -18,7 +18,12 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
     if (stored) setLang(stored);
   }, []);
 
-  const t = (key: string, fallback: string) => texts[key]?.[lang] || fallback;
+  const t = (key: string, fallback: string) => {
+    const val = texts[key];
+    if (!val) return fallback;
+    if (lang === "en") return val.en || val.id || fallback;
+    return val.id || val.en || fallback;
+  };
 
   const items = [
     { title: t("why_1_title", "Terpercaya & Berpengalaman"), desc: t("why_1_desc", "Lebih dari 10 tahun melayani jamaah."), Icon: icons[0] },
