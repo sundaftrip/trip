@@ -30,6 +30,33 @@ async function fetchRedditPosts(keyword: string, subreddit: string): Promise<{ t
     }));
 }
 
+async function fetchDestinationFacts(destination: string): Promise<string> {
+  const cityMap: Record<string, string> = {
+    russia: "Moscow",
+    kazakhstan: "Almaty",
+    kyrgyzstan: "Bishkek",
+    uzbekistan: "Tashkent",
+    tajikistan: "Dushanbe",
+  };
+  const city = cityMap[destination.toLowerCase()] ?? destination;
+  try {
+    const apiUrl = `https://en.wikivoyage.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(city)}&format=json&origin=*`;
+    const res = await fetch(apiUrl, { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) return "";
+    const json = await res.json();
+    const pages = json?.query?.pages ?? {};
+    const page = Object.values(pages)[0] as { extract?: string } | undefined;
+    if (!page?.extract) return "";
+    return page.extract
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 2500);
+  } catch {
+    return "";
+  }
+}
+
 async function mirrorToCloudinary(imageUrl: string): Promise<string> {
   try {
     const result = await cloudinary.uploader.upload(imageUrl, { folder: "blog-scraper", resource_type: "image", timeout: 15000 });
@@ -89,7 +116,7 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
   return slug;
 }
 
-async function rewriteArticle(title: string, content: string) {
+async function rewriteArticle(title: string, content: string, destinationFacts: string = "") {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
   const prompt = `Kamu adalah traveler Indonesia yang nulis blog perjalanan di sundaftrip.com. Tulisanmu jujur, detail, dan terasa seperti cerita dari teman — bukan artikel media.
@@ -103,6 +130,36 @@ LARANGAN KERAS (langgar ini = artikel gagal total):
 1. Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.
 2. JANGAN PERNAH mengarang fakta yang bisa dicek di Google atau Maps: alamat gedung, nama jalan, nomor jalan, syarat visa resmi (dokumen apa saja), biaya resmi kedutaan/pemerintah, jam operasional resmi. Kalau tidak tahu persis, tulis "cek situs resmi" atau "konfirmasi langsung ke kedutaan". LEBIH BAIK tidak sebut daripada salah.
 3. Yang BOLEH dikarang: nama karakter pendukung kecil, percakapan personal, perasaan, estimasi harga makanan/warung lokal, nama penginapan kecil, urutan kejadian personal.
+
+VARIASI KARAKTER PENDUKUNG — JANGAN pernah pakai nama "Rina". Variasikan tiap artikel:
+Perempuan: Maya, Sari, Dina, Putri, Hana, Tika, Ayu, Nisa, Reni, Bella, Karin, Shinta
+Laki-laki: Dika, Fajar, Rizky, Anto, Hendra, Bagas, Gilang, Wahyu, Kevin, Bram, Satria
+Konteks perkenalan yang berbeda-beda per artikel:
+- Teman kantor yang sama-sama berhasil dapat cuti panjang bareng
+- Kenalan dari grup FB "Backpacker Indonesia" — baru pertama kali ketemu offline di bandara
+- Solo traveler yang ketemu sesama WNI di hostel saat malam pertama tiba
+- Pasangan yang sudah plan liburan ini setahun sebelumnya
+- Sepupu yang tiba-tiba minta ikut H-2 keberangkatan
+
+MASKAPAI DARI JAKARTA — pakai HANYA dari daftar ini, JANGAN mengarang rute yang tidak ada:
+Rusia (Moskow/St. Petersburg): Turkish Airlines via Istanbul [paling populer traveler Indonesia], Qatar Airways via Doha, Etihad via Abu Dhabi
+Kazakhstan (Almaty/Astana): Turkish Airlines via Istanbul, atau AirAsia CGK→KUL lalu Air Astana KUL→Almaty
+Kyrgyzstan (Bishkek): Turkish Airlines via Istanbul, atau via Almaty
+Uzbekistan (Tashkent): Turkish Airlines via Istanbul, Uzbekistan Airways [semi-direct]
+Tajikistan (Dushanbe): Turkish Airlines via Istanbul, atau via Moskow dengan Somon Air
+Leg pertama hemat: AirAsia CGK→KUL, Garuda CGK→SIN, lalu connecting maskapai mitra
+⚠ CATATAN PENTING: Air Astana TIDAK punya penerbangan langsung dari Jakarta. Jangan tulis "naik Air Astana dari Jakarta".
+
+LOKASI SPESIFIK — sebut tempat yang bisa dicek pembaca, jangan karang alamat fiktif:
+- Kafe/restoran dengan view: sebut nama kawasan nyata + petunjuk cari. Contoh: "kafe di pojok kawasan Arbat — ketik 'cafe Arbat Moscow' di Google Maps, pilih yang bintang 4.5 ke atas"
+- KBRI/konsulat: JANGAN karang alamat. Tulis: "KBRI [kota] — cari di Google Maps untuk jam buka terkini sebelum datang"
+- Landmark: pakai nama resmi yang terverifikasi (Red Square, Registan, Ala-Too Square, dll)
+- Jika tahu nama kafe/restoran nyata dari bahan sumber atau fakta destinasi, sebutkan dengan percaya diri
+
+${destinationFacts ? `FAKTA DESTINASI TERVERIFIKASI (dari Wikivoyage — gunakan nama tempat, kawasan, dan detail ini dalam cerita):
+${destinationFacts}
+
+` : ""}
 
 TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti contoh. Target 1500-2000 kata.
 
@@ -205,8 +262,12 @@ export async function GET(req: NextRequest) {
   const subreddit = SUBREDDITS[Math.floor(Math.random() * SUBREDDITS.length)];
 
   let posts: { title: string; url: string; body: string }[] = [];
+  let destinationFacts = "";
   try {
-    posts = await fetchRedditPosts(keyword, subreddit);
+    [posts, destinationFacts] = await Promise.all([
+      fetchRedditPosts(keyword, subreddit),
+      fetchDestinationFacts(keyword),
+    ]);
   } catch (err) {
     return NextResponse.json({ error: `Gagal fetch Reddit: ${err}` }, { status: 502 });
   }
@@ -226,7 +287,7 @@ export async function GET(req: NextRequest) {
 
   for (const post of toProcess) {
     try {
-      const rewritten = await rewriteArticle(post.title, post.body);
+      const rewritten = await rewriteArticle(post.title, post.body, destinationFacts);
 
       const keywords = (rewritten as { imageKeywords?: string }).imageKeywords || rewritten.title;
       const pexelsImages = await fetchPexelsImages(keywords, 5);
