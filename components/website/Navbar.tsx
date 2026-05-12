@@ -92,7 +92,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="kw-btn px-5 py-2.5 text-xs font-black w-full justify-center"
+                className="flex kw-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--kw-border)", color: "#ffffff" }}>
                 {lang === "id" ? "Lihat Tour ♡" : "See Tours ♡"}
               </Link>
@@ -157,7 +157,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="gl-btn px-5 py-2.5 text-xs font-black w-full justify-center"
+                className="flex gl-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
                 {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
               </Link>
@@ -221,7 +221,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="at-btn-solid px-5 py-2.5 text-xs w-full justify-center">
+                className="flex at-btn-solid px-5 py-2.5 text-xs w-full justify-center">
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
             </div>
@@ -285,7 +285,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="mp-btn text-xs w-full justify-center"
+                className="flex mp-btn text-xs w-full justify-center"
                 style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
@@ -350,7 +350,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="tr-btn px-5 py-2.5 text-xs font-black w-full justify-center"
+                className="flex tr-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--site-accent)", color: "#ffffff" }}>
                 {lang === "id" ? "Lihat Tour 🌴" : "See Tours 🌴"}
               </Link>
@@ -421,7 +421,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="px-btn px-5 py-2.5 text-xs w-full justify-center"
+                className="flex px-btn px-5 py-2.5 text-xs w-full justify-center"
                 style={{ background: "var(--site-accent)", color: "#ffffff" }}>
                 {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
               </Link>
