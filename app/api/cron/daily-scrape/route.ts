@@ -2,61 +2,81 @@ import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
 import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
-import { fetchRbthRss } from "@/app/api/scraper/reddit/route";
+import cloudinary from "@/lib/cloudinary";
 
-function between(str: string, open: string, close: string): string {
-  const si = str.indexOf(open);
-  if (si === -1) return "";
-  const ei = str.indexOf(close, si + open.length);
-  if (ei === -1) return "";
-  return str.slice(si + open.length, ei).trim();
+const TA_WORLD_FORUMS = "https://www.tripadvisor.com/ListForums-g1-World.html";
+const DESTINATIONS = ["russia", "europe", "japan", "turkey", "middle east", "asia"];
+
+const BROWSER_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+};
+
+async function fetchHtml(url: string): Promise<string> {
+  const res = await fetch(url, { headers: BROWSER_HEADERS, signal: AbortSignal.timeout(15000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.text();
 }
 
-function stripHtml(html: string): string {
+function cleanText(html: string): string {
   return html
-    .replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<[^>]+>/g, "")
+    .replace(/<[^>]+>/g, "")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
-    .replace(/\n{3,}/g, "\n\n").trim();
+    .replace(/\s+/g, " ").trim();
 }
 
-function parseRss(xml: string) {
-  const items: { title: string; link: string; description: string; source: string }[] = [];
-  const itemBlocks = xml.split(/<item[\s>]/);
-  itemBlocks.shift();
-  for (const block of itemBlocks) {
-    const title = stripHtml(between(block, "<title>", "</title>").replace(/^<!\[CDATA\[/, "").replace(/\]\]>$/, ""));
-    let link = between(block, "<link>", "</link>") || between(block, "<guid>", "</guid>");
-    const rawDesc = between(block, "<description>", "</description>");
-    const description = stripHtml(rawDesc.replace(/^<!\[CDATA\[/, "").replace(/\]\]>$/, ""));
-    const source = between(block, '<source url=', "</source>").split(">").pop() ?? "Google News";
-    if (title && link?.startsWith("http") && description.length > 30) {
-      items.push({ title, link, description, source });
+function parseForumLinks(html: string, keyword: string): { title: string; url: string }[] {
+  const forums: { title: string; url: string }[] = [];
+  const kw = keyword.toLowerCase();
+  const re = /href="(\/(?:ListForums|Tourism)-g\d+[^"]*)"[^>]*>([^<]{3,60})<\/a>/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const title = cleanText(m[2]).trim();
+    if (!title || !title.toLowerCase().includes(kw)) continue;
+    const url = `https://www.tripadvisor.com${m[1]}`;
+    if (!forums.some((f) => f.url === url)) forums.push({ title, url });
+    if (forums.length >= 3) break;
+  }
+  return forums;
+}
+
+function parseThreads(html: string): { title: string; url: string }[] {
+  const threads: { title: string; url: string }[] = [];
+  const re = /href="(\/ShowTopic-[^"]+\.html)"[^>]*>([^<]{10,})<\/a>/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const title = cleanText(m[2]).trim();
+    if (!title || title.length < 10) continue;
+    const url = `https://www.tripadvisor.com${m[1].split("?")[0]}`;
+    if (!threads.some((t) => t.url === url)) threads.push({ title, url });
+    if (threads.length >= 20) break;
+  }
+  return threads;
+}
+
+async function fetchThreadContent(url: string): Promise<string> {
+  try {
+    const html = await fetchHtml(url);
+    const containers = [
+      /<div[^>]+class="[^"]*postBody[^"]*"[^>]*>([\s\S]{100,4000}?)<\/div>/i,
+      /<div[^>]+class="[^"]*review-container[^"]*"[^>]*>([\s\S]{100,4000}?)<\/div>/i,
+      /<p[^>]*class="[^"]*partial_entry[^"]*"[^>]*>([\s\S]{50,3000}?)<\/p>/i,
+    ];
+    for (const re of containers) {
+      const mm = html.match(re);
+      if (mm && mm[1].length > 80) return cleanText(mm[1]).slice(0, 4000);
     }
+    return "";
+  } catch {
+    return "";
   }
-  return items;
-}
-
-function estimateReadTime(html: string): string {
-  const words = html.replace(/<[^>]+>/g, "").split(/\s+/).length;
-  return `${Math.max(1, Math.round(words / 200))} menit`;
-}
-
-async function generateUniqueSlug(baseSlug: string): Promise<string> {
-  let slug = baseSlug;
-  let counter = 1;
-  while (await prisma.blog.findUnique({ where: { slug } })) {
-    slug = `${baseSlug}-${counter++}`;
-  }
-  return slug;
 }
 
 async function fetchOgImage(url: string): Promise<string> {
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
-      signal: AbortSignal.timeout(8000),
-    });
+    const res = await fetch(url, { headers: BROWSER_HEADERS, signal: AbortSignal.timeout(8000) });
     if (!res.ok) return "";
     const html = await res.text();
     const m = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
@@ -67,38 +87,61 @@ async function fetchOgImage(url: string): Promise<string> {
   }
 }
 
-async function rewriteArticle(title: string, body: string) {
+async function mirrorToCloudinary(imageUrl: string): Promise<string> {
+  try {
+    const result = await cloudinary.uploader.upload(imageUrl, { folder: "blog-scraper", resource_type: "image", timeout: 15000 });
+    return result.secure_url;
+  } catch {
+    return imageUrl;
+  }
+}
+
+function estimateReadTime(html: string): string {
+  const words = html.replace(/<[^>]+>/g, "").split(/\s+/).length;
+  return `${Math.max(1, Math.round(words / 200))} menit`;
+}
+
+async function generateUniqueSlug(baseSlug: string): Promise<string> {
+  let slug = baseSlug;
+  let counter = 1;
+  while (await prisma.blog.findUnique({ where: { slug } })) slug = `${baseSlug}-${counter++}`;
+  return slug;
+}
+
+async function rewriteArticle(title: string, content: string) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-  const prompt = `Kamu adalah travel blogger Indonesia gaul yang nulis buat sundaftrip.com. Gaya nulis lo santai, jujur, kadang lebay dikit — tapi tetap informatif dan bikin orang pengen langsung booking.
 
-Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG dan ASIK DIBACA (1200–1800 kata).
+  const prompt = `Kamu adalah traveler Indonesia yang suka jalan-jalan dan nulis pengalaman di blog pribadi. Bukan jurnalis, bukan copywriter — cuma orang biasa yang cerita perjalanan.
 
-Gaya bahasa:
-- Pakai "gue/gw" bukan "saya", "lo" bukan "kamu" — tapi jangan berlebihan, selang-seling aja
-- Boleh sesekali pakai: wkwk, weleh, aslik, anjay, literally, vibes, worth it, next level
-- Cerita kayak lagi ngobrol sama temen, bukan presentasi
-- Gunakan detail sensoris: bau, suara, rasa makanan, suhu udara, tekstur jalanan
-- Sisipkan reaksi jujur: "gue sempet culture shock pas...", "yang bikin gue speechless tuh..."
-- Sesekali bercanda atau lebay — tapi tetap ada info berguna di baliknya
-- Hindari kalimat kaku seperti "destinasi yang menakjubkan" atau "pemandangan yang indah"
+Tugas: Tulis artikel blog perjalanan dalam Bahasa Indonesia, gaya cerita personal, 800–1500 kata.
 
-Struktur WAJIB (gunakan heading HTML):
-1. <p> Opening hook — buka dengan situasi atau reaksi yang relatable, jangan langsung sebut nama destinasi
-2. <h2> Kenapa [Destinasi] Beda dari yang Lo Bayangin — fakta unik yang bikin penasaran (2-3 paragraf)
-3. <h2> Momen-Momen yang Bakal Lo Ceritain ke Semua Orang — 3 sub-bagian dengan <h3>, tiap sub 2 paragraf
-4. <h2> Tips Biar Perjalanan Lo Nggak Berantakan — min. 6 tips spesifik dalam <ul><li>, gaya casual
-5. <h2> Makanan & Budaya Lokal yang Wajib Lo Coba — jujur soal rasa, kebiasaan warga, hal aneh tapi seru
-6. <h2> Info Penting buat Traveler dari Indonesia — flight dari Jakarta/Surabaya, perlu visa atau bebas visa, waktu terbaik berangkat, durasi ideal, estimasi budget kasar dalam Rupiah
-7. <p> Penutup — tutup dengan kalimat yang bikin pembaca langsung pengen cek harga tiket
+Gaya penulisan:
+- Sudut pandang orang pertama: "saya" atau "aku" (boleh campur)
+- Nada santai, personal, sedikit spontan — seperti cerita di forum travel atau blog pribadi
+- Jangan terlalu rapi atau terlalu formal
+- Boleh ada kalimat agak panjang, pengulangan kata kecil, atau frasa sehari-hari
+- Hindari gaya puitis, marketing, atau terlalu sempurna — jangan terdengar seperti brosur wisata
+- Masukkan opini pribadi: "orang-orangnya ramah", "cukup aman", "lumayan capek tapi worth it"
+- Ceritakan secara kronologis dari datang sampai pulang
+- Detail praktis secara natural: transportasi, hotel, SIM card, harga, kondisi jalan, keamanan
 
-SEO: Sebut nama destinasi minimal 8× secara natural.
+Struktur (gunakan heading HTML):
+1. <p> Pembukaan singkat — konteks perjalanan
+2. <h2> Kedatangan dan First Impression
+3. <h2> Perjalanan Harian — cerita kronologis
+4. <h2> Transportasi dan Akomodasi
+5. <h2> Tips Praktis — min 5 tips dalam <ul><li>
+6. <h2> Kesimpulan — jujur, singkat
 
-Artikel asli:
+Info WAJIB ada secara natural: flight dari Indonesia, visa, SIM card, budget IDR, waktu terbaik.
+
+Topik:
 JUDUL: ${title}
-ISI: ${body}
+DETAIL (gunakan sebagai bahan, jangan copy-paste):
+${content || title}
 
 Kembalikan HANYA JSON valid:
-{"title":"...","excerpt":"...","category":"Eropa/Asia/Amerika/Timur Tengah/Afrika/Oseania/Tips Travel","imageKeywords":"travel,city,culture","body":"<p>...</p><h2>...</h2>..."}`;
+{"title":"judul blog pribadi natural","excerpt":"ringkasan santai 1-2 kalimat","category":"Eropa","imageKeywords":"travel,city,culture","body":"<p>...</p><h2>...</h2>..."}`;
 
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
@@ -106,6 +149,7 @@ Kembalikan HANYA JSON valid:
     temperature: 0.75,
     max_tokens: 4096,
   });
+
   const text = completion.choices[0]?.message?.content ?? "";
   const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
   const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
@@ -124,45 +168,54 @@ Kembalikan HANYA JSON valid:
 }
 
 export async function GET(req: NextRequest) {
-  // Vercel Cron auth check
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "GROQ_API_KEY tidak diset" }, { status: 500 });
   }
 
-  const TARGET_COUNT = 2; // artikel per hari
+  const TARGET_COUNT = 2;
   const published: string[] = [];
   const errors: string[] = [];
 
-  let articles: { title: string; link: string; description: string; source: string }[] = [];
+  // Pick a random destination keyword
+  const keyword = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)];
+
+  let threads: { title: string; url: string }[] = [];
   try {
-    const xml = await fetchRbthRss();
-    articles = parseRss(xml);
+    const worldHtml = await fetchHtml(TA_WORLD_FORUMS);
+    const forums = parseForumLinks(worldHtml, keyword);
+    if (forums.length > 0) {
+      const forumHtml = await fetchHtml(forums[0].url);
+      threads = parseThreads(forumHtml);
+    }
   } catch (err) {
-    return NextResponse.json({ error: `Gagal fetch RBTH: ${err}` }, { status: 502 });
+    return NextResponse.json({ error: `Gagal fetch TripAdvisor: ${err}` }, { status: 502 });
   }
 
-  // Filter artikel yang belum pernah diimport
+  if (threads.length === 0) {
+    return NextResponse.json({ error: "Tidak ada thread ditemukan", keyword }, { status: 200 });
+  }
+
+  // Filter yang belum diimport
   const existingUrls = await prisma.scrapedContent.findMany({
-    where: { sourceUrl: { in: articles.map((a) => a.link) } },
+    where: { sourceUrl: { in: threads.map((t) => t.url) } },
     select: { sourceUrl: true },
   });
   const existingSet = new Set(existingUrls.map((e) => e.sourceUrl));
-  const fresh = articles.filter((a) => !existingSet.has(a.link));
+  const fresh = threads.filter((t) => !existingSet.has(t.url));
+  const toProcess = fresh.sort(() => Math.random() - 0.5).slice(0, TARGET_COUNT);
 
-  // Shuffle dan ambil TARGET_COUNT
-  const shuffled = fresh.sort(() => Math.random() - 0.5).slice(0, TARGET_COUNT);
-
-  for (const article of shuffled) {
+  for (const thread of toProcess) {
     try {
-      const rewritten = await rewriteArticle(article.title, `${article.title}\n\n${article.description}`);
+      const content = await fetchThreadContent(thread.url);
+      const rewritten = await rewriteArticle(thread.title, content);
 
-      // Resolve cover image: og:image from article page → Picsum fallback
-      let cover = await fetchOgImage(article.link);
+      // Cover image
+      let cover = await fetchOgImage(thread.url);
+      if (cover) cover = await mirrorToCloudinary(cover);
       if (!cover) {
         const seed = rewritten.title.length + rewritten.title.charCodeAt(0);
         cover = `https://picsum.photos/seed/${seed}/1200/630`;
@@ -170,7 +223,6 @@ export async function GET(req: NextRequest) {
 
       const baseSlug = slugify(rewritten.title, { lower: true, strict: true, locale: "id" });
       const slug = await generateUniqueSlug(baseSlug);
-      const readTime = estimateReadTime(rewritten.body);
 
       const blog = await prisma.blog.create({
         data: {
@@ -180,7 +232,7 @@ export async function GET(req: NextRequest) {
           category: rewritten.category,
           body: rewritten.body,
           cover,
-          readTime,
+          readTime: estimateReadTime(rewritten.body),
           published: true,
           author: "Tim Sundaftrip",
         },
@@ -188,11 +240,11 @@ export async function GET(req: NextRequest) {
 
       await prisma.scrapedContent.create({
         data: {
-          sourceUrl: article.link,
-          sourcePlatform: "rbth",
-          subreddit: "RBTH Indonesia",
-          originalTitle: article.title,
-          originalBody: article.description.slice(0, 5000),
+          sourceUrl: thread.url,
+          sourcePlatform: "tripadvisor",
+          subreddit: "TripAdvisor Forums",
+          originalTitle: thread.title,
+          originalBody: content.slice(0, 5000),
           status: "published",
           blogId: blog.id,
         },
@@ -200,13 +252,14 @@ export async function GET(req: NextRequest) {
 
       published.push(blog.title);
     } catch (err) {
-      errors.push(`${article.title}: ${err}`);
+      errors.push(`${thread.title}: ${err}`);
     }
   }
 
   return NextResponse.json({
     success: true,
-    source: "rbth",
+    source: "tripadvisor",
+    keyword,
     published,
     errors,
     message: `${published.length} artikel berhasil dipublish`,
