@@ -54,43 +54,53 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
 async function rewriteArticle(title: string, content: string) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
 
-  const prompt = `Kamu adalah traveler Indonesia yang suka jalan-jalan dan nulis pengalaman di blog pribadi. Bukan jurnalis, bukan copywriter — cuma orang biasa yang cerita perjalanan.
+  const prompt = `Kamu adalah traveler Indonesia berpengalaman yang sudah keliling 30+ negara dan nulis blog perjalanan detail di sundaftrip.com.
 
-Tugas: Tulis artikel blog perjalanan dalam Bahasa Indonesia, gaya cerita personal, 800–1500 kata.
+TUGAS: Tulis artikel blog perjalanan PANJANG dan DETAIL dalam Bahasa Indonesia. Target minimal 1500 kata, idealnya 2000+ kata.
 
-Gaya penulisan:
-- Sudut pandang orang pertama: "saya" atau "aku" (boleh campur)
-- Nada santai, personal, sedikit spontan — seperti cerita di forum travel atau blog pribadi
-- Jangan terlalu rapi atau terlalu formal
-- Boleh ada kalimat agak panjang, pengulangan kata kecil, atau frasa sehari-hari
-- Hindari gaya puitis, marketing, atau terlalu sempurna — jangan terdengar seperti brosur wisata
-- Masukkan opini pribadi: "orang-orangnya ramah", "cukup aman", "lumayan capek tapi worth it"
-- Ceritakan secara kronologis dari datang sampai pulang
-- Detail praktis secara natural: transportasi, hotel, SIM card, harga, kondisi jalan, keamanan
+GAYA: Orang pertama ("saya"/"aku"), santai tapi informatif, penuh detail nyata — nama tempat, harga IDR, nama transportasi, nama makanan. Bukan brosur wisata, bukan Wikipedia. Boleh curhat, salah langkah, momen tak terduga.
 
-Struktur (gunakan heading HTML):
-1. <p> Pembukaan singkat — konteks perjalanan
-2. <h2> Kedatangan dan First Impression
-3. <h2> Perjalanan Harian — cerita kronologis
-4. <h2> Transportasi dan Akomodasi
-5. <h2> Tips Praktis — min 5 tips dalam <ul><li>
-6. <h2> Kesimpulan — jujur, singkat
+WAJIB ADA (tulis secara natural):
+- Booking tiket: maskapai, harga IDR, transit
+- Visa: proses, biaya, durasi
+- Bandara → kota: transportasi, harga
+- Akomodasi: nama area, harga per malam IDR
+- SIM card: provider, harga, sinyal
+- Transportasi lokal: aplikasi, biaya harian
+- Makanan: nama makanan, tempat, harga, pendapat jujur
+- Momen spesifik tak terduga
+- Budget total kasar dalam IDR
+- Tips keamanan spesifik (scam, area berbahaya, dll)
+- Waktu terbaik vs waktu yang dihindari
 
-Info WAJIB ada secara natural: flight dari Indonesia, visa, SIM card, budget IDR, waktu terbaik.
+STRUKTUR HTML:
+<p>[Pembukaan — hook menarik]</p>
+<h2>Persiapan dan Keberangkatan dari Indonesia</h2>
+<p>[Detail booking, visa, keberangkatan — min 300 kata]</p>
+<h2>Pertama Kali Sampai: Kesan Awal</h2>
+<p>[Bandara, transportasi ke kota, first impression jujur]</p>
+<h2>Jalan-Jalan Harian: Dari Pagi Sampai Malam</h2>
+<p>[Kronologis hari per hari — bagian TERPANJANG, min 600 kata, cerita spesifik bukan generik]</p>
+<h2>Soal Makan: Wajib Coba Ini</h2>
+<p>[Rekomendasi dengan nama, tempat, harga]</p>
+<h2>Transportasi, Akomodasi, dan Internet</h2>
+<p>[Detail praktis dengan angka nyata]</p>
+<h2>Tips Penting Sebelum Pergi</h2>
+<ul><li>[min 6 tips spesifik dan actionable]</li></ul>
+<h2>Worth It Nggak? Penilaian Jujur Saya</h2>
+<p>[Kesimpulan jujur dengan kelebihan dan kekurangan]</p>
 
-Topik:
-JUDUL: ${title}
-DETAIL (gunakan sebagai bahan, jangan copy-paste):
-${content || title}
+Topik: ${title}
+Bahan (kembangkan, jangan copy-paste): ${content || title}
 
 Kembalikan HANYA JSON valid:
-{"title":"judul blog pribadi natural","excerpt":"ringkasan santai 1-2 kalimat","category":"Eropa","imageKeywords":"travel,city,culture","body":"<p>...</p><h2>...</h2>..."}`;
+{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"travel,city,culture","body":"<p>...</p>"}`;
 
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
     temperature: 0.75,
-    max_tokens: 4096,
+    max_tokens: 8192,
   });
 
   const text = completion.choices[0]?.message?.content ?? "";
