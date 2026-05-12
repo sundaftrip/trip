@@ -85,7 +85,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-jost), sans-serif;
+  /* --site-font-family diinjeksi oleh website layout berdasarkan pilihan admin */
+  font-family: var(--site-font-family, var(--font-jost, ui-sans-serif, sans-serif));
 }
 
 /* Admin input utilities */
