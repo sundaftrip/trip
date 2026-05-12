@@ -46,10 +46,10 @@ export async function generateMetadata(): Promise<Metadata> {
       default: name,
       template: `%s — ${name}`,
     },
-    description: `Blog perjalanan dan panduan wisata mancanegara — tips visa, itinerary, dan cerita nyata dari traveler Indonesia bersama ${name}.`,
+    description: `Cerita perjalanan jujur, panduan visa, dan itinerary nyata dari traveler Indonesia yang sudah keliling dunia. Bukan brosur — ini pengalaman asli.`,
     openGraph: {
       title: name,
-      description: `Blog perjalanan dan panduan wisata mancanegara untuk traveler Indonesia`,
+      description: `Cerita perjalanan jujur dan panduan wisata nyata dari traveler Indonesia`,
       url: siteUrl,
       siteName: name,
       locale: "id_ID",
