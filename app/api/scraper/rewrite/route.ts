@@ -184,39 +184,55 @@ export async function POST(req: NextRequest) {
   const fullArticleText = sourceUrl ? await fetchFullArticle(sourceUrl) : "";
   const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;
 
-  const prompt = `Kamu adalah travel blogger Indonesia gaul yang nulis buat sundaftrip.com. Gaya nulis lo santai, jujur, kadang lebay dikit — tapi tetap informatif dan bikin orang pengen langsung booking.
+  const prompt = `Kamu adalah traveler Indonesia yang suka jalan-jalan dan nulis pengalaman di blog pribadi. Bukan jurnalis, bukan copywriter — cuma orang biasa yang cerita perjalanan.
 
-Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG dan ASIK DIBACA (1200–1800 kata).
+Tugas: Tulis artikel blog perjalanan dalam Bahasa Indonesia, gaya cerita personal, 800–1500 kata.
 
-Gaya bahasa:
-- Pakai "gue/gw" bukan "saya", "lo" bukan "kamu" — tapi jangan berlebihan, selang-seling aja
-- Boleh sesekali pakai: wkwk, weleh, aslik, anjir (versi halus: anjay), literally, vibes, worth it, next level
-- Cerita kayak lagi ngobrol sama temen, bukan presentasi
-- Gunakan detail sensoris: bau, suara, rasa makanan, suhu udara, tekstur jalanan
-- Sisipkan reaksi jujur: "gue sempet culture shock pas...", "yang bikin gue speechless tuh..."
-- Sesekali bercanda atau lebay — tapi tetap ada info berguna di baliknya
-- Hindari kalimat kaku seperti "destinasi yang menakjubkan" atau "pemandangan yang indah"
+Gaya penulisan:
+- Sudut pandang orang pertama: "saya" atau "aku" (boleh campur, konsisten per paragraf)
+- Nada santai, personal, sedikit spontan — seperti cerita di forum travel atau blog pribadi
+- Jangan terlalu rapi atau terlalu formal
+- Boleh ada kalimat agak panjang, pengulangan kata kecil, atau frasa sehari-hari
+- Hindari gaya puitis, marketing, atau terlalu sempurna
+- Jangan terdengar seperti brosur wisata atau artikel media
+- Masukkan opini pribadi sederhana: "orang-orangnya ramah", "cukup aman", "lumayan capek tapi worth it", "hotel ini sederhana tapi nyaman"
+- Ceritakan perjalanan secara kronologis dari datang sampai pulang
+- Sertakan detail praktis secara natural: transportasi, hotel, SIM card, harga, aplikasi, kondisi jalan, keamanan, guide lokal
+- Jangan terlalu banyak kata sifat berlebihan
 
-Struktur WAJIB (gunakan heading HTML):
-1. <p> Opening hook — buka dengan situasi atau reaksi yang relatable, jangan langsung sebut nama destinasi
-2. <h2> Kenapa [Destinasi] Beda dari yang Lo Bayangin — fakta unik yang bikin penasaran (2-3 paragraf)
-3. <h2> Momen-Momen yang Bakal Lo Ceritain ke Semua Orang — 3 sub-bagian dengan <h3>, tiap sub 2 paragraf
-4. <h2> Tips Biar Perjalanan Lo Nggak Berantakan — min. 6 tips spesifik dalam <ul><li>, gaya casual
-5. <h2> Makanan & Budaya Lokal yang Wajib Lo Coba — jujur soal rasa, kebiasaan warga, hal aneh tapi seru
-6. <h2> Info Penting buat Traveler dari Indonesia — flight dari Jakarta/Surabaya, perlu visa atau bebas visa, waktu terbaik berangkat, durasi ideal, estimasi budget kasar dalam Rupiah
-7. <p> Penutup — tutup dengan kalimat yang bikin pembaca langsung pengen cek harga tiket
+Contoh kalimat yang tepat:
+- "Saya cuma 2 malam di kota ini"
+- "ternyata lebih aman dari yang saya bayangkan"
+- "saya pakai SIM card lokal dan cukup lancar"
+- "jalanannya kadang bagus kadang rusak"
+- "lebih enak bawa cash dibanding kartu"
+- "overall saya cukup suka dengan negara ini"
 
-SEO: Sebut nama destinasi minimal 8× secara natural.
+Struktur (gunakan heading HTML):
+1. <p> Pembukaan singkat — konteks perjalanan, kenapa ke sini
+2. <h2> Kedatangan dan First Impression
+3. <h2> Perjalanan Harian — cerita kronologis tempat dan aktivitas
+4. <h2> Transportasi dan Akomodasi — pengalaman nyata, nama hotel/aplikasi boleh disebut
+5. <h2> Tips Praktis — minimal 5 tips dalam <ul><li>, gaya personal bukan formal
+6. <h2> Kesimpulan — jujur, singkat, apakah worth it atau tidak
+
+Info praktis yang WAJIB ada secara natural di dalam cerita:
+- Transportasi dari Indonesia (flight, transit)
+- Visa atau bebas visa
+- SIM card / internet
+- Budget kasar dalam Rupiah
+- Waktu terbaik kunjungan
+- Keamanan dan tips lokal
 
 Topik:
-JUDUL: ${originalTitle}
-ISI ARTIKEL ASLI (rewrite ini, jangan copy-paste):
+JUDUL / PENGALAMAN: ${originalTitle}
+DETAIL PERJALANAN (gunakan sebagai bahan, jangan copy-paste):
 ${sourceContent || originalTitle}
 
-PENTING: Kembalikan HANYA JSON dengan format PERSIS seperti ini, gunakan single quote untuk atribut HTML:
-{"title":"judul artikel menarik","excerpt":"ringkasan 1-2 kalimat","category":"Eropa","imageKeywords":"travel,russia,city,culture","body":"<p>...</p><h2>...</h2><h3>...</h3><ul><li>...</li></ul>..."}
+PENTING: Kembalikan HANYA JSON dengan format PERSIS seperti ini:
+{"title":"judul artikel natural seperti judul blog pribadi","excerpt":"ringkasan 1-2 kalimat gaya santai","category":"Eropa","imageKeywords":"travel,destination,journey,local","body":"<p>...</p><h2>...</h2><ul><li>...</li></ul>..."}
 
-imageKeywords: 3-5 kata bahasa Inggris dipisah koma, cocok untuk mencari foto artikel ini.`;
+imageKeywords: 3-5 kata bahasa Inggris dipisah koma.`;
 
   let aiText: string;
   try {

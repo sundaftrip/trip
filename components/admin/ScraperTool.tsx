@@ -160,7 +160,7 @@ export default function ScraperTool() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Scraper Konten</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Ambil berita perjalanan dari <strong>RBTH Indonesia</strong>, lalu rewrite otomatis dengan AI ke dalam draft blog.
+          Ambil thread perjalanan dari <strong>TripAdvisor Forums</strong>, lalu rewrite dengan AI menjadi artikel blog bergaya pengalaman pribadi.
         </p>
       </div>
 
@@ -185,11 +185,11 @@ export default function ScraperTool() {
       {tab === "search" && (
         <>
           {/* Source info */}
-          <div className="flex items-center gap-3 p-4 rounded-xl border-2 border-orange-500 bg-orange-50 dark:bg-orange-900/20">
-            <Rss className="text-orange-500 shrink-0" size={22} />
+          <div className="flex items-center gap-3 p-4 rounded-xl border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/20">
+            <Rss className="text-blue-500 shrink-0" size={22} />
             <div>
-              <p className="font-semibold text-sm text-gray-900 dark:text-white">RBTH Indonesia</p>
-              <p className="text-xs text-gray-500">id.rbth.com — berita dunia dalam Bahasa Indonesia, tanpa VPN</p>
+              <p className="font-semibold text-sm text-gray-900 dark:text-white">TripAdvisor Forums</p>
+              <p className="text-xs text-gray-500">tripadvisor.com — diskusi perjalanan nyata dari traveler dunia</p>
             </div>
           </div>
 
@@ -197,17 +197,17 @@ export default function ScraperTool() {
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 space-y-4">
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Filter Topik (opsional)
+                Destinasi / Keyword
               </label>
               <div className="flex gap-2 flex-wrap mb-2">
-                {["", "rusia", "eropa", "wisata", "budaya", "sejarah"].map((s) => (
+                {["", "russia", "europe", "japan", "turkey", "bali", "thailand"].map((s) => (
                   <button
                     key={s || "semua"}
                     onClick={() => setKeyword(s)}
                     className={`px-2.5 py-1 rounded-full text-xs font-medium transition capitalize ${
                       keyword === s
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-orange-100"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-100"
                     }`}
                   >
                     {s || "Semua"}
@@ -217,7 +217,7 @@ export default function ScraperTool() {
               <input
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="Kosongkan untuk semua artikel, atau ketik: rusia, wisata, budaya..."
+                placeholder="Contoh: russia, japan, turkey, europe..."
                 className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -286,7 +286,7 @@ export default function ScraperTool() {
           {!loading && posts.length === 0 && !error && (
             <div className="text-center py-12 text-gray-400 dark:text-gray-600">
               <Search size={40} className="mx-auto mb-3 opacity-40" />
-              <p className="text-sm">Klik "Cari Konten" untuk mengambil artikel terbaru dari RBTH</p>
+              <p className="text-sm">Masukkan destinasi lalu klik "Cari Konten" untuk mengambil thread dari TripAdvisor Forums</p>
             </div>
           )}
         </>
