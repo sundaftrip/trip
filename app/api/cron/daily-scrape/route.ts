@@ -69,25 +69,27 @@ async function fetchOgImage(url: string): Promise<string> {
 
 async function rewriteArticle(title: string, body: string) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-  const prompt = `Kamu adalah penulis blog perjalanan profesional untuk sundaftrip.com — travel agency Indonesia yang fokus pada destinasi wisata internasional.
+  const prompt = `Kamu adalah travel blogger Indonesia gaul yang nulis buat sundaftrip.com. Gaya nulis lo santai, jujur, kadang lebay dikit — tapi tetap informatif dan bikin orang pengen langsung booking.
 
-Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG, MENDALAM, dan MENARIK (1200–1800 kata).
+Tugas: Tulis artikel blog Bahasa Indonesia yang PANJANG dan ASIK DIBACA (1200–1800 kata).
 
-Panduan gaya:
-- Personal dan hangat — seperti cerita teman yang baru pulang traveling
-- Gunakan detail sensoris: aroma, suara, pemandangan, rasa makanan, suhu udara
-- Sisipkan fakta menarik yang tidak umum diketahui
-- Ajak pembaca membayangkan diri mereka di sana
-- Hindari kalimat klise seperti "destinasi yang menakjubkan" atau "pemandangan yang indah"
+Gaya bahasa:
+- Pakai "gue/gw" bukan "saya", "lo" bukan "kamu" — tapi jangan berlebihan, selang-seling aja
+- Boleh sesekali pakai: wkwk, weleh, aslik, anjay, literally, vibes, worth it, next level
+- Cerita kayak lagi ngobrol sama temen, bukan presentasi
+- Gunakan detail sensoris: bau, suara, rasa makanan, suhu udara, tekstur jalanan
+- Sisipkan reaksi jujur: "gue sempet culture shock pas...", "yang bikin gue speechless tuh..."
+- Sesekali bercanda atau lebay — tapi tetap ada info berguna di baliknya
+- Hindari kalimat kaku seperti "destinasi yang menakjubkan" atau "pemandangan yang indah"
 
 Struktur WAJIB (gunakan heading HTML):
-1. <p> Opening hook — 1 paragraf pembuka yang langsung menarik
-2. <h2> Mengapa [Destinasi] Berbeda dari yang Kamu Bayangkan — 2-3 paragraf
-3. <h2> Pengalaman yang Akan Kamu Ceritakan Seumur Hidup — 3 sub-bagian dengan <h3>
-4. <h2> Tips Praktis Agar Perjalananmu Lancar — min. 6 tips dalam <ul><li>
-5. <h2> Kuliner & Budaya yang Wajib Kamu Cicipi — 2 paragraf
-6. <h2> Rencanakan Perjalananmu Sekarang — waktu terbaik, durasi ideal, estimasi budget
-7. <p> Penutup inspiratif
+1. <p> Opening hook — buka dengan situasi atau reaksi yang relatable, jangan langsung sebut nama destinasi
+2. <h2> Kenapa [Destinasi] Beda dari yang Lo Bayangin — fakta unik yang bikin penasaran (2-3 paragraf)
+3. <h2> Momen-Momen yang Bakal Lo Ceritain ke Semua Orang — 3 sub-bagian dengan <h3>, tiap sub 2 paragraf
+4. <h2> Tips Biar Perjalanan Lo Nggak Berantakan — min. 6 tips spesifik dalam <ul><li>, gaya casual
+5. <h2> Makanan & Budaya Lokal yang Wajib Lo Coba — jujur soal rasa, kebiasaan warga, hal aneh tapi seru
+6. <h2> Info Penting buat Traveler dari Indonesia — flight dari Jakarta/Surabaya, perlu visa atau bebas visa, waktu terbaik berangkat, durasi ideal, estimasi budget kasar dalam Rupiah
+7. <p> Penutup — tutup dengan kalimat yang bikin pembaca langsung pengen cek harga tiket
 
 SEO: Sebut nama destinasi minimal 8× secara natural.
 
