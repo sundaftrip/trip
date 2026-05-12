@@ -73,12 +73,12 @@ const QUICK_FACTS = [
 ];
 
 const ACTIVITIES = [
-  { img: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&h=350&fit=crop&q=80", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
-  { img: "https://images.unsplash.com/photo-1578836537282-3171d77f8632?w=600&h=350&fit=crop&q=80", title: "Kapal Pemecah Es Atomik", desc: "Naik kapal nuklir pemecah es dan keluar ke Samudra Arktik. Literally pengalaman yang gak ada duanya di bumi." },
-  { img: "https://images.unsplash.com/photo-1548777123-e216912df7d8?w=600&h=350&fit=crop&q=80", title: "Husky Sledding", desc: "Berkeliling hutan bersalju ditarik anjing husky. Suara sepatu salju, napas anjing, dan sepi yang adem — healing level dewa." },
-  { img: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&h=350&fit=crop&q=80", title: "Memancing di Atas Es", desc: "Mancing di danau yang membeku, duduk di atas lapisan es tebal. Kalau dapat ikan, langsung dimasak di sana." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk — ukurannya gila, rasanya lebih gila. Ini bukan kepiting biasa, ini pengalaman makan yang bakal lo ceritain seumur hidup." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik — healing level dewa." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Berburu Paus di Teriberka", desc: "Susuri Laut Barents menuju Teriberka — desa nelayan terpencil yang jadi spot terbaik lihat paus bungkuk di habitat aslinya." },
   { img: "https://images.unsplash.com/photo-1553525553-65d33f0e8b4b?w=600&h=350&fit=crop&q=80", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
-  { img: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600&h=350&fit=crop&q=80", title: "Polar Night", desc: "Desember–Januari, matahari gak terbit sama sekali selama berminggu-minggu. Aneh banget, tapi justru itu yang bikin auranya makin spektakuler." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Naik Rusa di Tundra", desc: "Duduk di slede kayu ditarik rusa kutub menembus hutan pinus bersalju. Rasanya kayak masuk ke dalam dongeng Natal — tapi nyata." },
 ];
 
 const FAQ = [
