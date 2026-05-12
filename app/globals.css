@@ -445,8 +445,8 @@ body {
   --mp-ink:     color-mix(in srgb, var(--site-accent, #2d6a4f) 22%, #2e3f5c);
   --mp-border:  color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, #3d5473);
   --mp-text:    color-mix(in srgb, var(--site-accent, #2d6a4f) 18%, #1e2d45);
-  --mp-subtext: color-mix(in srgb, var(--site-accent, #2d6a4f) 15%, #5a6e88);
-  --mp-accent:  color-mix(in srgb, var(--site-accent, #2d6a4f) 85%, #3d5473);
+  --mp-subtext: color-mix(in srgb, var(--site-accent, #2d6a4f) 20%, #1e2d45);
+  --mp-accent:  color-mix(in srgb, var(--site-accent, #2d6a4f) 90%, #1a3350);
   --mp-water:   color-mix(in srgb, var(--site-accent, #2d6a4f) 28%, #6a8fa8);
   --mp-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 20%, rgba(62,84,115,0.14));
   --mp-frame:   color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, #3d5473);
