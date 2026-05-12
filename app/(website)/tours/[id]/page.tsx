@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
+import TourShareButtons from "@/components/website/TourShareButtons";
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -381,6 +382,19 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 </div>
               )}
+
+              {/* Share buttons */}
+              <TourShareButtons
+                tourTitle={tour.title}
+                isOutlined={isOutlined}
+                isAtlas={isAtlas}
+                pfx={pfx}
+                tText={tText}
+                tCard={tCard}
+                tBdr={tBdr}
+                tSub={tSub}
+                tMint={tMint}
+              />
             </div>
           </div>
         </div>
