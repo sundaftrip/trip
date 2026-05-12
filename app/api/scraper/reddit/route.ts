@@ -3,72 +3,101 @@ import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
-const RBTH_RSS = "https://id.rbth.com/rss";
+const TA_WORLD_FORUMS = "https://www.tripadvisor.com/ListForums-g1-World.html";
 
-function stripHtml(html: string): string {
+const BROWSER_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Cache-Control": "no-cache",
+};
+
+async function fetchHtml(url: string): Promise<string> {
+  const res = await fetch(url, {
+    headers: BROWSER_HEADERS,
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status} dari ${url}`);
+  return res.text();
+}
+
+function cleanText(html: string): string {
   return html
-    .replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n\n")
     .replace(/<[^>]+>/g, "")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
-    .replace(/\n{3,}/g, "\n\n").trim();
+    .replace(/\s+/g, " ").trim();
 }
 
-function extractTag(xml: string, tag: string): string {
-  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i");
-  const m = xml.match(re);
-  if (!m) return "";
-  return stripHtml(m[1].replace(/<!\[CDATA\[/g, "").replace(/\]\]>/g, "")).trim();
-}
+// Parse destination forum links from the world forum listing page
+function parseForumLinks(html: string, keyword: string): { title: string; url: string }[] {
+  const forums: { title: string; url: string }[] = [];
+  const kw = keyword.toLowerCase();
 
-function extractImageFromBlock(block: string): string {
-  // Try media:content url="..."
-  const mc = block.match(/<media:content[^>]+url="([^"]+)"/i);
-  if (mc) return mc[1];
-  // Try enclosure url="..." with image type
-  const enc = block.match(/<enclosure[^>]+url="([^"]+)"[^>]+type="image[^"]*"/i)
-    || block.match(/<enclosure[^>]+type="image[^"]*"[^>]+url="([^"]+)"/i);
-  if (enc) return enc[1];
-  // Try media:thumbnail
-  const thumb = block.match(/<media:thumbnail[^>]+url="([^"]+)"/i);
-  if (thumb) return thumb[1];
-  return "";
-}
-
-function parseRss(xml: string) {
-  const items: { title: string; link: string; author: string; description: string; coverImage: string }[] = [];
-  const itemRe = /<item[\s>]([\s\S]*?)<\/item>/gi;
-  let match;
-  while ((match = itemRe.exec(xml)) !== null) {
-    const block = match[1];
-    const title = extractTag(block, "title");
-    const description = extractTag(block, "description");
-    const author = extractTag(block, "dc:creator") || extractTag(block, "author") || "RBTH Indonesia";
-    const coverImage = extractImageFromBlock(block);
-
-    let link = extractTag(block, "link");
-    if (!link) {
-      const guidM = block.match(/<guid[^>]*>([\s\S]*?)<\/guid>/i);
-      link = guidM ? guidM[1].trim() : "";
+  // Match forum links — TripAdvisor uses /Tourism-g{id}-{slug} or /ListForums-g{id}
+  const re = /href="(\/(?:ListForums|Tourism)-g\d+[^"]*)"[^>]*>([^<]{3,60})<\/a>/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const title = cleanText(m[2]).trim();
+    if (!title || title.length < 3) continue;
+    if (kw && !title.toLowerCase().includes(kw)) continue;
+    const url = `https://www.tripadvisor.com${m[1]}`;
+    if (!forums.some((f) => f.url === url)) {
+      forums.push({ title, url });
     }
-
-    if (title && link.startsWith("http") && (description.length > 20 || title.length > 20)) {
-      items.push({ title, link, author, description: description || title, coverImage });
-    }
+    if (forums.length >= 5) break;
   }
-  return items;
+  return forums;
 }
 
-export async function fetchRbthRss(): Promise<string> {
-  const res = await fetch(RBTH_RSS, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-      "Accept": "application/rss+xml, application/xml, text/xml, */*",
-    },
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!res.ok) throw new Error(`RBTH RSS error ${res.status}`);
-  return res.text();
+// Parse thread list from a forum page
+function parseThreads(html: string): { title: string; url: string; preview: string }[] {
+  const threads: { title: string; url: string; preview: string }[] = [];
+
+  // TripAdvisor thread links: /ShowTopic-g...-k...-{slug}.html
+  const re = /href="(\/ShowTopic-[^"]+\.html)"[^>]*>([^<]{10,})<\/a>/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const title = cleanText(m[2]).trim();
+    if (!title || title.length < 10) continue;
+    const url = `https://www.tripadvisor.com${m[1].split("?")[0]}`;
+    if (!threads.some((t) => t.url === url)) {
+      threads.push({ title, url, preview: "" });
+    }
+    if (threads.length >= 30) break;
+  }
+  return threads;
+}
+
+// Fetch first post body from a thread page
+async function fetchThreadPreview(url: string): Promise<string> {
+  try {
+    const html = await fetchHtml(url);
+    // Try to extract first post content from various possible containers
+    const containers = [
+      /<div[^>]+class="[^"]*postBody[^"]*"[^>]*>([\s\S]{100,3000}?)<\/div>/i,
+      /<div[^>]+class="[^"]*review-container[^"]*"[^>]*>([\s\S]{100,3000}?)<\/div>/i,
+      /<div[^>]+data-automation="[^"]*body[^"]*"[^>]*>([\s\S]{100,3000}?)<\/div>/i,
+      /<p[^>]*class="[^"]*partial_entry[^"]*"[^>]*>([\s\S]{50,2000}?)<\/p>/i,
+    ];
+    for (const re of containers) {
+      const mm = html.match(re);
+      if (mm && mm[1].length > 80) return cleanText(mm[1]).slice(0, 600);
+    }
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+export async function fetchTripAdvisorThreads(keyword: string): Promise<string> {
+  const worldHtml = await fetchHtml(TA_WORLD_FORUMS);
+  const forums = parseForumLinks(worldHtml, keyword);
+  if (forums.length === 0) throw new Error("Forum tidak ditemukan untuk keyword tersebut");
+
+  // Fetch threads from first matching forum
+  const forumHtml = await fetchHtml(forums[0].url);
+  return forumHtml;
 }
 
 export async function POST(req: NextRequest) {
@@ -80,59 +109,73 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { keyword = "" } = body;
 
-  let xml: string;
+  let threads: { title: string; url: string; preview: string }[] = [];
+
   try {
-    xml = await fetchRbthRss();
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: `Gagal mengakses RBTH: ${msg}` }, { status: 502 });
-  }
+    // 1. Fetch world forum listing
+    const worldHtml = await fetchHtml(TA_WORLD_FORUMS);
 
-  let parsed = parseRss(xml);
+    // 2. Find matching destination forum
+    const forums = parseForumLinks(worldHtml, keyword);
 
-  if (keyword.trim()) {
-    const kw = keyword.toLowerCase();
-    parsed = parsed.filter(
-      (p) => p.title.toLowerCase().includes(kw) || p.description.toLowerCase().includes(kw)
-    );
-  }
+    if (forums.length === 0) {
+      // Fallback: search threads directly from world forum page
+      threads = parseThreads(worldHtml);
+    } else {
+      // 3. Fetch threads from matching forum
+      const forumHtml = await fetchHtml(forums[0].url);
+      threads = parseThreads(forumHtml);
 
-  const filtered = parsed
-    .filter((p) => p.description.length > 30 && p.link.startsWith("http"))
-    .map((p) => ({
-      sourceUrl: p.link,
-      sourcePlatform: "rbth",
-      subreddit: "RBTH Indonesia",
-      originalTitle: p.title,
-      originalBody: `${p.title}\n\n${p.description}`,
-      coverImage: p.coverImage,
-      author: p.author,
+      // If not enough, also try second forum
+      if (threads.length < 5 && forums.length > 1) {
+        const html2 = await fetchHtml(forums[1].url);
+        threads.push(...parseThreads(html2));
+      }
+    }
+
+    if (threads.length === 0) {
+      return NextResponse.json({
+        results: [],
+        total: 0,
+        warning: keyword
+          ? `Tidak ada thread ditemukan untuk "${keyword}". Coba keyword lain.`
+          : "Tidak ada thread ditemukan dari TripAdvisor.",
+      });
+    }
+
+    // Filter by keyword if provided
+    if (keyword.trim()) {
+      const kw = keyword.toLowerCase();
+      threads = threads.filter(
+        (t) => t.title.toLowerCase().includes(kw) || t.preview.toLowerCase().includes(kw)
+      );
+    }
+
+    // Check which URLs already imported
+    const existingUrls = await prisma.scrapedContent.findMany({
+      where: { sourceUrl: { in: threads.map((t) => t.url) } },
+      select: { sourceUrl: true, status: true, blogId: true },
+    });
+    const existingMap = new Map(existingUrls.map((e) => [e.sourceUrl, e]));
+
+    const results = threads.map((t) => ({
+      sourceUrl: t.url,
+      sourcePlatform: "tripadvisor",
+      subreddit: "TripAdvisor Forums",
+      originalTitle: t.title,
+      originalBody: t.preview || t.title,
+      coverImage: "",
+      author: "TripAdvisor Traveler",
       score: null,
       numComments: null,
+      alreadyImported: existingMap.has(t.url),
+      importStatus: existingMap.get(t.url)?.status ?? null,
+      blogId: existingMap.get(t.url)?.blogId ?? null,
     }));
 
-  if (filtered.length === 0) {
-    return NextResponse.json({
-      results: [],
-      total: 0,
-      warning: keyword.trim()
-        ? `Tidak ada artikel ditemukan untuk "${keyword}". Coba keyword lain atau kosongkan untuk semua artikel.`
-        : "Tidak ada artikel ditemukan dari RBTH.",
-    });
+    return NextResponse.json({ results, total: results.length });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: `Gagal mengakses TripAdvisor: ${msg}` }, { status: 502 });
   }
-
-  const existingUrls = await prisma.scrapedContent.findMany({
-    where: { sourceUrl: { in: filtered.map((p) => p.sourceUrl) } },
-    select: { sourceUrl: true, status: true, blogId: true },
-  });
-  const existingMap = new Map(existingUrls.map((e) => [e.sourceUrl, e]));
-
-  const results = filtered.map((p) => ({
-    ...p,
-    alreadyImported: existingMap.has(p.sourceUrl),
-    importStatus: existingMap.get(p.sourceUrl)?.status ?? null,
-    blogId: existingMap.get(p.sourceUrl)?.blogId ?? null,
-  }));
-
-  return NextResponse.json({ results, total: results.length });
 }
