@@ -99,7 +99,6 @@ export async function POST(req: NextRequest) {
 
   const filtered = parsed
     .filter((p) => p.description.length > 30 && p.link.startsWith("http"))
-    .slice(0, 20)
     .map((p) => ({
       sourceUrl: p.link,
       sourcePlatform: "rbth",
