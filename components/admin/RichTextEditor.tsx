@@ -118,6 +118,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
   const [showTablePicker, setShowTablePicker] = useState(false);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Image,

@@ -1,12 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Search, RefreshCw, Rss, Globe, BookOpen, ExternalLink } from "lucide-react";
+import { Search, RefreshCw, Rss, BookOpen, ExternalLink } from "lucide-react";
 import ScrapedCard, { ScrapedPost } from "./ScrapedCard";
 
-const DEFAULT_SUBREDDITS = ["travel", "solotravel", "backpacking", "digitalnomad", "TravelHacks"];
-
-type Platform = "reddit" | "facebook";
 type RewriteStatus = "idle" | "loading" | "done" | "error";
 
 interface PostState extends ScrapedPost {
@@ -15,56 +12,39 @@ interface PostState extends ScrapedPost {
 }
 
 export default function ScraperTool() {
-  // ── Form state ──────────────────────────────────────────────
-  const [platform, setPlatform] = useState<Platform>("reddit");
   const [keyword, setKeyword] = useState("");
-  const [subreddit, setSubreddit] = useState("travel");
-  const [groupUrl, setGroupUrl] = useState("");
-  const [sort, setSort] = useState("top");
-  const [time, setTime] = useState("month");
 
-  // ── Results ─────────────────────────────────────────────────
   const [posts, setPosts] = useState<PostState[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fbSetupHint, setFbSetupHint] = useState<string[] | null>(null);
   const [total, setTotal] = useState(0);
+  const [warning, setWarning] = useState<string | null>(null);
 
-  // ── Selection ────────────────────────────────────────────────
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  // ── History tab ──────────────────────────────────────────────
   const [tab, setTab] = useState<"search" | "history">("search");
   const [history, setHistory] = useState<
     { id: string; originalTitle: string; status: string; blog?: { id: string; title: string; published: boolean } | null }[]
   >([]);
   const [historyLoading, setHistoryLoading] = useState(false);
 
-  // ── Scrape ───────────────────────────────────────────────────
   const handleScrape = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setFbSetupHint(null);
+    setWarning(null);
     setPosts([]);
     setSelected(new Set());
 
     try {
-      const endpoint = platform === "reddit" ? "/api/scraper/reddit" : "/api/scraper/facebook";
-      const payload =
-        platform === "reddit"
-          ? { subreddit, keyword, sort, time }
-          : { groupUrl };
-
-      const res = await fetch(endpoint, {
+      const res = await fetch("/api/scraper/reddit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ keyword }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        if (data.setup) setFbSetupHint(data.setup);
         setError(data.error || "Gagal mengambil data");
         return;
       }
@@ -75,14 +55,14 @@ export default function ScraperTool() {
       }));
       setPosts(mapped);
       setTotal(data.total ?? mapped.length);
-    } catch {
-      setError("Terjadi kesalahan jaringan");
+      if (data.warning) setWarning(data.warning);
+    } catch (err) {
+      setError(`Terjadi kesalahan: ${err instanceof Error ? err.message : "unknown"}`);
     } finally {
       setLoading(false);
     }
-  }, [platform, subreddit, keyword, sort, time, groupUrl]);
+  }, [keyword]);
 
-  // ── Single rewrite ────────────────────────────────────────────
   const rewritePost = useCallback(async (post: PostState) => {
     setPosts((prev) =>
       prev.map((p) =>
@@ -138,7 +118,6 @@ export default function ScraperTool() {
     }
   }, []);
 
-  // ── Rewrite all selected ──────────────────────────────────────
   const rewriteSelected = useCallback(async () => {
     const toRewrite = posts.filter((p) => selected.has(p.sourceUrl) && !p.alreadyImported);
     for (const post of toRewrite) {
@@ -146,7 +125,6 @@ export default function ScraperTool() {
     }
   }, [posts, selected, rewritePost]);
 
-  // ── Toggle selection ─────────────────────────────────────────
   const toggleSelect = useCallback((url: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -155,7 +133,6 @@ export default function ScraperTool() {
     });
   }, []);
 
-  // ── Load history ──────────────────────────────────────────────
   const loadHistory = useCallback(async () => {
     setHistoryLoading(true);
     try {
@@ -182,8 +159,7 @@ export default function ScraperTool() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Scraper Konten</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Ambil cerita perjalanan dari Reddit & Facebook, lalu rewrite otomatis dengan AI ke dalam
-          draft blog.
+          Ambil berita perjalanan dari <strong>RBTH Indonesia</strong>, lalu rewrite otomatis dengan AI ke dalam draft blog.
         </p>
       </div>
 
@@ -207,130 +183,47 @@ export default function ScraperTool() {
       {/* ── SEARCH TAB ── */}
       {tab === "search" && (
         <>
-          {/* Platform selector */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setPlatform("reddit")}
-              className={`flex items-center gap-3 p-4 rounded-xl border-2 transition text-left ${
-                platform === "reddit"
-                  ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                  : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-              }`}
-            >
-              <Rss className={`${platform === "reddit" ? "text-orange-500" : "text-gray-400"}`} size={22} />
-              <div>
-                <p className="font-semibold text-sm text-gray-900 dark:text-white">Reddit</p>
-                <p className="text-xs text-gray-500">Subreddit travel</p>
-              </div>
-            </button>
-            <button
-              onClick={() => setPlatform("facebook")}
-              className={`flex items-center gap-3 p-4 rounded-xl border-2 transition text-left ${
-                platform === "facebook"
-                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                  : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-              }`}
-            >
-              <Globe className={`${platform === "facebook" ? "text-blue-600" : "text-gray-400"}`} size={22} />
-              <div>
-                <p className="font-semibold text-sm text-gray-900 dark:text-white">Facebook</p>
-                <p className="text-xs text-gray-500">Public group</p>
-              </div>
-            </button>
+          {/* Source info */}
+          <div className="flex items-center gap-3 p-4 rounded-xl border-2 border-orange-500 bg-orange-50 dark:bg-orange-900/20">
+            <Rss className="text-orange-500 shrink-0" size={22} />
+            <div>
+              <p className="font-semibold text-sm text-gray-900 dark:text-white">RBTH Indonesia</p>
+              <p className="text-xs text-gray-500">id.rbth.com — berita dunia dalam Bahasa Indonesia, tanpa VPN</p>
+            </div>
           </div>
 
           {/* Search form */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 space-y-4">
-            {platform === "reddit" ? (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      Subreddit
-                    </label>
-                    <div className="flex gap-2 flex-wrap mb-2">
-                      {DEFAULT_SUBREDDITS.map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => setSubreddit(s)}
-                          className={`px-2.5 py-1 rounded-full text-xs font-medium transition ${
-                            subreddit === s
-                              ? "bg-orange-500 text-white"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-orange-100"
-                          }`}
-                        >
-                          r/{s}
-                        </button>
-                      ))}
-                    </div>
-                    <input
-                      value={subreddit}
-                      onChange={(e) => setSubreddit(e.target.value)}
-                      placeholder="Atau ketik nama subreddit..."
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      Keyword (opsional)
-                    </label>
-                    <input
-                      value={keyword}
-                      onChange={(e) => setKeyword(e.target.value)}
-                      placeholder="Contoh: solo travel europe, japan backpack..."
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Urutkan</label>
-                    <select
-                      value={sort}
-                      onChange={(e) => setSort(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="top">Top</option>
-                      <option value="hot">Hot</option>
-                      <option value="new">Terbaru</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Periode</label>
-                    <select
-                      value={time}
-                      onChange={(e) => setTime(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="week">Minggu ini</option>
-                      <option value="month">Bulan ini</option>
-                      <option value="year">Tahun ini</option>
-                      <option value="all">Semua waktu</option>
-                    </select>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div>
-                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  URL Facebook Group
-                </label>
-                <input
-                  value={groupUrl}
-                  onChange={(e) => setGroupUrl(e.target.value)}
-                  placeholder="https://www.facebook.com/groups/..."
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-                  Pastikan <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">FACEBOOK_COOKIE</code> sudah diset di file{" "}
-                  <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">.env</code>.
-                </p>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Filter Topik (opsional)
+              </label>
+              <div className="flex gap-2 flex-wrap mb-2">
+                {["", "rusia", "eropa", "wisata", "budaya", "sejarah"].map((s) => (
+                  <button
+                    key={s || "semua"}
+                    onClick={() => setKeyword(s)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium transition capitalize ${
+                      keyword === s
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-orange-100"
+                    }`}
+                  >
+                    {s || "Semua"}
+                  </button>
+                ))}
               </div>
-            )}
+              <input
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="Kosongkan untuk semua artikel, atau ketik: rusia, wisata, budaya..."
+                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
             <button
               onClick={handleScrape}
-              disabled={loading || (platform === "facebook" && !groupUrl)}
+              disabled={loading}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
@@ -346,13 +239,13 @@ export default function ScraperTool() {
           {error && (
             <div className="rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4">
               <p className="text-sm font-medium text-red-700 dark:text-red-400">{error}</p>
-              {fbSetupHint && (
-                <ul className="mt-2 space-y-1">
-                  {fbSetupHint.map((hint, i) => (
-                    <li key={i} className="text-xs text-red-600 dark:text-red-300">{hint}</li>
-                  ))}
-                </ul>
-              )}
+            </div>
+          )}
+
+          {/* Warning */}
+          {warning && !error && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700 p-4">
+              <p className="text-sm text-amber-700 dark:text-amber-400">{warning}</p>
             </div>
           )}
 
@@ -392,7 +285,7 @@ export default function ScraperTool() {
           {!loading && posts.length === 0 && !error && (
             <div className="text-center py-12 text-gray-400 dark:text-gray-600">
               <Search size={40} className="mx-auto mb-3 opacity-40" />
-              <p className="text-sm">Pilih platform dan klik "Cari Konten" untuk mulai</p>
+              <p className="text-sm">Klik "Cari Konten" untuk mengambil artikel terbaru dari RBTH</p>
             </div>
           )}
         </>
@@ -434,7 +327,7 @@ export default function ScraperTool() {
                 <div className="flex items-center gap-2 shrink-0 ml-3">
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      item.status === "rewritten"
+                      item.status === "rewritten" || item.status === "published"
                         ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                         : item.status === "rejected"
                         ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"

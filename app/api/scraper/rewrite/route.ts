@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
+
+export const maxDuration = 60;
 import slugify from "slugify";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 function estimateReadTime(html: string): string {
   const words = html.replace(/<[^>]+>/g, "").split(/\s+/).length;
-  const minutes = Math.max(1, Math.round(words / 200));
-  return `${minutes} menit`;
+  return `${Math.max(1, Math.round(words / 200))} menit`;
 }
 
 async function generateUniqueSlug(baseSlug: string): Promise<string> {
@@ -29,74 +28,93 @@ export async function POST(req: NextRequest) {
   if (!await checkPermission(session, "scraper_rewrite"))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: "ANTHROPIC_API_KEY belum diset di .env" }, { status: 500 });
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json({ error: "GROQ_API_KEY belum diset di .env.local" }, { status: 500 });
   }
 
-  const {
-    sourceUrl,
-    sourcePlatform,
-    subreddit,
-    originalTitle,
-    originalBody,
-    scrapedContentId,
-  } = await req.json();
+  const { sourceUrl, sourcePlatform, subreddit, originalTitle, originalBody } = await req.json();
 
   if (!originalTitle || !originalBody) {
     return NextResponse.json({ error: "originalTitle dan originalBody diperlukan" }, { status: 400 });
   }
 
-  const prompt = `Kamu adalah penulis blog perjalanan profesional untuk sundaftrip.com, sebuah website travel agency yang mengutamakan destinasi wisata internasional.
+  // Strip HTML from body before sending to AI
+  const cleanBody = originalBody
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ").trim();
 
-Tugas kamu: Rewrite cerita perjalanan berikut menjadi artikel blog dalam Bahasa Indonesia yang:
-- Gaya: personal, hangat, inspiratif — seperti berbagi pengalaman dengan teman
-- Bahasa: Indonesia yang mengalir natural, bukan terjemahan kaku
-- SEO: sebutkan nama destinasi secara natural di awal, tengah, dan akhir artikel
-- Struktur: paragraf pembuka yang menarik perhatian → isi cerita dengan detail → tips praktis → penutup yang menginspirasi
+  const prompt = `Kamu adalah penulis blog perjalanan profesional untuk sundaftrip.com, sebuah travel agency Indonesia yang fokus pada destinasi wisata internasional.
+
+Tugas: Berdasarkan topik/judul berikut, tulis artikel blog Bahasa Indonesia yang menarik:
+- Gaya: personal, hangat, inspiratif — seperti cerita dari teman yang baru pulang traveling
+- SEO: sebutkan nama destinasi secara natural di awal, tengah, dan akhir
+- Struktur: pembuka menarik → informasi/tips utama → tips praktis → penutup inspiratif
 - Panjang: 600–900 kata
-- Jangan menyebut sumber aslinya (Reddit, Facebook, dll)
-- Tambahkan sentuhan lokal jika relevan (bandingkan dengan pengalaman wisatawan Indonesia)
+- Kembangkan sendiri berdasarkan pengetahuanmu tentang topik ini
 
-Konten asli:
+Topik:
 JUDUL: ${originalTitle}
-ISI: ${originalBody}
+INFO TAMBAHAN: ${cleanBody || originalTitle}
 
-Kembalikan HANYA JSON valid dengan format berikut (tidak ada teks lain di luar JSON):
-{
-  "title": "Judul artikel yang menarik dalam bahasa Indonesia (max 80 karakter)",
-  "excerpt": "Ringkasan 1-2 kalimat yang menarik untuk preview (max 160 karakter)",
-  "category": "Salah satu dari: Eropa, Asia, Amerika, Timur Tengah, Afrika, Oseania, Tips Travel",
-  "body": "Konten artikel lengkap dalam format HTML sederhana (gunakan <p>, <h2>, <h3>, <strong>, <em>, <ul>, <li>)"
-}`;
+PENTING: Kembalikan HANYA JSON dengan format PERSIS seperti ini, gunakan single quote dalam HTML:
+{"title":"judul artikel","excerpt":"ringkasan singkat","category":"Eropa","body":"<p>paragraf...</p><h2>subjudul</h2><p>isi...</p>"}
 
-  let aiResponse: string;
+Pastikan body menggunakan single quote untuk atribut HTML agar JSON tetap valid.`;
+
+  let aiText: string;
   try {
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 2048,
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 2048,
     });
-    aiResponse = (message.content[0] as { type: string; text: string }).text;
+    aiText = completion.choices[0]?.message?.content ?? "";
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: `AI error: ${message}` }, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: `Groq AI error: ${msg}` }, { status: 500 });
   }
 
   let parsed: { title: string; excerpt: string; category: string; body: string };
   try {
-    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+    const cleaned = aiText.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("No JSON found");
-    parsed = JSON.parse(jsonMatch[0]);
+
+    let jsonStr = jsonMatch[0];
+    // Fix common AI JSON mistakes: unescaped double quotes inside string values
+    // Extract body field separately since it may contain HTML with quotes
+    const bodyMatch = jsonStr.match(/"body"\s*:\s*"([\s\S]*?)"\s*\}/);
+    let bodyContent = "";
+    if (bodyMatch) {
+      bodyContent = bodyMatch[1];
+      // Remove body from jsonStr, parse the rest, then add body back
+      jsonStr = jsonStr.replace(/"body"\s*:\s*"[\s\S]*?"\s*\}/, '"body":"__BODY__"}');
+    }
+
+    parsed = JSON.parse(jsonStr);
+    if (bodyContent) parsed.body = bodyContent.replace(/\\n/g, "\n").replace(/\\"/g, '"');
+    if (!parsed.body) parsed.body = `<p>${cleanBody || originalTitle}</p>`;
   } catch {
-    return NextResponse.json(
-      { error: "AI mengembalikan format yang tidak valid", raw: aiResponse },
-      { status: 500 }
-    );
+    // Last resort: try to extract fields with regex
+    try {
+      const title = aiText.match(/"title"\s*:\s*"([^"]+)"/)?.[1] ?? originalTitle;
+      const excerpt = aiText.match(/"excerpt"\s*:\s*"([^"]+)"/)?.[1] ?? "";
+      const category = aiText.match(/"category"\s*:\s*"([^"]+)"/)?.[1] ?? "Tips Travel";
+      parsed = { title, excerpt, category, body: `<p>${cleanBody || originalTitle}</p>` };
+    } catch {
+      return NextResponse.json(
+        { error: "AI mengembalikan format tidak valid", raw: aiText.slice(0, 500) },
+        { status: 500 }
+      );
+    }
   }
 
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });
   const slug = await generateUniqueSlug(baseSlug);
-  const readTime = estimateReadTime(parsed.body);
 
   const blog = await prisma.blog.create({
     data: {
@@ -105,33 +123,25 @@ Kembalikan HANYA JSON valid dengan format berikut (tidak ada teks lain di luar J
       excerpt: parsed.excerpt,
       category: parsed.category,
       body: parsed.body,
-      readTime,
+      readTime: estimateReadTime(parsed.body),
       published: false,
       author: "Tim Sundaftrip",
     },
   });
 
-  // Save or update ScrapedContent record
-  if (scrapedContentId) {
-    await prisma.scrapedContent.update({
-      where: { id: scrapedContentId },
-      data: { status: "rewritten", blogId: blog.id },
-    });
-  } else {
-    await prisma.scrapedContent.upsert({
-      where: { sourceUrl },
-      create: {
-        sourceUrl,
-        sourcePlatform,
-        subreddit: subreddit ?? null,
-        originalTitle,
-        originalBody: originalBody.slice(0, 5000),
-        status: "rewritten",
-        blogId: blog.id,
-      },
-      update: { status: "rewritten", blogId: blog.id },
-    });
-  }
+  await prisma.scrapedContent.upsert({
+    where: { sourceUrl },
+    create: {
+      sourceUrl,
+      sourcePlatform,
+      subreddit: subreddit ?? null,
+      originalTitle,
+      originalBody: originalBody.slice(0, 5000),
+      status: "rewritten",
+      blogId: blog.id,
+    },
+    update: { status: "rewritten", blogId: blog.id },
+  });
 
   await logActivity({
     userId: session.user.id!,
