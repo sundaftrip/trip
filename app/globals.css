@@ -719,6 +719,58 @@ body {
   background-size: 32px 32px;
 }
 
+/* ── Aurora text animation ──────────────────────────────────────────────── */
+@keyframes aurora-shift {
+  0%   { background-position: 0%   60%; }
+  33%  { background-position: 60%  40%; }
+  66%  { background-position: 100% 60%; }
+  100% { background-position: 0%   60%; }
+}
+@keyframes aurora-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.88; }
+}
+.aurora-text {
+  background: linear-gradient(
+    120deg,
+    #4ade80 0%,
+    #22d3ee 18%,
+    #818cf8 38%,
+    #c084fc 55%,
+    #38bdf8 72%,
+    #4ade80 90%,
+    #22d3ee 100%
+  );
+  background-size: 400% 400%;
+  animation:
+    aurora-shift 8s ease infinite,
+    aurora-pulse 4s ease-in-out infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: white; /* CSS fallback */
+  will-change: background-position;
+}
+
+/* ── Aurora glow — faint bloom behind the title ── */
+.aurora-glow {
+  position: relative;
+}
+.aurora-glow::before {
+  content: "";
+  position: absolute;
+  inset: -20px -40px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(74,222,128,0.18) 0%,
+    rgba(129,140,248,0.12) 45%,
+    transparent 70%
+  );
+  filter: blur(32px);
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* Prose dark overrides */
 .dark .prose { color: #cbd5e1; }
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f1f5f9; }

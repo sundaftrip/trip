@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
+import type React from "react";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
@@ -145,45 +146,46 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
       />
       {/* Hero */}
-      <div className={`relative h-72 lg:h-96 ${isOutlined ? "border-b-2" : "bg-gray-200 dark:bg-gray-800"}`}
-        style={isOutlined ? { borderColor: tBdr } : undefined}>
-        {tour.heroImg && <Image src={tour.heroImg} alt={tour.title} fill className="object-cover" priority />}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-10 max-w-7xl mx-auto">
+      <div className={`relative h-80 lg:h-[480px] ${!tour.heroImg && !isOutlined ? "bg-gray-900 dark:bg-gray-950" : ""} ${isOutlined && !tour.heroImg ? "border-b-2" : ""}`}
+        style={isOutlined && !tour.heroImg ? { borderColor: tBdr } : undefined}>
+        {tour.heroImg && (
+          <Image src={tour.heroImg} alt={tour.title} fill className="object-cover" priority />
+        )}
+        {/* Cinematic overlay: dark vignette top + strong bottom ramp */}
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.18) 70%, rgba(0,0,0,0.08) 100%)" }} />
+        {/* Extra side vignette */}
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(to right, rgba(0,0,0,0.30) 0%, transparent 50%, rgba(0,0,0,0.18) 100%)" }} />
+
+        <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-12 max-w-7xl mx-auto">
           {tour.badge && (
-            isOutlined
-              ? <span className={`${pfx}-pill mb-3 inline-flex`} style={{ background: tSun, color: tText }}>{tour.badge}</span>
-              : <span className="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full mb-3">{tour.badge}</span>
+            <span className="inline-block px-3 py-1 text-xs font-bold rounded-full mb-4 border border-white/20 text-white/90"
+              style={{ background: "rgba(255,255,255,0.10)", backdropFilter: "blur(8px)" }}>
+              {tour.badge}
+            </span>
           )}
-          <h1 className={`text-3xl lg:text-4xl mb-2 ${isOutlined ? "font-black text-white" : "font-bold text-white"}`}>{tour.title}</h1>
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            {isOutlined ? (
-              <>
-                <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
-                  <MapPin size={12} />{tour.country}{tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}
-                </span>
-                {tour.duration && (
-                  <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
-                    <Clock size={12} />{tour.duration}
-                  </span>
-                )}
-                {tour.tripDate && (
-                  <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
-                    <Calendar size={12} />{formatDate(tour.tripDate)}
-                  </span>
-                )}
-                <span className={`${pfx}-pill flex items-center gap-1`} style={{ background: "rgba(255,255,255,0.9)", color: "#1a1a1a" }}>
-                  <Users size={12} />{tour.seatsLeft} seat tersisa
-                </span>
-              </>
-            ) : (
-              <span className="flex flex-wrap gap-4 text-white/80">
-                <span className="flex items-center gap-1"><MapPin size={14} /> {tour.country}{tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}</span>
-                {tour.duration && <span className="flex items-center gap-1"><Clock size={14} /> {tour.duration}</span>}
-                {tour.tripDate && <span className="flex items-center gap-1"><Calendar size={14} /> {formatDate(tour.tripDate)}</span>}
-                <span className="flex items-center gap-1"><Users size={14} /> {tour.seatsLeft} seat tersisa</span>
+
+          {/* Aurora animated title */}
+          <h1 className="aurora-text aurora-glow text-4xl lg:text-6xl font-black leading-tight mb-4 tracking-tight">
+            {tour.title}
+          </h1>
+
+          {/* Info pills — frosted glass style, consistent across all themes */}
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+            {[
+              { icon: <MapPin size={11} />, text: `${tour.country}${tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}` },
+              tour.duration  ? { icon: <Clock    size={11} />, text: tour.duration } : null,
+              tour.tripDate  ? { icon: <Calendar size={11} />, text: formatDate(tour.tripDate) } : null,
+              { icon: <Users size={11} />, text: `${tour.seatsLeft} seat tersisa` },
+            ].filter(Boolean).map((pill, i) => (
+              <span key={i}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/90 border border-white/20"
+                style={{ background: "rgba(255,255,255,0.10)", backdropFilter: "blur(12px)" }}>
+                {(pill as { icon: React.ReactNode; text: string }).icon}
+                {(pill as { icon: React.ReactNode; text: string }).text}
               </span>
-            )}
+            ))}
           </div>
         </div>
       </div>
