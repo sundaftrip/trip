@@ -94,7 +94,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
         {/* Cover image */}
         {post.cover && (
-          <div className={`relative h-72 lg:h-96 mb-10 overflow-hidden ${isGlobe ? "rounded-2xl" : isOutlined ? "border-2" : "rounded-2xl"}`}
+          <div className={`relative h-56 sm:h-80 lg:h-[480px] mb-10 overflow-hidden ${isGlobe ? "rounded-2xl" : isOutlined ? "border-2" : "rounded-2xl"}`}
             style={isGlobe    ? { boxShadow: "0 8px 32px var(--gl-shadow)" }
                  : isOutlined ? { borderColor: bdrClr, boxShadow: `4px 4px 0 0 ${bdrClr}` }
                  : undefined}>

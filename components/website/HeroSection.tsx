@@ -31,6 +31,16 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName} — ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
 
+  /* Render tiap kata sebagai block — agar akronim vertikal (mis. S-U-N-D-A-F) terbaca */
+  const TitleWords = ({ extra }: { extra?: React.ReactNode }) => (
+    <>
+      {t("hero_title", "Wujudkan Perjalanan Impian Anda")
+        .split(/\s+/).filter(Boolean)
+        .map((word, i) => <span key={i} className="block">{word}</span>)}
+      {extra}
+    </>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
@@ -52,8 +62,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--kw-text)" }}>
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
-          <span className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>
+          <TitleWords extra={<span className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>} />
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -111,7 +120,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--tr-text)" }}>
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          <TitleWords />
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -155,7 +164,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           <p className="text-xs font-mono text-gray-300 dark:text-gray-700 mb-6 tracking-widest">— 01</p>
           <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-black leading-[0.92] tracking-tight mb-8"
             style={{ color: "var(--site-hero,#0d2018)" }}>
-            {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+            <TitleWords />
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed">
             {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
@@ -208,7 +217,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       <div className="max-w-7xl mx-auto w-full hero-fade-up">
         <p className="text-xs font-semibold tracking-[0.25em] uppercase mb-12 text-gray-600">{eyebrow}</p>
         <h1 className="text-[clamp(3rem,9vw,8rem)] font-black leading-[0.92] tracking-tight text-white max-w-5xl mb-16">
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          <TitleWords />
         </h1>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 pt-10 border-t border-gray-800">
           <p className="text-base text-gray-500 max-w-sm leading-relaxed">
@@ -254,8 +263,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--gl-text)" }}>
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
-          <span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>
+          <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -329,7 +337,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 className="text-[clamp(2.8rem,8vw,6.5rem)] leading-[0.95] tracking-tight max-w-3xl mb-10 hero-fade-up"
           style={{ color: "var(--mp-text)", fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 900 }}>
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          <TitleWords />
         </h1>
 
         <div className="flex flex-wrap gap-2.5 mb-12 hero-fade-up">
@@ -393,7 +401,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          <TitleWords />
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -436,7 +444,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         </p>
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.0] tracking-tight max-w-4xl mb-10"
           style={{ color: "var(--site-hero,#0d2018)" }}>
-          {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          <TitleWords />
         </h1>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 pt-8 border-t border-gray-100 dark:border-gray-900">
           <p className="text-base text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed">

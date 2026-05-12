@@ -55,17 +55,23 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
     }
 
     try {
-      setProgress("Memproses gambar...");
-      const base64 = await compressImage(file);
+      let uploadFile: File;
 
-      // Convert base64 back to File for FormData
-      const res0 = await fetch(base64);
-      const blob = await res0.blob();
-      const compressed = new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" });
+      try {
+        setProgress("Memproses gambar...");
+        const base64 = await compressImage(file);
+        // Convert base64 back to File for FormData
+        const res0 = await fetch(base64);
+        const blob = await res0.blob();
+        uploadFile = new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" });
+      } catch {
+        // Compress gagal (misal format HEIC/HEIF dari iOS) — kirim file asli langsung
+        uploadFile = file;
+      }
 
       setProgress("Mengupload...");
       const formData = new FormData();
-      formData.append("file", compressed);
+      formData.append("file", uploadFile);
       formData.append("folder", folder);
 
       const res = await fetch("/api/upload", { method: "POST", body: formData });
