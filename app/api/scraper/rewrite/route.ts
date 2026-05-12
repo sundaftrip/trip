@@ -207,6 +207,31 @@ LARANGAN KERAS (langgar ini = artikel gagal total):
 2. JANGAN PERNAH mengarang fakta yang bisa dicek di Google atau Maps: alamat gedung, nama jalan, nomor jalan, syarat visa resmi (dokumen apa saja), biaya resmi kedutaan/pemerintah, jam operasional resmi. Kalau sumber tidak menyebutkannya, tulis "cek situs resmi kedutaan" atau "konfirmasi langsung". LEBIH BAIK tidak sebut daripada salah.
 3. Yang BOLEH dikarang untuk memperkaya cerita: nama karakter pendukung kecil (bukan pejabat), percakapan personal, perasaan/reaksi, estimasi harga makanan/warung lokal (bukan tarif resmi), nama penginapan kecil, urutan kejadian personal.
 
+VARIASI KARAKTER PENDUKUNG — JANGAN pernah pakai nama "Rina". Variasikan tiap artikel:
+Perempuan: Maya, Sari, Dina, Putri, Hana, Tika, Ayu, Nisa, Reni, Bella, Karin, Shinta
+Laki-laki: Dika, Fajar, Rizky, Anto, Hendra, Bagas, Gilang, Wahyu, Kevin, Bram, Satria
+Konteks perkenalan yang natural dan berbeda-beda per artikel:
+- Teman kantor yang sama-sama berhasil dapat cuti panjang bareng
+- Kenalan dari grup FB "Backpacker Indonesia" — baru pertama kali ketemu offline di bandara
+- Solo traveler yang ketemu sesama WNI di hostel saat malam pertama tiba
+- Pasangan yang sudah plan liburan ini setahun sebelumnya
+- Sepupu yang tiba-tiba minta ikut H-2 keberangkatan
+
+MASKAPAI DARI JAKARTA — pakai HANYA dari daftar ini, JANGAN mengarang rute yang tidak ada:
+Rusia (Moskow/St. Petersburg): Turkish Airlines via Istanbul [paling populer traveler Indonesia], Qatar Airways via Doha, Etihad via Abu Dhabi
+Kazakhstan (Almaty/Astana): Turkish Airlines via Istanbul, atau AirAsia CGK→KUL lalu Air Astana KUL→Almaty
+Kyrgyzstan (Bishkek): Turkish Airlines via Istanbul, atau via Almaty
+Uzbekistan (Tashkent): Turkish Airlines via Istanbul, Uzbekistan Airways [semi-direct dari beberapa kota]
+Tajikistan (Dushanbe): Turkish Airlines via Istanbul, atau via Moskow dengan Somon Air
+Leg pertama hemat: AirAsia CGK→KUL, Garuda CGK→SIN, lalu connecting maskapai mitra
+⚠ CATATAN PENTING: Air Astana TIDAK punya penerbangan langsung dari Jakarta. Jangan tulis "naik Air Astana dari Jakarta".
+
+LOKASI SPESIFIK — sebut tempat yang bisa dicek pembaca, jangan karang alamat fiktif:
+- Kafe/restoran dengan view: sebut nama kawasan nyata + petunjuk cari. Contoh: "kafe di pojok kawasan Arbat — ketik 'cafe Arbat Moscow' di Google Maps, pilih yang bintang 4.5 ke atas dan tampilan depannya vintage"
+- KBRI/konsulat: JANGAN karang alamat. Tulis: "KBRI [kota] — cari di Google Maps untuk jam buka terkini sebelum datang"
+- Landmark: pakai nama resmi (Red Square, Registan Samarkand, Ala-Too Square Bishkek, dll)
+- Jika tahu nama kafe/restoran nyata dari bahan sumber, sebutkan dengan percaya diri
+
 ═══ PERBEDAAN TULISAN BAGUS VS JELEK ═══
 
 JELEK ❌ — generik, tidak ada scene, bisa ditulis siapa saja tanpa pernah ke sana:
