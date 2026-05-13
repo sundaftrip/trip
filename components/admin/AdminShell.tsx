@@ -20,6 +20,7 @@ const navItems = [
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
+  { href: "/admin/faq", label: "FAQ", icon: FileText },
   { href: "/admin/terms", label: "Syarat & Ketentuan", icon: FileText },
 ];
 

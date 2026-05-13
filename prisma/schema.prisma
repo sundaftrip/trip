@@ -162,6 +162,17 @@ model TermsCondition {
   updatedAt DateTime @updatedAt
 }
 
+model Faq {
+  id        String   @id @default(cuid())
+  section   String   // e.g. "Umum", "Visa & Dokumen"
+  question  String
+  answer    String   @db.Text
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model CompanyInfo {
   id        String   @id @default(cuid())
   key       String   @unique
