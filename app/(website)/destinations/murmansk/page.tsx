@@ -140,55 +140,78 @@ export default async function MurmanskPage() {
     <div className={`min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
 
       {/* ── HERO ── */}
-      <div className="relative h-[65vh] min-h-[440px] flex items-end pt-24">
-        {/* Hero background: aurora gradient untuk classic/vibrant/bold, theme bg untuk outlined */}
-        {isOutlined ? (
-          <div className="absolute inset-0" style={{ background: pageBg }} />
-        ) : (
-          <>
-            <div className="absolute inset-0" style={{ background: "var(--site-hero, #0d2018)" }} />
-            <div className="absolute inset-0 opacity-30" style={{
-              background: "radial-gradient(ellipse at 20% 50%, #00ff88 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, #8b5cf6 0%, transparent 50%)",
-            }} />
-          </>
-        )}
+      <div className="relative h-[72vh] min-h-[520px] flex items-end">
+        {/* Foto HD aurora Pexels — tampil di semua theme */}
+        <Image
+          src="https://images.pexels.com/photos/30173400/pexels-photo-30173400.jpeg?auto=compress&cs=tinysrgb&w=1920"
+          alt="Aurora Borealis di Murmansk, Rusia"
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
+        />
+        {/* Cinematic overlay — bawah gelap agar teks terbaca */}
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.52) 42%, rgba(0,0,0,0.15) 100%)",
+        }} />
+        {/* Side vignette */}
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(to right, rgba(0,0,0,0.30) 0%, transparent 50%)",
+        }} />
 
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 pb-12">
+        <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 pb-14">
           {/* Eyebrow */}
-          <span className={`${pillClass} inline-flex items-center gap-1.5 mb-4 text-xs font-bold`} style={eyebrowStyle}>
+          <span className="inline-flex items-center gap-1.5 mb-5 text-xs font-bold px-3 py-1.5 rounded-full"
+            style={{ background: "rgba(255,255,255,0.14)", color: "#fff", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.28)" }}>
             <MapPin size={11} />
-            {isPixel ? "RUSIA · ARKTIK" : "Rusia · Arktik"}
+            Rusia · Arktik
           </span>
 
-          <h1
-            className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-4 ${!isOutlined ? "text-white" : ""}`}
-            style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}
-          >
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight mb-5 tracking-tight"
+            style={{ fontFamily: isPixel ? "monospace" : undefined }}>
+            <span className="text-white drop-shadow-lg">
+              {isPixel ? "MURMANSK &" : "Murmansk &"}
+            </span>
+            <br />
             {isPixel
-              ? "MURMANSK &\nAURORA BOREALIS"
-              : isOutlined
-              ? <>Murmansk &<br /><span style={{ color: headClr ?? "var(--site-accent)" }}>Aurora Borealis</span></>
-              : <>Murmansk &<br /><span className="aurora-text aurora-glow">Aurora Borealis</span></>
+              ? <span className="text-white drop-shadow-lg">AURORA BOREALIS</span>
+              : <span className="aurora-text aurora-glow">Aurora Borealis</span>
             }
           </h1>
 
-          <p
-            className={`text-base sm:text-lg max-w-xl mb-8 ${!isOutlined ? "text-white/75" : ""}`}
-            style={{ color: isOutlined ? subClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}
-          >
+          <p className="text-base sm:text-lg max-w-xl mb-8 text-white/80 leading-relaxed"
+            style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             {isPixel
               ? "> Kota di atas Lingkar Arktik. Langit meledak dengan cahaya hijau magis yang bikin lo nangis."
               : "Kota di atas Lingkar Arktik. Tempat matahari gak terbit selama berminggu-minggu — dan langitnya meledak dengan cahaya hijau magis yang bikin lo nangis."}
           </p>
 
-          {wa && (
-            <a href={waUrl} target="_blank" rel="noreferrer"
-              className={`inline-flex items-center gap-2 px-6 py-3 font-bold text-sm transition shadow-lg ${isOutlined ? pillClass : "rounded-full"}`}
-              style={accentStyle}>
-              <MessageCircle size={16} />
-              {isKawaii ? "✉ Tanya Paket!" : isPixel ? "[ TANYA PAKET ]" : "Tanya Paket Sekarang"}
-            </a>
-          )}
+          {/* CTA — paket tour dulu, WA sebagai sekunder */}
+          <div className="flex flex-wrap gap-3">
+            {tours.length > 0 ? (
+              <a href="#paket-tour"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+                <Star size={15} />
+                Lihat Paket Murmansk
+              </a>
+            ) : (
+              <Link href="/tours"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+                <Star size={15} />
+                Lihat Semua Paket Tour
+              </Link>
+            )}
+            {wa && (
+              <a href={waUrl} target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition border-2 text-white hover:bg-white/10"
+                style={{ borderColor: "rgba(255,255,255,0.38)", backdropFilter: "blur(8px)" }}>
+                <MessageCircle size={15} />
+                Tanya via WhatsApp
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
@@ -349,43 +372,63 @@ export default async function MurmanskPage() {
         </section>
 
         {/* ── PAKET TOUR dari DB ── */}
-        {tours.length > 0 && (
-          <section>
-            <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-              {isPixel ? "► PAKET TERSEDIA" : "Paket Tersedia"}
-            </span>
-            <h2 className={`text-3xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
-              style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-              Paket Tour Rusia dari Sundaftrip
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {tours.map((tour) => (
-                <Link key={tour.id} href={`/tours/${tour.id}`}
-                  className={`group block overflow-hidden transition-all duration-300 hover:-translate-y-1 ${isOutlined ? cardClass : "bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-gray-300"}`}
-                  style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
-                  <div className="relative h-44 bg-gray-100 dark:bg-slate-800 overflow-hidden">
-                    {tour.heroImg
-                      ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                      : <div className="flex items-center justify-center h-full"><MapPin size={28} className="text-gray-300" /></div>}
-                    {tour.badge && <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white text-[11px] font-semibold" style={accentStyle}>{tour.badge}</span>}
-                  </div>
-                  <div className="p-4">
-                    <p className={`text-xs mb-1 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{tour.country} · {tour.duration}</p>
-                    <h3 className={`font-bold text-sm leading-tight mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{tour.title}</h3>
-                    <p className="font-black" style={{ color: "var(--site-accent,#2d6a4f)" }}>
-                      {tour.promoPrice ? formatCurrency(tour.promoPrice) : formatCurrency(tour.price)}
-                    </p>
-                  </div>
+        <section id="paket-tour">
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
+            {isPixel ? "► PAKET TERSEDIA" : "Paket Tersedia"}
+          </span>
+          <h2 className={`text-3xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
+            Paket Tour Rusia dari Sundaftrip
+          </h2>
+
+          {tours.length > 0 ? (
+            <>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {tours.map((tour) => (
+                  <Link key={tour.id} href={`/tours/${tour.id}`}
+                    className={`group block overflow-hidden transition-all duration-300 hover:-translate-y-1 ${isOutlined ? cardClass : "bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-gray-300"}`}
+                    style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
+                    <div className="relative h-44 bg-gray-100 dark:bg-slate-800 overflow-hidden">
+                      {tour.heroImg
+                        ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                        : <div className="flex items-center justify-center h-full"><MapPin size={28} className="text-gray-300" /></div>}
+                      {tour.badge && <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white text-[11px] font-semibold" style={accentStyle}>{tour.badge}</span>}
+                    </div>
+                    <div className="p-4">
+                      <p className={`text-xs mb-1 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{tour.country} · {tour.duration}</p>
+                      <h3 className={`font-bold text-sm leading-tight mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{tour.title}</h3>
+                      <p className="font-black" style={{ color: "var(--site-accent,#2d6a4f)" }}>
+                        {tour.promoPrice ? formatCurrency(tour.promoPrice) : formatCurrency(tour.price)}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-4 text-center">
+                <Link href="/tours" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--site-accent,#2d6a4f)" }}>
+                  Lihat semua paket tour <ChevronRight size={16} />
                 </Link>
-              ))}
-            </div>
-            <div className="mt-4 text-center">
-              <Link href="/tours?continent=Eropa" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--site-accent,#2d6a4f)" }}>
-                Lihat semua paket Eropa <ChevronRight size={16} />
+              </div>
+            </>
+          ) : (
+            /* Fallback: belum ada paket aktif → arahkan ke halaman tour */
+            <div className={`${isOutlined ? cardClass : "bg-gray-50 dark:bg-slate-900 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700"} p-8 text-center`}
+              style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
+              <div className="text-4xl mb-3">🏔️</div>
+              <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>
+                Paket Murmansk Segera Hadir
+              </h3>
+              <p className={`text-sm mb-5 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
+                Tim kami sedang mempersiapkan keberangkatan Murmansk berikutnya. Sementara itu, jelajahi paket destinasi lain.
+              </p>
+              <Link href="/tours"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90"
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+                Jelajahi Semua Paket Tour <ChevronRight size={14} />
               </Link>
             </div>
-          </section>
-        )}
+          )}
+        </section>
 
         {/* ── FAQ ── */}
         <section>
