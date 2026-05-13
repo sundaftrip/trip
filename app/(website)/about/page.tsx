@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
+import React from "react";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award } from "lucide-react";
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
   description: "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.",
 };
 
-const DESTINATIONS = [
+/* ── Default fallbacks (dipakai kalau admin belum mengisi CMS) ── */
+const DEFAULT_DESTINATIONS = [
   { label: "Rusia", sub: "Moskow · St. Petersburg · Trans-Siberian" },
   { label: "Kazakhstan", sub: "Almaty · Astana · Danau Kaindy" },
   { label: "Kyrgyzstan", sub: "Bishkek · Issyk-Kul · Song Kol" },
@@ -18,48 +20,55 @@ const DESTINATIONS = [
   { label: "Aurora Borealis", sub: "Tromsø · Murmansk · Lapland" },
 ];
 
-const VALUES = [
-  {
-    Icon: Users,
-    title: "Grup Kecil, Pengalaman Besar",
-    desc: "Maksimal 10–12 orang per keberangkatan. Bukan rombongan bus — perjalanan yang terasa personal.",
-  },
-  {
-    Icon: ShieldCheck,
-    title: "Pendampingan Penuh",
-    desc: "Dari proses visa, tiket, akomodasi, hingga kepulangan — semuanya kami handle dengan transparan.",
-  },
-  {
-    Icon: Heart,
-    title: "Itinerary Manusiawi",
-    desc: "Tidak terburu-buru, tidak terlalu padat. Kami beri ruang untuk menikmati, bukan sekadar centang daftar.",
-  },
-  {
-    Icon: Sparkles,
-    title: "Informasi Terkini",
-    desc: "Kami update kondisi visa, situasi lapangan, dan tips lokal sebelum setiap keberangkatan.",
-  },
+const VALUE_ICONS = [Users, ShieldCheck, Heart, Sparkles];
+
+const DEFAULT_VALUES = [
+  { title: "Grup Kecil, Pengalaman Besar", desc: "Maksimal 10–12 orang per keberangkatan. Bukan rombongan bus — perjalanan yang terasa personal." },
+  { title: "Pendampingan Penuh",           desc: "Dari proses visa, tiket, akomodasi, hingga kepulangan — semuanya kami handle dengan transparan." },
+  { title: "Itinerary Manusiawi",          desc: "Tidak terburu-buru, tidak terlalu padat. Kami beri ruang untuk menikmati, bukan sekadar centang daftar." },
+  { title: "Informasi Terkini",            desc: "Kami update kondisi visa, situasi lapangan, dan tips lokal sebelum setiap keberangkatan." },
+];
+
+const DEFAULT_STORY = [
+  "Kami mulai dengan satu paket ke Moskow dan St. Petersburg — di saat kebanyakan agen wisata Indonesia masih fokus di Eropa Barat dan Asia Tenggara. Hasilnya? Peserta kami pulang dengan cerita yang tidak bisa mereka temukan di majalah travel mana pun.",
+  "Dari sana kami meluas. Kazakhstan dengan danau-danau terpencilnya. Uzbekistan dengan Samarkand yang biru. Kyrgyzstan yang masih sangat jarang disentuh traveler Indonesia. Tajikistan dengan jalan Pamir yang legendaris. Dan aurora borealis di Tromsø yang membuat kamera gemetar.",
+  "Lebih dari 700 traveler Indonesia telah mempercayakan perjalanan mereka kepada kami. Sebagian besar kembali lagi — dengan mengajak keluarga atau teman yang penasaran dengan cerita mereka.",
 ];
 
 async function getData() {
   try {
-    const [themeRow, companyRows, tourCount, blogCount] = await Promise.all([
+    const [themeRow, companyRows, aboutRows, tourCount, blogCount] = await Promise.all([
       prisma.companyInfo.findFirst({ where: { key: "site_theme" } }),
       prisma.companyInfo.findMany({ where: { key: { startsWith: "company_" } } }),
+      prisma.companyInfo.findMany({ where: { key: { startsWith: "about_" } } }),
       prisma.tour.count({ where: { status: { not: "DRAFT" } } }),
       prisma.blog.count({ where: { published: true } }),
     ]);
     const theme = themeRow?.value ?? "classic";
     const company: Record<string, string> = {};
     companyRows.forEach((r) => { company[r.key] = r.value; });
-    return { theme, company, tourCount, blogCount };
+    const about: Record<string, string> = {};
+    aboutRows.forEach((r) => { about[r.key] = r.value; });
+
+    const story        = about.about_story        ? JSON.parse(about.about_story)        : DEFAULT_STORY;
+    const valuesRaw    = about.about_values        ? JSON.parse(about.about_values)        : DEFAULT_VALUES;
+    const destinations = about.about_destinations  ? JSON.parse(about.about_destinations)  : DEFAULT_DESTINATIONS;
+    const tagline      = about.about_tagline       ?? "";
+
+    const values = (valuesRaw as { title: string; desc: string }[]).map((v, i) => ({
+      ...v,
+      Icon: VALUE_ICONS[i % VALUE_ICONS.length],
+    }));
+
+    return { theme, company, tourCount, blogCount, story, values, destinations, tagline };
   } catch {
-    return { theme: "classic", company: {}, tourCount: 0, blogCount: 0 };
+    const values = DEFAULT_VALUES.map((v, i) => ({ ...v, Icon: VALUE_ICONS[i] }));
+    return { theme: "classic", company: {}, tourCount: 0, blogCount: 0, story: DEFAULT_STORY, values, destinations: DEFAULT_DESTINATIONS, tagline: "" };
   }
 }
 
 export default async function AboutPage() {
-  const { theme, company, tourCount, blogCount } = await getData();
+  const { theme, company, tourCount, blogCount, story, values, destinations, tagline } = await getData();
 
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
@@ -136,10 +145,7 @@ export default async function AboutPage() {
           <p
             className={`text-lg leading-relaxed max-w-2xl ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
-            {name} lahir dari keyakinan bahwa destinasi yang jarang dikunjungi traveler Indonesia
-            justru menyimpan pengalaman paling tak terlupakan. Kami memulai ketika sangat sedikit
-            agen wisata Indonesia yang berani masuk ke pasar Rusia dan Asia Tengah — dan kami
-            terus di sini.
+            {tagline || `${name} lahir dari keyakinan bahwa destinasi yang jarang dikunjungi traveler Indonesia justru menyimpan pengalaman paling tak terlupakan. Kami memulai ketika sangat sedikit agen wisata Indonesia yang berani masuk ke pasar Rusia dan Asia Tengah — dan kami terus di sini.`}
           </p>
 
           {nib && (
@@ -181,22 +187,9 @@ export default async function AboutPage() {
           </h2>
           <div className={`space-y-4 text-base leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
-            <p>
-              Kami mulai dengan satu paket ke Moskow dan St. Petersburg — di saat kebanyakan agen
-              wisata Indonesia masih fokus di Eropa Barat dan Asia Tenggara. Hasilnya? Peserta
-              kami pulang dengan cerita yang tidak bisa mereka temukan di majalah travel mana pun.
-            </p>
-            <p>
-              Dari sana kami meluas. Kazakhstan dengan danau-danau terpencilnya. Uzbekistan dengan
-              Samarkand yang biru. Kyrgyzstan yang masih sangat jarang disentuh traveler Indonesia.
-              Tajikistan dengan jalan Pamir yang legendaris. Dan aurora borealis di Tromsø yang
-              membuat kamera gemetar.
-            </p>
-            <p>
-              Lebih dari 700 traveler Indonesia telah mempercayakan perjalanan mereka kepada kami.
-              Sebagian besar kembali lagi — dengan mengajak keluarga atau teman yang penasaran
-              dengan cerita mereka.
-            </p>
+            {story.map((para: string, i: number) => (
+              <p key={i}>{para}</p>
+            ))}
           </div>
         </div>
 
@@ -211,7 +204,7 @@ export default async function AboutPage() {
             Destinasi yang Kami Spesialisasi
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {DESTINATIONS.map(({ label, sub }) => (
+            {destinations.map(({ label, sub }: { label: string; sub: string }) => (
               <div
                 key={label}
                 className={`flex items-start gap-3 p-4 ${isOutlined ? "border-2" : "rounded-xl border border-gray-100 dark:border-gray-800"}`}
@@ -244,7 +237,7 @@ export default async function AboutPage() {
             Cara Kami Bekerja
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {VALUES.map(({ Icon, title, desc }) => (
+            {values.map(({ Icon, title, desc }: { Icon: React.ElementType; title: string; desc: string }) => (
               <div key={title} className="flex gap-4">
                 <div
                   className={`w-10 h-10 shrink-0 flex items-center justify-center ${isOutlined ? "border-2" : "rounded-xl bg-gray-100 dark:bg-gray-800"}`}
