@@ -164,7 +164,12 @@ export default async function MurmanskPage() {
             className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-4 ${!isOutlined ? "text-white" : ""}`}
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}
           >
-            {isPixel ? "MURMANSK &\nAURORA BOREALIS" : <>Murmansk &<br /><span style={{ color: "var(--site-accent, #2d6a4f)" }}>Aurora Borealis</span></>}
+            {isPixel
+              ? "MURMANSK &\nAURORA BOREALIS"
+              : isOutlined
+              ? <>Murmansk &<br /><span style={{ color: headClr ?? "var(--site-accent)" }}>Aurora Borealis</span></>
+              : <>Murmansk &<br /><span className="aurora-text aurora-glow">Aurora Borealis</span></>
+            }
           </h1>
 
           <p

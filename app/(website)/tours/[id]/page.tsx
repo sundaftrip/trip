@@ -166,8 +166,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             </span>
           )}
 
-          {/* Aurora animated title */}
-          <h1 className="aurora-text aurora-glow text-4xl lg:text-6xl font-black leading-tight mb-4 tracking-tight">
+          {/* Hero title — plain white, readable on any tour photo */}
+          <h1 className="text-4xl lg:text-6xl font-black leading-tight mb-4 tracking-tight text-white drop-shadow-lg">
             {tour.title}
           </h1>
 
