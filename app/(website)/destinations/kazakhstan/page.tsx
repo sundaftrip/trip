@@ -76,33 +76,33 @@ const QUICK_FACTS = [
 const ACTIVITIES = [
   {
     img: "https://images.pexels.com/photos/33731541/pexels-photo-33731541.jpeg?auto=compress&cs=tinysrgb&w=800",
-    title: "Danau Kaindy — Hutan Tenggelam",
+    title: "Danau Kaindy: Hutan Tenggelam",
     desc: "Danau glasial di ketinggian 2.000 mdpl dengan batang pohon cemara yang mencuat dari air biru kehijauan. Salah satu pemandangan paling surreal di Asia.",
   },
   {
     img: "https://images.pexels.com/photos/26311716/pexels-photo-26311716.jpeg?auto=compress&cs=tinysrgb&w=800",
-    title: "Charyn Canyon — Grand Canyon Versi Asia",
-    desc: "Ngarai merah sepanjang 154 km yang terbentuk jutaan tahun lalu. Berjalan di dasarnya terasa seperti berada di planet lain — dinding batu setinggi 150–300 meter mengapitnya dari dua sisi.",
+    title: "Charyn Canyon: Grand Canyon Versi Asia",
+    desc: "Ngarai merah sepanjang 154 km yang terbentuk jutaan tahun lalu. Berjalan di dasarnya terasa seperti berada di planet lain. Dinding batu setinggi 150–300 meter mengapitnya dari dua sisi.",
   },
   {
     img: "https://images.pexels.com/photos/28856115/pexels-photo-28856115.jpeg?auto=compress&cs=tinysrgb&w=800",
-    title: "Almaty — Kota di Kaki Pegunungan",
+    title: "Almaty: Kota di Kaki Pegunungan",
     desc: "Kota kosmopolitan dengan latar belakang Tian Shan yang bersalju. Naiki gondola Shymbulak ke ketinggian 3.200 mdpl untuk menikmati panorama kota dari atas.",
   },
   {
     img: "https://images.pexels.com/photos/30083127/pexels-photo-30083127.jpeg?auto=compress&cs=tinysrgb&w=800",
-    title: "Astana — Kota Futuristik di Stepa",
+    title: "Astana: Kota Futuristik di Stepa",
     desc: "Ibu kota baru Kazakhstan yang dibangun dari nol di tengah padang stepa. Bayterek Tower, Khan Shatyr, dan Nur-Astana Mosque adalah ikon arsitektur yang wajib dikunjungi.",
   },
   {
     img: "https://images.pexels.com/photos/16327878/pexels-photo-16327878.jpeg?auto=compress&cs=tinysrgb&w=800",
-    title: "Kolsai Lakes — Surga Tiga Danau",
+    title: "Kolsai Lakes: Surga Tiga Danau",
     desc: "Tiga danau bersusun di pegunungan Tian Shan yang bisa didaki dalam satu hari. Air birunya jernih sampai ke dasar, dikelilingi hutan pinus dan padang rumput alpine.",
   },
   {
     img: "https://images.pexels.com/photos/4321583/pexels-photo-4321583.jpeg?auto=compress&cs=tinysrgb&w=800",
-    title: "Beshbarmak & Kumiss — Kuliner Nomaden",
-    desc: "Coba Beshbarmak (daging rebus + pasta + bawang) dan Shubat (susu unta fermentasi). Pengalaman makan di dalam yurt tradisional di tengah stepa adalah cerita tersendiri.",
+    title: "Beshbarmak & Kumiss: Kuliner Nomaden",
+    desc: "Coba Beshbarmak (daging rebus, pasta, dan bawang) serta Shubat (susu unta fermentasi). Pengalaman makan di dalam yurt tradisional di tengah stepa adalah cerita tersendiri.",
   },
 ];
 
@@ -117,7 +117,7 @@ const FAQ = [
   },
   {
     q: "Kapan waktu terbaik ke Kazakhstan?",
-    a: "Dua musim terbaik: (1) Mei–September untuk menjelajah alam — danau, ngarai, pegunungan semua terbuka, suhu 15–30°C. (2) Desember–Februari untuk winter wonderland dan ski di Shymbulak. Hindari Oktober–November yang kelabu dan berlumpur.",
+    a: "Dua musim terbaik: (1) Mei–September untuk menjelajah alam. Danau, ngarai, dan pegunungan semuanya terbuka, suhu 15–30°C. (2) Desember–Februari untuk winter wonderland dan ski di Shymbulak. Hindari Oktober–November yang kelabu dan berlumpur.",
   },
   {
     q: "Bahasa apa yang dipakai di Kazakhstan?",
@@ -223,12 +223,12 @@ export default async function KazakhstanPage() {
           >
             {isPixel
               ? "> Stepa tanpa batas, ngarai merah memukau, danau biru di kaki Tian Shan. Bebas visa 30 hari untuk WNI."
-              : "Stepa tanpa batas, ngarai merah yang memukau, dan danau biru di kaki pegunungan Tian Shan. Bebas visa 30 hari untuk WNI — tidak ada alasan untuk tidak ke sini."}
+              : "Stepa tanpa batas, ngarai merah yang memukau, dan danau biru di kaki pegunungan Tian Shan. Bebas visa 30 hari untuk WNI. Tidak ada alasan untuk tidak ke sini."}
           </p>
 
           {/* Highlight bebas visa */}
           <div className="flex flex-wrap items-center gap-3 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-green-500/20 text-green-300 border border-green-500/30">
+            <span className={`${pillClass} inline-flex items-center gap-1.5`} style={accentStyle}>
               ✓ Bebas Visa 30 Hari untuk WNI
             </span>
           </div>
@@ -270,11 +270,11 @@ export default async function KazakhstanPage() {
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Kenapa Kazakhstan Layak Masuk Bucket List Lo?
+            Kenapa Kazakhstan Layak Masuk Bucket List Kita?
           </h2>
           <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-100" : ""}`} style={{ color: isOutlined ? subClr : undefined }}>
-            <p>Kazakhstan adalah negara terbesar ke-9 di dunia — dan hampir tidak ada traveler Indonesia yang tahu ini. Negeri yang dulunya bagian dari jalur sutra ini menyimpan kontras yang luar biasa: kota futuristik Astana yang terkesan datang dari masa depan, berdampingan dengan tradisi nomaden yang masih hidup di yurt-yurt di padang stepa.</p>
-            <p>Secara geografis, Kazakhstan adalah surga yang belum terjamah. Danau Kaindy dengan batang pohon yang mencuat dari air, Charyn Canyon yang menyaingi keindahan Grand Canyon Amerika, hingga Pegunungan Tian Shan yang bersalju sepanjang tahun — semua dalam satu negara.</p>
+            <p>Kazakhstan adalah negara terbesar ke-9 di dunia. Hampir tidak ada traveler Indonesia yang tahu ini. Negeri yang dulunya bagian dari jalur sutra ini menyimpan kontras yang luar biasa: kota futuristik Astana yang terkesan datang dari masa depan, berdampingan dengan tradisi nomaden yang masih hidup di yurt-yurt di padang stepa.</p>
+            <p>Secara geografis, Kazakhstan adalah surga yang belum terjamah. Danau Kaindy dengan batang pohon yang mencuat dari air, Charyn Canyon yang menyaingi keindahan Grand Canyon Amerika, hingga Pegunungan Tian Shan yang bersalju sepanjang tahun. Semuanya ada dalam satu negara.</p>
             <p>Yang membuat Kazakhstan semakin menarik: <strong>bebas visa 30 hari untuk WNI</strong>. Tidak perlu ribet mengurus dokumen berbulan-bulan. Beli tiket, pack koper, berangkat.</p>
           </div>
         </section>
@@ -289,7 +289,7 @@ export default async function KazakhstanPage() {
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-white" : ""}`}
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
-            Yang Perlu Lo Tahu Sebelum ke Alam Kazakhstan
+            Yang Perlu Kita Tahu Sebelum ke Alam Kazakhstan
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {[
@@ -318,7 +318,7 @@ export default async function KazakhstanPage() {
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Apa yang Bisa Lo Lakuin di Kazakhstan
+            Apa yang Bisa Kita Lakukan di Kazakhstan
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {ACTIVITIES.map(({ img, title, desc }) => (
@@ -352,7 +352,7 @@ export default async function KazakhstanPage() {
             {[
               { step: "01", title: "Jakarta → Kuala Lumpur → Almaty (Rekomendasi)", desc: "AirAsia CGK→KUL (~2 jam), lanjut Air Astana KUL→ALA (~6 jam). Total ±10–11 jam, harga paling terjangkau. Air Astana terbang langsung dari KL ke Almaty 4x seminggu." },
               { step: "02", title: "Jakarta → Dubai/Istanbul → Almaty (Alternatif)", desc: "Emirates via Dubai atau Turkish Airlines via Istanbul. Total ±13–16 jam. Pilihan ini lebih banyak frekuensinya dan kadang lebih murah jika pesan jauh hari." },
-              { step: "03", title: "Almaty → Astana (Dalam Kazakhstan)", desc: "Penerbangan domestik ±2 jam (Air Astana, Fly Arystan). Kereta malam Almaty–Astana juga ada, ±12 jam — pengalaman tersendiri melintasi stepa di malam hari." },
+              { step: "03", title: "Almaty ke Astana (Dalam Kazakhstan)", desc: "Penerbangan domestik sekitar 2 jam (Air Astana, Fly Arystan). Kereta malam Almaty–Astana juga tersedia, sekitar 12 jam. Perjalanan malam ini terasa seperti petualangan tersendiri melintasi stepa yang luas." },
               { step: "04", title: "Almaty → Destinasi Alam", desc: "Sewa mobil dari Almaty ke Charyn Canyon (±200 km, 3 jam), Danau Kaindy (±250 km, 4 jam), Kolsai Lakes (±280 km, 4,5 jam). Gabung grup atau tur day trip lebih hemat." },
             ].map(({ step, title, desc }, i, arr) => (
               <div key={step} className="flex gap-5">
@@ -378,7 +378,7 @@ export default async function KazakhstanPage() {
           </span>
           <h2 className={`text-2xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Berapa yang Harus Lo Siapkan?
+            Berapa yang Perlu Kita Siapkan?
           </h2>
           <div className="space-y-0">
             {[
@@ -525,7 +525,7 @@ export default async function KazakhstanPage() {
               {isPixel ? "> SIAP KE KAZAKHSTAN?" : "Siap Menjelajah Kazakhstan?"}
             </h2>
             <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
-              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Kazakhstan dari A sampai Z — tiket, itinerary, akomodasi, hingga guide lokal yang fasih.
+              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Kazakhstan dari awal sampai akhir: tiket, itinerary, akomodasi, hingga guide lokal yang fasih.
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}

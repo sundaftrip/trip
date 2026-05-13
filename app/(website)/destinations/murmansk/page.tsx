@@ -74,11 +74,11 @@ const QUICK_FACTS = [
 
 const ACTIVITIES = [
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk — ukurannya luar biasa, rasanya lebih luar biasa lagi. Ini bukan kepiting biasa, ini pengalaman makan yang tak terlupakan seumur hidup." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik — healing level dewa." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Berburu Paus di Teriberka", desc: "Susuri Laut Barents menuju Teriberka — desa nelayan terpencil yang jadi spot terbaik lihat paus bungkuk di habitat aslinya." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk ukurannya luar biasa, rasanya lebih luar biasa lagi. Ini bukan kepiting biasa, ini pengalaman makan yang tak terlupakan seumur hidup." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik yang menenangkan jiwa." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Berburu Paus di Teriberka", desc: "Susuri Laut Barents menuju Teriberka, desa nelayan terpencil yang jadi spot terbaik melihat paus bungkuk di habitat aslinya." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Naik Rusa di Tundra", desc: "Duduk di slede kayu ditarik rusa kutub menembus hutan pinus bersalju. Rasanya kayak masuk ke dalam dongeng Natal — tapi nyata." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Naik Rusa di Tundra", desc: "Duduk di slede kayu ditarik rusa kutub menembus hutan pinus bersalju. Rasanya seperti masuk ke dalam dongeng Natal, tapi ini nyata." },
 ];
 
 const FAQ = [
@@ -183,7 +183,7 @@ export default async function MurmanskPage() {
             style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             {isPixel
               ? "> Kota di atas Lingkar Arktik. Langit meledak dengan cahaya hijau magis yang sungguh memukau."
-              : "Kota di atas Lingkar Arktik. Tempat matahari tak terbit selama berminggu-minggu — dan langitnya meledak dengan cahaya hijau magis yang sungguh memukau."}
+              : "Kota di atas Lingkar Arktik. Tempat matahari tak terbit selama berminggu-minggu, dan langitnya meledak dengan cahaya hijau magis yang sungguh memukau."}
           </p>
 
           {/* CTA — paket tour dulu, WA sebagai sekunder */}
@@ -244,9 +244,9 @@ export default async function MurmanskPage() {
             Kenapa Murmansk, Bukan Finlandia atau Norwegia?
           </h2>
           <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-100" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>
-            <p>Kalau ingin melihat aurora, Finlandia dan Norwegia memang lebih &quot;mainstream&quot;. Lebih banyak travel agency, lebih mudah diakses. Tapi justru itu masalahnya — Anda akan bersaing dengan ratusan turis lain yang sama-sama mengangkat kamera untuk memotret langit yang sama.</p>
-            <p>Murmansk menawarkan sesuatu yang berbeda: <strong>keaslian</strong>. Ini kota industri Arktik yang nyata, bukan desa wisata yang dirancang untuk turis. Penduduknya bersahaja tapi hangat, landscape-nya keras tapi cantik, dan auranya? Sama spektakularnya — namun bisa dinikmati tanpa berdesakan.</p>
-            <p>Plus: Murmansk adalah kota terbesar di dunia yang berada di dalam Lingkar Arktik. Infrastrukturnya jauh lebih lengkap dari yang dibayangkan — ada hotel yang layak, restoran, dan transportasi yang tetap berfungsi meski di tengah badai salju -25°C.</p>
+            <p>Kalau ingin melihat aurora, Finlandia dan Norwegia memang lebih populer. Lebih banyak travel agency, lebih mudah diakses. Tapi justru itu yang menjadi masalahnya. Anda akan bersaing dengan ratusan turis lain yang sama-sama mengangkat kamera untuk memotret langit yang sama.</p>
+            <p>Murmansk menawarkan sesuatu yang berbeda: <strong>keaslian</strong>. Ini kota industri Arktik yang nyata, bukan desa wisata yang dirancang untuk turis. Penduduknya bersahaja tapi hangat, landscape-nya keras tapi cantik, dan auranya sama spektakularnya namun bisa dinikmati tanpa berdesakan.</p>
+            <p>Murmansk adalah kota terbesar di dunia yang berada di dalam Lingkar Arktik. Infrastrukturnya jauh lebih lengkap dari yang dibayangkan. Ada hotel yang layak, restoran yang baik, dan transportasi yang tetap berfungsi meski di tengah badai salju -25°C.</p>
           </div>
         </section>
 
@@ -260,11 +260,11 @@ export default async function MurmanskPage() {
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-white" : ""}`}
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
-            Aurora Borealis: Yang Perlu Lo Tau
+            Aurora Borealis: Yang Perlu Kita Tahu
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {[
-              { title: "Waktu Terbaik", content: "Oktober–Maret adalah musim aurora. Puncaknya Desember–Februari saat Polar Night — matahari gak terbit sama sekali. Langit paling gelap = aurora paling terlihat." },
+              { title: "Waktu Terbaik", content: "Oktober–Maret adalah musim aurora. Puncaknya Desember–Februari saat Polar Night, ketika matahari tidak terbit sama sekali. Langit semakin gelap berarti aurora semakin terlihat jelas." },
               { title: "Kapan Muncul?", content: "Biasanya pukul 21.00–02.00 waktu lokal. Gunakan aplikasi SpaceWeatherLive atau My Aurora Forecast buat pantau aktivitas badai matahari." },
               { title: "Tips Foto Aurora", content: "Pakai tripod, ISO 800–3200, aperture f/2.8, shutter 5–15 detik. Tangan gemetar karena dingin? Gunakan remote shutter atau timer." },
               { title: "Hindari Polusi Cahaya", content: "Keluar dari pusat kota. Spot terbaik: Kola Peninsula, tepian Danau Seydozero, atau ikut aurora hunting tour ke titik gelap terbaik." },
@@ -289,7 +289,7 @@ export default async function MurmanskPage() {
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Apa yang Bisa Lo Lakuin di Murmansk
+            Apa yang Bisa Kita Lakukan di Murmansk
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {ACTIVITIES.map(({ img, title, desc }) => (
@@ -318,7 +318,7 @@ export default async function MurmanskPage() {
           <div className="space-y-4">
             {[
               { step: "01", title: "Jakarta → Moskow", desc: "Via Dubai (Emirates), Doha (Qatar Airways), atau Abu Dhabi (Etihad). Durasi total ±12–15 jam. Harga tiket PP Rp 10–18 juta tergantung maskapai dan musim." },
-              { step: "02", title: "Moskow → Murmansk", desc: "Opsi 1: Pesawat Aeroflot/Pobeda, ±2 jam, Rp 400–800 ribu. Opsi 2: Kereta malam \"Arktika\", 30 jam — tidur sambil melewati hutan birch Rusia yang perlahan berubah jadi tundra. Lebih seru!" },
+              { step: "02", title: "Moskow ke Murmansk", desc: "Opsi pertama: pesawat Aeroflot atau Pobeda, sekitar 2 jam, Rp 400–800 ribu. Opsi kedua: kereta malam Arktika, 30 jam. Tidur sambil melewati hutan birch Rusia yang perlahan berubah menjadi tundra. Pengalaman yang jauh lebih berkesan." },
               { step: "03", title: "Di Murmansk", desc: "Kota kompak, bisa dijelajahi dengan taksi atau angkutan lokal. Sewa mobil + sopir sangat direkomendasikan untuk aurora hunting ke luar kota. Google Translate offline wajib download." },
             ].map(({ step, title, desc }, i, arr) => (
               <div key={step} className="flex gap-5">
@@ -344,7 +344,7 @@ export default async function MurmanskPage() {
           </span>
           <h2 className={`text-2xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Berapa yang Harus Lo Siapkan?
+            Berapa yang Perlu Kita Siapkan?
           </h2>
           <div className="space-y-0">
             {[
@@ -496,7 +496,7 @@ export default async function MurmanskPage() {
               {isPixel ? "> SIAP BERBURU AURORA?" : isKawaii ? "Siap Berburu Aurora? ✨" : "Siap Berburu Aurora?"}
             </h2>
             <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
-              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Murmansk dari A sampai Z — visa, tiket, hotel, dan aurora hunting guide lokal.
+              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Murmansk dari awal sampai akhir: visa, tiket, hotel, dan aurora hunting guide lokal.
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}
