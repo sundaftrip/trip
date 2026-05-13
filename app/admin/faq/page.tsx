@@ -34,7 +34,7 @@ export default function AdminFaqPage() {
 
   async function load() {
     setLoading(true);
-    const r = await fetch("/api/faq");
+    const r = await fetch("/api/faq?all=true");
     const data = await r.json();
     setItems(Array.isArray(data) ? data : []);
     setLoading(false);
@@ -239,7 +239,8 @@ export default function AdminFaqPage() {
               ) : (
                 <ul className="divide-y divide-gray-100 dark:divide-gray-700">
                   {faqs.map((item, idx) => (
-                    <li key={item.id} className={`px-5 py-4 ${!item.active ? "opacity-50" : ""}`}>
+                    <li key={item.id}
+                      className={`px-5 py-4 transition-colors ${!item.active ? "bg-gray-50 dark:bg-gray-900/50" : ""}`}>
                       <div className="flex items-start gap-3">
                         {/* Order controls */}
                         <div className="flex flex-col gap-0.5 shrink-0 mt-0.5">
@@ -255,14 +256,29 @@ export default function AdminFaqPage() {
 
                         {/* Content */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.question}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className={`text-sm font-semibold ${item.active ? "text-gray-900 dark:text-white" : "text-gray-400 dark:text-gray-500"}`}>
+                              {item.question}
+                            </p>
+                            {!item.active && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 shrink-0">
+                                <EyeOff size={9} /> Tersembunyi
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{item.answer}</p>
                         </div>
 
                         {/* Actions */}
                         <div className="flex items-center gap-1.5 shrink-0">
-                          <button onClick={() => toggleActive(item)} title={item.active ? "Sembunyikan" : "Tampilkan"}
-                            className="p-1.5 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                          <button
+                            onClick={() => toggleActive(item)}
+                            title={item.active ? "Sembunyikan dari website" : "Tampilkan di website"}
+                            className={`p-1.5 rounded transition ${
+                              item.active
+                                ? "text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                : "text-orange-500 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40"
+                            }`}>
                             {item.active ? <Eye size={14} /> : <EyeOff size={14} />}
                           </button>
                           <button onClick={() => startEdit(item)}

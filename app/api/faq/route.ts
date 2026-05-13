@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
-// GET — public, returns all active FAQs grouped by section
-export async function GET() {
+// GET — ?all=true returns all items (admin), otherwise only active (public)
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const showAll = searchParams.get("all") === "true";
+
     const faqs = await prisma.faq.findMany({
-      where: { active: true },
+      where: showAll ? undefined : { active: true },
       orderBy: [{ section: "asc" }, { order: "asc" }, { createdAt: "asc" }],
     });
     return NextResponse.json(faqs);
