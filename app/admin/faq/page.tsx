@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, Pencil, Trash2, Check, X, ChevronDown, ChevronUp, Eye, EyeOff } from "lucide-react";
 
 interface FaqItem {
@@ -30,11 +30,10 @@ export default function AdminFaqPage() {
   const [form, setForm] = useState<Omit<FaqItem, "id">>(EMPTY);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   async function load() {
     setLoading(true);
-    const res = await fetch("/api/faq");
-    // fetch all (admin sees all including inactive)
     const r = await fetch("/api/faq");
     const data = await r.json();
     setItems(Array.isArray(data) ? data : []);
@@ -42,6 +41,16 @@ export default function AdminFaqPage() {
   }
 
   useEffect(() => { load(); }, []);
+
+  // Scroll form into view whenever it opens
+  useEffect(() => {
+    if ((adding || editing) && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Focus first input after scroll
+      const first = formRef.current.querySelector<HTMLElement>("input, select, textarea");
+      setTimeout(() => first?.focus(), 300);
+    }
+  }, [adding, editing]);
 
   function startAdd() {
     setAdding(true);
@@ -134,7 +143,7 @@ export default function AdminFaqPage() {
 
       {/* Add / Edit Form */}
       {(adding || editing) && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+        <div ref={formRef} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4 scroll-mt-6">
           <h2 className="font-semibold text-gray-900 dark:text-white">
             {adding ? "Tambah FAQ Baru" : "Edit FAQ"}
           </h2>
