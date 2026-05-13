@@ -75,34 +75,34 @@ const QUICK_FACTS = [
 
 const ACTIVITIES = [
   {
-    img: "https://images.pexels.com/photos/5759082/pexels-photo-5759082.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "https://images.pexels.com/photos/33731541/pexels-photo-33731541.jpeg?auto=compress&cs=tinysrgb&w=800",
     title: "Danau Kaindy — Hutan Tenggelam",
     desc: "Danau glasial di ketinggian 2.000 mdpl dengan batang pohon cemara yang mencuat dari air biru kehijauan. Salah satu pemandangan paling surreal di Asia.",
   },
   {
-    img: "https://images.pexels.com/photos/4386476/pexels-photo-4386476.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "https://images.pexels.com/photos/26311716/pexels-photo-26311716.jpeg?auto=compress&cs=tinysrgb&w=800",
     title: "Charyn Canyon — Grand Canyon Versi Asia",
-    desc: "Ngarai merah sepanjang 154 km yang terbentuk jutaan tahun lalu. Berjalan di dasarnya terasa seperti berada di planet lain — dinding batu setinggi 150–300 meter mengapit lo dari dua sisi.",
+    desc: "Ngarai merah sepanjang 154 km yang terbentuk jutaan tahun lalu. Berjalan di dasarnya terasa seperti berada di planet lain — dinding batu setinggi 150–300 meter mengapitnya dari dua sisi.",
   },
   {
-    img: "https://images.pexels.com/photos/7242908/pexels-photo-7242908.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "https://images.pexels.com/photos/28856115/pexels-photo-28856115.jpeg?auto=compress&cs=tinysrgb&w=800",
     title: "Almaty — Kota di Kaki Pegunungan",
-    desc: "Kota kosmopolitan dengan latar belakang Tian Shan yang bersalju. Naikkan gondola Shymbulak ke ketinggian 3.200 mdpl untuk panorama kota dari atas.",
+    desc: "Kota kosmopolitan dengan latar belakang Tian Shan yang bersalju. Naiki gondola Shymbulak ke ketinggian 3.200 mdpl untuk menikmati panorama kota dari atas.",
   },
   {
-    img: "https://images.pexels.com/photos/9588154/pexels-photo-9588154.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "https://images.pexels.com/photos/30083127/pexels-photo-30083127.jpeg?auto=compress&cs=tinysrgb&w=800",
     title: "Astana — Kota Futuristik di Stepa",
     desc: "Ibu kota baru Kazakhstan yang dibangun dari nol di tengah padang stepa. Bayterek Tower, Khan Shatyr, dan Nur-Astana Mosque adalah ikon arsitektur yang wajib dikunjungi.",
   },
   {
-    img: "https://images.pexels.com/photos/3601425/pexels-photo-3601425.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "https://images.pexels.com/photos/16327878/pexels-photo-16327878.jpeg?auto=compress&cs=tinysrgb&w=800",
     title: "Kolsai Lakes — Surga Tiga Danau",
     desc: "Tiga danau bersusun di pegunungan Tian Shan yang bisa didaki dalam satu hari. Air birunya jernih sampai ke dasar, dikelilingi hutan pinus dan padang rumput alpine.",
   },
   {
-    img: "https://images.pexels.com/photos/4916461/pexels-photo-4916461.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "https://images.pexels.com/photos/4321583/pexels-photo-4321583.jpeg?auto=compress&cs=tinysrgb&w=800",
     title: "Beshbarmak & Kumiss — Kuliner Nomaden",
-    desc: "Coba Beshbarmak (daging rebus + pasta + bawang) dan Shubat (susu unta fermentasi). Pengalaman makan di yurt tradisional di tengah stepa adalah cerita tersendiri.",
+    desc: "Coba Beshbarmak (daging rebus + pasta + bawang) dan Shubat (susu unta fermentasi). Pengalaman makan di dalam yurt tradisional di tengah stepa adalah cerita tersendiri.",
   },
 ];
 
@@ -525,7 +525,7 @@ export default async function KazakhstanPage() {
               {isPixel ? "> SIAP KE KAZAKHSTAN?" : "Siap Menjelajah Kazakhstan?"}
             </h2>
             <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
-              Tim Sundaftrip siap bantu lo rencanakan perjalanan ke Kazakhstan dari A sampai Z — tiket, itinerary, akomodasi, hingga guide lokal yang fasih.
+              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Kazakhstan dari A sampai Z — tiket, itinerary, akomodasi, hingga guide lokal yang fasih.
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}

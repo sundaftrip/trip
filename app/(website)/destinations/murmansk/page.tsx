@@ -74,7 +74,7 @@ const QUICK_FACTS = [
 
 const ACTIVITIES = [
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk — ukurannya gila, rasanya lebih gila. Ini bukan kepiting biasa, ini pengalaman makan yang bakal lo ceritain seumur hidup." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk — ukurannya luar biasa, rasanya lebih luar biasa lagi. Ini bukan kepiting biasa, ini pengalaman makan yang tak terlupakan seumur hidup." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik — healing level dewa." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Berburu Paus di Teriberka", desc: "Susuri Laut Barents menuju Teriberka — desa nelayan terpencil yang jadi spot terbaik lihat paus bungkuk di habitat aslinya." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
@@ -182,8 +182,8 @@ export default async function MurmanskPage() {
           <p className="text-base sm:text-lg max-w-xl mb-8 text-white/80 leading-relaxed"
             style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             {isPixel
-              ? "> Kota di atas Lingkar Arktik. Langit meledak dengan cahaya hijau magis yang bikin lo nangis."
-              : "Kota di atas Lingkar Arktik. Tempat matahari gak terbit selama berminggu-minggu — dan langitnya meledak dengan cahaya hijau magis yang bikin lo nangis."}
+              ? "> Kota di atas Lingkar Arktik. Langit meledak dengan cahaya hijau magis yang sungguh memukau."
+              : "Kota di atas Lingkar Arktik. Tempat matahari tak terbit selama berminggu-minggu — dan langitnya meledak dengan cahaya hijau magis yang sungguh memukau."}
           </p>
 
           {/* CTA — paket tour dulu, WA sebagai sekunder */}
@@ -244,9 +244,9 @@ export default async function MurmanskPage() {
             Kenapa Murmansk, Bukan Finlandia atau Norwegia?
           </h2>
           <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-100" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>
-            <p>Jujur, kalau lo mau lihat aurora, Finlandia dan Norwegia memang lebih &quot;mainstream&quot;. Lebih banyak travel agency, lebih mudah diakses. Tapi justru itu masalahnya — lo bakal ketemu ratusan turis lain yang sama-sama angkat HP buat foto langit yang sama.</p>
-            <p>Murmansk menawarkan sesuatu yang berbeda: <strong>keaslian</strong>. Ini kota industri Arktik yang nyata, bukan desa wisata yang didesain buat turis. Penduduknya keras tapi hangat, landscape-nya brutal tapi cantik, dan auranya? Sama spektakularnya — tapi lo bisa nikmatin tanpa berdesakan.</p>
-            <p>Plus: Murmansk adalah kota terbesar di dunia yang berada di dalam Lingkar Arktik. Infrastrukturnya jauh lebih lengkap dari yang lo bayangkan — ada hotel proper, restoran, dan transportasi yang berfungsi meski di tengah badai salju -25°C.</p>
+            <p>Kalau ingin melihat aurora, Finlandia dan Norwegia memang lebih &quot;mainstream&quot;. Lebih banyak travel agency, lebih mudah diakses. Tapi justru itu masalahnya — Anda akan bersaing dengan ratusan turis lain yang sama-sama mengangkat kamera untuk memotret langit yang sama.</p>
+            <p>Murmansk menawarkan sesuatu yang berbeda: <strong>keaslian</strong>. Ini kota industri Arktik yang nyata, bukan desa wisata yang dirancang untuk turis. Penduduknya bersahaja tapi hangat, landscape-nya keras tapi cantik, dan auranya? Sama spektakularnya — namun bisa dinikmati tanpa berdesakan.</p>
+            <p>Plus: Murmansk adalah kota terbesar di dunia yang berada di dalam Lingkar Arktik. Infrastrukturnya jauh lebih lengkap dari yang dibayangkan — ada hotel yang layak, restoran, dan transportasi yang tetap berfungsi meski di tengah badai salju -25°C.</p>
           </div>
         </section>
 
@@ -496,7 +496,7 @@ export default async function MurmanskPage() {
               {isPixel ? "> SIAP BERBURU AURORA?" : isKawaii ? "Siap Berburu Aurora? ✨" : "Siap Berburu Aurora?"}
             </h2>
             <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
-              Tim Sundaftrip siap bantu lo rencanakan perjalanan ke Murmansk dari A sampai Z — visa, tiket, hotel, dan aurora hunting guide lokal.
+              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Murmansk dari A sampai Z — visa, tiket, hotel, dan aurora hunting guide lokal.
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}
