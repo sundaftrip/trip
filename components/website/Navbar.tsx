@@ -46,8 +46,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -111,8 +111,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -176,8 +176,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1.5">
@@ -239,8 +239,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1.5">
@@ -304,8 +304,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -375,8 +375,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -448,8 +448,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             <Image
               src={logo || "/logo.png"}
               alt="Logo"
-              width={130} height={40}
-              className={`h-8 w-auto${mounted && isDark ? " logo-dark" : ""}`}
+              width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`}
               priority
             />
           </Link>
