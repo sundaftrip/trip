@@ -593,7 +593,7 @@ function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
       <div className="p-5">
-        <p className="text-[11px] font-extrabold uppercase tracking-wide mb-2" style={{ color: "var(--jo-accent)" }}>{tour.category} · {tour.country}</p>
+        <p className="text-[11px] font-extrabold uppercase tracking-wide mb-2" style={{ color: "var(--jo-accent-on)" }}>{tour.category} · {tour.country}</p>
         <h3 className="font-extrabold mb-3 line-clamp-2 leading-snug text-[16px]" style={{ color: "var(--jo-ink)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {tour.duration && <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Clock size={10} /> {tour.duration}</span>}
@@ -603,7 +603,7 @@ function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <div className="flex items-end justify-between pt-3" style={{ borderTop: "2px dashed var(--jo-line)" }}>
           <div>
             {tour.promoPrice && <p className="text-[11px] line-through font-bold" style={{ color: "var(--jo-sub)" }}>{formatCurrency(tour.price)}</p>}
-            <p className="text-lg font-extrabold" style={{ color: "var(--jo-accent)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+            <p className="text-lg font-extrabold" style={{ color: "var(--jo-accent-on)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
           </div>
           {!isDimmed && (
             <span className="jo-tag !py-1.5 !px-3 gap-1.5">Lihat <ArrowRight size={12} /></span>

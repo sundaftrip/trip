@@ -791,27 +791,30 @@ body {
 @keyframes atl-fade { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 .atl-fade { animation: atl-fade .85s ease both; }
 
-/* ─── JOJO THEME — sticker book, chunky cute ─── */
+/* ─── JOJO THEME — sticker book, chunky cute (palet selaras skema) ─── */
 :root {
-  --jo-bg:     color-mix(in srgb, var(--site-accent, #2d6a4f) 9%, #fff6ec);
+  --jo-accent:     var(--site-accent, #2d6a4f);
+  /* terang dari aksen agar aksen sebagai teks tetap kontras di latar gelap */
+  --jo-accent-on:  var(--site-accent, #2d6a4f);
+  --jo-bg:     color-mix(in srgb, var(--jo-accent) 8%, #fffaf2);
   --jo-card:   #ffffff;
-  --jo-ink:    #4b3f39;
-  --jo-sub:    #9a8d84;
-  --jo-line:   color-mix(in srgb, var(--site-accent, #2d6a4f) 52%, #3a2f2a);
-  --jo-accent: var(--site-accent, #2d6a4f);
-  --jo-soft:   color-mix(in srgb, var(--site-accent, #2d6a4f) 15%, #ffffff);
-  --jo-cream:  color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #fffaf3);
-  --jo-shadow: color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #3a2f2a);
+  --jo-ink:    color-mix(in srgb, var(--jo-accent) 16%, #211f1c);
+  --jo-sub:    color-mix(in srgb, var(--jo-accent) 20%, #6a665f);
+  --jo-line:   color-mix(in srgb, var(--jo-accent) 55%, #34302a);
+  --jo-soft:   color-mix(in srgb, var(--jo-accent) 14%, #ffffff);
+  --jo-cream:  color-mix(in srgb, var(--jo-accent) 6%, #fffaf3);
+  --jo-shadow: color-mix(in srgb, var(--jo-accent) 50%, #2f2b26);
 }
 .dark {
-  --jo-bg:     color-mix(in srgb, var(--site-accent, #2d6a4f) 16%, #1a1614);
-  --jo-card:   #262120;
-  --jo-ink:    #f5ece3;
-  --jo-sub:    #a99e95;
-  --jo-line:   color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, #f5ece3);
-  --jo-soft:   color-mix(in srgb, var(--site-accent, #2d6a4f) 30%, #262120);
-  --jo-cream:  #201b19;
-  --jo-shadow: color-mix(in srgb, var(--site-accent, #2d6a4f) 38%, #000000);
+  --jo-accent-on:  color-mix(in srgb, var(--site-accent, #2d6a4f) 62%, #ffffff);
+  --jo-bg:     color-mix(in srgb, var(--jo-accent) 15%, #16161a);
+  --jo-card:   color-mix(in srgb, var(--jo-accent) 12%, #23242a);
+  --jo-ink:    color-mix(in srgb, var(--jo-accent) 7%, #f6f3ee);
+  --jo-sub:    color-mix(in srgb, var(--jo-accent) 16%, #c3bfb8);
+  --jo-line:   color-mix(in srgb, var(--jo-accent) 46%, #efece6);
+  --jo-soft:   color-mix(in srgb, var(--jo-accent) 26%, #2b2c32);
+  --jo-cream:  color-mix(in srgb, var(--jo-accent) 12%, #1c1d22);
+  --jo-shadow: color-mix(in srgb, var(--jo-accent) 30%, #000000);
 }
 .jo-font { font-family: var(--font-nunito), "Baloo 2", system-ui, sans-serif; }
 .jo-card {
