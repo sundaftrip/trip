@@ -4,7 +4,8 @@ import { auth } from "@/lib/auth";
 import { revalidateTag } from "next/cache";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
-import { PLAN, PLAN_FEATURES } from "@/lib/plan";
+import { PLAN_FEATURES } from "@/lib/plan";
+import { getPlan } from "@/lib/license";
 
 export async function GET() {
   const items = await prisma.companyInfo.findMany();
@@ -19,13 +20,19 @@ export async function PUT(req: NextRequest) {
 
   const body: Record<string, string> = await req.json();
 
-  // Block plan-locked features
+  // Block plan-locked features — plan diresolusi dari MASTER
+  const plan = await getPlan();
+
   if (body.site_theme && body.site_theme !== "classic") {
     const featureKey = `theme_${body.site_theme}`;
-    const requiredPlan = PLAN_FEATURES[featureKey];
-    if (requiredPlan === "pro" && PLAN !== "pro") {
+    if (PLAN_FEATURES[featureKey] === "pro" && plan !== "pro") {
       return NextResponse.json({ error: "Tema ini memerlukan paket Pro" }, { status: 403 });
     }
+  }
+
+  // Skema warna juga fitur Pro
+  if (body.color_scheme && PLAN_FEATURES["color_schemes"] === "pro" && plan !== "pro") {
+    return NextResponse.json({ error: "Skema warna memerlukan paket Pro" }, { status: 403 });
   }
 
   const isColorChange = Object.keys(body).some((k) => k.startsWith("color_") || k.startsWith("site_"));
