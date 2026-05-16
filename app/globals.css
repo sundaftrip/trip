@@ -759,18 +759,15 @@ body {
 .cns-logo { filter: none; }
 .dark .cns-logo { filter: brightness(0) invert(1); }
 .cns-navlink {
-  border-radius: 7px;
   color: var(--at-subtext);
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease;
 }
-.cns-navlink:hover { background: var(--at-muted); color: var(--at-text); }
+.cns-navlink:hover { color: var(--at-text); }
 .cns-navlink[data-active="true"] {
-  background: var(--at-muted);
-  color: var(--at-text);
+  color: var(--site-accent);
   font-weight: 600;
-  box-shadow: inset 2.5px 0 0 var(--site-accent);
 }
 .cns-mini-btn {
   display: inline-flex; align-items: center; justify-content: center;
