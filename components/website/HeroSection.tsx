@@ -41,25 +41,31 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     { dx: "-128px", rot: "-596deg" },
     { dx: "88px",   rot: "868deg"  },
   ];
-  const TitleWords = ({ extra }: { extra?: React.ReactNode }) => (
-    <>
-      {t("hero_title", "Wujudkan Perjalanan Impian Anda")
-        .split(/\s+/).filter(Boolean)
-        .map((word, i) => {
-          const p = FALL_PHYSICS[i % FALL_PHYSICS.length];
-          return (
+  const TitleWords = ({ extra }: { extra?: React.ReactNode }) => {
+    let g = 0; // indeks huruf global — stagger tiap huruf rontok
+    return (
+      <>
+        {t("hero_title", "Wujudkan Perjalanan Impian Anda")
+          .split(/\s+/).filter(Boolean)
+          .map((word, i) => (
             <span key={i} className="block">
               {word.charAt(0)}
-              <span className="sundaf-fall"
-                style={{ ["--n" as string]: i, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
-                {word.slice(1)}
-              </span>
+              {word.slice(1).split("").map((ch, j) => {
+                const gi = g++;
+                const p = FALL_PHYSICS[gi % FALL_PHYSICS.length];
+                return (
+                  <span key={j} className="sundaf-fall"
+                    style={{ ["--n" as string]: gi, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
+                    {ch}
+                  </span>
+                );
+              })}
             </span>
-          );
-        })}
-      {extra}
-    </>
-  );
+          ))}
+        {extra}
+      </>
+    );
+  };
 
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
