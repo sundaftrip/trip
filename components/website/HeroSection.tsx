@@ -38,7 +38,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       {t("hero_title", "Wujudkan Perjalanan Impian Anda")
         .split(/\s+/).filter(Boolean)
         .map((word, i) => (
-          <span key={i} className="block sundaf-word" style={{ animationDelay: `${i * 0.13}s` }}>
+          <span key={i} className="block">
             <span className="hero-initial">{word.charAt(0)}</span>
             {word.slice(1)}
           </span>

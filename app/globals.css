@@ -143,18 +143,6 @@ body {
 .hero-initial { color: var(--site-accent, #2d6a4f); }
 .dark .hero-initial { color: color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #ffffff); }
 
-/* Kaskade jatuh judul hero — tiap kata jatuh menimpa kata berikutnya */
-@keyframes sundaf-drop {
-  0%   { opacity: 0; transform: translateY(-0.6em); }
-  62%  { opacity: 1; transform: translateY(0.08em); }
-  82%  { transform: translateY(-0.02em); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.sundaf-word { animation: sundaf-drop 0.62s cubic-bezier(0.4,1.35,0.6,1) both; }
-@media (prefers-reduced-motion: reduce) {
-  .sundaf-word { animation: none; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-fade-up, .hero-fade-left { animation: none; }
 }
