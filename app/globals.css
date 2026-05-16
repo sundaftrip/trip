@@ -719,23 +719,23 @@ body {
   background-size: 32px 32px;
 }
 
-/* ─── ATELIER THEME — clean editorial travel ─── */
+/* ─── ATELIER THEME — clean editorial travel (ikut palet warna) ─── */
 :root {
-  --atl-bg:      #ffffff;
-  --atl-surface: #ffffff;
-  --atl-ink:     #1c1c1c;
-  --atl-sub:     #6b6b6b;
-  --atl-line:    #e6e5e1;
-  --atl-soft:    #f6f5f2;
   --atl-accent:  var(--site-accent, #2d6a4f);
+  --atl-bg:      color-mix(in srgb, var(--atl-accent) 5%, #ffffff);
+  --atl-surface: color-mix(in srgb, var(--atl-accent) 2.5%, #ffffff);
+  --atl-soft:    color-mix(in srgb, var(--atl-accent) 11%, #ffffff);
+  --atl-ink:     color-mix(in srgb, var(--atl-accent) 16%, #1a1a1a);
+  --atl-sub:     color-mix(in srgb, var(--atl-accent) 12%, #6e6e6e);
+  --atl-line:    color-mix(in srgb, var(--atl-accent) 18%, #e4e3df);
 }
 .dark {
-  --atl-bg:      #0e0e0f;
-  --atl-surface: #19191b;
-  --atl-ink:     #f2f1ee;
-  --atl-sub:     #9b9a96;
-  --atl-line:    #2b2b2d;
-  --atl-soft:    #161617;
+  --atl-bg:      color-mix(in srgb, var(--atl-accent) 14%, #0e0e0f);
+  --atl-surface: color-mix(in srgb, var(--atl-accent) 10%, #1a1a1c);
+  --atl-soft:    color-mix(in srgb, var(--atl-accent) 18%, #161617);
+  --atl-ink:     color-mix(in srgb, var(--atl-accent) 10%, #f2f1ee);
+  --atl-sub:     color-mix(in srgb, var(--atl-accent) 14%, #9b9a96);
+  --atl-line:    color-mix(in srgb, var(--atl-accent) 22%, #2b2b2d);
 }
 .atl-eyebrow { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--atl-accent); }
 .atl-btn-solid {
