@@ -139,9 +139,6 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
-/* Sorotan huruf pertama judul hero (akronim SUNDAF) — terang di dark mode */
-.hero-initial { color: var(--site-accent, #2d6a4f); }
-.dark .hero-initial { color: color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #ffffff); }
 
 /* Animasi SUNDAF — tiap huruf depan jatuh fisika: terguling, melayang
    kiri/kanan, gravitasi mempercepat, lenyap sejenak, lalu muncul kembali.

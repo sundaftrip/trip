@@ -31,9 +31,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName} — ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
 
-  /* Render tiap kata sebagai block — huruf pertama disorot warna aksen
-     agar akronim vertikal (mis. S-U-N-D-A-F) terbaca jelas */
-  /* Parameter fisika jatuh tiap huruf — arah & putaran berbeda-beda */
+  /* Render tiap kata sebagai block. Huruf pertama (akronim S-U-N-D-A-F)
+     tetap berdiri & warna asal; sisa kata di belakangnya rontok fisika. */
   const FALL_PHYSICS = [
     { dx: "-118px", rot: "-684deg" },
     { dx: "104px",  rot: "548deg"  },
@@ -50,11 +49,11 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           const p = FALL_PHYSICS[i % FALL_PHYSICS.length];
           return (
             <span key={i} className="block">
-              <span className="hero-initial sundaf-fall"
+              {word.charAt(0)}
+              <span className="sundaf-fall"
                 style={{ ["--n" as string]: i, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
-                {word.charAt(0)}
+                {word.slice(1)}
               </span>
-              {word.slice(1)}
             </span>
           );
         })}
