@@ -48,6 +48,7 @@ const THEMES = [
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
   { key: "atelier",  label: "Atelier",   desc: "Editorial mewah. Simetris, heading serif, hairline border, whitespace lega.", feature: null },
+  { key: "jojo",     label: "Jojo",      desc: "Sticker book cute. Stiker SVG, border tebal, shadow chunky, motion bouncy.", feature: null },
 ];
 
 export default function SettingsPage() {
@@ -295,8 +296,19 @@ export default function SettingsPage() {
                     key === "classic" ? "bg-white border border-gray-100" :
                     key === "vibrant" ? "bg-white border border-gray-100" :
                     key === "atelier" ? "bg-white border border-gray-100" :
+                    key === "jojo" ? "border border-gray-100" :
                     "bg-gray-950"
-                  }`}>
+                  }`} style={key === "jojo" ? { background: "#fff6ec" } : undefined}>
+                    {key === "jojo" && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                        <div className="flex gap-1.5">
+                          <div className="w-4 h-4 rounded-full" style={{ background: currentAccent, border: "1.5px solid #43372f" }} />
+                          <div className="w-4 h-4 rotate-45" style={{ background: "#fff", border: "1.5px solid #43372f" }} />
+                        </div>
+                        <div className="h-2.5 w-16 rounded-full" style={{ background: "#4b3f39" }} />
+                        <div className="h-3 w-9 rounded-full mt-0.5" style={{ background: currentAccent, border: "2px solid #43372f", boxShadow: "0 2px 0 0 #43372f" }} />
+                      </div>
+                    )}
                     {key === "atelier" && (
                       <div className="absolute inset-0 flex" style={{ background: "#f2f1ed" }}>
                         <div className="absolute inset-1 border" style={{ borderColor: "rgba(0,0,0,0.22)" }} />

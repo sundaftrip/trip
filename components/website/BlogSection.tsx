@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import AnimateIn from "./AnimateIn";
+import { JojoSticker } from "./JojoStickers";
 
 interface Post {
   id: string; slug: string; title: string; excerpt: string | null;
@@ -294,6 +295,41 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
   );
 
   /* ── CLASSIC / VIBRANT / BOLD ── */
+  if (theme === "jojo") return (
+    <section className="py-24 jo-font" style={{ background: "var(--jo-cream)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-14">
+            <span className="jo-chip mb-4 inline-flex"><JojoSticker shape="heart" size={18} /> Jurnal</span>
+            <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>Tips &amp; Inspirasi</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="jo-card group block overflow-hidden">
+                <div className="relative h-44 overflow-hidden" style={{ background: "var(--jo-soft)", borderBottom: "2.5px solid var(--jo-line)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full"><JojoSticker shape="cloud" size={48} /></div>}
+                  {post.category && <span className="absolute top-3 left-3 jo-tag">{post.category}</span>}
+                </div>
+                <div className="p-5">
+                  <h3 className="font-extrabold mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--jo-ink)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs font-semibold line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--jo-sub)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px] font-bold" style={{ color: "var(--jo-sub)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   if (theme === "atelier") return (
     <section className="py-28" style={{ background: "var(--atl-surface)" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
+import { JojoSticker } from "./JojoStickers";
 
 const getFooterData = unstable_cache(
   async () => {
@@ -348,6 +349,51 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   );
 
   /* ── CLASSIC / VIBRANT / BOLD (dark footer) ── */
+  /* ── JOJO ── */
+  if (theme === "jojo") return (
+    <footer className="jo-font" style={{ background: "var(--jo-cream)", borderTop: "2.5px solid var(--jo-line)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10" style={{ borderBottom: "2.5px dashed var(--jo-line)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} className="atl-logo" style={{ marginBottom: 16 }} />
+            {tagline && <p className="text-sm font-semibold leading-relaxed max-w-xs" style={{ color: "var(--jo-sub)" }}>{tagline}</p>}
+            {nib && <p className="text-xs font-bold mt-3" style={{ color: "var(--jo-sub)" }}>NIB {nib}</p>}
+          </div>
+          <div>
+            <h3 className="text-sm font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--jo-ink)" }}>
+              <JojoSticker shape="star" size={20} /> Navigasi
+            </h3>
+            <ul className="space-y-2.5 text-sm font-semibold">
+              {navLinks.map(([label, href]) => (
+                <li key={href}><Link href={href} className="hover:opacity-70 transition-opacity" style={{ color: "var(--jo-sub)" }}>{label}</Link></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--jo-ink)" }}>
+              <JojoSticker shape="heart" size={20} /> Kontak
+            </h3>
+            <ul className="space-y-2.5 text-sm font-semibold">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--jo-accent)" }} />
+                  {href
+                    ? <a href={href} className="hover:opacity-70 transition-opacity" style={{ color: "var(--jo-sub)" }}>{value}</a>
+                    : <span style={{ color: "var(--jo-sub)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold" style={{ color: "var(--jo-sub)" }}>
+          <p>© {new Date().getFullYear()} {name}</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
   /* ── ATELIER ── */
   if (theme === "atelier") return (
     <footer style={{ background: "var(--atl-bg)", color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>

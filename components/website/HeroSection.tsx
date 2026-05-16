@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin } from "lucide-react";
+import { JojoSticker, JojoStickerField } from "./JojoStickers";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo";
   featuredImage?: string | null;
 }
 
@@ -474,6 +475,46 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               WhatsApp
             </a>
           )}
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── JOJO — sticker book ── */
+  if (theme === "jojo") return (
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden px-4 pt-32 pb-20"
+      style={{ background: "var(--jo-bg)" }}>
+      <JojoStickerField />
+      <div className="max-w-4xl mx-auto w-full text-center relative z-10 jo-font">
+        <div className="jo-pop inline-block mb-8" style={{ animationDelay: ".05s" }}>
+          <span className="jo-chip"><JojoSticker shape="star" size={20} /> {eyebrow}</span>
+        </div>
+
+        <h1 className="jo-pop text-[clamp(2.8rem,8vw,6rem)] leading-[1.05] tracking-tight mb-7"
+          style={{ color: "var(--jo-ink)", fontWeight: 900, animationDelay: ".15s" }}>
+          <TitleWords extra={<span className="inline-block ml-3 align-middle jo-bob"><JojoSticker shape="heart" size={50} /></span>} />
+        </h1>
+
+        <p className="jo-pop text-base sm:text-lg max-w-xl mx-auto mb-9 font-semibold"
+          style={{ color: "var(--jo-sub)", animationDelay: ".28s" }}>
+          {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+        </p>
+
+        <div className="jo-pop flex flex-wrap items-center justify-center gap-4 mb-10" style={{ animationDelay: ".4s" }}>
+          <Link href="/tours" className="jo-btn">
+            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="jo-btn-soft">
+              WhatsApp
+            </a>
+          )}
+        </div>
+
+        <div className="jo-pop flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: ".52s" }}>
+          <span className="jo-chip"><JojoSticker shape="cloud" size={18} /> {t("hero_subtitle", "Destinasi Pilihan")}</span>
+          <span className="jo-chip"><JojoSticker shape="sparkle" size={18} /> Paket Lengkap</span>
+          <span className="jo-chip"><JojoSticker shape="face" size={18} /> Terpercaya</span>
         </div>
       </div>
     </section>

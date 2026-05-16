@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Calendar, Users, Clock } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { JojoSticker } from "./JojoStickers";
 
 interface Tour {
   id: string; title: string; country: string; cityHighlight?: string | null;
@@ -578,6 +579,40 @@ function AtelierCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  return (
+    <div className={`jo-card jo-font group block overflow-hidden ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden" style={{ background: "var(--jo-soft)", borderBottom: "2.5px solid var(--jo-line)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+          : <div className="flex items-center justify-center h-full" style={{ color: "var(--jo-line)" }}><MapPin size={28} /></div>}
+        {tour.badge && !isDimmed && (
+          <span className="absolute top-3 left-3 jo-tag">{tour.badge}</span>
+        )}
+        <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
+      </div>
+      <div className="p-5">
+        <p className="text-[11px] font-extrabold uppercase tracking-wide mb-2" style={{ color: "var(--jo-accent)" }}>{tour.category} · {tour.country}</p>
+        <h3 className="font-extrabold mb-3 line-clamp-2 leading-snug text-[16px]" style={{ color: "var(--jo-ink)" }}>{tour.title}</h3>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {tour.duration && <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Clock size={10} /> {tour.duration}</span>}
+          {tour.tripDate && <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
+          <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Users size={10} /> {tour.seatsLeft} seat</span>
+        </div>
+        <div className="flex items-end justify-between pt-3" style={{ borderTop: "2px dashed var(--jo-line)" }}>
+          <div>
+            {tour.promoPrice && <p className="text-[11px] line-through font-bold" style={{ color: "var(--jo-sub)" }}>{formatCurrency(tour.price)}</p>}
+            <p className="text-lg font-extrabold" style={{ color: "var(--jo-accent)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+          </div>
+          {!isDimmed && (
+            <span className="jo-tag !py-1.5 !px-3 gap-1.5">Lihat <ArrowRight size={12} /></span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -594,6 +629,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
   else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "atelier") card = <AtelierCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "jojo") card = <JojoCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

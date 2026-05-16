@@ -2,6 +2,7 @@ import Link from "next/link";
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
 import { ArrowRight } from "lucide-react";
+import { JojoSticker } from "./JojoStickers";
 
 interface Tour {
   id: string; title: string; country: string; cityHighlight: string | null;
@@ -69,6 +70,30 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <TourCard tour={tour} theme="atelier" />
             </AnimateIn>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── JOJO layout ── */
+  if (theme === "jojo") return (
+    <section className="py-24 jo-font" style={{ background: "var(--jo-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-14">
+            <span className="jo-chip mb-4 inline-flex"><JojoSticker shape="star" size={18} /> Paket Tersedia</span>
+            <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>Tour Pilihan</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="jojo" />
+            </AnimateIn>
+          ))}
+        </div>
+        <div className="text-center mt-12">
+          <Link href="/tours" className="jo-btn">Semua Tour <ArrowRight size={16} /></Link>
         </div>
       </div>
     </section>

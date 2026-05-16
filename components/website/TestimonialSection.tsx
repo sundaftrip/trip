@@ -322,9 +322,9 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── CLASSIC ── */
-  if (theme === "classic" || theme === "atelier") return (
-    <section className={`py-24 overflow-hidden ${theme === "atelier" ? "" : "bg-white dark:bg-black"}`}
-      style={theme === "atelier" ? { background: "var(--atl-surface)" } : undefined}>
+  if (theme === "classic" || theme === "atelier" || theme === "jojo") return (
+    <section className={`py-24 overflow-hidden ${theme === "classic" ? "bg-white dark:bg-black" : ""}`}
+      style={theme === "atelier" ? { background: "var(--atl-surface)" } : theme === "jojo" ? { background: "var(--jo-cream)" } : undefined}>
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
           <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-3">Testimoni</p>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Shield, Heart, Clock, Award } from "lucide-react";
 import AnimateIn from "./AnimateIn";
+import { JojoSticker, type JojoShape } from "./JojoStickers";
 
 const icons = [Shield, Heart, Clock, Award];
 
@@ -252,6 +253,33 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   }
 
   /* ── CLASSIC ── */
+  if (theme === "jojo") {
+    const joShapes: JojoShape[] = ["star", "heart", "cloud", "sparkle"];
+    return (
+    <section className="py-24 jo-font" style={{ background: "var(--jo-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-14">
+            <span className="jo-chip mb-4 inline-flex"><JojoSticker shape="sparkle" size={18} /> {subtitle}</span>
+            <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>{title}</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {items.map(({ title, desc }, i) => (
+            <AnimateIn key={title} delay={i * 100}>
+              <div className="jo-card p-6 h-full text-center">
+                <div className="flex justify-center mb-4"><JojoSticker shape={joShapes[i % 4]} size={58} /></div>
+                <h3 className="font-extrabold mb-2 text-[15px]" style={{ color: "var(--jo-ink)" }}>{title}</h3>
+                <p className="text-xs font-semibold leading-relaxed" style={{ color: "var(--jo-sub)" }}>{desc}</p>
+              </div>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+    );
+  }
+
   if (theme === "atelier") return (
     <section className="py-28" style={{ background: "var(--atl-bg)" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">

@@ -800,6 +800,69 @@ body {
 .atl-rise   { animation: atl-rise 1.05s cubic-bezier(.76,0,.24,1) both; }
 .atl-emerge { animation: atl-emerge .85s ease both; }
 
+/* ─── JOJO THEME — sticker book, chunky cute ─── */
+:root {
+  --jo-bg:     color-mix(in srgb, var(--site-accent, #2d6a4f) 9%, #fff6ec);
+  --jo-card:   #ffffff;
+  --jo-ink:    #4b3f39;
+  --jo-sub:    #9a8d84;
+  --jo-line:   color-mix(in srgb, var(--site-accent, #2d6a4f) 52%, #3a2f2a);
+  --jo-accent: var(--site-accent, #2d6a4f);
+  --jo-soft:   color-mix(in srgb, var(--site-accent, #2d6a4f) 15%, #ffffff);
+  --jo-cream:  color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #fffaf3);
+  --jo-shadow: color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #3a2f2a);
+}
+.dark {
+  --jo-bg:     color-mix(in srgb, var(--site-accent, #2d6a4f) 16%, #1a1614);
+  --jo-card:   #262120;
+  --jo-ink:    #f5ece3;
+  --jo-sub:    #a99e95;
+  --jo-line:   color-mix(in srgb, var(--site-accent, #2d6a4f) 55%, #f5ece3);
+  --jo-soft:   color-mix(in srgb, var(--site-accent, #2d6a4f) 30%, #262120);
+  --jo-cream:  #201b19;
+  --jo-shadow: color-mix(in srgb, var(--site-accent, #2d6a4f) 38%, #000000);
+}
+.jo-font { font-family: var(--font-nunito), "Baloo 2", system-ui, sans-serif; }
+.jo-card {
+  background: var(--jo-card); border: 2.5px solid var(--jo-line); border-radius: 26px;
+  box-shadow: 0 7px 0 0 var(--jo-shadow);
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s ease;
+}
+.jo-card:hover { transform: translateY(-5px) rotate(-1.2deg); box-shadow: 0 12px 0 0 var(--jo-shadow); }
+.jo-btn, .jo-btn-soft {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  border: 2.5px solid var(--jo-line); border-radius: 999px;
+  padding: 14px 28px; font-weight: 800; font-size: 14px;
+  box-shadow: 0 5px 0 0 var(--jo-shadow);
+  text-decoration: none; cursor: pointer;
+  transition: transform .13s ease, box-shadow .13s ease;
+}
+.jo-btn { background: var(--jo-accent); color: #fff; }
+.jo-btn-soft { background: var(--jo-card); color: var(--jo-ink); }
+.jo-btn:hover, .jo-btn-soft:hover { transform: translateY(2px); box-shadow: 0 3px 0 0 var(--jo-shadow); }
+.jo-btn:active, .jo-btn-soft:active { transform: translateY(5px); box-shadow: 0 0 0 0 var(--jo-shadow); }
+.jo-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--jo-soft); color: var(--jo-ink);
+  border: 2px solid var(--jo-line); border-radius: 999px;
+  padding: 6px 14px; font-weight: 700; font-size: 12px;
+}
+.jo-tag {
+  display: inline-flex; align-items: center;
+  background: var(--jo-accent); color: #fff;
+  border: 2px solid var(--jo-line); border-radius: 999px;
+  padding: 3px 12px; font-weight: 800; font-size: 11px;
+}
+.jo-sticker { filter: drop-shadow(0 4px 3px rgba(0,0,0,0.18)); }
+/* ── Jojo motion — bouncy ── */
+@keyframes jo-pop    { 0%{transform:scale(.4);opacity:0;} 70%{transform:scale(1.09);opacity:1;} 100%{transform:scale(1);opacity:1;} }
+@keyframes jo-floaty { 0%,100%{transform:translateY(0) rotate(var(--jo-rot,0deg));} 50%{transform:translateY(-14px) rotate(var(--jo-rot,0deg));} }
+@keyframes jo-bob    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+@keyframes jo-wob    { 0%,100%{transform:rotate(-4deg);} 50%{transform:rotate(4deg);} }
+.jo-pop   { animation: jo-pop .6s cubic-bezier(.34,1.56,.64,1) both; }
+.jo-float { animation: jo-floaty 5s ease-in-out infinite; }
+.jo-bob   { animation: jo-bob 2.6s ease-in-out infinite; }
+
 /* ── Aurora text animation ──────────────────────────────────────────────── */
 @keyframes aurora-shift {
   0%   { background-position: 0%   60%; }
