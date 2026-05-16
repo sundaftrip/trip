@@ -253,21 +253,28 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
 
   /* ── CLASSIC ── */
   if (theme === "atelier") return (
-    <section className="py-24" style={{ background: "var(--atl-bg)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-28" style={{ background: "var(--atl-bg)" }}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
         <AnimateIn>
-          <div className="text-center mb-16">
-            <p className="atl-eyebrow mb-4">{subtitle}</p>
-            <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{title}</h2>
+          <div className="flex items-end gap-5 sm:gap-7 mb-10">
+            <span className="atl-num leading-[0.8]" style={{ fontSize: "clamp(3.2rem,8vw,6rem)" }}>03</span>
+            <div className="flex-1 pb-1.5">
+              <p className="atl-eyebrow mb-3">{subtitle}</p>
+              <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{title}</h2>
+            </div>
           </div>
+          <div className="h-px w-full mb-14" style={{ background: "var(--atl-line-strong)" }} />
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px" style={{ background: "var(--atl-line)" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" style={{ borderLeft: "1px solid var(--atl-line)" }}>
           {items.map(({ title, desc, Icon }, i) => (
             <AnimateIn key={title} delay={i * 100}>
-              <div className="p-8 h-full" style={{ background: "var(--atl-surface)" }}>
-                <p className="atl-index mb-6">0{i + 1}</p>
-                <Icon size={22} style={{ color: "var(--atl-accent)" }} className="mb-4" />
-                <h3 className="atl-serif text-base mb-2.5" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{title}</h3>
+              <div className="p-8 h-full group transition-colors duration-500 hover:bg-[var(--atl-surface)]"
+                style={{ borderRight: "1px solid var(--atl-line)", borderTop: "1px solid var(--atl-line)" }}>
+                <div className="flex items-baseline justify-between mb-7">
+                  <span className="atl-num text-2xl">0{i + 1}</span>
+                  <Icon size={20} style={{ color: "var(--atl-accent)" }} />
+                </div>
+                <h3 className="atl-serif text-lg mb-3" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{title}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: "var(--atl-sub)" }}>{desc}</p>
               </div>
             </AnimateIn>

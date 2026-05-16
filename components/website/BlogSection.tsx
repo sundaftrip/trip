@@ -295,15 +295,20 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
 
   /* ── CLASSIC / VIBRANT / BOLD ── */
   if (theme === "atelier") return (
-    <section className="py-24" style={{ background: "var(--atl-surface)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-28" style={{ background: "var(--atl-surface)" }}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
         <AnimateIn>
-          <div className="text-center mb-14">
-            <p className="atl-eyebrow mb-4">Jurnal</p>
-            <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>Tips &amp; Inspirasi</h2>
+          <div className="flex items-end gap-5 sm:gap-7 mb-10">
+            <span className="atl-num leading-[0.8]" style={{ fontSize: "clamp(3.2rem,8vw,6rem)" }}>02</span>
+            <div className="flex-1 pb-1.5">
+              <p className="atl-eyebrow mb-3">Jurnal Perjalanan</p>
+              <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>Tips &amp; Inspirasi</h2>
+            </div>
+            <Link href="/blog" className="atl-btn-ghost hidden sm:inline-flex !py-3 !px-6">Semua <ArrowRight size={13} /></Link>
           </div>
+          <div className="h-px w-full mb-14" style={{ background: "var(--atl-line-strong)" }} />
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post, i) => (
             <AnimateIn key={post.id} delay={i * 90}>
               <Link href={`/blog/${post.slug}`} className="atl-card group block overflow-hidden">
@@ -328,9 +333,6 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               </Link>
             </AnimateIn>
           ))}
-        </div>
-        <div className="text-center mt-14">
-          <Link href="/blog" className="atl-btn-ghost">Semua Artikel <ArrowRight size={15} /></Link>
         </div>
       </div>
     </section>

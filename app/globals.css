@@ -719,70 +719,86 @@ body {
   background-size: 32px 32px;
 }
 
-/* ─── ATELIER THEME — editorial luxury ─── */
+/* ─── ATELIER THEME — sharp editorial, 90° ─── */
 :root {
-  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #fcfcfb);
+  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 3%, #f2f1ed);
   --atl-surface:     #ffffff;
-  --atl-ink:         #161616;
-  --atl-sub:         #6e6e6e;
-  --atl-line:        rgba(22,22,22,0.13);
-  --atl-line-strong: rgba(22,22,22,0.82);
+  --atl-ink:         #141414;
+  --atl-sub:         #61605c;
+  --atl-line:        rgba(20,20,20,0.20);
+  --atl-line-strong: rgba(20,20,20,0.88);
   --atl-accent:      var(--site-accent, #2d6a4f);
-  --atl-shadow:      rgba(20,20,20,0.07);
+  --atl-shadow:      rgba(15,15,15,0.13);
 }
 .dark {
-  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #0b0b0c);
-  --atl-surface:     #141415;
-  --atl-ink:         #f3f3f1;
-  --atl-sub:         #9a9a98;
-  --atl-line:        rgba(255,255,255,0.14);
-  --atl-line-strong: rgba(255,255,255,0.74);
-  --atl-shadow:      rgba(0,0,0,0.5);
+  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 11%, #0b0b0c);
+  --atl-surface:     #131314;
+  --atl-ink:         #f1f0ec;
+  --atl-sub:         #97968f;
+  --atl-line:        rgba(255,255,255,0.20);
+  --atl-line-strong: rgba(255,255,255,0.80);
+  --atl-shadow:      rgba(0,0,0,0.55);
 }
-.atl-serif { font-family: var(--font-playfair), Georgia, "Times New Roman", serif; }
-.atl-eyebrow {
-  font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase;
-  font-weight: 600; color: var(--atl-accent);
-}
+/* Atelier — semua sudut 90°, tanpa lengkung */
+.atl-serif { font-family: var(--font-playfair), "Times New Roman", Georgia, serif; }
+.atl-eyebrow { font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; font-weight: 700; color: var(--atl-accent); }
 .atl-rule { height: 1px; background: var(--atl-line); width: 100%; }
-.atl-pill {
-  display: inline-flex; align-items: center; gap: 7px;
-  border: 1px solid var(--atl-line); border-radius: 999px;
-  padding: 7px 16px; font-size: 12px; letter-spacing: 0.05em;
-  color: var(--atl-sub); background: var(--atl-surface);
+.atl-num { font-family: var(--font-playfair), Georgia, serif; font-style: italic; color: var(--atl-accent); }
+.atl-index { font-family: var(--font-playfair), Georgia, serif; font-style: italic; font-size: 13px; color: var(--atl-accent); }
+.atl-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--atl-line); border-radius: 0;
+  padding: 7px 13px; font-size: 10px; letter-spacing: 0.24em;
+  text-transform: uppercase; font-weight: 600; color: var(--atl-sub); background: transparent;
 }
 .atl-btn-solid {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--atl-accent); color: #fff;
-  border: 1px solid var(--atl-accent); border-radius: 2px;
-  font-weight: 600; font-size: 13px; letter-spacing: 0.06em;
-  text-transform: uppercase; padding: 14px 30px;
-  transition: opacity .18s ease; text-decoration: none; cursor: pointer;
-}
-.atl-btn-solid:hover { opacity: 0.86; }
-.atl-btn-ghost {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: transparent; color: var(--atl-ink);
-  border: 1px solid var(--atl-line-strong); border-radius: 2px;
-  font-weight: 600; font-size: 13px; letter-spacing: 0.06em;
-  text-transform: uppercase; padding: 14px 30px;
-  transition: background .18s ease, color .18s ease;
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--atl-ink); color: var(--atl-bg);
+  border: 1px solid var(--atl-ink); border-radius: 0;
+  padding: 16px 30px; font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; font-weight: 600;
   text-decoration: none; cursor: pointer;
+  transition: background .4s cubic-bezier(.76,0,.24,1), color .4s cubic-bezier(.76,0,.24,1), border-color .4s cubic-bezier(.76,0,.24,1);
 }
-.atl-btn-ghost:hover { background: var(--atl-ink); color: var(--atl-bg); }
+.atl-btn-solid:hover { background: var(--atl-accent); border-color: var(--atl-accent); color: #fff; }
+.atl-btn-ghost {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: transparent; color: var(--atl-ink);
+  border: 1px solid var(--atl-line-strong); border-radius: 0;
+  padding: 16px 30px; font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+  transition: color .3s ease, border-color .3s ease;
+}
+.atl-btn-ghost:hover { color: var(--atl-accent); border-color: var(--atl-accent); }
 .atl-card {
-  background: var(--atl-surface); border: 1px solid var(--atl-line);
-  border-radius: 3px;
-  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+  background: var(--atl-surface); border: 1px solid var(--atl-line); border-radius: 0;
+  position: relative;
+  transition: transform .5s cubic-bezier(.76,0,.24,1), box-shadow .5s cubic-bezier(.76,0,.24,1);
 }
-.atl-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 44px var(--atl-shadow);
-  border-color: var(--atl-line-strong);
+.atl-card:hover { transform: translateY(-7px); box-shadow: -9px 13px 0 -1px var(--atl-accent), 0 22px 46px var(--atl-shadow); }
+.atl-card::before, .atl-card::after {
+  content: ""; position: absolute; width: 11px; height: 11px;
+  border-color: var(--atl-accent); opacity: 0; transition: opacity .4s ease; pointer-events: none; z-index: 2;
 }
-.atl-index { font-family: var(--font-playfair), Georgia, serif; font-size: 13px; color: var(--atl-accent); letter-spacing: 0.1em; }
-.atl-logo { height: 44px; width: auto; }
+.atl-card::before { top: 7px; left: 7px; border-top: 1.5px solid; border-left: 1.5px solid; }
+.atl-card::after  { bottom: 7px; right: 7px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+.atl-card:hover::before, .atl-card:hover::after { opacity: 1; }
+.atl-logo { height: 42px; width: auto; }
 .dark .atl-logo { filter: brightness(0) invert(1); }
+
+/* ── Atelier motion — wipe / draw / rise ── */
+@keyframes atl-wipe   { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes atl-drawx  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes atl-drawy  { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes atl-rise   { from { transform: translateY(108%); } to { transform: translateY(0); } }
+@keyframes atl-emerge { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.atl-wipe   { animation: atl-wipe 1.05s cubic-bezier(.76,0,.24,1) both; }
+.atl-drawx  { transform-origin: left; animation: atl-drawx .95s cubic-bezier(.76,0,.24,1) both; }
+.atl-drawy  { transform-origin: top;  animation: atl-drawy 1.15s cubic-bezier(.76,0,.24,1) both; }
+.atl-rise-mask { overflow: hidden; }
+.atl-rise   { animation: atl-rise 1.05s cubic-bezier(.76,0,.24,1) both; }
+.atl-emerge { animation: atl-emerge .85s ease both; }
 
 /* ── Aurora text animation ──────────────────────────────────────────────── */
 @keyframes aurora-shift {
