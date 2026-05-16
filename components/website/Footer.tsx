@@ -377,7 +377,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
             <ul className="space-y-2.5 text-sm font-semibold">
               {contacts.map(({ Icon, label, value, href }) => (
                 <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--jo-accent)" }} />
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--jo-accent-on)" }} />
                   {href
                     ? <a href={href} className="hover:opacity-70 transition-opacity" style={{ color: "var(--jo-sub)" }}>{value}</a>
                     : <span style={{ color: "var(--jo-sub)" }}>{value}</span>}
