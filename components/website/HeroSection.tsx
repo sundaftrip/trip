@@ -39,7 +39,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         .split(/\s+/).filter(Boolean)
         .map((word, i) => (
           <span key={i} className="block">
-            <span style={{ color: "var(--site-accent, #2d6a4f)" }}>{word.charAt(0)}</span>
+            <span className="hero-initial">{word.charAt(0)}</span>
             {word.slice(1)}
           </span>
         ))}
