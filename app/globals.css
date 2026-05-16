@@ -635,26 +635,26 @@ body {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
-/* ─── ATLAS THEME UTILITIES ─── */
+/* ─── ATLAS THEME UTILITIES — ikut warna skema (color-mix) ─── */
 :root {
-  --at-bg:      #ffffff;
-  --at-card:    #ffffff;
-  --at-border:  #1a1a1a;
-  --at-text:    #0a0a0a;
-  --at-subtext: #6b7280;
-  --at-grid:    rgba(0,0,0,0.06);
-  --at-shadow:  rgba(0,0,0,0.06);
-  --at-muted:   #f5f5f5;
+  --at-bg:      color-mix(in srgb, var(--site-accent, #1a1a1a) 4%,  #ffffff);
+  --at-card:    color-mix(in srgb, var(--site-accent, #1a1a1a) 2.5%, #ffffff);
+  --at-border:  color-mix(in srgb, var(--site-accent, #1a1a1a) 55%, #1a1a1a);
+  --at-text:    color-mix(in srgb, var(--site-accent, #1a1a1a) 20%, #0a0a0a);
+  --at-subtext: color-mix(in srgb, var(--site-accent, #1a1a1a) 32%, #6b7280);
+  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, transparent);
+  --at-shadow:  rgba(0,0,0,0.07);
+  --at-muted:   color-mix(in srgb, var(--site-accent, #1a1a1a) 9%,  #f5f5f5);
 }
 .dark {
-  --at-bg:      #0a0a0a;
-  --at-card:    #111111;
-  --at-border:  rgba(255,255,255,0.18);
-  --at-text:    #f5f5f5;
-  --at-subtext: #9ca3af;
-  --at-grid:    rgba(255,255,255,0.05);
+  --at-bg:      color-mix(in srgb, var(--site-accent, #1a1a1a) 10%, #0a0a0a);
+  --at-card:    color-mix(in srgb, var(--site-accent, #1a1a1a) 13%, #111111);
+  --at-border:  color-mix(in srgb, var(--site-accent, #1a1a1a) 50%, rgba(255,255,255,0.20));
+  --at-text:    color-mix(in srgb, var(--site-accent, #1a1a1a) 14%, #f5f5f5);
+  --at-subtext: color-mix(in srgb, var(--site-accent, #1a1a1a) 28%, #9ca3af);
+  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 24%, transparent);
   --at-shadow:  rgba(0,0,0,0.4);
-  --at-muted:   #1a1a1a;
+  --at-muted:   color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, #1a1a1a);
 }
 .at-card {
   border: 1px solid var(--at-border);
