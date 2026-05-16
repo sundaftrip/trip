@@ -479,51 +479,92 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     </section>
   );
 
-  /* ── ATELIER — editorial luxury ── */
-  if (theme === "atelier") return (
-    <section className="min-h-screen flex flex-col justify-center relative px-4 sm:px-8 pt-32 pb-20"
-      style={{ background: "var(--atl-bg)" }}>
-      {/* hairline frame */}
-      <div className="atl-frame absolute inset-4 sm:inset-7 pointer-events-none" />
+  /* ── ATELIER — sharp editorial, asimetris ── */
+  if (theme === "atelier") {
+    const atlWords = t("hero_title", "Wujudkan Perjalanan Impian Anda").split(/\s+/).filter(Boolean);
+    const atlYear = new Date().getFullYear();
+    return (
+      <section className="min-h-screen relative overflow-hidden" style={{ background: "var(--atl-bg)" }}>
+        {/* outer frame 90° */}
+        <div className="absolute inset-3 sm:inset-5 border pointer-events-none z-20" style={{ borderColor: "var(--atl-line)" }} />
 
-      <div className="max-w-3xl mx-auto w-full text-center relative z-10">
-        <p className="atl-eyebrow mb-7 hero-fade-up">{eyebrow}</p>
-
-        <div className="flex items-center justify-center gap-4 mb-9 hero-fade-up">
-          <span className="h-px w-14" style={{ background: "var(--atl-line-strong)" }} />
-          <span className="atl-index">{new Date().getFullYear()}</span>
-          <span className="h-px w-14" style={{ background: "var(--atl-line-strong)" }} />
+        {/* vertical eyebrow — tepi kiri */}
+        <div className="hidden md:flex absolute left-3 sm:left-5 top-0 bottom-0 w-12 sm:w-14 items-center justify-center z-20 pointer-events-none">
+          <span className="atl-eyebrow atl-emerge" style={{ writingMode: "vertical-rl", animationDelay: ".25s" }}>{eyebrow}</span>
         </div>
 
-        <h1 className="atl-serif text-[clamp(2.6rem,7vw,5.4rem)] leading-[1.06] tracking-tight mb-8 hero-fade-up"
-          style={{ color: "var(--atl-ink)", fontWeight: 500 }}>
-          <TitleWords />
-        </h1>
+        <div className="relative z-10 max-w-[1400px] mx-auto grid lg:grid-cols-[1.08fr_0.92fr] min-h-screen">
+          {/* KIRI — tipografi */}
+          <div className="flex flex-col justify-center px-7 sm:px-16 lg:pl-24 lg:pr-16 py-28 lg:py-24 relative">
+            <span className="hidden lg:block absolute right-0 top-[12%] bottom-[12%] w-px atl-drawy"
+              style={{ background: "var(--atl-line)", animationDelay: ".2s" }} />
 
-        <p className="text-base sm:text-lg max-w-xl mx-auto mb-11 leading-relaxed hero-fade-up"
-          style={{ color: "var(--atl-sub)" }}>
-          {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-        </p>
+            <div className="flex items-center gap-5 mb-9">
+              <span className="atl-num text-xl atl-emerge" style={{ animationDelay: ".15s" }}>Nº {atlYear}</span>
+              <span className="h-px flex-1 atl-drawx" style={{ background: "var(--atl-line-strong)", animationDelay: ".35s" }} />
+              <span className="atl-eyebrow atl-emerge" style={{ animationDelay: ".15s", color: "var(--atl-sub)" }}>Édition</span>
+            </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 hero-fade-up">
-          <Link href="/tours" className="atl-btn-solid">
-            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-          </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-ghost">
-              WhatsApp
-            </a>
-          )}
+            <h1 className="atl-serif text-[clamp(2.7rem,6.4vw,5.2rem)] leading-[1.03] tracking-[-0.01em] mb-9"
+              style={{ color: "var(--atl-ink)", fontWeight: 500 }}>
+              {atlWords.map((w, i) => (
+                <span key={i} className="block atl-wipe" style={{ animationDelay: `${0.2 + i * 0.12}s` }}>{w}</span>
+              ))}
+            </h1>
+
+            <span className="block h-[2px] w-24 mb-8 atl-drawx" style={{ background: "var(--atl-accent)", animationDelay: ".9s" }} />
+
+            <p className="text-base sm:text-lg max-w-md mb-11 leading-relaxed atl-emerge"
+              style={{ color: "var(--atl-sub)", animationDelay: ".95s" }}>
+              {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+            </p>
+
+            <div className="flex flex-wrap items-center atl-emerge" style={{ animationDelay: "1.05s" }}>
+              <Link href="/tours" className="atl-btn-solid">
+                {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={14} />
+              </Link>
+              {waNumber && (
+                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-ghost sm:border-l-0">
+                  WhatsApp
+                </a>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-12 atl-emerge" style={{ animationDelay: "1.2s" }}>
+              <span className="atl-tag">Destinasi Pilihan</span>
+              <span className="atl-tag">Paket Lengkap</span>
+              <span className="atl-tag">Terpercaya</span>
+            </div>
+          </div>
+
+          {/* KANAN — plat berbingkai */}
+          <div className="relative hidden lg:flex items-center justify-center px-16 py-24">
+            <div className="atl-rise-mask w-full max-w-[400px] aspect-[3/4]">
+              <div className="atl-rise relative w-full h-full" style={{ animationDelay: ".5s" }}>
+                <div className="absolute inset-0 border" style={{ borderColor: "var(--atl-line-strong)", background: "var(--atl-surface)" }}>
+                  {featuredImage ? (
+                    <Image src={featuredImage} alt="" fill className="object-cover" priority sizes="400px" />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="atl-num leading-none" style={{ fontSize: "9rem", opacity: 0.13 }}>{String(atlYear).slice(2)}</span>
+                      <span className="atl-eyebrow absolute bottom-8" style={{ color: "var(--atl-sub)" }}>Collection</span>
+                    </div>
+                  )}
+                </div>
+                <div className="absolute -bottom-4 -left-4 w-20 h-20 border-2 pointer-events-none" style={{ borderColor: "var(--atl-accent)" }} />
+                <span className="atl-num absolute -top-px left-0 px-4 py-2 text-sm"
+                  style={{ background: "var(--atl-ink)", color: "var(--atl-bg)" }}>01 / {String(atlYear).slice(2)}</span>
+              </div>
+            </div>
+            <span className="atl-eyebrow atl-emerge absolute right-8 top-1/2 -translate-y-1/2"
+              style={{ writingMode: "vertical-rl", color: "var(--atl-sub)", animationDelay: "1.2s" }}>
+              {companyName || "Atelier"}
+            </span>
+          </div>
         </div>
-
-        <div className="flex items-center justify-center gap-6 mt-14 hero-fade-up">
-          <span className="atl-pill">{t("hero_subtitle", "Destinasi Pilihan")}</span>
-          <span className="atl-pill">Paket Lengkap</span>
-          <span className="atl-pill">Terpercaya</span>
-        </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  }
 
   /* ── CLASSIC ── */
   return (

@@ -298,12 +298,18 @@ export default function SettingsPage() {
                     "bg-gray-950"
                   }`}>
                     {key === "atelier" && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1" style={{ background: "#fcfcfb" }}>
-                        <div className="absolute inset-1.5 border" style={{ borderColor: "rgba(0,0,0,0.14)" }} />
-                        <div className="h-[3px] w-6 rounded-full" style={{ background: currentAccent }} />
-                        <div className="h-2.5 w-16 rounded" style={{ background: "#161616" }} />
-                        <div className="h-1 w-10 rounded bg-gray-300" />
-                        <div className="h-2.5 w-9 rounded-sm mt-0.5" style={{ background: currentAccent }} />
+                      <div className="absolute inset-0 flex" style={{ background: "#f2f1ed" }}>
+                        <div className="absolute inset-1 border" style={{ borderColor: "rgba(0,0,0,0.22)" }} />
+                        <div className="w-3/5 p-2.5 flex flex-col justify-center gap-1">
+                          <div className="h-1 w-3" style={{ background: currentAccent }} />
+                          <div className="h-2 w-12" style={{ background: "#141414" }} />
+                          <div className="h-2 w-9" style={{ background: "#141414" }} />
+                          <div className="h-[3px] w-5 mt-0.5" style={{ background: currentAccent }} />
+                          <div className="h-2 w-7 mt-0.5" style={{ background: "#141414" }} />
+                        </div>
+                        <div className="w-2/5 flex items-center justify-center" style={{ borderLeft: "1px solid rgba(0,0,0,0.22)" }}>
+                          <div className="w-8 h-12 border" style={{ borderColor: "rgba(0,0,0,0.5)", background: "#fff" }} />
+                        </div>
                       </div>
                     )}
                     {key === "classic" && (
