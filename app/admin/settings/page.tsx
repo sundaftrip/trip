@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PLAN, isFeatureEnabled } from "@/lib/plan";
+import { isFeatureEnabledFor, type Plan } from "@/lib/plan";
 import { COLOR_SCHEMES } from "@/lib/color-schemes";
 import { Lock } from "lucide-react";
 
@@ -54,13 +54,22 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [activeScheme, setActiveScheme] = useState<string>("");
+  const [plan, setPlan] = useState<Plan>("basic");
 
   useEffect(() => {
     fetch("/api/settings").then((r) => r.json()).then((d) => {
       setData(d);
       setActiveScheme(d["color_scheme"] ?? "forest");
     });
+    // Plan diresolusi dari MASTER lewat /api/plan
+    fetch("/api/plan").then((r) => r.json()).then((d) => {
+      if (d?.plan) setPlan(d.plan);
+    }).catch(() => {});
   }, []);
+
+  // Helper lokal: cek fitur berdasarkan plan yang sudah diresolusi
+  const isFeatureEnabled = (feature: string) => isFeatureEnabledFor(feature, plan);
+  const isPro = plan === "pro";
 
   async function handleSave() {
     setSaving(true);
@@ -258,11 +267,11 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between mb-1">
           <h2 className="font-semibold text-gray-900 dark:text-white">Tema Layout</h2>
           <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
-            PLAN === "pro"
+            isPro
               ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
               : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
           }`}>
-            {PLAN === "pro" ? "✦ PRO" : "BASIC"}
+            {isPro ? "✦ PRO" : "BASIC"}
           </span>
         </div>
         <p className="text-xs text-gray-500 mb-5">Pilih tampilan layout halaman utama</p>
@@ -419,7 +428,7 @@ export default function SettingsPage() {
           })}
         </div>
 
-        {PLAN !== "pro" && (
+        {!isPro && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
               Tema Catalog, Bold, Tropical, Kawaii, Pixel Art, Globe & Atlas Map tersedia di paket Pro. Hubungi admin untuk upgrade.
