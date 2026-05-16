@@ -310,17 +310,15 @@ export default function SettingsPage() {
                       </div>
                     )}
                     {key === "atelier" && (
-                      <div className="absolute inset-0 flex" style={{ background: "#f2f1ed" }}>
-                        <div className="absolute inset-1 border" style={{ borderColor: "rgba(0,0,0,0.22)" }} />
-                        <div className="w-3/5 p-2.5 flex flex-col justify-center gap-1">
-                          <div className="h-1 w-3" style={{ background: currentAccent }} />
-                          <div className="h-2 w-12" style={{ background: "#141414" }} />
-                          <div className="h-2 w-9" style={{ background: "#141414" }} />
-                          <div className="h-[3px] w-5 mt-0.5" style={{ background: currentAccent }} />
-                          <div className="h-2 w-7 mt-0.5" style={{ background: "#141414" }} />
-                        </div>
-                        <div className="w-2/5 flex items-center justify-center" style={{ borderLeft: "1px solid rgba(0,0,0,0.22)" }}>
-                          <div className="w-8 h-12 border" style={{ borderColor: "rgba(0,0,0,0.5)", background: "#fff" }} />
+                      <div className="absolute inset-0 overflow-hidden" style={{ background: "#f2f1ed" }}>
+                        <div className="absolute top-0 right-0 h-full w-3/5"
+                          style={{ background: "#141414", clipPath: "polygon(30% 0, 100% 0, 100% 100%, 0 100%)" }} />
+                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-12"
+                          style={{ background: currentAccent, clipPath: "polygon(20% 0, 100% 0, 80% 100%, 0 100%)" }} />
+                        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 flex flex-col gap-1">
+                          <div className="h-2 w-10" style={{ background: "#141414" }} />
+                          <div className="h-2 w-7" style={{ background: "#141414" }} />
+                          <div className="h-1.5 w-5 mt-0.5" style={{ background: currentAccent, clipPath: "polygon(0 0,100% 0,85% 100%,0 100%)" }} />
                         </div>
                       </div>
                     )}

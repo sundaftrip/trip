@@ -771,34 +771,43 @@ body {
   transition: color .3s ease, border-color .3s ease;
 }
 .atl-btn-ghost:hover { color: var(--atl-accent); border-color: var(--atl-accent); }
+/* kartu "fracture" — sudut terpotong diagonal, hard-offset drop-shadow */
 .atl-card {
-  background: var(--atl-surface); border: 1px solid var(--atl-line); border-radius: 0;
-  position: relative;
-  transition: transform .5s cubic-bezier(.76,0,.24,1), box-shadow .5s cubic-bezier(.76,0,.24,1);
+  background: var(--atl-surface);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%);
+  filter: drop-shadow(3px 3px 0 var(--atl-line-strong));
+  transition: transform .45s cubic-bezier(.76,0,.24,1), filter .45s cubic-bezier(.76,0,.24,1);
 }
-.atl-card:hover { transform: translateY(-7px); box-shadow: -9px 13px 0 -1px var(--atl-accent), 0 22px 46px var(--atl-shadow); }
-.atl-card::before, .atl-card::after {
-  content: ""; position: absolute; width: 11px; height: 11px;
-  border-color: var(--atl-accent); opacity: 0; transition: opacity .4s ease; pointer-events: none; z-index: 2;
+.atl-card:hover {
+  transform: translate(-3px, -8px);
+  filter: drop-shadow(-12px 16px 0 var(--atl-accent));
 }
-.atl-card::before { top: 7px; left: 7px; border-top: 1.5px solid; border-left: 1.5px solid; }
-.atl-card::after  { bottom: 7px; right: 7px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
-.atl-card:hover::before, .atl-card:hover::after { opacity: 1; }
+/* potongan sudut sebagai pseudo blok aksen */
+.atl-notch { position: relative; }
+.atl-notch::after {
+  content: ""; position: absolute; bottom: 0; right: 0;
+  width: 24px; height: 24px; background: var(--atl-accent);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%); pointer-events: none; z-index: 3;
+}
 .atl-logo { height: 42px; width: auto; }
 .dark .atl-logo { filter: brightness(0) invert(1); }
 
-/* ── Atelier motion — wipe / draw / rise ── */
+/* ── Atelier motion — wipe / draw / rise / slide ── */
 @keyframes atl-wipe   { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes atl-drawx  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes atl-drawy  { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes atl-rise   { from { transform: translateY(108%); } to { transform: translateY(0); } }
 @keyframes atl-emerge { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes atl-slide  { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes atl-spin-in{ from { opacity: 0; transform: rotate(-25deg) scale(.6); } to { opacity: 1; transform: rotate(-12deg) scale(1); } }
 .atl-wipe   { animation: atl-wipe 1.05s cubic-bezier(.76,0,.24,1) both; }
 .atl-drawx  { transform-origin: left; animation: atl-drawx .95s cubic-bezier(.76,0,.24,1) both; }
 .atl-drawy  { transform-origin: top;  animation: atl-drawy 1.15s cubic-bezier(.76,0,.24,1) both; }
 .atl-rise-mask { overflow: hidden; }
 .atl-rise   { animation: atl-rise 1.05s cubic-bezier(.76,0,.24,1) both; }
 .atl-emerge { animation: atl-emerge .85s ease both; }
+.atl-slide  { animation: atl-slide 1s cubic-bezier(.76,0,.24,1) both; }
+.atl-spin-in{ animation: atl-spin-in 1s cubic-bezier(.34,1.3,.64,1) both; }
 
 /* ─── JOJO THEME — sticker book, chunky cute ─── */
 :root {

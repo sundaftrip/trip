@@ -520,47 +520,66 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     </section>
   );
 
-  /* ── ATELIER — sharp editorial, asimetris ── */
+  /* ── ATELIER — FRACTURE, brutalist-luxe angular ── */
   if (theme === "atelier") {
     const atlWords = t("hero_title", "Wujudkan Perjalanan Impian Anda").split(/\s+/).filter(Boolean);
     const atlYear = new Date().getFullYear();
+    const atlYY = String(atlYear).slice(2);
     return (
-      <section className="min-h-screen relative overflow-hidden" style={{ background: "var(--atl-bg)" }}>
-        {/* outer frame 90° */}
-        <div className="absolute inset-3 sm:inset-5 border pointer-events-none z-20" style={{ borderColor: "var(--atl-line)" }} />
+      <section className="min-h-screen relative overflow-hidden flex items-center" style={{ background: "var(--atl-bg)" }}>
+        {/* WEDGE diagonal gelap — tepi kanan */}
+        <div className="hidden lg:block absolute top-0 right-0 h-full w-[46%] atl-slide"
+          style={{ background: "var(--atl-ink)", clipPath: "polygon(30% 0, 100% 0, 100% 100%, 0 100%)" }} aria-hidden />
 
-        {/* vertical eyebrow — tepi kiri */}
-        <div className="hidden md:flex absolute left-3 sm:left-5 top-0 bottom-0 w-12 sm:w-14 items-center justify-center z-20 pointer-events-none">
-          <span className="atl-eyebrow atl-emerge" style={{ writingMode: "vertical-rl", animationDelay: ".25s" }}>{eyebrow}</span>
+        {/* numeral raksasa miring — latar */}
+        <span className="atl-num atl-spin-in absolute select-none pointer-events-none leading-none hidden md:block"
+          style={{ right: "4%", top: "9%", fontSize: "24vw", color: "var(--atl-accent)", opacity: 0.18 }} aria-hidden>{atlYY}</span>
+
+        {/* PLAT gambar — parallelogram */}
+        <div className="hidden lg:block absolute right-[8%] top-1/2 -translate-y-1/2 w-[30%] z-10">
+          <div className="absolute -left-6 -bottom-6 w-full h-full atl-emerge"
+            style={{ background: "var(--atl-accent)", clipPath: "polygon(17% 0, 100% 0, 83% 100%, 0 100%)", animationDelay: ".35s" }} aria-hidden />
+          <div className="atl-rise-mask relative aspect-[4/5]">
+            <div className="atl-rise relative w-full h-full" style={{ animationDelay: ".55s", clipPath: "polygon(17% 0, 100% 0, 83% 100%, 0 100%)" }}>
+              {featuredImage ? (
+                <Image src={featuredImage} alt="" fill className="object-cover" priority sizes="460px" />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center" style={{ background: "var(--atl-surface)" }}>
+                  <span className="atl-num" style={{ fontSize: "7rem", color: "var(--atl-accent)", opacity: 0.4 }}>{atlYY}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <span className="atl-num absolute -top-5 -left-5 px-4 py-2 text-sm atl-emerge"
+            style={{ background: "var(--atl-bg)", color: "var(--atl-ink)", border: "2px solid var(--atl-ink)", animationDelay: ".95s" }}>
+            Nº {atlYear}
+          </span>
         </div>
 
-        <div className="relative z-10 max-w-[1400px] mx-auto grid lg:grid-cols-[1.08fr_0.92fr] min-h-screen">
-          {/* KIRI — tipografi */}
-          <div className="flex flex-col justify-center px-7 sm:px-16 lg:pl-24 lg:pr-16 py-28 lg:py-24 relative">
-            <span className="hidden lg:block absolute right-0 top-[12%] bottom-[12%] w-px atl-drawy"
-              style={{ background: "var(--atl-line)", animationDelay: ".2s" }} />
-
-            <div className="flex items-center gap-5 mb-9">
-              <span className="atl-num text-xl atl-emerge" style={{ animationDelay: ".15s" }}>Nº {atlYear}</span>
-              <span className="h-px flex-1 atl-drawx" style={{ background: "var(--atl-line-strong)", animationDelay: ".35s" }} />
-              <span className="atl-eyebrow atl-emerge" style={{ animationDelay: ".15s", color: "var(--atl-sub)" }}>Édition</span>
+        {/* KONTEN — kiri, area paper */}
+        <div className="relative z-20 max-w-7xl mx-auto w-full px-7 sm:px-12 lg:px-20">
+          <div className="max-w-md">
+            <div className="inline-flex items-stretch mb-9 atl-emerge" style={{ animationDelay: ".15s" }}>
+              <span className="atl-eyebrow flex items-center px-3.5 py-2.5" style={{ background: "var(--atl-ink)", color: "var(--atl-bg)" }}>EST</span>
+              <span className="atl-eyebrow flex items-center px-3.5 py-2.5" style={{ border: "2px solid var(--atl-ink)", color: "var(--atl-ink)" }}>{eyebrow}</span>
             </div>
 
-            <h1 className="atl-serif text-[clamp(2.7rem,6.4vw,5.2rem)] leading-[1.03] tracking-[-0.01em] mb-9"
-              style={{ color: "var(--atl-ink)", fontWeight: 500 }}>
+            <h1 className="atl-serif text-[clamp(2.6rem,5.6vw,4.6rem)] leading-[1.0] tracking-[-0.015em] mb-8"
+              style={{ color: "var(--atl-ink)", fontWeight: 600 }}>
               {atlWords.map((w, i) => (
-                <span key={i} className="block atl-wipe" style={{ animationDelay: `${0.2 + i * 0.12}s` }}>{w}</span>
+                <span key={i} className="block atl-wipe" style={{ animationDelay: `${0.25 + i * 0.13}s` }}>{w}</span>
               ))}
             </h1>
 
-            <span className="block h-[2px] w-24 mb-8 atl-drawx" style={{ background: "var(--atl-accent)", animationDelay: ".9s" }} />
+            <div className="h-2 w-28 mb-8 atl-drawx"
+              style={{ background: "var(--atl-accent)", clipPath: "polygon(0 0, 100% 0, 86% 100%, 0 100%)", animationDelay: ".95s" }} />
 
-            <p className="text-base sm:text-lg max-w-md mb-11 leading-relaxed atl-emerge"
-              style={{ color: "var(--atl-sub)", animationDelay: ".95s" }}>
+            <p className="text-base sm:text-lg mb-10 leading-relaxed atl-emerge"
+              style={{ color: "var(--atl-sub)", animationDelay: "1s" }}>
               {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
             </p>
 
-            <div className="flex flex-wrap items-center atl-emerge" style={{ animationDelay: "1.05s" }}>
+            <div className="flex flex-wrap items-center atl-emerge" style={{ animationDelay: "1.1s" }}>
               <Link href="/tours" className="atl-btn-solid">
                 {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={14} />
               </Link>
@@ -571,36 +590,11 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               )}
             </div>
 
-            <div className="flex flex-wrap gap-3 mt-12 atl-emerge" style={{ animationDelay: "1.2s" }}>
+            <div className="flex flex-wrap mt-11 atl-emerge" style={{ animationDelay: "1.2s" }}>
               <span className="atl-tag">Destinasi Pilihan</span>
-              <span className="atl-tag">Paket Lengkap</span>
-              <span className="atl-tag">Terpercaya</span>
+              <span className="atl-tag" style={{ marginLeft: -2 }}>Paket Lengkap</span>
+              <span className="atl-tag" style={{ marginLeft: -2 }}>Terpercaya</span>
             </div>
-          </div>
-
-          {/* KANAN — plat berbingkai */}
-          <div className="relative hidden lg:flex items-center justify-center px-16 py-24">
-            <div className="atl-rise-mask w-full max-w-[400px] aspect-[3/4]">
-              <div className="atl-rise relative w-full h-full" style={{ animationDelay: ".5s" }}>
-                <div className="absolute inset-0 border" style={{ borderColor: "var(--atl-line-strong)", background: "var(--atl-surface)" }}>
-                  {featuredImage ? (
-                    <Image src={featuredImage} alt="" fill className="object-cover" priority sizes="400px" />
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="atl-num leading-none" style={{ fontSize: "9rem", opacity: 0.13 }}>{String(atlYear).slice(2)}</span>
-                      <span className="atl-eyebrow absolute bottom-8" style={{ color: "var(--atl-sub)" }}>Collection</span>
-                    </div>
-                  )}
-                </div>
-                <div className="absolute -bottom-4 -left-4 w-20 h-20 border-2 pointer-events-none" style={{ borderColor: "var(--atl-accent)" }} />
-                <span className="atl-num absolute -top-px left-0 px-4 py-2 text-sm"
-                  style={{ background: "var(--atl-ink)", color: "var(--atl-bg)" }}>01 / {String(atlYear).slice(2)}</span>
-              </div>
-            </div>
-            <span className="atl-eyebrow atl-emerge absolute right-8 top-1/2 -translate-y-1/2"
-              style={{ writingMode: "vertical-rl", color: "var(--atl-sub)", animationDelay: "1.2s" }}>
-              {companyName || "Atelier"}
-            </span>
           </div>
         </div>
       </section>
