@@ -493,7 +493,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   /* ── JOJO — sticker book ── */
   if (theme === "jojo") return (
     <section className="min-h-screen flex flex-col justify-center relative overflow-hidden px-4 pt-32 pb-20"
-      style={{ background: "var(--jo-bg)" }}>
+      style={{ background: "transparent" }}>
       <JojoStickerField />
       <div className="max-w-4xl mx-auto w-full text-center relative z-10 jo-font">
         <div className="jo-pop inline-block mb-8" style={{ animationDelay: ".05s" }}>

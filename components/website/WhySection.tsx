@@ -256,7 +256,7 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   if (theme === "jojo") {
     const joShapes: JojoShape[] = ["star", "heart", "cloud", "sparkle"];
     return (
-    <section className="py-24 jo-font" style={{ background: "var(--jo-bg)" }}>
+    <section className="py-24 jo-font" style={{ background: "transparent" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
           <div className="text-center mb-14">

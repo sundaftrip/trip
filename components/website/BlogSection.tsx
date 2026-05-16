@@ -296,7 +296,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
 
   /* ── CLASSIC / VIBRANT / BOLD ── */
   if (theme === "jojo") return (
-    <section className="py-24 jo-font" style={{ background: "var(--jo-cream)" }}>
+    <section className="py-24 jo-font" style={{ background: "transparent" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
           <div className="text-center mb-14">
