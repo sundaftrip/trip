@@ -49,26 +49,20 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
     </section>
   );
 
-  /* ── ATELIER layout — header ber-numeral, asimetris ── */
+  /* ── ATELIER layout — clean editorial ── */
   if (theme === "atelier") return (
-    <section className="py-28" style={{ background: "var(--atl-bg)" }}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+    <section className="py-24" style={{ background: "var(--atl-bg)" }}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
         <AnimateIn>
-          <div className="flex items-end gap-5 sm:gap-7 mb-8">
-            <span className="atl-num flex items-center justify-center shrink-0"
-              style={{ background: "var(--atl-ink)", color: "var(--atl-bg)", fontSize: "clamp(1.9rem,4.4vw,3.2rem)",
-                       width: "clamp(62px,8.5vw,100px)", height: "clamp(62px,8.5vw,100px)", transform: "skewX(-9deg)" }}>
-              <span style={{ transform: "skewX(9deg)" }}>01</span>
-            </span>
-            <div className="flex-1 pb-1">
-              <p className="atl-eyebrow mb-2.5">Koleksi Perjalanan</p>
-              <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>Tour Pilihan</h2>
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+            <div>
+              <p className="atl-eyebrow mb-3">Paket Tersedia</p>
+              <h2 className="text-3xl lg:text-[2.6rem] font-semibold tracking-tight" style={{ color: "var(--atl-ink)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="atl-btn-ghost hidden sm:inline-flex !py-3 !px-6">Semua <ArrowRight size={13} /></Link>
+            <Link href="/tours" className="atl-btn-ghost !py-3 !px-6 !text-[13px]">Lihat Semua <ArrowRight size={14} /></Link>
           </div>
-          <div className="h-1.5 w-full mb-14" style={{ background: "var(--atl-line-strong)", clipPath: "polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%)" }} />
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="atelier" />
