@@ -31,12 +31,18 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName} — ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
 
-  /* Render tiap kata sebagai block — agar akronim vertikal (mis. S-U-N-D-A-F) terbaca */
+  /* Render tiap kata sebagai block — huruf pertama disorot warna aksen
+     agar akronim vertikal (mis. S-U-N-D-A-F) terbaca jelas */
   const TitleWords = ({ extra }: { extra?: React.ReactNode }) => (
     <>
       {t("hero_title", "Wujudkan Perjalanan Impian Anda")
         .split(/\s+/).filter(Boolean)
-        .map((word, i) => <span key={i} className="block">{word}</span>)}
+        .map((word, i) => (
+          <span key={i} className="block">
+            <span style={{ color: "var(--site-accent, #2d6a4f)" }}>{word.charAt(0)}</span>
+            {word.slice(1)}
+          </span>
+        ))}
       {extra}
     </>
   );
