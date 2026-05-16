@@ -70,7 +70,9 @@ export default async function ToursPage({
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
   const isAtlas    = theme === "atlas";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas;
+  const isAtelier  = theme === "atelier";
+  const isJojo     = theme === "jojo";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo;
 
   const pageBg = isKawaii   ? "var(--kw-bg)"
                : isTropical ? "var(--tr-bg)"
@@ -78,6 +80,8 @@ export default async function ToursPage({
                : isGlobe    ? "var(--gl-bg)"
                : isMap      ? "var(--mp-bg)"
                : isAtlas    ? "var(--at-bg)"
+               : isAtelier  ? "var(--atl-bg)"
+               : isJojo     ? "var(--jo-bg)"
                : undefined;
 
   const pageGrid = isPixel ? {
@@ -97,6 +101,8 @@ export default async function ToursPage({
                   : isGlobe    ? "var(--gl-text)"
                   : isMap      ? "var(--mp-text)"
                   : isAtlas    ? "var(--at-text)"
+                  : isAtelier  ? "var(--atl-ink)"
+                  : isJojo     ? "var(--jo-ink)"
                   : undefined;
 
   const subColor = isKawaii   ? "var(--kw-subtext)"
@@ -105,6 +111,8 @@ export default async function ToursPage({
                  : isGlobe    ? "var(--gl-subtext)"
                  : isMap      ? "var(--mp-subtext)"
                  : isAtlas    ? "var(--at-subtext)"
+                 : isAtelier  ? "var(--atl-sub)"
+                 : isJojo     ? "var(--jo-sub)"
                  : undefined;
 
   /* pill builders for filter chips */
@@ -115,6 +123,8 @@ export default async function ToursPage({
     if (isGlobe)    return { className: "gl-pill font-black", style: { background: "var(--gl-border)", color: "#fff", borderColor: "transparent" } };
     if (isMap)      return { className: "mp-pill font-black", style: { background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" } };
     if (isAtlas)    return { className: "at-pill font-semibold", style: { background: "var(--at-text)", color: "var(--at-bg)" } };
+    if (isAtelier)  return { className: "atl-tag", style: { background: "var(--atl-ink)", color: "var(--atl-bg)", borderColor: "var(--atl-ink)" } };
+    if (isJojo)     return { className: "jo-tag !text-[12px] !py-1.5 !px-3.5", style: {} };
     return { className: "px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white", style: {} };
   }
   function pillInactive() {
@@ -124,6 +134,8 @@ export default async function ToursPage({
     if (isGlobe)    return { className: "gl-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--gl-card)", color: "var(--gl-text)" } };
     if (isMap)      return { className: "mp-pill font-black hover:opacity-80 transition-opacity", style: { background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" } };
     if (isAtlas)    return { className: "at-pill hover:opacity-80 transition-opacity", style: { color: "var(--at-text)" } };
+    if (isAtelier)  return { className: "atl-tag hover:opacity-70 transition-opacity", style: {} };
+    if (isJojo)     return { className: "jo-chip hover:opacity-80 transition-opacity", style: {} };
     return { className: "px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-blue-400", style: {} };
   }
 
@@ -143,7 +155,10 @@ export default async function ToursPage({
               {isGlobe    && <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>🌍 Semua Paket</span>}
               {isMap      && <span className="mp-pill mb-3 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Semua Paket</span>}
               {isAtlas    && <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Semua Paket</span>}
-              <h1 className={`text-4xl font-black mt-3 mb-2 ${isPixel ? "font-mono" : ""}`} style={{ color: headColor, fontFamily: isPixel ? "monospace" : undefined }}>
+              {isAtelier  && <span className="atl-eyebrow mb-3 inline-flex">Koleksi — Semua Paket</span>}
+              {isJojo     && <span className="jo-chip mb-3 inline-flex">Semua Paket</span>}
+              <h1 className={`text-4xl font-black mt-3 mb-2 ${isPixel ? "font-mono" : ""} ${isAtelier ? "atl-serif" : ""} ${isJojo ? "jo-font" : ""}`}
+                style={{ color: headColor, fontFamily: isPixel ? "monospace" : undefined, fontWeight: isAtelier ? 600 : undefined }}>
                 {isPixel ? "PAKET TOUR" : "Paket Tour"}
               </h1>
               <p className="text-sm" style={{ color: subColor, fontFamily: isPixel ? "monospace" : undefined }}>

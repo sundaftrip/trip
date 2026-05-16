@@ -872,6 +872,24 @@ body {
 .jo-float { animation: jo-floaty 5s ease-in-out infinite; }
 .jo-bob   { animation: jo-bob 2.6s ease-in-out infinite; }
 
+/* alias prefix untuk halaman dalam (sistem pfx: ${pfx}-pill / -btn / -card) */
+.atl-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--atl-line); border-radius: 0;
+  padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+}
+.atl-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--atl-line-strong); border-radius: 0;
+  padding: 12px 26px; font-weight: 600; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; cursor: pointer;
+}
+.jo-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 2px solid var(--jo-line); border-radius: 999px;
+  padding: 7px 15px; font-size: 12px; font-weight: 700;
+}
+
 /* ── Aurora text animation ──────────────────────────────────────────────── */
 @keyframes aurora-shift {
   0%   { background-position: 0%   60%; }
