@@ -143,6 +143,23 @@ body {
 .hero-initial { color: var(--site-accent, #2d6a4f); }
 .dark .hero-initial { color: color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #ffffff); }
 
+/* Animasi SUNDAF — tiap huruf depan jatuh menumpuk ke bawah, lalu kembali.
+   --n = indeks kata (0=S .. 5=F). Huruf i jatuh (5-i) baris ke bawah
+   sehingga menumpuk rapat di dekat huruf F. */
+@keyframes sundaf-fall {
+  0%, 14%   { transform: translateY(0); }
+  40%, 60%  { transform: translateY(calc((5 - var(--n, 0)) * 0.8em)); }
+  88%, 100% { transform: translateY(0); }
+}
+.sundaf-fall {
+  display: inline-block;
+  animation: sundaf-fall 5s cubic-bezier(0.5,0,0.35,1) 1 both;
+  animation-delay: calc(0.5s + var(--n, 0) * 0.16s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sundaf-fall { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-fade-up, .hero-fade-left { animation: none; }
 }
