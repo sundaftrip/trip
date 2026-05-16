@@ -201,33 +201,36 @@ export default function AdminAboutPage() {
       <Section title="Destinasi yang Kami Spesialisasi" hint="Daftar destinasi + sub-lokasi (bisa tambah/hapus)">
         <div className="space-y-2">
           {dests.map((d, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <GripVertical size={14} className="text-gray-300 dark:text-gray-600 shrink-0" />
-              <input
-                type="text"
-                value={d.label}
-                placeholder="Nama destinasi"
-                onChange={e => {
-                  const arr = [...dests];
-                  arr[i] = { ...arr[i], label: e.target.value };
-                  setDests(arr);
-                }}
-                className={`${fieldCls} w-36`}
-              />
-              <input
-                type="text"
-                value={d.sub}
-                placeholder="Sub-lokasi (pisah ·)"
-                onChange={e => {
-                  const arr = [...dests];
-                  arr[i] = { ...arr[i], sub: e.target.value };
-                  setDests(arr);
-                }}
-                className={`${fieldCls} flex-1`}
-              />
+            <div key={i} className="flex items-start gap-2">
+              <GripVertical size={14} className="text-gray-300 dark:text-gray-600 shrink-0 mt-3" />
+              <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  value={d.label}
+                  placeholder="Nama destinasi"
+                  onChange={e => {
+                    const arr = [...dests];
+                    arr[i] = { ...arr[i], label: e.target.value };
+                    setDests(arr);
+                  }}
+                  className={`${fieldCls} sm:w-48`}
+                />
+                <input
+                  type="text"
+                  value={d.sub}
+                  placeholder="Sub-lokasi (pisah ·)"
+                  onChange={e => {
+                    const arr = [...dests];
+                    arr[i] = { ...arr[i], sub: e.target.value };
+                    setDests(arr);
+                  }}
+                  className={`${fieldCls} flex-1`}
+                />
+              </div>
               <button
                 onClick={() => setDests(dests.filter((_, j) => j !== i))}
-                className="p-1.5 rounded text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition shrink-0">
+                title="Hapus destinasi"
+                className="p-1.5 mt-1.5 rounded text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition shrink-0">
                 <Trash2 size={13} />
               </button>
             </div>
