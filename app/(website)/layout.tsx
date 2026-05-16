@@ -1,5 +1,6 @@
 import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
+import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -66,20 +67,40 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     ` --site-bg: color-mix(in srgb, ${accent} 5%, #ffffff);` +
     ` --site-bg-soft: color-mix(in srgb, ${accent} 9%, #ffffff);`;
 
+  const styleBlock = (
+    <style>{`
+      :root { ${cssVars} }
+      .dark {
+        --site-hero: #ffffff;
+        --site-heading: #f9fafb;
+        --site-tour-title: #f3f4f6;
+        --site-blog-title: #f3f4f6;
+        --site-eyebrow: #9ca3af;
+        --site-bg: color-mix(in srgb, var(--site-accent) 14%, #060606);
+        --site-bg-soft: color-mix(in srgb, var(--site-accent) 20%, #0a0a0a);
+      }
+    `}</style>
+  );
+
+  /* ── CONSOLE — layout sidebar ala dashboard ── */
+  if (theme === "console") {
+    return (
+      <>
+        {styleBlock}
+        <div className="flex flex-1 min-h-screen" style={{ background: "var(--at-bg)" }}>
+          <ConsoleSidebar logo={logo} />
+          <div className="flex-1 min-w-0 flex flex-col">
+            <main className="cns-main flex-1 pt-14 lg:pt-0" data-theme="console">{children}</main>
+            <Footer theme="atlas" />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      <style>{`
-        :root { ${cssVars} }
-        .dark {
-          --site-hero: #ffffff;
-          --site-heading: #f9fafb;
-          --site-tour-title: #f3f4f6;
-          --site-blog-title: #f3f4f6;
-          --site-eyebrow: #9ca3af;
-          --site-bg: color-mix(in srgb, var(--site-accent) 14%, #060606);
-          --site-bg-soft: color-mix(in srgb, var(--site-accent) 20%, #0a0a0a);
-        }
-      `}</style>
+      {styleBlock}
       <Navbar logo={logo} theme={theme} />
       <main className="flex-1" data-theme={theme}>{children}</main>
       <Footer theme={theme} />

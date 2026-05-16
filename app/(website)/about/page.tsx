@@ -44,7 +44,8 @@ async function getData() {
       prisma.tour.count({ where: { status: { not: "DRAFT" } } }),
       prisma.blog.count({ where: { published: true } }),
     ]);
-    const theme = themeRow?.value ?? "classic";
+    const rawTheme = themeRow?.value ?? "classic";
+    const theme = rawTheme === "console" ? "atlas" : rawTheme;
     const company: Record<string, string> = {};
     companyRows.forEach((r) => { company[r.key] = r.value; });
     const about: Record<string, string> = {};

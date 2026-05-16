@@ -747,6 +747,44 @@ body {
   background-size: 32px 32px;
 }
 
+/* ─── CONSOLE THEME — layout sidebar, turunan Atlas ─── */
+.cns-main {
+  background-color: var(--at-bg);
+  background-image:
+    linear-gradient(var(--at-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--at-grid) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+.cns-sidebar, .cns-topbar {
+  background: var(--at-card);
+  color: var(--at-text);
+}
+.cns-logo { filter: none; }
+.dark .cns-logo { filter: brightness(0) invert(1); }
+.cns-navlink {
+  border-radius: 7px;
+  color: var(--at-subtext);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.cns-navlink:hover { background: var(--at-muted); color: var(--at-text); }
+.cns-navlink[data-active="true"] {
+  background: var(--at-muted);
+  color: var(--at-text);
+  font-weight: 600;
+  box-shadow: inset 2.5px 0 0 var(--site-accent);
+}
+.cns-mini-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 34px; gap: 4px;
+  border: 1px solid var(--at-border); border-radius: 7px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  color: var(--at-text); background: transparent;
+  transition: background 0.15s ease;
+}
+.cns-mini-btn:hover { background: var(--at-muted); }
+
 /* ── Aurora text animation ──────────────────────────────────────────────── */
 @keyframes aurora-shift {
   0%   { background-position: 0%   60%; }

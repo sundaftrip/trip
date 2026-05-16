@@ -70,7 +70,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   companyRows.forEach((c) => { company[c.key] = c.value; });
   const waNumber = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
-  const siteTheme = company["site_theme"] ?? "classic";
+  const rawSiteTheme = company["site_theme"] ?? "classic";
+  const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme;
   const isTropical = siteTheme === "tropical";
   const isKawaii   = siteTheme === "kawaii";
   const isPixel    = siteTheme === "pixel";

@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 async function getSiteTheme() {
   try {
     const row = await prisma.companyInfo.findFirst({ where: { key: "site_theme" } });
-    return row?.value ?? "classic";
+    const v = row?.value ?? "classic";
+    return v === "console" ? "atlas" : v;
   } catch { return "classic"; }
 }
 

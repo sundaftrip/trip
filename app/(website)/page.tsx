@@ -44,7 +44,8 @@ export default async function HomePage() {
   const wa = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
-  const theme = (themeRow?.value || "classic") as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
+  const rawTheme = themeRow?.value || "classic";
+  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
 
   // Fetch featured image server-side for vibrant theme (no client fetch needed)
   let featuredImage: string | null = null;
