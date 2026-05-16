@@ -254,7 +254,7 @@ export default async function MurmanskPage() {
         <section className={`${isOutlined ? "" : "rounded-3xl"} p-8 lg:p-12`}
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
-            : { background: "var(--site-hero,#0d2018)" }}>
+            : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, #0c0c0c)" }}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "rgba(255,255,255,0.15)", color: "#fff" }}>
             {isPixel ? "► PANDUAN AURORA" : "Panduan Aurora"}
           </span>
