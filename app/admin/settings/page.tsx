@@ -310,15 +310,19 @@ export default function SettingsPage() {
                       </div>
                     )}
                     {key === "atelier" && (
-                      <div className="absolute inset-0 overflow-hidden" style={{ background: "#f2f1ed" }}>
-                        <div className="absolute top-0 right-0 h-full w-3/5"
-                          style={{ background: "#141414", clipPath: "polygon(30% 0, 100% 0, 100% 100%, 0 100%)" }} />
-                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-12"
-                          style={{ background: currentAccent, clipPath: "polygon(20% 0, 100% 0, 80% 100%, 0 100%)" }} />
-                        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 flex flex-col gap-1">
-                          <div className="h-2 w-10" style={{ background: "#141414" }} />
-                          <div className="h-2 w-7" style={{ background: "#141414" }} />
-                          <div className="h-1.5 w-5 mt-0.5" style={{ background: currentAccent, clipPath: "polygon(0 0,100% 0,85% 100%,0 100%)" }} />
+                      <div className="absolute inset-0 overflow-hidden"
+                        style={{ background: "linear-gradient(135deg, #3a4a5a, #6b7d8a)" }}>
+                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent 60%)" }} />
+                        <div className="absolute left-2.5 bottom-2.5 right-2.5">
+                          <div className="h-1.5 w-6 rounded-sm mb-1.5" style={{ background: currentAccent }} />
+                          <div className="h-2.5 w-20 rounded-sm bg-white mb-1" />
+                          <div className="h-1.5 w-12 rounded-sm bg-white/60 mb-2" />
+                          <div className="h-3.5 w-12 rounded-md" style={{ background: currentAccent }} />
+                        </div>
+                        <div className="absolute right-2.5 top-2.5 flex gap-1">
+                          <div className="h-1.5 w-4 rounded-full bg-white" />
+                          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
+                          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
                         </div>
                       </div>
                     )}

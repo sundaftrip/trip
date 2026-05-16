@@ -719,95 +719,77 @@ body {
   background-size: 32px 32px;
 }
 
-/* ─── ATELIER THEME — sharp editorial, 90° ─── */
+/* ─── ATELIER THEME — clean editorial travel ─── */
 :root {
-  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 3%, #f2f1ed);
-  --atl-surface:     #ffffff;
-  --atl-ink:         #141414;
-  --atl-sub:         #61605c;
-  --atl-line:        rgba(20,20,20,0.20);
-  --atl-line-strong: rgba(20,20,20,0.88);
-  --atl-accent:      var(--site-accent, #2d6a4f);
-  --atl-shadow:      rgba(15,15,15,0.13);
+  --atl-bg:      #ffffff;
+  --atl-surface: #ffffff;
+  --atl-ink:     #1c1c1c;
+  --atl-sub:     #6b6b6b;
+  --atl-line:    #e6e5e1;
+  --atl-soft:    #f6f5f2;
+  --atl-accent:  var(--site-accent, #2d6a4f);
 }
 .dark {
-  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 11%, #0b0b0c);
-  --atl-surface:     #131314;
-  --atl-ink:         #f1f0ec;
-  --atl-sub:         #97968f;
-  --atl-line:        rgba(255,255,255,0.20);
-  --atl-line-strong: rgba(255,255,255,0.80);
-  --atl-shadow:      rgba(0,0,0,0.55);
+  --atl-bg:      #0e0e0f;
+  --atl-surface: #19191b;
+  --atl-ink:     #f2f1ee;
+  --atl-sub:     #9b9a96;
+  --atl-line:    #2b2b2d;
+  --atl-soft:    #161617;
 }
-/* Atelier — semua sudut 90°, tanpa lengkung */
-.atl-serif { font-family: var(--font-playfair), "Times New Roman", Georgia, serif; }
-.atl-eyebrow { font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; font-weight: 700; color: var(--atl-accent); }
-.atl-rule { height: 1px; background: var(--atl-line); width: 100%; }
-.atl-num { font-family: var(--font-playfair), Georgia, serif; font-style: italic; color: var(--atl-accent); }
-.atl-index { font-family: var(--font-playfair), Georgia, serif; font-style: italic; font-size: 13px; color: var(--atl-accent); }
-.atl-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid var(--atl-line); border-radius: 0;
-  padding: 7px 13px; font-size: 10px; letter-spacing: 0.24em;
-  text-transform: uppercase; font-weight: 600; color: var(--atl-sub); background: transparent;
-}
+.atl-eyebrow { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--atl-accent); }
 .atl-btn-solid {
-  display: inline-flex; align-items: center; gap: 12px;
-  background: var(--atl-ink); color: var(--atl-bg);
-  border: 1px solid var(--atl-ink); border-radius: 0;
-  padding: 16px 30px; font-size: 11px; letter-spacing: 0.2em;
-  text-transform: uppercase; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  background: var(--atl-accent); color: #fff;
+  border-radius: 9px; padding: 14px 28px; font-size: 14px; font-weight: 600;
   text-decoration: none; cursor: pointer;
-  transition: background .4s cubic-bezier(.76,0,.24,1), color .4s cubic-bezier(.76,0,.24,1), border-color .4s cubic-bezier(.76,0,.24,1);
+  transition: transform .2s ease, filter .2s ease;
 }
-.atl-btn-solid:hover { background: var(--atl-accent); border-color: var(--atl-accent); color: #fff; }
+.atl-btn-solid:hover { filter: brightness(1.09); transform: translateY(-2px); }
 .atl-btn-ghost {
-  display: inline-flex; align-items: center; gap: 12px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   background: transparent; color: var(--atl-ink);
-  border: 1px solid var(--atl-line-strong); border-radius: 0;
-  padding: 16px 30px; font-size: 11px; letter-spacing: 0.2em;
-  text-transform: uppercase; font-weight: 600;
-  text-decoration: none; cursor: pointer;
-  transition: color .3s ease, border-color .3s ease;
+  border: 1.5px solid var(--atl-line); border-radius: 9px;
+  padding: 14px 28px; font-size: 14px; font-weight: 600;
+  text-decoration: none; cursor: pointer; transition: border-color .2s ease;
 }
-.atl-btn-ghost:hover { color: var(--atl-accent); border-color: var(--atl-accent); }
-/* kartu "fracture" — sudut terpotong diagonal, hard-offset drop-shadow */
+.atl-btn-ghost:hover { border-color: var(--atl-ink); }
+.atl-btn-light {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  background: rgba(255,255,255,0.14); color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.55); border-radius: 9px;
+  padding: 14px 28px; font-size: 14px; font-weight: 600;
+  text-decoration: none; cursor: pointer; transition: background .2s ease;
+  backdrop-filter: blur(6px);
+}
+.atl-btn-light:hover { background: rgba(255,255,255,0.26); }
 .atl-card {
-  background: var(--atl-surface);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%);
-  filter: drop-shadow(3px 3px 0 var(--atl-line-strong));
-  transition: transform .45s cubic-bezier(.76,0,.24,1), filter .45s cubic-bezier(.76,0,.24,1);
+  background: var(--atl-surface); border: 1px solid var(--atl-line);
+  border-radius: 16px; overflow: hidden;
+  transition: transform .3s ease, box-shadow .3s ease;
 }
-.atl-card:hover {
-  transform: translate(-3px, -8px);
-  filter: drop-shadow(-12px 16px 0 var(--atl-accent));
+.atl-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(0,0,0,0.13); }
+.atl-tag {
+  display: inline-flex; align-items: center;
+  background: var(--atl-accent); color: #fff;
+  border-radius: 999px; padding: 5px 13px; font-size: 11px; font-weight: 600;
 }
-/* potongan sudut sebagai pseudo blok aksen */
-.atl-notch { position: relative; }
-.atl-notch::after {
-  content: ""; position: absolute; bottom: 0; right: 0;
-  width: 24px; height: 24px; background: var(--atl-accent);
-  clip-path: polygon(100% 0, 100% 100%, 0 100%); pointer-events: none; z-index: 3;
+.atl-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--atl-line); border-radius: 999px;
+  padding: 8px 16px; font-size: 13px; font-weight: 600;
+}
+.atl-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--atl-line); border-radius: 9px;
+  padding: 12px 24px; font-weight: 600; font-size: 13px; text-decoration: none; cursor: pointer;
 }
 .atl-logo { height: 42px; width: auto; }
 .dark .atl-logo { filter: brightness(0) invert(1); }
-
-/* ── Atelier motion — wipe / draw / rise / slide ── */
-@keyframes atl-wipe   { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-@keyframes atl-drawx  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes atl-drawy  { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes atl-rise   { from { transform: translateY(108%); } to { transform: translateY(0); } }
-@keyframes atl-emerge { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes atl-slide  { from { transform: translateX(100%); } to { transform: translateX(0); } }
-@keyframes atl-spin-in{ from { opacity: 0; transform: rotate(-25deg) scale(.6); } to { opacity: 1; transform: rotate(-12deg) scale(1); } }
-.atl-wipe   { animation: atl-wipe 1.05s cubic-bezier(.76,0,.24,1) both; }
-.atl-drawx  { transform-origin: left; animation: atl-drawx .95s cubic-bezier(.76,0,.24,1) both; }
-.atl-drawy  { transform-origin: top;  animation: atl-drawy 1.15s cubic-bezier(.76,0,.24,1) both; }
-.atl-rise-mask { overflow: hidden; }
-.atl-rise   { animation: atl-rise 1.05s cubic-bezier(.76,0,.24,1) both; }
-.atl-emerge { animation: atl-emerge .85s ease both; }
-.atl-slide  { animation: atl-slide 1s cubic-bezier(.76,0,.24,1) both; }
-.atl-spin-in{ animation: atl-spin-in 1s cubic-bezier(.34,1.3,.64,1) both; }
+.atl-dot { width: 9px; height: 9px; border-radius: 999px; background: rgba(255,255,255,0.5); border: none; cursor: pointer; transition: width .3s ease, background .3s ease; padding: 0; }
+.atl-dot-on { width: 30px; background: #fff; }
+@keyframes atl-fade { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+.atl-fade { animation: atl-fade .85s ease both; }
 
 /* ─── JOJO THEME — sticker book, chunky cute ─── */
 :root {
@@ -873,17 +855,6 @@ body {
 .jo-bob   { animation: jo-bob 2.6s ease-in-out infinite; }
 
 /* alias prefix untuk halaman dalam (sistem pfx: ${pfx}-pill / -btn / -card) */
-.atl-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid var(--atl-line); border-radius: 0;
-  padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
-}
-.atl-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1px solid var(--atl-line-strong); border-radius: 0;
-  padding: 12px 26px; font-weight: 600; font-size: 12px;
-  text-transform: uppercase; letter-spacing: 0.12em; text-decoration: none; cursor: pointer;
-}
 .jo-pill {
   display: inline-flex; align-items: center; gap: 6px;
   border: 2px solid var(--jo-line); border-radius: 999px;

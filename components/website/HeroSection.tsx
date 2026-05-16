@@ -12,15 +12,25 @@ interface Props {
   companyName?: string;
   theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo";
   featuredImage?: string | null;
+  heroImages?: string[];
 }
 
-export default function HeroSection({ texts, waNumber, companyName, theme = "classic", featuredImage }: Props) {
+export default function HeroSection({ texts, waNumber, companyName, theme = "classic", featuredImage, heroImages = [] }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
+  const [slide, setSlide] = useState(0);
 
   useEffect(() => {
     const stored = localStorage.getItem("lang") as "id" | "en" | null;
     if (stored) setLang(stored);
   }, []);
+
+  /* Atelier hero carousel — auto-advance */
+  const atlSlides = heroImages.length > 0 ? heroImages : (featuredImage ? [featuredImage] : []);
+  useEffect(() => {
+    if (theme !== "atelier" || atlSlides.length < 2) return;
+    const id = setInterval(() => setSlide((s) => (s + 1) % atlSlides.length), 5500);
+    return () => clearInterval(id);
+  }, [theme, atlSlides.length]);
 
   const t = (key: string, fallback: string) => {
     const val = texts[key];
@@ -520,86 +530,71 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     </section>
   );
 
-  /* ── ATELIER — FRACTURE, brutalist-luxe angular ── */
-  if (theme === "atelier") {
-    const atlWords = t("hero_title", "Wujudkan Perjalanan Impian Anda").split(/\s+/).filter(Boolean);
-    const atlYear = new Date().getFullYear();
-    const atlYY = String(atlYear).slice(2);
-    return (
-      <section className="min-h-screen relative overflow-hidden flex items-center" style={{ background: "var(--atl-bg)" }}>
-        {/* WEDGE diagonal gelap — tepi kanan */}
-        <div className="hidden lg:block absolute top-0 right-0 h-full w-[46%] atl-slide"
-          style={{ background: "var(--atl-ink)", clipPath: "polygon(30% 0, 100% 0, 100% 100%, 0 100%)" }} aria-hidden />
-
-        {/* numeral raksasa miring — latar */}
-        <span className="atl-num atl-spin-in absolute select-none pointer-events-none leading-none hidden md:block"
-          style={{ right: "4%", top: "9%", fontSize: "24vw", color: "var(--atl-accent)", opacity: 0.18 }} aria-hidden>{atlYY}</span>
-
-        {/* PLAT gambar — parallelogram */}
-        <div className="hidden lg:block absolute right-[8%] top-1/2 -translate-y-1/2 w-[30%] z-10">
-          <div className="absolute -left-6 -bottom-6 w-full h-full atl-emerge"
-            style={{ background: "var(--atl-accent)", clipPath: "polygon(17% 0, 100% 0, 83% 100%, 0 100%)", animationDelay: ".35s" }} aria-hidden />
-          <div className="atl-rise-mask relative aspect-[4/5]">
-            <div className="atl-rise relative w-full h-full" style={{ animationDelay: ".55s", clipPath: "polygon(17% 0, 100% 0, 83% 100%, 0 100%)" }}>
-              {featuredImage ? (
-                <Image src={featuredImage} alt="" fill className="object-cover" priority sizes="460px" />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center" style={{ background: "var(--atl-surface)" }}>
-                  <span className="atl-num" style={{ fontSize: "7rem", color: "var(--atl-accent)", opacity: 0.4 }}>{atlYY}</span>
-                </div>
-              )}
-            </div>
-          </div>
-          <span className="atl-num absolute -top-5 -left-5 px-4 py-2 text-sm atl-emerge"
-            style={{ background: "var(--atl-bg)", color: "var(--atl-ink)", border: "2px solid var(--atl-ink)", animationDelay: ".95s" }}>
-            Nº {atlYear}
-          </span>
+  /* ── ATELIER — clean editorial travel, hero carousel ── */
+  if (theme === "atelier") return (
+    <section className="relative h-screen min-h-[600px] overflow-hidden">
+      {/* slides */}
+      {atlSlides.length > 0 ? atlSlides.map((src, i) => (
+        <div key={i} className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
+          style={{ opacity: i === slide ? 1 : 0 }} aria-hidden={i !== slide}>
+          <Image src={src} alt="" fill className="object-cover" priority={i === 0} sizes="100vw" />
         </div>
+      )) : (
+        <div className="absolute inset-0" style={{ background: "var(--atl-ink)" }} aria-hidden />
+      )}
 
-        {/* KONTEN — kiri, area paper */}
-        <div className="relative z-20 max-w-7xl mx-auto w-full px-7 sm:px-12 lg:px-20">
-          <div className="max-w-md">
-            <div className="inline-flex items-stretch mb-9 atl-emerge" style={{ animationDelay: ".15s" }}>
-              <span className="atl-eyebrow flex items-center px-3.5 py-2.5" style={{ background: "var(--atl-ink)", color: "var(--atl-bg)" }}>EST</span>
-              <span className="atl-eyebrow flex items-center px-3.5 py-2.5" style={{ border: "2px solid var(--atl-ink)", color: "var(--atl-ink)" }}>{eyebrow}</span>
-            </div>
+      {/* gradient overlay agar teks terbaca */}
+      <div className="absolute inset-0" aria-hidden
+        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 48%, rgba(0,0,0,0.42) 100%)" }} />
 
-            <h1 className="atl-serif text-[clamp(2.6rem,5.6vw,4.6rem)] leading-[1.0] tracking-[-0.015em] mb-8"
-              style={{ color: "var(--atl-ink)", fontWeight: 600 }}>
-              {atlWords.map((w, i) => (
-                <span key={i} className="block atl-wipe" style={{ animationDelay: `${0.25 + i * 0.13}s` }}>{w}</span>
-              ))}
-            </h1>
-
-            <div className="h-2 w-28 mb-8 atl-drawx"
-              style={{ background: "var(--atl-accent)", clipPath: "polygon(0 0, 100% 0, 86% 100%, 0 100%)", animationDelay: ".95s" }} />
-
-            <p className="text-base sm:text-lg mb-10 leading-relaxed atl-emerge"
-              style={{ color: "var(--atl-sub)", animationDelay: "1s" }}>
-              {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-            </p>
-
-            <div className="flex flex-wrap items-center atl-emerge" style={{ animationDelay: "1.1s" }}>
-              <Link href="/tours" className="atl-btn-solid">
-                {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={14} />
-              </Link>
-              {waNumber && (
-                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-ghost sm:border-l-0">
-                  WhatsApp
-                </a>
-              )}
-            </div>
-
-            <div className="flex flex-wrap mt-11 atl-emerge" style={{ animationDelay: "1.2s" }}>
-              <span className="atl-tag">Destinasi Pilihan</span>
-              <span className="atl-tag" style={{ marginLeft: -2 }}>Paket Lengkap</span>
-              <span className="atl-tag" style={{ marginLeft: -2 }}>Terpercaya</span>
-            </div>
+      {/* konten */}
+      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col justify-end pb-24 lg:pb-28">
+        <div className="max-w-3xl atl-fade">
+          <p className="atl-eyebrow text-white/85 mb-5">{eyebrow}</p>
+          <h1 className="text-white font-semibold leading-[1.06] tracking-tight mb-6 text-[clamp(2.6rem,6vw,5.2rem)]">
+            {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
+          </h1>
+          <p className="text-white/85 text-base sm:text-lg max-w-xl mb-9 leading-relaxed">
+            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+          </p>
+          <div className="flex flex-wrap items-center gap-3.5">
+            <Link href="/tours" className="atl-btn-solid">
+              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
+            </Link>
+            {waNumber && (
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-light">
+                WhatsApp
+              </a>
+            )}
           </div>
         </div>
-      </section>
-    );
-  }
+      </div>
+
+      {/* carousel controls */}
+      {atlSlides.length > 1 && (
+        <>
+          <div className="absolute z-20 bottom-10 right-6 sm:right-10 lg:right-12 flex items-center gap-2.5">
+            {atlSlides.map((_, i) => (
+              <button key={i} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`}
+                className={`atl-dot ${i === slide ? "atl-dot-on" : ""}`} />
+            ))}
+          </div>
+          <div className="absolute z-20 bottom-10 left-6 sm:left-10 lg:left-12 flex items-center gap-2">
+            <button onClick={() => setSlide((s) => (s - 1 + atlSlides.length) % atlSlides.length)}
+              aria-label="Sebelumnya"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/45 bg-white/10 backdrop-blur-sm hover:bg-white/25 transition">
+              <ArrowRight size={17} className="rotate-180" />
+            </button>
+            <button onClick={() => setSlide((s) => (s + 1) % atlSlides.length)}
+              aria-label="Berikutnya"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/45 bg-white/10 backdrop-blur-sm hover:bg-white/25 transition">
+              <ArrowRight size={17} />
+            </button>
+          </div>
+        </>
+      )}
+    </section>
+  );
 
   /* ── CLASSIC ── */
   return (

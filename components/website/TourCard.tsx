@@ -546,33 +546,34 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
 function AtelierCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   return (
-    <div className={`atl-card group block overflow-hidden ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
-      <div className="relative h-56 overflow-hidden" style={{ background: "var(--atl-bg)" }}>
+    <div className={`atl-card group block ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
+      <div className="relative h-56 overflow-hidden" style={{ background: "var(--atl-soft)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-          : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line-strong)" }}><MapPin size={28} /></div>}
+          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line)" }}><MapPin size={28} /></div>}
         {tour.badge && !isDimmed && (
-          <span className="absolute top-3 left-3 px-3 py-1 text-white text-[10px] font-semibold tracking-[0.1em] uppercase"
-            style={{ background: "var(--atl-accent)" }}>
-            {tour.badge}
-          </span>
+          <span className="absolute top-3 left-3 atl-tag">{tour.badge}</span>
         )}
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
-      <div className="p-6">
-        <p className="atl-eyebrow mb-3" style={{ fontSize: 10 }}>{tour.category} · {tour.country}</p>
-        <h3 className="atl-serif text-lg leading-snug mb-4 line-clamp-2" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{tour.title}</h3>
-        <div className="flex flex-wrap gap-3.5 text-[11px] mb-5" style={{ color: "var(--atl-sub)" }}>
-          {tour.duration && <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="flex items-center gap-1"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="flex items-center gap-1"><Users size={10} /> {tour.seatsLeft} seat</span>
+      <div className="p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--atl-accent)" }}>{tour.category} · {tour.country}</p>
+        <h3 className="font-semibold text-[16px] leading-snug mb-3 line-clamp-2" style={{ color: "var(--atl-ink)" }}>{tour.title}</h3>
+        <div className="flex flex-wrap gap-3 text-[11px] mb-4" style={{ color: "var(--atl-sub)" }}>
+          {tour.duration && <span className="flex items-center gap-1"><Clock size={11} /> {tour.duration}</span>}
+          {tour.tripDate && <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(tour.tripDate, "id-ID")}</span>}
+          <span className="flex items-center gap-1"><Users size={11} /> {tour.seatsLeft} seat</span>
         </div>
-        <div className="flex items-end justify-between pt-5" style={{ borderTop: "1px solid var(--atl-line)" }}>
+        <div className="flex items-end justify-between pt-4" style={{ borderTop: "1px solid var(--atl-line)" }}>
           <div>
             {tour.promoPrice && <p className="text-[11px] line-through" style={{ color: "var(--atl-sub)" }}>{formatCurrency(tour.price)}</p>}
-            <p className="atl-serif text-lg" style={{ color: "var(--atl-accent)", fontWeight: 600 }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+            <p className="text-lg font-bold" style={{ color: "var(--atl-ink)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
           </div>
-          {!isDimmed && <span className="text-[11px] font-semibold tracking-[0.1em] uppercase" style={{ color: "var(--atl-ink)" }}>Detail →</span>}
+          {!isDimmed && (
+            <span className="text-[13px] font-semibold flex items-center gap-1" style={{ color: "var(--atl-accent)" }}>
+              Detail <ArrowRight size={13} />
+            </span>
+          )}
         </div>
       </div>
     </div>

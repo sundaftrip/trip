@@ -331,43 +331,33 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
   );
 
   if (theme === "atelier") return (
-    <section className="py-28" style={{ background: "var(--atl-surface)" }}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+    <section className="py-24" style={{ background: "var(--atl-soft)" }}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
         <AnimateIn>
-          <div className="flex items-end gap-5 sm:gap-7 mb-8">
-            <span className="atl-num flex items-center justify-center shrink-0"
-              style={{ background: "var(--atl-ink)", color: "var(--atl-bg)", fontSize: "clamp(1.9rem,4.4vw,3.2rem)",
-                       width: "clamp(62px,8.5vw,100px)", height: "clamp(62px,8.5vw,100px)", transform: "skewX(-9deg)" }}>
-              <span style={{ transform: "skewX(9deg)" }}>02</span>
-            </span>
-            <div className="flex-1 pb-1">
-              <p className="atl-eyebrow mb-2.5">Jurnal Perjalanan</p>
-              <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>Tips &amp; Inspirasi</h2>
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+            <div>
+              <p className="atl-eyebrow mb-3">Jurnal Perjalanan</p>
+              <h2 className="text-3xl lg:text-[2.6rem] font-semibold tracking-tight" style={{ color: "var(--atl-ink)" }}>Tips &amp; Inspirasi</h2>
             </div>
-            <Link href="/blog" className="atl-btn-ghost hidden sm:inline-flex !py-3 !px-6">Semua <ArrowRight size={13} /></Link>
+            <Link href="/blog" className="atl-btn-ghost !py-3 !px-6 !text-[13px]">Lihat Semua <ArrowRight size={14} /></Link>
           </div>
-          <div className="h-1.5 w-full mb-14" style={{ background: "var(--atl-line-strong)", clipPath: "polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%)" }} />
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {posts.map((post, i) => (
             <AnimateIn key={post.id} delay={i * 90}>
-              <Link href={`/blog/${post.slug}`} className="atl-card group block overflow-hidden">
-                <div className="relative h-44 overflow-hidden" style={{ background: "var(--atl-bg)" }}>
+              <Link href={`/blog/${post.slug}`} className="atl-card group block">
+                <div className="relative h-48 overflow-hidden" style={{ background: "var(--atl-soft)" }}>
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line-strong)" }}>—</div>}
-                  {post.category && (
-                    <span className="absolute top-3 left-3 px-3 py-1 text-white text-[10px] font-semibold tracking-[0.1em] uppercase" style={{ background: "var(--atl-accent)" }}>
-                      {post.category}
-                    </span>
-                  )}
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line)" }}>—</div>}
+                  {post.category && <span className="absolute top-3 left-3 atl-tag">{post.category}</span>}
                 </div>
-                <div className="p-6">
-                  <h3 className="atl-serif text-lg leading-snug mb-2.5 line-clamp-2" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{post.title}</h3>
+                <div className="p-5">
+                  <h3 className="font-semibold text-[16px] leading-snug mb-2 line-clamp-2" style={{ color: "var(--atl-ink)" }}>{post.title}</h3>
                   {post.excerpt && <p className="text-xs line-clamp-2 mb-4 leading-relaxed" style={{ color: "var(--atl-sub)" }}>{post.excerpt}</p>}
-                  <div className="flex items-center justify-between text-[11px] pt-4" style={{ color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
+                  <div className="flex items-center justify-between text-[11px] pt-3.5" style={{ color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
                     <span>{formatDate(post.date)}</span>
-                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
                   </div>
                 </div>
               </Link>

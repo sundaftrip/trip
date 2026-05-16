@@ -44,7 +44,7 @@ export default async function HomePage() {
   const wa = company["company_whatsapp"] || "";
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
-  const theme = (themeRow?.value || "classic") as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
+  const theme = (themeRow?.value || "classic") as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo";
 
   // Fetch featured image server-side for vibrant theme (no client fetch needed)
   let featuredImage: string | null = null;
@@ -53,9 +53,14 @@ export default async function HomePage() {
     featuredImage = featured?.heroImg ?? null;
   }
 
+  // Foto-foto untuk carousel hero Atelier — dari heroImg tiap tour
+  const heroImages = theme === "atelier"
+    ? [...new Set(tours.map((t) => t.heroImg).filter((x): x is string => !!x))].slice(0, 6)
+    : [];
+
   return (
     <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} featuredImage={featuredImage} />
+      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} featuredImage={featuredImage} heroImages={heroImages} />
       <ToursSection tours={tours} theme={theme} />
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />
