@@ -143,18 +143,25 @@ body {
 .hero-initial { color: var(--site-accent, #2d6a4f); }
 .dark .hero-initial { color: color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #ffffff); }
 
-/* Animasi SUNDAF — tiap huruf depan jatuh menumpuk ke bawah, lalu kembali.
-   --n = indeks kata (0=S .. 5=F). Huruf i jatuh (5-i) baris ke bawah
-   sehingga menumpuk rapat di dekat huruf F. */
-@keyframes sundaf-fall {
-  0%, 14%   { transform: translateY(0); }
-  40%, 60%  { transform: translateY(calc((5 - var(--n, 0)) * 0.8em)); }
-  88%, 100% { transform: translateY(0); }
+/* Animasi SUNDAF — tiap huruf depan jatuh fisika: terguling, melayang
+   kiri/kanan, gravitasi mempercepat, lenyap sejenak, lalu muncul kembali.
+   --dx = simpangan horizontal, --rot = total putaran (beda tiap huruf). */
+@keyframes sundaf-tumble {
+  0%, 14%  { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  /* gravitasi: jarak antar tahap makin besar = makin cepat */
+  28%      { transform: translate(calc(var(--dx,0px)*0.14),  5vh)  rotate(calc(var(--rot,0deg)*0.16)); opacity: 1; }
+  42%      { transform: translate(calc(var(--dx,0px)*0.42), 20vh)  rotate(calc(var(--rot,0deg)*0.46)); opacity: 1; }
+  56%      { transform: translate(calc(var(--dx,0px)*0.78), 48vh)  rotate(calc(var(--rot,0deg)*0.80)); opacity: 1; }
+  68%      { transform: translate(var(--dx,0px), 86vh) rotate(var(--rot,0deg)); opacity: 0; }
+  /* lenyap sejenak */
+  84%      { transform: translate(var(--dx,0px), 86vh) rotate(var(--rot,0deg)); opacity: 0; }
+  90%      { transform: translate(0,0) rotate(0deg); opacity: 0; }
+  100%     { transform: translate(0,0) rotate(0deg); opacity: 1; }
 }
 .sundaf-fall {
   display: inline-block;
-  animation: sundaf-fall 5s cubic-bezier(0.5,0,0.35,1) 1 both;
-  animation-delay: calc(0.5s + var(--n, 0) * 0.16s);
+  animation: sundaf-tumble 5.4s cubic-bezier(0.45,0,0.9,0.5) 1 both;
+  animation-delay: calc(0.5s + var(--n, 0) * 0.34s);
 }
 @media (prefers-reduced-motion: reduce) {
   .sundaf-fall { animation: none; }

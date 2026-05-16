@@ -33,16 +33,31 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* Render tiap kata sebagai block — huruf pertama disorot warna aksen
      agar akronim vertikal (mis. S-U-N-D-A-F) terbaca jelas */
+  /* Parameter fisika jatuh tiap huruf — arah & putaran berbeda-beda */
+  const FALL_PHYSICS = [
+    { dx: "-118px", rot: "-684deg" },
+    { dx: "104px",  rot: "548deg"  },
+    { dx: "-72px",  rot: "-912deg" },
+    { dx: "136px",  rot: "742deg"  },
+    { dx: "-128px", rot: "-596deg" },
+    { dx: "88px",   rot: "868deg"  },
+  ];
   const TitleWords = ({ extra }: { extra?: React.ReactNode }) => (
     <>
       {t("hero_title", "Wujudkan Perjalanan Impian Anda")
         .split(/\s+/).filter(Boolean)
-        .map((word, i) => (
-          <span key={i} className="block">
-            <span className="hero-initial sundaf-fall" style={{ ["--n" as string]: i }}>{word.charAt(0)}</span>
-            {word.slice(1)}
-          </span>
-        ))}
+        .map((word, i) => {
+          const p = FALL_PHYSICS[i % FALL_PHYSICS.length];
+          return (
+            <span key={i} className="block">
+              <span className="hero-initial sundaf-fall"
+                style={{ ["--n" as string]: i, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
+                {word.charAt(0)}
+              </span>
+              {word.slice(1)}
+            </span>
+          );
+        })}
       {extra}
     </>
   );
