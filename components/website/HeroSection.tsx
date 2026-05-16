@@ -481,7 +481,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── CLASSIC ── */
   return (
-    <section className="min-h-screen flex flex-col justify-end bg-white dark:bg-black pb-20 lg:pb-28 pt-32 overflow-hidden">
+    <section className="min-h-screen flex flex-col justify-end pb-20 lg:pb-28 pt-32 overflow-hidden"
+      style={{ background: "var(--site-bg, #ffffff)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full hero-fade-up">
         <p className="text-xs font-medium tracking-[0.2em] uppercase mb-8"
           style={{ color: "var(--site-eyebrow,#6b7280)" }}>

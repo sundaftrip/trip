@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info,
+  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info, ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -137,6 +137,13 @@ export default function AdminShell({ role, user, logo, children }: Props) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            <a href="/" target="_blank" rel="noopener noreferrer"
+              title="Buka website di tab baru"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition">
+              <ExternalLink size={16} />
+              <span className="hidden sm:inline">Buka Website</span>
+            </a>
+
             <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
               {mounted ? (theme === "dark" ? <Sun size={18} /> : <Moon size={18} />) : <Moon size={18} />}

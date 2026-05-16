@@ -55,12 +55,16 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   const { colors, logo, theme, font } = await getSiteConfig();
 
   const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
+  const accent = colors["color_accent"] ?? "#2d6a4f";
   const cssVars =
     Object.entries(colors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
       .join(" ") +
-    ` --site-accent: ${colors["color_accent"] ?? "#2d6a4f"};` +
-    ` --site-font-family: ${fontFamily};`;
+    ` --site-accent: ${accent};` +
+    ` --site-font-family: ${fontFamily};` +
+    // Background bernuansa lembut dari warna aksen — ikut berubah saat skema diganti
+    ` --site-bg: color-mix(in srgb, ${accent} 5%, #ffffff);` +
+    ` --site-bg-soft: color-mix(in srgb, ${accent} 9%, #ffffff);`;
 
   return (
     <>
@@ -72,6 +76,8 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
           --site-tour-title: #f3f4f6;
           --site-blog-title: #f3f4f6;
           --site-eyebrow: #9ca3af;
+          --site-bg: color-mix(in srgb, var(--site-accent) 14%, #060606);
+          --site-bg-soft: color-mix(in srgb, var(--site-accent) 20%, #0a0a0a);
         }
       `}</style>
       <Navbar logo={logo} theme={theme} />
