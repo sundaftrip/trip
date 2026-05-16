@@ -47,6 +47,7 @@ const THEMES = [
   { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
+  { key: "atelier",  label: "Atelier",   desc: "Editorial mewah. Simetris, heading serif, hairline border, whitespace lega.", feature: null },
 ];
 
 export default function SettingsPage() {
@@ -293,8 +294,18 @@ export default function SettingsPage() {
                   <div className={`h-20 rounded-lg mb-3 overflow-hidden relative ${
                     key === "classic" ? "bg-white border border-gray-100" :
                     key === "vibrant" ? "bg-white border border-gray-100" :
+                    key === "atelier" ? "bg-white border border-gray-100" :
                     "bg-gray-950"
                   }`}>
+                    {key === "atelier" && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1" style={{ background: "#fcfcfb" }}>
+                        <div className="absolute inset-1.5 border" style={{ borderColor: "rgba(0,0,0,0.14)" }} />
+                        <div className="h-[3px] w-6 rounded-full" style={{ background: currentAccent }} />
+                        <div className="h-2.5 w-16 rounded" style={{ background: "#161616" }} />
+                        <div className="h-1 w-10 rounded bg-gray-300" />
+                        <div className="h-2.5 w-9 rounded-sm mt-0.5" style={{ background: currentAccent }} />
+                      </div>
+                    )}
                     {key === "classic" && (
                       <div className="absolute bottom-0 left-0 right-0 p-2">
                         <div className="h-1.5 w-12 rounded bg-gray-900 mb-1.5" />

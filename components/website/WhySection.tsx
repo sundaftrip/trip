@@ -252,6 +252,31 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   }
 
   /* ── CLASSIC ── */
+  if (theme === "atelier") return (
+    <section className="py-24" style={{ background: "var(--atl-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-16">
+            <p className="atl-eyebrow mb-4">{subtitle}</p>
+            <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{title}</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px" style={{ background: "var(--atl-line)" }}>
+          {items.map(({ title, desc, Icon }, i) => (
+            <AnimateIn key={title} delay={i * 100}>
+              <div className="p-8 h-full" style={{ background: "var(--atl-surface)" }}>
+                <p className="atl-index mb-6">0{i + 1}</p>
+                <Icon size={22} style={{ color: "var(--atl-accent)" }} className="mb-4" />
+                <h3 className="atl-serif text-base mb-2.5" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{title}</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--atl-sub)" }}>{desc}</p>
+              </div>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   if (theme === "classic") return (
     <section className="py-24 bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

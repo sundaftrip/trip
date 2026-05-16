@@ -48,6 +48,37 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── ATELIER layout ── */
+  if (theme === "atelier") return (
+    <section className="py-24" style={{ background: "var(--atl-bg)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-14">
+            <p className="atl-eyebrow mb-4">Paket Tersedia</p>
+            <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>Tour Pilihan</h2>
+            <div className="flex items-center justify-center gap-4 mt-6">
+              <span className="h-px w-12" style={{ background: "var(--atl-line-strong)" }} />
+              <span className="atl-index">✦</span>
+              <span className="h-px w-12" style={{ background: "var(--atl-line-strong)" }} />
+            </div>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80}>
+              <TourCard tour={tour} theme="atelier" />
+            </AnimateIn>
+          ))}
+        </div>
+        <div className="text-center mt-14">
+          <Link href="/tours" className="atl-btn-ghost">
+            Semua Tour <ArrowRight size={15} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII layout ── */
   if (theme === "kawaii") return (
     <section className="py-24" style={{ background: "var(--kw-bg)" }}>

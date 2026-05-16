@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier";
   featuredImage?: string | null;
 }
 
@@ -474,6 +474,52 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               WhatsApp
             </a>
           )}
+        </div>
+      </div>
+    </section>
+  );
+
+  /* ── ATELIER — editorial luxury ── */
+  if (theme === "atelier") return (
+    <section className="min-h-screen flex flex-col justify-center relative px-4 sm:px-8 pt-32 pb-20"
+      style={{ background: "var(--atl-bg)" }}>
+      {/* hairline frame */}
+      <div className="atl-frame absolute inset-4 sm:inset-7 pointer-events-none" />
+
+      <div className="max-w-3xl mx-auto w-full text-center relative z-10">
+        <p className="atl-eyebrow mb-7 hero-fade-up">{eyebrow}</p>
+
+        <div className="flex items-center justify-center gap-4 mb-9 hero-fade-up">
+          <span className="h-px w-14" style={{ background: "var(--atl-line-strong)" }} />
+          <span className="atl-index">{new Date().getFullYear()}</span>
+          <span className="h-px w-14" style={{ background: "var(--atl-line-strong)" }} />
+        </div>
+
+        <h1 className="atl-serif text-[clamp(2.6rem,7vw,5.4rem)] leading-[1.06] tracking-tight mb-8 hero-fade-up"
+          style={{ color: "var(--atl-ink)", fontWeight: 500 }}>
+          <TitleWords />
+        </h1>
+
+        <p className="text-base sm:text-lg max-w-xl mx-auto mb-11 leading-relaxed hero-fade-up"
+          style={{ color: "var(--atl-sub)" }}>
+          {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+        </p>
+
+        <div className="flex flex-wrap items-center justify-center gap-4 hero-fade-up">
+          <Link href="/tours" className="atl-btn-solid">
+            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-ghost">
+              WhatsApp
+            </a>
+          )}
+        </div>
+
+        <div className="flex items-center justify-center gap-6 mt-14 hero-fade-up">
+          <span className="atl-pill">{t("hero_subtitle", "Destinasi Pilihan")}</span>
+          <span className="atl-pill">Paket Lengkap</span>
+          <span className="atl-pill">Terpercaya</span>
         </div>
       </div>
     </section>

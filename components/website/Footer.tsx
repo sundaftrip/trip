@@ -348,6 +348,51 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   );
 
   /* ── CLASSIC / VIBRANT / BOLD (dark footer) ── */
+  /* ── ATELIER ── */
+  if (theme === "atelier") return (
+    <footer style={{ background: "var(--atl-bg)", color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center pb-14 border-b" style={{ borderColor: "var(--atl-line)" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logo || "/logo.png"} alt={name} className="atl-logo" style={{ margin: "0 auto 18px" }} />
+          {tagline && <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: "var(--atl-sub)" }}>{tagline}</p>}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-14">
+          <div>
+            <h3 className="atl-eyebrow mb-6">Navigasi</h3>
+            <ul className="grid grid-cols-2 gap-3 text-sm">
+              {navLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="hover:opacity-60 transition-opacity" style={{ color: "var(--atl-ink)" }}>{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="atl-eyebrow mb-6">Kontak</h3>
+            <ul className="space-y-3 text-sm">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2.5">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--atl-accent)" }} />
+                  {href
+                    ? <a href={href} className="hover:opacity-60 transition-opacity" style={{ color: "var(--atl-ink)" }}>{value}</a>
+                    : <span style={{ color: "var(--atl-ink)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs border-t" style={{ borderColor: "var(--atl-line)" }}>
+          <p>© {new Date().getFullYear()} {name}</p>
+          {nib && <p>NIB {nib}</p>}
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
   return (
     <footer className="bg-gray-950 text-gray-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

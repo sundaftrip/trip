@@ -294,6 +294,48 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
   );
 
   /* ── CLASSIC / VIBRANT / BOLD ── */
+  if (theme === "atelier") return (
+    <section className="py-24" style={{ background: "var(--atl-surface)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-14">
+            <p className="atl-eyebrow mb-4">Jurnal</p>
+            <h2 className="atl-serif text-3xl lg:text-5xl tracking-tight" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>Tips &amp; Inspirasi</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="atl-card group block overflow-hidden">
+                <div className="relative h-44 overflow-hidden" style={{ background: "var(--atl-bg)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line-strong)" }}>—</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 px-3 py-1 text-white text-[10px] font-semibold tracking-[0.1em] uppercase" style={{ background: "var(--atl-accent)" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-6">
+                  <h3 className="atl-serif text-lg leading-snug mb-2.5 line-clamp-2" style={{ color: "var(--atl-ink)", fontWeight: 500 }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-4 leading-relaxed" style={{ color: "var(--atl-sub)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px] pt-4" style={{ color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+        <div className="text-center mt-14">
+          <Link href="/blog" className="atl-btn-ghost">Semua Artikel <ArrowRight size={15} /></Link>
+        </div>
+      </div>
+    </section>
+  );
+
   const sectionBg = theme === "bold" ? "bg-gray-950" : "bg-gray-50 dark:bg-gray-950";
   const headingColor = theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
   const subColor = theme === "bold" ? "text-gray-600" : "text-gray-400";

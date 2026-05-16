@@ -719,6 +719,71 @@ body {
   background-size: 32px 32px;
 }
 
+/* ─── ATELIER THEME — editorial luxury ─── */
+:root {
+  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 4%, #fcfcfb);
+  --atl-surface:     #ffffff;
+  --atl-ink:         #161616;
+  --atl-sub:         #6e6e6e;
+  --atl-line:        rgba(22,22,22,0.13);
+  --atl-line-strong: rgba(22,22,22,0.82);
+  --atl-accent:      var(--site-accent, #2d6a4f);
+  --atl-shadow:      rgba(20,20,20,0.07);
+}
+.dark {
+  --atl-bg:          color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #0b0b0c);
+  --atl-surface:     #141415;
+  --atl-ink:         #f3f3f1;
+  --atl-sub:         #9a9a98;
+  --atl-line:        rgba(255,255,255,0.14);
+  --atl-line-strong: rgba(255,255,255,0.74);
+  --atl-shadow:      rgba(0,0,0,0.5);
+}
+.atl-serif { font-family: var(--font-playfair), Georgia, "Times New Roman", serif; }
+.atl-eyebrow {
+  font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase;
+  font-weight: 600; color: var(--atl-accent);
+}
+.atl-rule { height: 1px; background: var(--atl-line); width: 100%; }
+.atl-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--atl-line); border-radius: 999px;
+  padding: 7px 16px; font-size: 12px; letter-spacing: 0.05em;
+  color: var(--atl-sub); background: var(--atl-surface);
+}
+.atl-btn-solid {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--atl-accent); color: #fff;
+  border: 1px solid var(--atl-accent); border-radius: 2px;
+  font-weight: 600; font-size: 13px; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 14px 30px;
+  transition: opacity .18s ease; text-decoration: none; cursor: pointer;
+}
+.atl-btn-solid:hover { opacity: 0.86; }
+.atl-btn-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; color: var(--atl-ink);
+  border: 1px solid var(--atl-line-strong); border-radius: 2px;
+  font-weight: 600; font-size: 13px; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 14px 30px;
+  transition: background .18s ease, color .18s ease;
+  text-decoration: none; cursor: pointer;
+}
+.atl-btn-ghost:hover { background: var(--atl-ink); color: var(--atl-bg); }
+.atl-card {
+  background: var(--atl-surface); border: 1px solid var(--atl-line);
+  border-radius: 3px;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+}
+.atl-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 44px var(--atl-shadow);
+  border-color: var(--atl-line-strong);
+}
+.atl-index { font-family: var(--font-playfair), Georgia, serif; font-size: 13px; color: var(--atl-accent); letter-spacing: 0.1em; }
+.atl-logo { height: 44px; width: auto; }
+.dark .atl-logo { filter: brightness(0) invert(1); }
+
 /* ── Aurora text animation ──────────────────────────────────────────────── */
 @keyframes aurora-shift {
   0%   { background-position: 0%   60%; }

@@ -170,6 +170,70 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   );
 
   /* ── ATLAS ── */
+  if (theme === "atelier") return (
+    <header className="fixed top-0 inset-x-0 z-50 border-b"
+      style={{ backgroundColor: "var(--atl-surface)", borderColor: "var(--atl-line)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-[72px]">
+          <Link href="/" className="flex items-center">
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-9">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="text-[12px] tracking-[0.14em] uppercase font-medium hover:opacity-60 transition-opacity"
+                style={{ color: "var(--atl-ink)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2.5">
+            <button onClick={toggleLang}
+              className="text-[11px] tracking-[0.12em] uppercase font-semibold px-2.5 py-1.5 hover:opacity-60 transition"
+              style={{ color: "var(--atl-sub)" }}>
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="p-2 hover:opacity-60 transition" style={{ color: "var(--atl-sub)" }}>
+                {isDark ? <Sun size={14} /> : <Moon size={14} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex atl-btn-solid !py-2.5 !px-5 !text-[11px]">
+              {lang === "id" ? "Lihat Tour" : "See Tours"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden p-2"
+              style={{ color: "var(--atl-ink)" }}>
+              {open ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="lg:hidden border-t py-4 space-y-1"
+            style={{ borderColor: "var(--atl-line)", background: "var(--atl-surface)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 text-[12px] tracking-[0.12em] uppercase font-medium"
+                style={{ color: "var(--atl-ink)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="flex atl-btn-solid w-full justify-center">
+                {lang === "id" ? "Lihat Tour" : "See Tours"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
   if (theme === "atlas") return (
     <header className="fixed top-0 inset-x-0 z-50 border-b at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)", borderColor: "var(--at-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
