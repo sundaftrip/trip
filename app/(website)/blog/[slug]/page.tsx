@@ -17,7 +17,7 @@ async function getSiteInfo() {
     });
     const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
     return {
-      theme: map["site_theme"] ?? "classic",
+      theme: (map["site_theme"] === "console" ? "atlas" : map["site_theme"]) ?? "classic",
       companyName: map["company_name"] ?? "Sundaftrip",
     };
   } catch {

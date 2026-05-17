@@ -221,7 +221,7 @@ export default async function MurmanskPage() {
           {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
             <div key={label} className={`${cardClass} p-4`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
               <div className="flex items-start gap-3">
-                <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent,#2d6a4f)" }} />
+                <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
                 <div>
                   <p className={`text-[11px] font-medium mb-0.5 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{label}</p>
                   <p className={`text-sm font-bold leading-tight ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>{value}</p>
@@ -254,7 +254,7 @@ export default async function MurmanskPage() {
         <section className={`${isOutlined ? "" : "rounded-3xl"} p-8 lg:p-12`}
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
-            : { background: "var(--site-hero,#0d2018)" }}>
+            : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, #0c0c0c)" }}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "rgba(255,255,255,0.15)", color: "#fff" }}>
             {isPixel ? "► PANDUAN AURORA" : "Panduan Aurora"}
           </span>
@@ -363,7 +363,7 @@ export default async function MurmanskPage() {
             ))}
             <div className="flex items-center justify-between gap-4 pt-4">
               <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>Total Estimasi</span>
-              <span className="font-black text-lg" style={{ color: "var(--site-accent,#2d6a4f)" }}>Rp 25 – 47 juta / orang</span>
+              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>Rp 25 – 47 juta / orang</span>
             </div>
           </div>
           <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-400 dark:text-gray-600" : ""}`} style={{ color: subClr, opacity: 0.7 }}>
@@ -397,7 +397,7 @@ export default async function MurmanskPage() {
                     <div className="p-4">
                       <p className={`text-xs mb-1 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{tour.country} · {tour.duration}</p>
                       <h3 className={`font-bold text-sm leading-tight mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{tour.title}</h3>
-                      <p className="font-black" style={{ color: "var(--site-accent,#2d6a4f)" }}>
+                      <p className="font-black" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
                         {tour.promoPrice ? formatCurrency(tour.promoPrice) : formatCurrency(tour.price)}
                       </p>
                     </div>
@@ -405,7 +405,7 @@ export default async function MurmanskPage() {
                 ))}
               </div>
               <div className="mt-4 text-center">
-                <Link href="/tours" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--site-accent,#2d6a4f)" }}>
+                <Link href="/tours" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
                   Lihat semua paket tour <ChevronRight size={16} />
                 </Link>
               </div>
@@ -444,7 +444,7 @@ export default async function MurmanskPage() {
               <div key={q} className={`${isOutlined ? cardClass : "border border-gray-200 dark:border-slate-800 rounded-2xl"} p-6`}
                 style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
                 <h3 className={`font-bold mb-3 flex items-start gap-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-                  <Star size={14} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent,#2d6a4f)" }} />
+                  <Star size={14} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
                   {q}
                 </h3>
                 <p className={`text-sm leading-relaxed pl-5 ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{a}</p>
@@ -500,7 +500,7 @@ export default async function MurmanskPage() {
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}
-              style={isOutlined ? accentStyle : { color: "var(--site-accent,#2d6a4f)" }}>
+              style={isOutlined ? accentStyle : { color: "var(--site-accent-ink,#2d6a4f)" }}>
               <MessageCircle size={18} />
               {isPixel ? "[ CHAT WHATSAPP SEKARANG ]" : "Chat WhatsApp Sekarang"}
             </a>

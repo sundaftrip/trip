@@ -6,7 +6,8 @@ import { getContinent, CONTINENT_ORDER, normalizeCountry } from "@/lib/continent
 async function getSiteTheme() {
   try {
     const row = await prisma.companyInfo.findFirst({ where: { key: "site_theme" } });
-    return row?.value ?? "classic";
+    const v = row?.value ?? "classic";
+    return v === "console" ? "atlas" : v;
   } catch { return "classic"; }
 }
 

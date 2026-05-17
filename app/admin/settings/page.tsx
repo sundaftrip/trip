@@ -49,6 +49,7 @@ const THEMES = [
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
   { key: "atelier",  label: "Atelier",   desc: "Editorial mewah. Simetris, heading serif, hairline border, whitespace lega.", feature: null },
   { key: "jojo",     label: "Jojo",      desc: "Sticker book cute. Stiker SVG, border tebal, shadow chunky, motion bouncy.", feature: null },
+  { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
 ];
 
 export default function SettingsPage() {
@@ -297,6 +298,7 @@ export default function SettingsPage() {
                     key === "vibrant" ? "bg-white border border-gray-100" :
                     key === "atelier" ? "bg-white border border-gray-100" :
                     key === "jojo" ? "border border-gray-100" :
+                    key === "console" ? "bg-white border border-gray-100" :
                     "bg-gray-950"
                   }`} style={key === "jojo" ? { background: "#fff6ec" } : undefined}>
                     {key === "jojo" && (
@@ -435,6 +437,21 @@ export default function SettingsPage() {
                         {/* CTA */}
                         <div className="h-5 w-16 border text-[8px] font-semibold flex items-center justify-center relative z-10" style={{ borderColor: "#1a1a1a", background: "#0a0a0a", color: "#ffffff", borderRadius: "4px" }}>
                           Lihat Tour
+                        </div>
+                      </div>
+                    )}
+                    {key === "console" && (
+                      <div className="absolute inset-0 flex" style={{ background: "#ffffff" }}>
+                        <div className="w-1/3 h-full border-r flex flex-col gap-1 p-1.5" style={{ borderColor: "#1a1a1a", background: "#fafafa" }}>
+                          <div className="h-1.5 w-8 rounded-sm" style={{ background: currentAccent }} />
+                          <div className="h-1 w-full rounded-sm bg-gray-300 mt-1.5" />
+                          <div className="h-1 w-full rounded-sm" style={{ background: currentAccent }} />
+                          <div className="h-1 w-full rounded-sm bg-gray-300" />
+                          <div className="h-1 w-3/4 rounded-sm bg-gray-300" />
+                        </div>
+                        <div className="flex-1 relative" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.06) 1px,transparent 1px)", backgroundSize: "10px 10px" }}>
+                          <div className="absolute top-2 left-2 right-2 h-6 border rounded" style={{ borderColor: "#1a1a1a" }} />
+                          <div className="absolute bottom-2 left-2 h-3 w-10 rounded" style={{ background: "#0a0a0a" }} />
                         </div>
                       </div>
                     )}

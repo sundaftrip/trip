@@ -139,6 +139,31 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
+
+/* Animasi SUNDAF — tiap huruf depan jatuh fisika: terguling, melayang
+   kiri/kanan, gravitasi mempercepat, lenyap sejenak, lalu muncul kembali.
+   --dx = simpangan horizontal, --rot = total putaran (beda tiap huruf). */
+@keyframes sundaf-tumble {
+  0%, 14%  { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  /* gravitasi: jarak antar tahap makin besar = makin cepat */
+  28%      { transform: translate(calc(var(--dx,0px)*0.14),  5vh)  rotate(calc(var(--rot,0deg)*0.16)); opacity: 1; }
+  42%      { transform: translate(calc(var(--dx,0px)*0.42), 20vh)  rotate(calc(var(--rot,0deg)*0.46)); opacity: 1; }
+  56%      { transform: translate(calc(var(--dx,0px)*0.78), 48vh)  rotate(calc(var(--rot,0deg)*0.80)); opacity: 1; }
+  68%      { transform: translate(var(--dx,0px), 86vh) rotate(var(--rot,0deg)); opacity: 0; }
+  /* lenyap sejenak */
+  84%      { transform: translate(var(--dx,0px), 86vh) rotate(var(--rot,0deg)); opacity: 0; }
+  90%      { transform: translate(0,0) rotate(0deg); opacity: 0; }
+  100%     { transform: translate(0,0) rotate(0deg); opacity: 1; }
+}
+.sundaf-fall {
+  display: inline-block;
+  animation: sundaf-tumble 5.4s cubic-bezier(0.45,0,0.9,0.5) 1 both;
+  animation-delay: calc(0.5s + var(--n, 0) * 0.055s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sundaf-fall { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-fade-up, .hero-fade-left { animation: none; }
 }
@@ -863,6 +888,40 @@ body {
   border: 2px solid var(--jo-line); border-radius: 999px;
   padding: 7px 15px; font-size: 12px; font-weight: 700;
 }
+/* ─── CONSOLE THEME — layout sidebar, turunan Atlas ─── */
+.cns-main {
+  background-color: var(--at-bg);
+  background-image:
+    linear-gradient(var(--at-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--at-grid) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+.cns-sidebar, .cns-topbar {
+  background: var(--at-card);
+  color: var(--at-text);
+}
+.cns-logo { filter: none; }
+.dark .cns-logo { filter: brightness(0) invert(1); }
+.cns-navlink {
+  color: var(--at-subtext);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.cns-navlink:hover { color: var(--at-text); }
+.cns-navlink[data-active="true"] {
+  color: var(--site-accent);
+  font-weight: 600;
+}
+.cns-mini-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 34px; gap: 4px;
+  border: 1px solid var(--at-border); border-radius: 7px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  color: var(--at-text); background: transparent;
+  transition: background 0.15s ease;
+}
+.cns-mini-btn:hover { background: var(--at-muted); }
 
 /* ── Aurora text animation ──────────────────────────────────────────────── */
 @keyframes aurora-shift {
