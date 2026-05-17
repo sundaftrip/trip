@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { toWaNumber } from "@/lib/utils";
 import HeroSection from "@/components/website/HeroSection";
 import WhySection from "@/components/website/WhySection";
 import ToursSection from "@/components/website/ToursSection";
@@ -41,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const { texts, tours, posts, company, companyRows, testimonials } = await getData();
-  const wa = company["company_whatsapp"] || "";
+  const wa = toWaNumber(company["company_whatsapp"]);
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
   const rawTheme = themeRow?.value || "classic";

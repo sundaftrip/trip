@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { toWaNumber } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
 import { JojoSticker } from "./JojoStickers";
 
@@ -35,7 +36,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const nib      = c["company_nib"] || "";
   const address  = c["company_address"] || "";
   const phone    = c["company_phone"] || "";
-  const whatsapp = c["company_whatsapp"] || "";
+  const whatsapp = toWaNumber(c["company_whatsapp"]);
   const email    = c["company_email"] || "";
 
   const contacts = [

@@ -21,6 +21,12 @@ export function formatDate(date: Date | string, locale = "id-ID") {
   }).format(new Date(date));
 }
 
+/** Strip a phone number down to the digits-only form wa.me links expect
+ *  (removes "+", spaces, dashes, and any other non-digit characters). */
+export function toWaNumber(raw?: string | null) {
+  return (raw ?? "").replace(/\D/g, "");
+}
+
 export function generateReceiptNo() {
   const now = new Date();
   const y = now.getFullYear().toString().slice(-2);

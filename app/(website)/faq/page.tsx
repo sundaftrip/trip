@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
 import { MessageCircle, ChevronDown } from "lucide-react";
 
@@ -63,7 +64,7 @@ export default async function FaqPage() {
 
   const wrapperStyle = pageBg ? { backgroundColor: pageBg, ...pixelGrid } : undefined;
 
-  const whatsapp = company["company_whatsapp"] ?? "";
+  const whatsapp = toWaNumber(company["company_whatsapp"]);
   const waLink   = whatsapp
     ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya punya pertanyaan tentang paket tour.")}`
     : "/tours";

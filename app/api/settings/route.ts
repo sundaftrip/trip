@@ -20,6 +20,12 @@ export async function PUT(req: NextRequest) {
 
   const body: Record<string, string> = await req.json();
 
+  // Keep the WhatsApp number in the digits-only form wa.me links need,
+  // regardless of how it was typed in the admin panel.
+  if (typeof body.company_whatsapp === "string") {
+    body.company_whatsapp = body.company_whatsapp.replace(/\D/g, "");
+  }
+
   // Block plan-locked features — plan diresolusi dari MASTER
   const plan = await getPlan();
 

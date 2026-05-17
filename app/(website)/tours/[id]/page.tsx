@@ -10,7 +10,7 @@ import {
   ArrowLeft, MessageCircle, Camera, Building2, FileText,
   ClipboardList, Plane, Tag, Package, Ban, Route, Download,
 } from "lucide-react";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import TourShareButtons from "@/components/website/TourShareButtons";
 
@@ -68,7 +68,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  const waNumber = company["company_whatsapp"] || "";
+  const waNumber = toWaNumber(company["company_whatsapp"]);
   const companyName = company["company_name"] || "";
   const rawSiteTheme = company["site_theme"] ?? "classic";
   const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme;

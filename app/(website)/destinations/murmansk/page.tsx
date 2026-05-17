@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, toWaNumber } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Wisata Murmansk & Aurora Borealis dari Indonesia — Sundaftrip",
@@ -58,7 +58,7 @@ async function getData() {
   const company: Record<string, string> = {};
   companyRows.forEach((r) => { company[r.key] = r.value; });
   return {
-    wa: company["company_whatsapp"] ?? "",
+    wa: toWaNumber(company["company_whatsapp"]),
     theme: company["site_theme"] ?? "classic",
     tours,
     relatedPosts,

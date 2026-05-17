@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { toWaNumber } from "@/lib/utils";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -26,7 +27,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const bankAcc    = texts["payment_bank_acc"]?.id || "";
   const bankHolder = texts["payment_bank_holder"]?.id || "";
 
-  const wa      = company["company_whatsapp"] || "";
+  const wa      = toWaNumber(company["company_whatsapp"]);
   const email   = company["company_email"] || "";
   const phone   = company["company_phone"] || "";
   const address = company["company_address"] || "";
