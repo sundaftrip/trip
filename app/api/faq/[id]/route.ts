@@ -10,13 +10,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   const { id } = await params;
   try {
     const body = await req.json();
-    const { section, country, question, answer, order, active } = body;
+    const { section, question, answer, order, active } = body;
 
     const faq = await prisma.faq.update({
       where: { id },
       data: {
         ...(section   !== undefined && { section }),
-        ...(country   !== undefined && { country: country || null }),
         ...(question  !== undefined && { question }),
         ...(answer    !== undefined && { answer }),
         ...(order     !== undefined && { order }),

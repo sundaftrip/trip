@@ -165,7 +165,6 @@ model TermsCondition {
 model Faq {
   id        String   @id @default(cuid())
   section   String   // e.g. "Umum", "Visa & Dokumen"
-  country   String?  // null = berlaku untuk semua negara; diisi = khusus negara itu
   question  String
   answer    String   @db.Text
   order     Int      @default(0)
