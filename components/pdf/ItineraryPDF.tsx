@@ -3,7 +3,7 @@
    plus a Sundaf company profile. All content comes from the Tour record
    so the PDF always matches what is published on the website. */
 import {
-  Document, Page, View, Text, Image, StyleSheet,
+  Document, Page, View, Text, Image, Link, StyleSheet,
 } from "@react-pdf/renderer";
 
 const NAVY = "#1E3A5F";
@@ -51,7 +51,7 @@ export interface ItineraryPDFProps {
     website?: string;
     nib?: string;
   };
-  faqs: { question: string; answer: string }[];
+  faqUrl?: string;
 }
 
 const s = StyleSheet.create({
@@ -106,13 +106,12 @@ const s = StyleSheet.create({
 
   para: { fontSize: 9, lineHeight: 1.55, color: INK, marginTop: 4 },
 
-  faqItem: { marginBottom: 9 },
-  faqQ: { fontFamily: "Helvetica-Bold", fontSize: 9.5, color: NAVY },
-  faqA: { fontSize: 9, lineHeight: 1.5, color: SUB, marginTop: 2 },
-
   ctaBox: { borderWidth: 1, borderColor: NAVY, padding: 12, marginTop: 22 },
   ctaTitle: { fontFamily: "Helvetica-Bold", fontSize: 11, color: NAVY },
   ctaBody: { fontSize: 9, color: INK, lineHeight: 1.5, marginTop: 4 },
+
+  faqLine: { fontSize: 9, color: SUB, lineHeight: 1.5, marginTop: 10 },
+  faqLink: { color: ORANGE, fontFamily: "Helvetica-Bold", textDecoration: "none" },
 
   /* profile */
   profileWrap: { marginTop: 22, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 14 },
@@ -137,8 +136,9 @@ function isImg(u?: string | null): u is string {
 }
 
 export function ItineraryPDF({
-  tour, priceLabel, priceCoretLabel, landTourLabel, company, faqs,
+  tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl,
 }: ItineraryPDFProps) {
+  const faqDisplay = faqUrl ? faqUrl.replace(/^https?:\/\//, "") : "";
   const meta = [
     tour.duration ? ["DURASI", tour.duration] : null,
     tour.tripDateLabel ? ["KEBERANGKATAN", tour.tripDateLabel] : null,
@@ -251,20 +251,6 @@ export function ItineraryPDF({
           </View>
         )}
 
-        {/* faq */}
-        {faqs.length > 0 && (
-          <View>
-            <Text style={s.secHead}>Pertanyaan Umum (FAQ)</Text>
-            <View style={s.secAccent} />
-            {faqs.map((f, i) => (
-              <View key={i} style={s.faqItem} wrap={false}>
-                <Text style={s.faqQ}>{f.question}</Text>
-                <Text style={s.faqA}>{f.answer}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-
         {/* cta */}
         <View style={s.ctaBox} wrap={false}>
           <Text style={s.ctaTitle}>Tertarik bergabung?</Text>
@@ -275,6 +261,14 @@ export function ItineraryPDF({
             {tour.seatsLeft > 0 ? ` Sisa ${tour.seatsLeft} kursi.` : ""}
           </Text>
         </View>
+
+        {/* faq link */}
+        {!!faqUrl && (
+          <Text style={s.faqLine}>
+            Punya pertanyaan lain? Lihat daftar pertanyaan umum (FAQ) selengkapnya di{" "}
+            <Link src={faqUrl} style={s.faqLink}>{faqDisplay}</Link>
+          </Text>
+        )}
 
         {/* profil sundaf */}
         <View style={s.profileWrap} wrap={false}>

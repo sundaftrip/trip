@@ -23,12 +23,12 @@ function parseStory(raw?: string): string[] {
 }
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
 
-  const [tour, companyRows, faqRows] = await Promise.all([
+  const [tour, companyRows] = await Promise.all([
     prisma.tour.findUnique({ where: { id } }),
     prisma.companyInfo.findMany({
       where: { key: { in: [
@@ -37,7 +37,6 @@ export async function GET(
         "about_tagline", "about_story",
       ] } },
     }),
-    prisma.faq.findMany({ where: { active: true }, orderBy: { order: "asc" } }),
   ]);
 
   if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) {
@@ -46,6 +45,7 @@ export async function GET(
 
   const ci: Record<string, string> = {};
   companyRows.forEach((c) => { ci[c.key] = c.value; });
+  const faqUrl = `${new URL(req.url).origin}/faq`;
 
   const itinerary = (tour.itinerary as ItineraryDay[] | null) ?? [];
   const finalPrice = tour.promoPrice ?? tour.price;
@@ -54,13 +54,6 @@ export async function GET(
     ? `${formatCurrency(tour.price)}  -  hemat ${formatCurrency(tour.price - tour.promoPrice)}`
     : null;
   const landTourLabel = tour.priceLandTour ? formatCurrency(tour.priceLandTour) : null;
-
-  // FAQ with no country tag = applies to all tours; tagged FAQ must
-  // match this tour's country.
-  const tourCountry = tour.country.trim().toLowerCase();
-  const faqs = faqRows
-    .filter((f) => !f.country || f.country.trim().toLowerCase() === tourCountry)
-    .map((f) => ({ question: f.question, answer: f.answer }));
 
   // ItineraryPDF returns a <Document>; cast satisfies renderToBuffer's
   // strict element typing without leaking `any`.
@@ -97,7 +90,7 @@ export async function GET(
         website: ci["company_website"],
         nib: ci["company_nib"],
       },
-      faqs,
+      faqUrl,
     }) as unknown as PdfElement,
   );
 
