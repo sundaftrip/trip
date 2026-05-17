@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import React from "react";
 import { prisma } from "@/lib/prisma";
+import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
 import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award } from "lucide-react";
 
@@ -104,7 +105,7 @@ export default async function AboutPage() {
 
   const name      = company["company_name"]      ?? "Sundaftrip";
   const nib       = company["company_nib"]       ?? "";
-  const whatsapp  = company["company_whatsapp"]  ?? "";
+  const whatsapp  = toWaNumber(company["company_whatsapp"]);
   const waLink    = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi paket wisata.")}` : "/tours";
 
   const divStyle = isOutlined
