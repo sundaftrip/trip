@@ -13,39 +13,6 @@ function slugify(s: string) {
     .replace(/\s+/g, "-").replace(/-+/g, "-").slice(0, 70) || "itinerary";
 }
 
-/* Country keyword groups — used to keep FAQ relevant to the tour's
-   destination and drop FAQ that is specifically about other countries. */
-const COUNTRY_GROUPS: string[][] = [
-  ["russia", "rusia"],
-  ["china", "tiongkok", "cina"],
-  ["jepang", "japan"],
-  ["korea"],
-  ["kazakhstan", "kazakstan"],
-  ["uzbekistan"],
-  ["kyrgyzstan", "kirgizstan"],
-  ["turkmenistan"],
-  ["tajikistan"],
-  ["india"],
-];
-
-function relevantFaqs(
-  faqs: { question: string; answer: string }[],
-  country: string,
-) {
-  const c = country.toLowerCase();
-  const ownGroup = COUNTRY_GROUPS.find((g) => g.some((k) => c.includes(k))) ?? [c];
-  const otherKeywords = COUNTRY_GROUPS
-    .filter((g) => g !== ownGroup)
-    .flat();
-  return faqs.filter((f) => {
-    const text = `${f.question} ${f.answer}`.toLowerCase();
-    const mentionsOwn = ownGroup.some((k) => text.includes(k));
-    const mentionsOther = otherKeywords.some((k) => text.includes(k));
-    // keep general FAQ + FAQ about this country; drop other-country FAQ
-    return mentionsOwn || !mentionsOther;
-  });
-}
-
 function parseStory(raw?: string): string[] {
   if (!raw) return [];
   try {
@@ -88,10 +55,12 @@ export async function GET(
     : null;
   const landTourLabel = tour.priceLandTour ? formatCurrency(tour.priceLandTour) : null;
 
-  const faqs = relevantFaqs(
-    faqRows.map((f) => ({ question: f.question, answer: f.answer })),
-    tour.country,
-  );
+  // FAQ with no country tag = applies to all tours; tagged FAQ must
+  // match this tour's country.
+  const tourCountry = tour.country.trim().toLowerCase();
+  const faqs = faqRows
+    .filter((f) => !f.country || f.country.trim().toLowerCase() === tourCountry)
+    .map((f) => ({ question: f.question, answer: f.answer }));
 
   // ItineraryPDF returns a <Document>; cast satisfies renderToBuffer's
   // strict element typing without leaking `any`.

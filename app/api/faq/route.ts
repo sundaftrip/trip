@@ -25,14 +25,19 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { section, question, answer, order, active } = body;
+    const { section, country, question, answer, order, active } = body;
 
     if (!section || !question || !answer) {
       return NextResponse.json({ error: "section, question, answer wajib diisi" }, { status: 400 });
     }
 
     const faq = await prisma.faq.create({
-      data: { section, question, answer, order: order ?? 0, active: active ?? true },
+      data: {
+        section, question, answer,
+        country: country || null,
+        order: order ?? 0,
+        active: active ?? true,
+      },
     });
     return NextResponse.json(faq, { status: 201 });
   } catch {

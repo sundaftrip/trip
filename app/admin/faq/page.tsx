@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2, Check, X, ChevronDown, ChevronUp, Eye, EyeOff } f
 interface FaqItem {
   id: string;
   section: string;
+  country: string | null;
   question: string;
   answer: string;
   order: number;
@@ -16,6 +17,7 @@ const SECTIONS = ["Umum", "Visa & Dokumen", "Pembayaran & Deposit", "Di Lapangan
 
 const EMPTY: Omit<FaqItem, "id"> = {
   section: "Umum",
+  country: "",
   question: "",
   answer: "",
   order: 0,
@@ -30,6 +32,7 @@ export default function AdminFaqPage() {
   const [form, setForm] = useState<Omit<FaqItem, "id">>(EMPTY);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [countries, setCountries] = useState<string[]>([]);
   const formRef = useRef<HTMLDivElement>(null);
 
   async function load() {
@@ -41,6 +44,18 @@ export default function AdminFaqPage() {
   }
 
   useEffect(() => { load(); }, []);
+
+  // Country list for the FAQ-scope dropdown, taken from existing tours
+  useEffect(() => {
+    fetch("/api/tours")
+      .then((r) => r.json())
+      .then((d: { country?: string }[]) => {
+        if (!Array.isArray(d)) return;
+        const cs = [...new Set(d.map((t) => t.country).filter(Boolean))] as string[];
+        setCountries(cs.sort());
+      })
+      .catch(() => {});
+  }, []);
 
   // Scroll form into view whenever it opens
   useEffect(() => {
@@ -61,7 +76,7 @@ export default function AdminFaqPage() {
   function startEdit(item: FaqItem) {
     setEditing(item);
     setAdding(false);
-    setForm({ section: item.section, question: item.question, answer: item.answer, order: item.order, active: item.active });
+    setForm({ section: item.section, country: item.country ?? "", question: item.question, answer: item.answer, order: item.order, active: item.active });
   }
 
   function cancelForm() {
@@ -148,7 +163,7 @@ export default function AdminFaqPage() {
             {adding ? "Tambah FAQ Baru" : "Edit FAQ"}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Seksi</label>
               <select
@@ -158,6 +173,21 @@ export default function AdminFaqPage() {
               >
                 {SECTIONS.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Berlaku untuk negara</label>
+              <select
+                value={form.country ?? ""}
+                onChange={e => setForm(f => ({ ...f, country: e.target.value }))}
+                className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+              >
+                <option value="">Semua negara</option>
+                {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                {form.country && !countries.includes(form.country) && (
+                  <option value={form.country}>{form.country}</option>
+                )}
+              </select>
+              <p className="mt-1 text-[11px] text-gray-400">Menentukan FAQ ini muncul di PDF itinerary trip yang mana.</p>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Urutan (angka kecil = lebih atas)</label>
@@ -260,6 +290,9 @@ export default function AdminFaqPage() {
                             <p className={`text-sm font-semibold ${item.active ? "text-gray-900 dark:text-white" : "text-gray-400 dark:text-gray-500"}`}>
                               {item.question}
                             </p>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
+                              {item.country || "Semua negara"}
+                            </span>
                             {!item.active && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 shrink-0">
                                 <EyeOff size={9} /> Tersembunyi
