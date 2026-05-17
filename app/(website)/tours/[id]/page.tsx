@@ -8,7 +8,7 @@ import Link from "next/link";
 import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
   ArrowLeft, MessageCircle, Camera, Building2, FileText,
-  ClipboardList, Plane, Tag, Package, Ban, Route,
+  ClipboardList, Plane, Tag, Package, Ban, Route, Download,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
@@ -401,6 +401,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <MessageCircle size={18} /> Pesan via WhatsApp
                 </a>
               )}
+
+              {/* Download itinerary PDF */}
+              <a href={`/tours/${tour.id}/pdf`}
+                className={`w-full flex items-center justify-center gap-2 py-3 font-bold mb-3 transition ${isOutlined ? `${pfx}-card` : "border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"}`}
+                style={isOutlined ? { background: tCard, color: tText } : undefined}>
+                <Download size={16} /> Unduh Itinerary PDF
+              </a>
 
               <div className="text-xs text-center mb-5 font-black text-gray-400">
                 Konsultasi gratis · Tanpa biaya tambahan
