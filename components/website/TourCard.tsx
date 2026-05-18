@@ -8,7 +8,7 @@ interface Tour {
   id: string; title: string; country: string; cityHighlight?: string | null;
   price: number; promoPrice?: number | null; seatsLeft: number;
   tripDate?: Date | null; duration?: string | null; heroImg?: string | null;
-  badge?: string | null; category: string; status: string;
+  badge?: string | null; status: string;
 }
 
 function StatusOverlay({ isFull, isExpired }: { isFull: boolean; isExpired: boolean }) {
@@ -40,7 +40,7 @@ function ClassicCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
       <div className="p-5">
-        <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1.5">{tour.category} · {tour.country}</p>
+        <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1.5">{tour.country}</p>
         <h3 className="font-semibold mb-3 line-clamp-2 leading-snug text-[15px]" style={{ color: "var(--site-tour-title,#111827)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-3 text-[11px] text-gray-400 mb-4">
           {tour.duration && <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>}
@@ -73,7 +73,7 @@ function VibrantCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           </span>
         )}
         <div className="absolute bottom-4 left-4 right-4">
-          <p className="text-white/70 text-[10px] uppercase tracking-wider">{tour.category} · {tour.country}</p>
+          <p className="text-white/70 text-[10px] uppercase tracking-wider">{tour.country}</p>
         </div>
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
@@ -112,7 +112,7 @@ function BoldCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       </div>
       <div className="flex flex-col justify-between p-5 flex-1 min-w-0">
         <div>
-          <p className="text-[10px] uppercase tracking-widest mb-2" style={{ color: "var(--site-accent,#2d6a4f)" }}>{tour.category} · {tour.country}</p>
+          <p className="text-[10px] uppercase tracking-widest mb-2" style={{ color: "var(--site-accent,#2d6a4f)" }}>{tour.country}</p>
           <h3 className="font-bold text-white line-clamp-2 leading-snug text-sm mb-3">{tour.title}</h3>
           <div className="flex flex-wrap gap-3 text-[11px] text-gray-500">
             {tour.duration && <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>}
@@ -181,7 +181,7 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       <div className="p-5">
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--tr-subtext)" }}>
-          {tour.category} · {tour.country}
+          {tour.country}
         </p>
         <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--tr-text)" }}>
           {tour.title}
@@ -241,7 +241,7 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       <div className="p-5">
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--kw-subtext)" }}>
-          {tour.category} · {tour.country}
+          {tour.country}
         </p>
         <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--kw-text)" }}>
           {tour.title}
@@ -322,7 +322,7 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       <div className="p-5" style={{ background: "var(--px-card)" }}>
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
-          [{tour.category}] {tour.country}
+          {tour.country}
         </p>
         <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--px-text)" }}>
           {tour.title}
@@ -392,7 +392,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       <div className="p-5">
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--gl-subtext)" }}>
-          {tour.category} · {tour.country}
+          {tour.country}
         </p>
         <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--gl-text)" }}>
           {tour.title}
@@ -454,7 +454,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       <div className="p-5">
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--mp-subtext)" }}>
-          {tour.category} · {tour.country}
+          {tour.country}
         </p>
         <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>
           {tour.title}
@@ -516,7 +516,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       <div className="p-5">
         <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--at-subtext)" }}>
-          {tour.category} · {tour.country}
+          {tour.country}
         </p>
         <h3 className="font-semibold text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--at-text)" }}>
           {tour.title}
@@ -557,7 +557,7 @@ function AtelierCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
       <div className="p-5">
-        <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--atl-accent)" }}>{tour.category} · {tour.country}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--atl-accent)" }}>{tour.country}</p>
         <h3 className="font-semibold text-[16px] leading-snug mb-3 line-clamp-2" style={{ color: "var(--atl-ink)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-3 text-[11px] mb-4" style={{ color: "var(--atl-sub)" }}>
           {tour.duration && <span className="flex items-center gap-1"><Clock size={11} /> {tour.duration}</span>}
@@ -593,7 +593,7 @@ function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
       <div className="p-5">
-        <p className="text-[11px] font-extrabold uppercase tracking-wide mb-2" style={{ color: "var(--jo-accent-on)" }}>{tour.category} · {tour.country}</p>
+        <p className="text-[11px] font-extrabold uppercase tracking-wide mb-2" style={{ color: "var(--jo-accent-on)" }}>{tour.country}</p>
         <h3 className="font-extrabold mb-3 line-clamp-2 leading-snug text-[16px]" style={{ color: "var(--jo-ink)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {tour.duration && <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Clock size={10} /> {tour.duration}</span>}

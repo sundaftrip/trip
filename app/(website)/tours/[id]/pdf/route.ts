@@ -62,7 +62,6 @@ export async function GET(
     createElement(ItineraryPDF, {
       tour: {
         title: tour.title,
-        category: tour.category,
         country: tour.country,
         cityHighlight: tour.cityHighlight,
         seatsLeft: tour.seatsLeft,

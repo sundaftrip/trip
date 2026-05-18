@@ -9,7 +9,7 @@ interface Tour {
   id: string; title: string; country: string; cityHighlight: string | null;
   price: number; promoPrice: number | null; seatsLeft: number;
   tripDate: Date | null; duration: string | null; heroImg: string | null;
-  badge: string | null; category: string; status: string;
+  badge: string | null; status: string;
 }
 
 interface Props {
@@ -296,7 +296,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
                           </span>
                         )}
                         <div className="absolute bottom-0 left-0 right-0 p-6">
-                          <p className="text-white/60 text-[10px] uppercase tracking-wider mb-1">{tours[0].category} · {tours[0].country}</p>
+                          <p className="text-white/60 text-[10px] uppercase tracking-wider mb-1">{tours[0].country}</p>
                           <h3 className="text-white font-bold text-xl leading-snug mb-3">{tours[0].title}</h3>
                           <p className="text-xl font-black text-white">{(tours[0].promoPrice ?? tours[0].price).toLocaleString("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 })}</p>
                         </div>

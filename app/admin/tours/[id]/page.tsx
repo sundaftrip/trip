@@ -15,7 +15,6 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
       </div>
       <TourForm tour={{
         id: tour.id,
-        category: tour.category,
         title: tour.title,
         country: tour.country,
         cityHighlight: tour.cityHighlight ?? undefined,

@@ -23,7 +23,6 @@ export interface ItineraryDay {
 export interface ItineraryPDFProps {
   tour: {
     title: string;
-    category: string;
     country: string;
     cityHighlight?: string | null;
     seatsLeft: number;
@@ -143,7 +142,6 @@ export function ItineraryPDF({
     tour.duration ? ["DURASI", tour.duration] : null,
     tour.tripDateLabel ? ["KEBERANGKATAN", tour.tripDateLabel] : null,
     ["DESTINASI", tour.cityHighlight || tour.country],
-    ["KATEGORI", tour.category || "-"],
   ].filter(Boolean) as [string, string][];
 
   return (
@@ -160,7 +158,6 @@ export function ItineraryPDF({
         {/* title */}
         <Text style={s.kicker}>
           PAKET WISATA {tour.country.toUpperCase()}
-          {tour.category ? `  -  ${tour.category.toUpperCase()}` : ""}
         </Text>
         <Text style={s.title}>{tour.title}</Text>
 
