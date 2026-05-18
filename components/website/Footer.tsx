@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties, ComponentType } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
@@ -27,6 +28,20 @@ const getFooterData = unstable_cache(
 
 const navLinks = [["Beranda", "/"], ["Paket Tour", "/tours"], ["Blog", "/blog"], ["Tentang Kami", "/about"], ["FAQ", "/faq"], ["Syarat & Ketentuan", "/terms"]];
 
+type IconProps = { size?: number; className?: string; style?: CSSProperties };
+
+// lucide-react menghapus ikon brand — pakai SVG Instagram inline (currentColor)
+function InstagramIcon({ size = 16, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
 export default async function Footer({ theme = "classic" }: { theme?: string }) {
   const { t, c } = await getFooterData();
 
@@ -38,13 +53,19 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const phone    = c["company_phone"] || "";
   const whatsapp = toWaNumber(c["company_whatsapp"]);
   const email    = c["company_email"] || "";
+  const igUser   = (c["company_instagram"] || "")
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .replace(/\/+$/, "")
+    .trim();
 
   const contacts = [
     address  && { Icon: MapPin, label: "Alamat", value: address, href: null },
     phone    && { Icon: Phone,  label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
     whatsapp && { Icon: Phone,  label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
     email    && { Icon: Mail,   label: "Email", value: email, href: `mailto:${email}` },
-  ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
+    igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://instagram.com/${igUser}` },
+  ].filter(Boolean) as { Icon: ComponentType<IconProps>; label: string; value: string; href: string | null }[];
 
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
