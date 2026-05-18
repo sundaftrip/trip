@@ -111,6 +111,7 @@ const s = StyleSheet.create({
 
   faqLine: { fontSize: 9, color: SUB, lineHeight: 1.5, marginTop: 10 },
   faqLink: { color: ORANGE, fontFamily: "Helvetica-Bold", textDecoration: "none" },
+  waLink: { color: ORANGE, fontFamily: "Helvetica-Bold", textDecoration: "none" },
 
   /* profile */
   profileWrap: { marginTop: 22, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 14 },
@@ -132,6 +133,10 @@ const s = StyleSheet.create({
 
 function isImg(u?: string | null): u is string {
   return !!u && /^https?:\/\//.test(u);
+}
+
+function waLink(raw: string) {
+  return `https://wa.me/${raw.replace(/\D/g, "")}`;
 }
 
 export function ItineraryPDF({
@@ -252,9 +257,13 @@ export function ItineraryPDF({
         <View style={s.ctaBox} wrap={false}>
           <Text style={s.ctaTitle}>Tertarik bergabung?</Text>
           <Text style={s.ctaBody}>
-            {company.whatsapp
-              ? `Hubungi kami via WhatsApp ${company.whatsapp} untuk ketersediaan kursi dan proses pendaftaran.`
-              : "Hubungi kami untuk ketersediaan kursi dan proses pendaftaran."}
+            {company.whatsapp ? (
+              <>
+                Hubungi kami via WhatsApp{" "}
+                <Link src={waLink(company.whatsapp)} style={s.waLink}>{company.whatsapp}</Link>
+                {" "}untuk ketersediaan kursi dan proses pendaftaran.
+              </>
+            ) : "Hubungi kami untuk ketersediaan kursi dan proses pendaftaran."}
             {tour.seatsLeft > 0 ? ` Sisa ${tour.seatsLeft} kursi.` : ""}
           </Text>
         </View>
@@ -292,7 +301,7 @@ export function ItineraryPDF({
             {!!company.whatsapp && (
               <View style={s.contactRow}>
                 <Text style={s.contactLabel}>WhatsApp</Text>
-                <Text style={s.contactValue}>{company.whatsapp}</Text>
+                <Link style={[s.contactValue, s.waLink]} src={waLink(company.whatsapp)}>{company.whatsapp}</Link>
               </View>
             )}
             {!!company.email && (
