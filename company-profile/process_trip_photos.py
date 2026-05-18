@@ -21,18 +21,18 @@ TARGET_W, TARGET_H = 1200, 800  # 3:2 landscape
 # bright/contrast/color = enhancement factors (1.0 = unchanged)
 # v = vertical crop anchor (0 = keep top, 0.5 = center, 1 = keep bottom)
 PHOTOS = [
-    {"src": "PHOTO-2026-05-19-04-07-51.jpg",   "out": "trip-1.jpg",
-     "bright": 1.18, "contrast": 1.06, "color": 1.08, "v": 0.62},
-    {"src": "PHOTO-2026-05-19-04-13-22.jpg",   "out": "trip-2.jpg",
+    {"src": "PHOTO-2026-05-19-04-13-22.jpg",   "out": "trip-1.jpg",
      "bright": 1.05, "contrast": 1.04, "color": 1.06, "v": 0.42},
-    {"src": "PHOTO-2026-05-19-04-11-46 2.jpg", "out": "trip-3.jpg",
-     "bright": 1.07, "contrast": 1.05, "color": 1.05, "v": 0.50},
+    {"src": "PHOTO-2026-05-19-04-35-03.jpg",   "out": "trip-2.jpg",
+     "bright": 1.08, "contrast": 1.08, "color": 1.10, "v": 0.45},
+    {"src": "PHOTO-2026-05-19-04-35-04.jpg",   "out": "trip-3.jpg",
+     "bright": 1.06, "contrast": 1.06, "color": 1.08, "v": 0.50},
     {"src": "PHOTO-2026-05-19-04-08-25.jpg",   "out": "trip-4.jpg",
      "bright": 1.11, "contrast": 1.07, "color": 1.08, "v": 0.85},
-    {"src": "PHOTO-2026-05-19-04-09-10.jpg",   "out": "trip-5.jpg",
-     "bright": 1.15, "contrast": 1.07, "color": 1.08, "v": 0.72},
-    {"src": "PHOTO-2026-05-19-04-11-47 2.jpg", "out": "trip-6.jpg",
-     "bright": 1.20, "contrast": 1.05, "color": 1.06, "v": 0.50},
+    {"src": "PHOTO-2026-05-19-04-11-46 2.jpg", "out": "trip-5.jpg",
+     "bright": 1.07, "contrast": 1.05, "color": 1.05, "v": 0.50},
+    {"src": "PHOTO-2026-05-19-04-35-33.jpg",   "out": "trip-6.jpg",
+     "bright": 1.12, "contrast": 1.06, "color": 1.04, "v": 0.50},
 ]
 
 
