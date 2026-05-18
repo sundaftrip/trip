@@ -10,13 +10,25 @@ import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
 
 async function getData() {
-  const [texts, tours, posts, companyRows, testimonials] = await Promise.all([
+  const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
-    prisma.tour.findMany({ where: { status: "ACTIVE" }, take: 6, orderBy: { createdAt: "desc" } }),
+    prisma.tour.findMany({ where: { status: "ACTIVE" }, orderBy: { tripDate: "asc" } }),
     prisma.blog.findMany({ where: { published: true }, take: 3, orderBy: { date: "desc" } }),
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
+  // Tour selesai (tanggalnya sudah lewat) otomatis turun ke bawah, urut dari tanggal tertua
+  const now = new Date();
+  const tours = [...toursRaw]
+    .sort((a, b) => {
+      const aDone = !!a.tripDate && a.tripDate < now;
+      const bDone = !!b.tripDate && b.tripDate < now;
+      if (aDone !== bDone) return aDone ? 1 : -1;
+      const at = a.tripDate ? a.tripDate.getTime() : Infinity;
+      const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
+      return at - bt;
+    })
+    .slice(0, 6);
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
