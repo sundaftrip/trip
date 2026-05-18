@@ -40,16 +40,12 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "vibrant",  label: "Catalog",  desc: "Katalog premium. Layout split-screen editorial.",                      feature: "theme_vibrant" },
-  { key: "bold",     label: "Bold",     desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi.",             feature: "theme_bold" },
   { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.",          feature: "theme_tropical" },
   { key: "kawaii",   label: "Kawaii",   desc: "Retro cute pastel. Border bulat, hati melayang, peach aesthetic.",     feature: "theme_kawaii" },
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
   { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
-  { key: "atelier",  label: "Atelier",   desc: "Editorial mewah. Simetris, heading serif, hairline border, whitespace lega.", feature: null },
-  { key: "jojo",     label: "Jojo",      desc: "Sticker book cute. Stiker SVG, border tebal, shadow chunky, motion bouncy.", feature: null },
   { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
 ];
 
@@ -296,61 +292,14 @@ export default function SettingsPage() {
                   {/* Mini layout preview */}
                   <div className={`h-20 rounded-lg mb-3 overflow-hidden relative ${
                     key === "classic" ? "bg-white border border-gray-100" :
-                    key === "vibrant" ? "bg-white border border-gray-100" :
-                    key === "atelier" ? "bg-white border border-gray-100" :
-                    key === "jojo" ? "border border-gray-100" :
                     key === "console" ? "bg-white border border-gray-100" :
                     "bg-gray-950"
-                  }`} style={key === "jojo" ? { background: "#fff6ec" } : undefined}>
-                    {key === "jojo" && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
-                        <div className="flex gap-1.5">
-                          <div className="w-4 h-4 rounded-full" style={{ background: currentAccent, border: "1.5px solid #43372f" }} />
-                          <div className="w-4 h-4 rotate-45" style={{ background: "#fff", border: "1.5px solid #43372f" }} />
-                        </div>
-                        <div className="h-2.5 w-16 rounded-full" style={{ background: "#4b3f39" }} />
-                        <div className="h-3 w-9 rounded-full mt-0.5" style={{ background: currentAccent, border: "2px solid #43372f", boxShadow: "0 2px 0 0 #43372f" }} />
-                      </div>
-                    )}
-                    {key === "atelier" && (
-                      <div className="absolute inset-0 overflow-hidden"
-                        style={{ background: "linear-gradient(135deg, #3a4a5a, #6b7d8a)" }}>
-                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent 60%)" }} />
-                        <div className="absolute left-2.5 bottom-2.5 right-2.5">
-                          <div className="h-1.5 w-6 rounded-sm mb-1.5" style={{ background: currentAccent }} />
-                          <div className="h-2.5 w-20 rounded-sm bg-white mb-1" />
-                          <div className="h-1.5 w-12 rounded-sm bg-white/60 mb-2" />
-                          <div className="h-3.5 w-12 rounded-md" style={{ background: currentAccent }} />
-                        </div>
-                        <div className="absolute right-2.5 top-2.5 flex gap-1">
-                          <div className="h-1.5 w-4 rounded-full bg-white" />
-                          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
-                          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
-                        </div>
-                      </div>
-                    )}
+                  }`}>
                     {key === "classic" && (
                       <div className="absolute bottom-0 left-0 right-0 p-2">
                         <div className="h-1.5 w-12 rounded bg-gray-900 mb-1.5" />
                         <div className="h-3 w-20 rounded bg-gray-900 mb-1" />
                         <div className="h-1 w-16 rounded bg-gray-300" />
-                      </div>
-                    )}
-                    {key === "vibrant" && (
-                      <div className="absolute inset-0 flex">
-                        <div className="w-1/2 p-2 flex flex-col justify-center">
-                          <div className="h-1 w-8 rounded mb-1" style={{ background: currentEyebrow }} />
-                          <div className="h-2.5 w-12 rounded mb-1" style={{ background: currentHero }} />
-                          <div className="h-1.5 w-8 rounded" style={{ background: currentHero, opacity: 0.5 }} />
-                        </div>
-                        <div className="w-1/2 bg-gray-100 rounded-l-xl" />
-                      </div>
-                    )}
-                    {key === "bold" && (
-                      <div className="absolute inset-0 p-2 flex flex-col justify-end">
-                        <div className="h-1 w-8 rounded bg-gray-600 mb-1.5" />
-                        <div className="h-4 w-20 rounded bg-white mb-1" />
-                        <div className="h-1 w-14 rounded bg-gray-700" />
                       </div>
                     )}
                     {key === "tropical" && (
@@ -480,7 +429,7 @@ export default function SettingsPage() {
         {!isPro && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Tema Catalog, Bold, Tropical, Kawaii, Pixel Art, Globe & Atlas Map tersedia di paket Pro. Hubungi admin untuk upgrade.
+              Tema Tropical, Kawaii, Pixel Art, Globe & Atlas Map tersedia di paket Pro. Hubungi admin untuk upgrade.
             </p>
           </div>
         )}
