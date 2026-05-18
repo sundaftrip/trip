@@ -13,6 +13,7 @@ const INFO_FIELDS = [
   { key: "company_whatsapp", label: "WhatsApp" },
   { key: "company_email", label: "Email" },
   { key: "company_website", label: "Website" },
+  { key: "company_instagram", label: "Instagram (username, mis. sundaf.trip)" },
 ];
 
 const FONTS = [
