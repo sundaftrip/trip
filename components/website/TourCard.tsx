@@ -30,7 +30,7 @@ function ClassicCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`group block bg-white dark:bg-black border border-gray-100 dark:border-gray-900 rounded-2xl overflow-hidden transition-all duration-300 ${isDimmed ? "grayscale opacity-60 cursor-default" : "hover:border-gray-300 dark:hover:border-gray-700 hover:-translate-y-1 hover:shadow-lg"}`}>
       <div className="relative h-52 bg-gray-100 dark:bg-gray-900 overflow-hidden">
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full text-gray-300 dark:text-gray-700"><MapPin size={28} /></div>}
         {tour.badge && !isDimmed && (
           <span className="absolute top-3 left-3 px-2.5 py-1 text-white text-[11px] font-semibold rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }}>
@@ -64,7 +64,7 @@ function VibrantCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`group block bg-white dark:bg-gray-900 rounded-3xl overflow-hidden transition-all duration-500 ${isDimmed ? "grayscale opacity-60 cursor-default" : "hover:-translate-y-2 hover:shadow-2xl shadow-md"}`}>
       <div className="relative h-64 bg-gray-100 dark:bg-gray-800 overflow-hidden">
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full text-gray-300"><MapPin size={32} /></div>}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         {tour.badge && !isDimmed && (
@@ -106,7 +106,7 @@ function BoldCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       style={{ borderLeft: `4px solid var(--site-accent,#2d6a4f)` }}>
       <div className="relative w-40 sm:w-52 shrink-0 bg-gray-800 overflow-hidden">
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full text-gray-600"><MapPin size={24} /></div>}
         <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
       </div>
@@ -155,7 +155,7 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       <div className="relative h-52 overflow-hidden rounded-t-[18px] border-b-2"
         style={{ borderColor: "var(--tr-border)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full text-gray-300" style={{ background: "var(--tr-mint)" }}><MapPin size={28} /></div>}
 
         {!isDimmed && (
@@ -216,7 +216,7 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       <div className="relative h-52 overflow-hidden rounded-t-[22px] border-b-2"
         style={{ borderColor: "var(--kw-border)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full" style={{ background: "var(--kw-peach)", color: "var(--kw-border)" }}><MapPin size={28} /></div>}
 
         {/* Heart badge */}
@@ -292,7 +292,7 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       {/* Image */}
       <div className="relative h-52 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover" style={{ imageRendering: "auto", transition: "none" }} />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover" style={{ imageRendering: "auto", transition: "none" }} />
           : <div className="flex items-center justify-center h-full text-gray-300"
               style={{ background: accentColor, opacity: 0.2 }}>
               <MapPin size={28} />
@@ -366,7 +366,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`gl-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
       <div className="relative h-52 overflow-hidden rounded-t-[18px]">
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>🌍</div>}
 
         {!isDimmed && (
@@ -428,7 +428,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`mp-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
       <div className="relative h-52 overflow-hidden border-b-2" style={{ borderColor: "var(--mp-border)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full" style={{ background: "var(--mp-water)", opacity: 0.4 }} />}
 
         {!isDimmed && (
@@ -490,7 +490,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`at-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
       <div className="relative h-52 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
 
         {!isDimmed && (
@@ -549,7 +549,7 @@ function AtelierCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`atl-card group block ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
       <div className="relative h-56 overflow-hidden" style={{ background: "var(--atl-soft)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line)" }}><MapPin size={28} /></div>}
         {tour.badge && !isDimmed && (
           <span className="absolute top-3 left-3 atl-tag">{tour.badge}</span>
@@ -585,7 +585,7 @@ function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     <div className={`jo-card jo-font group block overflow-hidden ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
       <div className="relative h-52 overflow-hidden" style={{ background: "var(--jo-soft)", borderBottom: "2.5px solid var(--jo-line)" }}>
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="flex items-center justify-center h-full" style={{ color: "var(--jo-line)" }}><MapPin size={28} /></div>}
         {tour.badge && !isDimmed && (
           <span className="absolute top-3 left-3 jo-tag">{tour.badge}</span>

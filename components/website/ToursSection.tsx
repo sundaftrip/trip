@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
 import { ArrowRight } from "lucide-react";
@@ -286,7 +287,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
                     <Link href={`/tours/${tours[0].id}`}>
                       <div className="group relative h-96 rounded-3xl overflow-hidden shadow-2xl cursor-pointer">
                         {tours[0].heroImg
-                          ? <img src={tours[0].heroImg} alt={tours[0].title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                          ? <Image src={tours[0].heroImg} alt={tours[0].title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
                           : <div className="absolute inset-0 bg-gray-200" />}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                         {tours[0].badge && (
