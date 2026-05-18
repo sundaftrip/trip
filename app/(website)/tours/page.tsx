@@ -48,8 +48,10 @@ export default async function ToursPage({
   const sorted = [...filteredTours].sort((a, b) => {
     const aDown = a.status === "FULL" || (!!a.tripDate && a.tripDate < now);
     const bDown = b.status === "FULL" || (!!b.tripDate && b.tripDate < now);
-    if (aDown === bDown) return 0;
-    return aDown ? 1 : -1;
+    if (aDown !== bDown) return aDown ? 1 : -1;
+    const at = a.tripDate ? a.tripDate.getTime() : Infinity;
+    const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
+    return aDown ? bt - at : at - bt;
   });
 
   const buildUrl = (overrides: Record<string, string | undefined>) => {

@@ -17,7 +17,8 @@ async function getData() {
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
-  // Tour selesai (tanggalnya sudah lewat) otomatis turun ke bawah, urut dari tanggal tertua
+  // Tour selesai (tanggalnya sudah lewat) otomatis turun ke bawah.
+  // Aktif: tanggal terdekat dulu. Selesai: yang paling tua tenggelam paling bawah.
   const now = new Date();
   const tours = [...toursRaw]
     .sort((a, b) => {
@@ -26,7 +27,7 @@ async function getData() {
       if (aDone !== bDone) return aDone ? 1 : -1;
       const at = a.tripDate ? a.tripDate.getTime() : Infinity;
       const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
-      return at - bt;
+      return aDone ? bt - at : at - bt;
     })
     .slice(0, 6);
   const t: Record<string, { id?: string; en?: string }> = {};
