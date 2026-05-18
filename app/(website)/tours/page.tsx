@@ -216,7 +216,7 @@ export default async function ToursPage({
             <p className={`text-sm mb-5 ${isOutlined ? "" : "text-gray-500 dark:text-gray-400"}`} style={{ color: subColor ?? undefined }}>
               {sorted.length} paket ditemukan
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {sorted.map((tour) => <TourCard key={tour.id} tour={tour} theme={theme} />)}
             </div>
           </>

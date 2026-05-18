@@ -39,7 +39,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="pixel" />
@@ -63,7 +63,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             <Link href="/tours" className="atl-btn-ghost !py-3 !px-6 !text-[13px]">Lihat Semua <ArrowRight size={14} /></Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="atelier" />
@@ -84,7 +84,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>Tour Pilihan</h2>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="jojo" />
@@ -113,7 +113,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="kawaii" />
@@ -142,7 +142,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="globe" />
@@ -168,7 +168,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="atlas" />
@@ -198,7 +198,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="map" />
@@ -224,7 +224,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </Link>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
             <AnimateIn key={tour.id} delay={i * 80}>
               <TourCard tour={tour} theme="tropical" />
@@ -268,7 +268,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
 
         {/* Classic: equal 3-column grid */}
         {theme === "classic" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {tours.map((tour, i) => (
               <AnimateIn key={tour.id} delay={i * 80}>
                 <TourCard tour={tour} theme="classic" />
@@ -312,7 +312,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               </AnimateIn>
             )}
             {tours.length > 3 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {tours.slice(3).map((tour, i) => (
                   <AnimateIn key={tour.id} delay={i * 80}>
                     <TourCard tour={tour} theme="vibrant" />
