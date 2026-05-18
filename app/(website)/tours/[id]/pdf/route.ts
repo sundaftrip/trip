@@ -98,7 +98,7 @@ export async function GET(
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="Itinerary-${slugify(tour.title)}.pdf"`,
-      "Cache-Control": "public, max-age=300",
+      "Cache-Control": "no-store, must-revalidate",
     },
   });
 }
