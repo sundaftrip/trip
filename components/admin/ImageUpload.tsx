@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, X, AlertCircle } from "lucide-react";
+import { Upload, X, AlertCircle, Link2 } from "lucide-react";
 
 interface Props {
   value: string;
@@ -37,9 +37,11 @@ async function compressImage(file: File): Promise<string> {
 }
 
 export default function ImageUpload({ value, onChange, folder = "travel", multiple = false }: Props) {
+  const [mode, setMode] = useState<"upload" | "link">("upload");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState("");
+  const [linkText, setLinkText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
@@ -62,7 +64,8 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
         // Convert base64 back to File for FormData
         const res0 = await fetch(base64);
         const blob = await res0.blob();
-        uploadFile = new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" });
+        const baseName = (file.name || "gambar.jpg").replace(/\.[^.]+$/, ".jpg");
+        uploadFile = new File([blob], baseName, { type: "image/jpeg" });
       } catch {
         // Compress gagal (misal format HEIC/HEIF dari iOS) — kirim file asli langsung
         uploadFile = file;
@@ -95,6 +98,27 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
     e.target.value = "";
   }
 
+  function applyLink() {
+    const url = linkText.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) {
+      setError("Link harus diawali http:// atau https://");
+      return;
+    }
+    setError(null);
+    onChange(url);
+    setLinkText("");
+  }
+
+  // Tempel (paste) — kalau clipboard berisi gambar (mis. dari WhatsApp) langsung upload
+  function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
+    const imgFile = Array.from(e.clipboardData.files).find((f) => f.type.startsWith("image/"));
+    if (imgFile) {
+      e.preventDefault();
+      handleFile(imgFile);
+    }
+  }
+
   return (
     <div>
       {!multiple && value ? (
@@ -107,15 +131,68 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
           </button>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-          className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition disabled:opacity-60"
-        >
-          <Upload size={16} />
-          {uploading ? progress || "Mengupload..." : multiple ? "Upload Gambar" : "Upload Gambar Hero"}
-        </button>
+        <div>
+          {/* Pilihan: Upload atau Tempel Link */}
+          <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 p-0.5 mb-3">
+            <button
+              type="button"
+              onClick={() => { setMode("upload"); setError(null); }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition ${
+                mode === "upload"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              <Upload size={13} /> Upload
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode("link"); setError(null); }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition ${
+                mode === "link"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              <Link2 size={13} /> Tempel Link
+            </button>
+          </div>
+
+          {mode === "upload" ? (
+            <div>
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading}
+                className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition disabled:opacity-60"
+              >
+                <Upload size={16} />
+                {uploading ? progress || "Mengupload..." : multiple ? "Upload Gambar" : "Upload Gambar Hero"}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={linkText}
+                onChange={(e) => setLinkText(e.target.value)}
+                onPaste={handlePaste}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyLink(); } }}
+                disabled={uploading}
+                placeholder="Tempel link gambar, atau Ctrl/Cmd+V gambar dari WhatsApp"
+                className="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 disabled:opacity-60"
+              />
+              <button
+                type="button"
+                onClick={applyLink}
+                disabled={uploading || !linkText.trim()}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-40"
+              >
+                {uploading ? progress || "..." : "Pakai"}
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
       {error && (
