@@ -14,18 +14,16 @@ async function getSiteTheme() {
 export default async function ToursPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; country?: string; continent?: string }>;
+  searchParams: Promise<{ country?: string; continent?: string }>;
 }) {
   const [params, theme] = await Promise.all([searchParams, getSiteTheme()]);
 
   const where: Record<string, unknown> = { status: { in: ["ACTIVE", "FULL"] } };
-  if (params.category) where.category = params.category;
   if (params.country)  where.country  = params.country;
 
-  const [tours, allTours, categories] = await Promise.all([
+  const [tours, allTours] = await Promise.all([
     prisma.tour.findMany({ where, orderBy: { tripDate: "asc" } }),
     prisma.tour.findMany({ where: { status: { in: ["ACTIVE", "FULL"] } }, select: { country: true }, distinct: ["country"] }),
-    prisma.tour.findMany({ distinct: ["category"], select: { category: true }, where: { status: { in: ["ACTIVE", "FULL"] } } }),
   ]);
 
   const continentCountries: Record<string, string[]> = {};
@@ -57,7 +55,6 @@ export default async function ToursPage({
   const buildUrl = (overrides: Record<string, string | undefined>) => {
     const p = { ...params, ...overrides };
     const q = new URLSearchParams();
-    if (p.category)  q.set("category",  p.category);
     if (p.continent) q.set("continent", p.continent);
     if (p.country)   q.set("country",   p.country);
     return `/tours${q.toString() ? `?${q}` : ""}`;
@@ -175,20 +172,6 @@ export default async function ToursPage({
             </>
           )}
         </div>
-
-        {/* Category Filter */}
-        {categories.length > 1 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            <a href={buildUrl({ category: undefined })} {...(!params.category ? pillActive() : pillInactive())}>
-              Semua Kategori
-            </a>
-            {categories.map(({ category }) => (
-              <a key={category} href={buildUrl({ category })} {...(params.category === category ? pillActive() : pillInactive())}>
-                {category}
-              </a>
-            ))}
-          </div>
-        )}
 
         {/* Continent Filter */}
         {availableContinents.length > 0 && (

@@ -6,12 +6,10 @@ import { logActivity } from "@/lib/activityLog";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const category = searchParams.get("category");
   const status = searchParams.get("status");
   const country = searchParams.get("country");
 
   const where: Record<string, unknown> = {};
-  if (category) where.category = category;
   if (status) where.status = status;
   if (country) where.country = country;
 

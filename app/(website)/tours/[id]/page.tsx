@@ -8,7 +8,7 @@ import Link from "next/link";
 import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
   ArrowLeft, MessageCircle, Camera, Building2, FileText,
-  ClipboardList, Plane, Tag, Package, Ban, Route, Download,
+  ClipboardList, Plane, Package, Ban, Route, Download,
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
@@ -120,7 +120,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     "@type": "TouristTrip",
     name: tour.title,
     description: tour.notes ?? tour.visaInfo ?? undefined,
-    touristType: tour.category,
     image: tour.heroImg ? [tour.heroImg] : undefined,
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(tour.duration ? { duration: tour.duration } : {}),
@@ -440,13 +439,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   </span>
                   <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
                     style={isOutlined ? { color: tText } : undefined}>{tour.seatsLeft}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
-                    {sidebarLabel(<Tag size={12} />, "Kategori")}
-                  </span>
-                  <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
-                    style={isOutlined ? { color: tText } : undefined}>{tour.category}</span>
                 </div>
               </div>
 

@@ -28,7 +28,6 @@ export default async function ToursPage() {
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
                 <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Judul</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kategori</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Negara</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Harga</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Seat</th>
@@ -40,7 +39,7 @@ export default async function ToursPage() {
             <tbody>
               {tours.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-gray-400">
+                  <td colSpan={7} className="text-center py-12 text-gray-400">
                     Belum ada tour.{" "}
                     <Link href="/admin/tours/new" className="text-blue-600">Tambah sekarang</Link>
                   </td>
@@ -52,7 +51,6 @@ export default async function ToursPage() {
                     <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{tour.title}</p>
                     {tour.badge && <span className="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 rounded">{tour.badge}</span>}
                   </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{tour.category}</td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{tour.country}</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-white font-medium">
                     {formatCurrency(tour.promoPrice ?? tour.price)}

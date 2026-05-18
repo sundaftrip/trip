@@ -6,7 +6,6 @@ import ImageUpload from "./ImageUpload";
 
 interface TourData {
   id?: string;
-  category?: string;
   title?: string;
   country?: string;
   cityHighlight?: string;
@@ -34,7 +33,6 @@ export default function TourForm({ tour }: { tour?: TourData }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState<TourData>({
-    category: tour?.category ?? "",
     title: tour?.title ?? "",
     country: tour?.country ?? "",
     cityHighlight: tour?.cityHighlight ?? "",
@@ -104,14 +102,6 @@ export default function TourForm({ tour }: { tour?: TourData }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Judul Tour *">
             <input required className="input" value={form.title} onChange={(e) => set("title", e.target.value)} />
-          </Field>
-          <Field label="Kategori *">
-            <select className="input" value={form.category} onChange={(e) => set("category", e.target.value)} required>
-              <option value="">Pilih kategori</option>
-              {["Umroh", "Haji", "Wisata Religi", "Wisata Halal", "City Tour", "Adventure"].map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
           </Field>
           <Field label="Negara *">
             <input required className="input" value={form.country} onChange={(e) => set("country", e.target.value)} />
