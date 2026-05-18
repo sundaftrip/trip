@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
 
-export const size = { width: 32, height: 32 };
+// 192×192 (kelipatan 48) — syarat favicon Google. Ukuran 32px ditolak Google.
+export const size = { width: 192, height: 192 };
 export const contentType = "image/png";
 export const dynamic = "force-dynamic";
 
@@ -41,9 +42,9 @@ export default async function Icon() {
         alignItems: "center",
         justifyContent: "center",
         color: "#f97316",
-        fontSize: 22,
+        fontSize: 132,
         fontWeight: 900,
-        borderRadius: 6,
+        borderRadius: 36,
       }}
     >
       S
