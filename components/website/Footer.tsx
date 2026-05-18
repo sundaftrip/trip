@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { CSSProperties, ComponentType } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -79,8 +80,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--kw-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -127,8 +127,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 20%, transparent)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--gl-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--gl-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -174,8 +173,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "var(--at-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--at-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--at-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -223,8 +221,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--mp-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--mp-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--mp-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -270,8 +267,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--tr-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -323,8 +319,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>NIB {nib}</p>}
             {/* Pixel color blocks */}
@@ -377,8 +372,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10" style={{ borderBottom: "2.5px dashed var(--jo-line)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="atl-logo" style={{ marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="atl-logo" style={{ marginBottom: 16 }} />
             {tagline && <p className="text-sm font-semibold leading-relaxed max-w-xs" style={{ color: "var(--jo-sub)" }}>{tagline}</p>}
             {nib && <p className="text-xs font-bold mt-3" style={{ color: "var(--jo-sub)" }}>NIB {nib}</p>}
           </div>
@@ -421,8 +415,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     <footer style={{ background: "var(--atl-bg)", color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center pb-14 border-b" style={{ borderColor: "var(--atl-line)" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logo || "/logo.png"} alt={name} className="atl-logo" style={{ margin: "0 auto 18px" }} />
+          <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="atl-logo" style={{ margin: "0 auto 18px" }} />
           {tagline && <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: "var(--atl-sub)" }}>{tagline}</p>}
         </div>
 
@@ -466,8 +459,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
             {tagline && <p className="text-sm leading-relaxed text-gray-500 max-w-xs">{tagline}</p>}
             {nib && <p className="text-xs text-gray-500 mt-3">NIB {nib}</p>}
           </div>

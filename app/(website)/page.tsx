@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import HeroSection from "@/components/website/HeroSection";
@@ -9,7 +10,7 @@ import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
 
-async function getData() {
+const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
     prisma.tour.findMany({ where: { status: "ACTIVE" }, orderBy: { tripDate: "asc" } }),
@@ -35,7 +36,7 @@ async function getData() {
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
   return { texts: t, tours, posts, company, companyRows, testimonials };
-}
+}, ["home-page-data"], { revalidate: 300, tags: ["home-data"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
