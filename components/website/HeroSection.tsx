@@ -2,35 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, MapPin } from "lucide-react";
-import { JojoSticker, JojoStickerField } from "./JojoStickers";
+import { ArrowRight } from "lucide-react";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo";
-  featuredImage?: string | null;
-  heroImages?: string[];
+  theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
 }
 
-export default function HeroSection({ texts, waNumber, companyName, theme = "classic", featuredImage, heroImages = [] }: Props) {
+export default function HeroSection({ texts, waNumber, companyName, theme = "classic" }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
-  const [slide, setSlide] = useState(0);
 
   useEffect(() => {
     const stored = localStorage.getItem("lang") as "id" | "en" | null;
     if (stored) setLang(stored);
   }, []);
-
-  /* Atelier hero carousel — auto-advance */
-  const atlSlides = heroImages.length > 0 ? heroImages : (featuredImage ? [featuredImage] : []);
-  useEffect(() => {
-    if (theme !== "atelier" || atlSlides.length < 2) return;
-    const id = setInterval(() => setSlide((s) => (s + 1) % atlSlides.length), 5500);
-    return () => clearInterval(id);
-  }, [theme, atlSlides.length]);
 
   const t = (key: string, fallback: string) => {
     const val = texts[key];
@@ -185,94 +172,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               💬 WhatsApp
             </a>
           )}
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ── CATALOG (vibrant) ── */
-  if (theme === "vibrant") return (
-    <section className="min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-950">
-      <div className="flex-1 flex flex-col justify-between px-6 sm:px-12 lg:px-16 pt-28 pb-12 lg:pt-36 min-h-[60vh] lg:min-h-screen hero-fade-up">
-        <p className="text-[11px] font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--site-eyebrow,#6b7280)" }}>
-          {eyebrow}
-        </p>
-        <div className="py-8 lg:py-0">
-          <p className="text-xs font-mono text-gray-300 dark:text-gray-700 mb-6 tracking-widest">— 01</p>
-          <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-black leading-[0.92] tracking-tight mb-8"
-            style={{ color: "var(--site-hero,#0d2018)" }}>
-            <TitleWords />
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed">
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <Link href="/tours"
-            className="inline-flex items-center gap-2.5 px-7 py-3.5 text-sm font-bold text-white rounded-2xl transition-all hover:opacity-90 hover:scale-105 shadow-lg"
-            style={{ background: "var(--site-accent,#2d6a4f)" }}>
-            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-          </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-              className="text-sm font-medium text-gray-400 hover:text-gray-900 dark:hover:text-white transition underline underline-offset-4">
-              WhatsApp ↗
-            </a>
-          )}
-        </div>
-      </div>
-
-      <div className="relative w-full lg:w-[45%] h-64 lg:h-auto shrink-0 overflow-hidden hero-fade-left">
-        {featuredImage ? (
-          <Image src={featuredImage} alt="Featured Tour" fill className="object-cover" priority sizes="(max-width:1024px) 100vw, 45vw" />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center"
-            style={{ background: "var(--site-accent,#2d6a4f)", opacity: 0.12 }}>
-            <MapPin size={48} className="text-gray-300" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-transparent lg:from-white/10 dark:from-gray-950/40" />
-        <div className="absolute bottom-6 right-6 text-right">
-          <div className="inline-block px-4 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-sm"
-            style={{ background: "var(--site-accent,#2d6a4f)" }}>
-            Katalog {new Date().getFullYear()}
-          </div>
-        </div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden lg:block">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-semibold"
-            style={{ writingMode: "vertical-rl" }}>
-            Unique Collection
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ── BOLD ── */
-  if (theme === "bold") return (
-    <section className="min-h-screen flex flex-col justify-center bg-gray-950 px-4 py-32 overflow-hidden">
-      <div className="max-w-7xl mx-auto w-full hero-fade-up">
-        <p className="text-xs font-semibold tracking-[0.25em] uppercase mb-12 text-gray-600">{eyebrow}</p>
-        <h1 className="text-[clamp(3rem,9vw,8rem)] font-black leading-[0.92] tracking-tight text-white max-w-5xl mb-16">
-          <TitleWords />
-        </h1>
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 pt-10 border-t border-gray-800">
-          <p className="text-base text-gray-500 max-w-sm leading-relaxed">
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-          <div className="flex items-center gap-4 shrink-0">
-            <Link href="/tours"
-              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-bold text-white rounded-2xl transition-all hover:opacity-90 hover:scale-105"
-              style={{ background: "var(--site-accent,#2d6a4f)" }}>
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-            </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-                className="text-sm font-medium text-gray-600 hover:text-white transition underline underline-offset-4">
-                WhatsApp
-              </a>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -513,112 +412,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           )}
         </div>
       </div>
-    </section>
-  );
-
-  /* ── JOJO — sticker book ── */
-  if (theme === "jojo") return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden px-4 pt-32 pb-20"
-      style={{ background: "transparent" }}>
-      <JojoStickerField />
-      <div className="max-w-4xl mx-auto w-full text-center relative z-10 jo-font">
-        <div className="jo-pop inline-block mb-8" style={{ animationDelay: ".05s" }}>
-          <span className="jo-chip"><JojoSticker shape="star" size={20} /> {eyebrow}</span>
-        </div>
-
-        <h1 className="jo-pop text-[clamp(2.8rem,8vw,6rem)] leading-[1.05] tracking-tight mb-7"
-          style={{ color: "var(--jo-ink)", fontWeight: 900, animationDelay: ".15s" }}>
-          <TitleWords extra={<span className="inline-block ml-3 align-middle jo-bob"><JojoSticker shape="heart" size={50} /></span>} />
-        </h1>
-
-        <p className="jo-pop text-base sm:text-lg max-w-xl mx-auto mb-9 font-semibold"
-          style={{ color: "var(--jo-sub)", animationDelay: ".28s" }}>
-          {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-        </p>
-
-        <div className="jo-pop flex flex-wrap items-center justify-center gap-4 mb-10" style={{ animationDelay: ".4s" }}>
-          <Link href="/tours" className="jo-btn">
-            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
-          </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="jo-btn-soft">
-              WhatsApp
-            </a>
-          )}
-        </div>
-
-        <div className="jo-pop flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: ".52s" }}>
-          <span className="jo-chip"><JojoSticker shape="cloud" size={18} /> {t("hero_subtitle", "Destinasi Pilihan")}</span>
-          <span className="jo-chip"><JojoSticker shape="sparkle" size={18} /> Paket Lengkap</span>
-          <span className="jo-chip"><JojoSticker shape="face" size={18} /> Terpercaya</span>
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ── ATELIER — clean editorial travel, hero carousel ── */
-  if (theme === "atelier") return (
-    <section className="relative h-screen min-h-[600px] overflow-hidden">
-      {/* slides */}
-      {atlSlides.length > 0 ? atlSlides.map((src, i) => (
-        <div key={i} className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: i === slide ? 1 : 0 }} aria-hidden={i !== slide}>
-          <Image src={src} alt="" fill className="object-cover" priority={i === 0} sizes="100vw" />
-        </div>
-      )) : (
-        <div className="absolute inset-0" style={{ background: "var(--atl-ink)" }} aria-hidden />
-      )}
-
-      {/* gradient overlay agar teks terbaca */}
-      <div className="absolute inset-0" aria-hidden
-        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 48%, rgba(0,0,0,0.42) 100%)" }} />
-
-      {/* konten */}
-      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col justify-end pb-24 lg:pb-28">
-        <div className="max-w-3xl atl-fade">
-          <p className="atl-eyebrow text-white/85 mb-5">{eyebrow}</p>
-          <h1 className="text-white font-semibold leading-[1.06] tracking-tight mb-6 text-[clamp(2.6rem,6vw,5.2rem)]">
-            {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
-          </h1>
-          <p className="text-white/85 text-base sm:text-lg max-w-xl mb-9 leading-relaxed">
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-          <div className="flex flex-wrap items-center gap-3.5">
-            <Link href="/tours" className="atl-btn-solid">
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
-            </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-light">
-                WhatsApp
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* carousel controls */}
-      {atlSlides.length > 1 && (
-        <>
-          <div className="absolute z-20 bottom-10 right-6 sm:right-10 lg:right-12 flex items-center gap-2.5">
-            {atlSlides.map((_, i) => (
-              <button key={i} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`}
-                className={`atl-dot ${i === slide ? "atl-dot-on" : ""}`} />
-            ))}
-          </div>
-          <div className="absolute z-20 bottom-10 left-6 sm:left-10 lg:left-12 flex items-center gap-2">
-            <button onClick={() => setSlide((s) => (s - 1 + atlSlides.length) % atlSlides.length)}
-              aria-label="Sebelumnya"
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/45 bg-white/10 backdrop-blur-sm hover:bg-white/25 transition">
-              <ArrowRight size={17} className="rotate-180" />
-            </button>
-            <button onClick={() => setSlide((s) => (s + 1) % atlSlides.length)}
-              aria-label="Berikutnya"
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/45 bg-white/10 backdrop-blur-sm hover:bg-white/25 transition">
-              <ArrowRight size={17} />
-            </button>
-          </div>
-        </>
-      )}
     </section>
   );
 

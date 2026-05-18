@@ -103,20 +103,18 @@ export default async function BlogDetailPage({
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
   const isAtlas    = theme === "atlas";
-  const isAtelier  = theme === "atelier";
-  const isJojo     = theme === "jojo";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo;
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas;
 
   const pfx = isKawaii ? "kw" : isTropical ? "tr" : isPixel ? "px"
             : isGlobe ? "gl" : isMap ? "mp" : isAtlas ? "at"
-            : isAtelier ? "atl" : isJojo ? "jo" : "";
+            : "";
 
-  const pageBg  = isKawaii ? "var(--kw-bg)"      : isTropical ? "var(--tr-bg)"      : isPixel ? "var(--px-bg)"      : isGlobe ? "var(--gl-bg)"      : isMap ? "var(--mp-bg)"      : isAtlas ? "var(--at-bg)"      : isAtelier ? "var(--atl-bg)"      : isJojo ? "var(--jo-bg)"   : undefined;
-  const headClr = isKawaii ? "var(--kw-text)"     : isTropical ? "var(--tr-text)"     : isPixel ? "var(--px-text)"     : isGlobe ? "var(--gl-text)"     : isMap ? "var(--mp-text)"     : isAtlas ? "var(--at-text)"     : isAtelier ? "var(--atl-ink)"     : isJojo ? "var(--jo-ink)"  : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)"  : isTropical ? "var(--tr-subtext)"  : isPixel ? "var(--px-subtext)"  : isGlobe ? "var(--gl-subtext)"  : isMap ? "var(--mp-subtext)"  : isAtlas ? "var(--at-subtext)"  : isAtelier ? "var(--atl-sub)"     : isJojo ? "var(--jo-sub)"  : undefined;
-  const cardBg  = isKawaii ? "var(--kw-card)"     : isTropical ? "var(--tr-card)"     : isPixel ? "var(--px-card)"     : isGlobe ? "var(--gl-card)"     : isMap ? "var(--mp-card)"     : isAtlas ? "var(--at-card)"     : isAtelier ? "var(--atl-surface)" : isJojo ? "var(--jo-card)" : undefined;
-  const bdrClr  = isKawaii ? "var(--kw-border)"   : isTropical ? "var(--tr-border)"   : isPixel ? "var(--px-border)"   : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : isMap ? "var(--mp-border)" : isAtlas ? "var(--at-border)" : isAtelier ? "var(--atl-line)" : isJojo ? "var(--jo-line)" : undefined;
-  const mintClr = isKawaii ? "var(--kw-mint)"     : isTropical ? "var(--tr-mint)"     : isPixel ? "var(--px-cyan)"     : isAtlas ? "var(--at-muted)"    : isAtelier ? "var(--atl-bg)"     : isJojo ? "var(--jo-soft)"  : undefined;
+  const pageBg  = isKawaii ? "var(--kw-bg)"      : isTropical ? "var(--tr-bg)"      : isPixel ? "var(--px-bg)"      : isGlobe ? "var(--gl-bg)"      : isMap ? "var(--mp-bg)"      : isAtlas ? "var(--at-bg)"      : undefined;
+  const headClr = isKawaii ? "var(--kw-text)"     : isTropical ? "var(--tr-text)"     : isPixel ? "var(--px-text)"     : isGlobe ? "var(--gl-text)"     : isMap ? "var(--mp-text)"     : isAtlas ? "var(--at-text)"     : undefined;
+  const subClr  = isKawaii ? "var(--kw-subtext)"  : isTropical ? "var(--tr-subtext)"  : isPixel ? "var(--px-subtext)"  : isGlobe ? "var(--gl-subtext)"  : isMap ? "var(--mp-subtext)"  : isAtlas ? "var(--at-subtext)"  : undefined;
+  const cardBg  = isKawaii ? "var(--kw-card)"     : isTropical ? "var(--tr-card)"     : isPixel ? "var(--px-card)"     : isGlobe ? "var(--gl-card)"     : isMap ? "var(--mp-card)"     : isAtlas ? "var(--at-card)"     : undefined;
+  const bdrClr  = isKawaii ? "var(--kw-border)"   : isTropical ? "var(--tr-border)"   : isPixel ? "var(--px-border)"   : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : isMap ? "var(--mp-border)" : isAtlas ? "var(--at-border)" : undefined;
+  const mintClr = isKawaii ? "var(--kw-mint)"     : isTropical ? "var(--tr-mint)"     : isPixel ? "var(--px-cyan)"     : isAtlas ? "var(--at-muted)"    : undefined;
 
   const pixelGrid =
     isPixel ? { backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)", backgroundSize: "24px 24px" }
