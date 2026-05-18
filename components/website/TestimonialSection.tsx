@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import AnimateIn from "./AnimateIn";
 
 interface Testimonial {
@@ -323,9 +323,8 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── CLASSIC ── */
-  if (theme === "classic" || theme === "atelier" || theme === "jojo") return (
-    <section className={`py-24 overflow-hidden ${theme === "classic" ? "bg-white dark:bg-black" : ""}`}
-      style={theme === "atelier" ? { background: "var(--atl-surface)" } : theme === "jojo" ? { background: "transparent" } : undefined}>
+  return (
+    <section className="py-24 overflow-hidden bg-white dark:bg-black">
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
           <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-3">Testimoni</p>
@@ -356,80 +355,4 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
     </section>
   );
 
-  /* ── CATALOG (vibrant) ── */
-  if (theme === "vibrant") return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-950 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-2">Testimoni</p>
-              <h2 className="text-3xl lg:text-4xl font-black" style={{ color: "var(--site-heading,#111827)" }}>
-                Kata Mereka
-              </h2>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--site-accent,#2d6a4f)" }}>
-                <Quote size={14} className="text-white" />
-              </div>
-              <span className="text-sm text-gray-400">{items.length} ulasan</span>
-            </div>
-          </div>
-        </AnimateIn>
-        <AnimateIn delay={100}>
-          <Carousel items={items} renderCard={(item, active) => (
-            <div className={`rounded-3xl p-7 relative overflow-hidden transition-all duration-300 h-full flex flex-col ${
-              active
-                ? "shadow-2xl scale-[1.01]"
-                : "opacity-80"
-            }`} style={{ background: active ? "var(--site-accent,#2d6a4f)" : "white" }}>
-              <Quote size={48} className={`absolute top-4 right-6 ${active ? "text-white/10" : "text-gray-100"}`} />
-              <Stars rating={item.rating} />
-              <p className={`text-sm leading-relaxed mt-4 flex-1 relative z-10 ${active ? "text-white font-medium" : "text-gray-600"}`}>
-                &ldquo;{item.content}&rdquo;
-              </p>
-              <div className="flex items-center gap-3 mt-5 pt-5 border-t relative z-10" style={{ borderColor: active ? "rgba(255,255,255,0.2)" : "#f3f4f6" }}>
-                <Avatar avatar={item.avatar} name={item.name} />
-                <div>
-                  <p className={`font-bold text-sm ${active ? "text-white" : "text-gray-900"}`}>{item.name}</p>
-                  {item.role && <p className={`text-xs ${active ? "text-white/70" : "text-gray-400"}`}>{item.role}</p>}
-                </div>
-              </div>
-            </div>
-          )} />
-        </AnimateIn>
-      </div>
-    </section>
-  );
-
-  /* ── BOLD ── */
-  return (
-    <section className="py-24 bg-gray-950 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
-          <h2 className="text-3xl lg:text-5xl font-black text-white">Kata Mereka</h2>
-        </AnimateIn>
-        <AnimateIn delay={100}>
-          <Carousel items={items} renderCard={(item, active) => (
-            <div className={`rounded-2xl p-6 transition-all duration-300 h-full flex flex-col ${
-              active ? "bg-gray-800 border border-gray-700" : "bg-gray-900 border border-gray-800 opacity-70"
-            }`} style={{ borderLeft: active ? `4px solid var(--site-accent,#2d6a4f)` : "4px solid transparent" }}>
-              <Quote size={20} className="mb-3" style={{ color: "var(--site-accent,#2d6a4f)" }} />
-              <p className="text-gray-300 text-sm leading-relaxed flex-1">
-                {item.content}
-              </p>
-              <div className="flex items-center gap-3 mt-5 pt-5 border-t border-gray-700">
-                <Avatar avatar={item.avatar} name={item.name} />
-                <div>
-                  <p className="text-sm font-semibold text-white">{item.name}</p>
-                  {item.role && <p className="text-xs text-gray-500">{item.role}</p>}
-                </div>
-                <div className="ml-auto"><Stars rating={item.rating} /></div>
-              </div>
-            </div>
-          )} darkDots />
-        </AnimateIn>
-      </div>
-    </section>
-  );
 }

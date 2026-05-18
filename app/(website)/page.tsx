@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import HeroSection from "@/components/website/HeroSection";
@@ -9,7 +10,7 @@ import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
 
-async function getData() {
+const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
     prisma.tour.findMany({ where: { status: "ACTIVE" }, orderBy: { tripDate: "asc" } }),
@@ -35,7 +36,7 @@ async function getData() {
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
   return { texts: t, tours, posts, company, companyRows, testimonials };
-}
+}, ["home-page-data"], { revalidate: 300, tags: ["home-data"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -59,23 +60,11 @@ export default async function HomePage() {
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
   const rawTheme = themeRow?.value || "classic";
-  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo";
-
-  // Fetch featured image server-side for vibrant theme (no client fetch needed)
-  let featuredImage: string | null = null;
-  if (theme === "vibrant" && tours.length > 0) {
-    const featured = tours.find((t) => t.heroImg) ?? tours[0];
-    featuredImage = featured?.heroImg ?? null;
-  }
-
-  // Foto-foto untuk carousel hero Atelier — dari heroImg tiap tour
-  const heroImages = theme === "atelier"
-    ? [...new Set(tours.map((t) => t.heroImg).filter((x): x is string => !!x))].slice(0, 6)
-    : [];
+  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
 
   return (
     <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} featuredImage={featuredImage} heroImages={heroImages} />
+      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <ToursSection tours={tours} theme={theme} />
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />

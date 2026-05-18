@@ -1,10 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { CSSProperties, ComponentType } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
-import { JojoSticker } from "./JojoStickers";
 
 const getFooterData = unstable_cache(
   async () => {
@@ -79,8 +79,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--kw-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -127,8 +126,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 20%, transparent)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--gl-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--gl-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -174,8 +172,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "var(--at-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--at-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--at-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -223,8 +220,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--mp-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--mp-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--mp-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -270,8 +266,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--tr-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>NIB {nib}</p>}
           </div>
@@ -323,8 +318,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{tagline}</p>}
             {nib && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>NIB {nib}</p>}
             {/* Pixel color blocks */}
@@ -370,104 +364,13 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     </footer>
   );
 
-  /* ── CLASSIC / VIBRANT / BOLD (dark footer) ── */
-  /* ── JOJO ── */
-  if (theme === "jojo") return (
-    <footer className="jo-font" style={{ background: "var(--jo-cream)", borderTop: "2.5px solid var(--jo-line)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10" style={{ borderBottom: "2.5px dashed var(--jo-line)" }}>
-          <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="atl-logo" style={{ marginBottom: 16 }} />
-            {tagline && <p className="text-sm font-semibold leading-relaxed max-w-xs" style={{ color: "var(--jo-sub)" }}>{tagline}</p>}
-            {nib && <p className="text-xs font-bold mt-3" style={{ color: "var(--jo-sub)" }}>NIB {nib}</p>}
-          </div>
-          <div>
-            <h3 className="text-sm font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--jo-ink)" }}>
-              <JojoSticker shape="star" size={20} /> Navigasi
-            </h3>
-            <ul className="space-y-2.5 text-sm font-semibold">
-              {navLinks.map(([label, href]) => (
-                <li key={href}><Link href={href} className="hover:opacity-70 transition-opacity" style={{ color: "var(--jo-sub)" }}>{label}</Link></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-sm font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--jo-ink)" }}>
-              <JojoSticker shape="heart" size={20} /> Kontak
-            </h3>
-            <ul className="space-y-2.5 text-sm font-semibold">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--jo-accent-on)" }} />
-                  {href
-                    ? <a href={href} className="hover:opacity-70 transition-opacity" style={{ color: "var(--jo-sub)" }}>{value}</a>
-                    : <span style={{ color: "var(--jo-sub)" }}>{value}</span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold" style={{ color: "var(--jo-sub)" }}>
-          <p>© {new Date().getFullYear()} {name}</p>
-          {c["company_website"] && <p>{c["company_website"]}</p>}
-        </div>
-      </div>
-    </footer>
-  );
-
-  /* ── ATELIER ── */
-  if (theme === "atelier") return (
-    <footer style={{ background: "var(--atl-bg)", color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center pb-14 border-b" style={{ borderColor: "var(--atl-line)" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logo || "/logo.png"} alt={name} className="atl-logo" style={{ margin: "0 auto 18px" }} />
-          {tagline && <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: "var(--atl-sub)" }}>{tagline}</p>}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-14">
-          <div>
-            <h3 className="atl-eyebrow mb-6">Navigasi</h3>
-            <ul className="grid grid-cols-2 gap-3 text-sm">
-              {navLinks.map(([label, href]) => (
-                <li key={href}>
-                  <Link href={href} className="hover:opacity-60 transition-opacity" style={{ color: "var(--atl-ink)" }}>{label}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="atl-eyebrow mb-6">Kontak</h3>
-            <ul className="space-y-3 text-sm">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2.5">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--atl-accent)" }} />
-                  {href
-                    ? <a href={href} className="hover:opacity-60 transition-opacity" style={{ color: "var(--atl-ink)" }}>{value}</a>
-                    : <span style={{ color: "var(--atl-ink)" }}>{value}</span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs border-t" style={{ borderColor: "var(--atl-line)" }}>
-          <p>© {new Date().getFullYear()} {name}</p>
-          {nib && <p>NIB {nib}</p>}
-          {c["company_website"] && <p>{c["company_website"]}</p>}
-        </div>
-      </div>
-    </footer>
-  );
-
+  /* ── CLASSIC (dark footer) ── */
   return (
     <footer className="bg-gray-950 text-gray-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt={name} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
+            <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
             {tagline && <p className="text-sm leading-relaxed text-gray-500 max-w-xs">{tagline}</p>}
             {nib && <p className="text-xs text-gray-500 mt-3">NIB {nib}</p>}
           </div>

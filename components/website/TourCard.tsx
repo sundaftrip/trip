@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
+import { MapPin, Calendar, Users, Clock } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { JojoSticker } from "./JojoStickers";
 
 interface Tour {
   id: string; title: string; country: string; cityHighlight?: string | null;
@@ -53,81 +52,6 @@ function ClassicCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
             <p className="text-base font-bold" style={{ color: "var(--site-accent,#2d6a4f)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
           </div>
           {!isDimmed && <span className="text-[11px] font-semibold text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Lihat Detail →</span>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VibrantCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
-  return (
-    <div className={`group block bg-white dark:bg-gray-900 rounded-3xl overflow-hidden transition-all duration-500 ${isDimmed ? "grayscale opacity-60 cursor-default" : "hover:-translate-y-2 hover:shadow-2xl shadow-md"}`}>
-      <div className="relative h-64 bg-gray-100 dark:bg-gray-800 overflow-hidden">
-        {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-          : <div className="flex items-center justify-center h-full text-gray-300"><MapPin size={32} /></div>}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        {tour.badge && !isDimmed && (
-          <span className="absolute top-4 left-4 px-3 py-1.5 text-white text-[11px] font-bold rounded-full shadow-lg" style={{ background: "var(--site-accent,#2d6a4f)" }}>
-            {tour.badge}
-          </span>
-        )}
-        <div className="absolute bottom-4 left-4 right-4">
-          <p className="text-white/70 text-[10px] uppercase tracking-wider">{tour.country}</p>
-        </div>
-        <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
-      </div>
-      <div className="p-6">
-        <h3 className="font-bold mb-3 line-clamp-2 leading-snug text-base text-gray-900 dark:text-white">{tour.title}</h3>
-        <div className="flex flex-wrap gap-3 text-[11px] text-gray-400 mb-5">
-          {tour.duration && <span className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 px-2.5 py-1 rounded-full"><Clock size={10} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 px-2.5 py-1 rounded-full"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 px-2.5 py-1 rounded-full"><Users size={10} /> {tour.seatsLeft} seat</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div>
-            {tour.promoPrice && <p className="text-[11px] text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
-            <p className="text-lg font-black" style={{ color: "var(--site-accent,#2d6a4f)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-          </div>
-          {!isDimmed && (
-            <span className="text-xs font-bold text-white px-4 py-2 rounded-full transition-all" style={{ background: "var(--site-accent,#2d6a4f)" }}>
-              Lihat →
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BoldCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
-  return (
-    <div className={`group flex bg-gray-950 rounded-2xl overflow-hidden transition-all duration-300 ${isDimmed ? "grayscale opacity-60 cursor-default" : "hover:bg-gray-900"}`}
-      style={{ borderLeft: `4px solid var(--site-accent,#2d6a4f)` }}>
-      <div className="relative w-40 sm:w-52 shrink-0 bg-gray-800 overflow-hidden">
-        {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-          : <div className="flex items-center justify-center h-full text-gray-600"><MapPin size={24} /></div>}
-        <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
-      </div>
-      <div className="flex flex-col justify-between p-5 flex-1 min-w-0">
-        <div>
-          <p className="text-[10px] uppercase tracking-widest mb-2" style={{ color: "var(--site-accent,#2d6a4f)" }}>{tour.country}</p>
-          <h3 className="font-bold text-white line-clamp-2 leading-snug text-sm mb-3">{tour.title}</h3>
-          <div className="flex flex-wrap gap-3 text-[11px] text-gray-500">
-            {tour.duration && <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>}
-            {tour.tripDate && <span className="flex items-center gap-1"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-            <span className="flex items-center gap-1"><Users size={10} /> {tour.seatsLeft} seat</span>
-          </div>
-        </div>
-        <div className="flex items-end justify-between mt-4 pt-4 border-t border-gray-800">
-          <div>
-            {tour.promoPrice && <p className="text-[11px] text-gray-600 line-through">{formatCurrency(tour.price)}</p>}
-            <p className="text-base font-black text-white">{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-          </div>
-          {!isDimmed && (
-            <span className="text-[11px] font-semibold text-gray-400 group-hover:text-white transition-colors">Lihat Detail →</span>
-          )}
         </div>
       </div>
     </div>
@@ -544,76 +468,6 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
-function AtelierCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
-  return (
-    <div className={`atl-card group block ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
-      <div className="relative h-56 overflow-hidden" style={{ background: "var(--atl-soft)" }}>
-        {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line)" }}><MapPin size={28} /></div>}
-        {tour.badge && !isDimmed && (
-          <span className="absolute top-3 left-3 atl-tag">{tour.badge}</span>
-        )}
-        <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
-      </div>
-      <div className="p-5">
-        <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--atl-accent)" }}>{tour.country}</p>
-        <h3 className="font-semibold text-[16px] leading-snug mb-3 line-clamp-2" style={{ color: "var(--atl-ink)" }}>{tour.title}</h3>
-        <div className="flex flex-wrap gap-3 text-[11px] mb-4" style={{ color: "var(--atl-sub)" }}>
-          {tour.duration && <span className="flex items-center gap-1"><Clock size={11} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="flex items-center gap-1"><Users size={11} /> {tour.seatsLeft} seat</span>
-        </div>
-        <div className="flex items-end justify-between pt-4" style={{ borderTop: "1px solid var(--atl-line)" }}>
-          <div>
-            {tour.promoPrice && <p className="text-[11px] line-through" style={{ color: "var(--atl-sub)" }}>{formatCurrency(tour.price)}</p>}
-            <p className="text-lg font-bold" style={{ color: "var(--atl-ink)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-          </div>
-          {!isDimmed && (
-            <span className="text-[13px] font-semibold flex items-center gap-1" style={{ color: "var(--atl-accent)" }}>
-              Detail <ArrowRight size={13} />
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
-  return (
-    <div className={`jo-card jo-font group block overflow-hidden ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`}>
-      <div className="relative h-52 overflow-hidden" style={{ background: "var(--jo-soft)", borderBottom: "2.5px solid var(--jo-line)" }}>
-        {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-          : <div className="flex items-center justify-center h-full" style={{ color: "var(--jo-line)" }}><MapPin size={28} /></div>}
-        {tour.badge && !isDimmed && (
-          <span className="absolute top-3 left-3 jo-tag">{tour.badge}</span>
-        )}
-        <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
-      </div>
-      <div className="p-5">
-        <p className="text-[11px] font-extrabold uppercase tracking-wide mb-2" style={{ color: "var(--jo-accent-on)" }}>{tour.country}</p>
-        <h3 className="font-extrabold mb-3 line-clamp-2 leading-snug text-[16px]" style={{ color: "var(--jo-ink)" }}>{tour.title}</h3>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {tour.duration && <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Clock size={10} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="jo-chip !text-[11px] !py-1 !px-2.5"><Users size={10} /> {tour.seatsLeft} seat</span>
-        </div>
-        <div className="flex items-end justify-between pt-3" style={{ borderTop: "2px dashed var(--jo-line)" }}>
-          <div>
-            {tour.promoPrice && <p className="text-[11px] line-through font-bold" style={{ color: "var(--jo-sub)" }}>{formatCurrency(tour.price)}</p>}
-            <p className="text-lg font-extrabold" style={{ color: "var(--jo-accent-on)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-          </div>
-          {!isDimmed && (
-            <span className="jo-tag !py-1.5 !px-3 gap-1.5">Lihat <ArrowRight size={12} /></span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -621,16 +475,12 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   const isDimmed = isExpired || isFull;
 
   let card;
-  if (theme === "vibrant") card = <VibrantCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "bold") card = <BoldCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
+  if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "kawaii") card = <KawaiiCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
   else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "atelier") card = <AtelierCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "jojo") card = <JojoCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
