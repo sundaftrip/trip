@@ -39,12 +39,12 @@ const MODES = [
 ];
 
 const TRIP_PHOTOS = [
-  { src: "/trip-photos/trip-1.jpg", caption: "Group departure · Kazakhstan" },
-  { src: "/trip-photos/trip-2.jpg", caption: "Red Square · Moscow" },
-  { src: "/trip-photos/trip-3.jpg", caption: "Aurora borealis tour" },
+  { src: "/trip-photos/trip-1.jpg", caption: "Red Square · Moscow" },
+  { src: "/trip-photos/trip-2.jpg", caption: "Taj Mahal · India" },
+  { src: "/trip-photos/trip-3.jpg", caption: "Jade Dragon Snow Mountain · China" },
   { src: "/trip-photos/trip-4.jpg", caption: "Kaindy Lake · Kazakhstan" },
-  { src: "/trip-photos/trip-5.jpg", caption: "Almaty Mountains · Kazakhstan" },
-  { src: "/trip-photos/trip-6.jpg", caption: "Northern Lights · full group" },
+  { src: "/trip-photos/trip-5.jpg", caption: "Aurora borealis · Murmansk" },
+  { src: "/trip-photos/trip-6.jpg", caption: "Group departure · Moscow" },
 ];
 
 export default function PartnerPage() {
@@ -114,7 +114,8 @@ export default function PartnerPage() {
           Real Departures, Real Travelers
         </h2>
         <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-          A look at groups we have operated across Russia and Central Asia.
+          A look at groups we have operated across Russia, Central Asia,
+          China, and India.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {TRIP_PHOTOS.map(({ src, caption }) => (

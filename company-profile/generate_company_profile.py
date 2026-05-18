@@ -404,12 +404,12 @@ def text_label(c, x, y, s, color):
 # Page 3 — photo gallery
 # --------------------------------------------------------------------------
 TRIP_PHOTOS = [
-    ("trip-1.jpg", "Group departure — Kazakhstan"),
-    ("trip-2.jpg", "Red Square, Moscow"),
-    ("trip-3.jpg", "Aurora borealis tour"),
+    ("trip-1.jpg", "Red Square, Moscow"),
+    ("trip-2.jpg", "Taj Mahal, India"),
+    ("trip-3.jpg", "Jade Dragon Snow Mountain, China"),
     ("trip-4.jpg", "Kaindy Lake, Kazakhstan"),
-    ("trip-5.jpg", "Almaty Mountains, Kazakhstan"),
-    ("trip-6.jpg", "Northern Lights — full group"),
+    ("trip-5.jpg", "Aurora borealis, Murmansk"),
+    ("trip-6.jpg", "Group departure — Moscow (Sheremetyevo)"),
 ]
 
 
@@ -418,9 +418,9 @@ def page_three(c):
     y = H - 118
 
     y = section_heading(c, LM, y, "OUR GROUPS IN ACTION")
-    intro = ("Real group departures we have operated across Russia and "
-             "Central Asia — every trip accompanied by our own "
-             "Indonesian-speaking tour leader.")
+    intro = ("Real group departures we have operated across Russia, "
+             "Central Asia, China, and India — every trip accompanied by "
+             "our own Indonesian-speaking tour leader.")
     y = paragraph(c, LM, y, intro, CW) - 16
 
     gap = 14
