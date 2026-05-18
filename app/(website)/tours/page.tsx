@@ -130,8 +130,8 @@ export default async function ToursPage({
   const wrapperStyle = pageBg ? { background: pageBg, ...pageGrid } : undefined;
 
   return (
-    <div className={`min-h-screen pt-24 ${!isOutlined ? "bg-gray-50 dark:bg-gray-950" : ""}`} style={wrapperStyle}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className={`min-h-screen pt-20 lg:pt-24 ${!isOutlined ? "bg-gray-50 dark:bg-gray-950" : ""}`} style={wrapperStyle}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:py-12">
 
         {/* Heading */}
         <div className="mb-10">
