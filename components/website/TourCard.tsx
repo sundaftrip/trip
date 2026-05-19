@@ -411,8 +411,8 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
 
   return (
-    <div className={`at-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      <div className="relative h-52 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
+    <div className={`at-card group overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
         {tour.heroImg
           ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
@@ -438,7 +438,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      <div className="p-5">
+      <div className="p-5 flex-1 flex flex-col">
         <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
         </p>
@@ -455,10 +455,10 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{tour.seatsLeft} seat</span>
         </div>
         {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+          <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{formatCurrency(tour.price)}</p>
         )}
         {!isDimmed && (
-          <div className="pt-3 border-t flex items-center justify-between"
+          <div className={`pt-3 border-t flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
             style={{ borderColor: "var(--at-border)" }}>
             <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--at-subtext)" }}>Lihat detail →</span>
           </div>
@@ -484,5 +484,5 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
-  return <Link href={`/tours/${tour.id}`}>{card}</Link>;
+  return <Link href={`/tours/${tour.id}`} className="block h-full">{card}</Link>;
 }
