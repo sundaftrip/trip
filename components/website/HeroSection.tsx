@@ -419,13 +419,9 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           <div className="relative aspect-[4/5] w-full"
             style={{
               maskImage:
-                "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), "
-                + "linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent)",
+                "radial-gradient(70% 64% at 50% 47%, #000 46%, transparent 100%)",
               WebkitMaskImage:
-                "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), "
-                + "linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent)",
-              maskComposite: "intersect",
-              WebkitMaskComposite: "source-in",
+                "radial-gradient(70% 64% at 50% 47%, #000 46%, transparent 100%)",
             }}>
             <Image src="/trip-photos/trip-5.jpg"
               alt="Aurora borealis bersama traveler Sundaf Trip di Murmansk, Rusia"
