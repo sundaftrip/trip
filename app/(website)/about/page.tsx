@@ -80,17 +80,18 @@ export default async function AboutPage() {
   const isAtlas    = theme === "atlas";
   const isAtelier  = theme === "atelier";
   const isJojo     = theme === "jojo";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo;
+  const isTeri     = theme === "teri";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo || isTeri;
 
   const pfx = isKawaii ? "kw" : isTropical ? "tr" : isPixel ? "px"
     : isGlobe ? "gl" : isMap ? "mp" : isAtlas ? "at"
-    : isAtelier ? "atl" : isJojo ? "jo" : "";
+    : isAtelier ? "atl" : isJojo ? "jo" : isTeri ? "teri" : "";
 
   const pageBg  = isAtlas ? "var(--at-bg)"      : isTropical ? "var(--tr-bg)"      : isKawaii ? "var(--kw-bg)"      : isPixel ? "var(--px-bg)"      : isAtelier ? "var(--atl-bg)"      : isJojo ? "var(--jo-bg)"   : undefined;
-  const headClr = isAtlas ? "var(--at-text)"     : isTropical ? "var(--tr-text)"     : isKawaii ? "var(--kw-text)"     : isPixel ? "var(--px-text)"     : isAtelier ? "var(--atl-ink)"     : isJojo ? "var(--jo-ink)"  : undefined;
-  const subClr  = isAtlas ? "var(--at-subtext)"  : isTropical ? "var(--tr-subtext)"  : isKawaii ? "var(--kw-subtext)"  : isPixel ? "var(--px-subtext)"  : isAtelier ? "var(--atl-sub)"     : isJojo ? "var(--jo-sub)"  : undefined;
-  const cardBg  = isAtlas ? "var(--at-card)"     : isTropical ? "var(--tr-card)"     : isKawaii ? "var(--kw-card)"     : isPixel ? "var(--px-card)"     : isAtelier ? "var(--atl-surface)" : isJojo ? "var(--jo-card)" : undefined;
-  const bdrClr  = isAtlas ? "var(--at-border)"   : isTropical ? "var(--tr-border)"   : isKawaii ? "var(--kw-border)"   : isPixel ? "var(--px-border)"   : isAtelier ? "var(--atl-line)"    : isJojo ? "var(--jo-line)" : undefined;
+  const headClr = isAtlas ? "var(--at-text)"     : isTropical ? "var(--tr-text)"     : isKawaii ? "var(--kw-text)"     : isPixel ? "var(--px-text)"     : isAtelier ? "var(--atl-ink)"     : isJojo ? "var(--jo-ink)"  : isTeri ? "var(--teri-ink)" : undefined;
+  const subClr  = isAtlas ? "var(--at-subtext)"  : isTropical ? "var(--tr-subtext)"  : isKawaii ? "var(--kw-subtext)"  : isPixel ? "var(--px-subtext)"  : isAtelier ? "var(--atl-sub)"     : isJojo ? "var(--jo-sub)"  : isTeri ? "var(--teri-sub)" : undefined;
+  const cardBg  = isAtlas ? "var(--at-card)"     : isTropical ? "var(--tr-card)"     : isKawaii ? "var(--kw-card)"     : isPixel ? "var(--px-card)"     : isAtelier ? "var(--atl-surface)" : isJojo ? "var(--jo-card)" : isTeri ? "var(--teri-card)" : undefined;
+  const bdrClr  = isAtlas ? "var(--at-border)"   : isTropical ? "var(--tr-border)"   : isKawaii ? "var(--kw-border)"   : isPixel ? "var(--px-border)"   : isAtelier ? "var(--atl-line)"    : isJojo ? "var(--jo-line)" : isTeri ? "var(--teri-line)" : undefined;
   const mintClr = isAtlas ? "var(--at-muted)"    : isTropical ? "var(--tr-mint)"     : isKawaii ? "var(--kw-mint)"     : isPixel ? "var(--px-cyan)"     : isAtelier ? "var(--atl-bg)"      : isJojo ? "var(--jo-soft)" : undefined;
 
   const pixelGrid = isAtlas ? {

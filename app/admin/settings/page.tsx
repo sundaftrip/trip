@@ -374,13 +374,13 @@ export default function SettingsPage() {
                       </div>
                     )}
                     {key === "teri" && (
-                      <div className="absolute inset-0 flex flex-col justify-end p-2" style={{ background: "#eef0da", backgroundImage: "linear-gradient(rgba(61,51,37,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(61,51,37,0.07) 1px,transparent 1px)", backgroundSize: "6px 6px" }}>
-                        <div className="flex gap-1 items-center mb-1.5">
-                          <div className="w-3 h-3 border" style={{ background: "#6ba84d", borderColor: "#3d3325", boxShadow: "1px 1px 0 0 #3d3325" }} />
-                          <div className="w-3 h-3 border" style={{ background: "#e3b24c", borderColor: "#3d3325", boxShadow: "1px 1px 0 0 #3d3325" }} />
-                          <div className="w-3 h-3 border" style={{ background: "#7bb0c9", borderColor: "#3d3325", boxShadow: "1px 1px 0 0 #3d3325" }} />
-                        </div>
-                        <div className="h-5 w-16 border font-black text-[8px] flex items-center justify-center" style={{ background: "#6ba84d", borderColor: "#3d3325", boxShadow: "2px 2px 0 0 #3d3325", color: "#fbfaee", fontFamily: "monospace" }}>TOUR →</div>
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fdf3e3" }}>
+                        {/* hexagon mengambang */}
+                        <div className="absolute" style={{ top: 5, right: 8, width: 16, height: 18, background: "#ff8fab", clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }} />
+                        <div className="absolute" style={{ top: 16, right: 24, width: 11, height: 12, background: "#4ecdc4", clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }} />
+                        {/* kartu shadow ganda warni */}
+                        <div className="h-6 w-20 rounded-md mb-2" style={{ background: "#fffdf7", border: "2px solid #342f4a", boxShadow: "3px 3px 0 0 #ff8fab, 6px 6px 0 0 #4ecdc4" }} />
+                        <div className="h-4 w-12 rounded-sm" style={{ background: "#7c5cff" }} />
                       </div>
                     )}
                     {key === "globe" && (
