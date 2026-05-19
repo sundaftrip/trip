@@ -468,6 +468,65 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function FumayoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  return (
+    <div className={`fb-card group overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden shrink-0" style={{ borderBottom: "2px solid var(--fb-line)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full" style={{ background: "var(--fb-paper)", color: "var(--fb-line)" }}><MapPin size={28} /></div>}
+
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 fb-pill" style={{ background: "var(--fb-card)", fontWeight: 700 }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
+            ★ {tour.badge}
+          </div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="fb-pill" style={{ background: "var(--fb-card)" }}>
+              {isFull ? "Sold Out" : "Trip Selesai"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5 flex-1 flex flex-col" style={{ fontFamily: "var(--fb-font)" }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: "var(--fb-subink)" }}>
+          {tour.country}
+        </p>
+        <h3 className="font-bold text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--fb-ink)" }}>
+          {tour.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && (
+            <span className="fb-pill" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>⏱ {tour.duration}</span>
+          )}
+          {tour.tripDate && (
+            <span className="fb-pill" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          )}
+          <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat</span>
+        </div>
+        {tour.promoPrice && (
+          <p className="text-[11px] line-through mb-1 mt-auto" style={{ color: "var(--fb-subink)" }}>{formatCurrency(tour.price)}</p>
+        )}
+        {!isDimmed && (
+          <div className={`pt-3 flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
+            style={{ borderTop: "2px dashed var(--fb-line)" }}>
+            <span className="text-xs font-bold" style={{ color: "var(--fb-accent)" }}>Lihat detail →</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -481,6 +540,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
   else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "fumayo") card = <FumayoCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

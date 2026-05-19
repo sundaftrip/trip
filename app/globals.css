@@ -850,3 +850,145 @@ body {
 .prose td { color: #374151; }
 .dark .prose th { background: #1e293b; color: #f1f5f9; border-style: solid; border-color: #334155; }
 .dark .prose td { color: #cbd5e1; border-style: solid; border-color: #334155; }
+
+/* ════════════════════════════════════════════════════════════════════
+   FUMAYO THEME — toko buku anak / buku tulis kotak-kotak
+   Referensi: Fumayo Children's bookstore (Behance, Alena Sheva 2023).
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  --fb-font:    var(--font-anonymous-pro), "Courier New", ui-monospace, monospace;
+  --fb-paper:   color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #fbf8ef);
+  --fb-card:    #ffffff;
+  --fb-ink:     #333131;
+  --fb-subink:  #656261;
+  --fb-line:    #333131;
+  --fb-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 26%, transparent);
+  --fb-accent:  var(--site-accent, #2d6a4f);
+  --fb-red:     #ff6b6b;
+  --fb-yellow:  #fff06a;
+  --fb-blue:    #86b2ca;
+  --fb-green:   #6bcb77;
+  --fb-peach:   #fed7aa;
+  --fb-pink:    #fbcfe8;
+  --fb-bg:      var(--fb-paper);
+  --fb-text:    var(--fb-ink);
+  --fb-subtext: var(--fb-subink);
+  --fb-border:  var(--fb-line);
+  --fb-shadow:  var(--fb-line);
+  --fb-mint:    var(--fb-blue);
+  --fb-sun:     var(--fb-yellow);
+}
+.dark {
+  --fb-paper:   color-mix(in srgb, var(--site-accent, #2d6a4f) 16%, #141d18);
+  --fb-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, #1c2620);
+  --fb-ink:     #f0eeec;
+  --fb-subink:  #b6b3ad;
+  --fb-line:    color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #ffffff);
+  --fb-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 22%, transparent);
+}
+.fb-page {
+  background-color: var(--fb-paper);
+  background-image:
+    linear-gradient(var(--fb-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fb-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  font-family: var(--fb-font);
+}
+.fb-frame {
+  border: 2.5px solid var(--fb-line);
+  border-radius: 28px;
+  background: var(--fb-card);
+  box-shadow: 0 10px 0 -3px color-mix(in srgb, var(--fb-line) 22%, transparent);
+  font-family: var(--fb-font);
+}
+.fb-tab {
+  display: inline-block;
+  border: 2.5px solid var(--fb-line);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  background: var(--fb-yellow);
+  color: #333131;
+  font-family: var(--fb-font);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 26px;
+}
+.fb-card {
+  border: 2px solid var(--fb-line);
+  border-radius: 16px;
+  background: var(--fb-card);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.fb-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 -1px color-mix(in srgb, var(--fb-line) 32%, transparent);
+}
+.fb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-accent);
+  color: #ffffff;
+  font-family: var(--fb-font);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 0 0 var(--fb-line);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.fb-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 0 var(--fb-line); }
+.fb-btn:active { transform: translateY(2px);  box-shadow: 0 1px 0 0 var(--fb-line); }
+.fb-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-card);
+  color: var(--fb-ink);
+  font-family: var(--fb-font);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 0 0 var(--fb-line);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.fb-btn-outline:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 0 var(--fb-line); }
+.fb-btn-outline:active { transform: translateY(2px);  box-shadow: 0 1px 0 0 var(--fb-line); }
+.fb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid var(--fb-line);
+  border-radius: 999px;
+  background: var(--fb-card);
+  color: var(--fb-ink);
+  font-family: var(--fb-font);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 3px 12px;
+}
+.fb-wave {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--fb-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 9px;
+}
+@keyframes fb-float {
+  0%, 100% { transform: translateY(0)     rotate(var(--fb-r, 0deg)); }
+  50%      { transform: translateY(-13px) rotate(calc(var(--fb-r, 0deg) + 10deg)); }
+}
+.fb-float-1 { animation: fb-float 4.0s ease-in-out 0s   infinite; }
+.fb-float-2 { animation: fb-float 5.2s ease-in-out 0.6s infinite; }
+.fb-float-3 { animation: fb-float 4.6s ease-in-out 1.2s infinite; }
+.fb-float-4 { animation: fb-float 5.8s ease-in-out 0.3s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .fb-float-1, .fb-float-2, .fb-float-3, .fb-float-4 { animation: none; }
+}

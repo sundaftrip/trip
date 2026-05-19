@@ -25,17 +25,19 @@ export default async function BlogPage() {
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
   const isAtlas    = theme === "atlas";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas;
+  const isFumayo   = theme === "fumayo";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isFumayo;
 
-  const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : isAtlas ? "var(--at-bg)" : undefined;
-  const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isAtlas ? "var(--at-text)" : undefined;
-  const subClr  = isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
+  const pageBg  = isFumayo ? "var(--fb-bg)" : isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : isAtlas ? "var(--at-bg)" : undefined;
+  const headClr = isFumayo ? "var(--fb-text)" : isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isAtlas ? "var(--at-text)" : undefined;
+  const subClr  = isFumayo ? "var(--fb-subtext)" : isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
 
   const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
     backgroundSize: "24px 24px",
   } : isMap ? { backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }
-    : isAtlas ? { backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)", backgroundSize: "32px 32px" } : {};
+    : isAtlas ? { backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)", backgroundSize: "32px 32px" }
+    : isFumayo ? { backgroundImage: "linear-gradient(var(--fb-grid) 1px,transparent 1px),linear-gradient(90deg,var(--fb-grid) 1px,transparent 1px)", backgroundSize: "26px 26px", fontFamily: "var(--fb-font)" } : {};
 
   const wrapperStyle = pageBg ? { background: pageBg, ...pixelGrid } : undefined;
 
@@ -52,6 +54,7 @@ export default async function BlogPage() {
               {isPixel    && <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► JURNAL</span>}
               {isGlobe    && <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-lavender)", color: "var(--gl-on-lavender)", borderColor: "transparent" }}>🗺️ Jurnal</span>}
               {isAtlas    && <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Jurnal</span>}
+              {isFumayo   && <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>✦ Jurnal</span>}
               <h1 className="text-4xl font-black mt-3 mb-2" style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
                 {isPixel ? "BLOG & TIPS TRAVEL" : "Blog & Tips Travel"}
               </h1>
@@ -190,6 +193,31 @@ export default async function BlogPage() {
                   <h2 className="font-semibold mb-2 line-clamp-2" style={{ color: "var(--at-text)" }}>{post.title}</h2>
                   {post.excerpt && <p className="text-sm line-clamp-2 mb-4" style={{ color: "var(--at-subtext)" }}>{post.excerpt}</p>}
                   <div className="flex items-center justify-between text-xs" style={{ color: "var(--at-subtext)" }}>
+                    <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : isFumayo ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="block fb-card overflow-hidden group">
+                <div className="relative h-48 overflow-hidden" style={{ borderBottom: "2px solid var(--fb-line)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-4xl" style={{ background: "var(--fb-paper)", color: "var(--fb-line)" }}>✦</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5" style={{ fontFamily: "var(--fb-font)" }}>
+                  <h2 className="font-bold mb-2 line-clamp-2" style={{ color: "var(--fb-ink)" }}>{post.title}</h2>
+                  {post.excerpt && <p className="text-sm line-clamp-2 mb-4" style={{ color: "var(--fb-subink)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-xs" style={{ color: "var(--fb-subink)" }}>
                     <span className="flex items-center gap-1"><Calendar size={11} /> {formatDate(post.date)}</span>
                     {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
                   </div>

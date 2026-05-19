@@ -17,6 +17,51 @@ interface Props {
 export default function BlogSection({ posts, theme = "classic" }: Props) {
   if (posts.length === 0) return null;
 
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") return (
+    <section className="fb-page py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12 flex-wrap gap-3">
+            <div>
+              <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>✦ Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+                Tips &amp; <span className="fb-wave" style={{ color: "var(--fb-accent)" }}>Inspirasi</span>
+              </h2>
+            </div>
+            <Link href="/blog" className="fb-btn-outline px-4 py-2 text-xs">Semua Artikel →</Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block fb-card overflow-hidden group h-full">
+                <div className="relative h-44 overflow-hidden" style={{ borderBottom: "2px solid var(--fb-line)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--fb-paper)", color: "var(--fb-line)" }}>✦</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5" style={{ fontFamily: "var(--fb-font)" }}>
+                  <h3 className="font-bold mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--fb-ink)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--fb-subink)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--fb-subink)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── GLOBE ── */
   if (theme === "globe") return (
     <section className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
