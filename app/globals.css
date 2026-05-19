@@ -1140,7 +1140,7 @@ body {
 
 /* wadah utama terpusat — kotak gingham border coklat */
 .atc-container {
-  max-width: 900px; margin: 0 auto;
+  max-width: 1760px; margin: 0 auto;
   border: 2px solid var(--atc-border);
   background-color: var(--atc-card);
   background-image:
