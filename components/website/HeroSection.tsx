@@ -95,14 +95,12 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atc-btn w-full">Guestbook ✎</a>
           )}
         </div>
-        {/* tengah — welcome */}
+        {/* tengah — welcome (semua teks editable via CMS → Teks Website) */}
         <div className="atc-box p-5 flex flex-col">
-          <h2 className="atc-title text-2xl">Welcome! ✦</h2>
+          <h2 className="atc-title text-2xl">{t("hero_title", "Welcome! ✦")}</h2>
           <hr className="atc-divider" />
-          <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--atc-ink)" }}>
-            Assalamualaikum! Selamat datang di{" "}
-            <span style={{ color: "var(--atc-link)", textDecoration: "underline" }}>{companyName || "Sundaf Trip"}</span> ✈️🕌 —{" "}
-            {t("hero_subtitle", "teman perjalanan Anda menjelajah Rusia, ramah Muslim, hangat, dan berkesan. Yuk jelajahi katalog tour kami!")}
+          <p className="text-sm leading-relaxed flex-1 whitespace-pre-line" style={{ color: "var(--atc-ink)" }}>
+            {t("hero_welcome", `Assalamualaikum! Selamat datang di ${companyName || "Sundaf Trip"} ✈️🕌 — teman perjalanan Anda menjelajah Rusia, ramah Muslim, hangat, dan berkesan. Yuk jelajahi katalog tour kami!`)}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link href="/tours" className="atc-btn">{t("hero_btn", "Lihat Katalog")} →</Link>
@@ -114,10 +112,10 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         </div>
         {/* kanan — updates */}
         <div className="atc-box p-4">
-          <h2 className="atc-title text-lg">Updates ✿</h2>
+          <h2 className="atc-title text-lg">{t("hero_updates_title", "Updates ✿")}</h2>
           <hr className="atc-divider" />
-          <p className="text-xs leading-relaxed" style={{ color: "var(--atc-ink)" }}>
-            <b style={{ color: "var(--atc-link)" }}>Baru!</b> Paket Russia, Aurora &amp; Asia Tengah tersedia. Hubungi kami untuk jadwal &amp; harga terkini.
+          <p className="text-xs leading-relaxed whitespace-pre-line" style={{ color: "var(--atc-ink)" }}>
+            {t("hero_updates", "Baru! Paket Russia, Aurora & Asia Tengah tersedia. Hubungi kami untuk jadwal & harga terkini.")}
           </p>
           <div className="mt-3 flex gap-1.5 text-base select-none">✿ ✦ ♡ ✦ ✿</div>
         </div>

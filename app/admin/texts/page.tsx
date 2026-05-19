@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import TextsForm from "@/components/admin/TextsForm";
 
 const TEXT_KEYS = [
-  { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"] },
+  { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn", "hero_welcome", "hero_updates_title", "hero_updates"] },
   { section: "Keunggulan (Mengapa Kami)", keys: ["why_title", "why_subtitle", "why_1_title", "why_1_desc", "why_2_title", "why_2_desc", "why_3_title", "why_3_desc"] },
   { section: "Footer", keys: ["footer_tagline"] },
   { section: "Kontak", keys: ["contact_title", "contact_desc"] },
