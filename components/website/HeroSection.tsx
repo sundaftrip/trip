@@ -10,7 +10,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri";
   featuredImage?: string | null;
   heroImages?: string[];
 }
@@ -555,6 +555,49 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       </div>
     </section>
   );
+
+  /* ── TERI — honeycomb, shadow warni-warni, tepi tombol bergerigi ── */
+  if (theme === "teri") {
+    const hex = "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)";
+    return (
+      <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden px-4 pt-32 pb-20">
+        {/* hexagon mengambang warna-warni */}
+        <div className="absolute pointer-events-none hidden sm:block" style={{ top: "15%", right: "12%", width: 76, height: 84, background: "var(--teri-c1)", clipPath: hex }} />
+        <div className="absolute pointer-events-none" style={{ top: "24%", left: "9%", width: 46, height: 52, background: "var(--teri-c2)", clipPath: hex }} />
+        <div className="absolute pointer-events-none hidden sm:block" style={{ bottom: "16%", right: "19%", width: 38, height: 42, background: "var(--teri-c3)", clipPath: hex }} />
+        <div className="absolute pointer-events-none" style={{ bottom: "21%", left: "15%", width: 58, height: 64, background: "var(--teri-c4)", clipPath: hex }} />
+
+        <div className="max-w-4xl mx-auto w-full text-center relative z-10">
+          <div className="hero-fade-up mb-8">
+            <span className="teri-pill">✦ {eyebrow}</span>
+          </div>
+          <h1 className="hero-fade-up text-[clamp(2.8rem,8vw,6.4rem)] font-black leading-[1.02] tracking-tight mb-7"
+            style={{ color: "var(--teri-ink)" }}>
+            <TitleWords />
+          </h1>
+          <p className="hero-fade-up text-base sm:text-lg max-w-xl mx-auto mb-9 font-semibold"
+            style={{ color: "var(--teri-sub)" }}>
+            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+          </p>
+          <div className="hero-fade-up flex flex-wrap items-center justify-center gap-5 mb-10">
+            <Link href="/tours" className="teri-btn">
+              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
+            </Link>
+            {waNumber && (
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="teri-btn-ghost">
+                WhatsApp
+              </a>
+            )}
+          </div>
+          <div className="hero-fade-up flex flex-wrap items-center justify-center gap-3">
+            <span className="teri-chip">{t("hero_subtitle", "Destinasi Pilihan")}</span>
+            <span className="teri-chip">Paket Lengkap</span>
+            <span className="teri-chip">Terpercaya</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   /* ── ATELIER — clean editorial travel, hero carousel ── */
   if (theme === "atelier") return (
