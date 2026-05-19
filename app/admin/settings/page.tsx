@@ -40,7 +40,7 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "jojo",     label: "Jojo",      desc: "Sticker book cute. Stiker SVG, border tebal, shadow chunky, motion bouncy.", feature: null },
+  { key: "jojo",     label: "Boutique",  desc: "Travel boutique kawaii. Krem hangat, burnt orange & dusty navy, border ganda membulat, dekorasi lembut.", feature: null },
   { key: "teri",     label: "Teri",      desc: "Pixel-art cozy valley. Nuansa hangat hijau-kayu, sudut tajam, shadow pixel.", feature: null },
 ];
 
@@ -292,14 +292,12 @@ export default function SettingsPage() {
                     key === "jojo" ? "border border-gray-100" :
                     key === "console" ? "bg-white border border-gray-100" :
                     "bg-gray-950"
-                  }`} style={key === "jojo" ? { background: "#f4ead0" } : undefined}>
+                  }`} style={key === "jojo" ? { background: "#fff8f0" } : undefined}>
                     {key === "jojo" && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-2">
-                        <div className="h-6 w-20 rounded-md" style={{ background: "#fffdf4", border: "2px solid #b23f38", boxShadow: "0 3px 0 0 #d9c79e" }} />
-                        <div className="flex gap-1.5 items-center">
-                          <span className="text-[8px] font-extrabold px-1.5 rounded" style={{ background: "#f6e27e", color: "#4a3f28" }}>highlight</span>
-                          <div className="h-3 w-8 rounded-full" style={{ background: "#869a3e", border: "1.5px solid #b23f38" }} />
-                        </div>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-2">
+                        <div className="rounded-full" style={{ width: 22, height: 22, background: "#ffd6ba", boxShadow: "0 0 0 2px #ffdab9, 0 0 0 4px #ecb389" }} />
+                        <div className="h-5 w-20 rounded-xl" style={{ background: "rgba(255,255,255,0.9)", border: "2px solid #ffdab9", boxShadow: "inset 0 0 0 2px #ecb389" }} />
+                        <div className="h-3.5 w-12 rounded-full" style={{ background: "#e8834a" }} />
                       </div>
                     )}
                     {key === "atelier" && (

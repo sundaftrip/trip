@@ -1,6 +1,5 @@
 import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
-import JojoWatermark from "@/components/website/JojoWatermark";
 import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
@@ -86,17 +85,14 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     `}</style>
   );
 
-  /* ── JOJO — watermark logo melayang di latar ── */
+  /* ── JOJO — travel boutique kawaii: latar krem berpola samar ── */
   if (theme === "jojo") {
     return (
       <>
         {styleBlock}
-        <JojoWatermark logo={logo} />
-        <div className="relative z-10 flex flex-col flex-1">
-          <Navbar logo={logo} theme={theme} />
-          <main className="flex-1" data-theme={theme}>{children}</main>
-          <Footer theme={theme} />
-        </div>
+        <Navbar logo={logo} theme={theme} />
+        <main className="flex-1 jo-pattern" data-theme={theme}>{children}</main>
+        <Footer theme={theme} />
       </>
     );
   }
