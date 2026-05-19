@@ -353,27 +353,25 @@ body {
 
 /* tombol — tepi atas & bawah bergerigi lengkung (scallop), shadow warni-warni */
 .teri-btn, .teri-btn-ghost {
-  --teri-sc: 7px;
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 28px;
+  padding: 13px 28px;
   font-weight: 800;
-  border: 0;
+  border: 2.5px solid var(--teri-line);
+  border-radius: 999px;
   cursor: pointer;
   text-decoration: none;
-  -webkit-mask:
-    radial-gradient(var(--teri-sc) at 50% 0,    #0000 96%, #000) repeat-x 0 0    / calc(2*var(--teri-sc)) 51%,
-    radial-gradient(var(--teri-sc) at 50% 100%, #0000 96%, #000) repeat-x 0 100% / calc(2*var(--teri-sc)) 51%;
-          mask:
-    radial-gradient(var(--teri-sc) at 50% 0,    #0000 96%, #000) repeat-x 0 0    / calc(2*var(--teri-sc)) 51%,
-    radial-gradient(var(--teri-sc) at 50% 100%, #0000 96%, #000) repeat-x 0 100% / calc(2*var(--teri-sc)) 51%;
-  filter: drop-shadow(3px 3px 0 var(--teri-c4)) drop-shadow(6px 6px 0 var(--teri-c3));
-  transition: transform 0.15s ease, filter 0.15s ease;
+  box-shadow: 4px 4px 0 0 var(--teri-c1), 8px 8px 0 0 var(--teri-c2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .teri-btn { background: var(--teri-accent); color: var(--teri-on-accent); }
 .teri-btn-ghost { background: var(--teri-card); color: var(--teri-ink); }
 .teri-btn:hover, .teri-btn-ghost:hover {
   transform: translate(-2px, -2px);
-  filter: drop-shadow(5px 5px 0 var(--teri-c4)) drop-shadow(9px 9px 0 var(--teri-c3));
+  box-shadow: 6px 6px 0 0 var(--teri-c1), 11px 11px 0 0 var(--teri-c2);
+}
+.teri-btn:active, .teri-btn-ghost:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--teri-c1), 3px 3px 0 0 var(--teri-c2);
 }
 
 /* pil/label — kapsul bergaris dengan titik hex kecil */

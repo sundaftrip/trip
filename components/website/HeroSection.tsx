@@ -636,7 +636,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           </p>
           <div className="hero-fade-up flex flex-wrap items-center justify-center gap-5 mb-10">
             <Link href="/tours" className="teri-btn">
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
+              Lihat Tour <ArrowRight size={16} />
             </Link>
             {waNumber && (
               <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="teri-btn-ghost">
