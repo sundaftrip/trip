@@ -170,7 +170,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
+            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
               <TourCard tour={tour} theme="atlas" />
             </AnimateIn>
           ))}

@@ -12,7 +12,7 @@ import TestimonialSection from "@/components/website/TestimonialSection";
 async function getData() {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
-    prisma.tour.findMany({ where: { status: "ACTIVE" }, orderBy: { tripDate: "asc" } }),
+    prisma.tour.findMany({ where: { status: { in: ["ACTIVE", "FULL"] } }, orderBy: { tripDate: "asc" } }),
     prisma.blog.findMany({ where: { published: true }, take: 3, orderBy: { date: "desc" } }),
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
@@ -22,8 +22,8 @@ async function getData() {
   const now = new Date();
   const tours = [...toursRaw]
     .sort((a, b) => {
-      const aDone = !!a.tripDate && a.tripDate < now;
-      const bDone = !!b.tripDate && b.tripDate < now;
+      const aDone = a.status === "FULL" || (!!a.tripDate && a.tripDate < now);
+      const bDone = b.status === "FULL" || (!!b.tripDate && b.tripDate < now);
       if (aDone !== bDone) return aDone ? 1 : -1;
       const at = a.tripDate ? a.tripDate.getTime() : Infinity;
       const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
