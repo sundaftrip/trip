@@ -18,6 +18,29 @@ interface Props {
 export default function BlogSection({ posts, theme = "classic" }: Props) {
   if (posts.length === 0) return null;
 
+  /* ── Y2K KAWAII (attic) ── */
+  if (theme === "attic") return (
+    <section className="atc-box atc-font p-4 sm:p-5">
+      <h2 className="atc-title text-xl">Jurnal ✿</h2>
+      <hr className="atc-divider" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {posts.map((post) => (
+          <Link key={post.id} href={`/blog/${post.slug}`} className="atc-box p-3 flex gap-3 items-start">
+            <div className="shrink-0 w-16 h-16 rounded-md overflow-hidden" style={{ border: "1.5px solid var(--atc-border)" }}>
+              {post.cover
+                ? <Image src={post.cover} alt={post.title} width={64} height={64} className="w-full h-full object-cover" />
+                : <div className="w-full h-full" style={{ background: "var(--atc-pink-soft)" }} />}
+            </div>
+            <div>
+              <h3 className="font-extrabold text-sm leading-snug line-clamp-2" style={{ color: "var(--atc-ink)" }}>{post.title}</h3>
+              <p className="text-[11px] mt-1" style={{ color: "var(--atc-ink-soft)" }}>{formatDate(post.date)}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+
   /* ── GLOBE ── */
   if (theme === "teri") return (
     <section className="py-24">

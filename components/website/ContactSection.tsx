@@ -312,6 +312,35 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     </section>
   );
 
+  /* ── Y2K KAWAII (attic) ── */
+  if (theme === "attic") return (
+    <section id="contact" className="atc-box atc-font p-4 sm:p-5">
+      <h2 className="atc-title text-xl">{headLabel} ✉</h2>
+      <hr className="atc-divider" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {contacts.map(({ Icon, label, value, href }) => (
+          <div key={label} className="atc-box p-3 flex items-center gap-3" style={{ background: "var(--atc-pink-soft)" }}>
+            <Icon size={15} style={{ color: "var(--atc-pink-deep)" }} />
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: "var(--atc-ink-soft)" }}>{label}</p>
+              {href
+                ? <a href={href} className="text-xs font-bold" style={{ color: "var(--atc-link)", textDecoration: "underline" }}>{value}</a>
+                : <p className="text-xs font-bold" style={{ color: "var(--atc-ink)" }}>{value}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+      {wa && (
+        <div className="mt-4 text-center">
+          <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+            className="atc-btn" style={{ background: "#5fbf6a" }}>
+            <MessageCircle size={15} /> {waLabel}
+          </a>
+        </div>
+      )}
+    </section>
+  );
+
   /* ── TROPICAL ── */
   if (theme === "teri") return (
     <section id="contact" className="py-24">

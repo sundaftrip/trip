@@ -36,6 +36,30 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
+  /* ── Y2K KAWAII (attic) ── */
+  if (theme === "attic") {
+    return (
+      <section className="atc-box atc-font p-4 sm:p-5">
+        <h2 className="atc-title text-xl">{title} ♡</h2>
+        <hr className="atc-divider" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {items.map(({ title, desc, Icon }) => (
+            <div key={title} className="atc-box p-3 flex gap-3 items-start" style={{ background: "var(--atc-pink-soft)" }}>
+              <div className="shrink-0 w-9 h-9 rounded-md flex items-center justify-center"
+                style={{ background: "var(--atc-card)", border: "1.5px solid var(--atc-border)" }}>
+                <Icon size={17} style={{ color: "var(--atc-pink-deep)" }} />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-sm" style={{ color: "var(--atc-ink)" }}>{title}</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--atc-ink-soft)" }}>{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   /* ── GLOBE ── */
   if (theme === "teri") {
     const accents = ["var(--teri-c1)", "var(--teri-c2)", "var(--teri-c3)", "var(--teri-c4)"];

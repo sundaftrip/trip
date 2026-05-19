@@ -67,6 +67,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://instagram.com/${igUser}` },
   ].filter(Boolean) as { Icon: ComponentType<IconProps>; label: string; value: string; href: string | null }[];
 
+  /* ── Y2K KAWAII (attic) ── */
+  if (theme === "attic") return (
+    <footer className="atc-box atc-font text-center py-2.5 px-4" style={{ background: "var(--atc-pink)" }}>
+      <p className="text-xs font-bold" style={{ color: "#ffffff" }}>
+        © {new Date().getFullYear()} {name} ୨୧ {c["company_website"] || "made with love"}
+      </p>
+    </footer>
+  );
+
   /* ── TERI ── */
   if (theme === "teri") return (
     <footer className="teri-bg border-t-[2.5px]" style={{ borderColor: "var(--teri-line)" }}>

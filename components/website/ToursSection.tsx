@@ -19,6 +19,21 @@ interface Props {
 export default function ToursSection({ tours, theme = "classic" }: Props) {
   if (tours.length === 0) return null;
 
+  /* ── Y2K KAWAII (attic) ── */
+  if (theme === "attic") return (
+    <section className="atc-box atc-font p-4 sm:p-5">
+      <h2 className="atc-title text-xl">Katalog Tour ✦</h2>
+      <hr className="atc-divider" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        {tours.map((tour, i) => (
+          <AnimateIn key={tour.id} delay={i * 60} className="h-full">
+            <TourCard tour={tour} theme="attic" />
+          </AnimateIn>
+        ))}
+      </div>
+    </section>
+  );
+
   /* ── TERI layout ── */
   if (theme === "teri") return (
     <section className="py-24">

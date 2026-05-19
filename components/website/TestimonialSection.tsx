@@ -132,6 +132,24 @@ function Carousel({ items, renderCard, darkDots = false }: {
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
+  /* ── Y2K KAWAII (attic) ── */
+  if (theme === "attic") return (
+    <section className="atc-box atc-font p-4 sm:p-5 overflow-hidden">
+      <h2 className="atc-title text-xl">Kata Mereka ♡</h2>
+      <hr className="atc-divider" />
+      <Carousel items={items} renderCard={(item) => (
+        <div className="atc-box p-4 h-full flex flex-col" style={{ background: "var(--atc-pink-soft)" }}>
+          <Stars rating={item.rating} />
+          <p className="text-xs leading-relaxed mt-2 flex-1" style={{ color: "var(--atc-ink)" }}>&ldquo;{item.content}&rdquo;</p>
+          <div className="flex items-center gap-2 mt-3 pt-2" style={{ borderTop: "1.5px dotted var(--atc-border)" }}>
+            <Avatar avatar={item.avatar} name={item.name} />
+            <p className="text-xs font-extrabold" style={{ color: "var(--atc-ink)" }}>{item.name}</p>
+          </div>
+        </div>
+      )} />
+    </section>
+  );
+
   /* ── GLOBE ── */
   if (theme === "teri") return (
     <section className="py-24 overflow-hidden">

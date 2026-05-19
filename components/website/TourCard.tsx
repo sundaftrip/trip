@@ -614,6 +614,36 @@ function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function AtticCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  return (
+    <div className={`atc-box atc-font overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale" : ""}`}>
+      <div className="relative overflow-hidden" style={{ aspectRatio: "16/9", borderBottom: "1.5px solid var(--atc-border)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, 50vw" className="object-cover" />
+          : <div className="w-full h-full flex items-center justify-center" style={{ background: "var(--atc-pink-soft)" }}><MapPin size={24} style={{ color: "var(--atc-pink-deep)" }} /></div>}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+            <span className="atc-pill">{isFull ? "Sold Out" : "Trip Selesai"}</span>
+          </div>
+        )}
+      </div>
+      <div className="p-3 flex-1 flex flex-col">
+        <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: "var(--atc-ink-soft)" }}>{tour.country}</p>
+        <h3 className="font-extrabold text-sm leading-snug line-clamp-2 mb-2" style={{ color: "var(--atc-ink)" }}>{tour.title}</h3>
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {tour.duration && <span className="atc-pill"><Clock size={10} /> {tour.duration}</span>}
+          <span className="atc-pill"><Users size={10} /> {tour.seatsLeft} seat</span>
+        </div>
+        <p className="text-[10px] mt-auto" style={{ color: "var(--atc-ink-soft)" }}>mulai dari</p>
+        <p className="font-extrabold text-base" style={{ color: "var(--atc-pink-deep)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+        {!isDimmed && <span className="atc-btn mt-2.5 w-full">Lihat Detail →</span>}
+      </div>
+    </div>
+  );
+}
+
 function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
@@ -675,6 +705,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "atelier") card = <AtelierCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "jojo") card = <JojoCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "teri") card = <TeriCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "attic") card = <AtticCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
