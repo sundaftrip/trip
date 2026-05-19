@@ -416,8 +416,17 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         </div>
 
         <div className="hero-fade-up">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border"
-            style={{ borderColor: "var(--at-border)" }}>
+          <div className="relative aspect-[4/5] w-full"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), "
+                + "linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), "
+                + "linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent)",
+              maskComposite: "intersect",
+              WebkitMaskComposite: "source-in",
+            }}>
             <Image src="/trip-photos/trip-5.jpg"
               alt="Aurora borealis bersama traveler Sundaf Trip di Murmansk, Rusia"
               fill priority sizes="(max-width:1024px) 100vw, 40vw"
