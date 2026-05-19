@@ -35,6 +35,41 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") {
+    const cardBgs = ["var(--fb-red)", "var(--fb-yellow)", "var(--fb-blue)", "var(--fb-green)"];
+    return (
+      <section className="fb-page py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateIn>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+              <div>
+                <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>★ Keunggulan Kami</span>
+                <h2 className="text-3xl lg:text-5xl font-bold mt-3 fb-wave" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>{title}</h2>
+              </div>
+              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--fb-subink)" }}>{subtitle}</p>
+            </div>
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100}>
+                <div className="fb-card p-7 h-full" style={{ background: i % 2 === 0 ? "var(--fb-card)" : "var(--fb-paper)" }}>
+                  <p className="text-5xl font-bold mb-3" style={{ color: "color-mix(in srgb, var(--fb-line) 16%, transparent)", fontFamily: "var(--fb-font)" }}>0{i + 1}</p>
+                  <div className="w-11 h-11 flex items-center justify-center mb-4"
+                    style={{ background: cardBgs[i], border: "2px solid var(--fb-line)", borderRadius: 10, boxShadow: "0 3px 0 0 var(--fb-line)" }}>
+                    <Icon size={20} style={{ color: "#1a1a1a" }} />
+                  </div>
+                  <h3 className="font-bold text-sm leading-snug mb-2" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--fb-subink)" }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   /* ── GLOBE ── */
   if (theme === "globe") {
     const cardBgs = ["var(--gl-sky)", "var(--gl-amber)", "var(--gl-coral)", "var(--gl-grass)"];

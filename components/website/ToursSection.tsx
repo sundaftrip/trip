@@ -43,6 +43,29 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
     </section>
   );
 
+  /* ── FUMAYO layout ── */
+  if (theme === "fumayo") return (
+    <section className="fb-page py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="mb-12">
+            <span className="fb-pill mb-4 inline-flex" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ Paket Tersedia</span>
+            <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+              Tour <span className="fb-wave" style={{ color: "var(--fb-accent)" }}>Pilihan</span>
+            </h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
+              <TourCard tour={tour} theme="fumayo" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── KAWAII layout ── */
   if (theme === "kawaii") return (
     <section className="py-24" style={{ background: "var(--kw-bg)" }}>

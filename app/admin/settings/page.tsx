@@ -46,6 +46,7 @@ const THEMES = [
   { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
+  { key: "fumayo",   label: "Fumayo",    desc: "Buku tulis kotak-kotak anak. Bingkai rounded, font mesin tik, tombol hijau, doodle.", feature: null },
   { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
 ];
 
@@ -293,6 +294,7 @@ export default function SettingsPage() {
                   <div className={`h-20 rounded-lg mb-3 overflow-hidden relative ${
                     key === "classic" ? "bg-white border border-gray-100" :
                     key === "console" ? "bg-white border border-gray-100" :
+                    key === "fumayo" ? "bg-white border border-gray-100" :
                     "bg-gray-950"
                   }`}>
                     {key === "classic" && (
@@ -387,6 +389,19 @@ export default function SettingsPage() {
                         {/* CTA */}
                         <div className="h-5 w-16 border text-[8px] font-semibold flex items-center justify-center relative z-10" style={{ borderColor: "#1a1a1a", background: "#0a0a0a", color: "#ffffff", borderRadius: "4px" }}>
                           Lihat Tour
+                        </div>
+                      </div>
+                    )}
+                    {key === "fumayo" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fbf8ef", backgroundImage: "linear-gradient(rgba(45,106,79,0.16) 1px,transparent 1px),linear-gradient(90deg,rgba(45,106,79,0.16) 1px,transparent 1px)", backgroundSize: "9px 9px" }}>
+                        <span className="absolute top-1 right-2 text-[10px]" style={{ color: "#ff6b6b" }}>✶</span>
+                        <span className="absolute top-3 left-3 text-[8px]" style={{ color: "#86b2ca" }}>✦</span>
+                        <div className="flex gap-1 mb-1.5">
+                          <div className="h-4 px-1.5 text-[7px] font-bold flex items-center rounded-full border" style={{ background: "#fff", borderColor: "#333131", color: "#333131", fontFamily: "monospace" }}>NOVINKI</div>
+                          <div className="h-4 px-1.5 text-[7px] font-bold flex items-center rounded-full border" style={{ background: "#fff06a", borderColor: "#333131", color: "#333131", fontFamily: "monospace" }}>★</div>
+                        </div>
+                        <div className="h-5 w-16 border-2 text-[8px] font-bold flex items-center justify-center text-white" style={{ background: currentAccent, borderColor: "#333131", borderRadius: "6px", boxShadow: "0 2px 0 0 #333131", fontFamily: "monospace" }}>
+                          LIHAT
                         </div>
                       </div>
                     )}

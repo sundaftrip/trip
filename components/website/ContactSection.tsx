@@ -48,6 +48,69 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const waLabel   = lang === "id" ? "WhatsApp Sekarang" : "WhatsApp Now";
   const bankLabel = lang === "id" ? "Rekening Pembayaran" : "Payment Account";
 
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") return (
+    <section id="contact" className="fb-page py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 max-w-xl">
+          <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>★ {headLabel}</span>
+          <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+            {t("contact_title", "Siap Membantu Perjalanan Anda")}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--fb-subink)" }}>
+            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {contacts.map(({ Icon, label, value, href }, i) => {
+              const bgs = ["var(--fb-blue)", "var(--fb-yellow)", "var(--fb-green)", "var(--fb-pink)"];
+              return (
+                <div key={label} className="fb-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
+                  <div className="w-9 h-9 flex items-center justify-center shrink-0"
+                    style={{ background: "#ffffff", border: "2px solid #333131", borderRadius: 8, boxShadow: "0 3px 0 0 #333131" }}>
+                    <Icon size={14} style={{ color: "#1a1a1a" }} />
+                  </div>
+                  <div style={{ fontFamily: "var(--fb-font)" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: "#1a1a1a", opacity: 0.7 }}>{label}</p>
+                    {href
+                      ? <a href={href} className="text-sm font-bold hover:opacity-70 transition-opacity" style={{ color: "#1a1a1a" }}>{value}</a>
+                      : <p className="text-sm font-bold leading-relaxed" style={{ color: "#1a1a1a" }}>{value}</p>}
+                  </div>
+                </div>
+              );
+            })}
+            {bankAcc && (
+              <div className="fb-card p-5" style={{ fontFamily: "var(--fb-font)" }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--fb-subink)" }}>{bankLabel}</p>
+                {bankName && <p className="text-xs mb-1" style={{ color: "var(--fb-subink)" }}>{bankName}</p>}
+                <p className="text-xl font-bold font-mono" style={{ color: "var(--fb-ink)" }}>{bankAcc}</p>
+                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--fb-subink)" }}>a/n {bankHolder}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="fb-frame p-10 flex flex-col justify-between" style={{ background: "var(--fb-accent)" }}>
+            <div>
+              <span className="fb-pill mb-6 inline-flex" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ {ctaLabel}</span>
+              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug text-white" style={{ fontFamily: "var(--fb-font)" }}>{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed text-white/75">{ctaDesc}</p>
+            </div>
+            {wa ? (
+              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
+                className="mt-10 fb-btn-outline px-6 py-3.5 text-sm self-start" style={{ background: "#ffffff" }}>
+                <MessageCircle size={16} /> {waLabel}
+              </a>
+            ) : (
+              <p className="mt-10 text-sm text-white/50">{email}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── GLOBE ── */
   if (theme === "globe") return (
     <section id="contact" className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
