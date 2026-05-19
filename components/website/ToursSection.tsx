@@ -171,7 +171,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
 
   const subColor = "text-gray-400";
 
-  const linkColor = "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white";
 
   return (
     <section className={`py-24 ${sectionBg}`}>
