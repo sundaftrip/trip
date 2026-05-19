@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -55,6 +55,7 @@ function normalizeDate(raw: string): string | null {
 
 export default function ImportToursPage() {
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
@@ -186,12 +187,21 @@ export default function ImportToursPage() {
 
           {/* Upload foto */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-            <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Foto Trip (opsional)</label>
+            <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Foto Trip</label>
+            <p className="text-xs text-gray-500 mb-3">Pilih semua foto sekaligus (tahan Cmd/Ctrl saat klik, atau Cmd/Ctrl+A). Urutan foto = urutan baris.</p>
             <input
+              ref={fileRef}
               type="file" accept="image/*" multiple
               onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-              className="text-sm text-gray-600 dark:text-gray-400"
+              className="hidden"
             />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:border-blue-400 hover:text-blue-600 transition"
+            >
+              <Upload size={16} /> Pilih Foto
+            </button>
             {files.length > 0 && (
               <p className="text-xs text-gray-500 mt-2">
                 {files.length} foto dipilih. {files.length !== validRows.length &&
