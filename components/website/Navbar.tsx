@@ -39,6 +39,37 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
   const isDark = mounted && resolvedTheme === "dark";
 
+  /* ── Y2K KAWAII (attic) — banner + nav statis di dalam kotak ── */
+  if (theme === "attic") return (
+    <header className="atc-font">
+      <div className="atc-box relative flex items-center justify-center py-7 px-4 overflow-hidden"
+        style={{ background: "var(--atc-banner)" }}>
+        <span className="absolute left-5 top-3 text-xl select-none pointer-events-none">✦</span>
+        <span className="absolute right-6 top-3 text-lg select-none pointer-events-none">♬</span>
+        <span className="absolute right-12 bottom-3 text-sm select-none pointer-events-none">✧</span>
+        <span className="absolute left-10 bottom-3 text-sm select-none pointer-events-none">✿</span>
+        {logo
+          ? <Image src={logo} alt="Logo" width={220} height={64}
+              className={`h-12 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+          : <h1 className="text-2xl font-extrabold" style={{ color: "var(--atc-pink-deep)" }}>Sundaf Trip ✈</h1>}
+      </div>
+      <nav className="flex flex-wrap items-center justify-center gap-2">
+        {navLinks.map((link) => (
+          <Link key={link.href} href={link.href} className="atc-btn">{link.label[lang]}</Link>
+        ))}
+      </nav>
+      <div className="flex items-center justify-center gap-2">
+        <button onClick={toggleLang} className="atc-btn !px-3">{lang === "id" ? "EN" : "ID"}</button>
+        {mounted && (
+          <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode" className="atc-btn !px-3">
+            {isDark ? <Sun size={13} /> : <Moon size={13} />}
+          </button>
+        )}
+        <span className="atc-btn !px-3" aria-hidden>♥</span>
+      </div>
+    </header>
+  );
+
   /* ── TERI ── */
   if (theme === "teri") return (
     <header className="fixed top-0 inset-x-0 z-50 teri-bg border-b-[2.5px]" style={{ borderColor: "var(--teri-line)" }}>

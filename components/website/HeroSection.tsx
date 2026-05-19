@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic";
   featuredImage?: string | null;
   heroImages?: string[];
 }
@@ -76,6 +76,54 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       </>
     );
   };
+
+  /* ── Y2K KAWAII (attic) — area 3-kolom ala situs 2000-an ── */
+  if (theme === "attic") {
+    const aHero = featuredImage ?? heroImages[0] ?? null;
+    return (
+      <section className="atc-font grid grid-cols-1 md:grid-cols-[0.9fr_1.5fr_1fr] gap-3 sm:gap-4">
+        {/* kiri — widget profil */}
+        <div className="atc-box p-4 flex flex-col items-center text-center gap-3">
+          <span className="atc-pill">♡ Hello!</span>
+          <div className="overflow-hidden rounded-md w-full" style={{ border: "1.5px solid var(--atc-border)", aspectRatio: "1" }}>
+            {aHero
+              ? <Image src={aHero} alt="" width={260} height={260} className="w-full h-full object-cover" priority />
+              : <div className="w-full h-full flex items-center justify-center text-4xl" style={{ background: "var(--atc-pink-soft)" }}>🧸</div>}
+          </div>
+          <p className="text-xs font-semibold" style={{ color: "var(--atc-ink-soft)" }}>have a nice trip ~ ♪</p>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atc-btn w-full">Guestbook ✎</a>
+          )}
+        </div>
+        {/* tengah — welcome */}
+        <div className="atc-box p-5 flex flex-col">
+          <h2 className="atc-title text-2xl">Welcome! ✦</h2>
+          <hr className="atc-divider" />
+          <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--atc-ink)" }}>
+            Assalamualaikum! Selamat datang di{" "}
+            <span style={{ color: "var(--atc-link)", textDecoration: "underline" }}>{companyName || "Sundaf Trip"}</span> ✈️🕌 —{" "}
+            {t("hero_subtitle", "teman perjalanan Anda menjelajah Rusia, ramah Muslim, hangat, dan berkesan. Yuk jelajahi katalog tour kami!")}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href="/tours" className="atc-btn">{t("hero_btn", "Lihat Katalog")} →</Link>
+            {waNumber && (
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atc-btn"
+                style={{ background: "var(--atc-mint)", color: "var(--atc-ink)" }}>WhatsApp</a>
+            )}
+          </div>
+        </div>
+        {/* kanan — updates */}
+        <div className="atc-box p-4">
+          <h2 className="atc-title text-lg">Updates ✿</h2>
+          <hr className="atc-divider" />
+          <p className="text-xs leading-relaxed" style={{ color: "var(--atc-ink)" }}>
+            <b style={{ color: "var(--atc-link)" }}>Baru!</b> Paket Russia, Aurora &amp; Asia Tengah tersedia. Hubungi kami untuk jadwal &amp; harga terkini.
+          </p>
+          <div className="mt-3 flex gap-1.5 text-base select-none">✿ ✦ ♡ ✦ ✿</div>
+        </div>
+      </section>
+    );
+  }
 
   /* ── KAWAII ── */
   if (theme === "kawaii") return (

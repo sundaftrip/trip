@@ -1105,3 +1105,87 @@ body {
 .prose td { color: #374151; }
 .dark .prose th { background: #1e293b; color: #f1f5f9; border-style: solid; border-color: #334155; }
 .dark .prose td { color: #cbd5e1; border-style: solid; border-color: #334155; }
+
+/* ════════ TEMA Y2K KAWAII (key: attic) — boxed 2000s, gingham, pixel ════════ */
+:root {
+  --atc-pink:      #ffb6c1;   /* tombol/aksen */
+  --atc-pink-deep: #ff8fa3;   /* hover */
+  --atc-pink-soft: #ffe3e8;   /* gingham muda */
+  --atc-ink:       #8b7375;   /* teks coklat susu */
+  --atc-ink-soft:  #a68084;
+  --atc-border:    #8b6969;   /* garis coklat tipis */
+  --atc-card:      #ffffff;
+  --atc-link:      #e0758f;   /* hyperlink pink */
+  --atc-banner:    #fff3b0;   /* kuning banner lembut */
+  --atc-mint:      #c8e6d0;
+  --atc-page:      #ffd9e4;   /* warna dasar latar tiled */
+  /* tile pola kawaii — hati & bintang pastel */
+  --atc-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill-rule='evenodd'%3E%3Cpath d='M16 14c-2-4-8-4-8 1 0 4 8 9 8 9s8-5 8-9c0-5-6-5-8-1z' fill='%23ff9bb3' fill-opacity='0.55'/%3E%3Cpath d='M46 40l1.6 4.4L52 46l-4.4 1.6L46 52l-1.6-4.4L40 46l4.4-1.6z' fill='%23ffd86b' fill-opacity='0.6'/%3E%3Ccircle cx='50' cy='14' r='4' fill='%2392d6c8' fill-opacity='0.55'/%3E%3Ccircle cx='14' cy='46' r='3.4' fill='%23b8a6e8' fill-opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark {
+  --atc-pink:      #d98aa0;
+  --atc-pink-deep: #e89cb0;
+  --atc-pink-soft: #3a2630;
+  --atc-ink:       #e7cdd4;
+  --atc-ink-soft:  #c9a9b2;
+  --atc-border:    #c9a9b2;
+  --atc-card:      #2a2026;
+  --atc-link:      #f0a8bc;
+  --atc-banner:    #4a3f2a;
+  --atc-page:      #2a1d24;
+}
+
+/* latar halaman — pola tiled kawaii */
+.atc-page { background-color: var(--atc-page); background-image: var(--atc-tile); }
+
+/* wadah utama terpusat — kotak gingham border coklat */
+.atc-container {
+  max-width: 900px; margin: 0 auto;
+  border: 2px solid var(--atc-border);
+  background-color: var(--atc-card);
+  background-image:
+    repeating-linear-gradient(0deg,  color-mix(in srgb, var(--atc-pink) 55%, transparent) 0 15px, transparent 15px 30px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--atc-pink) 55%, transparent) 0 15px, transparent 15px 30px);
+  box-shadow: 0 0 0 5px var(--atc-card), 0 10px 30px rgba(139,105,105,0.3);
+}
+
+/* kotak konten putih di dalam container */
+.atc-box {
+  background: var(--atc-card);
+  border: 1.5px solid var(--atc-border);
+  border-radius: 5px;
+}
+.atc-box a { color: var(--atc-link); text-decoration: underline; }
+
+/* tombol nav — pink solid, border coklat, sudut sedikit membulat */
+.atc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--atc-pink); color: #fff;
+  border: 1.5px solid var(--atc-border); border-radius: 5px;
+  padding: 9px 18px; font-weight: 800; font-size: 13px;
+  text-decoration: none; cursor: pointer;
+  transition: background .14s ease, transform .14s ease;
+}
+.atc-btn:hover { background: var(--atc-pink-deep); transform: translateY(-1px); }
+.atc-btn-active { background: var(--atc-pink-deep); }
+
+/* pil/label kecil */
+.atc-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--atc-pink-soft); color: var(--atc-ink);
+  border: 1.5px solid var(--atc-border); border-radius: 999px;
+  padding: 4px 12px; font-weight: 700; font-size: 11px;
+}
+/* judul section — teks pink di kotak, garis bawah titik */
+.atc-title {
+  font-family: var(--font-nunito), system-ui, sans-serif; font-weight: 800;
+  color: var(--atc-pink-deep);
+}
+.atc-font { font-family: var(--font-plus-jakarta), system-ui, sans-serif; }
+.atc-font h1, .atc-font h2, .atc-font h3 { font-family: var(--font-nunito), system-ui, sans-serif; font-weight: 800; }
+
+.atc-pixel { image-rendering: pixelated; }
+.atc-divider {
+  height: 0; border: 0; border-top: 2px dotted var(--atc-border);
+  margin: 16px 0;
+}

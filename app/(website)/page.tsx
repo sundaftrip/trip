@@ -58,7 +58,7 @@ export default async function HomePage() {
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
   const rawTheme = themeRow?.value || "classic";
-  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri";
+  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic";
 
   // Fetch featured image server-side for vibrant theme (no client fetch needed)
   let featuredImage: string | null = null;
