@@ -1189,3 +1189,7 @@ body {
   height: 0; border: 0; border-top: 2px dotted var(--atc-border);
   margin: 16px 0;
 }
+
+/* alias .atc-card = .atc-box (untuk sistem pfx halaman dalam) */
+.atc-card { background: var(--atc-card); border: 1.5px solid var(--atc-border); border-radius: 5px; }
+.atc-card a, .atc-box a { color: var(--atc-link); }

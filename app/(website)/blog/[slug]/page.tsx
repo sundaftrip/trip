@@ -106,9 +106,11 @@ export default async function BlogDetailPage({
   const isAtelier  = theme === "atelier";
   const isJojo     = theme === "jojo";
   const isTeri     = theme === "teri";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo || isTeri;
+  const isAttic    = theme === "attic";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo || isTeri || isAttic;
 
   const pfx = isKawaii ? "kw" : isTropical ? "tr" : isPixel ? "px"
+            : isAttic ? "atc"
             : isGlobe ? "gl" : isMap ? "mp" : isAtlas ? "at"
             : isAtelier ? "atl" : isJojo ? "jo" : isTeri ? "teri" : "";
 

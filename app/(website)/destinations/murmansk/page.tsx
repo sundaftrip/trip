@@ -100,7 +100,8 @@ export default async function MurmanskPage() {
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
   const isTeri     = theme === "teri";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isTeri;
+  const isAttic    = theme === "attic";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isTeri || isAttic;
 
   const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : undefined;
   const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isTeri ? "var(--teri-ink)" : undefined;

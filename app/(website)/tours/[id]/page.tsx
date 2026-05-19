@@ -79,9 +79,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const isAtelier  = siteTheme === "atelier";
   const isJojo     = siteTheme === "jojo";
   const isTeri     = siteTheme === "teri";
-  const isOutlined = isTropical || isKawaii || isPixel || isAtlas || isAtelier || isJojo || isTeri;
+  const isAttic    = siteTheme === "attic";
+  const isOutlined = isTropical || isKawaii || isPixel || isAtlas || isAtelier || isJojo || isTeri || isAttic;
 
-  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : isPixel ? "px" : isAtlas ? "at" : isAtelier ? "atl" : isJojo ? "jo" : isTeri ? "teri" : "";
+  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : isPixel ? "px" : isAtlas ? "at" : isAtelier ? "atl" : isJojo ? "jo" : isTeri ? "teri" : isAttic ? "atc" : "";
   const tBg   = isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : isPixel ? "var(--px-bg)"   : isAtlas ? "var(--at-bg)"   : isAtelier ? "var(--atl-bg)"      : isJojo ? "var(--jo-bg)"   : undefined;
   const tText = isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : isPixel ? "var(--px-text)" : isAtlas ? "var(--at-text)" : isAtelier ? "var(--atl-ink)"     : isJojo ? "var(--jo-ink)"  : isTeri ? "var(--teri-ink)" : undefined;
   const tCard = isTropical ? "var(--tr-card)"  : isKawaii ? "var(--kw-card)" : isPixel ? "var(--px-card)" : isAtlas ? "var(--at-card)" : isAtelier ? "var(--atl-surface)" : isJojo ? "var(--jo-card)" : isTeri ? "var(--teri-card)" : undefined;

@@ -32,7 +32,8 @@ export default async function TermsPage({
   const isAtelier  = theme === "atelier";
   const isJojo     = theme === "jojo";
   const isTeri     = theme === "teri";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtelier || isJojo || isTeri;
+  const isAttic    = theme === "attic";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtelier || isJojo || isTeri || isAttic;
 
   const pageBg  = isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : isAtelier ? "var(--atl-bg)" : isJojo ? "var(--jo-bg)" : undefined;
   const headClr = isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isAtelier ? "var(--atl-ink)" : isJojo ? "var(--jo-ink)" : isTeri ? "var(--teri-ink)" : undefined;
