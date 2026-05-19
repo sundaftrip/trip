@@ -15,8 +15,9 @@ from reportlab.pdfgen import canvas
 # --------------------------------------------------------------------------
 # CONFIG — edit these values, then re-run the script.
 # --------------------------------------------------------------------------
-OUTPUT_PATH = "/Users/ferdiansahyusuf/Downloads/sundaftrip_company_profile.pdf"
+OUTPUT_PATH = "/Users/ferdiansahyusuf/sundaftrip/public/sundaftrip-company-profile.pdf"
 PHOTO_DIR   = "/Users/ferdiansahyusuf/sundaftrip/public/trip-photos"
+LOGO_PATH   = "/Users/ferdiansahyusuf/sundaftrip/company-profile/logo-white.png"
 
 EMAIL        = "info@sundaftrip.com"
 WEBSITE      = "sundaftrip.com"
@@ -114,8 +115,11 @@ TAGLINE = ("Small Group Tours   |   Affordable International Travel   |   "
 def draw_header(c):
     set_fill(c, NAVY)
     c.rect(0, H - 86, W, 86, stroke=0, fill=1)
-    text(c, LM + 16, H - 50, "SUNDAF TRIP", "Helvetica-Bold", 28, WHITE)
-    text(c, LM + 17, H - 70, TAGLINE, "Helvetica", 9, (0.78, 0.82, 0.88))
+    logo_h = 34
+    logo_w = logo_h * 862 / 241          # logo-white.png is 862x241
+    c.drawImage(LOGO_PATH, LM + 16, H - 58, width=logo_w, height=logo_h,
+                mask="auto")
+    text(c, LM + 17, H - 71, TAGLINE, "Helvetica", 9, (0.78, 0.82, 0.88))
     set_fill(c, ORANGE)
     c.rect(0, H - 90, W, 4, stroke=0, fill=1)
 
