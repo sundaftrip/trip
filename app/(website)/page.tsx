@@ -18,8 +18,8 @@ const getData = unstable_cache(async () => {
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
-  // Semua tour tampil di beranda — aktif di atas (tanggal terdekat dulu),
-  // tour selesai turun ke bawah (yang paling tua tenggelam paling bawah).
+  // Beranda menampilkan maks 12 tour — aktif di atas (tanggal terdekat dulu),
+  // lalu sebagian trip selesai. Selengkapnya di halaman Paket Tour.
   const now = new Date();
   const tours = [...toursRaw]
     .sort((a, b) => {
@@ -29,7 +29,8 @@ const getData = unstable_cache(async () => {
       const at = a.tripDate ? a.tripDate.getTime() : Infinity;
       const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
       return aDone ? bt - at : at - bt;
-    });
+    })
+    .slice(0, 12);
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
