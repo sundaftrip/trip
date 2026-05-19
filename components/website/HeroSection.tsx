@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 interface Props {
@@ -375,62 +374,42 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   if (theme === "atlas") return (
     <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden pt-24 lg:pt-28 pb-20 px-4 at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)" }}>
-      <div className="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-[1.55fr_1fr] gap-10 lg:gap-14 items-center">
-        <div>
-          <div className="mb-8 hero-fade-up">
-            <span className="at-pill" style={{ color: "var(--at-text)" }}>
-              {eyebrow}
-            </span>
-          </div>
-
-          <h1 className="text-[clamp(2.8rem,7vw,6.4rem)] font-bold leading-[0.92] tracking-tight mb-10 hero-fade-up"
-            style={{ color: "var(--at-text)" }}>
-            <TitleWords />
-          </h1>
-
-          <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
-            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-              {t("hero_subtitle", "Destinasi Pilihan")}
-            </span>
-            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-              Paket Lengkap
-            </span>
-            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-              Terpercaya
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <Link href="/tours"
-              className="at-btn-solid px-8 py-4 text-sm">
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-            </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-                className="at-btn px-8 py-4 text-sm"
-                style={{ color: "var(--at-text)" }}>
-                WhatsApp
-              </a>
-            )}
-          </div>
+      <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="mb-8 hero-fade-up">
+          <span className="at-pill" style={{ color: "var(--at-text)" }}>
+            {eyebrow}
+          </span>
         </div>
 
-        <div className="hero-fade-up">
-          <div className="relative aspect-[4/5] w-full"
-            style={{
-              maskImage:
-                "radial-gradient(70% 64% at 50% 47%, #000 46%, transparent 100%)",
-              WebkitMaskImage:
-                "radial-gradient(70% 64% at 50% 47%, #000 46%, transparent 100%)",
-            }}>
-            <Image src="/trip-photos/trip-5.jpg"
-              alt="Aurora borealis bersama traveler Sundaf Trip di Murmansk, Rusia"
-              fill priority sizes="(max-width:1024px) 100vw, 40vw"
-              className="object-cover" />
-          </div>
-          <p className="mt-3 text-xs font-medium tracking-wide" style={{ color: "var(--at-subtext)" }}>
-            Aurora Borealis · Murmansk, Rusia
-          </p>
+        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
+          style={{ color: "var(--at-text)" }}>
+          <TitleWords />
+        </h1>
+
+        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+            {t("hero_subtitle", "Destinasi Pilihan")}
+          </span>
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+            Paket Lengkap
+          </span>
+          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+            Terpercaya
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/tours"
+            className="at-btn-solid px-8 py-4 text-sm">
+            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              className="at-btn px-8 py-4 text-sm"
+              style={{ color: "var(--at-text)" }}>
+              WhatsApp
+            </a>
+          )}
         </div>
       </div>
     </section>
