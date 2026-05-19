@@ -1108,31 +1108,32 @@ body {
 
 /* ════════ TEMA Y2K KAWAII (key: attic) — boxed 2000s, gingham, pixel ════════ */
 :root {
-  --atc-pink:      #ffb6c1;   /* tombol/aksen */
-  --atc-pink-deep: #ff8fa3;   /* hover */
-  --atc-pink-soft: #ffe3e8;   /* gingham muda */
+  /* aksen diturunkan dari skema warna (--site-accent) */
+  --atc-pink:      var(--site-accent, #ffb6c1);                                   /* tombol/aksen */
+  --atc-pink-deep: color-mix(in srgb, var(--site-accent, #ffb6c1) 76%, #4a2c34);  /* hover/judul */
+  --atc-pink-soft: color-mix(in srgb, var(--site-accent, #ffb6c1) 24%, #ffffff);  /* gingham muda */
   --atc-ink:       #8b7375;   /* teks coklat susu */
   --atc-ink-soft:  #a68084;
   --atc-border:    #8b6969;   /* garis coklat tipis */
   --atc-card:      #ffffff;
-  --atc-link:      #e0758f;   /* hyperlink pink */
+  --atc-link:      color-mix(in srgb, var(--site-accent, #ffb6c1) 68%, #3a2229);  /* hyperlink */
   --atc-banner:    #fff3b0;   /* kuning banner lembut */
   --atc-mint:      #c8e6d0;
-  --atc-page:      #ffd9e4;   /* warna dasar latar tiled */
+  --atc-page:      color-mix(in srgb, var(--site-accent, #ffb6c1) 34%, #ffffff);  /* dasar latar tiled */
   /* tile pola kawaii — hati & bintang pastel */
   --atc-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill-rule='evenodd'%3E%3Cpath d='M16 14c-2-4-8-4-8 1 0 4 8 9 8 9s8-5 8-9c0-5-6-5-8-1z' fill='%23ff9bb3' fill-opacity='0.55'/%3E%3Cpath d='M46 40l1.6 4.4L52 46l-4.4 1.6L46 52l-1.6-4.4L40 46l4.4-1.6z' fill='%23ffd86b' fill-opacity='0.6'/%3E%3Ccircle cx='50' cy='14' r='4' fill='%2392d6c8' fill-opacity='0.55'/%3E%3Ccircle cx='14' cy='46' r='3.4' fill='%23b8a6e8' fill-opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
 }
 .dark {
-  --atc-pink:      #d98aa0;
-  --atc-pink-deep: #e89cb0;
-  --atc-pink-soft: #3a2630;
+  --atc-pink:      color-mix(in srgb, var(--site-accent, #d98aa0) 72%, #ffffff);
+  --atc-pink-deep: color-mix(in srgb, var(--site-accent, #d98aa0) 82%, #ffffff);
+  --atc-pink-soft: color-mix(in srgb, var(--site-accent, #d98aa0) 22%, #1c1218);
   --atc-ink:       #e7cdd4;
   --atc-ink-soft:  #c9a9b2;
   --atc-border:    #c9a9b2;
   --atc-card:      #2a2026;
-  --atc-link:      #f0a8bc;
+  --atc-link:      color-mix(in srgb, var(--site-accent, #d98aa0) 58%, #ffffff);
   --atc-banner:    #4a3f2a;
-  --atc-page:      #2a1d24;
+  --atc-page:      color-mix(in srgb, var(--site-accent, #d98aa0) 22%, #16101a);
 }
 
 /* latar halaman — pola tiled kawaii */
