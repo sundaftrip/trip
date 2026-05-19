@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { PLAN_FEATURES } from "@/lib/plan";
@@ -54,6 +54,9 @@ export async function PUT(req: NextRequest) {
   );
   (revalidateTag as unknown as (t: string) => void)("site-colors");
   (revalidateTag as unknown as (t: string) => void)("footer-data");
+  (revalidateTag as unknown as (t: string) => void)("home-data");
+  // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
+  (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
 
   await logActivity({
     userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
