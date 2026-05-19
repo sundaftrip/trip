@@ -526,14 +526,23 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           <span className="jo-chip"><JojoSticker shape="star" size={20} /> {eyebrow}</span>
         </div>
 
-        <h1 className="jo-pop text-[clamp(2.8rem,8vw,6rem)] leading-[1.05] tracking-tight mb-7"
-          style={{ color: "var(--jo-ink)", fontWeight: 900, animationDelay: ".15s" }}>
-          <TitleWords extra={<span className="inline-block ml-3 align-middle jo-bob"><JojoSticker shape="heart" size={50} /></span>} />
+        <h1 className="jo-pop text-[clamp(2.8rem,8vw,6rem)] leading-[1.12] tracking-tight mb-7"
+          style={{ fontWeight: 900, animationDelay: ".15s" }}>
+          {t("hero_title", "Wujudkan Perjalanan Impian Anda")
+            .split(/\s+/).filter(Boolean)
+            .map((w, i) => (
+              <span key={i} className="inline-block mr-[0.26em]"
+                style={{ color: ["var(--jo-ink)", "var(--jo-red)", "var(--jo-accent-on)"][i % 3] }}>
+                {w}
+              </span>
+            ))}
+          <span className="inline-block ml-1 align-middle jo-bob"><JojoSticker shape="heart" size={48} /></span>
         </h1>
 
-        <p className="jo-pop text-base sm:text-lg max-w-xl mx-auto mb-9 font-semibold"
-          style={{ color: "var(--jo-sub)", animationDelay: ".28s" }}>
-          {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+        <p className="jo-pop text-base sm:text-lg max-w-xl mx-auto mb-9" style={{ animationDelay: ".28s" }}>
+          <span className="jo-mark-2 font-semibold" style={{ color: "var(--jo-ink)" }}>
+            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
+          </span>
         </p>
 
         <div className="jo-pop flex flex-wrap items-center justify-center gap-4 mb-10" style={{ animationDelay: ".4s" }}>

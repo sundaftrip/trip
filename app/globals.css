@@ -911,62 +911,87 @@ body {
 @keyframes atl-fade { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 .atl-fade { animation: atl-fade .85s ease both; }
 
-/* ─── JOJO THEME — sticker book, chunky cute (palet selaras skema) ─── */
+/* ─── JOJO THEME — scrapbook hangat: krem, gingham merah, hijau zaitun ─── */
 :root {
-  --jo-accent:     var(--site-accent, #2d6a4f);
-  /* terang dari aksen agar aksen sebagai teks tetap kontras di latar gelap */
-  --jo-accent-on:  var(--site-accent, #2d6a4f);
-  --jo-bg:     color-mix(in srgb, var(--jo-accent) 8%, #fffaf2);
-  --jo-card:   #ffffff;
-  --jo-ink:    color-mix(in srgb, var(--jo-accent) 16%, #211f1c);
-  --jo-sub:    color-mix(in srgb, var(--jo-accent) 20%, #6a665f);
-  --jo-line:   color-mix(in srgb, var(--jo-accent) 55%, #34302a);
-  --jo-soft:   color-mix(in srgb, var(--jo-accent) 14%, #ffffff);
-  --jo-cream:  color-mix(in srgb, var(--jo-accent) 6%, #fffaf3);
-  --jo-shadow: color-mix(in srgb, var(--jo-accent) 50%, #2f2b26);
+  --jo-bg:      #f4ead0;          /* krem hangat */
+  --jo-card:    #fffdf4;          /* kertas krem */
+  --jo-ink:     #4a3f28;          /* coklat tulisan */
+  --jo-sub:     #8a7c5b;          /* coklat lembut */
+  --jo-line:    #b23f38;          /* merah gingham — border */
+  --jo-accent:  #869a3e;          /* hijau zaitun — tombol */
+  --jo-accent-on: #5d6b22;        /* hijau gelap untuk teks aksen */
+  --jo-soft:    #efe2c0;
+  --jo-cream:   #faf3dd;
+  --jo-red:     #b23f38;
+  --jo-shadow:  #d9c79e;          /* bayangan lembut hangat */
+  --jo-mark-1:  #f6e27e;          /* highlight kuning */
+  --jo-mark-2:  #c8de8c;          /* highlight hijau */
+  --jo-mark-3:  #f4b8c5;          /* highlight pink */
 }
 .dark {
-  --jo-accent-on:  color-mix(in srgb, var(--site-accent, #2d6a4f) 62%, #ffffff);
-  --jo-bg:     color-mix(in srgb, var(--jo-accent) 15%, #16161a);
-  --jo-card:   color-mix(in srgb, var(--jo-accent) 12%, #23242a);
-  --jo-ink:    color-mix(in srgb, var(--jo-accent) 7%, #f6f3ee);
-  --jo-sub:    color-mix(in srgb, var(--jo-accent) 16%, #c3bfb8);
-  --jo-line:   color-mix(in srgb, var(--jo-accent) 46%, #efece6);
-  --jo-soft:   color-mix(in srgb, var(--jo-accent) 26%, #2b2c32);
-  --jo-cream:  color-mix(in srgb, var(--jo-accent) 12%, #1c1d22);
-  --jo-shadow: color-mix(in srgb, var(--jo-accent) 30%, #000000);
+  --jo-bg:      #221e15;
+  --jo-card:    #2d281c;
+  --jo-ink:     #f3e9cf;
+  --jo-sub:     #b9ab88;
+  --jo-line:    #d96d63;
+  --jo-accent:  #a9bd5a;
+  --jo-accent-on: #c4d680;
+  --jo-soft:    #383122;
+  --jo-cream:   #2d281c;
+  --jo-red:     #d96d63;
+  --jo-shadow:  rgba(0,0,0,0.45);
+  --jo-mark-1:  #8a7a2e;
+  --jo-mark-2:  #5d6b2a;
+  --jo-mark-3:  #8a4655;
 }
 .jo-font { font-family: var(--font-nunito), "Baloo 2", system-ui, sans-serif; }
-.jo-card {
-  background: var(--jo-card); border: 2.5px solid var(--jo-line); border-radius: 26px;
-  box-shadow: 0 7px 0 0 var(--jo-shadow);
-  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s ease;
+
+/* pola gingham — strip/aksen kotak-kotak */
+.jo-gingham {
+  background-color: var(--jo-cream);
+  background-image:
+    repeating-linear-gradient(0deg,  color-mix(in srgb, var(--jo-red) 18%, transparent) 0 11px, transparent 11px 22px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--jo-red) 18%, transparent) 0 11px, transparent 11px 22px);
 }
-.jo-card:hover { transform: translateY(-5px) rotate(-1.2deg); box-shadow: 0 12px 0 0 var(--jo-shadow); }
+
+.jo-card {
+  background: var(--jo-card); border: 2.5px solid var(--jo-line); border-radius: 18px;
+  box-shadow: 0 6px 0 0 var(--jo-shadow), 0 7px 16px rgba(74,63,40,0.13);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.jo-card:hover { transform: translateY(-4px); box-shadow: 0 10px 0 0 var(--jo-shadow), 0 13px 22px rgba(74,63,40,0.16); }
 .jo-btn, .jo-btn-soft {
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   border: 2.5px solid var(--jo-line); border-radius: 999px;
-  padding: 14px 28px; font-weight: 800; font-size: 14px;
-  box-shadow: 0 5px 0 0 var(--jo-shadow);
+  padding: 13px 28px; font-weight: 800; font-size: 14px;
+  box-shadow: 0 4px 0 0 var(--jo-shadow);
   text-decoration: none; cursor: pointer;
   transition: transform .13s ease, box-shadow .13s ease;
 }
-.jo-btn { background: var(--jo-accent); color: #fff; }
+.jo-btn { background: var(--jo-accent); color: #fffdf4; }
 .jo-btn-soft { background: var(--jo-card); color: var(--jo-ink); }
-.jo-btn:hover, .jo-btn-soft:hover { transform: translateY(2px); box-shadow: 0 3px 0 0 var(--jo-shadow); }
-.jo-btn:active, .jo-btn-soft:active { transform: translateY(5px); box-shadow: 0 0 0 0 var(--jo-shadow); }
+.jo-btn:hover, .jo-btn-soft:hover { transform: translateY(2px); box-shadow: 0 2px 0 0 var(--jo-shadow); }
+.jo-btn:active, .jo-btn-soft:active { transform: translateY(4px); box-shadow: 0 0 0 0 var(--jo-shadow); }
 .jo-chip {
   display: inline-flex; align-items: center; gap: 6px;
-  background: var(--jo-soft); color: var(--jo-ink);
+  background: var(--jo-cream); color: var(--jo-ink);
   border: 2px solid var(--jo-line); border-radius: 999px;
   padding: 6px 14px; font-weight: 700; font-size: 12px;
 }
 .jo-tag {
   display: inline-flex; align-items: center;
-  background: var(--jo-accent); color: #fff;
-  border: 2px solid var(--jo-line); border-radius: 999px;
-  padding: 3px 12px; font-weight: 800; font-size: 11px;
+  background: var(--jo-red); color: #fffdf4;
+  border: 2px solid var(--jo-red); border-radius: 7px;
+  padding: 3px 11px; font-weight: 800; font-size: 11px; letter-spacing: .03em;
 }
+/* teks ber-highlight ala scrapbook */
+.jo-mark, .jo-mark-2, .jo-mark-3 {
+  border-radius: 4px; padding: 0.04em 0.32em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.jo-mark   { background: var(--jo-mark-1); color: var(--jo-ink); }
+.jo-mark-2 { background: var(--jo-mark-2); color: var(--jo-ink); }
+.jo-mark-3 { background: var(--jo-mark-3); color: var(--jo-ink); }
 .jo-sticker { filter: drop-shadow(0 4px 3px rgba(0,0,0,0.18)); }
 /* ── Jojo motion — bouncy ── */
 @keyframes jo-pop    { 0%{transform:scale(.4);opacity:0;} 70%{transform:scale(1.09);opacity:1;} 100%{transform:scale(1);opacity:1;} }
@@ -980,6 +1005,7 @@ body {
 /* alias prefix untuk halaman dalam (sistem pfx: ${pfx}-pill / -btn / -card) */
 .jo-pill {
   display: inline-flex; align-items: center; gap: 6px;
+  background: var(--jo-cream); color: var(--jo-ink);
   border: 2px solid var(--jo-line); border-radius: 999px;
   padding: 7px 15px; font-size: 12px; font-weight: 700;
 }
