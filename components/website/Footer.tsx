@@ -67,6 +67,47 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://instagram.com/${igUser}` },
   ].filter(Boolean) as { Icon: ComponentType<IconProps>; label: string; value: string; href: string | null }[];
 
+  /* ── TERI ── */
+  if (theme === "teri") return (
+    <footer className="teri-bg border-t-[2.5px]" style={{ borderColor: "var(--teri-line)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-[2.5px] border-dashed" style={{ borderColor: "var(--teri-line)" }}>
+          <div className="md:col-span-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logo || "/logo.png"} alt={name} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
+            {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--teri-sub)" }}>{tagline}</p>}
+            {nib && <p className="text-xs mt-3" style={{ color: "var(--teri-sub)" }}>NIB {nib}</p>}
+          </div>
+          <div>
+            <span className="teri-pill mb-5 inline-flex">✦ Navigasi</span>
+            <ul className="space-y-3 mt-3">
+              {navLinks.map(([label, href]) => (
+                <li key={href}><Link href={href} className="text-sm font-bold hover:opacity-65 transition-opacity" style={{ color: "var(--teri-sub)" }}>{label}</Link></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <span className="teri-pill mb-5 inline-flex">✦ Kontak</span>
+            <ul className="space-y-3 mt-3">
+              {contacts.map(({ Icon, label, value, href }) => (
+                <li key={label} className="flex items-start gap-2">
+                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--teri-accent)" }} />
+                  {href
+                    ? <a href={href} className="text-sm font-bold hover:opacity-65 transition-opacity" style={{ color: "var(--teri-sub)" }}>{value}</a>
+                    : <span className="text-sm leading-relaxed" style={{ color: "var(--teri-sub)" }}>{value}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--teri-sub)" }}>
+          <p>© {new Date().getFullYear()} {name}</p>
+          {c["company_website"] && <p>{c["company_website"]}</p>}
+        </div>
+      </div>
+    </footer>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <footer className="border-t-2 relative overflow-hidden"

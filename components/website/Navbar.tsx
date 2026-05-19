@@ -39,6 +39,62 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
   const isDark = mounted && resolvedTheme === "dark";
 
+  /* ── TERI ── */
+  if (theme === "teri") return (
+    <header className="fixed top-0 inset-x-0 z-50 teri-bg border-b-[2.5px]" style={{ borderColor: "var(--teri-line)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+          </Link>
+          <nav className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}
+                className="px-3 py-2 text-sm font-extrabold hover:opacity-65 transition-opacity"
+                style={{ color: "var(--teri-ink)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLang} className="teri-chip !py-1.5 !px-3 !text-[13px]">
+              {lang === "id" ? "EN" : "ID"}
+            </button>
+            {mounted && (
+              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                className="teri-chip !py-1.5 !px-3">
+                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
+            )}
+            <Link href="/tours" className="hidden lg:inline-flex teri-btn !py-2.5 !px-5 !text-xs">
+              {lang === "id" ? "Lihat Tour" : "See Tours"}
+            </Link>
+            <button onClick={() => setOpen(!open)} className="lg:hidden teri-chip !py-1.5 !px-3">
+              {open ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </div>
+        {open && (
+          <div className="lg:hidden border-t-[2.5px] py-4 space-y-1" style={{ borderColor: "var(--teri-line)" }}>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 font-extrabold text-sm" style={{ color: "var(--teri-ink)" }}>
+                {link.label[lang]}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="flex teri-btn !py-2.5 !px-5 !text-xs w-full justify-center">
+                {lang === "id" ? "Lihat Tour" : "See Tours"}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <header className="fixed top-0 inset-x-0 z-50 border-b-2"

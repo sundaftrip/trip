@@ -133,6 +133,34 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   if (items.length === 0) return null;
 
   /* ── GLOBE ── */
+  if (theme === "teri") return (
+    <section className="py-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10 text-center">
+          <span className="teri-pill mb-3 inline-flex">✦ Testimoni</span>
+          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--teri-ink)" }}>Kata Mereka</h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`teri-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-60"}`}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--teri-sub)" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4 border-t-[2.5px] border-dashed" style={{ borderColor: "var(--teri-line)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-extrabold" style={{ color: "var(--teri-ink)" }}>{item.name}</p>
+                  {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   if (theme === "globe") return (
     <section className="py-24 overflow-hidden" style={{ background: "var(--gl-bg)" }}>
       <div className="max-w-7xl mx-auto">

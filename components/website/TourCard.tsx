@@ -614,6 +614,49 @@ function JojoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  const isFull = tour.status === "FULL";
+  const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  return (
+    <div className={`teri-card group overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      <div className="relative h-52 overflow-hidden border-b-[2.5px] shrink-0" style={{ borderColor: "var(--teri-line)" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full" style={{ background: "var(--teri-c2)" }}><MapPin size={28} /></div>}
+        {!isDimmed && (
+          <div className="absolute bottom-3 right-3 teri-pill" style={{ boxShadow: "3px 3px 0 0 var(--teri-c1)" }}>
+            {formatCurrency(tour.promoPrice ?? tour.price)}
+          </div>
+        )}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 left-3 teri-pill" style={{ boxShadow: "3px 3px 0 0 var(--teri-c4)" }}>{tour.badge}</div>
+        )}
+        {(isFull || isExpired) && (
+          <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+            <span className="teri-pill">{isFull ? "Sold Out" : "Trip Selesai"}</span>
+          </div>
+        )}
+      </div>
+      <div className="p-5 flex-1 flex flex-col">
+        <p className="text-[10px] font-extrabold uppercase tracking-widest mb-1" style={{ color: "var(--teri-sub)" }}>{tour.country}</p>
+        <h3 className="font-extrabold text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--teri-ink)" }}>{tour.title}</h3>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tour.duration && <span className="teri-pill !shadow-none"><Clock size={11} /> {tour.duration}</span>}
+          {tour.tripDate && <span className="teri-pill !shadow-none"><Calendar size={11} /> {formatDate(tour.tripDate, "id-ID")}</span>}
+          <span className="teri-pill !shadow-none"><Users size={11} /> {tour.seatsLeft} seat</span>
+        </div>
+        {tour.promoPrice && <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{formatCurrency(tour.price)}</p>}
+        {!isDimmed && (
+          <div className={`pt-3 border-t-[2.5px] border-dashed flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
+            style={{ borderColor: "var(--teri-line)" }}>
+            <span className="text-xs font-extrabold inline-flex items-center gap-1" style={{ color: "var(--teri-accent)" }}>Lihat detail <ArrowRight size={12} /></span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -631,6 +674,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "atelier") card = <AtelierCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "jojo") card = <JojoCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "teri") card = <TeriCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

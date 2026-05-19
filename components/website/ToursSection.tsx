@@ -19,6 +19,27 @@ interface Props {
 export default function ToursSection({ tours, theme = "classic" }: Props) {
   if (tours.length === 0) return null;
 
+  /* ── TERI layout ── */
+  if (theme === "teri") return (
+    <section className="py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-16">
+            <span className="teri-pill mb-4 inline-flex">✦ Paket Tersedia</span>
+            <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--teri-ink)" }}>Tour Pilihan</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-12">
+          {tours.map((tour, i) => (
+            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
+              <TourCard tour={tour} theme="teri" />
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   /* ── PIXEL layout ── */
   if (theme === "pixel") return (
     <section className="py-24 relative" style={{

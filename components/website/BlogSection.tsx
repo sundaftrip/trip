@@ -19,6 +19,41 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
   if (posts.length === 0) return null;
 
   /* ── GLOBE ── */
+  if (theme === "teri") return (
+    <section className="py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="text-center mb-14">
+            <span className="teri-pill mb-3 inline-flex">✦ Jurnal</span>
+            <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--teri-ink)" }}>Tips &amp; Inspirasi</h2>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-12">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90} className="h-full">
+              <Link href={`/blog/${post.slug}`} className="teri-card group overflow-hidden h-full flex flex-col">
+                <div className="relative h-44 overflow-hidden border-b-[2.5px] shrink-0" style={{ borderColor: "var(--teri-line)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--teri-c2)" }}>✈️</div>}
+                  {post.category && <span className="absolute top-3 left-3 teri-pill">{post.category}</span>}
+                </div>
+                <div className="p-5 flex-1 flex flex-col">
+                  <h3 className="font-extrabold mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--teri-ink)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--teri-sub)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px] mt-auto" style={{ color: "var(--teri-sub)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   if (theme === "globe") return (
     <section className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
       <span className="absolute top-6 right-8 text-5xl pointer-events-none select-none gl-float-1" style={{ opacity: 0.1 }}>🕌</span>

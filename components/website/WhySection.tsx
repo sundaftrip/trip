@@ -37,6 +37,37 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
   /* ── GLOBE ── */
+  if (theme === "teri") {
+    const accents = ["var(--teri-c1)", "var(--teri-c2)", "var(--teri-c3)", "var(--teri-c4)"];
+    return (
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateIn>
+            <div className="text-center mb-16">
+              <span className="teri-pill mb-3 inline-flex">✦ Keunggulan Kami</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--teri-ink)" }}>{title}</h2>
+              <p className="text-sm max-w-md mx-auto leading-relaxed mt-3" style={{ color: "var(--teri-sub)" }}>{subtitle}</p>
+            </div>
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100} className="h-full">
+                <div className="teri-card h-full p-7">
+                  <div className="w-14 h-14 flex items-center justify-center mb-4"
+                    style={{ background: accents[i % 4], clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }}>
+                    <Icon size={22} style={{ color: "var(--teri-on-accent)" }} />
+                  </div>
+                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: "var(--teri-ink)" }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--teri-sub)" }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (theme === "globe") {
     const cardBgs = ["var(--gl-sky)", "var(--gl-amber)", "var(--gl-coral)", "var(--gl-grass)"];
     const cardFgs = ["var(--gl-on-sky)", "var(--gl-on-amber)", "var(--gl-on-coral)", "var(--gl-on-grass)"];
