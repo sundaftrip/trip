@@ -36,7 +36,8 @@ const getData = unstable_cache(async () => {
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
   return { texts: t, tours, posts, company, companyRows, testimonials };
-}, ["home-page-data"], { revalidate: 300, tags: ["home-data"] });
+// tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
+}, ["home-page-data"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
