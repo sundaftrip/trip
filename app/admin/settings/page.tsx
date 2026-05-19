@@ -40,17 +40,7 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "vibrant",  label: "Catalog",  desc: "Katalog premium. Layout split-screen editorial.",                      feature: "theme_vibrant" },
-  { key: "bold",     label: "Bold",     desc: "Kesan premium & gelap. Hero gelap dengan kontras tinggi.",             feature: "theme_bold" },
-  { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.",          feature: "theme_tropical" },
-  { key: "kawaii",   label: "Kawaii",   desc: "Retro cute pastel. Border bulat, hati melayang, peach aesthetic.",     feature: "theme_kawaii" },
-  { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
-  { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
-  { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
-  { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
-  { key: "atelier",  label: "Atelier",   desc: "Editorial mewah. Simetris, heading serif, hairline border, whitespace lega.", feature: null },
   { key: "jojo",     label: "Jojo",      desc: "Sticker book cute. Stiker SVG, border tebal, shadow chunky, motion bouncy.", feature: null },
-  { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
 ];
 
 export default function SettingsPage() {
