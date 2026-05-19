@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
-import { ArrowRight } from "lucide-react";
 import { JojoSticker } from "./JojoStickers";
 
 interface Tour {
@@ -34,9 +33,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>► PAKET TERSEDIA</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>TOUR PILIHAN</h2>
             </div>
-            <Link href="/tours" className="px-btn px-5 py-2.5 text-sm" style={{ background: "var(--site-accent)", color: "#ffffff" }}>
-              SEMUA TOUR ►
-            </Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -60,7 +56,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <p className="atl-eyebrow mb-3">Paket Tersedia</p>
               <h2 className="text-3xl lg:text-[2.6rem] font-semibold tracking-tight" style={{ color: "var(--atl-ink)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="atl-btn-ghost !py-3 !px-6 !text-[13px]">Lihat Semua <ArrowRight size={14} /></Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -91,9 +86,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
-        <div className="text-center mt-12">
-          <Link href="/tours" className="jo-btn">Semua Tour <ArrowRight size={16} /></Link>
-        </div>
       </div>
     </section>
   );
@@ -108,9 +100,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="kw-pill mb-4 inline-flex" style={{ background: "var(--kw-sun)", color: "var(--kw-text)" }}>✦ Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--kw-text)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="kw-pill font-black" style={{ background: "var(--kw-border)", color: "#ffffff" }}>
-              Semua Tour →
-            </Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -137,9 +126,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="gl-pill mb-4 inline-flex" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }}>✈ Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="gl-pill font-black" style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "transparent" }}>
-              Semua Tour →
-            </Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -163,9 +149,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="at-pill mb-4 inline-flex" style={{ color: "var(--at-subtext)" }}>Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="at-btn px-5 py-2.5 text-sm" style={{ color: "var(--at-text)" }}>
-              Semua Tour <ArrowRight size={14} />
-            </Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -193,9 +176,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="mp-pill mb-4 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--mp-text)", fontFamily: "Georgia,'Times New Roman',serif" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="mp-pill font-black" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
-              Semua Tour →
-            </Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -219,9 +199,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <span className="tr-pill mb-4 inline-flex" style={{ background: "var(--tr-sun)", color: "var(--tr-text)" }}>🌏 Paket Tersedia</span>
               <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--tr-text)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className="tr-pill font-black" style={{ background: "var(--site-accent)", color: "#fff" }}>
-              Semua Tour →
-            </Link>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
@@ -260,9 +237,6 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
               <p className={`text-xs tracking-[0.15em] uppercase mb-3 ${subColor}`}>Paket Tersedia</p>
               <h2 className={`text-3xl lg:text-4xl font-bold ${headingColor}`} style={{ color: "var(--site-heading,inherit)" }}>Tour Pilihan</h2>
             </div>
-            <Link href="/tours" className={`flex items-center gap-1.5 text-sm font-medium transition-colors group ${linkColor}`}>
-              Semua Tour <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
-            </Link>
           </div>
         </AnimateIn>
 
