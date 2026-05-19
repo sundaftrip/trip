@@ -186,16 +186,13 @@ export default function ImportToursPage() {
 
           {/* Upload foto */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-            <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Foto Trip</label>
+            <p className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Foto Trip</p>
             <p className="text-xs text-gray-500 mb-3">Pilih semua foto sekaligus (tahan Cmd/Ctrl saat klik, atau Cmd/Ctrl+A). Urutan foto = urutan baris.</p>
-            <label className="inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:border-blue-400 hover:text-blue-600 transition cursor-pointer">
-              <Upload size={16} /> Pilih Foto
-              <input
-                type="file" accept="image/*" multiple
-                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-                className="hidden"
-              />
-            </label>
+            <input
+              type="file" accept="image/*" multiple
+              onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+              className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-5 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-700"
+            />
             {files.length > 0 && (
               <p className="text-xs text-gray-500 mt-2">
                 {files.length} foto dipilih. {files.length !== validRows.length &&
