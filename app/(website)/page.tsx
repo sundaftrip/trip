@@ -18,8 +18,8 @@ const getData = unstable_cache(async () => {
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
-  // Beranda menampilkan maks 12 tour — aktif di atas (tanggal terdekat dulu),
-  // lalu sebagian trip selesai. Selengkapnya di halaman Paket Tour.
+  // Beranda menampilkan SEMUA tour (halaman Paket Tour terpisah dihapus).
+  // Aktif di atas (tanggal terdekat dulu), tour selesai turun ke bawah.
   const now = new Date();
   const tours = [...toursRaw]
     .sort((a, b) => {
@@ -29,8 +29,7 @@ const getData = unstable_cache(async () => {
       const at = a.tripDate ? a.tripDate.getTime() : Infinity;
       const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
       return aDone ? bt - at : at - bt;
-    })
-    .slice(0, 12);
+    });
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
@@ -66,7 +65,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
-      <ToursSection tours={tours} theme={theme} />
+      <div id="tours"><ToursSection tours={tours} theme={theme} /></div>
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />
       <TestimonialSection items={testimonials} theme={theme} />
