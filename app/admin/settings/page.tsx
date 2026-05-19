@@ -41,6 +41,7 @@ const FONT_CSS_VAR: Record<string, string> = {
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
   { key: "jojo",     label: "Jojo",      desc: "Sticker book cute. Stiker SVG, border tebal, shadow chunky, motion bouncy.", feature: null },
+  { key: "teri",     label: "Teri",      desc: "Pixel-art cozy valley. Nuansa hangat hijau-kayu, sudut tajam, shadow pixel.", feature: null },
 ];
 
 export default function SettingsPage() {
@@ -370,6 +371,16 @@ export default function SettingsPage() {
                           <div className="w-3 h-3 border" style={{ background: "#00b4d8", borderColor: "#1a1a2e", boxShadow: "1px 1px 0 0 #1a1a2e" }} />
                         </div>
                         <div className="h-5 w-16 border font-black text-[8px] flex items-center justify-center" style={{ background: currentAccent, borderColor: "#1a1a2e", boxShadow: "2px 2px 0 0 #1a1a2e", color: "white", fontFamily: "monospace" }}>TOUR →</div>
+                      </div>
+                    )}
+                    {key === "teri" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2" style={{ background: "#eef0da", backgroundImage: "linear-gradient(rgba(61,51,37,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(61,51,37,0.07) 1px,transparent 1px)", backgroundSize: "6px 6px" }}>
+                        <div className="flex gap-1 items-center mb-1.5">
+                          <div className="w-3 h-3 border" style={{ background: "#6ba84d", borderColor: "#3d3325", boxShadow: "1px 1px 0 0 #3d3325" }} />
+                          <div className="w-3 h-3 border" style={{ background: "#e3b24c", borderColor: "#3d3325", boxShadow: "1px 1px 0 0 #3d3325" }} />
+                          <div className="w-3 h-3 border" style={{ background: "#7bb0c9", borderColor: "#3d3325", boxShadow: "1px 1px 0 0 #3d3325" }} />
+                        </div>
+                        <div className="h-5 w-16 border font-black text-[8px] flex items-center justify-center" style={{ background: "#6ba84d", borderColor: "#3d3325", boxShadow: "2px 2px 0 0 #3d3325", color: "#fbfaee", fontFamily: "monospace" }}>TOUR →</div>
                       </div>
                     )}
                     {key === "globe" && (

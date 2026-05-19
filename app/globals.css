@@ -306,6 +306,35 @@ body {
   --px-subtext: #9898c8;
   --px-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, transparent);
 }
+
+/* ─── TEMA TERI — pixel-art cozy valley (memakai layout pixel, palet hangat).
+   .teri-skin diterapkan oleh website layout; meng-override token --px-*. ─── */
+.teri-skin {
+  --px-bg:      #eef0da;
+  --px-card:    #fbfaee;
+  --px-border:  #3d3325;
+  --px-shadow:  #3d3325;
+  --px-text:    #33291a;
+  --px-subtext: #6b5d45;
+  --px-grid:    color-mix(in srgb, #3d3325 8%, transparent);
+  --px-red:     #c56a4a;
+  --px-yellow:  #e3b24c;
+  --px-cyan:    #7bb0c9;
+  --px-purple:  #c98bb3;
+  --px-green:   #6ba84d;
+  --px-on-yellow: #33291a;
+  --px-on-cyan:   #22323a;
+}
+.dark .teri-skin {
+  --px-bg:      #20271a;
+  --px-card:    #2a331f;
+  --px-border:  #cdbb8e;
+  --px-shadow:  #cdbb8e;
+  --px-text:    #f0ead4;
+  --px-subtext: #b3a585;
+  --px-grid:    color-mix(in srgb, #cdbb8e 12%, transparent);
+}
+
 .px-card {
   border: 2px solid var(--px-border);
   border-radius: 0;

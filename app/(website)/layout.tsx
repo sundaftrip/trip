@@ -117,12 +117,16 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     );
   }
 
+  /* ── TERI — pixel-art cozy valley: pakai layout pixel, palet hangat via .teri-skin ── */
+  const isTeri = theme === "teri";
+  const renderTheme = isTeri ? "pixel" : theme;
+
   return (
-    <>
+    <div className={isTeri ? "teri-skin" : undefined} style={{ display: "contents" }}>
       {styleBlock}
-      <Navbar logo={logo} theme={theme} />
-      <main className="flex-1" data-theme={theme}>{children}</main>
-      <Footer theme={theme} />
-    </>
+      <Navbar logo={logo} theme={renderTheme} />
+      <main className="flex-1" data-theme={renderTheme}>{children}</main>
+      <Footer theme={renderTheme} />
+    </div>
   );
 }
