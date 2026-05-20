@@ -711,7 +711,7 @@ body {
   --jojo-sub:       #4a4a4a;
   --jojo-line:      #0a0a0a;
   --jojo-rule:      #0a0a0a;
-  --jojo-accent:    #e63946;
+  --jojo-accent:    var(--site-accent, #e63946);
   --jojo-on-accent: #fafaf7;
   --jojo-mute:      #9ca3af;
   --jojo-soft:      #f0f0eb;
