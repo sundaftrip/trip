@@ -319,12 +319,12 @@ body {
   --teri-sub:       #4a4a4a;
   --teri-line:      #1a1a1a;
   --teri-shadow:    rgba(26,26,26,0.08);
-  --teri-accent:    #c9302c;          /* airmail red */
+  --teri-accent:    var(--site-accent, #c9302c);          /* primary accent, tied ke skema warna */
   --teri-on-accent: #fffdf6;
   --teri-blue:      #1e4f8f;          /* airmail blue */
   --teri-postmark:  #6b7280;
   --teri-stripe:    repeating-linear-gradient(45deg, #c9302c 0 8px, #fffdf6 8px 16px, #1e4f8f 16px 24px, #fffdf6 24px 32px);
-  --teri-c1: #c9302c; --teri-c2: #1e4f8f; --teri-c3: #d4a017;
+  --teri-c1: var(--site-accent, #c9302c); --teri-c2: #1e4f8f; --teri-c3: color-mix(in srgb, var(--site-accent, #d4a017) 60%, #d4a017);
   --teri-c4: #4a4a4a; --teri-c5: #fffdf6;
   --teri-hex: none;
 }
@@ -459,16 +459,16 @@ body {
   --corei-aurora-2:   #5b3aa8;  /* violet */
   --corei-aurora-3:   #c0479e;  /* magenta */
   --corei-aurora-4:   #f29a6b;  /* amber dawn */
-  --corei-aurora-5:   #7ae2d5;  /* aurora cyan */
+  --corei-aurora-5:   color-mix(in srgb, var(--site-accent, #7ae2d5) 55%, #7ae2d5);  /* aurora cyan tinted */
   --corei-ink:        #f5f1ff;
   --corei-sub:        rgba(245,241,255,0.72);
   --corei-mute:       rgba(245,241,255,0.55);
   --corei-glass:      rgba(255,255,255,0.10);
   --corei-glass-strong: rgba(255,255,255,0.18);
   --corei-glass-line: rgba(255,255,255,0.22);
-  --corei-glow:       rgba(122,226,213,0.45);
-  --corei-glow-warm:  rgba(255,210,122,0.40);
-  --corei-accent:     #ffd27a;
+  --corei-glow:       color-mix(in srgb, var(--site-accent, #7ae2d5) 60%, transparent);
+  --corei-glow-warm:  color-mix(in srgb, var(--site-accent, #ffd27a) 50%, transparent);
+  --corei-accent:     var(--site-accent, #ffd27a);
   --corei-on-accent:  #1a1235;
   --corei-stars: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f5f1ff'%3E%3Ccircle cx='20' cy='40' r='0.6' opacity='0.55'/%3E%3Ccircle cx='90' cy='20' r='0.4' opacity='0.40'/%3E%3Ccircle cx='150' cy='60' r='0.7' opacity='0.60'/%3E%3Ccircle cx='40' cy='110' r='0.5' opacity='0.45'/%3E%3Ccircle cx='130' cy='130' r='0.6' opacity='0.50'/%3E%3Ccircle cx='70' cy='160' r='0.4' opacity='0.35'/%3E%3Ccircle cx='160' cy='100' r='0.5' opacity='0.50'/%3E%3Ccircle cx='10' cy='150' r='0.5' opacity='0.45'/%3E%3C/g%3E%3C/svg%3E");
 }
@@ -583,7 +583,7 @@ body {
   transition: transform 0.25s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 .corei-btn {
-  background: linear-gradient(180deg, var(--corei-accent) 0%, #f0b95a 100%);
+  background: linear-gradient(180deg, var(--corei-accent) 0%, color-mix(in srgb, var(--corei-accent) 75%, #000) 100%);
   color: var(--corei-on-accent);
   box-shadow:
     0 4px 18px var(--corei-glow-warm),
@@ -637,10 +637,10 @@ body {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 16px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(122,226,213,0.20) 0%, rgba(122,226,213,0.08) 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--site-accent, #7ae2d5) 22%, transparent) 0%, color-mix(in srgb, var(--site-accent, #7ae2d5) 9%, transparent) 100%);
   backdrop-filter: blur(14px) saturate(160%);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid rgba(122,226,213,0.35);
+  border: 1px solid color-mix(in srgb, var(--site-accent, #7ae2d5) 40%, transparent);
   color: var(--corei-ink);
   font-weight: 600;
   font-size: 12px;
@@ -659,7 +659,7 @@ body {
   font-size: clamp(2.2rem, 5.5vw, 4.2rem);
   line-height: 1.05;
   letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #ffffff 0%, #c0d4ff 40%, #7ae2d5 70%, #ffd27a 100%);
+  background: linear-gradient(135deg, #ffffff 0%, color-mix(in srgb, var(--site-accent, #7ae2d5) 35%, #c0d4ff) 40%, var(--site-accent, #7ae2d5) 70%, var(--corei-accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -723,7 +723,7 @@ body {
   --jojo-sub:       #b8b8b8;
   --jojo-line:      #fafaf7;
   --jojo-rule:      #fafaf7;
-  --jojo-accent:    #ff5c66;
+  --jojo-accent:    color-mix(in srgb, var(--site-accent, #ff5c66) 80%, white);
   --jojo-on-accent: #0a0a0a;
   --jojo-mute:      #6b7280;
   --jojo-soft:      #1a1a1a;
