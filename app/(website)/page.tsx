@@ -10,6 +10,7 @@ import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
 import Pagination from "@/components/website/Pagination";
+import TourFilter, { regionOf, type RegionKey, REGIONS } from "@/components/website/TourFilter";
 
 const TOURS_PER_PAGE = 12;
 
@@ -60,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; region?: string }>;
 }) {
   const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();
   const wa = toWaNumber(company["company_whatsapp"]);
@@ -69,17 +70,24 @@ export default async function HomePage({
   const rawTheme = themeRow?.value || "classic";
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
-  // Pagination katalog tour — 12 per halaman
-  const totalPages = Math.max(1, Math.ceil(allTours.length / TOURS_PER_PAGE));
+  // Filter region + pagination katalog tour — 12 per halaman
   const sp = await searchParams;
+  const activeRegion: RegionKey = (REGIONS.find(r => r.key === sp.region)?.key ?? "all");
+  const filteredTours = activeRegion === "all"
+    ? allTours
+    : allTours.filter(t => regionOf(t.country) === activeRegion);
+  const totalPages = Math.max(1, Math.ceil(filteredTours.length / TOURS_PER_PAGE));
   const currentPage = Math.min(totalPages, Math.max(1, Number(sp.page) || 1));
-  const tours = allTours.slice((currentPage - 1) * TOURS_PER_PAGE, currentPage * TOURS_PER_PAGE);
+  const tours = filteredTours.slice((currentPage - 1) * TOURS_PER_PAGE, currentPage * TOURS_PER_PAGE);
 
   return (
     <>
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
         <ToursSection tours={tours} theme={theme}>
+          {theme === "globe" && (
+            <TourFilter active={activeRegion} />
+          )}
           <Pagination currentPage={currentPage} totalPages={totalPages} />
         </ToursSection>
       </div>
