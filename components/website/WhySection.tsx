@@ -103,32 +103,53 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   }
 
   if (theme === "globe") {
-    const cardBgs = ["var(--gl-sky)", "var(--gl-amber)", "var(--gl-coral)", "var(--gl-grass)"];
-    const cardFgs = ["var(--gl-on-sky)", "var(--gl-on-amber)", "var(--gl-on-coral)", "var(--gl-on-grass)"];
+    /* SUNDAF acrostic — 6 huruf S-U-N-D-A-F masing-masing dengan deskripsi
+       singkat di sebelahnya. Konten dikelola via CMS field
+       why_sundaf_{s|u|n|d|a|f}. Default value adalah fallback Bahasa. */
+    const letters: Array<{ letter: string; key: string; fallback: string }> = [
+      { letter: "S", key: "why_sundaf_s", fallback: "Small group, lebih dekat dan personal. Tidak rebutan foto, tidak rebutan suara. Setiap tamu kami punya cerita yang utuh." },
+      { letter: "U", key: "why_sundaf_u", fallback: "Unforgettable moments. Setiap destinasi kami rancang dengan satu tujuan: jadi kenangan yang Anda ceritakan ke anak-cucu nanti." },
+      { letter: "N", key: "why_sundaf_n", fallback: "Nyaman dari awal sampai akhir. Visa, hotel, transport, makan — semua sudah kami urus. Anda tinggal datang dan menikmati." },
+      { letter: "D", key: "why_sundaf_d", fallback: "Dedikasi tanpa jam kerja. Tim Sundaf Trip siap menjawab pertanyaan 24/7, dari konsultasi pertama sampai pulang sehat ke rumah." },
+      { letter: "A", key: "why_sundaf_a", fallback: "Autentik, bukan turis biasa. Kami bawa Anda ke spot lokal yang tidak ada di buku panduan, bertemu warga, mencicip rasa asli." },
+      { letter: "F", key: "why_sundaf_f", fallback: "Filosofi perjalanan: pulang sebagai pribadi yang sedikit berbeda. Bukan cuma foto-foto, tapi perspektif baru tentang dunia." },
+    ];
+
     return (
-      <section className="py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
+      <section className="py-20 sm:py-24 relative overflow-hidden" style={{ background: "var(--gl-bg)" }}>
         <span className="absolute bottom-8 right-6 text-5xl pointer-events-none select-none gl-float-2" style={{ opacity: 0.1 }}>🏰</span>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <AnimateIn>
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
-              <div>
-                <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-coral)", color: "var(--gl-on-coral)", borderColor: "transparent" }}>🏆 Keunggulan Kami</span>
-                <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>{title}</h2>
-              </div>
-              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--gl-subtext)" }}>{subtitle}</p>
+            <div className="mb-10 sm:mb-14">
+              <span className="gl-pill mb-3 inline-flex" style={{ background: "var(--gl-coral)", color: "var(--gl-on-coral)", borderColor: "transparent" }}>🏆 Keunggulan Kami</span>
+              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--gl-text)" }}>{title}</h2>
+              <p className="text-sm max-w-md leading-relaxed mt-3" style={{ color: "var(--gl-subtext)" }}>{subtitle}</p>
             </div>
           </AnimateIn>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {items.map(({ title, desc, Icon }, i) => (
-              <AnimateIn key={title} delay={i * 100}>
-                <div className="gl-card p-7 h-full" style={{ background: cardBgs[i] }}>
-                  <p className="text-5xl font-black mb-3" style={{ color: "rgba(0,0,0,0.08)" }}>0{i + 1}</p>
-                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4"
-                    style={{ background: "rgba(255,255,255,0.7)", boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}>
-                    <Icon size={20} style={{ color: "#1a2a3a" }} />
+
+          <div className="space-y-5 sm:space-y-7">
+            {letters.map(({ letter, key, fallback }, i) => (
+              <AnimateIn key={letter} delay={i * 60}>
+                <div className="grid grid-cols-[48px_1fr] sm:grid-cols-[88px_1fr] gap-4 sm:gap-8 items-start">
+                  <div
+                    className="text-5xl sm:text-7xl font-black leading-none tabular-nums"
+                    style={{
+                      color: "var(--gl-text)",
+                      fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace",
+                    }}
+                  >
+                    {letter}
                   </div>
-                  <h3 className="font-black text-sm leading-snug mb-2" style={{ color: cardFgs[i] }}>{title}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: cardFgs[i], opacity: 0.85 }}>{desc}</p>
+                  <p
+                    className="text-sm sm:text-base leading-relaxed pt-1 sm:pt-3"
+                    style={{
+                      color: "var(--gl-text)",
+                      textAlign: "justify",
+                      textJustify: "inter-word",
+                    } as React.CSSProperties}
+                  >
+                    {t(key, fallback)}
+                  </p>
                 </div>
               </AnimateIn>
             ))}
