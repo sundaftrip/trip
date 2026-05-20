@@ -304,12 +304,38 @@ function getIata(title: string, city?: string | null): string {
   return (words[0]?.slice(0, 3) ?? "TRP").toUpperCase();
 }
 
+/** Class code di boarding pass — semantic berdasarkan negara + durasi.
+ *  F = First (signature long-haul 10+ hari)
+ *  J = Business (international: Russia, Europe, non-Asia)
+ *  Y = Economy (domestic Indonesia + regional Asia/SEA)
+ */
+function getFlightClass(tour: Tour): string {
+  const country = (tour.country || "").toLowerCase();
+  // Parse duration like "14D13N" or "9 Hari" → ambil angka pertama
+  const days = parseInt(String(tour.duration || "0").match(/\d+/)?.[0] || "0", 10);
+
+  // F: signature panjang
+  if (days >= 10) return "F";
+
+  // Domestic + regional Asia/SEA → Y
+  const isAsia = [
+    "indonesia", "indo", "id ",
+    "singapura", "singapore", "malaysia", "thailand", "vietnam",
+    "filipina", "philippines", "kamboja", "cambodia", "laos", "myanmar",
+    "brunei", "asia tenggara"
+  ].some(k => country.includes(k));
+  if (isAsia) return "Y";
+
+  // International (Russia, Europe, dll) → J
+  return "J";
+}
+
 function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
   const iata = getIata(tour.title, tour.cityHighlight);
   const flightNo = `SF-${tour.id.slice(-4).toUpperCase()}`;
-  const classCode = (tour.promoPrice && tour.promoPrice < tour.price * 0.8) ? "Y" : "J"; // Promo besar = Economy Y, else Business J
+  const classCode = getFlightClass(tour);
   const dateCode = tour.tripDate
     ? new Date(tour.tripDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase().replace(" ", "")
     : "OPEN";
