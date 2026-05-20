@@ -66,7 +66,7 @@ export default function TextsForm({ sections, initialValues }: Props) {
               <div key={key}>
                 <label className="label mb-1">{labelFromKey(key)}</label>
                 <textarea
-                  rows={2}
+                  rows={key === "hero_sundaf" ? 8 : 2}
                   className="input"
                   value={values[key]?.[lang] ?? ""}
                   onChange={(e) => set(key, lang, e.target.value)}

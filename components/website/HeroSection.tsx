@@ -226,59 +226,88 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   );
 
   /* ── GLOBE / WORLD LANDMARKS ── */
-  if (theme === "globe") return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
-      style={{ background: "var(--gl-bg)" }}>
-      {/* Floating landmark decorations */}
-      <span className="absolute top-32 right-12 lg:right-32 text-5xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.6 }}>🗼</span>
-      <span className="absolute top-48 right-[35%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45 }}>🏛️</span>
-      <span className="absolute bottom-20 left-12 lg:left-24 text-4xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.5 }}>🕌</span>
-      <span className="absolute top-40 left-[42%] text-2xl gl-float-4 pointer-events-none select-none" style={{ opacity: 0.4 }}>🗽</span>
-      <span className="absolute bottom-36 right-[22%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45, animationDelay: "1.2s" }}>✈️</span>
-      <span className="absolute top-28 left-8 text-xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.35 }}>🌍</span>
-      <span className="absolute bottom-14 right-8 text-2xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.4, animationDelay: "2s" }}>🏰</span>
+  if (theme === "globe") {
+    const sundafDefault =
+      "S — Small group, lebih dekat dan personal.\n" +
+      "U — Unforgettable moments di setiap destinasi.\n" +
+      "N — Nyaman dari awal sampai akhir.\n" +
+      "D — Dedikasi tim 24/7.\n" +
+      "A — Autentik, bukan turis biasa.\n" +
+      "F — Filosofi: pulang sebagai pribadi baru.";
+    const sundafText = t("hero_sundaf", sundafDefault);
 
-      <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="mb-8 hero-fade-up">
-          <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
-            ✈ {eyebrow}
-          </span>
-        </div>
+    return (
+      <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
+        style={{ background: "var(--gl-bg)" }}>
+        {/* Floating landmark decorations */}
+        <span className="absolute top-32 right-12 lg:right-32 text-5xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.6 }}>🗼</span>
+        <span className="absolute top-48 right-[35%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45 }}>🏛️</span>
+        <span className="absolute bottom-20 left-12 lg:left-24 text-4xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.5 }}>🕌</span>
+        <span className="absolute top-40 left-[42%] text-2xl gl-float-4 pointer-events-none select-none" style={{ opacity: 0.4 }}>🗽</span>
+        <span className="absolute bottom-36 right-[22%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45, animationDelay: "1.2s" }}>✈️</span>
+        <span className="absolute top-28 left-8 text-xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.35 }}>🌍</span>
+        <span className="absolute bottom-14 right-8 text-2xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.4, animationDelay: "2s" }}>🏰</span>
 
-        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
-          style={{ color: "var(--gl-text)" }}>
-          <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
-        </h1>
+        <div className="max-w-7xl mx-auto w-full relative z-10">
+          <div className="mb-8 hero-fade-up">
+            <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
+              ✈ {eyebrow}
+            </span>
+          </div>
 
-        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
-          <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
-            🗺️ {t("hero_subtitle", "Destinasi Pilihan")}
-          </span>
-          <span className="gl-pill" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent", transform: "rotate(-1.5deg)" }}>
-            🧳 Paket Lengkap
-          </span>
-          <span className="gl-pill" style={{ background: "var(--gl-grass)", color: "var(--gl-on-grass)", borderColor: "transparent", transform: "rotate(1deg)" }}>
-            ⭐ Terpercaya
-          </span>
-        </div>
+          <h1 className="text-[clamp(2.8rem,7vw,6rem)] font-black leading-[0.92] tracking-tight max-w-3xl mb-10 hero-fade-up"
+            style={{ color: "var(--gl-text)" }}>
+            <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
+          </h1>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <Link href="/tours"
-            className="gl-btn px-8 py-4 text-sm font-black"
-            style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
-            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-          </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+          {/* SUNDAF kolom kecil — bawah judul di mobile, samping kanan judul di desktop */}
+          <div className="hero-fade-up mb-10 lg:mb-12 lg:absolute lg:top-1/2 lg:right-6 xl:right-10 lg:-translate-y-1/2 lg:max-w-[260px] xl:max-w-[300px]">
+            <span className="text-[9px] sm:text-[10px] tracking-[0.22em] uppercase opacity-50 block mb-2" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+              Mengapa Sundaf
+            </span>
+            <p
+              className="text-[12px] sm:text-[13px] leading-[1.7] whitespace-pre-line"
+              style={{
+                color: "var(--gl-text)",
+                fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace",
+                textAlign: "justify",
+                textJustify: "inter-word",
+              } as React.CSSProperties}
+            >
+              {sundafText}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+            <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
+              🗺️ {t("hero_subtitle", "Destinasi Pilihan")}
+            </span>
+            <span className="gl-pill" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent", transform: "rotate(-1.5deg)" }}>
+              🧳 Paket Lengkap
+            </span>
+            <span className="gl-pill" style={{ background: "var(--gl-grass)", color: "var(--gl-on-grass)", borderColor: "transparent", transform: "rotate(1deg)" }}>
+              ⭐ Terpercaya
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/tours"
               className="gl-btn px-8 py-4 text-sm font-black"
-              style={{ background: "var(--gl-card)", color: "var(--gl-text)" }}>
-              💬 WhatsApp
-            </a>
-          )}
+              style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
+              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+            </Link>
+            {waNumber && (
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+                className="gl-btn px-8 py-4 text-sm font-black"
+                style={{ background: "var(--gl-card)", color: "var(--gl-text)" }}>
+                💬 WhatsApp
+              </a>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  }
 
   /* ── MAP / ATLAS ── */
   if (theme === "map") return (
