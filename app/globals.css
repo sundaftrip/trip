@@ -668,6 +668,27 @@ a.gl-pill:has(svg:only-child) {
   padding: 8px;
   justify-content: center;
 }
+
+/* Mobile-friendly: shrink nav pills + ensure Tailwind .hidden menang
+   atas .gl-btn / .gl-pill display:inline-flex */
+@media (max-width: 1023px) {
+  button.gl-pill,
+  a.gl-pill {
+    min-height: 30px;
+    padding: 4px 9px;
+    font-size: 10px;
+  }
+  button.gl-pill:has(svg:only-child),
+  a.gl-pill:has(svg:only-child) {
+    min-width: 30px;
+    padding: 6px;
+  }
+}
+/* Tailwind .hidden harus menang dari .gl-btn/.gl-pill display:inline-flex.
+   .gl-btn { display: inline-flex } loaded setelah Tailwind, jadi nimpa.
+   Override hard: .hidden selalu display:none. */
+.hidden { display: none !important; }
+
 .gl-btn {
   display: inline-flex;
   align-items: center;
