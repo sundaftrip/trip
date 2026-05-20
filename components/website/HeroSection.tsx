@@ -561,49 +561,43 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     </section>
   );
 
-  /* ── JOJO — sticker book ── */
+  /* ── JOJO — Brutalist Manifesto (editorial magazine, all-CMS) ── */
   if (theme === "jojo") {
-    const joHero = featuredImage ?? heroImages[0] ?? null;
     return (
-      <section className="relative overflow-hidden px-4 pt-32 pb-20 lg:pb-24">
-        {/* ikon dekoratif sudut */}
-        <span className="jo-deco text-[2.1rem] hidden sm:block" style={{ top: "17%", left: "8%", transform: "rotate(-14deg)" }}>🧳</span>
-        <span className="jo-deco text-[2.1rem] hidden sm:block" style={{ top: "21%", right: "9%", transform: "rotate(13deg)" }}>🕌</span>
-        <span className="jo-deco text-[1.7rem]" style={{ bottom: "19%", left: "11%", transform: "rotate(9deg)" }}>🪆</span>
-        <span className="jo-deco text-[1.7rem]" style={{ bottom: "15%", right: "12%", transform: "rotate(-11deg)" }}>✈️</span>
-
-        <div className="max-w-3xl mx-auto w-full text-center relative z-10 jo-font">
-          <div className="jo-pop inline-block mb-7" style={{ animationDelay: ".05s" }}>
-            <div className="jo-bob mx-auto rounded-full overflow-hidden"
-              style={{ width: 168, height: 168, border: "5px solid var(--jo-card)",
-                boxShadow: "0 0 0 4px var(--jo-peach-outer), 0 0 0 7px var(--jo-line), 0 14px 30px var(--jo-shadow)" }}>
-              {joHero
-                ? <Image src={joHero} alt="" width={336} height={336} className="w-full h-full object-cover" priority />
-                : <div className="w-full h-full flex items-center justify-center text-5xl" style={{ background: "var(--jo-peach)" }}>✈️</div>}
-            </div>
+      <section data-theme="jojo" className="px-4 pt-32 pb-20 lg:pb-24" style={{ background: "var(--jojo-bg)", color: "var(--jojo-ink)" }}>
+        <div className="max-w-5xl mx-auto">
+          {/* meta bar — fully CMS via hero_eyebrow + hero_updates_title (left/right) */}
+          <div className="jojo-meta mb-10 flex items-center justify-between">
+            <span>{t("hero_eyebrow", "")}</span>
+            <span>{t("hero_updates_title", "")}</span>
           </div>
 
-          <div className="jo-pop mb-5" style={{ animationDelay: ".12s" }}>
-            <span className="jo-chip">🌙 {eyebrow}</span>
-          </div>
+          <div className="jojo-rule mb-12" />
 
-          <h1 className="jo-pop jo-head text-[clamp(1.9rem,5vw,3.2rem)] leading-[1.2] mb-4"
-            style={{ color: "var(--jo-navy)", animationDelay: ".18s" }}>
-            Assalamualaikum! Selamat datang di{" "}
-            <span style={{ color: "var(--jo-accent-on)" }}>{companyName || "Sundaf Trip"}</span> ✈️🕌
+          {/* huge serif headline — CMS via hero_title (companyName tetap dari CMS company_name) */}
+          <h1 className="jojo-headline mb-8">
+            {t("hero_title", companyName)}
           </h1>
 
-          <p className="jo-pop text-base sm:text-lg max-w-xl mx-auto mb-9"
-            style={{ color: "var(--jo-sub)", animationDelay: ".26s" }}>
-            {t("hero_subtitle", "Teman perjalanan Anda menjelajah Rusia — ramah Muslim, hangat, dan berkesan.")}
+          {/* subtitle — CMS via hero_subtitle */}
+          <p className="text-lg sm:text-xl max-w-2xl mb-12" style={{ color: "var(--jojo-sub)", lineHeight: 1.55 }}>
+            {t("hero_subtitle", "")}
           </p>
 
-          <div className="jo-pop flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: ".34s" }}>
-            <Link href="/tours" className="jo-btn">{t("hero_btn", "Lihat Katalog")} <ArrowRight size={16} /></Link>
+          <div className="flex flex-wrap items-center gap-3 mb-16">
+            <Link href="/tours" className="jojo-btn">{t("hero_btn", "Lihat Katalog")} <ArrowRight size={16} /></Link>
             {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="jo-btn-soft">WhatsApp</a>
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="jojo-btn-ghost">{t("hero_welcome", "WhatsApp")}</a>
             )}
           </div>
+
+          {/* bottom meta — CMS via hero_updates (free-form catatan editorial) */}
+          {t("hero_updates", "") && (
+            <>
+              <div className="jojo-rule mb-6" />
+              <div className="jojo-meta">{t("hero_updates", "")}</div>
+            </>
+          )}
         </div>
       </section>
     );
