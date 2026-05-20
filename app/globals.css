@@ -168,92 +168,234 @@ body {
   .hero-fade-up, .hero-fade-left { animation: none; }
 }
 
-/* ─── TROPICAL THEME UTILITIES ─── */
+/* ============================================
+   TROPICAL THEME — Vintage Travel Poster
+   DNA: thin precise border, horizontal stripe accent,
+        subtle drop-shadow (printed paper feel),
+        sharp-cornered rectangles, slight tilt on hover.
+   Inspired by: 1960s travel posters, postcards from
+        Tahiti/Bali era, Saul Bass typography.
+   ============================================ */
 .tr-card {
-  border: 2px solid var(--tr-border);
-  border-radius: 20px;
-  box-shadow: 4px 4px 0 0 var(--tr-shadow);
   background: var(--tr-card);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--tr-border);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.04),
+    0 8px 24px -10px color-mix(in srgb, var(--tr-shadow) 35%, transparent);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.tr-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--tr-border) 0 12px,
+    transparent 12px 24px
+  );
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 1;
 }
 .tr-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--tr-shadow);
+  transform: translateY(-3px) rotate(-0.4deg);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.05),
+    0 18px 36px -12px color-mix(in srgb, var(--tr-shadow) 45%, transparent);
 }
 .tr-pill {
-  border: 1.5px solid var(--tr-border);
-  border-radius: 999px;
-  font-weight: 800;
-  box-shadow: 2px 2px 0 0 var(--tr-shadow);
-  padding: 3px 12px;
-  font-size: 11px;
-  line-height: 1.5;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  padding: 4px 10px 4px 18px;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--tr-card);
+  color: var(--tr-text);
+  border: 1px solid var(--tr-border);
+  position: relative;
+  line-height: 1.5;
+}
+.tr-pill::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--tr-border);
+  border-radius: 1px;
 }
 .tr-btn {
-  align-items: center;
-  gap: 8px;
-  border: 2.5px solid var(--tr-border);
-  border-radius: 999px;
-  font-weight: 900;
-  box-shadow: 4px 4px 0 0 var(--tr-shadow);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-.tr-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--tr-shadow);
-}
-.tr-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 0 var(--tr-shadow);
-}
-
-/* ─── KAWAII THEME UTILITIES ─── */
-.kw-card {
-  border: 2px solid var(--kw-border);
-  border-radius: 24px;
-  box-shadow: 4px 4px 0 0 var(--kw-shadow);
-  background: var(--kw-card);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.kw-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--kw-shadow);
-}
-.kw-pill {
-  border: 1.5px solid var(--kw-border);
-  border-radius: 999px;
-  font-weight: 800;
-  box-shadow: 2px 2px 0 0 var(--kw-shadow);
-  padding: 3px 12px;
-  font-size: 11px;
-  line-height: 1.5;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-}
-.kw-btn {
-  align-items: center;
-  gap: 8px;
-  border: 2.5px solid var(--kw-border);
-  border-radius: 999px;
-  font-weight: 900;
-  box-shadow: 4px 4px 0 0 var(--kw-shadow);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 10px;
+  padding: 12px 22px 12px 30px;
+  border: none;
+  border-radius: 4px;
+  background: var(--tr-border);
+  color: var(--tr-bg);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  position: relative;
   cursor: pointer;
   text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1),
+              background-color 0.3s cubic-bezier(0.22,1,0.36,1);
+  overflow: hidden;
+}
+.tr-btn::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 18px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--tr-bg) 0 2px,
+    transparent 2px 6px
+  );
+  opacity: 0.6;
+}
+.tr-btn:hover {
+  transform: translateY(-2px) rotate(-0.5deg);
+  background: color-mix(in srgb, var(--tr-border) 88%, black);
+}
+.tr-btn:active {
+  transform: translateY(0) rotate(0);
+}
+
+/* ============================================
+   KAWAII THEME — Hand-drawn Sticker Scrapbook
+   DNA: thick colored outline, extra-rounded organic
+        radius, layered soft shadows, slight tilt by
+        default (sticker-on-paper), decorative sparkle.
+   Inspired by: Japanese washi tape, Cinnamoroll &
+        scrapbook stickers, hand-cut sticker sheets.
+   ============================================ */
+.kw-card {
+  background: var(--kw-card);
+  border: 2.5px solid var(--kw-border);
+  border-radius: 28px 32px 26px 30px / 30px 28px 32px 26px;
+  position: relative;
+  transform: rotate(-1.2deg);
+  box-shadow:
+    0 0 0 4px var(--kw-card),
+    0 0 0 5px color-mix(in srgb, var(--kw-border) 25%, transparent),
+    0 18px 28px -10px color-mix(in srgb, var(--kw-shadow) 30%, transparent),
+    0 4px 8px -2px color-mix(in srgb, var(--kw-shadow) 20%, transparent);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.kw-card::after {
+  content: '✿';
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  font-size: 28px;
+  color: var(--kw-border);
+  transform: rotate(15deg);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 0 var(--kw-card));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.kw-card:hover {
+  transform: rotate(0deg) scale(1.025);
+  box-shadow:
+    0 0 0 4px var(--kw-card),
+    0 0 0 5px color-mix(in srgb, var(--kw-border) 35%, transparent),
+    0 28px 40px -10px color-mix(in srgb, var(--kw-shadow) 35%, transparent),
+    0 8px 12px -2px color-mix(in srgb, var(--kw-shadow) 25%, transparent);
+}
+.kw-card:hover::after {
+  transform: rotate(40deg) scale(1.2);
+}
+.kw-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 14px;
+  border: 2px solid var(--kw-border);
+  border-radius: 50% 999px 50% 999px / 999px;
+  background: var(--kw-blush);
+  color: var(--kw-text);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.5;
+  transform: rotate(-1deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    0 2px 0 var(--kw-border);
+}
+.kw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border: 2.5px solid var(--kw-border);
+  border-radius: 999px;
+  background: var(--kw-card);
+  color: var(--kw-text);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  transform: rotate(-0.6deg);
+  box-shadow:
+    inset 0 -3px 0 color-mix(in srgb, var(--kw-border) 18%, transparent),
+    0 4px 0 var(--kw-border),
+    0 10px 18px -6px color-mix(in srgb, var(--kw-shadow) 30%, transparent);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+}
+.kw-btn::after {
+  content: '✦';
+  position: absolute;
+  right: 14px;
+  top: -10px;
+  font-size: 14px;
+  color: var(--kw-border);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
 }
 .kw-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--kw-shadow);
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow:
+    inset 0 -3px 0 color-mix(in srgb, var(--kw-border) 22%, transparent),
+    0 6px 0 var(--kw-border),
+    0 16px 24px -6px color-mix(in srgb, var(--kw-shadow) 38%, transparent);
+}
+.kw-btn:hover::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 .kw-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 0 var(--kw-shadow);
+  transform: rotate(0deg) translateY(2px);
+  box-shadow:
+    inset 0 -1px 0 color-mix(in srgb, var(--kw-border) 22%, transparent),
+    0 2px 0 var(--kw-border),
+    0 4px 8px -2px color-mix(in srgb, var(--kw-shadow) 30%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-card, .tr-card:hover,
+  .tr-btn, .tr-btn:hover,
+  .kw-card, .kw-card:hover,
+  .kw-btn, .kw-btn:hover, .kw-pill {
+    transform: none !important;
+  }
 }
 @keyframes kw-float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
