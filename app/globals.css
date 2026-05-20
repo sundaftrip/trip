@@ -386,7 +386,8 @@ body {
 }
 .teri-card:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 0 2px 0 var(--teri-shadow), 6px 9px 0 -2px rgba(26,26,26,0.10);
+  border-color: var(--teri-accent);
+  box-shadow: 0 2px 0 var(--teri-shadow), 6px 9px 0 -2px rgba(26,26,26,0.10), inset 0 0 0 1px var(--teri-accent);
 }
 
 .teri-btn, .teri-btn-ghost {
@@ -431,7 +432,7 @@ body {
   padding: 6px 14px;
   border: 1.5px solid var(--teri-line);
   border-radius: 3px;
-  background: var(--teri-blue);
+  background: color-mix(in srgb, var(--site-accent, #c9302c) 60%, var(--teri-blue));
   color: var(--teri-card);
   font-family: 'Anonymous Pro', ui-monospace, monospace;
   font-weight: 700;
@@ -488,6 +489,7 @@ body {
 [data-theme="corei"] {
   background-color: var(--corei-bg-base);
   background-image:
+    radial-gradient(ellipse 75% 55% at 30% 35%, var(--site-accent, #5b3aa8) 0%, transparent 50%),
     radial-gradient(ellipse 80% 60% at 15% 8%,  var(--corei-aurora-2) 0%, transparent 55%),
     radial-gradient(ellipse 70% 50% at 85% 12%, var(--corei-aurora-3) 0%, transparent 60%),
     radial-gradient(ellipse 90% 55% at 50% 100%, var(--corei-aurora-4) 0%, transparent 65%),
@@ -637,7 +639,7 @@ body {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 16px;
   border-radius: 999px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--site-accent, #7ae2d5) 22%, transparent) 0%, color-mix(in srgb, var(--site-accent, #7ae2d5) 9%, transparent) 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--site-accent, #7ae2d5) 45%, transparent) 0%, color-mix(in srgb, var(--site-accent, #7ae2d5) 22%, transparent) 100%);
   backdrop-filter: blur(14px) saturate(160%);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   border: 1px solid color-mix(in srgb, var(--site-accent, #7ae2d5) 40%, transparent);
@@ -670,7 +672,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--corei-aurora-5);
+  color: var(--site-accent, #ffd27a);
   text-shadow: 0 0 12px var(--corei-glow);
 }
 .corei-sub {
@@ -748,7 +750,7 @@ body {
   content: '';
   position: absolute;
   top: 0; left: 0;
-  width: 24px; height: 4px;
+  width: 56px; height: 6px;
   background: var(--jojo-accent);
 }
 
@@ -765,15 +767,15 @@ body {
   text-decoration: none;
   transition: background 0.18s ease, color 0.18s ease;
 }
-.jojo-btn { background: var(--jojo-ink); color: var(--jojo-bg); }
+.jojo-btn { background: var(--jojo-accent); color: var(--jojo-on-accent); border-color: var(--jojo-accent); }
 .jojo-btn-ghost { background: transparent; color: var(--jojo-ink); }
-.jojo-btn:hover { background: var(--jojo-accent); color: var(--jojo-on-accent); border-color: var(--jojo-accent); }
+.jojo-btn:hover { background: var(--jojo-ink); color: var(--jojo-bg); border-color: var(--jojo-ink); }
 .jojo-btn-ghost:hover { background: var(--jojo-ink); color: var(--jojo-bg); }
 
 .jojo-pill {
   display: inline-flex; align-items: baseline; gap: 6px;
   padding: 2px 0 3px;
-  border-bottom: 1px solid var(--jojo-line);
+  border-bottom: 2px solid var(--jojo-accent);
   background: transparent;
   color: var(--jojo-ink);
   font-family: 'Anonymous Pro', ui-monospace, monospace;
