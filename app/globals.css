@@ -678,8 +678,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .jojo-card, .jojo-btn, .jojo-btn:hover, .jojo-chip:hover { transition: none; }
 }
-  .teri-float-1, .teri-float-2, .teri-float-3, .teri-float-4 { animation: none; }
-}
 
 .px-card {
   border: 2px solid var(--px-border);
