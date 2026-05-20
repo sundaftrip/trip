@@ -39,9 +39,10 @@ const FONT_CSS_VAR: Record<string, string> = {
 };
 
 const THEMES = [
-  { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "corei",    label: "Corei",    desc: "Kawaii hangat. Pastel peach + aksen burnt orange, kartu rounded dengan shadow lembut, ikon hati & sparkles.", feature: null },
-  { key: "teri",     label: "Teri",     desc: "Globe-trotter dunia. Latar krem dengan pola titik peta, kartu putih rounded, palet landmark (sky, amber, coral, grass, lavender), shadow soft accent.", feature: null },
+  { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                                                                                                                feature: null },
+  { key: "corei",    label: "Corei",    desc: "Risograph zine. Cetak indie 2-warna, halftone dots di kertas krem, kartu rounded dengan shadow ofset cyan/coral (hard, no blur), aksen stiker asterisk.",         feature: null },
+  { key: "teri",     label: "Teri",     desc: "Airmail envelope. Perforasi dashed, label PAR AVION, garis diagonal red+blue postal di tepi atas, tipografi monospace, vibe surat pos lintas benua.",              feature: null },
+  { key: "jojo",     label: "Jojo",     desc: "Brutalist manifesto. Editorial magazine — serif Playfair raksasa + monospace meta, garis hairline 1px hitam, satu aksen vermilion, sudut 90°, tanpa shadow.",      feature: null },
 ];
 
 export default function SettingsPage() {
@@ -371,30 +372,37 @@ export default function SettingsPage() {
                       </div>
                     )}
                     {key === "teri" && (
-                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fef9f0" }}>
-                        {/* floating landmark emoji decorations (mirror globe) */}
-                        <span className="absolute top-1.5 right-2 text-[11px]" style={{ opacity: 0.55 }}>🗼</span>
-                        <span className="absolute top-4 left-2 text-[9px]"   style={{ opacity: 0.45 }}>🕌</span>
-                        <span className="absolute top-1 right-7 text-[8px]"  style={{ opacity: 0.4 }}>✈️</span>
-                        {/* pill badges */}
-                        <div className="flex gap-1 mb-1.5">
-                          <div className="h-4 px-2 rounded-full text-[7px] font-black flex items-center" style={{ background: "#56c7e0", color: "#111827" }}>🗺️ Destinasi</div>
-                          <div className="h-4 px-1.5 rounded-full text-[7px] font-black flex items-center" style={{ background: "#f5a623", color: "#111827" }}>⭐</div>
-                        </div>
-                        {/* CTA */}
-                        <div className="h-5 w-16 rounded-lg text-[8px] font-black flex items-center justify-center text-white shadow-md" style={{ background: currentAccent }}>
-                          Lihat Tour ✈
-                        </div>
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#f8f4e8" }}>
+                        <div className="absolute top-0 left-0 right-0 h-1.5" style={{ background: "repeating-linear-gradient(45deg, #c9302c 0 4px, #fffdf6 4px 8px, #1e4f8f 8px 12px, #fffdf6 12px 16px)" }} />
+                        <div className="absolute top-2.5 right-1.5 text-[6px] font-bold tracking-[0.2em] px-1 border border-[#1e4f8f] text-[#1e4f8f]" style={{ fontFamily: "ui-monospace, monospace" }}>PAR AVION</div>
+                        <div className="absolute top-2.5 left-2 w-5 h-5 rounded-full border-2 border-[#6b7280] flex items-center justify-center text-[5px] font-bold text-[#6b7280]" style={{ fontFamily: "ui-monospace, monospace" }}>MMK</div>
+                        <div className="h-7 w-full rounded-sm mb-1.5" style={{ background: "#fffdf6", border: "1.5px dashed #1a1a1a" }} />
+                        <div className="h-4 w-14 text-[7px] font-bold tracking-[0.08em] uppercase flex items-center justify-center" style={{ background: "#c9302c", color: "#fffdf6", fontFamily: "ui-monospace, monospace", border: "1.5px solid #1a1a1a" }}>BOOK →</div>
                       </div>
                     )}
                     {key === "corei" && (
-                      <div className="absolute inset-0 flex flex-col justify-end p-2" style={{ background: "#fef4ee" }}>
-                        <div className="flex gap-1 items-center mb-1.5">
-                          <span className="text-xs" style={{ color: "#d4754e" }}>♡</span>
-                          <div className="h-4 w-10 rounded-full border bg-[#fce7f3]" style={{ borderColor: "#d4754e", boxShadow: "1px 1px 0 0 #d4754e" }} />
-                          <span className="text-[9px]" style={{ color: "#d4754e" }}>✦</span>
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5"
+                        style={{ background: "#faf6e8", backgroundImage: "radial-gradient(#2a2a2a 0.6px,transparent 0.6px)", backgroundSize: "5px 5px" }}>
+                        <span className="absolute top-1.5 right-2 text-[12px] font-black" style={{ color: "#f47b7b" }}>✱</span>
+                        <span className="absolute top-1 left-2.5 text-[8px] font-black" style={{ color: "#6fb7c7" }}>✱</span>
+                        <div className="relative h-6 w-20 rounded-md mb-2" style={{ background: "#ffffff", border: "1.5px solid #2a2a2a", boxShadow: "3px 3px 0 0 #6fb7c7" }} />
+                        <div className="h-4 w-14 rounded-full border-[1.5px] font-black text-[7px] flex items-center justify-center" style={{ background: "#f47b7b", borderColor: "#2a2a2a", color: "#2a2a2a", boxShadow: "2px 2px 0 0 #2a2a2a" }}>LIHAT TOUR</div>
+                      </div>
+                    )}
+                    {key === "jojo" && (
+                      <div className="absolute inset-0 flex flex-col justify-between p-2.5" style={{ background: "#fafaf7" }}>
+                        <div className="flex items-center justify-between">
+                          <div className="text-[6px] tracking-[0.25em] uppercase font-bold text-[#4a4a4a]" style={{ fontFamily: "ui-monospace, monospace" }}>ISSUE 01</div>
+                          <div className="text-[6px] tracking-[0.25em] uppercase font-bold text-[#4a4a4a]" style={{ fontFamily: "ui-monospace, monospace" }}>2026</div>
                         </div>
-                        <div className="h-5 w-16 rounded-full border font-black text-[8px] flex items-center justify-center" style={{ background: "#d4754e", borderColor: "#d4754e", boxShadow: "1px 1px 0 0 #d4754e", color: "white" }}>Lihat Tour</div>
+                        <div className="h-px w-full bg-[#0a0a0a]" />
+                        <div className="flex items-baseline gap-1">
+                          <div className="font-black text-[16px] leading-none text-[#0a0a0a]" style={{ fontFamily: "Playfair Display, Georgia, serif", letterSpacing: "-0.02em" }}>SUN<em className="not-italic" style={{ color: "#e63946" }}>·</em>daf</div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="h-1 w-4" style={{ background: "#e63946" }} />
+                          <div className="text-[6px] tracking-[0.18em] uppercase text-[#0a0a0a] font-bold" style={{ fontFamily: "ui-monospace, monospace" }}>READ →</div>
+                        </div>
                       </div>
                     )}
                     {key === "globe" && (

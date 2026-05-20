@@ -59,8 +59,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // Preview theme override via cookie (set by proxy.ts dari ?theme=X)
   const cookieStore = await cookies();
   const previewTheme = cookieStore.get("preview-theme")?.value;
-  const rawTheme = previewTheme || config.theme;
-  const theme = rawTheme === "corei" ? "kawaii" : rawTheme;
+  const theme = previewTheme || config.theme;
 
   const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
   const accent = colors["color_accent"] ?? "#2d6a4f";

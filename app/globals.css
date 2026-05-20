@@ -307,117 +307,377 @@ body {
   --px-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, transparent);
 }
 
-/* ════════ TEMA TERI — globe / world-landmarks (CORE deploy, mirror dari GLOBE) ════════ */
+/* ════════════════════════════════════════════════════════════════
+   TEMA TERI — Airmail Envelope (par avion postal nostalgia)
+   DNA: dashed perforation borders, postmark stamps, red+blue stripe
+        diagonal, ivory envelope paper. Cards = small postcards.
+   ════════════════════════════════════════════════════════════════ */
 :root {
-  --teri-bg:        color-mix(in srgb, var(--site-accent, #2d6a4f) 5%, #fef9f0);
-  --teri-card:      #ffffff;
-  --teri-ink:       #1a2a3a;
-  --teri-sub:       #5a7a9a;
-  --teri-line:      color-mix(in srgb, var(--site-accent, #2d6a4f) 70%, #ffffff);
-  --teri-shadow:    color-mix(in srgb, var(--site-accent, #2d6a4f) 18%, transparent);
-  --teri-accent:    #e8533a;          /* coral */
-  --teri-on-accent: #ffffff;
-  --teri-c1: #56c7e0; /* sky     */
-  --teri-c2: #f5a623; /* amber   */
-  --teri-c3: #e8533a; /* coral   */
-  --teri-c4: #4aad52; /* grass   */
-  --teri-c5: #a78bfa; /* lavender */
-  /* subtle dotted "world-map" pattern, light scope */
-  --teri-hex: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%231a2a3a' fill-opacity='0.05'/%3E%3C/svg%3E");
+  --teri-bg:        #f8f4e8;
+  --teri-card:      #fffdf6;
+  --teri-ink:       #1a1a1a;
+  --teri-sub:       #4a4a4a;
+  --teri-line:      #1a1a1a;
+  --teri-shadow:    rgba(26,26,26,0.08);
+  --teri-accent:    #c9302c;          /* airmail red */
+  --teri-on-accent: #fffdf6;
+  --teri-blue:      #1e4f8f;          /* airmail blue */
+  --teri-postmark:  #6b7280;
+  --teri-stripe:    repeating-linear-gradient(45deg, #c9302c 0 8px, #fffdf6 8px 16px, #1e4f8f 16px 24px, #fffdf6 24px 32px);
+  --teri-c1: #c9302c; --teri-c2: #1e4f8f; --teri-c3: #d4a017;
+  --teri-c4: #4a4a4a; --teri-c5: #fffdf6;
+  --teri-hex: none;
 }
 .dark {
-  --teri-bg:        color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #0d1b2a);
-  --teri-card:      color-mix(in srgb, var(--site-accent, #2d6a4f) 8%, #112032);
-  --teri-ink:       #d8eef8;
-  --teri-sub:       #7aaac8;
-  --teri-line:      color-mix(in srgb, var(--site-accent, #2d6a4f) 65%, white);
-  --teri-shadow:    color-mix(in srgb, var(--site-accent, #2d6a4f) 28%, transparent);
-  --teri-accent:    #e8533a;
-  --teri-on-accent: #ffffff;
-  --teri-hex: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%23d8eef8' fill-opacity='0.06'/%3E%3C/svg%3E");
+  --teri-bg:        #14110a;
+  --teri-card:      #1c1810;
+  --teri-ink:       #f4ebd0;
+  --teri-sub:       #b8a878;
+  --teri-line:      #f4ebd0;
+  --teri-shadow:    rgba(244,235,208,0.08);
+  --teri-accent:    #e85850;
+  --teri-on-accent: #14110a;
+  --teri-blue:      #5a8fd0;
+  --teri-postmark:  #b8a878;
 }
 
-/* latar map-dots */
-.teri-bg { background-color: var(--teri-bg); background-image: var(--teri-hex); }
+.teri-bg {
+  background-color: var(--teri-bg);
+}
+[data-theme="teri"] {
+  background-color: var(--teri-bg);
+  color: var(--teri-ink);
+  position: relative;
+}
+[data-theme="teri"]::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: var(--teri-stripe);
+  z-index: 100;
+  pointer-events: none;
+}
 
-/* kartu — sudut bulat, garis tipis, shadow lembut bernuansa accent */
 .teri-card {
   background: var(--teri-card);
-  border: 1.5px solid color-mix(in srgb, var(--teri-line) 40%, transparent);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px var(--teri-shadow), 0 1px 4px rgba(0,0,0,0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1.5px dashed var(--teri-line);
+  border-radius: 4px;
+  padding: 2px;
+  position: relative;
+  box-shadow: 0 2px 0 var(--teri-shadow), 4px 6px 0 -2px rgba(26,26,26,0.06);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+.teri-card::after {
+  content: 'PAR AVION';
+  position: absolute;
+  top: 8px; right: 8px;
+  font-family: 'Anonymous Pro', ui-monospace, monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--teri-blue);
+  border: 1px solid var(--teri-blue);
+  padding: 1px 5px;
+  border-radius: 2px;
+  opacity: 0.65;
+  z-index: 2;
+  pointer-events: none;
 }
 .teri-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 52px var(--teri-shadow), 0 4px 12px rgba(0,0,0,0.10);
+  transform: translate(-2px, -2px);
+  box-shadow: 0 2px 0 var(--teri-shadow), 6px 9px 0 -2px rgba(26,26,26,0.10);
 }
 
-/* tombol — rounded soft, shadow accent-tinted */
 .teri-btn, .teri-btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 28px;
-  font-weight: 900;
+  padding: 11px 24px;
+  font-family: 'Anonymous Pro', ui-monospace, monospace;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   border: 1.5px solid var(--teri-line);
-  border-radius: 14px;
+  border-radius: 2px;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 4px 18px var(--teri-shadow);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .teri-btn { background: var(--teri-accent); color: var(--teri-on-accent); }
 .teri-btn-ghost { background: var(--teri-card); color: var(--teri-ink); }
 .teri-btn:hover, .teri-btn-ghost:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px var(--teri-shadow);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 0 var(--teri-line);
 }
 .teri-btn:active, .teri-btn-ghost:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 8px var(--teri-shadow);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 0 var(--teri-line);
 }
 
-/* pil/label */
 .teri-pill {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 14px;
-  border: 1.5px solid color-mix(in srgb, var(--teri-line) 55%, transparent);
-  border-radius: 999px;
+  padding: 4px 12px;
+  border: 1.5px dashed var(--teri-line);
+  border-radius: 3px;
   background: var(--teri-card);
   color: var(--teri-ink);
-  font-weight: 800;
-  font-size: 11px;
-  line-height: 1.5;
-  box-shadow: 0 2px 8px var(--teri-shadow);
+  font-family: 'Anonymous Pro', ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 .teri-chip {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 16px;
-  border: 1.5px solid color-mix(in srgb, var(--teri-line) 55%, transparent);
-  border-radius: 999px;
-  background: var(--teri-card);
-  color: var(--teri-ink);
-  font-weight: 800;
-  box-shadow: 0 2px 8px var(--teri-shadow);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  padding: 6px 14px;
+  border: 1.5px solid var(--teri-line);
+  border-radius: 3px;
+  background: var(--teri-blue);
+  color: var(--teri-card);
+  font-family: 'Anonymous Pro', ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transition: transform 0.18s ease;
 }
-.teri-chip:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--teri-shadow);
-}
-
-@keyframes teri-float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  30%       { transform: translateY(-14px) rotate(3deg); }
-  70%       { transform: translateY(-7px) rotate(-2deg); }
-}
-.teri-float-1 { animation: teri-float 4.2s ease-in-out 0s   infinite; }
-.teri-float-2 { animation: teri-float 5.5s ease-in-out 0.9s infinite; }
-.teri-float-3 { animation: teri-float 4.8s ease-in-out 1.6s infinite; }
-.teri-float-4 { animation: teri-float 6.2s ease-in-out 0.4s infinite; }
+.teri-chip:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 0 var(--teri-line); }
 
 @media (prefers-reduced-motion: reduce) {
   .teri-card, .teri-card:hover, .teri-btn, .teri-btn:hover,
-  .teri-btn-ghost, .teri-btn-ghost:hover, .teri-chip, .teri-chip:hover { transition: none; transform: none; }
+  .teri-btn-ghost, .teri-btn-ghost:hover, .teri-chip:hover { transition: none; transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TEMA COREI — Risograph Zine (indie 2-color print, halftone)
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --corei-bg:       #faf6e8;
+  --corei-card:     #ffffff;
+  --corei-ink:      #2a2a2a;
+  --corei-sub:      #6b6b6b;
+  --corei-line:     #2a2a2a;
+  --corei-coral:    #f47b7b;
+  --corei-cyan:     #6fb7c7;
+  --corei-yellow:   #f4d36b;
+  --corei-on-coral: #2a2a2a;
+  --corei-halftone: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%232a2a2a' fill-opacity='0.08'/%3E%3Ccircle cx='8' cy='8' r='0.6' fill='%232a2a2a' fill-opacity='0.05'/%3E%3C/svg%3E");
+}
+.dark {
+  --corei-bg:       #1a1a1a;
+  --corei-card:     #242424;
+  --corei-ink:      #faf6e8;
+  --corei-sub:      #b8b8b8;
+  --corei-line:     #faf6e8;
+  --corei-coral:    #ff8f8f;
+  --corei-cyan:     #8fcfd9;
+  --corei-yellow:   #ffe085;
+  --corei-on-coral: #1a1a1a;
+  --corei-halftone: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23faf6e8' fill-opacity='0.10'/%3E%3Ccircle cx='8' cy='8' r='0.6' fill='%23faf6e8' fill-opacity='0.07'/%3E%3C/svg%3E");
+}
+
+[data-theme="corei"] {
+  background-color: var(--corei-bg);
+  background-image: var(--corei-halftone);
+  color: var(--corei-ink);
+}
+.corei-bg {
+  background-color: var(--corei-bg);
+  background-image: var(--corei-halftone);
+}
+
+.corei-card {
+  background: var(--corei-card);
+  border: 2px solid var(--corei-line);
+  border-radius: 14px;
+  box-shadow: 5px 5px 0 0 var(--corei-cyan);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+}
+.corei-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 0 var(--corei-cyan), 7px 7px 0 2px var(--corei-coral);
+}
+
+.corei-btn, .corei-btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 26px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  border: 2px solid var(--corei-line);
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 4px 4px 0 0 var(--corei-coral);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.corei-btn { background: var(--corei-coral); color: var(--corei-on-coral); }
+.corei-btn-ghost { background: var(--corei-card); color: var(--corei-ink); }
+.corei-btn:hover, .corei-btn-ghost:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--corei-cyan);
+}
+.corei-btn:active, .corei-btn-ghost:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 0 var(--corei-coral);
+}
+
+.corei-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 11px;
+  border: 1.5px solid var(--corei-line);
+  border-radius: 999px;
+  background: var(--corei-yellow);
+  color: var(--corei-ink);
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.corei-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px;
+  border: 2px solid var(--corei-line);
+  border-radius: 999px;
+  background: var(--corei-cyan);
+  color: var(--corei-ink);
+  font-weight: 800;
+  font-size: 11px;
+  box-shadow: 2px 2px 0 0 var(--corei-coral);
+  transition: transform 0.15s ease;
+}
+.corei-chip:hover { transform: translate(-1px, -1px); }
+
+.corei-asterisk {
+  display: inline-block;
+  color: var(--corei-coral);
+  font-weight: 900;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corei-card, .corei-card:hover, .corei-btn, .corei-btn:hover,
+  .corei-btn-ghost, .corei-btn-ghost:hover, .corei-chip:hover { transition: none; transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TEMA JOJO — Brutalist Manifesto (editorial magazine)
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --jojo-bg:        #fafaf7;
+  --jojo-card:      #ffffff;
+  --jojo-ink:       #0a0a0a;
+  --jojo-sub:       #4a4a4a;
+  --jojo-line:      #0a0a0a;
+  --jojo-rule:      #0a0a0a;
+  --jojo-accent:    #e63946;
+  --jojo-on-accent: #fafaf7;
+  --jojo-mute:      #9ca3af;
+  --jojo-soft:      #f0f0eb;
+}
+.dark {
+  --jojo-bg:        #0a0a0a;
+  --jojo-card:      #141414;
+  --jojo-ink:       #fafaf7;
+  --jojo-sub:       #b8b8b8;
+  --jojo-line:      #fafaf7;
+  --jojo-rule:      #fafaf7;
+  --jojo-accent:    #ff5c66;
+  --jojo-on-accent: #0a0a0a;
+  --jojo-mute:      #6b7280;
+  --jojo-soft:      #1a1a1a;
+}
+
+[data-theme="jojo"] {
+  background-color: var(--jojo-bg);
+  color: var(--jojo-ink);
+  font-feature-settings: "ss01", "ss02", "liga";
+}
+.jojo-bg { background-color: var(--jojo-bg); }
+
+.jojo-card {
+  background: var(--jojo-card);
+  border: 1px solid var(--jojo-line);
+  border-radius: 0;
+  position: relative;
+  transition: border-color 0.15s ease;
+}
+.jojo-card:hover { border-color: var(--jojo-accent); }
+.jojo-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 24px; height: 4px;
+  background: var(--jojo-accent);
+}
+
+.jojo-btn, .jojo-btn-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--jojo-line);
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.jojo-btn { background: var(--jojo-ink); color: var(--jojo-bg); }
+.jojo-btn-ghost { background: transparent; color: var(--jojo-ink); }
+.jojo-btn:hover { background: var(--jojo-accent); color: var(--jojo-on-accent); border-color: var(--jojo-accent); }
+.jojo-btn-ghost:hover { background: var(--jojo-ink); color: var(--jojo-bg); }
+
+.jojo-pill {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  padding: 2px 0 3px;
+  border-bottom: 1px solid var(--jojo-line);
+  background: transparent;
+  color: var(--jojo-ink);
+  font-family: 'Anonymous Pro', ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.jojo-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--jojo-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--jojo-ink);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.jojo-chip:hover { background: var(--jojo-ink); color: var(--jojo-bg); }
+
+.jojo-rule { height: 1px; background: var(--jojo-rule); width: 100%; }
+
+.jojo-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--jojo-ink);
+}
+.jojo-headline em { color: var(--jojo-accent); font-style: italic; }
+
+.jojo-meta {
+  font-family: 'Anonymous Pro', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--jojo-sub);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jojo-card, .jojo-btn, .jojo-btn:hover, .jojo-chip:hover { transition: none; }
+}
   .teri-float-1, .teri-float-2, .teri-float-3, .teri-float-4 { animation: none; }
 }
 
