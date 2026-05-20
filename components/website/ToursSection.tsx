@@ -36,7 +36,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
                     <div className="nu-row-thumb">
                       {tour.heroImg
                         // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={tour.heroImg} alt="" loading="lazy" />
+                        ? <img src={tour.heroImg} alt={tour.title} loading="lazy" />
                         : <div className="w-full h-full flex items-center justify-center text-2xl nu-display" style={{ color: "var(--nu-navy)" }}>{tour.title.charAt(0)}</div>}
                     </div>
                     <div className="min-w-0 flex-1">

@@ -43,7 +43,24 @@ const nextConfig: NextConfig = {
           { key: "X-DNS-Prefetch-Control", value: "on" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
-          { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              // Next.js butuh unsafe-inline + unsafe-eval untuk hydration & dev tools.
+              // Vercel Analytics di va.vercel-scripts.com.
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' https://fonts.gstatic.com data:",
+              "connect-src 'self' https: wss:",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Strict-Transport-Security",

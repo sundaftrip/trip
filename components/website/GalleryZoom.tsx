@@ -158,6 +158,8 @@ export default function GalleryZoom({ images }: { images: string[] }) {
                 <button
                   key={i}
                   onClick={() => setActive(i)}
+                  type="button"
+                  aria-label={`Lihat foto ke-${i + 1}`}
                   className={`relative shrink-0 w-14 h-10 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                     i === active
                       ? "border-white opacity-100 scale-105"
@@ -165,7 +167,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <img src={url} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

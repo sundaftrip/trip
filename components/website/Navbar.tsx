@@ -73,8 +73,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             <Link href="/tours" className="hidden lg:inline-flex fb-btn px-4 py-2 text-xs">
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden fb-pill">
-              {open ? <X size={16} /> : <Menu size={16} />}
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden fb-pill">
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -136,9 +136,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               style={{ background: "var(--kw-border)", color: "#ffffff" }}>
               {lang === "id" ? "Lihat Tour ♡" : "See Tours ♡"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden kw-pill"
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden kw-pill"
               style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
-              {open ? <X size={16} /> : <Menu size={16} />}
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -202,9 +202,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               <span className="hidden xl:inline">{lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}</span>
               <span className="xl:hidden">{lang === "id" ? "Tour ✈" : "Tour ✈"}</span>
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden gl-pill"
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden gl-pill"
               style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
-              {open ? <X size={16} /> : <Menu size={16} />}
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -265,9 +265,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             <Link href="/tours" className="hidden lg:inline-flex at-btn-solid px-4 py-2 text-xs">
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden at-pill"
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden at-pill"
               style={{ color: "var(--at-text)" }}>
-              {open ? <X size={16} /> : <Menu size={16} />}
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -329,9 +329,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden mp-pill"
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden mp-pill"
               style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
-              {open ? <X size={16} /> : <Menu size={16} />}
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -394,9 +394,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               style={{ background: "var(--site-accent)", color: "#ffffff" }}>
               {lang === "id" ? "Lihat Tour 🌴" : "See Tours 🌴"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden tr-pill"
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden tr-pill"
               style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
-              {open ? <X size={16} /> : <Menu size={16} />}
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -465,9 +465,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               style={{ background: "var(--site-accent)", color: "#ffffff" }}>
               {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden px-pill"
+            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden px-pill"
               style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
-              {open ? <X size={16} /> : <Menu size={16} />}
+              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -547,7 +547,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
             <button onClick={() => setOpen(!open)}
               className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 transition">
-              {open ? <X size={18} /> : <Menu size={18} />}
+              {open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
             </button>
           </div>
         </div>

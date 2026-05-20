@@ -101,6 +101,8 @@ function Carousel({ items, renderCard, darkDots = false }: {
           <div className="flex gap-2 flex-wrap max-w-[60%]">
             {items.map((_, i) => (
               <button key={i} onClick={() => scrollToIndex(i)}
+                aria-label={`Buka testimoni ke-${i + 1}`}
+                type="button"
                 className={`h-2 rounded-full transition-all duration-300 ${
                   i === current
                     ? `w-6 ${darkDots ? "bg-white" : "bg-gray-900 dark:bg-white"}`
@@ -113,21 +115,21 @@ function Carousel({ items, renderCard, darkDots = false }: {
 
         {/* Prev / Next */}
         <div className="flex gap-2">
-          <button onClick={prev} disabled={current === 0}
+          <button onClick={prev} disabled={current === 0} type="button" aria-label="Testimoni sebelumnya"
             className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
               darkDots
                 ? "border-white/30 text-white hover:bg-white/10"
                 : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
             }`}>
-            <ChevronLeft size={16} />
+            <ChevronLeft size={16} aria-hidden="true" />
           </button>
-          <button onClick={next} disabled={current === items.length - 1}
+          <button onClick={next} disabled={current === items.length - 1} type="button" aria-label="Testimoni berikutnya"
             className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
               darkDots
                 ? "border-white/30 text-white hover:bg-white/10"
                 : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
             }`}>
-            <ChevronRight size={16} />
+            <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>
       </div>

@@ -4,15 +4,22 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import { prisma } from "@/lib/prisma";
 
-const jost        = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
-const plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap" });
-const dmSans      = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap" });
-const outfit      = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap" });
-const nunito      = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap" });
-const playfair    = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap" });
-const raleway     = Raleway({ subsets: ["latin"], variable: "--font-raleway", display: "swap" });
-const poppins     = Poppins({ weight: ["400","500","600","700","800","900"], subsets: ["latin"], variable: "--font-poppins", display: "swap" });
+/* Font loading strategy:
+   - Jost: default body font, PRELOAD (paling sering jadi --site-font)
+   - Anonymous_Pro: monospace dipakai Globe theme (boarding pass), PRELOAD
+   - Sisanya (7 fonts): tetap available tapi preload: false → tidak dimuat
+     kecuali admin mengaktifkan via site_font setting. Lighthouse drop dari
+     15 woff2 preload → 2.
+*/
+const jost         = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
 const anonymousPro = Anonymous_Pro({ weight: ["400","700"], subsets: ["latin"], variable: "--font-anonymous-pro", display: "swap" });
+const plusJakarta  = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap", preload: false });
+const dmSans       = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap", preload: false });
+const outfit       = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap", preload: false });
+const nunito       = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap", preload: false });
+const playfair     = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap", preload: false });
+const raleway      = Raleway({ subsets: ["latin"], variable: "--font-raleway", display: "swap", preload: false });
+const poppins      = Poppins({ weight: ["400","500","600","700","800","900"], subsets: ["latin"], variable: "--font-poppins", display: "swap", preload: false });
 
 const ALL_FONT_VARS = [
   jost.variable, plusJakarta.variable, dmSans.variable, outfit.variable,
