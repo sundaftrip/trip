@@ -186,7 +186,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
           </nav>
 
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
             <button onClick={toggleLang} className="gl-pill font-black"
               style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -197,9 +197,10 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
-            <Link href="/tours" className="hidden lg:inline-flex gl-btn px-4 py-2 text-xs font-black"
+            <Link href="/tours" className="hidden lg:inline-flex gl-btn px-3 py-1.5 text-[10px] font-black"
               style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
-              {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
+              <span className="hidden xl:inline">{lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}</span>
+              <span className="xl:hidden">{lang === "id" ? "Tour ✈" : "Tour ✈"}</span>
             </Link>
             <button onClick={() => setOpen(!open)} className="lg:hidden gl-pill"
               style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
