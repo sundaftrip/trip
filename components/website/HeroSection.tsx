@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara" | "corei";
   featuredImage?: string | null;
   heroImages?: string[];
 }
@@ -560,6 +560,43 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       </div>
     </section>
   );
+
+  /* ── COREI — Aurora Glass (gradient mesh aurora + frosted glass, all-CMS) ── */
+  if (theme === "corei") {
+    const coreiHero = featuredImage ?? heroImages[0] ?? null;
+    return (
+      <section data-theme="corei" className="relative px-4 pt-32 pb-24 lg:pb-32 overflow-hidden">
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
+            {t("hero_eyebrow", "") && (
+              <p className="corei-eyebrow mb-5">{t("hero_eyebrow", "")}</p>
+            )}
+            <h1 className="corei-headline mb-7">
+              {t("hero_title", companyName ?? "")}
+            </h1>
+            {t("hero_subtitle", "") && (
+              <p className="corei-sub max-w-2xl mx-auto mb-10">
+                {t("hero_subtitle", "")}
+              </p>
+            )}
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link href="/tours" className="corei-btn">{t("hero_btn", "Lihat Katalog")} <ArrowRight size={16} /></Link>
+              {waNumber && (
+                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="corei-btn-ghost">
+                  {t("hero_welcome", "WhatsApp")}
+                </a>
+              )}
+            </div>
+          </div>
+          {coreiHero && (
+            <div className="mt-16 max-w-4xl mx-auto corei-card overflow-hidden" style={{ padding: 0 }}>
+              <Image src={coreiHero} alt="" width={1600} height={800} className="w-full h-auto object-cover" priority />
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   /* ── JOJO — Brutalist Manifesto (editorial magazine, all-CMS) ── */
   if (theme === "jojo") {

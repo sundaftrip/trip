@@ -687,6 +687,39 @@ function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
+function CoreiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+  return (
+    <div className={`group block corei-card overflow-hidden h-full ${isDimmed ? "grayscale opacity-60 cursor-default" : ""}`} style={{ padding: 0 }}>
+      <div className="relative h-56 overflow-hidden" style={{ borderTopLeftRadius: "21px", borderTopRightRadius: "21px" }}>
+        {tour.heroImg
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full" style={{ background: "rgba(255,255,255,0.06)" }}><MapPin size={28} className="text-white/40" /></div>}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(10,14,39,0.55) 100%)" }} />
+        {tour.badge && !isDimmed && (
+          <span className="absolute top-3 left-3 corei-chip" style={{ fontSize: "10px", padding: "4px 12px" }}>{tour.badge}</span>
+        )}
+        <StatusOverlay isFull={tour.status === "FULL"} isExpired={!!tour.tripDate && new Date(tour.tripDate) < new Date()} />
+      </div>
+      <div className="p-5">
+        <p className="corei-eyebrow mb-2" style={{ fontSize: "10px" }}>{tour.country}</p>
+        <h3 className="font-semibold mb-4 line-clamp-2 leading-snug text-[16px]" style={{ color: "var(--corei-ink)" }}>{tour.title}</h3>
+        <div className="flex flex-wrap gap-2 mb-5">
+          {tour.duration && <span className="corei-pill"><Clock size={10} /> {tour.duration}</span>}
+          {tour.tripDate && <span className="corei-pill"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
+          <span className="corei-pill"><Users size={10} /> {tour.seatsLeft} seat</span>
+        </div>
+        <div className="flex items-end justify-between pt-4" style={{ borderTop: "1px solid var(--corei-glass-line)" }}>
+          <div>
+            {tour.promoPrice && <p className="text-[11px] line-through" style={{ color: "var(--corei-mute)" }}>{formatCurrency(tour.price)}</p>}
+            <p className="text-lg font-bold" style={{ color: "var(--corei-accent)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+          </div>
+          {!isDimmed && <span className="text-[11px] font-semibold inline-flex items-center gap-1" style={{ color: "var(--corei-aurora-5)" }}>Lihat <ArrowRight size={12} /></span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
@@ -706,6 +739,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "jojo") card = <JojoCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "teri") card = <TeriCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "attic") card = <AtticCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "corei") card = <CoreiCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

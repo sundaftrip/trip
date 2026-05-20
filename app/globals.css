@@ -447,117 +447,259 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   TEMA COREI — Risograph Zine (indie 2-color print, halftone)
+   TEMA COREI — Aurora Glass (Russian aurora + iOS Liquid Glass)
+   DNA: gradient mesh aurora bg (deep indigo → violet → magenta → amber),
+        frosted glass cards (backdrop-filter), soft glow shadows,
+        subtle star-dots overlay. Spatial premium dreamy mood —
+        thematically linked to brand (Sundaf Rusia / Murmansk Aurora).
    ════════════════════════════════════════════════════════════════ */
 :root {
-  --corei-bg:       #faf6e8;
-  --corei-card:     #ffffff;
-  --corei-ink:      #2a2a2a;
-  --corei-sub:      #6b6b6b;
-  --corei-line:     #2a2a2a;
-  --corei-coral:    #f47b7b;
-  --corei-cyan:     #6fb7c7;
-  --corei-yellow:   #f4d36b;
-  --corei-on-coral: #2a2a2a;
-  --corei-halftone: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%232a2a2a' fill-opacity='0.08'/%3E%3Ccircle cx='8' cy='8' r='0.6' fill='%232a2a2a' fill-opacity='0.05'/%3E%3C/svg%3E");
+  --corei-bg-base:    #0a0e27;
+  --corei-aurora-1:   #1a2d6d;  /* deep indigo */
+  --corei-aurora-2:   #5b3aa8;  /* violet */
+  --corei-aurora-3:   #c0479e;  /* magenta */
+  --corei-aurora-4:   #f29a6b;  /* amber dawn */
+  --corei-aurora-5:   #7ae2d5;  /* aurora cyan */
+  --corei-ink:        #f5f1ff;
+  --corei-sub:        rgba(245,241,255,0.72);
+  --corei-mute:       rgba(245,241,255,0.55);
+  --corei-glass:      rgba(255,255,255,0.10);
+  --corei-glass-strong: rgba(255,255,255,0.18);
+  --corei-glass-line: rgba(255,255,255,0.22);
+  --corei-glow:       rgba(122,226,213,0.45);
+  --corei-glow-warm:  rgba(255,210,122,0.40);
+  --corei-accent:     #ffd27a;
+  --corei-on-accent:  #1a1235;
+  --corei-stars: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f5f1ff'%3E%3Ccircle cx='20' cy='40' r='0.6' opacity='0.55'/%3E%3Ccircle cx='90' cy='20' r='0.4' opacity='0.40'/%3E%3Ccircle cx='150' cy='60' r='0.7' opacity='0.60'/%3E%3Ccircle cx='40' cy='110' r='0.5' opacity='0.45'/%3E%3Ccircle cx='130' cy='130' r='0.6' opacity='0.50'/%3E%3Ccircle cx='70' cy='160' r='0.4' opacity='0.35'/%3E%3Ccircle cx='160' cy='100' r='0.5' opacity='0.50'/%3E%3Ccircle cx='10' cy='150' r='0.5' opacity='0.45'/%3E%3C/g%3E%3C/svg%3E");
 }
 .dark {
-  --corei-bg:       #1a1a1a;
-  --corei-card:     #242424;
-  --corei-ink:      #faf6e8;
-  --corei-sub:      #b8b8b8;
-  --corei-line:     #faf6e8;
-  --corei-coral:    #ff8f8f;
-  --corei-cyan:     #8fcfd9;
-  --corei-yellow:   #ffe085;
-  --corei-on-coral: #1a1a1a;
-  --corei-halftone: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23faf6e8' fill-opacity='0.10'/%3E%3Ccircle cx='8' cy='8' r='0.6' fill='%23faf6e8' fill-opacity='0.07'/%3E%3C/svg%3E");
+  --corei-bg-base:    #050816;
+  --corei-aurora-1:   #0d1a4a;
+  --corei-aurora-2:   #3d2580;
+  --corei-aurora-3:   #8f3373;
+  --corei-aurora-4:   #b86d4c;
+  --corei-aurora-5:   #4fc4b8;
+  --corei-glass:      rgba(255,255,255,0.07);
+  --corei-glass-strong: rgba(255,255,255,0.12);
+  --corei-glass-line: rgba(255,255,255,0.18);
 }
 
+/* Aurora gradient mesh — layered radial+linear, animated subtle drift */
 [data-theme="corei"] {
-  background-color: var(--corei-bg);
-  background-image: var(--corei-halftone);
+  background-color: var(--corei-bg-base);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 8%,  var(--corei-aurora-2) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 12%, var(--corei-aurora-3) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 55% at 50% 100%, var(--corei-aurora-4) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 80% at 0%  60%, var(--corei-aurora-5) 0%, transparent 60%),
+    radial-gradient(ellipse 65% 75% at 100% 70%, var(--corei-aurora-1) 0%, transparent 55%),
+    linear-gradient(180deg, var(--corei-aurora-1) 0%, var(--corei-bg-base) 100%);
+  background-attachment: fixed;
   color: var(--corei-ink);
+  position: relative;
+  overflow-x: hidden;
 }
-.corei-bg {
-  background-color: var(--corei-bg);
-  background-image: var(--corei-halftone);
+[data-theme="corei"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--corei-stars);
+  background-repeat: repeat;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme="corei"]::after {
+  content: '';
+  position: fixed;
+  inset: -10% -5%;
+  background:
+    radial-gradient(ellipse 50% 40% at 25% 30%, var(--corei-aurora-5) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 35% at 75% 75%, var(--corei-aurora-3) 0%, transparent 70%);
+  opacity: 0.35;
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+  animation: corei-drift 32s ease-in-out infinite alternate;
 }
 
+@keyframes corei-drift {
+  0%   { transform: translate(-2%, -1%) rotate(-1deg); }
+  50%  { transform: translate(2%, 1%) rotate(1.5deg); }
+  100% { transform: translate(-1%, 2%) rotate(-0.5deg); }
+}
+
+[data-theme="corei"] > * { position: relative; z-index: 1; }
+
+.corei-bg {
+  background-color: var(--corei-bg-base);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 8%,  var(--corei-aurora-2) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 12%, var(--corei-aurora-3) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 55% at 50% 100%, var(--corei-aurora-4) 0%, transparent 65%);
+}
+
+/* Frosted glass card — backdrop blur + subtle border + glow */
 .corei-card {
-  background: var(--corei-card);
-  border: 2px solid var(--corei-line);
-  border-radius: 14px;
-  box-shadow: 5px 5px 0 0 var(--corei-cyan);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  position: relative;
+  background: var(--corei-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--corei-glass-line);
+  border-radius: 22px;
+  box-shadow:
+    0 8px 32px rgba(10, 14, 39, 0.35),
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 -1px 0 rgba(255,255,255,0.08);
+  color: var(--corei-ink);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.3s ease;
 }
 .corei-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 0 var(--corei-cyan), 7px 7px 0 2px var(--corei-coral);
+  transform: translateY(-6px);
+  background: var(--corei-glass-strong);
+  box-shadow:
+    0 24px 60px rgba(10, 14, 39, 0.50),
+    0 0 60px -10px var(--corei-glow),
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    inset 0 -1px 0 rgba(255,255,255,0.10);
 }
 
+/* Glass pill button — inner highlight + hover glow */
 .corei-btn, .corei-btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 26px;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  border: 2px solid var(--corei-line);
+  padding: 13px 28px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
   border-radius: 999px;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 4px 4px 0 0 var(--corei-coral);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid var(--corei-glass-line);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
-.corei-btn { background: var(--corei-coral); color: var(--corei-on-coral); }
-.corei-btn-ghost { background: var(--corei-card); color: var(--corei-ink); }
-.corei-btn:hover, .corei-btn-ghost:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--corei-cyan);
+.corei-btn {
+  background: linear-gradient(180deg, var(--corei-accent) 0%, #f0b95a 100%);
+  color: var(--corei-on-accent);
+  box-shadow:
+    0 4px 18px var(--corei-glow-warm),
+    inset 0 1px 0 rgba(255,255,255,0.55);
 }
-.corei-btn:active, .corei-btn-ghost:active {
-  transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 0 var(--corei-coral);
-}
-
-.corei-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 3px 11px;
-  border: 1.5px solid var(--corei-line);
-  border-radius: 999px;
-  background: var(--corei-yellow);
+.corei-btn-ghost {
+  background: var(--corei-glass);
   color: var(--corei-ink);
-  font-weight: 800;
-  font-size: 10px;
-  letter-spacing: 0.04em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.20);
+}
+.corei-btn::before, .corei-btn-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.corei-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 32px var(--corei-glow-warm),
+    0 0 40px -8px var(--corei-glow-warm),
+    inset 0 1px 0 rgba(255,255,255,0.65);
+}
+.corei-btn-ghost:hover {
+  transform: translateY(-2px);
+  background: var(--corei-glass-strong);
+  box-shadow:
+    0 0 30px -8px var(--corei-glow),
+    inset 0 1px 0 rgba(255,255,255,0.30);
+}
+.corei-btn:active, .corei-btn-ghost:active { transform: translateY(0); }
+
+/* Glass pill — small label */
+.corei-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--corei-glass);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--corei-glass-line);
+  color: var(--corei-ink);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
 }
 .corei-chip {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 14px;
-  border: 2px solid var(--corei-line);
+  padding: 7px 16px;
   border-radius: 999px;
-  background: var(--corei-cyan);
+  background: linear-gradient(180deg, rgba(122,226,213,0.20) 0%, rgba(122,226,213,0.08) 100%);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(122,226,213,0.35);
   color: var(--corei-ink);
-  font-weight: 800;
-  font-size: 11px;
-  box-shadow: 2px 2px 0 0 var(--corei-coral);
-  transition: transform 0.15s ease;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 0 18px -6px var(--corei-glow);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
-.corei-chip:hover { transform: translate(-1px, -1px); }
+.corei-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px -4px var(--corei-glow);
+}
 
-.corei-asterisk {
-  display: inline-block;
-  color: var(--corei-coral);
-  font-weight: 900;
-  font-size: 1.2em;
-  line-height: 1;
+/* Aurora headline — gradient text + soft text shadow for floating feel */
+.corei-headline {
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #ffffff 0%, #c0d4ff 40%, #7ae2d5 70%, #ffd27a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 40px rgba(122,226,213,0.20);
+}
+.corei-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--corei-aurora-5);
+  text-shadow: 0 0 12px var(--corei-glow);
+}
+.corei-sub {
+  color: var(--corei-sub);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+/* Floating aurora orbs decoration */
+.corei-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(30px);
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .corei-card, .corei-card:hover, .corei-btn, .corei-btn:hover,
-  .corei-btn-ghost, .corei-btn-ghost:hover, .corei-chip:hover { transition: none; transform: none; }
+  [data-theme="corei"]::after { animation: none; }
+  .corei-card, .corei-btn, .corei-btn-ghost, .corei-chip { transition: none; }
 }
+
+/* Fallback for browsers without backdrop-filter — slightly more opaque glass */
+@supports not (backdrop-filter: blur(1px)) {
+  .corei-card { background: rgba(20, 28, 60, 0.65); }
+  .corei-btn-ghost { background: rgba(20, 28, 60, 0.55); }
+  .corei-pill { background: rgba(20, 28, 60, 0.55); }
+}
+
 
 /* ════════════════════════════════════════════════════════════════
    TEMA JOJO — Brutalist Manifesto (editorial magazine)
