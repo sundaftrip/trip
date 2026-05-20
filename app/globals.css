@@ -545,20 +545,25 @@ body {
   --gl-subtext: #7aaac8;
 }
 /* Page background ketika theme=globe — paper feel ala envelope tiket
-   Grid + warmth di belakang cards supaya tidak kosong, cards tetap clean */
+   Grid + warmth di belakang cards supaya tidak kosong, cards tetap clean.
+   Target section level dengan !important karena Hero section punya inline
+   style="background:var(--gl-bg)" yang akan menutupi rule di main level. */
 [data-theme="globe"] {
   background-color: var(--gl-bg);
+}
+[data-theme="globe"] section {
+  background-color: var(--gl-bg) !important;
   background-image:
     repeating-linear-gradient(
       90deg,
       transparent 0 14px,
-      color-mix(in srgb, var(--gl-text) 6%, transparent) 14px 15px
+      color-mix(in srgb, var(--gl-text) 7%, transparent) 14px 15px
     ),
     repeating-linear-gradient(
       0deg,
       transparent 0 15px,
-      color-mix(in srgb, var(--gl-text) 6%, transparent) 15px 16px
-    );
+      color-mix(in srgb, var(--gl-text) 7%, transparent) 15px 16px
+    ) !important;
 }
 
 /* ============================================
