@@ -600,7 +600,7 @@ body:has(main[data-theme="globe"]) {
   transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
               box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
 }
-.gl-card::before {
+.gl-card:has(img)::before {
   content: '';
   position: absolute;
   left: 14px; right: 14px;
@@ -610,7 +610,7 @@ body:has(main[data-theme="globe"]) {
   pointer-events: none;
   z-index: 1;
 }
-.gl-card::after {
+.gl-card:has(img)::after {
   content: '';
   position: absolute;
   bottom: 14px;
