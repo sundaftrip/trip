@@ -684,10 +684,12 @@ a.gl-pill:has(svg:only-child) {
     padding: 6px;
   }
 }
-/* Tailwind .hidden harus menang dari .gl-btn/.gl-pill display:inline-flex.
-   .gl-btn { display: inline-flex } loaded setelah Tailwind, jadi nimpa.
-   Override hard: .hidden selalu display:none. */
-.hidden { display: none !important; }
+/* Scope display:inline-flex .gl-btn supaya tidak nimpa Tailwind .hidden
+   responsive classes (hidden md:block, dst). Pakai :where() selector untuk
+   lower specificity ke (0,0,0,0) — Tailwind .hidden (0,1,0,0) selalu menang. */
+:where(.gl-btn:not(.hidden)) {
+  display: inline-flex;
+}
 
 .gl-btn {
   display: inline-flex;
