@@ -3,6 +3,7 @@ import Footer from "@/components/website/Footer";
 import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
+import { cookies } from "next/headers";
 
 const COLOR_DEFAULTS: Record<string, string> = {
   color_hero: "#0d2018",
@@ -53,7 +54,12 @@ const getSiteConfig = unstable_cache(
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const { colors, logo, theme, font } = await getSiteConfig();
+  const config = await getSiteConfig();
+  const { colors, logo, font } = config;
+  // Preview theme override via cookie (set by proxy.ts dari ?theme=X)
+  const cookieStore = await cookies();
+  const previewTheme = cookieStore.get("preview-theme")?.value;
+  const theme = previewTheme || config.theme;
 
   const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
   const accent = colors["color_accent"] ?? "#2d6a4f";

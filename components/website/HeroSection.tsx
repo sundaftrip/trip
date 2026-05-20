@@ -9,7 +9,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic";
+  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara";
   featuredImage?: string | null;
   heroImages?: string[];
 }
@@ -717,6 +717,43 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       )}
     </section>
   );
+
+  /* ── NUSANTARA ── */
+  if (theme === "nusantara") {
+    const heroImage = texts["hero_image"]?.id || featuredImage || heroImages[0] || "/hero-bali.jpg";
+    return (
+      <section className="nu-page nu-hero">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 w-full">
+          <div className="grid md:grid-cols-[1fr_1fr] gap-8 items-center pt-6 pb-12">
+            <div className="hero-fade-up">
+              <p className="nu-eyebrow mb-5">{eyebrow}</p>
+              <h1 className="nu-display text-[clamp(2.4rem,5.5vw,3.6rem)] mb-5" style={{ color: "var(--nu-navy)" }}>
+                {t("hero_title", "Perjalanan Nyaman,")}<br />
+                <span style={{ color: "var(--nu-navy-soft)" }}>{t("hero_title_2", "Kenangan Tak Terlupakan")}</span>
+              </h1>
+              <p className="text-[15px] leading-relaxed mb-7 max-w-md" style={{ color: "var(--nu-muted)" }}>
+                {t("hero_subtitle", "Nikmati pengalaman wisata terbaik bersama kami dengan pelayanan yang hangat dan terpercaya.")}
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link href="#tours" className="nu-btn-gold">
+                  {t("hero_btn", "Lihat Paket Wisata")} <ArrowRight size={15} />
+                </Link>
+                {waNumber && (
+                  <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="nu-btn-ghost">
+                    WhatsApp
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="nu-hero-art aspect-[5/4] md:aspect-[5/5] hero-fade-up">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={heroImage} alt="" loading="eager" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   /* ── CLASSIC ── */
   return (

@@ -90,19 +90,25 @@ function Carousel({ items, renderCard, darkDots = false }: {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-between mt-6 px-6">
-        {/* Dots */}
-        <div className="flex gap-2">
-          {items.map((_, i) => (
-            <button key={i} onClick={() => scrollToIndex(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === current
-                  ? `w-6 ${darkDots ? "bg-white" : "bg-gray-900 dark:bg-white"}`
-                  : `w-2 ${darkDots ? "bg-white/30" : "bg-gray-300 dark:bg-gray-700"}`
-              }`}
-            />
-          ))}
-        </div>
+      <div className="flex items-center justify-between mt-6 px-6 gap-4">
+        {/* Dots — untuk banyak item tampilkan counter saja (ringkas) */}
+        {items.length > 10 ? (
+          <div className={`text-xs font-medium tabular-nums ${darkDots ? "text-white/70" : "text-gray-500 dark:text-gray-400"}`}>
+            {current + 1} / {items.length}
+          </div>
+        ) : (
+          <div className="flex gap-2 flex-wrap max-w-[60%]">
+            {items.map((_, i) => (
+              <button key={i} onClick={() => scrollToIndex(i)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === current
+                    ? `w-6 ${darkDots ? "bg-white" : "bg-gray-900 dark:bg-white"}`
+                    : `w-2 ${darkDots ? "bg-white/30" : "bg-gray-300 dark:bg-gray-700"}`
+                }`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Prev / Next */}
         <div className="flex gap-2">
@@ -131,6 +137,35 @@ function Carousel({ items, renderCard, darkDots = false }: {
 /* ─── Main section ─── */
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
+
+  /* ── NUSANTARA ── */
+  if (theme === "nusantara") return (
+    <section className="nu-page py-16">
+      <div className="max-w-6xl mx-auto">
+        <AnimateIn className="px-5 sm:px-8 mb-8">
+          <h2 className="nu-section-title">Kata Mereka</h2>
+          <p className="nu-section-sub">Cerita dari tamu yang sudah menempuh perjalanan bersama kami.</p>
+        </AnimateIn>
+        <AnimateIn delay={80}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`nu-card p-7 h-full flex flex-col transition-all duration-300 ${active ? "" : "opacity-70"}`}>
+              <Stars rating={item.rating} />
+              <p className="nu-display text-[20px] leading-snug mt-4" style={{ color: "var(--nu-navy)" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-auto pt-5" style={{ borderTop: "1px solid var(--nu-line-soft)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "var(--nu-navy)" }}>{item.name}</p>
+                  {item.role && <p className="text-xs" style={{ color: "var(--nu-muted)" }}>{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
 
   /* ── Y2K KAWAII (attic) ── */
   if (theme === "attic") return (
