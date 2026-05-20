@@ -267,7 +267,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`px-card p-6 flex flex-col h-full transition-all duration-100 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--px-yellow)" : "var(--px-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--px-text)", fontFamily: "monospace"} />
+              <ExpandableQuote text={item.content} color="var(--px-text)" />
               <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
                 style={{ borderColor: "var(--px-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
