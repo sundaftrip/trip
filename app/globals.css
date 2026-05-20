@@ -553,25 +553,22 @@ body {
    ============================================ */
 .gl-card {
   background:
-    /* Notches kiri-kanan di perforasi */
-    radial-gradient(circle at 0% 62%, transparent 9px, var(--gl-card) 9.5px),
-    radial-gradient(circle at 100% 62%, transparent 9px, var(--gl-card) 9.5px),
-    /* Grid tipis 14x15 (off-square biar organic, kayak boarding pass info area) */
+    /* Grid 14x15 (off-square = organic, engineering paper) — di TOP layer supaya visible */
     repeating-linear-gradient(
       90deg,
       transparent 0 14px,
-      color-mix(in srgb, var(--gl-text) 5%, transparent) 14px 15px
+      color-mix(in srgb, var(--gl-text) 9%, transparent) 14px 15px
     ),
     repeating-linear-gradient(
       0deg,
       transparent 0 15px,
-      color-mix(in srgb, var(--gl-text) 5%, transparent) 15px 16px
+      color-mix(in srgb, var(--gl-text) 9%, transparent) 15px 16px
     ),
-    /* Vignette halus di edges supaya kerasa printed paper */
+    /* Edge vignette — kerasa kayak printed paper */
     radial-gradient(
       ellipse at center,
-      var(--gl-card) 60%,
-      color-mix(in srgb, var(--gl-text) 3%, var(--gl-card)) 100%
+      var(--gl-card) 55%,
+      color-mix(in srgb, var(--gl-text) 6%, var(--gl-card)) 100%
     ),
     var(--gl-card);
   border: 1px solid color-mix(in srgb, var(--gl-border) 60%, transparent);
