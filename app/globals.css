@@ -1112,38 +1112,12 @@ body:has(main[data-theme="globe"]) {
   transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
               box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
 }
-.gl-card:has(img)::before {
-  content: '';
-  position: absolute;
-  left: 14px; right: 14px;
-  /* Anchored ke bottom image (h-44 = 11rem). Sebelumnya pakai 62% yang
-     di mobile jatuh di tengah body karena title/via wrap multi-line. */
-  top: 11rem;
-  height: 0;
-  border-top: 1.5px dashed color-mix(in srgb, var(--gl-border) 55%, transparent);
-  pointer-events: none;
-  z-index: 1;
-}
-.gl-card:has(img)::after {
-  content: '';
-  position: absolute;
-  bottom: 22px;
-  right: 14px;
-  width: 56px;
-  height: 14px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--gl-text) 0 1px,
-    transparent 1px 2px,
-    var(--gl-text) 2px 3px,
-    transparent 3px 5px,
-    var(--gl-text) 5px 6px,
-    transparent 6px 9px
-  );
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: 1;
-}
+/* Card compact: tidak ada perforation atau barcode dekoratif.
+   Layout sekarang fokus ke 3 baris info: title / durasi · tanggal / harga.
+   Pseudo elements tetap di-declare kosong untuk override apabila ada
+   varian gl-card lain yang masih pakai. */
+.gl-card-compact::before,
+.gl-card-compact::after { content: none !important; }
 .gl-card:hover {
   transform: translateY(-3px);
   box-shadow:

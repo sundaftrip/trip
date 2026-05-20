@@ -391,40 +391,33 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
   const iata = getIata(tour.title, tour.cityHighlight);
-  const flightNo = `SF-${tour.id.slice(-4).toUpperCase()}`;
-  const classCode = getFlightClass(tour);
   const _tripDate = tour.tripDate ? new Date(tour.tripDate) : null;
-  const dateMain = _tripDate
-    ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase()
+  const dateStr = _tripDate
+    ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
     : "OPEN";
-  const dateYear = _tripDate ? String(_tripDate.getFullYear()) : "";
+  const duration = shortenDuration(tour.duration);
+  const hasPromo = !!tour.promoPrice && tour.promoPrice < tour.price;
 
   return (
-    <div className={`gl-card group ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      {/* === MAIN — image + overlay text === */}
-      <div className="relative h-44 overflow-hidden rounded-t-[8px]">
+    <div className={`gl-card gl-card-compact group ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      {/* === IMAGE — tetap punya identitas boarding pass (IATA + country) === */}
+      <div className="relative h-40 sm:h-44 overflow-hidden rounded-t-[8px]">
         {tour.heroImg
           ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
           : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-text)", opacity: 0.15 }}>✈</div>}
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/55"></div>
 
-        {/* TOP STRIP — airline header */}
-        <div className="absolute top-3 left-4 right-4 flex justify-between items-start text-[9px] font-mono tracking-[0.18em] text-white/90 uppercase" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-          <span>Sundaf Trip · Boarding Pass</span>
-          <span>{flightNo}</span>
-        </div>
-
-        {/* BIG IATA + COUNTRY */}
-        <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-          <div>
-            <div className="text-[60px] font-bold text-white leading-[0.85] tracking-tight">{iata}</div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-white/85 mt-0.5">{tour.country}</div>
+        {/* Badge top-right */}
+        {tour.badge && !isDimmed && (
+          <div className="absolute top-3 right-3 text-[10px] tracking-[0.18em] uppercase text-white font-semibold border border-white/70 px-2 py-0.5 rounded-sm" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+            {tour.badge}
           </div>
-          {tour.badge && !isDimmed && (
-            <div className="text-[10px] tracking-[0.18em] uppercase text-white font-semibold border border-white/70 px-2 py-0.5 rounded-sm">
-              {tour.badge}
-            </div>
-          )}
+        )}
+
+        {/* BIG IATA + COUNTRY (overlay tetap — identitas tema) */}
+        <div className="absolute bottom-3 left-4 right-4" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          <div className="text-[48px] sm:text-[56px] font-bold text-white leading-[0.85] tracking-tight">{iata}</div>
+          <div className="text-[10px] tracking-[0.2em] uppercase text-white/85 mt-0.5">{tour.country}</div>
         </div>
 
         {(isFull || isExpired) && (
@@ -436,70 +429,30 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY — title + via + (deskripsi tour ATAU INCLUDES fallback) === */}
-      <div className="px-5 pt-4 pb-3 min-h-[88px] flex flex-col">
-        <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[18px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
+      {/* === BODY COMPACT — 3 baris: title / durasi · tanggal / harga === */}
+      <div className="px-4 sm:px-5 py-3 sm:py-4 space-y-2">
+        {/* Title */}
+        <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[17px] leading-snug line-clamp-2" style={{ color: "var(--gl-text)" }}>
           {tour.title}
         </h3>
-        {tour.cityHighlight && (
-          <p className="text-[10px] sm:text-[11px] mt-1 tracking-widest uppercase line-clamp-1" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-            via {shortenRoute(tour.cityHighlight, 3)}
-          </p>
-        )}
-        {/* Konten utama body: deskripsi tour (excerpt) ATAU fallback INCLUDES strip.
-            mt-auto: dipush ke bawah body agar ruang kosong terisi konsisten. */}
-        {tour.description ? (
-          <p className="mt-auto pt-3 text-[12px] sm:text-[13px] lg:text-[14px] leading-snug line-clamp-3" style={{ color: "var(--gl-subtext)" }}>
-            {excerpt(tour.description, 140)}
-          </p>
-        ) : (
-          <div className="mt-auto pt-3" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60 mb-0.5" style={{ color: "var(--gl-subtext)" }}>Includes</div>
-            <div className="text-[11px] sm:text-[12px] lg:text-[13px] tracking-[0.1em] uppercase font-medium leading-tight" style={{ color: "var(--gl-text)" }}>
-              Flight · Hotel · Meals · Guide
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* === DASHED PERFORATION dihandle CSS gl-card::before === */}
-
-      {/* === STUB — boarding info grid + barcode === */}
-      <div className="px-5 pt-5 pb-5" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-        {/* Grid: di mobile DATE dapat porsi sedikit lebih besar agar "SEP" tidak ke-clip.
-            Desktop (sm+): font sedikit naik agar lebih readable di layar lebar. */}
-        <div className="grid grid-cols-[0.55fr_0.55fr_0.95fr_1.15fr] sm:grid-cols-[0.7fr_0.7fr_1fr_1fr] gap-2 mb-3">
-          <div>
-            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Class</div>
-            <div className="font-bold text-[13px] sm:text-[15px] lg:text-[16px] leading-tight" style={{ color: "var(--gl-text)" }}>{classCode}</div>
-          </div>
-          <div>
-            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Seat</div>
-            <div className="font-bold text-[13px] sm:text-[15px] lg:text-[16px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.seatsLeft}</div>
-          </div>
-          <div>
-            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Dur</div>
-            <div className="font-bold text-[12px] sm:text-[14px] lg:text-[15px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{shortenDuration(tour.duration)}</div>
-          </div>
-          <div>
-            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
-            <div className="font-bold leading-[1.1] whitespace-nowrap" style={{ color: "var(--gl-text)" }}>
-              <div className="text-[12px] sm:text-[14px] lg:text-[15px]">{dateMain}</div>
-              {dateYear && <div className="text-[9px] sm:text-[10px] opacity-60 mt-0.5">{dateYear}</div>}
-            </div>
-          </div>
+        {/* Durasi · Tanggal */}
+        <div className="flex items-center gap-2 text-[11px] sm:text-[12px] tracking-[0.08em] uppercase font-medium" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          <span className="whitespace-nowrap">{duration || "—"}</span>
+          <span className="opacity-40">·</span>
+          <span className="whitespace-nowrap">{dateStr}</span>
         </div>
 
-        <div className="flex items-end justify-between pt-2 border-t" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
-          <div>
-            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Fare</div>
-            <div className="font-bold text-[16px] sm:text-[18px] lg:text-[20px] leading-tight" style={{ color: "var(--gl-text)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</div>
-            {tour.promoPrice && (
-              <div className="text-[10px] sm:text-[11px] line-through opacity-50" style={{ color: "var(--gl-subtext)" }}>{formatCurrency(tour.price)}</div>
-            )}
-          </div>
-          {/* Spacer for the ::after barcode */}
-          <div className="w-[60px] h-[16px]"></div>
+        {/* Harga — promo besar + harga coret kecil di sebelahnya */}
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <span className="font-bold text-[17px] sm:text-[19px] lg:text-[21px] leading-tight" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+            {formatCurrency(hasPromo ? tour.promoPrice! : tour.price)}
+          </span>
+          {hasPromo && (
+            <span className="text-[11px] sm:text-[12px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--gl-subtext)" }}>
+              {formatCurrency(tour.price)}
+            </span>
+          )}
         </div>
       </div>
     </div>
