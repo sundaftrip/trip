@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Calendar, Users, Clock } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface Tour {
