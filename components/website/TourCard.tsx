@@ -415,51 +415,56 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY — title (fixed height untuk konsistensi card) === */}
-      <div className="px-5 pt-4 pb-3 min-h-[88px]">
-        <h3 className="font-semibold text-[14px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
+      {/* === BODY — title + via + filler agar tinggi konsisten dan ruang kosong terisi === */}
+      <div className="px-5 pt-4 pb-3 min-h-[88px] flex flex-col">
+        <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[18px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
           {tour.title}
         </h3>
         {tour.cityHighlight && (
-          <p className="text-[10px] mt-1 tracking-widest uppercase line-clamp-1" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          <p className="text-[10px] sm:text-[11px] mt-1 tracking-widest uppercase line-clamp-1" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
             via {shortenRoute(tour.cityHighlight, 3)}
           </p>
         )}
+        {/* Filler boarding-pass-style: dipush ke bawah lewat mt-auto biar isi ruang kosong saat VIA tidak ada */}
+        <p className="text-[9px] sm:text-[10px] mt-auto pt-2 tracking-[0.18em] uppercase opacity-50" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          Operated by Sundaf Trip · Group Tour
+        </p>
       </div>
 
       {/* === DASHED PERFORATION dihandle CSS gl-card::before === */}
 
       {/* === STUB — boarding info grid + barcode === */}
       <div className="px-5 pt-5 pb-5" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-        {/* Grid: di mobile DATE dapat porsi sedikit lebih besar agar "SEP" tidak ke-clip */}
+        {/* Grid: di mobile DATE dapat porsi sedikit lebih besar agar "SEP" tidak ke-clip.
+            Desktop (sm+): font sedikit naik agar lebih readable di layar lebar. */}
         <div className="grid grid-cols-[0.55fr_0.55fr_0.95fr_1.15fr] sm:grid-cols-[0.7fr_0.7fr_1fr_1fr] gap-2 mb-3">
           <div>
-            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Class</div>
-            <div className="font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: "var(--gl-text)" }}>{classCode}</div>
+            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Class</div>
+            <div className="font-bold text-[13px] sm:text-[15px] lg:text-[16px] leading-tight" style={{ color: "var(--gl-text)" }}>{classCode}</div>
           </div>
           <div>
-            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Seat</div>
-            <div className="font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.seatsLeft}</div>
+            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Seat</div>
+            <div className="font-bold text-[13px] sm:text-[15px] lg:text-[16px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.seatsLeft}</div>
           </div>
           <div>
-            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Dur</div>
-            <div className="font-bold text-[12px] sm:text-[13px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{shortenDuration(tour.duration)}</div>
+            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Dur</div>
+            <div className="font-bold text-[12px] sm:text-[14px] lg:text-[15px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{shortenDuration(tour.duration)}</div>
           </div>
           <div>
-            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
+            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
             <div className="font-bold leading-[1.1] whitespace-nowrap" style={{ color: "var(--gl-text)" }}>
-              <div className="text-[12px] sm:text-[13px]">{dateMain}</div>
-              {dateYear && <div className="text-[9px] opacity-60 mt-0.5">{dateYear}</div>}
+              <div className="text-[12px] sm:text-[14px] lg:text-[15px]">{dateMain}</div>
+              {dateYear && <div className="text-[9px] sm:text-[10px] opacity-60 mt-0.5">{dateYear}</div>}
             </div>
           </div>
         </div>
 
         <div className="flex items-end justify-between pt-2 border-t" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
           <div>
-            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Fare</div>
-            <div className="font-bold text-[16px] leading-tight" style={{ color: "var(--gl-text)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</div>
+            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Fare</div>
+            <div className="font-bold text-[16px] sm:text-[18px] lg:text-[20px] leading-tight" style={{ color: "var(--gl-text)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</div>
             {tour.promoPrice && (
-              <div className="text-[10px] line-through opacity-50" style={{ color: "var(--gl-subtext)" }}>{formatCurrency(tour.price)}</div>
+              <div className="text-[10px] sm:text-[11px] line-through opacity-50" style={{ color: "var(--gl-subtext)" }}>{formatCurrency(tour.price)}</div>
             )}
           </div>
           {/* Spacer for the ::after barcode */}
