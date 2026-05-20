@@ -15,7 +15,20 @@ import TestimonialSection from "@/components/website/TestimonialSection";
 const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
-    prisma.tour.findMany({ where: { status: { in: ["ACTIVE", "FULL"] } }, orderBy: { tripDate: "asc" } }),
+    // SELECT explicit — homepage card hanya butuh field ini. Skip:
+    // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
+    // notes (long), description (long, di-excerpt di card). Hemat JSON
+    // payload yang dikirim ke client hydration (ToursCatalog).
+    prisma.tour.findMany({
+      where: { status: { in: ["ACTIVE", "FULL"] } },
+      orderBy: { tripDate: "asc" },
+      select: {
+        id: true, title: true, country: true, cityHighlight: true,
+        price: true, promoPrice: true, seatsLeft: true,
+        tripDate: true, duration: true, heroImg: true, badge: true,
+        status: true,
+      },
+    }),
     prisma.blog.findMany({ where: { published: true }, take: 3, orderBy: { date: "desc" } }),
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
