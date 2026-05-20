@@ -79,8 +79,9 @@ export default async function HomePage({
     <>
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
-        <ToursSection tours={tours} theme={theme} />
-        <Pagination currentPage={currentPage} totalPages={totalPages} />
+        <ToursSection tours={tours} theme={theme}>
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
+        </ToursSection>
       </div>
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />

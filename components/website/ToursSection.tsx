@@ -11,9 +11,10 @@ interface Tour {
 interface Props {
   tours: Tour[];
   theme?: string;
+  children?: React.ReactNode;
 }
 
-export default function ToursSection({ tours, theme = "classic" }: Props) {
+export default function ToursSection({ tours, theme = "classic", children }: Props) {
   if (tours.length === 0) return null;
 
   /* ── PIXEL layout ── */
@@ -39,6 +40,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -62,6 +64,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -85,6 +88,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -111,6 +115,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -134,6 +139,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -161,6 +167,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -184,6 +191,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
             </AnimateIn>
           ))}
         </div>
+        {children}
       </div>
     </section>
   );
@@ -218,6 +226,7 @@ export default function ToursSection({ tours, theme = "classic" }: Props) {
           </div>
         )}
 
+        {children}
       </div>
     </section>
   );
