@@ -38,63 +38,6 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
   const isDark = mounted && resolvedTheme === "dark";
 
-  /* ── NUSANTARA ── */
-  if (theme === "nusantara") return (
-    <header className={cn("fixed top-0 inset-x-0 z-50 transition-all nu-page", scrolled ? "shadow-sm" : "")}
-      style={{ borderBottom: scrolled ? "1px solid var(--nu-line)" : "1px solid transparent" }}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5" style={{ color: "var(--nu-navy)" }}>
-            {logo ? (
-              <Image src={logo} alt="Logo" width={140} height={40} className="h-8 w-auto" priority />
-            ) : (
-              <>
-                <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden>
-                  <path d="M3 24 L12 11 L17 17 L22 11 L29 24 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                  <circle cx="12" cy="8" r="1.2" fill="currentColor" />
-                </svg>
-                <div className="leading-none">
-                  <p className="nu-display text-[18px] tracking-wide">Nusantara</p>
-                  <p className="text-[9px] uppercase tracking-[0.24em]" style={{ color: "var(--nu-muted)" }}>Travel</p>
-                </div>
-              </>
-            )}
-          </Link>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium" style={{ color: "var(--nu-navy-soft)" }}>
-            {navLinks.map(l => (
-              <Link key={l.href} href={l.href} className="hover:text-[var(--nu-gold-deep)] transition">
-                {l.label[lang]}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <button onClick={toggleLang} className="hidden sm:inline-flex text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-full nu-hairline" style={{ color: "var(--nu-navy-soft)" }}>
-              {lang === "id" ? "EN" : "ID"}
-            </button>
-            {mounted && (
-              <button onClick={() => setTheme(isDark ? "light" : "dark")} className="p-1.5 rounded-full nu-hairline" style={{ color: "var(--nu-navy-soft)" }} aria-label="theme">
-                {isDark ? <Sun size={15} /> : <Moon size={15} />}
-              </button>
-            )}
-            <button onClick={() => setOpen(o => !o)} className="md:hidden p-1.5 rounded-full nu-hairline" style={{ color: "var(--nu-navy-soft)" }} aria-label="menu">
-              {open ? <X size={17} /> : <Menu size={17} />}
-            </button>
-          </div>
-        </div>
-        {open && (
-          <div className="md:hidden pb-4 pt-1 flex flex-col gap-1">
-            {navLinks.map(l => (
-              <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm" style={{ color: "var(--nu-navy)" }}>
-                {l.label[lang]}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </header>
-  );
-
   /* ── Y2K KAWAII (attic) — banner + nav statis di dalam kotak ── */
   if (theme === "attic") return (
     <header className="atc-font">

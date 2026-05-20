@@ -20,55 +20,6 @@ interface Props {
 export default function ToursSection({ tours, theme = "classic", children }: Props) {
   if (tours.length === 0) return null;
 
-  /* ── NUSANTARA ── */
-  if (theme === "nusantara") {
-    const idr = (n: number) => "Rp " + n.toLocaleString("id-ID");
-    return (
-      <section className="nu-page py-16">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <AnimateIn>
-            <h2 className="nu-section-title">Paket Wisata Pilihan</h2>
-            <p className="nu-section-sub mb-8">Berbagai pilihan paket wisata terbaik untuk pengalaman liburan yang berkesan.</p>
-          </AnimateIn>
-          <AnimateIn>
-            <div className="nu-card overflow-hidden">
-              {tours.map((tour) => {
-                const price = tour.promoPrice ?? tour.price;
-                return (
-                  <a key={tour.id} href={`/tours/${tour.id}`} className="nu-row">
-                    <div className="nu-row-thumb">
-                      {tour.heroImg
-                        // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={tour.heroImg} alt="" loading="lazy" />
-                        : <div className="w-full h-full flex items-center justify-center text-2xl nu-display" style={{ color: "var(--nu-navy)" }}>{tour.title.charAt(0)}</div>}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="nu-display text-[20px] truncate" style={{ color: "var(--nu-navy)" }}>{tour.title}</h3>
-                      <p className="text-xs mt-0.5" style={{ color: "var(--nu-muted)" }}>
-                        {tour.duration || tour.country}
-                        {tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}
-                      </p>
-                    </div>
-                    <div className="hidden sm:flex items-center gap-2 shrink-0">
-                      {tour.badge && <span className="nu-chip">{tour.badge}</span>}
-                      <span className="nu-chip" style={{ color: "var(--nu-gold-deep)", background: "var(--nu-gold-soft)", borderColor: "var(--nu-gold-soft)" }}>
-                        {idr(price)}
-                      </span>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--nu-gold)" }} className="shrink-0">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </a>
-                );
-              })}
-            </div>
-          </AnimateIn>
-          {children}
-        </div>
-      </section>
-    );
-  }
-
   /* ── Y2K KAWAII (attic) ── */
   if (theme === "attic") return (
     <section className="atc-box atc-font p-4 sm:p-5">

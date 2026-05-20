@@ -36,39 +36,6 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
-  /* ── NUSANTARA ── */
-  if (theme === "nusantara") {
-    return (
-      <section className="nu-page py-16">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <AnimateIn>
-            <h2 className="nu-section-title">{title}</h2>
-            <p className="nu-section-sub mb-8">{subtitle}</p>
-          </AnimateIn>
-          <AnimateIn>
-            <div className="nu-card overflow-hidden">
-              {items.map(({ title, desc, Icon }) => (
-                <div key={title} className="nu-row">
-                  <div className="h-11 w-11 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: "var(--nu-cream)", border: "1px solid var(--nu-line)" }}>
-                    <Icon size={17} style={{ color: "var(--nu-gold)" }} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="nu-display text-[18px] leading-tight" style={{ color: "var(--nu-navy)" }}>{title}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--nu-muted)" }}>{desc}</p>
-                  </div>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--nu-gold)" }} className="shrink-0">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
-              ))}
-            </div>
-          </AnimateIn>
-        </div>
-      </section>
-    );
-  }
-
   /* ── Y2K KAWAII (attic) ── */
   if (theme === "attic") {
     return (
