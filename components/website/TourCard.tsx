@@ -431,23 +431,24 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
       {/* === STUB — boarding info grid + barcode === */}
       <div className="px-5 pt-5 pb-5" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-        <div className="grid grid-cols-[0.7fr_0.7fr_1fr_1fr] gap-2 mb-3">
+        {/* Grid: di mobile DATE dapat porsi sedikit lebih besar agar "SEP" tidak ke-clip */}
+        <div className="grid grid-cols-[0.55fr_0.55fr_0.95fr_1.15fr] sm:grid-cols-[0.7fr_0.7fr_1fr_1fr] gap-2 mb-3">
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Class</div>
-            <div className="font-bold text-[14px] leading-tight" style={{ color: "var(--gl-text)" }}>{classCode}</div>
+            <div className="font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: "var(--gl-text)" }}>{classCode}</div>
           </div>
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Seat</div>
-            <div className="font-bold text-[14px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.seatsLeft}</div>
+            <div className="font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.seatsLeft}</div>
           </div>
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Dur</div>
-            <div className="font-bold text-[13px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{shortenDuration(tour.duration)}</div>
+            <div className="font-bold text-[12px] sm:text-[13px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{shortenDuration(tour.duration)}</div>
           </div>
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
             <div className="font-bold leading-[1.1] whitespace-nowrap" style={{ color: "var(--gl-text)" }}>
-              <div className="text-[13px]">{dateMain}</div>
+              <div className="text-[12px] sm:text-[13px]">{dateMain}</div>
               {dateYear && <div className="text-[9px] opacity-60 mt-0.5">{dateYear}</div>}
             </div>
           </div>

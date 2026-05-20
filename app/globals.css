@@ -1116,7 +1116,9 @@ body:has(main[data-theme="globe"]) {
   content: '';
   position: absolute;
   left: 14px; right: 14px;
-  top: 62%;
+  /* Anchored ke bottom image (h-44 = 11rem). Sebelumnya pakai 62% yang
+     di mobile jatuh di tengah body karena title/via wrap multi-line. */
+  top: 11rem;
   height: 0;
   border-top: 1.5px dashed color-mix(in srgb, var(--gl-border) 55%, transparent);
   pointer-events: none;
