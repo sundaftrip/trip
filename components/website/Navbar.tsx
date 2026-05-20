@@ -169,11 +169,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   if (theme === "globe") return (
     <header className="fixed top-0 inset-x-0 z-50"
       style={{ background: "var(--gl-card)", borderBottom: "1.5px solid color-mix(in srgb, var(--gl-border) 30%, transparent)", boxShadow: "0 4px 24px var(--gl-shadow)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          <Link href="/" className="flex items-center shrink-0">
             <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+              className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -186,14 +186,14 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <button onClick={toggleLang} className="gl-pill font-black"
               style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
               <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>
+                className="hidden xs:inline-flex sm:inline-flex gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
