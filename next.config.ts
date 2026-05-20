@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   // Tanpa ini, import { Foo } dari "lucide-react" akan bawa seluruh barrel.
   experimental: {
     optimizePackageImports: ["lucide-react", "@auth/prisma-adapter"],
+    // optimizeCss: pakai critters untuk inline critical CSS + defer sisanya.
+    // Target "Render blocking requests" insight Lighthouse.
+    optimizeCss: true,
   },
   images: {
     // unoptimized=true → skip Vercel Image Optimization, foto langsung di-serve
