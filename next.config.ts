@@ -49,7 +49,11 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               // Next.js butuh unsafe-inline + unsafe-eval untuk hydration & dev tools.
               // Vercel Analytics di va.vercel-scripts.com.
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live",
+              // unsafe-eval dihilangkan — hanya dibutuhkan oleh dev HMR, prod
+              // Next.js tidak pakai eval(). unsafe-inline masih perlu karena
+              // Next.js emit bootstrap script inline (untuk hilangkan butuh
+              // nonce-CSP yang membatalkan edge cache — trade-off tidak worth).
+              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https:",
               "font-src 'self' https://fonts.gstatic.com data:",
@@ -68,8 +72,12 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
           },
+          // COOP: isolate browsing context — Lighthouse Best Practices.
+          // same-origin-allow-popups supaya WhatsApp & external links tetap bisa
+          // dibuka di tab baru.
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
         ],
       },
       {
