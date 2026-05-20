@@ -9,6 +9,9 @@ import ToursSection from "@/components/website/ToursSection";
 import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
+import Pagination from "@/components/website/Pagination";
+
+const TOURS_PER_PAGE = 12;
 
 const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
@@ -54,18 +57,31 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function HomePage() {
-  const { texts, tours, posts, company, companyRows, testimonials } = await getData();
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();
   const wa = toWaNumber(company["company_whatsapp"]);
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
   const rawTheme = themeRow?.value || "classic";
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
+  // Pagination katalog tour — 12 per halaman
+  const totalPages = Math.max(1, Math.ceil(allTours.length / TOURS_PER_PAGE));
+  const sp = await searchParams;
+  const currentPage = Math.min(totalPages, Math.max(1, Number(sp.page) || 1));
+  const tours = allTours.slice((currentPage - 1) * TOURS_PER_PAGE, currentPage * TOURS_PER_PAGE);
+
   return (
     <>
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
-      <div id="tours"><ToursSection tours={tours} theme={theme} /></div>
+      <div id="tours">
+        <ToursSection tours={tours} theme={theme} />
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      </div>
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />
       <TestimonialSection items={testimonials} theme={theme} />
