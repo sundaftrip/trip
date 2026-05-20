@@ -147,7 +147,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`fb-card p-6 flex flex-col h-full transition-all duration-200 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--fb-paper)" : "var(--fb-card)", fontFamily: "var(--fb-font)" }}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--fb-subink)" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: "var(--fb-subink)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4" style={{ borderTop: "2px dashed var(--fb-line)" }}>
@@ -177,7 +177,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`gl-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "#fef9c3" : "var(--gl-card)" }}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: active ? "#1a2a3a" : "var(--gl-subtext)" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: active ? "#1a2a3a" : "var(--gl-subtext)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t"
@@ -207,7 +207,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
           <Carousel items={items} renderCard={(item, active) => (
             <div className={`at-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-60"}`}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--at-subtext)" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: "var(--at-subtext)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t"
@@ -239,7 +239,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`mp-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--mp-land)" : "var(--mp-card)" }}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: active ? "var(--mp-text)" : "var(--mp-subtext)" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: active ? "var(--mp-text)" : "var(--mp-subtext)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
@@ -274,7 +274,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`px-card p-6 flex flex-col h-full transition-all duration-100 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--px-yellow)" : "var(--px-card)" }}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
@@ -305,7 +305,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`kw-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--kw-peach)" : "var(--kw-card)" }}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--kw-subtext)" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: "var(--kw-subtext)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t-2 border-dashed"
@@ -336,7 +336,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`tr-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--tr-mint)" : "var(--tr-card)" }}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--tr-subtext)" }}>
+              <p className="text-sm leading-relaxed mt-4 flex-1 line-clamp-5" style={{ color: "var(--tr-subtext)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t-2 border-dashed"
