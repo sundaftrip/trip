@@ -40,9 +40,7 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "jojo",     label: "Boutique",  desc: "Travel boutique kawaii. Krem hangat, burnt orange & dusty navy, border ganda membulat, dekorasi lembut.", feature: null },
-  { key: "teri",     label: "Teri",      desc: "Pixel-art cozy valley. Nuansa hangat hijau-kayu, sudut tajam, shadow pixel.", feature: null },
-  { key: "attic",    label: "Y2K",       desc: "Y2K kawaii 2000-an. Wadah kotak gingham pink, banner retro, nav tombol, pixel art, palet pastel.", feature: null },
+  { key: "teri",     label: "JOJO",     desc: "Pixel-art cozy valley. Nuansa hangat hijau-kayu, sudut tajam, shadow pixel.", feature: null },
 ];
 
 export default function SettingsPage() {
