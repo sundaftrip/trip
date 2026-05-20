@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Shield, Heart, Clock, Award } from "lucide-react";
 import AnimateIn from "./AnimateIn";
-import { JojoSticker, type JojoShape } from "./JojoStickers";
 
 const icons = [Shield, Heart, Clock, Award];
 
@@ -36,58 +35,36 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   const title = lang === "id" ? "Mengapa Kami?" : "Why Us?";
   const subtitle = lang === "id" ? "Komitmen kami pada setiap perjalanan." : "Our commitment on every journey.";
 
-  /* ── NUSANTARA ── */
-  if (theme === "nusantara") {
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") {
+    const cardBgs = ["var(--fb-red)", "var(--fb-yellow)", "var(--fb-blue)", "var(--fb-green)"];
     return (
-      <section className="nu-page py-16">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+      <section className="fb-page py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateIn>
-            <h2 className="nu-section-title">{title}</h2>
-            <p className="nu-section-sub mb-8">{subtitle}</p>
-          </AnimateIn>
-          <AnimateIn>
-            <div className="nu-card overflow-hidden">
-              {items.map(({ title, desc, Icon }) => (
-                <div key={title} className="nu-row">
-                  <div className="h-11 w-11 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: "var(--nu-cream)", border: "1px solid var(--nu-line)" }}>
-                    <Icon size={17} style={{ color: "var(--nu-gold)" }} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="nu-display text-[18px] leading-tight" style={{ color: "var(--nu-navy)" }}>{title}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--nu-muted)" }}>{desc}</p>
-                  </div>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--nu-gold)" }} className="shrink-0">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
-              ))}
-            </div>
-          </AnimateIn>
-        </div>
-      </section>
-    );
-  }
-
-  /* ── Y2K KAWAII (attic) ── */
-  if (theme === "attic") {
-    return (
-      <section className="atc-box atc-font p-4 sm:p-5">
-        <h2 className="atc-title text-xl">{title} ♡</h2>
-        <hr className="atc-divider" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {items.map(({ title, desc, Icon }) => (
-            <div key={title} className="atc-box p-3 flex gap-3 items-start" style={{ background: "var(--atc-pink-soft)" }}>
-              <div className="shrink-0 w-9 h-9 rounded-md flex items-center justify-center"
-                style={{ background: "var(--atc-card)", border: "1.5px solid var(--atc-border)" }}>
-                <Icon size={17} style={{ color: "var(--atc-pink-deep)" }} />
-              </div>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
               <div>
-                <h3 className="font-extrabold text-sm" style={{ color: "var(--atc-ink)" }}>{title}</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--atc-ink-soft)" }}>{desc}</p>
+                <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>★ Keunggulan Kami</span>
+                <h2 className="text-3xl lg:text-5xl font-bold mt-3 fb-wave" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>{title}</h2>
               </div>
+              <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--fb-subink)" }}>{subtitle}</p>
             </div>
-          ))}
+          </AnimateIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map(({ title, desc, Icon }, i) => (
+              <AnimateIn key={title} delay={i * 100}>
+                <div className="fb-card p-7 h-full" style={{ background: i % 2 === 0 ? "var(--fb-card)" : "var(--fb-paper)" }}>
+                  <p className="text-5xl font-bold mb-3" style={{ color: "color-mix(in srgb, var(--fb-line) 16%, transparent)", fontFamily: "var(--fb-font)" }}>0{i + 1}</p>
+                  <div className="w-11 h-11 flex items-center justify-center mb-4"
+                    style={{ background: cardBgs[i], border: "2px solid var(--fb-line)", borderRadius: 10, boxShadow: "0 3px 0 0 var(--fb-line)" }}>
+                    <Icon size={20} style={{ color: "#1a1a1a" }} />
+                  </div>
+                  <h3 className="font-bold text-sm leading-snug mb-2" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--fb-subink)" }}>{desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -341,61 +318,7 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
   }
 
   /* ── CLASSIC ── */
-  if (theme === "jojo") {
-    const joShapes: JojoShape[] = ["star", "heart", "cloud", "sparkle"];
-    return (
-    <section className="py-24 jo-font" style={{ background: "transparent" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <div className="text-center mb-14">
-            <span className="jo-chip mb-4 inline-flex"><JojoSticker shape="sparkle" size={18} /> {subtitle}</span>
-            <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>{title}</h2>
-          </div>
-        </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {items.map(({ title, desc }, i) => (
-            <AnimateIn key={title} delay={i * 100}>
-              <div className="jo-card p-6 h-full text-center">
-                <div className="flex justify-center mb-4"><JojoSticker shape={joShapes[i % 4]} size={58} /></div>
-                <h3 className="font-extrabold mb-2 text-[15px]" style={{ color: "var(--jo-ink)" }}>{title}</h3>
-                <p className="text-xs font-semibold leading-relaxed" style={{ color: "var(--jo-sub)" }}>{desc}</p>
-              </div>
-            </AnimateIn>
-          ))}
-        </div>
-      </div>
-    </section>
-    );
-  }
-
-  if (theme === "atelier") return (
-    <section className="py-24" style={{ background: "var(--atl-bg)" }}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-        <AnimateIn>
-          <div className="max-w-2xl mb-14">
-            <p className="atl-eyebrow mb-3">{subtitle}</p>
-            <h2 className="text-3xl lg:text-[2.6rem] font-semibold tracking-tight" style={{ color: "var(--atl-ink)" }}>{title}</h2>
-          </div>
-        </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {items.map(({ title, desc, Icon }, i) => (
-            <AnimateIn key={title} delay={i * 100}>
-              <div className="atl-card p-6 h-full">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                  style={{ background: "var(--atl-soft)" }}>
-                  <Icon size={20} style={{ color: "var(--atl-accent)" }} />
-                </div>
-                <h3 className="font-semibold text-[15px] mb-2" style={{ color: "var(--atl-ink)" }}>{title}</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--atl-sub)" }}>{desc}</p>
-              </div>
-            </AnimateIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  if (theme === "classic") return (
+  return (
     <section className="py-24 bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
@@ -420,57 +343,4 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
     </section>
   );
 
-  /* ── VIBRANT ── */
-  if (theme === "vibrant") return (
-    <section className="py-24" style={{ background: "var(--site-accent,#2d6a4f)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">{title}</h2>
-            <p className="text-white/60 text-sm">{subtitle}</p>
-          </div>
-        </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {items.map(({ title, desc, Icon }, i) => (
-            <AnimateIn key={title} delay={i * 100}>
-              <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-7 border border-white/20 hover:bg-white/20 transition-colors duration-300">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-5">
-                  <Icon size={22} className="text-white" />
-                </div>
-                <h3 className="font-bold text-white mb-2 text-sm leading-snug">{title}</h3>
-                <p className="text-xs text-white/60 leading-relaxed">{desc}</p>
-              </div>
-            </AnimateIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ── BOLD ── */
-  return (
-    <section className="py-24 bg-gray-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <h2 className="text-3xl lg:text-5xl font-black text-white mb-20">{title}</h2>
-        </AnimateIn>
-        <div className="space-y-0 divide-y divide-gray-800">
-          {items.map(({ title, desc, Icon }, i) => (
-            <AnimateIn key={title} delay={i * 80} direction="left">
-              <div className="flex items-start gap-8 py-8 group hover:bg-gray-900 px-4 -mx-4 rounded-xl transition-colors duration-300">
-                <span className="text-4xl font-black text-gray-700 w-12 shrink-0 group-hover:text-white transition-colors duration-300">0{i + 1}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Icon size={18} style={{ color: "var(--site-accent,#2d6a4f)" }} />
-                    <h3 className="font-bold text-white text-base">{title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-500 leading-relaxed max-w-xl">{desc}</p>
-                </div>
-              </div>
-            </AnimateIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
 }

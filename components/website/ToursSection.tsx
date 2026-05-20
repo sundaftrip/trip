@@ -1,8 +1,5 @@
-import Link from "next/link";
-import Image from "next/image";
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
-import { JojoSticker } from "./JojoStickers";
 
 interface Tour {
   id: string; title: string; country: string; cityHighlight: string | null;
@@ -135,44 +132,22 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
     </section>
   );
 
-  /* ── ATELIER layout — clean editorial ── */
-  if (theme === "atelier") return (
-    <section className="py-24" style={{ background: "var(--atl-bg)" }}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-        <AnimateIn>
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
-            <div>
-              <p className="atl-eyebrow mb-3">Paket Tersedia</p>
-              <h2 className="text-3xl lg:text-[2.6rem] font-semibold tracking-tight" style={{ color: "var(--atl-ink)" }}>Tour Pilihan</h2>
-            </div>
-          </div>
-        </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="atelier" />
-            </AnimateIn>
-          ))}
-        </div>
-        {children}
-      </div>
-    </section>
-  );
-
-  /* ── JOJO layout ── */
-  if (theme === "jojo") return (
-    <section className="py-24 jo-font" style={{ background: "transparent" }}>
+  /* ── FUMAYO layout ── */
+  if (theme === "fumayo") return (
+    <section className="fb-page py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
-          <div className="text-center mb-14">
-            <span className="jo-chip mb-4 inline-flex"><JojoSticker shape="star" size={18} /> Paket Tersedia</span>
-            <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>Tour Pilihan</h2>
+          <div className="mb-12">
+            <span className="fb-pill mb-4 inline-flex" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ Paket Tersedia</span>
+            <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+              Tour <span className="fb-wave" style={{ color: "var(--fb-accent)" }}>Pilihan</span>
+            </h2>
           </div>
         </AnimateIn>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
           {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="jojo" />
+            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
+              <TourCard tour={tour} theme="fumayo" />
             </AnimateIn>
           ))}
         </div>
@@ -308,16 +283,11 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
     </section>
   );
 
-  const sectionBg =
-    theme === "bold" ? "bg-black" :
-    theme === "vibrant" ? "bg-white dark:bg-gray-950" :
-    "bg-white dark:bg-black";
+  const sectionBg = "bg-white dark:bg-black";
 
-  const headingColor =
-    theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
+  const headingColor = "text-gray-900 dark:text-white";
 
-  const subColor =
-    theme === "bold" ? "text-gray-500" : "text-gray-400";
+  const subColor = "text-gray-400";
 
 
   return (
@@ -343,62 +313,6 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
           </div>
         )}
 
-        {/* Vibrant: first card featured (full-width), rest in grid */}
-        {theme === "vibrant" && (
-          <div className="space-y-6">
-            {tours.length > 0 && (
-              <AnimateIn>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="lg:col-span-1">
-                    <Link href={`/tours/${tours[0].id}`}>
-                      <div className="group relative h-96 rounded-3xl overflow-hidden shadow-2xl cursor-pointer">
-                        {tours[0].heroImg
-                          ? <Image src={tours[0].heroImg} alt={tours[0].title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                          : <div className="absolute inset-0 bg-gray-200" />}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                        {tours[0].badge && (
-                          <span className="absolute top-5 left-5 px-3 py-1.5 text-white text-[11px] font-bold rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }}>
-                            {tours[0].badge}
-                          </span>
-                        )}
-                        <div className="absolute bottom-0 left-0 right-0 p-6">
-                          <p className="text-white/60 text-[10px] uppercase tracking-wider mb-1">{tours[0].country}</p>
-                          <h3 className="text-white font-bold text-xl leading-snug mb-3">{tours[0].title}</h3>
-                          <p className="text-xl font-black text-white">{(tours[0].promoPrice ?? tours[0].price).toLocaleString("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 })}</p>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  {tours.slice(1, 3).map((tour, i) => (
-                    <AnimateIn key={tour.id} delay={(i + 1) * 100}>
-                      <TourCard tour={tour} theme="vibrant" />
-                    </AnimateIn>
-                  ))}
-                </div>
-              </AnimateIn>
-            )}
-            {tours.length > 3 && (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                {tours.slice(3).map((tour, i) => (
-                  <AnimateIn key={tour.id} delay={i * 80}>
-                    <TourCard tour={tour} theme="vibrant" />
-                  </AnimateIn>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Bold: single-column list of horizontal cards */}
-        {theme === "bold" && (
-          <div className="flex flex-col gap-4">
-            {tours.map((tour, i) => (
-              <AnimateIn key={tour.id} delay={i * 60} direction="left">
-                <TourCard tour={tour} theme="bold" />
-              </AnimateIn>
-            ))}
-          </div>
-        )}
         {children}
       </div>
     </section>

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ArrowRight, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import AnimateIn from "./AnimateIn";
-import { JojoSticker } from "./JojoStickers";
 
 interface Post {
   id: string; slug: string; title: string; excerpt: string | null;
@@ -18,25 +17,47 @@ interface Props {
 export default function BlogSection({ posts, theme = "classic" }: Props) {
   if (posts.length === 0) return null;
 
-  /* ── Y2K KAWAII (attic) ── */
-  if (theme === "attic") return (
-    <section className="atc-box atc-font p-4 sm:p-5">
-      <h2 className="atc-title text-xl">Jurnal ✿</h2>
-      <hr className="atc-divider" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {posts.map((post) => (
-          <Link key={post.id} href={`/blog/${post.slug}`} className="atc-box p-3 flex gap-3 items-start">
-            <div className="shrink-0 w-16 h-16 rounded-md overflow-hidden" style={{ border: "1.5px solid var(--atc-border)" }}>
-              {post.cover
-                ? <Image src={post.cover} alt={post.title} width={64} height={64} className="w-full h-full object-cover" />
-                : <div className="w-full h-full" style={{ background: "var(--atc-pink-soft)" }} />}
-            </div>
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") return (
+    <section className="fb-page py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimateIn>
+          <div className="flex items-end justify-between mb-12 flex-wrap gap-3">
             <div>
-              <h3 className="font-extrabold text-sm leading-snug line-clamp-2" style={{ color: "var(--atc-ink)" }}>{post.title}</h3>
-              <p className="text-[11px] mt-1" style={{ color: "var(--atc-ink-soft)" }}>{formatDate(post.date)}</p>
+              <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>✦ Jurnal</span>
+              <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+                Tips &amp; <span className="fb-wave" style={{ color: "var(--fb-accent)" }}>Inspirasi</span>
+              </h2>
             </div>
-          </Link>
-        ))}
+            <Link href="/blog" className="fb-btn-outline px-4 py-2 text-xs">Semua Artikel →</Link>
+          </div>
+        </AnimateIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <AnimateIn key={post.id} delay={i * 90}>
+              <Link href={`/blog/${post.slug}`} className="block fb-card overflow-hidden group h-full">
+                <div className="relative h-44 overflow-hidden" style={{ borderBottom: "2px solid var(--fb-line)" }}>
+                  {post.cover
+                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--fb-paper)", color: "var(--fb-line)" }}>✦</div>}
+                  {post.category && (
+                    <span className="absolute top-3 left-3 fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
+                      {post.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5" style={{ fontFamily: "var(--fb-font)" }}>
+                  <h3 className="font-bold mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--fb-ink)" }}>{post.title}</h3>
+                  {post.excerpt && <p className="text-xs line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--fb-subink)" }}>{post.excerpt}</p>}
+                  <div className="flex items-center justify-between text-[11px]" style={{ color: "var(--fb-subink)" }}>
+                    <span>{formatDate(post.date)}</span>
+                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
+                  </div>
+                </div>
+              </Link>
+            </AnimateIn>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -352,88 +373,13 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
     </section>
   );
 
-  /* ── CLASSIC / VIBRANT / BOLD ── */
-  if (theme === "jojo") return (
-    <section className="py-24 jo-font" style={{ background: "transparent" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <div className="text-center mb-14">
-            <span className="jo-chip mb-4 inline-flex"><JojoSticker shape="heart" size={18} /> Jurnal</span>
-            <h2 className="text-3xl lg:text-5xl mt-2" style={{ color: "var(--jo-ink)", fontWeight: 900 }}>Tips &amp; Inspirasi</h2>
-          </div>
-        </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-          {posts.map((post, i) => (
-            <AnimateIn key={post.id} delay={i * 90}>
-              <Link href={`/blog/${post.slug}`} className="jo-card group block overflow-hidden">
-                <div className="relative h-44 overflow-hidden" style={{ background: "var(--jo-soft)", borderBottom: "2.5px solid var(--jo-line)" }}>
-                  {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    : <div className="flex items-center justify-center h-full"><JojoSticker shape="cloud" size={48} /></div>}
-                  {post.category && <span className="absolute top-3 left-3 jo-tag">{post.category}</span>}
-                </div>
-                <div className="p-5">
-                  <h3 className="font-extrabold mb-2 line-clamp-2 text-[15px] leading-snug" style={{ color: "var(--jo-ink)" }}>{post.title}</h3>
-                  {post.excerpt && <p className="text-xs font-semibold line-clamp-2 mb-3 leading-relaxed" style={{ color: "var(--jo-sub)" }}>{post.excerpt}</p>}
-                  <div className="flex items-center justify-between text-[11px] font-bold" style={{ color: "var(--jo-sub)" }}>
-                    <span>{formatDate(post.date)}</span>
-                    {post.readTime && <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>}
-                  </div>
-                </div>
-              </Link>
-            </AnimateIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  if (theme === "atelier") return (
-    <section className="py-24" style={{ background: "var(--atl-soft)" }}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-        <AnimateIn>
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
-            <div>
-              <p className="atl-eyebrow mb-3">Jurnal Perjalanan</p>
-              <h2 className="text-3xl lg:text-[2.6rem] font-semibold tracking-tight" style={{ color: "var(--atl-ink)" }}>Tips &amp; Inspirasi</h2>
-            </div>
-            <Link href="/blog" className="atl-btn-ghost !py-3 !px-6 !text-[13px]">Lihat Semua <ArrowRight size={14} /></Link>
-          </div>
-        </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-          {posts.map((post, i) => (
-            <AnimateIn key={post.id} delay={i * 90}>
-              <Link href={`/blog/${post.slug}`} className="atl-card group block">
-                <div className="relative h-48 overflow-hidden" style={{ background: "var(--atl-soft)" }}>
-                  {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-                    : <div className="flex items-center justify-center h-full" style={{ color: "var(--atl-line)" }}>—</div>}
-                  {post.category && <span className="absolute top-3 left-3 atl-tag">{post.category}</span>}
-                </div>
-                <div className="p-5">
-                  <h3 className="font-semibold text-[16px] leading-snug mb-2 line-clamp-2" style={{ color: "var(--atl-ink)" }}>{post.title}</h3>
-                  {post.excerpt && <p className="text-xs line-clamp-2 mb-4 leading-relaxed" style={{ color: "var(--atl-sub)" }}>{post.excerpt}</p>}
-                  <div className="flex items-center justify-between text-[11px] pt-3.5" style={{ color: "var(--atl-sub)", borderTop: "1px solid var(--atl-line)" }}>
-                    <span>{formatDate(post.date)}</span>
-                    {post.readTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readTime}</span>}
-                  </div>
-                </div>
-              </Link>
-            </AnimateIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  const sectionBg = theme === "bold" ? "bg-gray-950" : "bg-gray-50 dark:bg-gray-950";
-  const headingColor = theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
-  const subColor = theme === "bold" ? "text-gray-600" : "text-gray-400";
-  const linkColor = theme === "bold" ? "text-gray-500 hover:text-white" : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white";
-  const cardBg = theme === "bold"
-    ? "bg-gray-900 border-gray-800 hover:border-gray-700"
-    : "bg-white dark:bg-black border-gray-100 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700";
-  const titleColor = theme === "bold" ? "text-white" : "text-gray-900 dark:text-white";
+  /* ── CLASSIC ── */
+  const sectionBg = "bg-gray-50 dark:bg-gray-950";
+  const headingColor = "text-gray-900 dark:text-white";
+  const subColor = "text-gray-400";
+  const linkColor = "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white";
+  const cardBg = "bg-white dark:bg-black border-gray-100 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700";
+  const titleColor = "text-gray-900 dark:text-white";
 
   return (
     <section className={`py-24 ${sectionBg}`}>

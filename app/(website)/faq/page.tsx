@@ -41,22 +41,18 @@ export default async function FaqPage() {
   const isGlobe    = theme === "globe";
   const isMap      = theme === "map";
   const isAtlas    = theme === "atlas";
-  const isAtelier  = theme === "atelier";
-  const isJojo     = theme === "jojo";
-  const isTeri     = theme === "teri";
-  const isAttic    = theme === "attic";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isAtelier || isJojo || isTeri || isAttic;
+  const isFumayo   = theme === "fumayo";
+  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isFumayo;
 
   const pfx = isKawaii ? "kw" : isTropical ? "tr" : isPixel ? "px"
-    : isAttic ? "atc"
-    : isGlobe ? "gl" : isMap ? "mp" : isAtlas ? "at"
-    : isAtelier ? "atl" : isJojo ? "jo" : isTeri ? "teri" : "";
+    : isGlobe ? "gl" : isMap ? "mp" : isAtlas ? "at" : isFumayo ? "fb"
+    : "";
 
-  const pageBg  = isAtlas ? "var(--at-bg)"     : isTropical ? "var(--tr-bg)"     : isKawaii ? "var(--kw-bg)"     : isPixel ? "var(--px-bg)"     : isAtelier ? "var(--atl-bg)"      : isJojo ? "var(--jo-bg)"   : undefined;
-  const headClr = isAtlas ? "var(--at-text)"    : isTropical ? "var(--tr-text)"    : isKawaii ? "var(--kw-text)"    : isPixel ? "var(--px-text)"    : isAtelier ? "var(--atl-ink)"     : isJojo ? "var(--jo-ink)"  : isTeri ? "var(--teri-ink)" : undefined;
-  const subClr  = isAtlas ? "var(--at-subtext)" : isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : isAtelier ? "var(--atl-sub)"     : isJojo ? "var(--jo-sub)"  : isTeri ? "var(--teri-sub)" : undefined;
-  const cardBg  = isAtlas ? "var(--at-card)"    : isTropical ? "var(--tr-card)"    : isKawaii ? "var(--kw-card)"    : isPixel ? "var(--px-card)"    : isAtelier ? "var(--atl-surface)" : isJojo ? "var(--jo-card)" : isTeri ? "var(--teri-card)" : undefined;
-  const bdrClr  = isAtlas ? "var(--at-border)"  : isTropical ? "var(--tr-border)"  : isKawaii ? "var(--kw-border)"  : isPixel ? "var(--px-border)"  : isAtelier ? "var(--atl-line)"    : isJojo ? "var(--jo-line)" : isTeri ? "var(--teri-line)" : undefined;
+  const pageBg  = isFumayo ? "var(--fb-bg)"      : isAtlas ? "var(--at-bg)"     : isTropical ? "var(--tr-bg)"     : isKawaii ? "var(--kw-bg)"     : isPixel ? "var(--px-bg)"     : undefined;
+  const headClr = isFumayo ? "var(--fb-text)"    : isAtlas ? "var(--at-text)"    : isTropical ? "var(--tr-text)"    : isKawaii ? "var(--kw-text)"    : isPixel ? "var(--px-text)"    : undefined;
+  const subClr  = isFumayo ? "var(--fb-subtext)" : isAtlas ? "var(--at-subtext)" : isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : undefined;
+  const cardBg  = isFumayo ? "var(--fb-card)"    : isAtlas ? "var(--at-card)"    : isTropical ? "var(--tr-card)"    : isKawaii ? "var(--kw-card)"    : isPixel ? "var(--px-card)"    : undefined;
+  const bdrClr  = isFumayo ? "var(--fb-border)"  : isAtlas ? "var(--at-border)"  : isTropical ? "var(--tr-border)"  : isKawaii ? "var(--kw-border)"  : isPixel ? "var(--px-border)"  : undefined;
 
   const pixelGrid = isAtlas ? {
     backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)",
@@ -64,9 +60,12 @@ export default async function FaqPage() {
   } : isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
     backgroundSize: "24px 24px",
+  } : isFumayo ? {
+    backgroundImage: "linear-gradient(var(--fb-grid) 1px,transparent 1px),linear-gradient(90deg,var(--fb-grid) 1px,transparent 1px)",
+    backgroundSize: "26px 26px",
   } : {};
 
-  const wrapperStyle = pageBg ? { backgroundColor: pageBg, ...pixelGrid } : undefined;
+  const wrapperStyle = pageBg ? { backgroundColor: pageBg, ...pixelGrid, ...(isFumayo ? { fontFamily: "var(--fb-font)" } : {}) } : undefined;
 
   const whatsapp = toWaNumber(company["company_whatsapp"]);
   const waLink   = whatsapp

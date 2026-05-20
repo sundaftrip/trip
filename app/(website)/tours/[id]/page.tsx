@@ -76,20 +76,17 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const isKawaii   = siteTheme === "kawaii";
   const isPixel    = siteTheme === "pixel";
   const isAtlas    = siteTheme === "atlas";
-  const isAtelier  = siteTheme === "atelier";
-  const isJojo     = siteTheme === "jojo";
-  const isTeri     = siteTheme === "teri";
-  const isAttic    = siteTheme === "attic";
-  const isOutlined = isTropical || isKawaii || isPixel || isAtlas || isAtelier || isJojo || isTeri || isAttic;
+  const isFumayo   = siteTheme === "fumayo";
+  const isOutlined = isTropical || isKawaii || isPixel || isAtlas || isFumayo;
 
-  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : isPixel ? "px" : isAtlas ? "at" : isAtelier ? "atl" : isJojo ? "jo" : isTeri ? "teri" : isAttic ? "atc" : "";
-  const tBg   = isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : isPixel ? "var(--px-bg)"   : isAtlas ? "var(--at-bg)"   : isAtelier ? "var(--atl-bg)"      : isJojo ? "var(--jo-bg)"   : undefined;
-  const tText = isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : isPixel ? "var(--px-text)" : isAtlas ? "var(--at-text)" : isAtelier ? "var(--atl-ink)"     : isJojo ? "var(--jo-ink)"  : isTeri ? "var(--teri-ink)" : undefined;
-  const tCard = isTropical ? "var(--tr-card)"  : isKawaii ? "var(--kw-card)" : isPixel ? "var(--px-card)" : isAtlas ? "var(--at-card)" : isAtelier ? "var(--atl-surface)" : isJojo ? "var(--jo-card)" : isTeri ? "var(--teri-card)" : undefined;
-  const tMint = isTropical ? "var(--tr-mint)"  : isKawaii ? "var(--kw-mint)" : isPixel ? "var(--px-cyan)" : isAtlas ? "var(--at-muted)" : isAtelier ? "var(--atl-bg)"     : isJojo ? "var(--jo-soft)" : isTeri ? "var(--teri-c2)" : undefined;
-  const tSun  = isTropical ? "var(--tr-sun)"   : isKawaii ? "var(--kw-sun)"  : isPixel ? "var(--px-yellow)" : isAtlas ? "var(--at-muted)" : isAtelier ? "var(--atl-bg)"   : isJojo ? "var(--jo-soft)" : isTeri ? "var(--teri-c3)" : undefined;
-  const tSub  = isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : isAtlas ? "var(--at-subtext)" : isAtelier ? "var(--atl-sub)" : isJojo ? "var(--jo-sub)" : isTeri ? "var(--teri-sub)" : undefined;
-  const tBdr  = isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : isAtlas ? "var(--at-border)" : isAtelier ? "var(--atl-line)" : isJojo ? "var(--jo-line)" : isTeri ? "var(--teri-line)" : undefined;
+  const pfx   = isTropical ? "tr" : isKawaii ? "kw" : isPixel ? "px" : isAtlas ? "at" : isFumayo ? "fb" : "";
+  const tBg   = isFumayo ? "var(--fb-bg)"   : isTropical ? "var(--tr-bg)"   : isKawaii ? "var(--kw-bg)"   : isPixel ? "var(--px-bg)"   : isAtlas ? "var(--at-bg)"   : undefined;
+  const tText = isFumayo ? "var(--fb-text)"  : isTropical ? "var(--tr-text)"  : isKawaii ? "var(--kw-text)" : isPixel ? "var(--px-text)" : isAtlas ? "var(--at-text)" : undefined;
+  const tCard = isFumayo ? "var(--fb-card)"  : isTropical ? "var(--tr-card)"  : isKawaii ? "var(--kw-card)" : isPixel ? "var(--px-card)" : isAtlas ? "var(--at-card)" : undefined;
+  const tMint = isFumayo ? "var(--fb-mint)"  : isTropical ? "var(--tr-mint)"  : isKawaii ? "var(--kw-mint)" : isPixel ? "var(--px-cyan)" : isAtlas ? "var(--at-muted)" : undefined;
+  const tSun  = isFumayo ? "var(--fb-sun)"   : isTropical ? "var(--tr-sun)"   : isKawaii ? "var(--kw-sun)"  : isPixel ? "var(--px-yellow)" : isAtlas ? "var(--at-muted)" : undefined;
+  const tSub  = isFumayo ? "var(--fb-subtext)" : isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
+  const tBdr  = isFumayo ? "var(--fb-border)" : isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : isAtlas ? "var(--at-border)" : undefined;
 
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
   const addOns = (tour.addOns as { name: string; price: number }[]) ?? [];

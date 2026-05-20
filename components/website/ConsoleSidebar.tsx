@@ -73,8 +73,7 @@ export default function ConsoleSidebar({ logo }: { logo?: string }) {
       {/* Mobile top bar */}
       <header className="lg:hidden fixed top-0 inset-x-0 z-40 h-14 flex items-center justify-between px-4 cns-topbar">
         <Link href="/">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logo || "/logo.png"} alt="Logo" className="h-7 w-auto cns-logo" />
+          <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54} className="h-7 w-auto cns-logo" priority />
         </Link>
         <button onClick={() => setOpen(true)} className="cns-mini-btn !w-9 !h-9" aria-label="Buka menu">
           <Menu size={18} />
@@ -85,8 +84,7 @@ export default function ConsoleSidebar({ logo }: { logo?: string }) {
       <aside className="hidden lg:flex flex-col w-60 shrink-0 sticky top-0 h-screen cns-sidebar">
         <div className="px-5 py-5" style={{ borderBottom: "1px solid var(--at-border)" }}>
           <Link href="/">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo || "/logo.png"} alt="Logo" className="h-8 w-auto cns-logo" />
+            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54} className="h-8 w-auto cns-logo" priority />
           </Link>
         </div>
         <NavList />
@@ -99,8 +97,7 @@ export default function ConsoleSidebar({ logo }: { logo?: string }) {
           <div className="absolute inset-0 bg-black/55" onClick={() => setOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-64 flex flex-col cns-sidebar">
             <div className="px-5 py-5 flex items-center justify-between" style={{ borderBottom: "1px solid var(--at-border)" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={logo || "/logo.png"} alt="Logo" className="h-7 w-auto cns-logo" />
+              <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54} className="h-7 w-auto cns-logo" />
               <button onClick={() => setOpen(false)} className="cns-mini-btn !w-8 !h-8" aria-label="Tutup menu">
                 <X size={16} />
               </button>

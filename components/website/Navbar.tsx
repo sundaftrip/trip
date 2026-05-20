@@ -38,141 +38,59 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
   const isDark = mounted && resolvedTheme === "dark";
 
-  /* ── NUSANTARA ── */
-  if (theme === "nusantara") return (
-    <header className={cn("fixed top-0 inset-x-0 z-50 transition-all nu-page", scrolled ? "shadow-sm" : "")}
-      style={{ borderBottom: scrolled ? "1px solid var(--nu-line)" : "1px solid transparent" }}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5" style={{ color: "var(--nu-navy)" }}>
-            {logo ? (
-              <Image src={logo} alt="Logo" width={140} height={40} className="h-8 w-auto" priority />
-            ) : (
-              <>
-                <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden>
-                  <path d="M3 24 L12 11 L17 17 L22 11 L29 24 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                  <circle cx="12" cy="8" r="1.2" fill="currentColor" />
-                </svg>
-                <div className="leading-none">
-                  <p className="nu-display text-[18px] tracking-wide">Nusantara</p>
-                  <p className="text-[9px] uppercase tracking-[0.24em]" style={{ color: "var(--nu-muted)" }}>Travel</p>
-                </div>
-              </>
-            )}
-          </Link>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium" style={{ color: "var(--nu-navy-soft)" }}>
-            {navLinks.map(l => (
-              <Link key={l.href} href={l.href} className="hover:text-[var(--nu-gold-deep)] transition">
-                {l.label[lang]}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <button onClick={toggleLang} className="hidden sm:inline-flex text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-full nu-hairline" style={{ color: "var(--nu-navy-soft)" }}>
-              {lang === "id" ? "EN" : "ID"}
-            </button>
-            {mounted && (
-              <button onClick={() => setTheme(isDark ? "light" : "dark")} className="p-1.5 rounded-full nu-hairline" style={{ color: "var(--nu-navy-soft)" }} aria-label="theme">
-                {isDark ? <Sun size={15} /> : <Moon size={15} />}
-              </button>
-            )}
-            <button onClick={() => setOpen(o => !o)} className="md:hidden p-1.5 rounded-full nu-hairline" style={{ color: "var(--nu-navy-soft)" }} aria-label="menu">
-              {open ? <X size={17} /> : <Menu size={17} />}
-            </button>
-          </div>
-        </div>
-        {open && (
-          <div className="md:hidden pb-4 pt-1 flex flex-col gap-1">
-            {navLinks.map(l => (
-              <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm" style={{ color: "var(--nu-navy)" }}>
-                {l.label[lang]}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </header>
-  );
-
-  /* ── Y2K KAWAII (attic) — banner + nav statis di dalam kotak ── */
-  if (theme === "attic") return (
-    <header className="atc-font">
-      <div className="atc-box relative flex items-center justify-center py-7 px-4 overflow-hidden"
-        style={{ background: "var(--atc-banner)" }}>
-        <span className="absolute left-5 top-3 text-xl select-none pointer-events-none">✦</span>
-        <span className="absolute right-6 top-3 text-lg select-none pointer-events-none">♬</span>
-        <span className="absolute right-12 bottom-3 text-sm select-none pointer-events-none">✧</span>
-        <span className="absolute left-10 bottom-3 text-sm select-none pointer-events-none">✿</span>
-        {logo
-          ? <Image src={logo} alt="Logo" width={220} height={64}
-              className={`h-12 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
-          : <h1 className="text-2xl font-extrabold" style={{ color: "var(--atc-pink-deep)" }}>Sundaf Trip ✈</h1>}
-      </div>
-      <nav className="flex flex-wrap items-center justify-center gap-2">
-        {navLinks.map((link) => (
-          <Link key={link.href} href={link.href} className="atc-btn">{link.label[lang]}</Link>
-        ))}
-      </nav>
-      <div className="flex items-center justify-center gap-2">
-        <button onClick={toggleLang} className="atc-btn !px-3">{lang === "id" ? "EN" : "ID"}</button>
-        {mounted && (
-          <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode" className="atc-btn !px-3">
-            {isDark ? <Sun size={13} /> : <Moon size={13} />}
-          </button>
-        )}
-        <span className="atc-btn !px-3" aria-hidden>♥</span>
-      </div>
-    </header>
-  );
-
-  /* ── TERI ── */
-  if (theme === "teri") return (
-    <header className="fixed top-0 inset-x-0 z-50 teri-bg border-b-[2.5px]" style={{ borderColor: "var(--teri-line)" }}>
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") return (
+    <header className="fixed top-0 inset-x-0 z-50 fb-page" style={{ borderBottom: "2.5px solid var(--fb-line)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            <span className="inline-flex items-center rounded-xl px-3 py-1.5"
+              style={{ border: "2px solid var(--fb-line)", background: "var(--fb-yellow)", boxShadow: "0 3px 0 0 var(--fb-line)" }}>
+              <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+                className="h-8 w-auto" priority />
+            </span>
           </Link>
-          <nav className="hidden lg:flex items-center gap-1">
+
+          <nav className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}
-                className="px-3 py-2 text-sm font-extrabold hover:opacity-65 transition-opacity"
-                style={{ color: "var(--teri-ink)" }}>
+                className="fb-pill hover:opacity-70 transition-opacity">
                 {link.label[lang]}
               </Link>
             ))}
           </nav>
+
           <div className="flex items-center gap-2">
-            <button onClick={toggleLang} className="teri-chip !py-1.5 !px-3 !text-[13px]">
+            <button onClick={toggleLang} className="fb-pill" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
               <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="teri-chip !py-1.5 !px-3">
+                className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
-            <Link href="/tours" className="hidden lg:inline-flex teri-btn !py-2.5 !px-5 !text-xs">
+            <Link href="/tours" className="hidden lg:inline-flex fb-btn px-4 py-2 text-xs">
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden teri-chip !py-1.5 !px-3">
+            <button onClick={() => setOpen(!open)} className="lg:hidden fb-pill">
               {open ? <X size={16} /> : <Menu size={16} />}
             </button>
           </div>
         </div>
+
         {open && (
-          <div className="lg:hidden border-t-[2.5px] py-4 space-y-1" style={{ borderColor: "var(--teri-line)" }}>
+          <div className="lg:hidden py-4 space-y-1" style={{ borderTop: "2px solid var(--fb-line)" }}>
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 font-extrabold text-sm" style={{ color: "var(--teri-ink)" }}>
+                className="block px-4 py-2.5 font-bold text-sm"
+                style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
                 {link.label[lang]}
               </Link>
             ))}
             <div className="px-4 pt-2">
               <Link href="/tours" onClick={() => setOpen(false)}
-                className="flex teri-btn !py-2.5 !px-5 !text-xs w-full justify-center">
+                className="flex fb-btn px-5 py-2.5 text-xs w-full justify-center">
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
             </div>
@@ -251,11 +169,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   if (theme === "globe") return (
     <header className="fixed top-0 inset-x-0 z-50"
       style={{ background: "var(--gl-card)", borderBottom: "1.5px solid color-mix(in srgb, var(--gl-border) 30%, transparent)", boxShadow: "0 4px 24px var(--gl-shadow)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          <Link href="/" className="flex items-center shrink-0">
             <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+              className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -268,20 +186,21 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
             <button onClick={toggleLang} className="gl-pill font-black"
               style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
               <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>
+                className="hidden xs:inline-flex sm:inline-flex gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
-            <Link href="/tours" className="hidden lg:inline-flex gl-btn px-4 py-2 text-xs font-black"
+            <Link href="/tours" className="hidden lg:inline-flex gl-btn px-3 py-1.5 text-[10px] font-black"
               style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
-              {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
+              <span className="hidden xl:inline">{lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}</span>
+              <span className="xl:hidden">{lang === "id" ? "Tour ✈" : "Tour ✈"}</span>
             </Link>
             <button onClick={() => setOpen(!open)} className="lg:hidden gl-pill"
               style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
@@ -304,133 +223,6 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 className="flex gl-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
                 {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
-              </Link>
-            </div>
-          </div>
-        )}
-      </div>
-    </header>
-  );
-
-  /* ── ATLAS ── */
-  if (theme === "jojo") return (
-    <header className="fixed top-0 inset-x-0 z-50 jo-font"
-      style={{ background: "var(--jo-card)", borderBottom: "2.5px solid var(--jo-line)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[68px]">
-          <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}
-                className="px-3.5 py-2 rounded-full text-sm font-bold transition-colors hover:bg-[var(--jo-soft)]"
-                style={{ color: "var(--jo-ink)" }}>
-                {link.label[lang]}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <button onClick={toggleLang}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-extrabold"
-              style={{ border: "2px solid var(--jo-line)", color: "var(--jo-ink)", background: "var(--jo-soft)" }}>
-              {lang === "id" ? "EN" : "ID"}
-            </button>
-            {mounted && (
-              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="w-9 h-9 rounded-full flex items-center justify-center"
-                style={{ border: "2px solid var(--jo-line)", color: "var(--jo-ink)", background: "var(--jo-soft)" }}>
-                {isDark ? <Sun size={14} /> : <Moon size={14} />}
-              </button>
-            )}
-            <Link href="/tours" className="hidden lg:inline-flex jo-btn !py-2.5 !px-5 !text-[13px]">
-              {lang === "id" ? "Lihat Tour" : "See Tours"}
-            </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ border: "2px solid var(--jo-line)", color: "var(--jo-ink)", background: "var(--jo-soft)" }}>
-              {open ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-        </div>
-
-        {open && (
-          <div className="lg:hidden py-4 space-y-1" style={{ borderTop: "2.5px solid var(--jo-line)" }}>
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm font-bold" style={{ color: "var(--jo-ink)" }}>
-                {link.label[lang]}
-              </Link>
-            ))}
-            <div className="px-4 pt-2">
-              <Link href="/tours" onClick={() => setOpen(false)} className="flex jo-btn w-full">
-                {lang === "id" ? "Lihat Tour" : "See Tours"}
-              </Link>
-            </div>
-          </div>
-        )}
-      </div>
-    </header>
-  );
-
-  if (theme === "atelier") return (
-    <header className="fixed top-0 inset-x-0 z-50 border-b"
-      style={{ backgroundColor: "var(--atl-surface)", borderColor: "var(--atl-line)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[72px]">
-          <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-9">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}
-                className="text-[12px] tracking-[0.14em] uppercase font-medium hover:opacity-60 transition-opacity"
-                style={{ color: "var(--atl-ink)" }}>
-                {link.label[lang]}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2.5">
-            <button onClick={toggleLang}
-              className="text-[11px] tracking-[0.12em] uppercase font-semibold px-2.5 py-1.5 hover:opacity-60 transition"
-              style={{ color: "var(--atl-sub)" }}>
-              {lang === "id" ? "EN" : "ID"}
-            </button>
-            {mounted && (
-              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="p-2 hover:opacity-60 transition" style={{ color: "var(--atl-sub)" }}>
-                {isDark ? <Sun size={14} /> : <Moon size={14} />}
-              </button>
-            )}
-            <Link href="/tours" className="hidden lg:inline-flex atl-btn-solid !py-2.5 !px-5 !text-[11px]">
-              {lang === "id" ? "Lihat Tour" : "See Tours"}
-            </Link>
-            <button onClick={() => setOpen(!open)} className="lg:hidden p-2"
-              style={{ color: "var(--atl-ink)" }}>
-              {open ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-        </div>
-
-        {open && (
-          <div className="lg:hidden border-t py-4 space-y-1"
-            style={{ borderColor: "var(--atl-line)", background: "var(--atl-surface)" }}>
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-[12px] tracking-[0.12em] uppercase font-medium"
-                style={{ color: "var(--atl-ink)" }}>
-                {link.label[lang]}
-              </Link>
-            ))}
-            <div className="px-4 pt-2">
-              <Link href="/tours" onClick={() => setOpen(false)}
-                className="flex atl-btn-solid w-full justify-center">
-                {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
             </div>
           </div>
@@ -702,7 +494,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
     </header>
   );
 
-  /* ── CLASSIC / VIBRANT / BOLD ── */
+  /* ── CLASSIC ── */
   return (
     <header className={cn(
       "fixed top-0 inset-x-0 z-50 transition-all duration-300",

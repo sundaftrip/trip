@@ -163,92 +163,234 @@ body {
   .hero-fade-up, .hero-fade-left { animation: none; }
 }
 
-/* ─── TROPICAL THEME UTILITIES ─── */
+/* ============================================
+   TROPICAL THEME — Vintage Travel Poster
+   DNA: thin precise border, horizontal stripe accent,
+        subtle drop-shadow (printed paper feel),
+        sharp-cornered rectangles, slight tilt on hover.
+   Inspired by: 1960s travel posters, postcards from
+        Tahiti/Bali era, Saul Bass typography.
+   ============================================ */
 .tr-card {
-  border: 2px solid var(--tr-border);
-  border-radius: 20px;
-  box-shadow: 4px 4px 0 0 var(--tr-shadow);
   background: var(--tr-card);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--tr-border);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.04),
+    0 8px 24px -10px color-mix(in srgb, var(--tr-shadow) 35%, transparent);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.tr-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--tr-border) 0 12px,
+    transparent 12px 24px
+  );
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 1;
 }
 .tr-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--tr-shadow);
+  transform: translateY(-3px) rotate(-0.4deg);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.05),
+    0 18px 36px -12px color-mix(in srgb, var(--tr-shadow) 45%, transparent);
 }
 .tr-pill {
-  border: 1.5px solid var(--tr-border);
-  border-radius: 999px;
-  font-weight: 800;
-  box-shadow: 2px 2px 0 0 var(--tr-shadow);
-  padding: 3px 12px;
-  font-size: 11px;
-  line-height: 1.5;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  padding: 4px 10px 4px 18px;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--tr-card);
+  color: var(--tr-text);
+  border: 1px solid var(--tr-border);
+  position: relative;
+  line-height: 1.5;
+}
+.tr-pill::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--tr-border);
+  border-radius: 1px;
 }
 .tr-btn {
-  align-items: center;
-  gap: 8px;
-  border: 2.5px solid var(--tr-border);
-  border-radius: 999px;
-  font-weight: 900;
-  box-shadow: 4px 4px 0 0 var(--tr-shadow);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-.tr-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--tr-shadow);
-}
-.tr-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 0 var(--tr-shadow);
-}
-
-/* ─── KAWAII THEME UTILITIES ─── */
-.kw-card {
-  border: 2px solid var(--kw-border);
-  border-radius: 24px;
-  box-shadow: 4px 4px 0 0 var(--kw-shadow);
-  background: var(--kw-card);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.kw-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--kw-shadow);
-}
-.kw-pill {
-  border: 1.5px solid var(--kw-border);
-  border-radius: 999px;
-  font-weight: 800;
-  box-shadow: 2px 2px 0 0 var(--kw-shadow);
-  padding: 3px 12px;
-  font-size: 11px;
-  line-height: 1.5;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-}
-.kw-btn {
-  align-items: center;
-  gap: 8px;
-  border: 2.5px solid var(--kw-border);
-  border-radius: 999px;
-  font-weight: 900;
-  box-shadow: 4px 4px 0 0 var(--kw-shadow);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 10px;
+  padding: 12px 22px 12px 30px;
+  border: none;
+  border-radius: 4px;
+  background: var(--tr-border);
+  color: var(--tr-bg);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  position: relative;
   cursor: pointer;
   text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1),
+              background-color 0.3s cubic-bezier(0.22,1,0.36,1);
+  overflow: hidden;
+}
+.tr-btn::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 18px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--tr-bg) 0 2px,
+    transparent 2px 6px
+  );
+  opacity: 0.6;
+}
+.tr-btn:hover {
+  transform: translateY(-2px) rotate(-0.5deg);
+  background: color-mix(in srgb, var(--tr-border) 88%, black);
+}
+.tr-btn:active {
+  transform: translateY(0) rotate(0);
+}
+
+/* ============================================
+   KAWAII THEME — Hand-drawn Sticker Scrapbook
+   DNA: thick colored outline, extra-rounded organic
+        radius, layered soft shadows, slight tilt by
+        default (sticker-on-paper), decorative sparkle.
+   Inspired by: Japanese washi tape, Cinnamoroll &
+        scrapbook stickers, hand-cut sticker sheets.
+   ============================================ */
+.kw-card {
+  background: var(--kw-card);
+  border: 2.5px solid var(--kw-border);
+  border-radius: 28px 32px 26px 30px / 30px 28px 32px 26px;
+  position: relative;
+  transform: rotate(-1.2deg);
+  box-shadow:
+    0 0 0 4px var(--kw-card),
+    0 0 0 5px color-mix(in srgb, var(--kw-border) 25%, transparent),
+    0 18px 28px -10px color-mix(in srgb, var(--kw-shadow) 30%, transparent),
+    0 4px 8px -2px color-mix(in srgb, var(--kw-shadow) 20%, transparent);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.kw-card::after {
+  content: '✿';
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  font-size: 28px;
+  color: var(--kw-border);
+  transform: rotate(15deg);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 0 var(--kw-card));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.kw-card:hover {
+  transform: rotate(0deg) scale(1.025);
+  box-shadow:
+    0 0 0 4px var(--kw-card),
+    0 0 0 5px color-mix(in srgb, var(--kw-border) 35%, transparent),
+    0 28px 40px -10px color-mix(in srgb, var(--kw-shadow) 35%, transparent),
+    0 8px 12px -2px color-mix(in srgb, var(--kw-shadow) 25%, transparent);
+}
+.kw-card:hover::after {
+  transform: rotate(40deg) scale(1.2);
+}
+.kw-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 14px;
+  border: 2px solid var(--kw-border);
+  border-radius: 50% 999px 50% 999px / 999px;
+  background: var(--kw-blush);
+  color: var(--kw-text);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.5;
+  transform: rotate(-1deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    0 2px 0 var(--kw-border);
+}
+.kw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border: 2.5px solid var(--kw-border);
+  border-radius: 999px;
+  background: var(--kw-card);
+  color: var(--kw-text);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  transform: rotate(-0.6deg);
+  box-shadow:
+    inset 0 -3px 0 color-mix(in srgb, var(--kw-border) 18%, transparent),
+    0 4px 0 var(--kw-border),
+    0 10px 18px -6px color-mix(in srgb, var(--kw-shadow) 30%, transparent);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+}
+.kw-btn::after {
+  content: '✦';
+  position: absolute;
+  right: 14px;
+  top: -10px;
+  font-size: 14px;
+  color: var(--kw-border);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
 }
 .kw-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 var(--kw-shadow);
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow:
+    inset 0 -3px 0 color-mix(in srgb, var(--kw-border) 22%, transparent),
+    0 6px 0 var(--kw-border),
+    0 16px 24px -6px color-mix(in srgb, var(--kw-shadow) 38%, transparent);
+}
+.kw-btn:hover::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 .kw-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 0 var(--kw-shadow);
+  transform: rotate(0deg) translateY(2px);
+  box-shadow:
+    inset 0 -1px 0 color-mix(in srgb, var(--kw-border) 22%, transparent),
+    0 2px 0 var(--kw-border),
+    0 4px 8px -2px color-mix(in srgb, var(--kw-shadow) 30%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-card, .tr-card:hover,
+  .tr-btn, .tr-btn:hover,
+  .kw-card, .kw-card:hover,
+  .kw-btn, .kw-btn:hover, .kw-pill {
+    transform: none !important;
+  }
 }
 @keyframes kw-float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -914,19 +1056,52 @@ body {
   --gl-text:    #d8eef8;
   --gl-subtext: #7aaac8;
 }
+/* Page background ketika theme=globe — paper feel ala envelope tiket
+   Grid + warmth di belakang cards supaya tidak kosong, cards tetap clean.
+   Target section level dengan !important karena Hero section punya inline
+   style="background:var(--gl-bg)" yang akan menutupi rule di main level. */
+/* Boarding Pass background — grid paper pattern di SEMUA wrapper section/div
+   utama dalam theme=globe. background-attachment:fixed bikin pattern stay
+   tetap saat scroll → kerasa kayak konten "geser" di atas paper background. */
+body:has(main[data-theme="globe"]) {
+  background-color: var(--gl-bg) !important;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 14px,
+      color-mix(in srgb, var(--gl-text) 7%, transparent) 14px 15px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 15px,
+      color-mix(in srgb, var(--gl-text) 7%, transparent) 15px 16px
+    ) !important;
+  background-attachment: fixed !important;
+}
+[data-theme="globe"],
+[data-theme="globe"] section,
+[data-theme="globe"] > div,
+[data-theme="globe"] main {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* Footer & elements yang punya bg sendiri tetap pakai bg sendiri */
+[data-theme="globe"] footer,
+[data-theme="globe"] nav,
+[data-theme="globe"] header {
+  background-attachment: fixed;
+}
+
 /* ============================================
-   GLOBE → BOARDING PASS aesthetic (renamed conceptually,
-   class names kept for backward compat with components)
+   GLOBE THEME → BOARDING PASS aesthetic
    DNA: actual airline ticket. Paper, IATA codes monospace,
         dashed perforation, half-circle notches, barcode.
    Inspired by: Lufthansa/SAS boarding pass, brutalist
         info design, Swissair archive tickets.
    ============================================ */
 .gl-card {
-  background:
-    radial-gradient(circle at 0% 62%, transparent 9px, var(--gl-card) 9.5px),
-    radial-gradient(circle at 100% 62%, transparent 9px, var(--gl-card) 9.5px),
-    var(--gl-card);
+  /* Card bersih putih — grid pindah ke page background */
+  background: var(--gl-card);
   border: 1px solid color-mix(in srgb, var(--gl-border) 60%, transparent);
   border-radius: 8px;
   position: relative;
@@ -937,7 +1112,7 @@ body {
   transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
               box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
 }
-.gl-card::before {
+.gl-card:has(img)::before {
   content: '';
   position: absolute;
   left: 14px; right: 14px;
@@ -947,23 +1122,23 @@ body {
   pointer-events: none;
   z-index: 1;
 }
-.gl-card::after {
+.gl-card:has(img)::after {
   content: '';
   position: absolute;
-  bottom: 14px;
-  right: 16px;
-  width: 78px;
-  height: 22px;
+  bottom: 22px;
+  right: 14px;
+  width: 56px;
+  height: 14px;
   background: repeating-linear-gradient(
     90deg,
     var(--gl-text) 0 1px,
-    transparent 1px 3px,
-    var(--gl-text) 3px 5px,
-    transparent 5px 8px,
-    var(--gl-text) 8px 9px,
-    transparent 9px 12px
+    transparent 1px 2px,
+    var(--gl-text) 2px 3px,
+    transparent 3px 5px,
+    var(--gl-text) 5px 6px,
+    transparent 6px 9px
   );
-  opacity: 0.7;
+  opacity: 0.4;
   pointer-events: none;
   z-index: 1;
 }
@@ -990,6 +1165,44 @@ body {
   line-height: 1.4;
   box-shadow: none;
 }
+/* Button variant of .gl-pill — bigger tap target (44px min, Apple HIG) */
+button.gl-pill,
+a.gl-pill {
+  cursor: pointer;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 11px;
+}
+/* For nav hamburger specifically — icon-only button needs square padding */
+button.gl-pill:has(svg:only-child),
+a.gl-pill:has(svg:only-child) {
+  min-width: 36px;
+  padding: 8px;
+  justify-content: center;
+}
+
+/* Mobile-friendly: shrink nav pills + ensure Tailwind .hidden menang
+   atas .gl-btn / .gl-pill display:inline-flex */
+@media (max-width: 1023px) {
+  button.gl-pill,
+  a.gl-pill {
+    min-height: 30px;
+    padding: 4px 9px;
+    font-size: 10px;
+  }
+  button.gl-pill:has(svg:only-child),
+  a.gl-pill:has(svg:only-child) {
+    min-width: 30px;
+    padding: 6px;
+  }
+}
+/* Scope display:inline-flex .gl-btn supaya tidak nimpa Tailwind .hidden
+   responsive classes (hidden md:block, dst). Pakai :where() selector untuk
+   lower specificity ke (0,0,0,0) — Tailwind .hidden (0,1,0,0) selalu menang. */
+:where(.gl-btn:not(.hidden)) {
+  display: inline-flex;
+}
+
 .gl-btn {
   display: inline-flex;
   align-items: center;
@@ -1332,166 +1545,6 @@ body {
   background-size: 32px 32px;
 }
 
-/* ─── ATELIER THEME — clean editorial travel (ikut palet warna) ─── */
-:root {
-  --atl-accent:  var(--site-accent, #2d6a4f);
-  --atl-bg:      color-mix(in srgb, var(--atl-accent) 5%, #ffffff);
-  --atl-surface: color-mix(in srgb, var(--atl-accent) 2.5%, #ffffff);
-  --atl-soft:    color-mix(in srgb, var(--atl-accent) 11%, #ffffff);
-  --atl-ink:     color-mix(in srgb, var(--atl-accent) 16%, #1a1a1a);
-  --atl-sub:     color-mix(in srgb, var(--atl-accent) 12%, #6e6e6e);
-  --atl-line:    color-mix(in srgb, var(--atl-accent) 18%, #e4e3df);
-}
-.dark {
-  --atl-bg:      color-mix(in srgb, var(--atl-accent) 14%, #0e0e0f);
-  --atl-surface: color-mix(in srgb, var(--atl-accent) 10%, #1a1a1c);
-  --atl-soft:    color-mix(in srgb, var(--atl-accent) 18%, #161617);
-  --atl-ink:     color-mix(in srgb, var(--atl-accent) 10%, #f2f1ee);
-  --atl-sub:     color-mix(in srgb, var(--atl-accent) 14%, #9b9a96);
-  --atl-line:    color-mix(in srgb, var(--atl-accent) 22%, #2b2b2d);
-}
-.atl-eyebrow { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--atl-accent); }
-.atl-btn-solid {
-  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  background: var(--atl-accent); color: #fff;
-  border-radius: 9px; padding: 14px 28px; font-size: 14px; font-weight: 600;
-  text-decoration: none; cursor: pointer;
-  transition: transform .2s ease, filter .2s ease;
-}
-.atl-btn-solid:hover { filter: brightness(1.09); transform: translateY(-2px); }
-.atl-btn-ghost {
-  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  background: transparent; color: var(--atl-ink);
-  border: 1.5px solid var(--atl-line); border-radius: 9px;
-  padding: 14px 28px; font-size: 14px; font-weight: 600;
-  text-decoration: none; cursor: pointer; transition: border-color .2s ease;
-}
-.atl-btn-ghost:hover { border-color: var(--atl-ink); }
-.atl-btn-light {
-  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  background: rgba(255,255,255,0.14); color: #fff;
-  border: 1.5px solid rgba(255,255,255,0.55); border-radius: 9px;
-  padding: 14px 28px; font-size: 14px; font-weight: 600;
-  text-decoration: none; cursor: pointer; transition: background .2s ease;
-  backdrop-filter: blur(6px);
-}
-.atl-btn-light:hover { background: rgba(255,255,255,0.26); }
-.atl-card {
-  background: var(--atl-surface); border: 1px solid var(--atl-line);
-  border-radius: 16px; overflow: hidden;
-  transition: transform .3s ease, box-shadow .3s ease;
-}
-.atl-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(0,0,0,0.13); }
-.atl-tag {
-  display: inline-flex; align-items: center;
-  background: var(--atl-accent); color: #fff;
-  border-radius: 999px; padding: 5px 13px; font-size: 11px; font-weight: 600;
-}
-.atl-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid var(--atl-line); border-radius: 999px;
-  padding: 8px 16px; font-size: 13px; font-weight: 600;
-}
-.atl-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1.5px solid var(--atl-line); border-radius: 9px;
-  padding: 12px 24px; font-weight: 600; font-size: 13px; text-decoration: none; cursor: pointer;
-}
-.atl-logo { height: 42px; width: auto; }
-.dark .atl-logo { filter: brightness(0) invert(1); }
-.atl-dot { width: 9px; height: 9px; border-radius: 999px; background: rgba(255,255,255,0.5); border: none; cursor: pointer; transition: width .3s ease, background .3s ease; padding: 0; }
-.atl-dot-on { width: 30px; background: #fff; }
-@keyframes atl-fade { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
-.atl-fade { animation: atl-fade .85s ease both; }
-
-/* ─── JOJO THEME — travel boutique kawaii: krem hangat, burnt orange,
-   dusty navy, peach, border ganda membulat, dekorasi lembut ─── */
-:root {
-  --jo-bg:      #fff8f0;          /* soft cream / warm white */
-  --jo-card:    rgba(255,255,255,0.86);
-  --jo-ink:     #3a3a3a;          /* warm dark gray */
-  --jo-sub:     #7d7468;
-  --jo-accent:  #e8834a;          /* burnt orange — primer */
-  --jo-accent-on: #c75f28;        /* oranye gelap untuk teks aksen */
-  --jo-navy:    #2c3e6b;          /* dusty navy — sekunder */
-  --jo-peach:   #ffd6ba;          /* pastel peach */
-  --jo-peach-outer: #ffdab9;      /* border luar kartu */
-  --jo-line:    #ecb389;          /* border dalam (peach lebih gelap) */
-  --jo-cream:   #fff3e6;          /* soft cream */
-  --jo-soft:    #ffe9d6;          /* isi chip/pill */
-  --jo-coral:   #ff8a75;          /* badge/highlight */
-  --jo-rose:    #e8a0bf;          /* muted rose */
-  --jo-shadow:  rgba(232,131,74,0.16);
-  --jo-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='54' viewBox='0 0 54 54'%3E%3Cg fill='%23e8834a' fill-opacity='0.06'%3E%3Cpath d='M15 5 L16.5 11.6 L23 13 L16.5 14.4 L15 21 L13.5 14.4 L7 13 L13.5 11.6 Z'/%3E%3Ccircle cx='40' cy='38' r='2.6'/%3E%3Cpath d='M38 9 L38.8 12.4 L42 13 L38.8 13.6 L38 17 L37.2 13.6 L34 13 L37.2 12.4 Z'/%3E%3C/g%3E%3C/svg%3E");
-}
-.dark {
-  --jo-bg:      #241f1b;
-  --jo-card:    rgba(58,50,44,0.86);
-  --jo-ink:     #fff3e6;
-  --jo-sub:     #b3a89c;
-  --jo-accent:  #f0996a;
-  --jo-accent-on: #f4a87f;
-  --jo-navy:    #a8b6da;
-  --jo-peach:   #5a4636;
-  --jo-peach-outer: #6b5240;
-  --jo-line:    #6b5240;
-  --jo-cream:   #322a24;
-  --jo-soft:    #3c322b;
-  --jo-coral:   #f0996a;
-  --jo-rose:    #d99bb8;
-  --jo-shadow:  rgba(0,0,0,0.4);
-  --jo-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='54' viewBox='0 0 54 54'%3E%3Cg fill='%23f0996a' fill-opacity='0.07'%3E%3Cpath d='M15 5 L16.5 11.6 L23 13 L16.5 14.4 L15 21 L13.5 14.4 L7 13 L13.5 11.6 Z'/%3E%3Ccircle cx='40' cy='38' r='2.6'/%3E%3Cpath d='M38 9 L38.8 12.4 L42 13 L38.8 13.6 L38 17 L37.2 13.6 L34 13 L37.2 12.4 Z'/%3E%3C/g%3E%3C/svg%3E");
-}
-/* body = Plus Jakarta Sans; heading di dalamnya = Jost */
-.jo-font { font-family: var(--font-plus-jakarta), system-ui, sans-serif; font-weight: 400; }
-.jo-font h1, .jo-font h2, .jo-font h3, .jo-head {
-  font-family: var(--font-jost), system-ui, sans-serif; font-weight: 500;
-}
-/* latar berpola — pesawat/bintang samar */
-.jo-pattern { background-color: var(--jo-bg); background-image: var(--jo-pattern); }
-
-/* kartu — sudut membulat, border ganda (luar peach + inset dalam) */
-.jo-card {
-  background: var(--jo-card);
-  border: 2px solid var(--jo-peach-outer); border-radius: 18px;
-  box-shadow: inset 0 0 0 2px var(--jo-line), 0 8px 22px var(--jo-shadow);
-  transition: transform .22s ease, box-shadow .22s ease;
-}
-.jo-card:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--jo-line), 0 14px 30px var(--jo-shadow); }
-.jo-btn, .jo-btn-soft {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  border-radius: 999px; padding: 12px 26px; font-weight: 600; font-size: 14px;
-  text-decoration: none; cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
-}
-.jo-btn { background: var(--jo-accent); color: #fff; box-shadow: 0 6px 14px var(--jo-shadow); }
-.jo-btn-soft { background: var(--jo-peach); color: var(--jo-navy); }
-.jo-btn:hover, .jo-btn-soft:hover { transform: translateY(-2px); filter: brightness(1.04); }
-.jo-btn:active, .jo-btn-soft:active { transform: translateY(0); }
-.jo-chip, .jo-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--jo-soft); color: var(--jo-navy);
-  border-radius: 999px; padding: 6px 15px; font-weight: 600; font-size: 12px;
-}
-.jo-tag {
-  display: inline-flex; align-items: center;
-  background: var(--jo-coral); color: #fff;
-  border-radius: 999px; padding: 4px 13px; font-weight: 600; font-size: 11px;
-}
-/* ikon dekoratif di sudut kartu/section */
-.jo-deco { position: absolute; pointer-events: none; opacity: 0.6; user-select: none; }
-.jo-sticker { filter: drop-shadow(0 4px 3px rgba(0,0,0,0.14)); }
-/* ── Jojo motion — lembut ── */
-@keyframes jo-pop    { 0%{transform:scale(.85);opacity:0;} 100%{transform:scale(1);opacity:1;} }
-@keyframes jo-floaty { 0%,100%{transform:translateY(0) rotate(var(--jo-rot,0deg));} 50%{transform:translateY(-10px) rotate(var(--jo-rot,0deg));} }
-@keyframes jo-bob    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
-.jo-pop   { animation: jo-pop .5s cubic-bezier(.16,1,.3,1) both; }
-.jo-float { animation: jo-floaty 6s ease-in-out infinite; }
-.jo-bob   { animation: jo-bob 3s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .jo-pop, .jo-float, .jo-bob { animation: none; }
-  .jo-card, .jo-card:hover, .jo-btn, .jo-btn:hover, .jo-btn-soft, .jo-btn-soft:hover { transition: none; transform: none; }
-}
 /* ─── CONSOLE THEME — layout sidebar, turunan Atlas ─── */
 .cns-main {
   background-color: var(--at-bg);
@@ -1599,140 +1652,144 @@ body {
 .dark .prose th { background: #1e293b; color: #f1f5f9; border-style: solid; border-color: #334155; }
 .dark .prose td { color: #cbd5e1; border-style: solid; border-color: #334155; }
 
-/* ════════ TEMA Y2K KAWAII (key: attic) — boxed 2000s, gingham, pixel ════════ */
+/* ════════════════════════════════════════════════════════════════════
+   FUMAYO THEME — toko buku anak / buku tulis kotak-kotak
+   Referensi: Fumayo Children's bookstore (Behance, Alena Sheva 2023).
+   ════════════════════════════════════════════════════════════════════ */
 :root {
-  /* aksen diturunkan dari skema warna (--site-accent) */
-  --atc-pink:      var(--site-accent, #ffb6c1);                                   /* tombol/aksen */
-  --atc-pink-deep: color-mix(in srgb, var(--site-accent, #ffb6c1) 76%, #4a2c34);  /* hover/judul */
-  --atc-pink-soft: color-mix(in srgb, var(--site-accent, #ffb6c1) 24%, #ffffff);  /* gingham muda */
-  --atc-ink:       #8b7375;   /* teks coklat susu */
-  --atc-ink-soft:  #a68084;
-  --atc-border:    #8b6969;   /* garis coklat tipis */
-  --atc-card:      #ffffff;
-  --atc-link:      color-mix(in srgb, var(--site-accent, #ffb6c1) 68%, #3a2229);  /* hyperlink */
-  --atc-banner:    #fff3b0;   /* kuning banner lembut */
-  --atc-mint:      #c8e6d0;
-  --atc-page:      color-mix(in srgb, var(--site-accent, #ffb6c1) 34%, #ffffff);  /* dasar latar tiled */
-  /* tile pola kawaii — hati & bintang pastel */
-  --atc-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill-rule='evenodd'%3E%3Cpath d='M16 14c-2-4-8-4-8 1 0 4 8 9 8 9s8-5 8-9c0-5-6-5-8-1z' fill='%23ff9bb3' fill-opacity='0.55'/%3E%3Cpath d='M46 40l1.6 4.4L52 46l-4.4 1.6L46 52l-1.6-4.4L40 46l4.4-1.6z' fill='%23ffd86b' fill-opacity='0.6'/%3E%3Ccircle cx='50' cy='14' r='4' fill='%2392d6c8' fill-opacity='0.55'/%3E%3Ccircle cx='14' cy='46' r='3.4' fill='%23b8a6e8' fill-opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
+  --fb-font:    var(--font-anonymous-pro), "Courier New", ui-monospace, monospace;
+  --fb-paper:   color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #fbf8ef);
+  --fb-card:    #ffffff;
+  --fb-ink:     #333131;
+  --fb-subink:  #656261;
+  --fb-line:    #333131;
+  --fb-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 26%, transparent);
+  --fb-accent:  var(--site-accent, #2d6a4f);
+  --fb-red:     #ff6b6b;
+  --fb-yellow:  #fff06a;
+  --fb-blue:    #86b2ca;
+  --fb-green:   #6bcb77;
+  --fb-peach:   #fed7aa;
+  --fb-pink:    #fbcfe8;
+  --fb-bg:      var(--fb-paper);
+  --fb-text:    var(--fb-ink);
+  --fb-subtext: var(--fb-subink);
+  --fb-border:  var(--fb-line);
+  --fb-shadow:  var(--fb-line);
+  --fb-mint:    var(--fb-blue);
+  --fb-sun:     var(--fb-yellow);
 }
 .dark {
-  --atc-pink:      color-mix(in srgb, var(--site-accent, #d98aa0) 72%, #ffffff);
-  --atc-pink-deep: color-mix(in srgb, var(--site-accent, #d98aa0) 82%, #ffffff);
-  --atc-pink-soft: color-mix(in srgb, var(--site-accent, #d98aa0) 22%, #1c1218);
-  --atc-ink:       #e7cdd4;
-  --atc-ink-soft:  #c9a9b2;
-  --atc-border:    #c9a9b2;
-  --atc-card:      #2a2026;
-  --atc-link:      color-mix(in srgb, var(--site-accent, #d98aa0) 58%, #ffffff);
-  --atc-banner:    #4a3f2a;
-  --atc-page:      color-mix(in srgb, var(--site-accent, #d98aa0) 22%, #16101a);
+  --fb-paper:   color-mix(in srgb, var(--site-accent, #2d6a4f) 16%, #141d18);
+  --fb-card:    color-mix(in srgb, var(--site-accent, #2d6a4f) 10%, #1c2620);
+  --fb-ink:     #f0eeec;
+  --fb-subink:  #b6b3ad;
+  --fb-line:    color-mix(in srgb, var(--site-accent, #2d6a4f) 48%, #ffffff);
+  --fb-grid:    color-mix(in srgb, var(--site-accent, #2d6a4f) 22%, transparent);
 }
-
-/* latar halaman — pola tiled kawaii */
-.atc-page { background-color: var(--atc-page); background-image: var(--atc-tile); }
-
-/* wadah utama terpusat — kotak gingham border coklat */
-.atc-container {
-  max-width: 1760px; margin: 0 auto;
-  border: 2px solid var(--atc-border);
-  background-color: var(--atc-card);
+.fb-page {
+  background-color: var(--fb-paper);
   background-image:
-    repeating-linear-gradient(0deg,  color-mix(in srgb, var(--atc-pink) 55%, transparent) 0 15px, transparent 15px 30px),
-    repeating-linear-gradient(90deg, color-mix(in srgb, var(--atc-pink) 55%, transparent) 0 15px, transparent 15px 30px);
-  box-shadow: 0 0 0 5px var(--atc-card), 0 10px 30px rgba(139,105,105,0.3);
+    linear-gradient(var(--fb-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fb-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  font-family: var(--fb-font);
 }
-
-/* kotak konten putih di dalam container */
-.atc-box {
-  background: var(--atc-card);
-  border: 1.5px solid var(--atc-border);
-  border-radius: 5px;
+.fb-frame {
+  border: 2.5px solid var(--fb-line);
+  border-radius: 28px;
+  background: var(--fb-card);
+  box-shadow: 0 10px 0 -3px color-mix(in srgb, var(--fb-line) 22%, transparent);
+  font-family: var(--fb-font);
 }
-.atc-box a { color: var(--atc-link); text-decoration: underline; }
-
-/* tombol nav — pink solid, border coklat, sudut sedikit membulat */
-.atc-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--atc-pink); color: #fff;
-  border: 1.5px solid var(--atc-border); border-radius: 5px;
-  padding: 9px 18px; font-weight: 800; font-size: 13px;
-  text-decoration: none; cursor: pointer;
-  transition: background .14s ease, transform .14s ease;
+.fb-tab {
+  display: inline-block;
+  border: 2.5px solid var(--fb-line);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  background: var(--fb-yellow);
+  color: #333131;
+  font-family: var(--fb-font);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 26px;
 }
-.atc-btn:hover { background: var(--atc-pink-deep); transform: translateY(-1px); }
-.atc-btn-active { background: var(--atc-pink-deep); }
-
-/* pil/label kecil */
-.atc-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--atc-pink-soft); color: var(--atc-ink);
-  border: 1.5px solid var(--atc-border); border-radius: 999px;
-  padding: 4px 12px; font-weight: 700; font-size: 11px;
+.fb-card {
+  border: 2px solid var(--fb-line);
+  border-radius: 16px;
+  background: var(--fb-card);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-/* judul section — teks pink di kotak, garis bawah titik */
-.atc-title {
-  font-family: var(--font-nunito), system-ui, sans-serif; font-weight: 800;
-  color: var(--atc-pink-deep);
+.fb-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 -1px color-mix(in srgb, var(--fb-line) 32%, transparent);
 }
-.atc-font { font-family: var(--font-plus-jakarta), system-ui, sans-serif; }
-.atc-font h1, .atc-font h2, .atc-font h3 { font-family: var(--font-nunito), system-ui, sans-serif; font-weight: 800; }
-
-.atc-pixel { image-rendering: pixelated; }
-.atc-divider {
-  height: 0; border: 0; border-top: 2px dotted var(--atc-border);
-  margin: 16px 0;
+.fb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-accent);
+  color: #ffffff;
+  font-family: var(--fb-font);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 0 0 var(--fb-line);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  text-decoration: none;
 }
-
-/* alias .atc-card = .atc-box (untuk sistem pfx halaman dalam) */
-.atc-card { background: var(--atc-card); border: 1.5px solid var(--atc-border); border-radius: 5px; }
-.atc-card a, .atc-box a { color: var(--atc-link); }
-
-/* ─────────────────────────────────────────────────────────────────────
-   ── NUSANTARA ── tema travel modern: krem + navy + emas, serif headings
-   ───────────────────────────────────────────────────────────────────── */
-:root {
-  --nu-bg:        #F7F5EF;
-  --nu-cream:     #EFEBDF;
-  --nu-surface:   #FFFFFF;
-  --nu-navy:      #1B2A41;
-  --nu-navy-soft: #2F3F58;
-  --nu-gold:      #C9A468;
-  --nu-gold-deep: #B58D4E;
-  --nu-gold-soft: #E8D9B5;
-  --nu-line:      #E5DFCB;
-  --nu-line-soft: #EFEADB;
-  --nu-muted:     #8B8472;
-  --nu-display:   var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --nu-sans:      var(--font-jost), system-ui, -apple-system, sans-serif;
+.fb-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 0 var(--fb-line); }
+.fb-btn:active { transform: translateY(2px);  box-shadow: 0 1px 0 0 var(--fb-line); }
+.fb-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-card);
+  color: var(--fb-ink);
+  font-family: var(--fb-font);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 0 0 var(--fb-line);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  text-decoration: none;
 }
-.dark {
-  --nu-bg:        #0F1620;
-  --nu-cream:     #161E2A;
-  --nu-surface:   #1A2230;
-  --nu-navy:      #ECE6D2;
-  --nu-navy-soft: #C8C2AE;
-  --nu-line:      #28324A;
-  --nu-line-soft: #1F2839;
-  --nu-muted:     #908874;
+.fb-btn-outline:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 0 var(--fb-line); }
+.fb-btn-outline:active { transform: translateY(2px);  box-shadow: 0 1px 0 0 var(--fb-line); }
+.fb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid var(--fb-line);
+  border-radius: 999px;
+  background: var(--fb-card);
+  color: var(--fb-ink);
+  font-family: var(--fb-font);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 3px 12px;
 }
-.nu-page { background: var(--nu-bg); color: var(--nu-navy); font-family: var(--nu-sans); }
-.nu-display { font-family: var(--nu-display); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; }
-.nu-eyebrow { font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--nu-gold-deep); font-weight: 500; }
-.nu-hairline { border: 1px solid var(--nu-line); }
-.nu-card { background: var(--nu-surface); border: 1px solid var(--nu-line); border-radius: 16px; }
-.nu-btn-gold { background: var(--nu-gold); color: #fff; border-radius: 999px; padding: 10px 22px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: background .15s ease; }
-.nu-btn-gold:hover { background: var(--nu-gold-deep); }
-.nu-btn-ghost { border: 1px solid var(--nu-line); color: var(--nu-navy-soft); background: transparent; border-radius: 999px; padding: 10px 18px; font-weight: 500; font-size: 13px; transition: background .15s, color .15s; }
-.nu-btn-ghost:hover { background: var(--nu-cream); color: var(--nu-navy); }
-.nu-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: var(--nu-cream); color: var(--nu-navy-soft); border: 1px solid var(--nu-line); border-radius: 999px; padding: 3px 10px; }
-.nu-row { display: flex; align-items: center; gap: 16px; padding: 14px 20px; transition: background .15s ease; }
-.nu-row:hover { background: color-mix(in srgb, var(--nu-cream) 60%, transparent); }
-.nu-row + .nu-row { border-top: 1px solid var(--nu-line-soft); }
-.nu-row-thumb { width: 92px; height: 60px; border-radius: 12px; background: var(--nu-cream); overflow: hidden; flex-shrink: 0; position: relative; }
-.nu-row-thumb img { object-fit: cover; width: 100%; height: 100%; }
-.nu-hero { background: var(--nu-bg); padding-top: 96px; padding-bottom: 24px; }
-.nu-hero-art { border-radius: 22px; overflow: hidden; position: relative; background: var(--nu-cream); }
-.nu-hero-art img { object-fit: cover; width: 100%; height: 100%; }
-.nu-section-title { font-family: var(--nu-display); font-weight: 600; font-size: clamp(28px, 3vw, 36px); color: var(--nu-navy); text-align: center; }
-.nu-section-sub { text-align: center; color: var(--nu-muted); font-size: 14px; margin-top: 6px; }
+.fb-wave {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--fb-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 9px;
+}
+@keyframes fb-float {
+  0%, 100% { transform: translateY(0)     rotate(var(--fb-r, 0deg)); }
+  50%      { transform: translateY(-13px) rotate(calc(var(--fb-r, 0deg) + 10deg)); }
+}
+.fb-float-1 { animation: fb-float 4.0s ease-in-out 0s   infinite; }
+.fb-float-2 { animation: fb-float 5.2s ease-in-out 0.6s infinite; }
+.fb-float-3 { animation: fb-float 4.6s ease-in-out 1.2s infinite; }
+.fb-float-4 { animation: fb-float 5.8s ease-in-out 0.3s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .fb-float-1, .fb-float-2, .fb-float-3, .fb-float-4 { animation: none; }
+}

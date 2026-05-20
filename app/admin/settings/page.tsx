@@ -39,10 +39,15 @@ const FONT_CSS_VAR: Record<string, string> = {
 };
 
 const THEMES = [
-  { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                                                                                                                feature: null },
-  { key: "corei",    label: "Corei",    desc: "Risograph zine. Cetak indie 2-warna, halftone dots di kertas krem, kartu rounded dengan shadow ofset cyan/coral (hard, no blur), aksen stiker asterisk.",         feature: null },
-  { key: "teri",     label: "Teri",     desc: "Airmail envelope. Perforasi dashed, label PAR AVION, garis diagonal red+blue postal di tepi atas, tipografi monospace, vibe surat pos lintas benua.",              feature: null },
-  { key: "jojo",     label: "Jojo",     desc: "Brutalist manifesto. Editorial magazine — serif Playfair raksasa + monospace meta, garis hairline 1px hitam, satu aksen vermilion, sudut 90°, tanpa shadow.",      feature: null },
+  { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
+  { key: "tropical", label: "Tropical", desc: "Vintage travel poster 1960s. Thin border + stripe top + drop shadow halus, postcard rectangular feel.",          feature: "theme_tropical" },
+  { key: "kawaii",   label: "Kawaii",   desc: "Hand-drawn sticker scrapbook. Thick outline, organic blob radius, sedikit tilt -1.2deg, layered soft shadow, ✿ flower & ✦ sparkle decorations.",     feature: "theme_kawaii" },
+  { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
+  { key: "globe",    label: "Boarding Pass", desc: "Tiket pesawat asli. IATA 3-letter code monospace (MMK · LED · SVO), perforasi dashed, half-circle notch, barcode di stub, font Anonymous Pro. Travel-native, brutalist info design.", feature: "theme_globe" },
+  { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
+  { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
+  { key: "fumayo",   label: "Fumayo",    desc: "Buku tulis kotak-kotak anak. Bingkai rounded, font mesin tik, tombol hijau, doodle.", feature: null },
+  { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
 ];
 
 export default function SettingsPage() {
@@ -288,58 +293,15 @@ export default function SettingsPage() {
                   {/* Mini layout preview */}
                   <div className={`h-20 rounded-lg mb-3 overflow-hidden relative ${
                     key === "classic" ? "bg-white border border-gray-100" :
-                    key === "vibrant" ? "bg-white border border-gray-100" :
-                    key === "atelier" ? "bg-white border border-gray-100" :
-                    key === "jojo" ? "border border-gray-100" :
                     key === "console" ? "bg-white border border-gray-100" :
+                    key === "fumayo" ? "bg-white border border-gray-100" :
                     "bg-gray-950"
-                  }`} style={key === "jojo" ? { background: "#fff8f0" } : undefined}>
-                    {key === "jojo" && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-2">
-                        <div className="rounded-full" style={{ width: 22, height: 22, background: "#ffd6ba", boxShadow: "0 0 0 2px #ffdab9, 0 0 0 4px #ecb389" }} />
-                        <div className="h-5 w-20 rounded-xl" style={{ background: "rgba(255,255,255,0.9)", border: "2px solid #ffdab9", boxShadow: "inset 0 0 0 2px #ecb389" }} />
-                        <div className="h-3.5 w-12 rounded-full" style={{ background: "#e8834a" }} />
-                      </div>
-                    )}
-                    {key === "atelier" && (
-                      <div className="absolute inset-0 overflow-hidden"
-                        style={{ background: "linear-gradient(135deg, #3a4a5a, #6b7d8a)" }}>
-                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent 60%)" }} />
-                        <div className="absolute left-2.5 bottom-2.5 right-2.5">
-                          <div className="h-1.5 w-6 rounded-sm mb-1.5" style={{ background: currentAccent }} />
-                          <div className="h-2.5 w-20 rounded-sm bg-white mb-1" />
-                          <div className="h-1.5 w-12 rounded-sm bg-white/60 mb-2" />
-                          <div className="h-3.5 w-12 rounded-md" style={{ background: currentAccent }} />
-                        </div>
-                        <div className="absolute right-2.5 top-2.5 flex gap-1">
-                          <div className="h-1.5 w-4 rounded-full bg-white" />
-                          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
-                          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
-                        </div>
-                      </div>
-                    )}
+                  }`}>
                     {key === "classic" && (
                       <div className="absolute bottom-0 left-0 right-0 p-2">
                         <div className="h-1.5 w-12 rounded bg-gray-900 mb-1.5" />
                         <div className="h-3 w-20 rounded bg-gray-900 mb-1" />
                         <div className="h-1 w-16 rounded bg-gray-300" />
-                      </div>
-                    )}
-                    {key === "vibrant" && (
-                      <div className="absolute inset-0 flex">
-                        <div className="w-1/2 p-2 flex flex-col justify-center">
-                          <div className="h-1 w-8 rounded mb-1" style={{ background: currentEyebrow }} />
-                          <div className="h-2.5 w-12 rounded mb-1" style={{ background: currentHero }} />
-                          <div className="h-1.5 w-8 rounded" style={{ background: currentHero, opacity: 0.5 }} />
-                        </div>
-                        <div className="w-1/2 bg-gray-100 rounded-l-xl" />
-                      </div>
-                    )}
-                    {key === "bold" && (
-                      <div className="absolute inset-0 p-2 flex flex-col justify-end">
-                        <div className="h-1 w-8 rounded bg-gray-600 mb-1.5" />
-                        <div className="h-4 w-20 rounded bg-white mb-1" />
-                        <div className="h-1 w-14 rounded bg-gray-700" />
                       </div>
                     )}
                     {key === "tropical" && (
@@ -464,6 +426,19 @@ export default function SettingsPage() {
                         </div>
                       </div>
                     )}
+                    {key === "fumayo" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fbf8ef", backgroundImage: "linear-gradient(rgba(45,106,79,0.16) 1px,transparent 1px),linear-gradient(90deg,rgba(45,106,79,0.16) 1px,transparent 1px)", backgroundSize: "9px 9px" }}>
+                        <span className="absolute top-1 right-2 text-[10px]" style={{ color: "#ff6b6b" }}>✶</span>
+                        <span className="absolute top-3 left-3 text-[8px]" style={{ color: "#86b2ca" }}>✦</span>
+                        <div className="flex gap-1 mb-1.5">
+                          <div className="h-4 px-1.5 text-[7px] font-bold flex items-center rounded-full border" style={{ background: "#fff", borderColor: "#333131", color: "#333131", fontFamily: "monospace" }}>NOVINKI</div>
+                          <div className="h-4 px-1.5 text-[7px] font-bold flex items-center rounded-full border" style={{ background: "#fff06a", borderColor: "#333131", color: "#333131", fontFamily: "monospace" }}>★</div>
+                        </div>
+                        <div className="h-5 w-16 border-2 text-[8px] font-bold flex items-center justify-center text-white" style={{ background: currentAccent, borderColor: "#333131", borderRadius: "6px", boxShadow: "0 2px 0 0 #333131", fontFamily: "monospace" }}>
+                          LIHAT
+                        </div>
+                      </div>
+                    )}
                     {key === "console" && (
                       <div className="absolute inset-0 flex" style={{ background: "#ffffff" }}>
                         <div className="w-1/3 h-full border-r flex flex-col gap-1 p-1.5" style={{ borderColor: "#1a1a1a", background: "#fafafa" }}>
@@ -503,7 +478,7 @@ export default function SettingsPage() {
         {!isPro && (
           <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
-              Tema Catalog, Bold, Tropical, Kawaii, Pixel Art, Globe & Atlas Map tersedia di paket Pro. Hubungi admin untuk upgrade.
+              Tema Tropical, Kawaii, Pixel Art, Globe & Atlas Map tersedia di paket Pro. Hubungi admin untuk upgrade.
             </p>
           </div>
         )}

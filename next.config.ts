@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
         destination: "https://sundaftrip.com/:path*",
         permanent: true,
       },
+      {
+        source: "/tour",
+        destination: "/tours",
+        permanent: true,
+      },
     ];
   },
   async headers() {

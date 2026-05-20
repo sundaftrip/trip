@@ -91,34 +91,6 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     `}</style>
   );
 
-  /* ── JOJO — travel boutique kawaii: latar krem berpola samar ── */
-  if (theme === "jojo") {
-    return (
-      <>
-        {styleBlock}
-        <Navbar logo={logo} theme={theme} />
-        <main className="flex-1 jo-pattern" data-theme={theme}>{children}</main>
-        <Footer theme={theme} />
-      </>
-    );
-  }
-
-  /* ── Y2K KAWAII (attic) — wadah kotak terpusat di atas latar tiled ── */
-  if (theme === "attic") {
-    return (
-      <>
-        {styleBlock}
-        <div className="atc-page min-h-screen py-5 px-3 sm:py-9">
-          <div className="atc-container atc-font flex flex-col p-3 sm:p-4 gap-3 sm:gap-4" data-theme="attic">
-            <Navbar logo={logo} theme="attic" />
-            <main className="flex-1 flex flex-col gap-3 sm:gap-4">{children}</main>
-            <Footer theme="attic" />
-          </div>
-        </div>
-      </>
-    );
-  }
-
   /* ── CONSOLE — layout sidebar ala dashboard ── */
   if (theme === "console") {
     return (

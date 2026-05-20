@@ -2,34 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara" | "corei";
-  featuredImage?: string | null;
-  heroImages?: string[];
+  theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 }
 
-export default function HeroSection({ texts, waNumber, companyName, theme = "classic", featuredImage, heroImages = [] }: Props) {
+export default function HeroSection({ texts, waNumber, companyName, theme = "classic" }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
-  const [slide, setSlide] = useState(0);
 
   useEffect(() => {
     const stored = localStorage.getItem("lang") as "id" | "en" | null;
     if (stored) setLang(stored);
   }, []);
-
-  /* Atelier hero carousel — auto-advance */
-  const atlSlides = heroImages.length > 0 ? heroImages : (featuredImage ? [featuredImage] : []);
-  useEffect(() => {
-    if (theme !== "atelier" || atlSlides.length < 2) return;
-    const id = setInterval(() => setSlide((s) => (s + 1) % atlSlides.length), 5500);
-    return () => clearInterval(id);
-  }, [theme, atlSlides.length]);
 
   const t = (key: string, fallback: string) => {
     const val = texts[key];
@@ -77,47 +65,49 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     );
   };
 
-  /* ── Y2K KAWAII (attic) — area 3-kolom ala situs 2000-an ── */
-  if (theme === "attic") {
-    const aHero = featuredImage ?? heroImages[0] ?? null;
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") {
+    const words = t("hero_title", "Wujudkan Perjalanan Impian Anda").split(/\s+/).filter(Boolean);
+    const popColors = ["var(--fb-red)", "var(--fb-blue)", "var(--fb-accent)", "var(--fb-yellow)"];
     return (
-      <section className="atc-font grid grid-cols-1 md:grid-cols-[0.9fr_1.5fr_1fr] gap-3 sm:gap-4">
-        {/* kiri — widget profil */}
-        <div className="atc-box p-4 flex flex-col items-center text-center gap-3">
-          <span className="atc-pill">♡ Hello!</span>
-          <div className="overflow-hidden rounded-md w-full" style={{ border: "1.5px solid var(--atc-border)", aspectRatio: "1" }}>
-            {aHero
-              ? <Image src={aHero} alt="" width={260} height={260} className="w-full h-full object-cover" priority />
-              : <div className="w-full h-full flex items-center justify-center text-4xl" style={{ background: "var(--atc-pink-soft)" }}>🧸</div>}
+      <section className="fb-page min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4">
+        <span className="absolute top-32 right-[12%] text-5xl fb-float-1 select-none pointer-events-none" style={{ color: "var(--fb-red)", ["--fb-r" as string]: "-12deg" }}>✶</span>
+        <span className="absolute top-52 right-[34%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-blue)" }}>✦</span>
+        <span className="absolute bottom-28 left-[10%] text-4xl fb-float-3 select-none pointer-events-none" style={{ color: "var(--fb-accent)", ["--fb-r" as string]: "8deg" }}>★</span>
+        <span className="absolute top-44 left-[40%] text-2xl fb-float-4 select-none pointer-events-none" style={{ color: "var(--fb-ink)" }}>✺</span>
+        <span className="absolute bottom-40 right-[20%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-red)" }}>✷</span>
+
+        <div className="max-w-7xl mx-auto w-full relative z-10">
+          <div className="fb-frame p-7 sm:p-14">
+            <div className="mb-7 hero-fade-up">
+              <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ {eyebrow}</span>
+            </div>
+            <h1 className="text-[clamp(2.3rem,6.8vw,5.4rem)] font-bold leading-[1.08] tracking-tight max-w-4xl mb-8 hero-fade-up"
+              style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+              {words.map((w, i) => (
+                <span key={i} className={i % 3 === 1 ? "fb-wave" : undefined}
+                  style={i % 3 === 1 ? { color: popColors[i % popColors.length] } : undefined}>
+                  {w}{i < words.length - 1 ? " " : ""}
+                </span>
+              ))}
+            </h1>
+            <div className="flex flex-wrap gap-2.5 mb-9 hero-fade-up">
+              <span className="fb-pill" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>📚 {t("hero_subtitle", "Destinasi Pilihan")}</span>
+              <span className="fb-pill" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>✦ Paket Lengkap</span>
+              <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ Terpercaya</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 hero-fade-up">
+              <Link href="/tours" className="fb-btn px-7 py-3.5 text-sm">
+                {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+              </Link>
+              {waNumber && (
+                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+                  className="fb-btn-outline px-7 py-3.5 text-sm">
+                  WhatsApp
+                </a>
+              )}
+            </div>
           </div>
-          <p className="text-xs font-semibold" style={{ color: "var(--atc-ink-soft)" }}>have a nice trip ~ ♪</p>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atc-btn w-full">Guestbook ✎</a>
-          )}
-        </div>
-        {/* tengah — welcome (semua teks editable via CMS → Teks Website) */}
-        <div className="atc-box p-5 flex flex-col">
-          <h2 className="atc-title text-2xl">{t("hero_title", "Welcome! ✦")}</h2>
-          <hr className="atc-divider" />
-          <p className="text-sm leading-relaxed flex-1 whitespace-pre-line" style={{ color: "var(--atc-ink)" }}>
-            {t("hero_welcome", `Assalamualaikum! Selamat datang di ${companyName || "Sundaf Trip"} ✈️🕌 — teman perjalanan Anda menjelajah Rusia, ramah Muslim, hangat, dan berkesan. Yuk jelajahi katalog tour kami!`)}
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link href="/tours" className="atc-btn">{t("hero_btn", "Lihat Katalog")} →</Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atc-btn"
-                style={{ background: "var(--atc-mint)", color: "var(--atc-ink)" }}>WhatsApp</a>
-            )}
-          </div>
-        </div>
-        {/* kanan — updates */}
-        <div className="atc-box p-4">
-          <h2 className="atc-title text-lg">{t("hero_updates_title", "Updates ✿")}</h2>
-          <hr className="atc-divider" />
-          <p className="text-xs leading-relaxed whitespace-pre-line" style={{ color: "var(--atc-ink)" }}>
-            {t("hero_updates", "Baru! Paket Russia, Aurora & Asia Tengah tersedia. Hubungi kami untuk jadwal & harga terkini.")}
-          </p>
-          <div className="mt-3 flex gap-1.5 text-base select-none">✿ ✦ ♡ ✦ ✿</div>
         </div>
       </section>
     );
@@ -230,94 +220,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               💬 WhatsApp
             </a>
           )}
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ── CATALOG (vibrant) ── */
-  if (theme === "vibrant") return (
-    <section className="min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-950">
-      <div className="flex-1 flex flex-col justify-between px-6 sm:px-12 lg:px-16 pt-28 pb-12 lg:pt-36 min-h-[60vh] lg:min-h-screen hero-fade-up">
-        <p className="text-[11px] font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--site-eyebrow,#6b7280)" }}>
-          {eyebrow}
-        </p>
-        <div className="py-8 lg:py-0">
-          <p className="text-xs font-mono text-gray-300 dark:text-gray-700 mb-6 tracking-widest">— 01</p>
-          <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-black leading-[0.92] tracking-tight mb-8"
-            style={{ color: "var(--site-hero,#0d2018)" }}>
-            <TitleWords />
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed">
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <Link href="/tours"
-            className="inline-flex items-center gap-2.5 px-7 py-3.5 text-sm font-bold text-white rounded-2xl transition-all hover:opacity-90 hover:scale-105 shadow-lg"
-            style={{ background: "var(--site-accent,#2d6a4f)" }}>
-            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-          </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-              className="text-sm font-medium text-gray-400 hover:text-gray-900 dark:hover:text-white transition underline underline-offset-4">
-              WhatsApp ↗
-            </a>
-          )}
-        </div>
-      </div>
-
-      <div className="relative w-full lg:w-[45%] h-64 lg:h-auto shrink-0 overflow-hidden hero-fade-left">
-        {featuredImage ? (
-          <Image src={featuredImage} alt="Featured Tour" fill className="object-cover" priority sizes="(max-width:1024px) 100vw, 45vw" />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center"
-            style={{ background: "var(--site-accent,#2d6a4f)", opacity: 0.12 }}>
-            <MapPin size={48} className="text-gray-300" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-transparent lg:from-white/10 dark:from-gray-950/40" />
-        <div className="absolute bottom-6 right-6 text-right">
-          <div className="inline-block px-4 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-sm"
-            style={{ background: "var(--site-accent,#2d6a4f)" }}>
-            Katalog {new Date().getFullYear()}
-          </div>
-        </div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden lg:block">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-semibold"
-            style={{ writingMode: "vertical-rl" }}>
-            Unique Collection
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ── BOLD ── */
-  if (theme === "bold") return (
-    <section className="min-h-screen flex flex-col justify-center bg-gray-950 px-4 py-32 overflow-hidden">
-      <div className="max-w-7xl mx-auto w-full hero-fade-up">
-        <p className="text-xs font-semibold tracking-[0.25em] uppercase mb-12 text-gray-600">{eyebrow}</p>
-        <h1 className="text-[clamp(3rem,9vw,8rem)] font-black leading-[0.92] tracking-tight text-white max-w-5xl mb-16">
-          <TitleWords />
-        </h1>
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 pt-10 border-t border-gray-800">
-          <p className="text-base text-gray-500 max-w-sm leading-relaxed">
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-          <div className="flex items-center gap-4 shrink-0">
-            <Link href="/tours"
-              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-bold text-white rounded-2xl transition-all hover:opacity-90 hover:scale-105"
-              style={{ background: "var(--site-accent,#2d6a4f)" }}>
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
-            </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-                className="text-sm font-medium text-gray-600 hover:text-white transition underline underline-offset-4">
-                WhatsApp
-              </a>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -560,231 +462,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       </div>
     </section>
   );
-
-  /* ── COREI — Aurora Glass (gradient mesh aurora + frosted glass, all-CMS) ── */
-  if (theme === "corei") {
-    const coreiHero = featuredImage ?? heroImages[0] ?? null;
-    return (
-      <section data-theme="corei" className="relative px-4 pt-32 pb-24 lg:pb-32 overflow-hidden">
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center max-w-3xl mx-auto">
-            {t("hero_eyebrow", "") && (
-              <p className="corei-eyebrow mb-5">{t("hero_eyebrow", "")}</p>
-            )}
-            <h1 className="corei-headline mb-7">
-              {t("hero_title", companyName ?? "")}
-            </h1>
-            {t("hero_subtitle", "") && (
-              <p className="corei-sub max-w-2xl mx-auto mb-10">
-                {t("hero_subtitle", "")}
-              </p>
-            )}
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href="/tours" className="corei-btn">{t("hero_btn", "Lihat Katalog")} <ArrowRight size={16} /></Link>
-              {waNumber && (
-                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="corei-btn-ghost">
-                  {t("hero_welcome", "WhatsApp")}
-                </a>
-              )}
-            </div>
-          </div>
-          {coreiHero && (
-            <div className="mt-16 max-w-4xl mx-auto corei-card overflow-hidden" style={{ padding: 0 }}>
-              <Image src={coreiHero} alt="" width={1600} height={800} className="w-full h-auto object-cover" priority />
-            </div>
-          )}
-        </div>
-      </section>
-    );
-  }
-
-  /* ── JOJO — Brutalist Manifesto (editorial magazine, all-CMS) ── */
-  if (theme === "jojo") {
-    return (
-      <section data-theme="jojo" className="px-4 pt-32 pb-20 lg:pb-24" style={{ background: "var(--jojo-bg)", color: "var(--jojo-ink)" }}>
-        <div className="max-w-5xl mx-auto">
-          {/* meta bar — fully CMS via hero_eyebrow + hero_updates_title (left/right) */}
-          <div className="jojo-meta mb-10 flex items-center justify-between">
-            <span>{t("hero_eyebrow", "")}</span>
-            <span>{t("hero_updates_title", "")}</span>
-          </div>
-
-          <div className="jojo-rule mb-12" />
-
-          {/* huge serif headline — CMS via hero_title (companyName tetap dari CMS company_name) */}
-          <h1 className="jojo-headline mb-8">
-            {t("hero_title", companyName ?? "")}
-          </h1>
-
-          {/* subtitle — CMS via hero_subtitle */}
-          <p className="text-lg sm:text-xl max-w-2xl mb-12" style={{ color: "var(--jojo-sub)", lineHeight: 1.55 }}>
-            {t("hero_subtitle", "")}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 mb-16">
-            <Link href="/tours" className="jojo-btn">{t("hero_btn", "Lihat Katalog")} <ArrowRight size={16} /></Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="jojo-btn-ghost">{t("hero_welcome", "WhatsApp")}</a>
-            )}
-          </div>
-
-          {/* bottom meta — CMS via hero_updates (free-form catatan editorial) */}
-          {t("hero_updates", "") && (
-            <>
-              <div className="jojo-rule mb-6" />
-              <div className="jojo-meta">{t("hero_updates", "")}</div>
-            </>
-          )}
-        </div>
-      </section>
-    );
-  }
-
-  /* ── TERI — honeycomb, shadow warni-warni, tepi tombol bergerigi ── */
-  if (theme === "teri") {
-    const hex = "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)";
-    return (
-      <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden px-4 pt-32 pb-20">
-        {/* hexagon mengambang warna-warni */}
-        <div className="absolute pointer-events-none hidden sm:block" style={{ top: "15%", right: "12%", width: 76, height: 84, background: "var(--teri-c1)", clipPath: hex }} />
-        <div className="absolute pointer-events-none" style={{ top: "24%", left: "9%", width: 46, height: 52, background: "var(--teri-c2)", clipPath: hex }} />
-        <div className="absolute pointer-events-none hidden sm:block" style={{ bottom: "16%", right: "19%", width: 38, height: 42, background: "var(--teri-c3)", clipPath: hex }} />
-        <div className="absolute pointer-events-none" style={{ bottom: "21%", left: "15%", width: 58, height: 64, background: "var(--teri-c4)", clipPath: hex }} />
-
-        <div className="max-w-4xl mx-auto w-full text-center relative z-10">
-          <div className="hero-fade-up mb-8">
-            <span className="teri-pill">✦ {eyebrow}</span>
-          </div>
-          <h1 className="hero-fade-up text-[clamp(2.8rem,8vw,6.4rem)] font-black leading-[1.02] tracking-tight mb-7"
-            style={{ color: "var(--teri-ink)" }}>
-            <TitleWords />
-          </h1>
-          <p className="hero-fade-up text-base sm:text-lg max-w-xl mx-auto mb-9 font-semibold"
-            style={{ color: "var(--teri-sub)" }}>
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-          <div className="hero-fade-up flex flex-wrap items-center justify-center gap-5 mb-10">
-            <Link href="/tours" className="teri-btn">
-              Lihat Tour <ArrowRight size={16} />
-            </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="teri-btn-ghost">
-                WhatsApp
-              </a>
-            )}
-          </div>
-          <div className="hero-fade-up flex flex-wrap items-center justify-center gap-3">
-            <span className="teri-chip">{t("hero_subtitle", "Destinasi Pilihan")}</span>
-            <span className="teri-chip">Paket Lengkap</span>
-            <span className="teri-chip">Terpercaya</span>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  /* ── ATELIER — clean editorial travel, hero carousel ── */
-  if (theme === "atelier") return (
-    <section className="relative h-screen min-h-[600px] overflow-hidden">
-      {/* slides */}
-      {atlSlides.length > 0 ? atlSlides.map((src, i) => (
-        <div key={i} className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: i === slide ? 1 : 0 }} aria-hidden={i !== slide}>
-          <Image src={src} alt="" fill className="object-cover" priority={i === 0} sizes="100vw" />
-        </div>
-      )) : (
-        <div className="absolute inset-0" style={{ background: "var(--atl-ink)" }} aria-hidden />
-      )}
-
-      {/* gradient overlay agar teks terbaca */}
-      <div className="absolute inset-0" aria-hidden
-        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 48%, rgba(0,0,0,0.42) 100%)" }} />
-
-      {/* konten */}
-      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col justify-end pb-24 lg:pb-28">
-        <div className="max-w-3xl atl-fade">
-          <p className="atl-eyebrow text-white/85 mb-5">{eyebrow}</p>
-          <h1 className="text-white font-semibold leading-[1.06] tracking-tight mb-6 text-[clamp(2.6rem,6vw,5.2rem)]">
-            {t("hero_title", "Wujudkan Perjalanan Impian Anda")}
-          </h1>
-          <p className="text-white/85 text-base sm:text-lg max-w-xl mb-9 leading-relaxed">
-            {t("hero_subtitle", "Paket wisata terpercaya dengan pelayanan terbaik.")}
-          </p>
-          <div className="flex flex-wrap items-center gap-3.5">
-            <Link href="/tours" className="atl-btn-solid">
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={16} />
-            </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="atl-btn-light">
-                WhatsApp
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* carousel controls */}
-      {atlSlides.length > 1 && (
-        <>
-          <div className="absolute z-20 bottom-10 right-6 sm:right-10 lg:right-12 flex items-center gap-2.5">
-            {atlSlides.map((_, i) => (
-              <button key={i} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`}
-                className={`atl-dot ${i === slide ? "atl-dot-on" : ""}`} />
-            ))}
-          </div>
-          <div className="absolute z-20 bottom-10 left-6 sm:left-10 lg:left-12 flex items-center gap-2">
-            <button onClick={() => setSlide((s) => (s - 1 + atlSlides.length) % atlSlides.length)}
-              aria-label="Sebelumnya"
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/45 bg-white/10 backdrop-blur-sm hover:bg-white/25 transition">
-              <ArrowRight size={17} className="rotate-180" />
-            </button>
-            <button onClick={() => setSlide((s) => (s + 1) % atlSlides.length)}
-              aria-label="Berikutnya"
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/45 bg-white/10 backdrop-blur-sm hover:bg-white/25 transition">
-              <ArrowRight size={17} />
-            </button>
-          </div>
-        </>
-      )}
-    </section>
-  );
-
-  /* ── NUSANTARA ── */
-  if (theme === "nusantara") {
-    const heroImage = texts["hero_image"]?.id || featuredImage || heroImages[0] || "/hero-bali.jpg";
-    return (
-      <section className="nu-page nu-hero">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 w-full">
-          <div className="grid md:grid-cols-[1fr_1fr] gap-8 items-center pt-6 pb-12">
-            <div className="hero-fade-up">
-              <p className="nu-eyebrow mb-5">{eyebrow}</p>
-              <h1 className="nu-display text-[clamp(2.4rem,5.5vw,3.6rem)] mb-5" style={{ color: "var(--nu-navy)" }}>
-                {t("hero_title", "Perjalanan Nyaman,")}<br />
-                <span style={{ color: "var(--nu-navy-soft)" }}>{t("hero_title_2", "Kenangan Tak Terlupakan")}</span>
-              </h1>
-              <p className="text-[15px] leading-relaxed mb-7 max-w-md" style={{ color: "var(--nu-muted)" }}>
-                {t("hero_subtitle", "Nikmati pengalaman wisata terbaik bersama kami dengan pelayanan yang hangat dan terpercaya.")}
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <Link href="#tours" className="nu-btn-gold">
-                  {t("hero_btn", "Lihat Paket Wisata")} <ArrowRight size={15} />
-                </Link>
-                {waNumber && (
-                  <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer" className="nu-btn-ghost">
-                    WhatsApp
-                  </a>
-                )}
-              </div>
-            </div>
-            <div className="nu-hero-art aspect-[5/4] md:aspect-[5/5] hero-fade-up">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={heroImage} alt="" loading="eager" />
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   /* ── CLASSIC ── */
   return (

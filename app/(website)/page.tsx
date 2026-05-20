@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { toWaNumber } from "@/lib/utils";
@@ -10,10 +11,11 @@ import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
 import Pagination from "@/components/website/Pagination";
+import TourFilter, { regionOf, type RegionKey, REGIONS } from "@/components/website/TourFilter";
 
 const TOURS_PER_PAGE = 12;
 
-async function getData() {
+const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
     prisma.tour.findMany({ where: { status: { in: ["ACTIVE", "FULL"] } }, orderBy: { tripDate: "asc" } }),
@@ -38,7 +40,8 @@ async function getData() {
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
   return { texts: t, tours, posts, company, companyRows, testimonials };
-}
+// tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
+}, ["home-page-data"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -59,42 +62,33 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; region?: string }>;
 }) {
   const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();
   const wa = toWaNumber(company["company_whatsapp"]);
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
-  // Preview theme override via cookie (set by proxy dari ?theme=X)
-  const cookieStore = await cookies();
-  const previewTheme = cookieStore.get("preview-theme")?.value;
-  const rawTheme = previewTheme || themeRow?.value || "classic";
-  const normalizedTheme = rawTheme === "console" ? "atlas" : rawTheme;
-  const theme = normalizedTheme as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara";
+  const rawTheme = themeRow?.value || "classic";
+  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
-  // Pagination katalog tour — 12 per halaman
-  const totalPages = Math.max(1, Math.ceil(allTours.length / TOURS_PER_PAGE));
+  // Filter region + pagination katalog tour — 12 per halaman
   const sp = await searchParams;
+  const activeRegion: RegionKey = (REGIONS.find(r => r.key === sp.region)?.key ?? "all");
+  const filteredTours = activeRegion === "all"
+    ? allTours
+    : allTours.filter(t => regionOf(t.country) === activeRegion);
+  const totalPages = Math.max(1, Math.ceil(filteredTours.length / TOURS_PER_PAGE));
   const currentPage = Math.min(totalPages, Math.max(1, Number(sp.page) || 1));
-  const tours = allTours.slice((currentPage - 1) * TOURS_PER_PAGE, currentPage * TOURS_PER_PAGE);
-
-  // Fetch featured image server-side for vibrant theme (no client fetch needed)
-  let featuredImage: string | null = null;
-  if (theme === "vibrant" && tours.length > 0) {
-    const featured = tours.find((t) => t.heroImg) ?? tours[0];
-    featuredImage = featured?.heroImg ?? null;
-  }
-
-  // Foto-foto untuk carousel hero Atelier — dari heroImg tiap tour
-  const heroImages = theme === "atelier"
-    ? [...new Set(tours.map((t) => t.heroImg).filter((x): x is string => !!x))].slice(0, 6)
-    : [];
+  const tours = filteredTours.slice((currentPage - 1) * TOURS_PER_PAGE, currentPage * TOURS_PER_PAGE);
 
   return (
     <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} featuredImage={featuredImage} heroImages={heroImages} />
+      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
         <ToursSection tours={tours} theme={theme}>
+          {theme === "globe" && (
+            <TourFilter active={activeRegion} />
+          )}
           <Pagination currentPage={currentPage} totalPages={totalPages} />
         </ToursSection>
       </div>
