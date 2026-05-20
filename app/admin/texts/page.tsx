@@ -3,7 +3,7 @@ import TextsForm from "@/components/admin/TextsForm";
 
 const TEXT_KEYS = [
   { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn", "hero_welcome", "hero_updates_title", "hero_updates"] },
-  { section: "Mengapa Sundaf (samping hero)", keys: ["hero_sundaf"] },
+  { section: "Mengapa Sundaf (samping hero)", keys: ["hero_sundaf_title", "hero_sundaf"] },
   { section: "Footer", keys: ["footer_tagline"] },
   { section: "Kontak", keys: ["contact_title", "contact_desc"] },
   { section: "Pembayaran", keys: ["payment_bank_name", "payment_bank_acc", "payment_bank_holder"] },

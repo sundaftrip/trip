@@ -263,7 +263,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           {/* SUNDAF kolom kecil — bawah judul di mobile, samping kanan judul di desktop */}
           <div className="hero-fade-up mb-10 lg:mb-12 lg:absolute lg:top-1/2 lg:right-6 xl:right-10 lg:-translate-y-1/2 lg:max-w-[260px] xl:max-w-[300px]">
             <span className="text-[9px] sm:text-[10px] tracking-[0.22em] uppercase opacity-50 block mb-2" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-              Mengapa Sundaf
+              {t("hero_sundaf_title", "Mengapa Sundaf")}
             </span>
             <p
               className="text-[12px] sm:text-[13px] leading-[1.7] whitespace-pre-line"
