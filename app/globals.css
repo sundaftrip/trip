@@ -634,6 +634,21 @@ body {
   line-height: 1.4;
   box-shadow: none;
 }
+/* Button variant of .gl-pill — bigger tap target (44px min, Apple HIG) */
+button.gl-pill,
+a.gl-pill {
+  cursor: pointer;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 11px;
+}
+/* For nav hamburger specifically — icon-only button needs square padding */
+button.gl-pill:has(svg:only-child),
+a.gl-pill:has(svg:only-child) {
+  min-width: 36px;
+  padding: 8px;
+  justify-content: center;
+}
 .gl-btn {
   display: inline-flex;
   align-items: center;
