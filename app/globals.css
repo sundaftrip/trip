@@ -548,10 +548,10 @@ body {
    Grid + warmth di belakang cards supaya tidak kosong, cards tetap clean.
    Target section level dengan !important karena Hero section punya inline
    style="background:var(--gl-bg)" yang akan menutupi rule di main level. */
-[data-theme="globe"] {
-  background-color: var(--gl-bg);
-}
-[data-theme="globe"] section {
+/* Boarding Pass background — grid paper pattern di SEMUA wrapper section/div
+   utama dalam theme=globe. background-attachment:fixed bikin pattern stay
+   tetap saat scroll → kerasa kayak konten "geser" di atas paper background. */
+body:has(main[data-theme="globe"]) {
   background-color: var(--gl-bg) !important;
   background-image:
     repeating-linear-gradient(
@@ -564,6 +564,20 @@ body {
       transparent 0 15px,
       color-mix(in srgb, var(--gl-text) 7%, transparent) 15px 16px
     ) !important;
+  background-attachment: fixed !important;
+}
+[data-theme="globe"],
+[data-theme="globe"] section,
+[data-theme="globe"] > div,
+[data-theme="globe"] main {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* Footer & elements yang punya bg sendiri tetap pakai bg sendiri */
+[data-theme="globe"] footer,
+[data-theme="globe"] nav,
+[data-theme="globe"] header {
+  background-attachment: fixed;
 }
 
 /* ============================================
