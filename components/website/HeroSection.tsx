@@ -576,7 +576,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
           {/* huge serif headline — CMS via hero_title (companyName tetap dari CMS company_name) */}
           <h1 className="jojo-headline mb-8">
-            {t("hero_title", companyName)}
+            {t("hero_title", companyName ?? "")}
           </h1>
 
           {/* subtitle — CMS via hero_subtitle */}
