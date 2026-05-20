@@ -372,9 +372,11 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const iata = getIata(tour.title, tour.cityHighlight);
   const flightNo = `SF-${tour.id.slice(-4).toUpperCase()}`;
   const classCode = getFlightClass(tour);
-  const dateCode = tour.tripDate
-    ? new Date(tour.tripDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase().replace(" ", "")
+  const _tripDate = tour.tripDate ? new Date(tour.tripDate) : null;
+  const dateMain = _tripDate
+    ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase()
     : "OPEN";
+  const dateYear = _tripDate ? String(_tripDate.getFullYear()) : "";
 
   return (
     <div className={`gl-card group ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
@@ -444,7 +446,10 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           </div>
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
-            <div className="font-bold text-[13px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{dateCode}</div>
+            <div className="font-bold leading-[1.1] whitespace-nowrap" style={{ color: "var(--gl-text)" }}>
+              <div className="text-[13px]">{dateMain}</div>
+              {dateYear && <div className="text-[9px] opacity-60 mt-0.5">{dateYear}</div>}
+            </div>
           </div>
         </div>
 
