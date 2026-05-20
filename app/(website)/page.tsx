@@ -4,7 +4,6 @@ export const revalidate = 300;
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { cookies } from "next/headers";
 import { toWaNumber } from "@/lib/utils";
 import HeroSection from "@/components/website/HeroSection";
 import WhySection from "@/components/website/WhySection";
