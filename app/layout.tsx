@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins } from "next/font/google";
+import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import { prisma } from "@/lib/prisma";
@@ -12,10 +12,12 @@ const nunito      = Nunito({ subsets: ["latin"], variable: "--font-nunito", disp
 const playfair    = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap" });
 const raleway     = Raleway({ subsets: ["latin"], variable: "--font-raleway", display: "swap" });
 const poppins     = Poppins({ weight: ["400","500","600","700","800","900"], subsets: ["latin"], variable: "--font-poppins", display: "swap" });
+const cormorant   = Cormorant_Garamond({ weight: ["500","600","700"], subsets: ["latin"], variable: "--font-cormorant", display: "swap" });
 
 const ALL_FONT_VARS = [
   jost.variable, plusJakarta.variable, dmSans.variable, outfit.variable,
   nunito.variable, playfair.variable, raleway.variable, poppins.variable,
+  cormorant.variable,
 ].join(" ");
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
