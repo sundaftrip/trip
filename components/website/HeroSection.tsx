@@ -4,14 +4,26 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+export interface SundafBlockConfig {
+  title?: string;
+  text?: string;
+  x?: number; // % from left of hero section
+  y?: number; // % from top of hero section
+  w?: number; // px
+  font?: "mono" | "handwritten" | "serif" | "sans";
+  highlight?: string;
+  rotate?: number;
+}
+
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
   theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
+  sundafConfig?: SundafBlockConfig | null;
 }
 
-export default function HeroSection({ texts, waNumber, companyName, theme = "classic" }: Props) {
+export default function HeroSection({ texts, waNumber, companyName, theme = "classic", sundafConfig }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
 
   useEffect(() => {
@@ -227,53 +239,39 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── GLOBE / WORLD LANDMARKS ── */
   if (theme === "globe") {
-    const sundafDefault =
-      "S — Small group, lebih dekat dan personal.\n" +
-      "U — Unforgettable moments di setiap destinasi.\n" +
-      "N — Nyaman dari awal sampai akhir.\n" +
-      "D — Dedikasi tim 24/7.\n" +
-      "A — Autentik, bukan turis biasa.\n" +
-      "F — Filosofi: pulang sebagai pribadi baru.";
-    const sundafText = t("hero_sundaf", sundafDefault);
-
-    /* Style overrides dari CMS — bisa diubah lewat /admin/texts.
-       Semua opsional, ada fallback yang masuk akal. */
-    const sundafPos = t("hero_sundaf_position", "center-right"); // center-right | top-right | bottom-right | top-left | bottom-left | above-buttons
-    const sundafWidthRaw = t("hero_sundaf_width", "260"); // px, contoh "260" atau "300"
-    const sundafFontKey = t("hero_sundaf_font", "mono"); // mono | handwritten | serif | sans
-    const sundafHighlight = t("hero_sundaf_highlight", ""); // hex color, mis "#fff06a", kosong = no stabilo
-    const sundafRotateRaw = t("hero_sundaf_rotate", "0"); // derajat, mis "-2"
-
-    /* Translate keyword → CSS */
-    const sundafFontFamily =
-      sundafFontKey === "handwritten" ? "var(--font-caveat), cursive" :
-      sundafFontKey === "serif" ? "Georgia, 'Times New Roman', serif" :
-      sundafFontKey === "sans" ? "var(--font-jost), ui-sans-serif, system-ui" :
-      "var(--font-anonymous-pro), ui-monospace, monospace";
-
-    const sundafFontSize =
-      sundafFontKey === "handwritten" ? "20px" :
-      sundafFontKey === "serif" ? "14px" :
-      "13px";
-
-    const sundafWidthPx = `${parseInt(sundafWidthRaw, 10) || 260}px`;
-    const sundafRotate = `${sundafRotateRaw.replace(/[^\d.-]/g, "") || 0}deg`;
-
-    /* Position presets — diapply via lg: breakpoint (mobile selalu inline) */
-    const POSITION_PRESETS: Record<string, React.CSSProperties> = {
-      "top-right":      { top: "8rem",   right: "1.5rem",  transform: `rotate(${sundafRotate})` },
-      "center-right":   { top: "50%",    right: "1.5rem",  transform: `translateY(-50%) rotate(${sundafRotate})` },
-      "bottom-right":   { bottom: "8rem", right: "1.5rem", transform: `rotate(${sundafRotate})` },
-      "top-left":       { top: "8rem",   left:  "1.5rem",  transform: `rotate(${sundafRotate})` },
-      "bottom-left":    { bottom: "8rem", left: "1.5rem",  transform: `rotate(${sundafRotate})` },
-      "above-buttons":  { top: "55%",    right: "1.5rem",  transform: `translateY(-50%) rotate(${sundafRotate})` },
+    /* SUNDAF block — semua konten + style di-resolve dari sundafConfig prop
+       (dikelola lewat /admin/hero-sundaf visual editor). Default value
+       untuk fallback aman. */
+    const SUNDAF_DEFAULT = {
+      title: "Mengapa Sundaf",
+      text:
+        "S — Small group, lebih dekat dan personal.\n" +
+        "U — Unforgettable moments di setiap destinasi.\n" +
+        "N — Nyaman dari awal sampai akhir.\n" +
+        "D — Dedikasi tim 24/7.\n" +
+        "A — Autentik, bukan turis biasa.\n" +
+        "F — Filosofi: pulang sebagai pribadi baru.",
+      x: 70,
+      y: 50,
+      w: 260,
+      font: "mono" as const,
+      highlight: "",
+      rotate: 0,
     };
-    const sundafDesktopPos = POSITION_PRESETS[sundafPos] || POSITION_PRESETS["center-right"];
+    const sf = { ...SUNDAF_DEFAULT, ...(sundafConfig ?? {}) };
 
-    /* Stabilo CSS: linear-gradient bg dari 50% transparan → 92% warna highlight */
-    const stabiloStyle: React.CSSProperties = sundafHighlight
+    const sundafFontFamily =
+      sf.font === "handwritten" ? "var(--font-caveat), cursive" :
+      sf.font === "serif"       ? "Georgia, 'Times New Roman', serif" :
+      sf.font === "sans"        ? "var(--font-jost), ui-sans-serif, system-ui" :
+                                  "var(--font-anonymous-pro), ui-monospace, monospace";
+    const sundafFontSize =
+      sf.font === "handwritten" ? 20 :
+      sf.font === "serif"       ? 14 :
+                                  13;
+    const stabiloStyle: React.CSSProperties = sf.highlight
       ? {
-          backgroundImage: `linear-gradient(180deg, transparent 0 55%, ${sundafHighlight} 55% 90%, transparent 90%)`,
+          backgroundImage: `linear-gradient(180deg, transparent 0 55%, ${sf.highlight} 55% 90%, transparent 90%)`,
           padding: "0 4px",
         }
       : {};
@@ -302,11 +300,10 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
           </h1>
 
-          {/* SUNDAF kolom kecil — mobile inline (di bawah judul), desktop absolute
-              dengan posisi yang bisa diatur via CMS (position, width, font, highlight, rotate). */}
+          {/* SUNDAF block — mobile inline; desktop absolute pakai % offset dari x/y editor */}
           <div
             className="hero-sundaf-block hero-fade-up mb-10 lg:mb-0"
-            style={{ maxWidth: sundafWidthPx }}
+            style={{ maxWidth: `${sf.w}px` }}
           >
             <span
               className="text-[10px] tracking-[0.22em] uppercase opacity-60 block mb-2"
@@ -315,36 +312,32 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
                 fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace",
               }}
             >
-              {t("hero_sundaf_title", "Mengapa Sundaf")}
+              {sf.title}
             </span>
             <p
               className="leading-[1.7] whitespace-pre-line"
               style={{
                 color: "var(--gl-text)",
                 fontFamily: sundafFontFamily,
-                fontSize: sundafFontSize,
+                fontSize: `${sundafFontSize}px`,
                 textAlign: "justify",
                 textJustify: "inter-word",
                 ...stabiloStyle,
               } as React.CSSProperties}
             >
-              {sundafText}
+              {sf.text}
             </p>
           </div>
-          {/* Inline <style> untuk apply desktop position dinamis dari CMS.
-              Mobile (< 1024px): block inline di flow normal.
-              Desktop (>= 1024px): absolute dengan posisi & rotate dari CMS. */}
+          {/* Desktop positioning — x/y % dari section, dengan translate(-50%, -50%) supaya origin di tengah block */}
           <style>{`
             @media (min-width: 1024px) {
               .hero-sundaf-block {
                 position: absolute;
                 z-index: 20;
                 margin-bottom: 0 !important;
-                ${sundafDesktopPos.top !== undefined ? `top: ${sundafDesktopPos.top};` : ""}
-                ${sundafDesktopPos.right !== undefined ? `right: ${sundafDesktopPos.right};` : ""}
-                ${sundafDesktopPos.bottom !== undefined ? `bottom: ${sundafDesktopPos.bottom};` : ""}
-                ${sundafDesktopPos.left !== undefined ? `left: ${sundafDesktopPos.left};` : ""}
-                transform: ${sundafDesktopPos.transform || `rotate(${sundafRotate})`};
+                left: ${sf.x}%;
+                top: ${sf.y}%;
+                transform: translate(-50%, -50%) rotate(${sf.rotate}deg);
               }
             }
           `}</style>
