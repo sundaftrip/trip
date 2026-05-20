@@ -415,7 +415,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY — title + via + filler agar tinggi konsisten dan ruang kosong terisi === */}
+      {/* === BODY — title + via + INCLUDES strip (selalu tampil, isi ruang kosong) === */}
       <div className="px-5 pt-4 pb-3 min-h-[88px] flex flex-col">
         <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[18px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
           {tour.title}
@@ -425,10 +425,14 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
             via {shortenRoute(tour.cityHighlight, 3)}
           </p>
         )}
-        {/* Filler boarding-pass-style: dipush ke bawah lewat mt-auto biar isi ruang kosong saat VIA tidak ada */}
-        <p className="text-[9px] sm:text-[10px] mt-auto pt-2 tracking-[0.18em] uppercase opacity-50" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-          Operated by Sundaf Trip · Group Tour
-        </p>
+        {/* INCLUDES strip — selalu tampil, fungsional (informasi yang berguna), dipush ke bawah
+            via mt-auto agar card tanpa VIA tidak menganga */}
+        <div className="mt-auto pt-3" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60 mb-0.5" style={{ color: "var(--gl-subtext)" }}>Includes</div>
+          <div className="text-[11px] sm:text-[12px] lg:text-[13px] tracking-[0.1em] uppercase font-medium leading-tight" style={{ color: "var(--gl-text)" }}>
+            Flight · Hotel · Meals · Guide
+          </div>
+        </div>
       </div>
 
       {/* === DASHED PERFORATION dihandle CSS gl-card::before === */}
