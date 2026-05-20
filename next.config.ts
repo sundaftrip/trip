@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // unoptimized=true → skip Vercel Image Optimization, foto langsung di-serve
+    // dari Cloudinary CDN (yang sudah punya auto-resize via URL params).
+    // Hemat kuota Vercel Image Optim free tier (1000 source/bulan).
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
