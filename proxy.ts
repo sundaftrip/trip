@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const VALID_THEMES = new Set([
   "classic", "vibrant", "bold", "tropical", "kawaii", "pixel",
   "globe", "map", "atlas", "atelier", "jojo", "teri", "attic", "nusantara",
+  "corei",
 ]);
 
 export function proxy(req: NextRequest) {

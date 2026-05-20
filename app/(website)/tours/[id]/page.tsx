@@ -71,7 +71,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const waNumber = toWaNumber(company["company_whatsapp"]);
   const companyName = company["company_name"] || "";
   const rawSiteTheme = company["site_theme"] ?? "classic";
-  const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme;
+  const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme === "corei" ? "kawaii" : rawSiteTheme;
   const isTropical = siteTheme === "tropical";
   const isKawaii   = siteTheme === "kawaii";
   const isPixel    = siteTheme === "pixel";

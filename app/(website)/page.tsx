@@ -69,7 +69,8 @@ export default async function HomePage({
   const cookieStore = await cookies();
   const previewTheme = cookieStore.get("preview-theme")?.value;
   const rawTheme = previewTheme || themeRow?.value || "classic";
-  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara";
+  const normalizedTheme = rawTheme === "console" ? "atlas" : rawTheme === "corei" ? "kawaii" : rawTheme;
+  const theme = normalizedTheme as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara";
 
   // Pagination katalog tour — 12 per halaman
   const totalPages = Math.max(1, Math.ceil(allTours.length / TOURS_PER_PAGE));

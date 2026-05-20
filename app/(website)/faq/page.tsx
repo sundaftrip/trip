@@ -25,7 +25,8 @@ async function getData() {
     const company: Record<string, string> = {};
     companyRows.forEach((r) => { company[r.key] = r.value; });
     const rawTheme = themeRow?.value ?? "classic";
-    return { theme: rawTheme === "console" ? "atlas" : rawTheme, company, faqs };
+    const theme = rawTheme === "console" ? "atlas" : rawTheme === "corei" ? "kawaii" : rawTheme;
+    return { theme, company, faqs };
   } catch {
     return { theme: "classic", company: {}, faqs: [] };
   }
