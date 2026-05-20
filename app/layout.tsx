@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Anonymous_Pro } from "next/font/google";
+import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Anonymous_Pro, Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import { prisma } from "@/lib/prisma";
@@ -13,11 +13,13 @@ const playfair    = Playfair_Display({ subsets: ["latin"], variable: "--font-pla
 const raleway     = Raleway({ subsets: ["latin"], variable: "--font-raleway", display: "swap" });
 const poppins     = Poppins({ weight: ["400","500","600","700","800","900"], subsets: ["latin"], variable: "--font-poppins", display: "swap" });
 const anonymousPro = Anonymous_Pro({ weight: ["400","700"], subsets: ["latin"], variable: "--font-anonymous-pro", display: "swap" });
+const instrumentSerif = Instrument_Serif({ weight: "400", style: ["normal", "italic"], subsets: ["latin"], variable: "--font-instrument-serif", display: "swap" });
+const inter = Inter({ weight: ["300","400","500"], subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 const ALL_FONT_VARS = [
   jost.variable, plusJakarta.variable, dmSans.variable, outfit.variable,
   nunito.variable, playfair.variable, raleway.variable, poppins.variable,
-  anonymousPro.variable,
+  anonymousPro.variable, instrumentSerif.variable, inter.variable,
 ].join(" ");
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
