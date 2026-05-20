@@ -6,11 +6,14 @@ const prisma = new PrismaClient();
 const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
 const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? "Admin2025!";
 const ADMIN_NAME = process.env.SEED_ADMIN_NAME ?? "Super Admin";
+const SEED_THEME = process.env.SEED_THEME ?? "classic";
+const SEED_COMPANY_NAME = process.env.SEED_COMPANY_NAME ?? "";
 
 async function main() {
-  // Create superadmin
-  const existing = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
-  if (!existing) {
+  // Bikin superadmin HANYA kalau DB benar-benar kosong (tidak ada user sama sekali).
+  // Mencegah clutter user dummy di deployment existing yang sudah punya admin.
+  const userCount = await prisma.user.count();
+  if (userCount === 0) {
     await prisma.user.create({
       data: {
         name: ADMIN_NAME,
@@ -21,7 +24,7 @@ async function main() {
     });
     console.log(`✅ Superadmin created: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
   } else {
-    console.log("ℹ️  Superadmin already exists");
+    console.log(`ℹ️  ${userCount} user(s) sudah ada, skip seed admin`);
   }
 
   // Seed default site texts (generic, client customizes via CMS)
@@ -56,6 +59,23 @@ async function main() {
     });
   }
   console.log("✅ Default site texts seeded");
+
+  // Theme + nama perusahaan: di-set hanya saat row PERTAMA KALI dibuat.
+  // Tidak override existing value — jadi klien yang sudah ganti theme via CMS
+  // tidak akan ke-reset tiap deploy.
+  await prisma.companyInfo.upsert({
+    where: { key: "site_theme" },
+    update: {},
+    create: { key: "site_theme", value: SEED_THEME },
+  });
+  if (SEED_COMPANY_NAME) {
+    await prisma.companyInfo.upsert({
+      where: { key: "company_name" },
+      update: {},
+      create: { key: "company_name", value: SEED_COMPANY_NAME },
+    });
+  }
+  console.log(`✅ Theme=${SEED_THEME}${SEED_COMPANY_NAME ? ` company=${SEED_COMPANY_NAME}` : ""}`);
 }
 
 main()
