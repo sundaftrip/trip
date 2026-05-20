@@ -281,64 +281,122 @@ function hashGlobeColor(str: string, offset = 0) {
   return GL_BADGE_COLORS[Math.abs(h) % GL_BADGE_COLORS.length];
 }
 
+/** Map title/city → IATA 3-letter code untuk feel boarding pass yang otentik. */
+const IATA_MAP: Record<string, string> = {
+  murmansk: "MMK", moskow: "SVO", moscow: "SVO", "st petersburg": "LED",
+  petersburg: "LED", "saint petersburg": "LED", kazan: "KZN", sochi: "AER",
+  vladivostok: "VVO", baikal: "UUD", irkutsk: "IKT", yekaterinburg: "SVX",
+  novosibirsk: "OVB", kaliningrad: "KGD",
+  // Indonesia (kalau theme dipakai klien Dermaga lain)
+  bali: "DPS", yogyakarta: "JOG", yogya: "JOG", bromo: "JOG", komodo: "LBJ",
+  "raja ampat": "SOQ", "labuan bajo": "LBJ", jakarta: "CGK", surabaya: "SUB",
+  bandung: "BDO", medan: "KNO", lombok: "LOP",
+};
+function getIata(title: string, city?: string | null): string {
+  const haystack = `${title} ${city ?? ""}`.toLowerCase();
+  for (const [key, code] of Object.entries(IATA_MAP)) {
+    if (haystack.includes(key)) return code;
+  }
+  // Fallback: first letters of first 3 significant words
+  const words = title.replace(/[^a-zA-Z ]/g, "").split(/\s+/).filter(w => w.length > 2);
+  if (words.length >= 3) return (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
+  if (words.length === 2) return (words[0].slice(0, 2) + words[1][0]).toUpperCase();
+  return (words[0]?.slice(0, 3) ?? "TRP").toUpperCase();
+}
+
 function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
-  const badgeColor = hashGlobeColor(tour.id, 0);
+  const iata = getIata(tour.title, tour.cityHighlight);
+  const flightNo = `SF-${tour.id.slice(-4).toUpperCase()}`;
+  const classCode = (tour.promoPrice && tour.promoPrice < tour.price * 0.8) ? "Y" : "J"; // Promo besar = Economy Y, else Business J
+  const dateCode = tour.tripDate
+    ? new Date(tour.tripDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase().replace(" ", "")
+    : "OPEN";
 
   return (
-    <div className={`gl-card group overflow-hidden ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      <div className="relative h-52 overflow-hidden rounded-t-[18px]">
+    <div className={`gl-card group ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
+      {/* === MAIN — image + overlay text === */}
+      <div className="relative h-44 overflow-hidden rounded-t-[8px]">
         {tour.heroImg
-          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-          : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>🌍</div>}
+          ? <Image src={tour.heroImg} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+          : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-text)", opacity: 0.15 }}>✈</div>}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/55"></div>
 
-        {!isDimmed && (
-          <div className="absolute bottom-3 right-3 gl-pill font-black"
-            style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", transform: "rotate(2deg)", borderColor: "transparent", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+        {/* TOP STRIP — airline header */}
+        <div className="absolute top-3 left-4 right-4 flex justify-between items-start text-[9px] font-mono tracking-[0.18em] text-white/90 uppercase" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          <span>Sundaf Trip · Boarding Pass</span>
+          <span>{flightNo}</span>
+        </div>
+
+        {/* BIG IATA + COUNTRY */}
+        <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+          <div>
+            <div className="text-[60px] font-bold text-white leading-[0.85] tracking-tight">{iata}</div>
+            <div className="text-[10px] tracking-[0.2em] uppercase text-white/85 mt-0.5">{tour.country}</div>
           </div>
-        )}
-        {tour.badge && !isDimmed && (
-          <div className="absolute top-3 left-3 gl-pill"
-            style={{ background: badgeColor, color: "#111827", transform: "rotate(-2deg)", borderColor: "transparent" }}>
-            {tour.badge}
-          </div>
-        )}
+          {tour.badge && !isDimmed && (
+            <div className="text-[10px] tracking-[0.18em] uppercase text-white font-semibold border border-white/70 px-2 py-0.5 rounded-sm">
+              {tour.badge}
+            </div>
+          )}
+        </div>
+
         {(isFull || isExpired) && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[18px]">
-            <span className="gl-pill" style={{ background: "var(--gl-card)", color: "var(--gl-text)", borderColor: "transparent" }}>
-              {isFull ? "🙅 Sold Out" : "✅ Trip Selesai"}
+          <div className="absolute inset-0 bg-black/65 flex items-center justify-center">
+            <span className="gl-pill" style={{ background: "var(--gl-card)", color: "var(--gl-text)" }}>
+              {isFull ? "✕ Sold Out" : "✓ Trip Selesai"}
             </span>
           </div>
         )}
       </div>
 
-      <div className="p-5">
-        <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--gl-subtext)" }}>
-          {tour.country}
-        </p>
-        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--gl-text)" }}>
+      {/* === BODY — title === */}
+      <div className="px-5 pt-4 pb-3">
+        <h3 className="font-semibold text-[14px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
           {tour.title}
         </h3>
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {tour.duration && (
-            <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>⏱ {tour.duration}</span>
-          )}
-          {tour.tripDate && (
-            <span className="gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
-          )}
-          <span className="gl-pill" style={{ background: "#dcfce7", color: "#111827", borderColor: "transparent" }}>👤 {tour.seatsLeft} seat</span>
-        </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        {tour.cityHighlight && (
+          <p className="text-[10px] mt-1 tracking-widest uppercase" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+            via {tour.cityHighlight}
+          </p>
         )}
-        {!isDimmed && (
-          <div className="pt-3 border-t flex items-center justify-between"
-            style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)" }}>
-            <span className="text-xs font-black" style={{ color: "var(--gl-subtext)" }}>Lihat detail →</span>
+      </div>
+
+      {/* === DASHED PERFORATION dihandle CSS gl-card::before === */}
+
+      {/* === STUB — boarding info grid + barcode === */}
+      <div className="px-5 pt-5 pb-5" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+        <div className="grid grid-cols-4 gap-3 mb-3">
+          <div>
+            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Class</div>
+            <div className="font-bold text-[15px] leading-tight" style={{ color: "var(--gl-text)" }}>{classCode}</div>
           </div>
-        )}
+          <div>
+            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Seat</div>
+            <div className="font-bold text-[15px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.seatsLeft}</div>
+          </div>
+          <div>
+            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Dur</div>
+            <div className="font-bold text-[15px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.duration || "—"}</div>
+          </div>
+          <div>
+            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
+            <div className="font-bold text-[15px] leading-tight" style={{ color: "var(--gl-text)" }}>{dateCode}</div>
+          </div>
+        </div>
+
+        <div className="flex items-end justify-between pt-2 border-t" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
+          <div>
+            <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Fare</div>
+            <div className="font-bold text-[16px] leading-tight" style={{ color: "var(--gl-text)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</div>
+            {tour.promoPrice && (
+              <div className="text-[10px] line-through opacity-50" style={{ color: "var(--gl-subtext)" }}>{formatCurrency(tour.price)}</div>
+            )}
+          </div>
+          {/* Spacer for the ::after barcode */}
+          <div className="w-[78px] h-[22px]"></div>
+        </div>
       </div>
     </div>
   );

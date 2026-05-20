@@ -544,47 +544,122 @@ body {
   --gl-text:    #d8eef8;
   --gl-subtext: #7aaac8;
 }
+/* ============================================
+   GLOBE THEME → BOARDING PASS aesthetic
+   DNA: actual airline ticket. Paper, IATA codes monospace,
+        dashed perforation, half-circle notches, barcode.
+   Inspired by: Lufthansa/SAS boarding pass, brutalist
+        info design, Swissair archive tickets.
+   ============================================ */
 .gl-card {
-  border: 1.5px solid color-mix(in srgb, var(--gl-border) 40%, transparent);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px var(--gl-shadow), 0 1px 4px rgba(0,0,0,0.06);
-  background: var(--gl-card);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background:
+    radial-gradient(circle at 0% 62%, transparent 9px, var(--gl-card) 9.5px),
+    radial-gradient(circle at 100% 62%, transparent 9px, var(--gl-card) 9.5px),
+    var(--gl-card);
+  border: 1px solid color-mix(in srgb, var(--gl-border) 60%, transparent);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.04),
+    0 12px 24px -8px color-mix(in srgb, var(--gl-shadow) 60%, transparent);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.gl-card::before {
+  content: '';
+  position: absolute;
+  left: 14px; right: 14px;
+  top: 62%;
+  height: 0;
+  border-top: 1.5px dashed color-mix(in srgb, var(--gl-border) 55%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+.gl-card::after {
+  content: '';
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  width: 78px;
+  height: 22px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gl-text) 0 1px,
+    transparent 1px 3px,
+    var(--gl-text) 3px 5px,
+    transparent 5px 8px,
+    var(--gl-text) 8px 9px,
+    transparent 9px 12px
+  );
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
 }
 .gl-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 52px var(--gl-shadow), 0 4px 12px rgba(0,0,0,0.10);
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.05),
+    0 22px 36px -8px color-mix(in srgb, var(--gl-shadow) 70%, transparent);
 }
 .gl-pill {
-  border: 1.5px solid color-mix(in srgb, var(--gl-border) 55%, transparent);
-  border-radius: 999px;
-  font-weight: 800;
-  box-shadow: 0 2px 8px var(--gl-shadow);
-  padding: 3px 14px;
-  font-size: 11px;
-  line-height: 1.5;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  padding: 3px 8px;
+  background: transparent;
+  color: var(--gl-text);
+  border: 1.5px solid var(--gl-text);
+  border-radius: 2px;
+  font-family: var(--font-anonymous-pro), ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  box-shadow: none;
 }
 .gl-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  border: 1.5px solid var(--gl-border);
-  border-radius: 14px;
-  font-weight: 900;
-  box-shadow: 0 4px 18px var(--gl-shadow);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  gap: 10px;
+  padding: 11px 22px 11px 28px;
+  background: var(--gl-text);
+  color: var(--gl-card);
+  border: none;
+  border-radius: 3px;
+  font-family: var(--font-anonymous-pro), ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   cursor: pointer;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--gl-text) 70%, black);
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.gl-btn::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 14px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--gl-card) 0 2px,
+    transparent 2px 5px
+  );
+  opacity: 0.5;
 }
 .gl-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px var(--gl-shadow);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--gl-text) 70%, black);
 }
 .gl-btn:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 8px var(--gl-shadow);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--gl-text) 70%, black);
 }
 @keyframes gl-float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }

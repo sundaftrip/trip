@@ -40,10 +40,10 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "tropical", label: "Tropical", desc: "Playful & fun. Kartu postcard, stiker harga, border sketsa.",          feature: "theme_tropical" },
-  { key: "kawaii",   label: "Kawaii",   desc: "Retro cute pastel. Border bulat, hati melayang, peach aesthetic.",     feature: "theme_kawaii" },
+  { key: "tropical", label: "Tropical", desc: "Vintage travel poster 1960s. Thin border + stripe top + drop shadow halus, postcard rectangular feel.",          feature: "theme_tropical" },
+  { key: "kawaii",   label: "Kawaii",   desc: "Hand-drawn sticker scrapbook. Thick outline, organic blob radius, sedikit tilt -1.2deg, layered soft shadow, ✿ flower & ✦ sparkle decorations.",     feature: "theme_kawaii" },
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
-  { key: "globe",    label: "Globe",     desc: "Cartoon world landmarks. Kartu mengambang, landmark emoji, cream & sky.",  feature: "theme_globe" },
+  { key: "globe",    label: "Boarding Pass", desc: "Tiket pesawat asli. IATA 3-letter code monospace (MMK · LED · SVO), perforasi dashed, half-circle notch, barcode di stub, font Anonymous Pro. Travel-native, brutalist info design.", feature: "theme_globe" },
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
   { key: "fumayo",   label: "Fumayo",    desc: "Buku tulis kotak-kotak anak. Bingkai rounded, font mesin tik, tombol hijau, doodle.", feature: null },
