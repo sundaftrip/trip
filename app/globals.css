@@ -1034,7 +1034,7 @@ body {
   --gl-border:   color-mix(in srgb, var(--site-accent, #2d6a4f) 70%, #ffffff);
   --gl-shadow:   color-mix(in srgb, var(--site-accent, #2d6a4f) 18%, transparent);
   --gl-text:     #1a2a3a;
-  --gl-subtext:  #5a7a9a;
+  --gl-subtext:  #3d5670;  /* darker untuk WCAG AA 4.5:1 di atas cream bg */
   /* landmark accent colors — fixed, never invert in dark */
   --gl-sky:      #56c7e0;
   --gl-amber:    #f5a623;

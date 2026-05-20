@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Tree-shake lucide-react & icon libraries — cut JS bundle signifikan.
+  // Tanpa ini, import { Foo } dari "lucide-react" akan bawa seluruh barrel.
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@auth/prisma-adapter"],
+  },
   images: {
     // unoptimized=true → skip Vercel Image Optimization, foto langsung di-serve
     // dari Cloudinary CDN (yang sudah punya auto-resize via URL params).
