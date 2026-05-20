@@ -48,7 +48,6 @@ const THEMES = [
   { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
   { key: "fumayo",   label: "Fumayo",    desc: "Buku tulis kotak-kotak anak. Bingkai rounded, font mesin tik, tombol hijau, doodle.", feature: null },
   { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
-  { key: "editorial", label: "Editorial", desc: "Premium magazine aesthetic. Instrument Serif italic accent + Inter, krem warm + deep forest, kartu rounded hover lift, footer watermark SUNDAF.", feature: null },
 ];
 
 export default function SettingsPage() {
