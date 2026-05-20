@@ -67,6 +67,59 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://instagram.com/${igUser}` },
   ].filter(Boolean) as { Icon: ComponentType<IconProps>; label: string; value: string; href: string | null }[];
 
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") return (
+    <footer className="fb-page relative overflow-hidden" style={{ borderTop: "2.5px solid var(--fb-line)" }}>
+      <span className="absolute top-10 right-[12%] text-3xl pointer-events-none select-none fb-float-1" style={{ color: "var(--fb-red)" }}>✶</span>
+      <span className="absolute bottom-16 left-[8%] text-2xl pointer-events-none select-none fb-float-3" style={{ color: "var(--fb-blue)" }}>✦</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        <div className="fb-frame p-8 sm:p-10">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10"
+            style={{ borderBottom: "2px dashed var(--fb-line)" }}>
+            <div className="md:col-span-2">
+              <span className="inline-flex items-center rounded-xl px-3 py-1.5 mb-4"
+                style={{ border: "2px solid var(--fb-line)", background: "var(--fb-yellow)", boxShadow: "0 3px 0 0 var(--fb-line)" }}>
+                <Image src={logo || "/logo.png"} alt={name} width={176} height={54} style={{ height: 34, width: "auto" }} />
+              </span>
+              {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--fb-subink)" }}>{tagline}</p>}
+              {nib && <p className="text-xs mt-3" style={{ color: "var(--fb-subink)" }}>NIB {nib}</p>}
+            </div>
+
+            <div>
+              <span className="fb-tab text-[10px] mb-4" style={{ borderRadius: 999, borderBottom: "2.5px solid var(--fb-line)", padding: "4px 14px" }}>Navigasi</span>
+              <ul className="space-y-3 mt-4">
+                {navLinks.map(([label, href]) => (
+                  <li key={href}>
+                    <Link href={href} className="text-sm font-bold hover:opacity-60 transition-opacity" style={{ color: "var(--fb-subink)" }}>{label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <span className="fb-tab text-[10px] mb-4" style={{ borderRadius: 999, borderBottom: "2.5px solid var(--fb-line)", padding: "4px 14px", background: "var(--fb-blue)" }}>Kontak</span>
+              <ul className="space-y-3 mt-4">
+                {contacts.map(({ Icon, label, value, href }) => (
+                  <li key={label} className="flex items-start gap-2">
+                    <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--fb-accent)" }} />
+                    {href
+                      ? <a href={href} className="text-sm hover:opacity-60 transition-opacity" style={{ color: "var(--fb-subink)" }}>{value}</a>
+                      : <span className="text-sm leading-relaxed" style={{ color: "var(--fb-subink)" }}>{value}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--fb-subink)" }}>
+            <p>© {new Date().getFullYear()} {name} ✶</p>
+            {c["company_website"] && <p>{c["company_website"]}</p>}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
     <footer className="border-t-2 relative overflow-hidden"

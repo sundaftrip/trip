@@ -132,6 +132,38 @@ function Carousel({ items, renderCard, darkDots = false }: {
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") return (
+    <section className="fb-page py-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+          <span className="fb-pill mb-3 inline-flex" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ Testimoni</span>
+          <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+            Kata <span className="fb-wave" style={{ color: "var(--fb-accent)" }}>Mereka</span>
+          </h2>
+        </AnimateIn>
+        <AnimateIn delay={100}>
+          <Carousel items={items} renderCard={(item, active) => (
+            <div className={`fb-card p-6 flex flex-col h-full transition-all duration-200 ${active ? "" : "opacity-70"}`}
+              style={{ background: active ? "var(--fb-paper)" : "var(--fb-card)", fontFamily: "var(--fb-font)" }}>
+              <Stars rating={item.rating} />
+              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--fb-subink)" }}>
+                &ldquo;{item.content}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 mt-5 pt-4" style={{ borderTop: "2px dashed var(--fb-line)" }}>
+                <Avatar avatar={item.avatar} name={item.name} />
+                <div>
+                  <p className="text-sm font-bold" style={{ color: "var(--fb-ink)" }}>{item.name}</p>
+                  {item.role && <p className="text-xs" style={{ color: "var(--fb-subink)" }}>{item.role}</p>}
+                </div>
+              </div>
+            </div>
+          )} />
+        </AnimateIn>
+      </div>
+    </section>
+  );
+
   /* ── GLOBE ── */
   if (theme === "globe") return (
     <section className="py-24 overflow-hidden" style={{ background: "var(--gl-bg)" }}>

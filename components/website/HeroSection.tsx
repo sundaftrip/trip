@@ -8,7 +8,7 @@ interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
-  theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas";
+  theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 }
 
 export default function HeroSection({ texts, waNumber, companyName, theme = "classic" }: Props) {
@@ -64,6 +64,54 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       </>
     );
   };
+
+  /* ── FUMAYO ── */
+  if (theme === "fumayo") {
+    const words = t("hero_title", "Wujudkan Perjalanan Impian Anda").split(/\s+/).filter(Boolean);
+    const popColors = ["var(--fb-red)", "var(--fb-blue)", "var(--fb-accent)", "var(--fb-yellow)"];
+    return (
+      <section className="fb-page min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4">
+        <span className="absolute top-32 right-[12%] text-5xl fb-float-1 select-none pointer-events-none" style={{ color: "var(--fb-red)", ["--fb-r" as string]: "-12deg" }}>✶</span>
+        <span className="absolute top-52 right-[34%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-blue)" }}>✦</span>
+        <span className="absolute bottom-28 left-[10%] text-4xl fb-float-3 select-none pointer-events-none" style={{ color: "var(--fb-accent)", ["--fb-r" as string]: "8deg" }}>★</span>
+        <span className="absolute top-44 left-[40%] text-2xl fb-float-4 select-none pointer-events-none" style={{ color: "var(--fb-ink)" }}>✺</span>
+        <span className="absolute bottom-40 right-[20%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-red)" }}>✷</span>
+
+        <div className="max-w-7xl mx-auto w-full relative z-10">
+          <div className="fb-frame p-7 sm:p-14">
+            <div className="mb-7 hero-fade-up">
+              <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ {eyebrow}</span>
+            </div>
+            <h1 className="text-[clamp(2.3rem,6.8vw,5.4rem)] font-bold leading-[1.08] tracking-tight max-w-4xl mb-8 hero-fade-up"
+              style={{ color: "var(--fb-ink)", fontFamily: "var(--fb-font)" }}>
+              {words.map((w, i) => (
+                <span key={i} className={i % 3 === 1 ? "fb-wave" : undefined}
+                  style={i % 3 === 1 ? { color: popColors[i % popColors.length] } : undefined}>
+                  {w}{i < words.length - 1 ? " " : ""}
+                </span>
+              ))}
+            </h1>
+            <div className="flex flex-wrap gap-2.5 mb-9 hero-fade-up">
+              <span className="fb-pill" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>📚 {t("hero_subtitle", "Destinasi Pilihan")}</span>
+              <span className="fb-pill" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>✦ Paket Lengkap</span>
+              <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ Terpercaya</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 hero-fade-up">
+              <Link href="/tours" className="fb-btn px-7 py-3.5 text-sm">
+                {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+              </Link>
+              {waNumber && (
+                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+                  className="fb-btn-outline px-7 py-3.5 text-sm">
+                  WhatsApp
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   /* ── KAWAII ── */
   if (theme === "kawaii") return (
