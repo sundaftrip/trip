@@ -27,6 +27,22 @@ export function toWaNumber(raw?: string | null) {
   return (raw ?? "").replace(/\D/g, "");
 }
 
+/** Inject Cloudinary transformation segment ke URL agar gambar di-deliver
+ *  dengan width tertentu + auto-format (WebP/AVIF) + auto-quality.
+ *  Tanpa ini gambar di-serve original size (sering 2-5MB) → CLS + LCP buruk.
+ *
+ *  Pattern Cloudinary: https://res.cloudinary.com/<cloud>/image/upload/<rest>
+ *  Tambah segment "w_<width>,c_fill,q_auto,f_auto" setelah `/upload/`.
+ *  Idempotent — kalau width sama sudah ada, tidak dobel-inject.
+ */
+export function cldOptimize(url: string | null | undefined, width: number): string {
+  if (!url) return "";
+  if (!url.includes("res.cloudinary.com")) return url;
+  const seg = `w_${width},c_fill,q_auto,f_auto`;
+  if (url.includes(`/upload/${seg}/`) || url.includes(`/upload/${seg},`)) return url;
+  return url.replace("/upload/", `/upload/${seg}/`);
+}
+
 export function generateReceiptNo() {
   const now = new Date();
   const y = now.getFullYear().toString().slice(-2);
