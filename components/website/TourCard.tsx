@@ -304,6 +304,42 @@ function getIata(title: string, city?: string | null): string {
   return (words[0]?.slice(0, 3) ?? "TRP").toUpperCase();
 }
 
+/** Compact duration display untuk boarding pass cell.
+ *  "11 hari 10 malam" → "11D10N"
+ *  "7D6N" → tetap "7D6N"
+ *  "9 Hari" → "9D"
+ */
+function shortenDuration(s: string | null | undefined): string {
+  if (!s) return "—";
+  const t = s.trim();
+  // Already compact like 7D6N
+  if (/^\d+\s*[DH]\s*\d*\s*[NM]?$/i.test(t.replace(/\s/g, ""))) {
+    return t.replace(/\s+/g, "").toUpperCase();
+  }
+  // Parse "X hari Y malam" style
+  const dayMatch = t.match(/(\d+)\s*(?:hari|h|d|days?)/i);
+  const nightMatch = t.match(/(\d+)\s*(?:malam|m|n|nights?)/i);
+  const days = dayMatch?.[1];
+  const nights = nightMatch?.[1];
+  if (days && nights) return `${days}D${nights}N`;
+  if (days) return `${days}D`;
+  if (nights) return `${nights}N`;
+  // Fallback: ambil angka pertama saja
+  const numMatch = t.match(/(\d+)/);
+  return numMatch ? `${numMatch[1]}D` : t.slice(0, 6);
+}
+
+/** Shorten city list ke max 3 entries supaya tinggi card konsisten.
+ *  "Almaty · Bishkek · Issyk · Samarkand · Tashkent" → "Almaty · Bishkek · Issyk +2"
+ */
+function shortenRoute(s: string | null | undefined, max = 3): string {
+  if (!s) return "";
+  const parts = s.split(/[·•,]/).map(p => p.trim()).filter(Boolean);
+  if (parts.length <= max) return parts.join(" · ");
+  const rest = parts.length - max;
+  return parts.slice(0, max).join(" · ") + ` +${rest}`;
+}
+
 /** Class code di boarding pass — semantic berdasarkan negara + durasi.
  *  F = First (signature long-haul 10+ hari)
  *  J = Business (international: Russia, Europe, non-Asia)
@@ -377,14 +413,14 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY — title === */}
-      <div className="px-5 pt-4 pb-3">
+      {/* === BODY — title (fixed height untuk konsistensi card) === */}
+      <div className="px-5 pt-4 pb-3 min-h-[88px]">
         <h3 className="font-semibold text-[14px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
           {tour.title}
         </h3>
         {tour.cityHighlight && (
-          <p className="text-[10px] mt-1 tracking-widest uppercase" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-            via {tour.cityHighlight}
+          <p className="text-[10px] mt-1 tracking-widest uppercase line-clamp-1" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+            via {shortenRoute(tour.cityHighlight, 3)}
           </p>
         )}
       </div>
@@ -404,7 +440,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           </div>
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Dur</div>
-            <div className="font-bold text-[15px] leading-tight" style={{ color: "var(--gl-text)" }}>{tour.duration || "—"}</div>
+            <div className="font-bold text-[15px] leading-tight whitespace-nowrap" style={{ color: "var(--gl-text)" }}>{shortenDuration(tour.duration)}</div>
           </div>
           <div>
             <div className="text-[8px] tracking-[0.18em] uppercase opacity-60" style={{ color: "var(--gl-subtext)" }}>Date</div>
@@ -421,7 +457,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
             )}
           </div>
           {/* Spacer for the ::after barcode */}
-          <div className="w-[78px] h-[22px]"></div>
+          <div className="w-[60px] h-[16px]"></div>
         </div>
       </div>
     </div>
