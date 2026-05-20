@@ -544,6 +544,23 @@ body {
   --gl-text:    #d8eef8;
   --gl-subtext: #7aaac8;
 }
+/* Page background ketika theme=globe — paper feel ala envelope tiket
+   Grid + warmth di belakang cards supaya tidak kosong, cards tetap clean */
+[data-theme="globe"] {
+  background-color: var(--gl-bg);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 14px,
+      color-mix(in srgb, var(--gl-text) 6%, transparent) 14px 15px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 15px,
+      color-mix(in srgb, var(--gl-text) 6%, transparent) 15px 16px
+    );
+}
+
 /* ============================================
    GLOBE THEME → BOARDING PASS aesthetic
    DNA: actual airline ticket. Paper, IATA codes monospace,
@@ -552,25 +569,8 @@ body {
         info design, Swissair archive tickets.
    ============================================ */
 .gl-card {
-  background:
-    /* Grid 14x15 (off-square = organic, engineering paper) — di TOP layer supaya visible */
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 14px,
-      color-mix(in srgb, var(--gl-text) 9%, transparent) 14px 15px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 15px,
-      color-mix(in srgb, var(--gl-text) 9%, transparent) 15px 16px
-    ),
-    /* Edge vignette — kerasa kayak printed paper */
-    radial-gradient(
-      ellipse at center,
-      var(--gl-card) 55%,
-      color-mix(in srgb, var(--gl-text) 6%, var(--gl-card)) 100%
-    ),
-    var(--gl-card);
+  /* Card bersih putih — grid pindah ke page background */
+  background: var(--gl-card);
   border: 1px solid color-mix(in srgb, var(--gl-border) 60%, transparent);
   border-radius: 8px;
   position: relative;
