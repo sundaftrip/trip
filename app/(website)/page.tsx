@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
 import { toWaNumber } from "@/lib/utils";
 import HeroSection from "@/components/website/HeroSection";
 import WhySection from "@/components/website/WhySection";
@@ -64,7 +65,10 @@ export default async function HomePage({
   const wa = toWaNumber(company["company_whatsapp"]);
   const companyName = company["company_name"] || "";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
-  const rawTheme = themeRow?.value || "classic";
+  // Preview theme override via cookie (set by proxy dari ?theme=X)
+  const cookieStore = await cookies();
+  const previewTheme = cookieStore.get("preview-theme")?.value;
+  const rawTheme = previewTheme || themeRow?.value || "classic";
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "vibrant" | "bold" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "atelier" | "jojo" | "teri" | "attic" | "nusantara";
 
   // Pagination katalog tour — 12 per halaman
