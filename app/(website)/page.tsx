@@ -80,16 +80,9 @@ export default async function HomePage() {
   const rawTheme = themeRow?.value || "classic";
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
-  // Parse hero_sundaf_config (JSON blob) — dikelola lewat /admin/hero-sundaf editor
-  let sundafConfig = null;
-  const sundafRaw = company["hero_sundaf_config"];
-  if (sundafRaw) {
-    try { sundafConfig = JSON.parse(sundafRaw); } catch { sundafConfig = null; }
-  }
-
   return (
     <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} sundafConfig={sundafConfig} />
+      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
         <ToursCatalog tours={allTours} theme={theme} showFilter={theme === "globe"} />
       </div>

@@ -4,26 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-export interface SundafBlockConfig {
-  title?: string;
-  text?: string;
-  x?: number; // % from left of hero section
-  y?: number; // % from top of hero section
-  w?: number; // px
-  font?: "mono" | "handwritten" | "serif" | "sans";
-  highlight?: string;
-  rotate?: number;
-}
-
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   waNumber?: string;
   companyName?: string;
   theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
-  sundafConfig?: SundafBlockConfig | null;
 }
 
-export default function HeroSection({ texts, waNumber, companyName, theme = "classic", sundafConfig }: Props) {
+export default function HeroSection({ texts, waNumber, companyName, theme = "classic" }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
 
   useEffect(() => {
@@ -239,42 +227,17 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── GLOBE / WORLD LANDMARKS ── */
   if (theme === "globe") {
-    /* SUNDAF block — semua konten + style di-resolve dari sundafConfig prop
-       (dikelola lewat /admin/hero-sundaf visual editor). Default value
-       untuk fallback aman. */
-    const SUNDAF_DEFAULT = {
-      title: "Mengapa Sundaf",
-      text:
-        "S — Small group, lebih dekat dan personal.\n" +
-        "U — Unforgettable moments di setiap destinasi.\n" +
-        "N — Nyaman dari awal sampai akhir.\n" +
-        "D — Dedikasi tim 24/7.\n" +
-        "A — Autentik, bukan turis biasa.\n" +
-        "F — Filosofi: pulang sebagai pribadi baru.",
-      x: 70,
-      y: 50,
-      w: 260,
-      font: "mono" as const,
-      highlight: "",
-      rotate: 0,
-    };
-    const sf = { ...SUNDAF_DEFAULT, ...(sundafConfig ?? {}) };
-
-    const sundafFontFamily =
-      sf.font === "handwritten" ? "var(--font-caveat), cursive" :
-      sf.font === "serif"       ? "Georgia, 'Times New Roman', serif" :
-      sf.font === "sans"        ? "var(--font-jost), ui-sans-serif, system-ui" :
-                                  "var(--font-anonymous-pro), ui-monospace, monospace";
-    const sundafFontSize =
-      sf.font === "handwritten" ? 20 :
-      sf.font === "serif"       ? 14 :
-                                  13;
-    const stabiloStyle: React.CSSProperties = sf.highlight
-      ? {
-          backgroundImage: `linear-gradient(180deg, transparent 0 55%, ${sf.highlight} 55% 90%, transparent 90%)`,
-          padding: "0 4px",
-        }
-      : {};
+    /* SUNDAF block — konten editable via /admin/texts (hero_sundaf_title + hero_sundaf).
+       Style hardcode minimalis. */
+    const sundafDefault =
+      "S — Small group, lebih dekat dan personal.\n" +
+      "U — Unforgettable moments di setiap destinasi.\n" +
+      "N — Nyaman dari awal sampai akhir.\n" +
+      "D — Dedikasi tim 24/7.\n" +
+      "A — Autentik, bukan turis biasa.\n" +
+      "F — Filosofi: pulang sebagai pribadi baru.";
+    const sundafTitle = t("hero_sundaf_title", "Mengapa Sundaf");
+    const sundafText = t("hero_sundaf", sundafDefault);
 
     return (
       <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
@@ -300,47 +263,23 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
           </h1>
 
-          {/* SUNDAF block — mobile inline; desktop absolute pakai % offset dari x/y editor */}
-          <div
-            className="hero-sundaf-block hero-fade-up mb-10 lg:mb-0"
-            style={{ maxWidth: `${sf.w}px` }}
-          >
-            <span
-              className="text-[10px] tracking-[0.22em] uppercase opacity-60 block mb-2"
+          {/* SUNDAF kolom kecil — bawah judul di mobile, samping kanan judul di desktop */}
+          <div className="hero-fade-up mb-10 lg:mb-12 lg:absolute lg:top-1/2 lg:right-6 xl:right-10 lg:-translate-y-1/2 lg:max-w-[260px] xl:max-w-[300px]">
+            <span className="text-[10px] tracking-[0.22em] uppercase opacity-60 block mb-2" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+              {sundafTitle}
+            </span>
+            <p
+              className="text-[12px] sm:text-[13px] leading-[1.7] whitespace-pre-line"
               style={{
                 color: "var(--gl-text)",
                 fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace",
-              }}
-            >
-              {sf.title}
-            </span>
-            <p
-              className="leading-[1.7] whitespace-pre-line"
-              style={{
-                color: "var(--gl-text)",
-                fontFamily: sundafFontFamily,
-                fontSize: `${sundafFontSize}px`,
                 textAlign: "justify",
                 textJustify: "inter-word",
-                ...stabiloStyle,
               } as React.CSSProperties}
             >
-              {sf.text}
+              {sundafText}
             </p>
           </div>
-          {/* Desktop positioning — x/y % dari section, dengan translate(-50%, -50%) supaya origin di tengah block */}
-          <style>{`
-            @media (min-width: 1024px) {
-              .hero-sundaf-block {
-                position: absolute;
-                z-index: 20;
-                margin-bottom: 0 !important;
-                left: ${sf.x}%;
-                top: ${sf.y}%;
-                transform: translate(-50%, -50%) rotate(${sf.rotate}deg);
-              }
-            }
-          `}</style>
 
           <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
             <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>

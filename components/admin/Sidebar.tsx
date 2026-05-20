@@ -12,7 +12,6 @@ import {
   Users,
   Settings,
   FileText,
-  Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +20,6 @@ const navItems = [
   { href: "/admin/tours", label: "Tour", icon: Map },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
-  { href: "/admin/hero-sundaf", label: "Editor Hero SUNDAF", icon: Wand2 },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
   { href: "/admin/terms", label: "Syarat & Ketentuan", icon: FileText },
 ];
