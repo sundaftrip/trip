@@ -60,7 +60,7 @@ async function getData() {
   companyRows.forEach((r) => { company[r.key] = r.value; });
   return {
     wa: toWaNumber(company["company_whatsapp"]),
-    theme: company["site_theme"] ?? "classic",
+    theme: company["site_theme"] === "corei" ? "kawaii" : (company["site_theme"] ?? "classic"),
     tours,
     relatedPosts,
   };

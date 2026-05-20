@@ -9,7 +9,7 @@ async function getSiteTheme() {
   try {
     const row = await prisma.companyInfo.findFirst({ where: { key: "site_theme" } });
     const v = row?.value ?? "classic";
-    return v === "console" ? "atlas" : v;
+    return v === "console" ? "atlas" : v === "corei" ? "kawaii" : v;
   } catch { return "classic"; }
 }
 

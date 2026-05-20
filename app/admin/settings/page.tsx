@@ -40,7 +40,8 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
-  { key: "teri",     label: "JOJO",     desc: "Pixel-art cozy valley. Nuansa hangat hijau-kayu, sudut tajam, shadow pixel.", feature: null },
+  { key: "corei",    label: "Corei",    desc: "Kawaii hangat. Pastel peach + aksen burnt orange, kartu rounded dengan shadow lembut, ikon hati & sparkles.", feature: null },
+  { key: "teri",     label: "Teri",     desc: "Globe-trotter dunia. Latar krem dengan pola titik peta, kartu putih rounded, palet landmark (sky, amber, coral, grass, lavender), shadow soft accent.", feature: null },
 ];
 
 export default function SettingsPage() {
@@ -370,13 +371,30 @@ export default function SettingsPage() {
                       </div>
                     )}
                     {key === "teri" && (
-                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fdf3e3" }}>
-                        {/* hexagon mengambang */}
-                        <div className="absolute" style={{ top: 5, right: 8, width: 16, height: 18, background: "#ff8fab", clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }} />
-                        <div className="absolute" style={{ top: 16, right: 24, width: 11, height: 12, background: "#4ecdc4", clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }} />
-                        {/* kartu shadow ganda warni */}
-                        <div className="h-6 w-20 rounded-md mb-2" style={{ background: "#fffdf7", border: "2px solid #342f4a", boxShadow: "3px 3px 0 0 #ff8fab, 6px 6px 0 0 #4ecdc4" }} />
-                        <div className="h-4 w-12 rounded-sm" style={{ background: "#7c5cff" }} />
+                      <div className="absolute inset-0 flex flex-col justify-end p-2.5" style={{ background: "#fef9f0" }}>
+                        {/* floating landmark emoji decorations (mirror globe) */}
+                        <span className="absolute top-1.5 right-2 text-[11px]" style={{ opacity: 0.55 }}>🗼</span>
+                        <span className="absolute top-4 left-2 text-[9px]"   style={{ opacity: 0.45 }}>🕌</span>
+                        <span className="absolute top-1 right-7 text-[8px]"  style={{ opacity: 0.4 }}>✈️</span>
+                        {/* pill badges */}
+                        <div className="flex gap-1 mb-1.5">
+                          <div className="h-4 px-2 rounded-full text-[7px] font-black flex items-center" style={{ background: "#56c7e0", color: "#111827" }}>🗺️ Destinasi</div>
+                          <div className="h-4 px-1.5 rounded-full text-[7px] font-black flex items-center" style={{ background: "#f5a623", color: "#111827" }}>⭐</div>
+                        </div>
+                        {/* CTA */}
+                        <div className="h-5 w-16 rounded-lg text-[8px] font-black flex items-center justify-center text-white shadow-md" style={{ background: currentAccent }}>
+                          Lihat Tour ✈
+                        </div>
+                      </div>
+                    )}
+                    {key === "corei" && (
+                      <div className="absolute inset-0 flex flex-col justify-end p-2" style={{ background: "#fef4ee" }}>
+                        <div className="flex gap-1 items-center mb-1.5">
+                          <span className="text-xs" style={{ color: "#d4754e" }}>♡</span>
+                          <div className="h-4 w-10 rounded-full border bg-[#fce7f3]" style={{ borderColor: "#d4754e", boxShadow: "1px 1px 0 0 #d4754e" }} />
+                          <span className="text-[9px]" style={{ color: "#d4754e" }}>✦</span>
+                        </div>
+                        <div className="h-5 w-16 rounded-full border font-black text-[8px] flex items-center justify-center" style={{ background: "#d4754e", borderColor: "#d4754e", boxShadow: "1px 1px 0 0 #d4754e", color: "white" }}>Lihat Tour</div>
                       </div>
                     )}
                     {key === "globe" && (
