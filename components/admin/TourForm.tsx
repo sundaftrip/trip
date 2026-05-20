@@ -22,6 +22,7 @@ interface TourData {
   heroImg?: string;
   badge?: string;
   notes?: string;
+  description?: string;
   visaInfo?: string;
   itinerary?: { day: number; title: string; description: string }[];
   addOns?: { name: string; price: number }[];
@@ -49,6 +50,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
     heroImg: tour?.heroImg ?? "",
     badge: tour?.badge ?? "",
     notes: tour?.notes ?? "",
+    description: tour?.description ?? "",
     visaInfo: tour?.visaInfo ?? "",
     itinerary: tour?.itinerary ?? [],
     addOns: tour?.addOns ?? [],
@@ -374,12 +376,28 @@ export default function TourForm({ tour }: { tour?: TourData }) {
         </div>
       </div>
 
-      {/* Notes & Visa */}
+      {/* Deskripsi Tour (evocative copy untuk kartu + halaman detail) */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Catatan & Visa</h2>
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Deskripsi Tour</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          Tampil di kartu tour beranda (excerpt 140 char) dan halaman detail (lengkap). Tulis dengan gaya menggairahkan — ajak pembaca membayangkan perjalanannya. Tambahkan bonus &amp; opsional di baris bawah dengan prefix <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">+</code> atau <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">&amp;</code>.
+        </p>
+        <Field label="Cerita Trip">
+          <textarea
+            className="input min-h-[220px]"
+            value={form.description ?? ""}
+            onChange={(e) => set("description", e.target.value)}
+            placeholder={`Contoh:\n\nNungguin ya? Kali ini Sundaf mengajak ke Canada yang terkenal dengan formasi pegunungan yang megah bertabur destinasi wisata alam yang membuat siapapun takjub. Hutan-hutan hijau lebat, sungai dan danau sebening kristal, gletser abadi, hingga bangunan historical yang menanti kunjunganmu menyapa langsung, "HELLO...CANADA"\n\n+ San Francisco & Seattle\n& Tokyo (free time saat kepulangan)\nOPTIONAL: ALASKA`}
+          />
+        </Field>
+      </div>
+
+      {/* Catatan Penting & Visa */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Catatan Penting & Visa</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Catatan">
-            <textarea className="input min-h-[100px]" value={form.notes} onChange={(e) => set("notes", e.target.value)} />
+          <Field label="Catatan Penting">
+            <textarea className="input min-h-[100px]" value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Mis: Pastikan paspor minimal 6 bulan masa berlaku, vaksin tertentu wajib, dll." />
           </Field>
           <Field label="Informasi Visa">
             <textarea className="input min-h-[100px]" value={form.visaInfo} onChange={(e) => set("visaInfo", e.target.value)} />

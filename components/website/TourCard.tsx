@@ -8,6 +8,8 @@ interface Tour {
   price: number; promoPrice?: number | null; seatsLeft: number;
   tripDate?: Date | null; duration?: string | null; heroImg?: string | null;
   badge?: string | null; status: string;
+  notes?: string | null;
+  description?: string | null;
 }
 
 function StatusOverlay({ isFull, isExpired }: { isFull: boolean; isExpired: boolean }) {
@@ -340,6 +342,25 @@ function shortenRoute(s: string | null | undefined, max = 3): string {
   return parts.slice(0, max).join(" · ") + ` +${rest}`;
 }
 
+/** Ambil excerpt evocative dari tour.notes untuk dipajang di card.
+ *  Strip newline/bullet markers, ambil ~120 char pertama yang berakhir di kata. */
+function excerpt(s: string | null | undefined, max = 120): string {
+  if (!s) return "";
+  // Buang baris yang berisi cuma simbol/bullet, gabung sisa jadi 1 paragraf
+  const flat = s
+    .split(/\n+/)
+    .map(line => line.trim())
+    .filter(line => line && !/^[+&\-*•·]/.test(line))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (flat.length <= max) return flat;
+  // Cut di spasi terdekat sebelum max, lalu …
+  const cut = flat.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 60 ? cut.slice(0, lastSpace) : cut) + "…";
+}
+
 /** Class code di boarding pass — semantic berdasarkan negara + durasi.
  *  F = First (signature long-haul 10+ hari)
  *  J = Business (international: Russia, Europe, non-Asia)
@@ -415,7 +436,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY — title + via + INCLUDES strip (selalu tampil, isi ruang kosong) === */}
+      {/* === BODY — title + via + (deskripsi tour ATAU INCLUDES fallback) === */}
       <div className="px-5 pt-4 pb-3 min-h-[88px] flex flex-col">
         <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[18px] leading-tight line-clamp-2" style={{ color: "var(--gl-text)" }}>
           {tour.title}
@@ -425,14 +446,20 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
             via {shortenRoute(tour.cityHighlight, 3)}
           </p>
         )}
-        {/* INCLUDES strip — selalu tampil, fungsional (informasi yang berguna), dipush ke bawah
-            via mt-auto agar card tanpa VIA tidak menganga */}
-        <div className="mt-auto pt-3" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-          <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60 mb-0.5" style={{ color: "var(--gl-subtext)" }}>Includes</div>
-          <div className="text-[11px] sm:text-[12px] lg:text-[13px] tracking-[0.1em] uppercase font-medium leading-tight" style={{ color: "var(--gl-text)" }}>
-            Flight · Hotel · Meals · Guide
+        {/* Konten utama body: deskripsi tour (excerpt) ATAU fallback INCLUDES strip.
+            mt-auto: dipush ke bawah body agar ruang kosong terisi konsisten. */}
+        {tour.description ? (
+          <p className="mt-auto pt-3 text-[12px] sm:text-[13px] lg:text-[14px] leading-snug line-clamp-3" style={{ color: "var(--gl-subtext)" }}>
+            {excerpt(tour.description, 140)}
+          </p>
+        ) : (
+          <div className="mt-auto pt-3" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+            <div className="text-[8px] sm:text-[9px] tracking-[0.18em] uppercase opacity-60 mb-0.5" style={{ color: "var(--gl-subtext)" }}>Includes</div>
+            <div className="text-[11px] sm:text-[12px] lg:text-[13px] tracking-[0.1em] uppercase font-medium leading-tight" style={{ color: "var(--gl-text)" }}>
+              Flight · Hotel · Meals · Guide
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* === DASHED PERFORATION dihandle CSS gl-card::before === */}

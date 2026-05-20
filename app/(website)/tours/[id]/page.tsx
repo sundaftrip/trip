@@ -26,14 +26,14 @@ export async function generateMetadata({
   const [tour, companyRow] = await Promise.all([
     prisma.tour.findUnique({
       where: { id },
-      select: { title: true, heroImg: true, notes: true, visaInfo: true, country: true },
+      select: { title: true, heroImg: true, description: true, notes: true, visaInfo: true, country: true },
     }),
     prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
   ]);
   if (!tour) return {};
 
   const companyName = companyRow?.value ?? "Sundaftrip";
-  const description = tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country} bersama ${companyName}`;
+  const description = tour.description ?? tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country} bersama ${companyName}`;
 
   return {
     title: tour.title,
@@ -118,7 +118,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     name: tour.title,
-    description: tour.notes ?? tour.visaInfo ?? undefined,
+    description: tour.description ?? tour.notes ?? tour.visaInfo ?? undefined,
     image: tour.heroImg ? [tour.heroImg] : undefined,
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(tour.duration ? { duration: tour.duration } : {}),
@@ -201,6 +201,16 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+
+            {/* Deskripsi Tour — evocative copy, paragraf + bonus/optional */}
+            {tour.description && (
+              <div>
+                <div className={`text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line ${isOutlined ? "" : "text-gray-700 dark:text-gray-300"}`}
+                  style={isOutlined ? { color: tSub } : undefined}>
+                  {tour.description}
+                </div>
+              </div>
+            )}
 
             {/* Gallery */}
             {tour.gallery.length > 0 && (
