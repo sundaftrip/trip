@@ -236,6 +236,48 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       "F — Filosofi: pulang sebagai pribadi baru.";
     const sundafText = t("hero_sundaf", sundafDefault);
 
+    /* Style overrides dari CMS — bisa diubah lewat /admin/texts.
+       Semua opsional, ada fallback yang masuk akal. */
+    const sundafPos = t("hero_sundaf_position", "center-right"); // center-right | top-right | bottom-right | top-left | bottom-left | above-buttons
+    const sundafWidthRaw = t("hero_sundaf_width", "260"); // px, contoh "260" atau "300"
+    const sundafFontKey = t("hero_sundaf_font", "mono"); // mono | handwritten | serif | sans
+    const sundafHighlight = t("hero_sundaf_highlight", ""); // hex color, mis "#fff06a", kosong = no stabilo
+    const sundafRotateRaw = t("hero_sundaf_rotate", "0"); // derajat, mis "-2"
+
+    /* Translate keyword → CSS */
+    const sundafFontFamily =
+      sundafFontKey === "handwritten" ? "var(--font-caveat), cursive" :
+      sundafFontKey === "serif" ? "Georgia, 'Times New Roman', serif" :
+      sundafFontKey === "sans" ? "var(--font-jost), ui-sans-serif, system-ui" :
+      "var(--font-anonymous-pro), ui-monospace, monospace";
+
+    const sundafFontSize =
+      sundafFontKey === "handwritten" ? "20px" :
+      sundafFontKey === "serif" ? "14px" :
+      "13px";
+
+    const sundafWidthPx = `${parseInt(sundafWidthRaw, 10) || 260}px`;
+    const sundafRotate = `${sundafRotateRaw.replace(/[^\d.-]/g, "") || 0}deg`;
+
+    /* Position presets — diapply via lg: breakpoint (mobile selalu inline) */
+    const POSITION_PRESETS: Record<string, React.CSSProperties> = {
+      "top-right":      { top: "8rem",   right: "1.5rem",  transform: `rotate(${sundafRotate})` },
+      "center-right":   { top: "50%",    right: "1.5rem",  transform: `translateY(-50%) rotate(${sundafRotate})` },
+      "bottom-right":   { bottom: "8rem", right: "1.5rem", transform: `rotate(${sundafRotate})` },
+      "top-left":       { top: "8rem",   left:  "1.5rem",  transform: `rotate(${sundafRotate})` },
+      "bottom-left":    { bottom: "8rem", left: "1.5rem",  transform: `rotate(${sundafRotate})` },
+      "above-buttons":  { top: "55%",    right: "1.5rem",  transform: `translateY(-50%) rotate(${sundafRotate})` },
+    };
+    const sundafDesktopPos = POSITION_PRESETS[sundafPos] || POSITION_PRESETS["center-right"];
+
+    /* Stabilo CSS: linear-gradient bg dari 50% transparan → 92% warna highlight */
+    const stabiloStyle: React.CSSProperties = sundafHighlight
+      ? {
+          backgroundImage: `linear-gradient(180deg, transparent 0 55%, ${sundafHighlight} 55% 90%, transparent 90%)`,
+          padding: "0 4px",
+        }
+      : {};
+
     return (
       <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
         style={{ background: "var(--gl-bg)" }}>
@@ -260,23 +302,52 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
           </h1>
 
-          {/* SUNDAF kolom kecil — bawah judul di mobile, samping kanan judul di desktop */}
-          <div className="hero-fade-up mb-10 lg:mb-12 lg:absolute lg:top-1/2 lg:right-6 xl:right-10 lg:-translate-y-1/2 lg:max-w-[260px] xl:max-w-[300px]">
-            <span className="text-[9px] sm:text-[10px] tracking-[0.22em] uppercase opacity-50 block mb-2" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-              {t("hero_sundaf_title", "Mengapa Sundaf")}
-            </span>
-            <p
-              className="text-[12px] sm:text-[13px] leading-[1.7] whitespace-pre-line"
+          {/* SUNDAF kolom kecil — mobile inline (di bawah judul), desktop absolute
+              dengan posisi yang bisa diatur via CMS (position, width, font, highlight, rotate). */}
+          <div
+            className="hero-sundaf-block hero-fade-up mb-10 lg:mb-0"
+            style={{ maxWidth: sundafWidthPx }}
+          >
+            <span
+              className="text-[10px] tracking-[0.22em] uppercase opacity-60 block mb-2"
               style={{
                 color: "var(--gl-text)",
                 fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace",
+              }}
+            >
+              {t("hero_sundaf_title", "Mengapa Sundaf")}
+            </span>
+            <p
+              className="leading-[1.7] whitespace-pre-line"
+              style={{
+                color: "var(--gl-text)",
+                fontFamily: sundafFontFamily,
+                fontSize: sundafFontSize,
                 textAlign: "justify",
                 textJustify: "inter-word",
+                ...stabiloStyle,
               } as React.CSSProperties}
             >
               {sundafText}
             </p>
           </div>
+          {/* Inline <style> untuk apply desktop position dinamis dari CMS.
+              Mobile (< 1024px): block inline di flow normal.
+              Desktop (>= 1024px): absolute dengan posisi & rotate dari CMS. */}
+          <style>{`
+            @media (min-width: 1024px) {
+              .hero-sundaf-block {
+                position: absolute;
+                z-index: 20;
+                margin-bottom: 0 !important;
+                ${sundafDesktopPos.top !== undefined ? `top: ${sundafDesktopPos.top};` : ""}
+                ${sundafDesktopPos.right !== undefined ? `right: ${sundafDesktopPos.right};` : ""}
+                ${sundafDesktopPos.bottom !== undefined ? `bottom: ${sundafDesktopPos.bottom};` : ""}
+                ${sundafDesktopPos.left !== undefined ? `left: ${sundafDesktopPos.left};` : ""}
+                transform: ${sundafDesktopPos.transform || `rotate(${sundafRotate})`};
+              }
+            }
+          `}</style>
 
           <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
             <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
