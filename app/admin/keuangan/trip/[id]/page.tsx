@@ -108,6 +108,11 @@ export default async function TripDetailPage({
         )}
       </div>
 
+      <Section title="Link Pelaporan TL" note="Untuk TL melapor pengeluaran dari lapangan" />
+      <Panel pad ticked>
+        <LinkTL tourId={trip.id} token={expenseToken} />
+      </Panel>
+
       <Section
         title="Pengakuan Akrual"
         note={trip.departed ? "Trip sudah jalan" : "Menunggu keberangkatan"}
@@ -317,11 +322,6 @@ export default async function TripDetailPage({
           </Panel>
         </div>
       </div>
-
-      <Section title="Link Pelaporan TL" note="Pengeluaran lapangan tanpa login" />
-      <Panel pad ticked>
-        <LinkTL tourId={trip.id} token={expenseToken} />
-      </Panel>
 
       <Section
         title="Pengeluaran Lapangan"
