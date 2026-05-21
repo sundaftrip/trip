@@ -175,10 +175,11 @@ def page_one(c):
               "international destinations. Our focus is delivering high-value "
               "travel experiences with personal attention — ensuring every "
               "trip is safe, enjoyable, and memorable.")
-    about2 = ("Founded by Ferdiansah, Sundaf Trip was built on the belief "
-              "that international travel should be accessible to more people. "
-              "We handle end-to-end trip operations including itinerary "
-              "design, group coordination, and on-ground tour leadership.")
+    about2 = ("Founded by Ferdiansah with co-founder Billy, Sundaf Trip was "
+              "built on the belief that international travel should be "
+              "accessible to more people. We handle end-to-end trip "
+              "operations including itinerary design, group coordination, "
+              "and on-ground tour leadership.")
     y = paragraph(c, LM, y, about1, CW) - 5
     y = paragraph(c, LM, y, about2, CW) - 16
 
@@ -344,7 +345,7 @@ def page_two(c):
     line_y = box_y + box_h - 54
     LH = 15.5
     light = (0.82, 0.85, 0.90)
-    text(c, ix, line_y, "Ferdiansah  |  Founder, Sundaf Trip",
+    text(c, ix, line_y, "Ferdiansah, Founder   ·   Billy, Co-Founder",
          "Helvetica", 9.5, light)
     line_y -= LH
     lx = ix + text_label(c, ix, line_y, "Email:  ", light)
@@ -378,7 +379,7 @@ def page_two(c):
         ("Legal Entity", "CV Sundaf Holiday Group"),
         ("Business License (NIB)", NIB),
         ("Headquarters", "Jakarta, Indonesia"),
-        ("Founder", "Ferdiansah"),
+        ("Founder & Co-Founder", "Ferdiansah, Billy"),
         ("Business Model", "B2C + B2B (Tour Operator)"),
         ("Group Size", "10–20 pax per departure"),
         ("Tour Leadership", "Own Indonesian-speaking tour leader"),
