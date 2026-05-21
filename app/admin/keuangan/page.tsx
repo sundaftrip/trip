@@ -25,6 +25,7 @@ const MODULES = [
   { idx: "06", href: "/admin/keuangan/bank", title: "Bank & Kas", desc: "Rekening bank, kas tunai, dan e-wallet operasional." },
   { idx: "07", href: "/admin/keuangan/vendor", title: "Vendor & Hutang", desc: "Daftar vendor, tagihan, dan pelunasan hutang HPP." },
   { idx: "08", href: "/admin/keuangan/jurnal", title: "Jurnal Manual", desc: "Buku besar kas. Koreksi lewat void, bukan hapus." },
+  { idx: "09", href: "/admin/keuangan/lapangan", title: "Pengeluaran Lapangan", desc: "Review pengeluaran TL dari lapangan — foto bukti + approval." },
 ];
 
 export default async function RingkasanPage() {
@@ -114,6 +115,31 @@ export default async function RingkasanPage() {
           sub="Total dari trip yang sudah jalan"
         />
       </div>
+
+      {d.fieldPendingCount > 0 && (
+        <Link href="/admin/keuangan/lapangan" style={{ display: "block", marginTop: 12 }}>
+          <Panel ticked className="keu-panel">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                flexWrap: "wrap",
+                fontSize: 11.5,
+              }}
+            >
+              <span className="keu-pill keu-pill-warn">REVIEW</span>
+              <span className="keu-dim-t">
+                <b className="keu-amber-t">{d.fieldPendingCount} pengeluaran lapangan</b> dari TL
+                menunggu review — senilai {rupiah(d.fieldPending)}.
+              </span>
+              <span className="keu-accent" style={{ marginLeft: "auto", fontSize: 10 }}>
+                BUKA ANTRIAN ›
+              </span>
+            </div>
+          </Panel>
+        </Link>
+      )}
 
       <Section title="Modul Terminal" note="Klik untuk membuka rincian" />
       <div

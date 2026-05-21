@@ -12,7 +12,12 @@ import {
   SignedNum,
   autoTone,
 } from "@/components/keuangan/ui";
-import { TripFinanceForm } from "@/components/keuangan/forms";
+import {
+  TripFinanceForm,
+  ApproveExpenseButton,
+  RejectExpenseButton,
+} from "@/components/keuangan/forms";
+import LinkTL from "@/components/keuangan/LinkTL";
 
 export const dynamic = "force-dynamic";
 
@@ -24,8 +29,14 @@ export default async function TripDetailPage({
   const { id } = await params;
   const data = await getTripDetail(id);
   if (!data) notFound();
-  const { trip, receipts, bills, ledger, finance } = data;
+  const { trip, receipts, bills, ledger, finance, fieldExpenses, fieldPending, kasbonSisa, expenseToken } =
+    data;
   const a = trip.agg;
+  const STATUS_TONE: Record<string, "ok" | "warn" | "red"> = {
+    APPROVED: "ok",
+    PENDING: "warn",
+    REJECTED: "red",
+  };
 
   return (
     <>
@@ -295,9 +306,9 @@ export default async function TripDetailPage({
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={2}>HPP TOTAL · DIBAYAR</td>
+                    <td colSpan={2}>TAGIHAN VENDOR · DIBAYAR</td>
                     <td className="keu-r">
-                      {rupiah(a.hppTotal)} · {rupiah(a.hppPaid)}
+                      {rupiah(a.vendorHpp)} · {rupiah(a.hppPaid)}
                     </td>
                   </tr>
                 </tfoot>
@@ -306,6 +317,121 @@ export default async function TripDetailPage({
           </Panel>
         </div>
       </div>
+
+      <Section title="Link Pelaporan TL" note="Pengeluaran lapangan tanpa login" />
+      <Panel pad ticked>
+        <LinkTL tourId={trip.id} token={expenseToken} />
+      </Panel>
+
+      <Section
+        title="Pengeluaran Lapangan"
+        note={`${fieldExpenses.length} entri dari TL`}
+      />
+      <div
+        className="keu-statgrid"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))" }}
+      >
+        <Stat
+          k="Kasbon Diberikan"
+          v={rupiah(a.advanceOut)}
+          tone="cyan"
+          accent="var(--keu-cyan)"
+          sub="Uang muka kerja ke TL"
+        />
+        <Stat
+          k="Sudah Disetujui (HPP)"
+          v={rupiah(a.fieldHpp)}
+          tone="up"
+          accent="var(--keu-green)"
+          sub="Pengeluaran lapangan terverifikasi"
+        />
+        <Stat
+          k="Menunggu Review"
+          v={rupiah(fieldPending)}
+          tone={fieldPending ? "amber" : "faint"}
+          accent="var(--keu-amber)"
+        />
+        <Stat
+          k="Sisa Kasbon TL"
+          v={rupiah(kasbonSisa)}
+          tone={autoTone(kasbonSisa)}
+          accent="var(--keu-orange)"
+          sub={
+            kasbonSisa > 0
+              ? "TL masih pegang / wajib kembalikan"
+              : kasbonSisa < 0
+                ? "Kantor wajib reimburse TL"
+                : "Sudah lunas"
+          }
+        />
+      </div>
+      <Panel pad={false} ticked style={{ marginTop: 12 }}>
+        {fieldExpenses.length === 0 ? (
+          <Empty>BELUM ADA PENGELUARAN LAPANGAN DILAPORKAN</Empty>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table className="keu-table">
+              <thead>
+                <tr>
+                  <th>Bukti</th>
+                  <th>Pengeluaran</th>
+                  <th>TL</th>
+                  <th className="keu-r">Nominal</th>
+                  <th>Status</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {fieldExpenses.map((f) => (
+                  <tr key={f.id}>
+                    <td>
+                      <a href={f.photoUrl} target="_blank" rel="noreferrer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={f.photoUrl}
+                          alt="bukti"
+                          style={{
+                            width: 42,
+                            height: 42,
+                            objectFit: "cover",
+                            borderRadius: 3,
+                            border: "1px solid var(--keu-line2)",
+                            display: "block",
+                          }}
+                        />
+                      </a>
+                    </td>
+                    <td>
+                      <div>{f.category}</div>
+                      <div style={{ fontSize: 9.5, color: "var(--keu-faint)" }}>
+                        {fmtDate(f.date)}
+                        {f.note ? ` · ${f.note}` : ""}
+                      </div>
+                    </td>
+                    <td className="keu-dim-t">{f.submittedBy}</td>
+                    <td className="keu-r keu-num">{rupiah(f.amount)}</td>
+                    <td>
+                      <Pill tone={STATUS_TONE[f.status] ?? "dim"}>{f.status}</Pill>
+                    </td>
+                    <td className="keu-r">
+                      {f.status === "PENDING" ? (
+                        <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                          <ApproveExpenseButton id={f.id} />
+                          <RejectExpenseButton id={f.id} />
+                        </div>
+                      ) : (
+                        <span className="keu-faint-t" style={{ fontSize: 9 }}>
+                          SELESAI
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Panel>
     </>
   );
 }

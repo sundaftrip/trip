@@ -264,6 +264,34 @@ async function seedFinance() {
       { name: "Sari Indah", pax: 2, amount: 60000000, status: "UNPAID", daysAgo: 0 },
     ]);
 
+  // Demo pengeluaran lapangan + kasbon TL pada trip ke-4 (sudah berangkat).
+  if (tours[3]) {
+    const t = tours[3];
+    await prisma.tour.update({
+      where: { id: t.id },
+      data: { expenseToken: "sundafdemo2026" },
+    });
+    await prisma.ledgerEntry.create({
+      data: {
+        date: day(85),
+        direction: "OUT",
+        amount: 25000000,
+        category: "Kasbon TL",
+        description: `Uang muka kerja TL — ${t.title}`,
+        source: "ADVANCE",
+        tourId: t.id,
+      },
+    });
+    const photo = "https://res.cloudinary.com/demo/image/upload/sample.jpg";
+    await prisma.fieldExpense.createMany({
+      data: [
+        { tourId: t.id, date: day(80), category: "Makan Grup", amount: 8500000, photoUrl: photo, submittedBy: "Agus Setiawan", note: "Makan siang grup 10 pax", status: "APPROVED", reviewedAt: day(78) },
+        { tourId: t.id, date: day(79), category: "Tiket Masuk / Atraksi", amount: 6200000, photoUrl: photo, submittedBy: "Agus Setiawan", note: "Tiket museum + istana", status: "APPROVED", reviewedAt: day(77) },
+        { tourId: t.id, date: day(77), category: "Tips & Gratuity", amount: 3500000, photoUrl: photo, submittedBy: "Agus Setiawan", note: "Tips driver & guide lokal", status: "PENDING" },
+      ],
+    });
+  }
+
   await prisma.ledgerEntry.createMany({
     data: [
       { date: day(150), direction: "IN", amount: 400000000, category: "Setoran Modal Awal", source: "CAPITAL", description: "Modal disetor pemilik" },

@@ -74,6 +74,7 @@ export type LedgerClass =
   | "VENDOR_SETTLE"
   | "CAPITAL_IN"
   | "PRIVE_OUT"
+  | "ADVANCE_OUT"
   | "OTHER_INCOME"
   | "OPEX";
 
@@ -85,6 +86,7 @@ export function classifyLedger(e: {
   if (e.vendorBillId) return "VENDOR_SETTLE";
   if (e.source === "CAPITAL") return "CAPITAL_IN";
   if (e.source === "PRIVE") return "PRIVE_OUT";
+  if (e.source === "ADVANCE") return "ADVANCE_OUT";
   return e.direction === "IN" ? "OTHER_INCOME" : "OPEX";
 }
 
@@ -99,10 +101,15 @@ export type TripAgg = {
   billedTotal: number; // total ditagihkan ke peserta (kas + piutang)
   pax: number;
 
-  // sisi biaya (vendor / HPP)
-  hppTotal: number; // total tagihan vendor untuk trip ini
+  // sisi biaya (HPP = vendor + pengeluaran lapangan)
+  vendorHpp: number; // total tagihan vendor untuk trip ini
+  fieldHpp: number; // total pengeluaran lapangan TL yang sudah di-approve
+  hppTotal: number; // vendorHpp + fieldHpp
   hppPaid: number; // tagihan vendor yang sudah dibayar
   hppHutang: number; // tagihan vendor yang belum dibayar
+
+  // kasbon / uang muka TL untuk trip ini
+  advanceOut: number;
 
   // jurnal kas yang ditag ke trip
   ledgerIn: number;
@@ -136,6 +143,7 @@ export function aggregateTrip(
   ledger: LedgerLite[],
   finance: FinanceLite,
   departed: boolean,
+  fieldHpp: number, // total pengeluaran lapangan TL yang sudah di-approve
 ): TripAgg {
   let pesertaCashIn = 0;
   let pesertaPiutang = 0;
@@ -149,19 +157,22 @@ export function aggregateTrip(
     }
   }
 
-  let hppTotal = 0;
+  let vendorHpp = 0;
   let hppPaid = 0;
   for (const b of bills) {
-    hppTotal += b.amount;
+    vendorHpp += b.amount;
     hppPaid += b.amountPaid;
   }
-  const hppHutang = hppTotal - hppPaid;
+  const hppHutang = vendorHpp - hppPaid; // hanya tagihan vendor yang bisa "hutang"
+  const hppTotal = vendorHpp + fieldHpp;
 
   let ledgerIn = 0;
   let ledgerOut = 0;
+  let advanceOut = 0;
   for (const l of ledger) {
     if (l.direction === "IN") ledgerIn += l.amount;
     else ledgerOut += l.amount;
+    if (l.source === "ADVANCE" && l.direction === "OUT") advanceOut += l.amount;
   }
 
   const billedTotal = pesertaCashIn + pesertaPiutang;
@@ -178,9 +189,12 @@ export function aggregateTrip(
     pesertaPiutang,
     billedTotal,
     pax,
+    vendorHpp,
+    fieldHpp,
     hppTotal,
     hppPaid,
     hppHutang,
+    advanceOut,
     ledgerIn,
     ledgerOut,
     cashIn,
@@ -206,6 +220,7 @@ export type FinancialPosition = {
   cash: number; // kas & bank
   arPeserta: number; // piutang peserta (trip sudah berangkat)
   wipCost: number; // biaya trip ditangguhkan (trip belum berangkat)
+  uangMukaTL: number; // kasbon yang dipegang TL & belum dipertanggungjawabkan
   totalAssets: number;
 
   // kewajiban
@@ -232,18 +247,20 @@ export function buildPosition(input: {
   cash: number;
   arPeserta: number;
   wipCost: number;
+  uangMukaTL: number;
   hutangVendor: number;
   deferredRevenue: number;
   modal: number;
   labaDitahan: number;
 }): FinancialPosition {
-  const totalAssets = input.cash + input.arPeserta + input.wipCost;
+  const totalAssets = input.cash + input.arPeserta + input.wipCost + input.uangMukaTL;
   const totalLiabilities = input.hutangVendor + input.deferredRevenue;
   const equity = input.modal + input.labaDitahan;
   return {
     cash: input.cash,
     arPeserta: input.arPeserta,
     wipCost: input.wipCost,
+    uangMukaTL: input.uangMukaTL,
     totalAssets,
     hutangVendor: input.hutangVendor,
     deferredRevenue: input.deferredRevenue,

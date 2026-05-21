@@ -1,5 +1,6 @@
 "use server";
 
+import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -93,6 +94,7 @@ export async function createLedgerEntry(
     let direction = s(fd, "direction") || "OUT";
     if (source === "CAPITAL") direction = "IN";
     if (source === "PRIVE") direction = "OUT";
+    if (source === "ADVANCE") direction = "OUT";
 
     await prisma.ledgerEntry.create({
       data: {
@@ -282,5 +284,92 @@ export async function upsertTripFinance(
       create: { tourId, ...data },
       update: data,
     });
+  });
+}
+
+// ── Pengeluaran Lapangan (field expense) ──────────────────────
+
+/** Buat / regenerasi token link pelaporan pengeluaran TL untuk satu trip. */
+export async function generateExpenseToken(fd: FormData): Promise<void> {
+  await guard();
+  const tourId = s(fd, "tourId");
+  if (!tourId) return;
+  const token = randomBytes(9).toString("base64url");
+  await prisma.tour.update({ where: { id: tourId }, data: { expenseToken: token } });
+  revalidate();
+}
+
+/** Cabut link pelaporan TL (token dihapus, link lama mati). */
+export async function revokeExpenseToken(fd: FormData): Promise<void> {
+  await guard();
+  const tourId = s(fd, "tourId");
+  if (!tourId) return;
+  await prisma.tour.update({ where: { id: tourId }, data: { expenseToken: null } });
+  revalidate();
+}
+
+export async function approveFieldExpense(fd: FormData): Promise<void> {
+  await guard();
+  const id = s(fd, "id");
+  const fe = await prisma.fieldExpense.findUnique({ where: { id } });
+  if (!fe || fe.status !== "PENDING") return;
+  await prisma.fieldExpense.update({
+    where: { id },
+    data: { status: "APPROVED", reviewedAt: new Date() },
+  });
+  revalidate();
+}
+
+export async function rejectFieldExpense(fd: FormData): Promise<void> {
+  await guard();
+  const id = s(fd, "id");
+  const fe = await prisma.fieldExpense.findUnique({ where: { id } });
+  if (!fe || fe.status !== "PENDING") return;
+  await prisma.fieldExpense.update({
+    where: { id },
+    data: { status: "REJECTED", reviewedAt: new Date(), reviewNote: opt(fd, "reviewNote") },
+  });
+  revalidate();
+}
+
+/**
+ * PUBLIK — diajukan TL lewat link bertoken. TIDAK pakai guard():
+ * autentikasinya adalah token trip yang valid. Hanya bisa membuat
+ * pengeluaran berstatus PENDING; tidak bisa baca data keuangan.
+ */
+export async function submitFieldExpense(
+  _prev: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  return run(async () => {
+    const token = s(fd, "token");
+    if (!token) throw new Error("Link tidak valid.");
+    const tour = await prisma.tour.findUnique({ where: { expenseToken: token } });
+    if (!tour) throw new Error("Link tidak valid atau sudah dicabut.");
+
+    const amount = n(fd, "amount");
+    if (amount <= 0) throw new Error("Nominal harus lebih dari 0.");
+    const category = s(fd, "category");
+    if (!category) throw new Error("Kategori wajib dipilih.");
+    const photoUrl = s(fd, "photoUrl");
+    if (!photoUrl) throw new Error("Foto bukti wajib diunggah.");
+    const submittedBy = s(fd, "submittedBy");
+    if (!submittedBy) throw new Error("Nama TL wajib diisi.");
+    const dateStr = s(fd, "date");
+
+    await prisma.fieldExpense.create({
+      data: {
+        tourId: tour.id,
+        date: dateStr ? new Date(dateStr) : new Date(),
+        category,
+        amount,
+        photoUrl,
+        note: opt(fd, "note"),
+        submittedBy,
+        status: "PENDING",
+      },
+    });
+    revalidatePath(`/lapor/${token}`);
+    revalidate();
   });
 }

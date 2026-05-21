@@ -13,6 +13,10 @@ import {
   toggleBankArchive,
   voidLedgerEntry,
   voidVendorBill,
+  generateExpenseToken,
+  revokeExpenseToken,
+  approveFieldExpense,
+  rejectFieldExpense,
 } from "@/lib/keuangan/actions";
 import { CURRENCIES, rupiah } from "@/lib/keuangan/format";
 
@@ -202,6 +206,7 @@ export function JurnalForm({
             <option value="REFUND">Refund</option>
             <option value="CAPITAL">Setoran Modal (otomatis masuk)</option>
             <option value="PRIVE">Penarikan Pemilik / Prive (otomatis keluar)</option>
+            <option value="ADVANCE">Kasbon / Uang Muka TL (otomatis keluar)</option>
             <option value="MANUAL">Manual</option>
           </select>
         </Field>
@@ -537,6 +542,66 @@ export function VoidBillButton({ id }: { id: string }) {
         title="Batalkan tagihan (hanya bila belum ada pembayaran)"
       >
         VOID
+      </button>
+    </form>
+  );
+}
+
+// ── Pengeluaran Lapangan ──────────────────────────────────────
+
+export function GenerateLinkButton({
+  tourId,
+  hasToken,
+}: {
+  tourId: string;
+  hasToken: boolean;
+}) {
+  return (
+    <form action={generateExpenseToken} style={{ display: "inline" }}>
+      <input type="hidden" name="tourId" value={tourId} />
+      <button type="submit" className="keu-btn keu-btn-primary" style={{ fontSize: 10 }}>
+        {hasToken ? "+ GENERATE ULANG LINK" : "+ BUAT LINK TL"}
+      </button>
+    </form>
+  );
+}
+
+export function RevokeLinkButton({ tourId }: { tourId: string }) {
+  return (
+    <form action={revokeExpenseToken} style={{ display: "inline" }}>
+      <input type="hidden" name="tourId" value={tourId} />
+      <button type="submit" className="keu-btn keu-btn-ghost" style={{ fontSize: 10 }}>
+        CABUT LINK
+      </button>
+    </form>
+  );
+}
+
+export function ApproveExpenseButton({ id }: { id: string }) {
+  return (
+    <form action={approveFieldExpense} style={{ display: "inline" }}>
+      <input type="hidden" name="id" value={id} />
+      <button
+        type="submit"
+        className="keu-btn keu-btn-primary"
+        style={{ padding: "5px 10px", fontSize: 10 }}
+      >
+        ✓ APPROVE
+      </button>
+    </form>
+  );
+}
+
+export function RejectExpenseButton({ id }: { id: string }) {
+  return (
+    <form action={rejectFieldExpense} style={{ display: "inline" }}>
+      <input type="hidden" name="id" value={id} />
+      <button
+        type="submit"
+        className="keu-btn keu-btn-ghost"
+        style={{ padding: "5px 10px", fontSize: 10 }}
+      >
+        ✕ TOLAK
       </button>
     </form>
   );

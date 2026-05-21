@@ -13,6 +13,7 @@ const NAV: { idx: string; href: string; label: string; group: string }[] = [
   { idx: "06", href: "/admin/keuangan/bank", label: "Bank & Kas", group: "OPERASI" },
   { idx: "07", href: "/admin/keuangan/vendor", label: "Vendor & Hutang", group: "OPERASI" },
   { idx: "08", href: "/admin/keuangan/jurnal", label: "Jurnal Manual", group: "OPERASI" },
+  { idx: "09", href: "/admin/keuangan/lapangan", label: "Pengeluaran Lapangan", group: "OPERASI" },
 ];
 
 function isActive(pathname: string, href: string): boolean {

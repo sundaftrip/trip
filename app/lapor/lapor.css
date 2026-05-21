@@ -1,0 +1,292 @@
+/* ════════════════════════════════════════════════════════════
+   Form Pelaporan Pengeluaran TL — publik, mobile-first.
+   Sengaja TERANG & simpel (kebalikan dari terminal gelap kantor)
+   supaya gampang dipakai TL di lapangan dari HP.
+   ════════════════════════════════════════════════════════════ */
+
+.lapor {
+  --navy: #0c2647;
+  --orange: #fe8032;
+  --ink: #1a2433;
+  --dim: #5b6678;
+  --line: #e3e7ee;
+  --bg: #f4f6fa;
+  --ok: #1c8a5b;
+  --warn: #b9821a;
+  --bad: #c4402f;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-jost), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.lapor * {
+  box-sizing: border-box;
+}
+
+.lapor-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 0 60px;
+}
+
+/* header */
+.lapor-head {
+  background: var(--navy);
+  color: #fff;
+  padding: 22px 20px 26px;
+  border-radius: 0 0 20px 20px;
+}
+.lapor-brand {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  opacity: 0.7;
+}
+.lapor-brand b {
+  color: var(--orange);
+}
+.lapor-title {
+  font-size: 21px;
+  font-weight: 700;
+  margin-top: 10px;
+  line-height: 1.25;
+}
+.lapor-trip {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 6px;
+}
+.lapor-head-note {
+  font-size: 11.5px;
+  opacity: 0.6;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+/* card */
+.lapor-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 14px rgba(12, 38, 71, 0.05);
+}
+.lapor-sec-title {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin: 4px 0 14px;
+}
+
+/* fields */
+.lapor-field {
+  margin-bottom: 15px;
+}
+.lapor-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.lapor-label .req {
+  color: var(--bad);
+}
+.lapor-input,
+.lapor-select,
+.lapor-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px; /* >=16 mencegah zoom iOS; 15 kompromi */
+  padding: 12px 13px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.12s;
+}
+.lapor-input:focus,
+.lapor-select:focus,
+.lapor-textarea:focus {
+  border-color: var(--orange);
+}
+.lapor-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.lapor-hint {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 5px;
+}
+
+/* foto uploader */
+.lapor-photo {
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  padding: 22px 14px;
+  text-align: center;
+  cursor: pointer;
+  background: #fbfcfe;
+  transition: border-color 0.12s, background 0.12s;
+}
+.lapor-photo:active {
+  border-color: var(--orange);
+}
+.lapor-photo-icon {
+  font-size: 30px;
+}
+.lapor-photo-text {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+.lapor-photo-sub {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 3px;
+}
+.lapor-photo-preview {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid var(--line);
+}
+.lapor-photo-preview img {
+  width: 100%;
+  display: block;
+  max-height: 260px;
+  object-fit: cover;
+}
+.lapor-photo-change {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(12, 38, 71, 0.88);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* buttons */
+.lapor-btn {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 11px;
+  border: none;
+  background: var(--orange);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.12s, transform 0.05s;
+}
+.lapor-btn:active {
+  transform: scale(0.99);
+}
+.lapor-btn:disabled {
+  opacity: 0.5;
+}
+
+/* alerts */
+.lapor-alert {
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.lapor-alert-error {
+  background: #fdecea;
+  color: var(--bad);
+  border: 1px solid #f3c8c2;
+}
+.lapor-alert-ok {
+  background: #e8f6ef;
+  color: var(--ok);
+  border: 1px solid #bfe3d0;
+}
+
+/* recent list */
+.lapor-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lapor-row:last-child {
+  border-bottom: none;
+}
+.lapor-row-thumb {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+}
+.lapor-row-main {
+  flex: 1;
+  min-width: 0;
+}
+.lapor-row-cat {
+  font-size: 13px;
+  font-weight: 600;
+}
+.lapor-row-meta {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 2px;
+}
+.lapor-row-amt {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.lapor-pill {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+.lapor-pill-pending { background: #fdf1da; color: var(--warn); }
+.lapor-pill-approved { background: #e3f3ea; color: var(--ok); }
+.lapor-pill-rejected { background: #fbe6e3; color: var(--bad); }
+
+.lapor-empty {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--dim);
+  padding: 18px 0;
+}
+
+.lapor-invalid {
+  text-align: center;
+  margin-top: 60px;
+}
+.lapor-invalid-icon {
+  font-size: 44px;
+}
+.lapor-invalid h1 {
+  font-size: 18px;
+  margin: 12px 0 6px;
+}
+.lapor-invalid p {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.6;
+}

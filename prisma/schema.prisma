@@ -94,6 +94,8 @@ model Tour {
   finance        TripFinance?
   vendorBills    VendorBill[]
   ledgerEntries  LedgerEntry[]
+  fieldExpenses  FieldExpense[]
+  expenseToken   String?    @unique  // token link pelaporan pengeluaran TL
 }
 
 model Blog {
@@ -245,7 +247,14 @@ enum EntrySource {
   REFUND          // pengembalian dana
   CAPITAL         // setoran modal pemilik (menambah ekuitas, BUKAN pendapatan)
   PRIVE           // penarikan pemilik (mengurangi ekuitas, BUKAN beban)
+  ADVANCE         // kasbon / uang muka kerja ke TL (aset, BUKAN beban)
   OTHER
+}
+
+enum FieldExpenseStatus {
+  PENDING   // diajukan TL, menunggu review
+  APPROVED  // disetujui — masuk HPP trip
+  REJECTED  // ditolak
 }
 
 enum VendorCategory {
@@ -336,6 +345,28 @@ model TripFinance {
   note         String?
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+}
+
+// Pengeluaran lapangan — diajukan TL lewat link bertoken, dengan
+// foto bukti. Setelah di-approve jadi bagian HPP trip.
+model FieldExpense {
+  id          String             @id @default(cuid())
+  tourId      String
+  tour        Tour               @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  date        DateTime
+  category    String
+  amount      Float
+  photoUrl    String             // foto struk/nota — bukti wajib
+  note        String?
+  submittedBy String             // nama TL
+  status      FieldExpenseStatus @default(PENDING)
+  reviewNote  String?
+  reviewedAt  DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([tourId])
+  @@index([status])
 }
 
 // Buku besar kas — setiap pergerakan uang masuk/keluar.

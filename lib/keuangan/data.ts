@@ -30,8 +30,11 @@ async function fetchAll() {
     prisma.ledgerEntry.findMany({ orderBy: { date: "desc" } }),
     prisma.tripFinance.findMany(),
   ]);
-  const receipts = await prisma.receipt.findMany();
-  return { tours, banks, vendors, bills, ledger, finances, receipts };
+  const [receipts, fieldExpenses] = await Promise.all([
+    prisma.receipt.findMany(),
+    prisma.fieldExpense.findMany({ orderBy: { date: "desc" } }),
+  ]);
+  return { tours, banks, vendors, bills, ledger, finances, receipts, fieldExpenses };
 }
 
 type AllData = Awaited<ReturnType<typeof fetchAll>>;
@@ -78,6 +81,9 @@ function derive(all: AllData) {
     const bills = activeBills.filter((b) => b.tourId === tour.id);
     const ledger = activeLedger.filter((l) => l.tourId === tour.id);
     const fin = finByTour.get(tour.id) ?? null;
+    const fieldHpp = all.fieldExpenses
+      .filter((f) => f.tourId === tour.id && f.status === "APPROVED")
+      .reduce((s, f) => s + f.amount, 0);
     const agg = aggregateTrip(
       receipts.map((r) => ({
         amount: r.amount,
@@ -102,6 +108,7 @@ function derive(all: AllData) {
           }
         : null,
       departed,
+      fieldHpp,
     );
     return {
       id: tour.id,
@@ -122,6 +129,7 @@ function derive(all: AllData) {
   let otherIncome = 0;
   let opex = 0;
   let vendorSettle = 0;
+  let advanceTotal = 0;
   let ledgerInTotal = 0;
   let ledgerOutTotal = 0;
   for (const l of activeLedger) {
@@ -134,6 +142,9 @@ function derive(all: AllData) {
       case "PRIVE_OUT":
         priveOut += l.amount;
         break;
+      case "ADVANCE_OUT":
+        advanceTotal += l.amount;
+        break;
       case "OTHER_INCOME":
         otherIncome += l.amount;
         break;
@@ -145,6 +156,17 @@ function derive(all: AllData) {
         break;
     }
   }
+
+  // Uang Muka TL = kasbon yang sudah keluar − pengeluaran lapangan
+  // yang sudah di-approve. Sisa = cash yang masih dipegang TL.
+  const fieldApproved = all.fieldExpenses
+    .filter((f) => f.status === "APPROVED")
+    .reduce((s, f) => s + f.amount, 0);
+  const fieldPending = all.fieldExpenses
+    .filter((f) => f.status === "PENDING")
+    .reduce((s, f) => s + f.amount, 0);
+  const fieldPendingCount = all.fieldExpenses.filter((f) => f.status === "PENDING").length;
+  const uangMukaTL = advanceTotal - fieldApproved;
 
   const opening = all.banks.reduce((s, b) => s + b.openingBalance, 0);
   const pesertaCashInAll = trips.reduce((s, t) => s + t.agg.pesertaCashIn, 0);
@@ -162,6 +184,7 @@ function derive(all: AllData) {
     cash,
     arPeserta,
     wipCost,
+    uangMukaTL,
     hutangVendor,
     deferredRevenue,
     modal,
@@ -178,11 +201,15 @@ function derive(all: AllData) {
     pesertaCashInAll,
     capitalIn,
     priveOut,
+    advanceTotal,
     otherIncome,
     opex,
     vendorSettle,
     recognizedRevenue,
     recognizedHpp,
+    fieldApproved,
+    fieldPending,
+    fieldPendingCount,
   };
 }
 
@@ -338,6 +365,8 @@ export async function getOverview() {
     recognizedRevenue: d.recognizedRevenue,
     monthNet: cur?.net ?? 0,
     monthNetGrowth: growth(cur?.net ?? 0, prev?.net ?? 0),
+    fieldPendingCount: d.fieldPendingCount,
+    fieldPending: d.fieldPending,
   };
 }
 
@@ -361,13 +390,32 @@ export async function getTripDetail(id: string) {
   const d = derive(await fetchAll());
   const trip = d.trips.find((t) => t.id === id);
   if (!trip) return null;
+  const tour = d.all.tours.find((t) => t.id === id);
   const receipts = d.all.receipts
     .filter((r) => r.tourId === id)
     .sort((a, b) => receiptDate(b).getTime() - receiptDate(a).getTime());
   const bills = d.activeBills.filter((b) => b.tourId === id);
   const ledger = d.activeLedger.filter((l) => l.tourId === id);
   const finance = d.all.finances.find((f) => f.tourId === id) ?? null;
-  return { trip, receipts, bills, ledger, finance };
+  const fieldExpenses = d.all.fieldExpenses
+    .filter((f) => f.tourId === id)
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
+  const fieldPending = fieldExpenses
+    .filter((f) => f.status === "PENDING")
+    .reduce((s, f) => s + f.amount, 0);
+  // rekonsiliasi kasbon: kasbon keluar − pengeluaran lapangan disetujui
+  const kasbonSisa = trip.agg.advanceOut - trip.agg.fieldHpp;
+  return {
+    trip,
+    receipts,
+    bills,
+    ledger,
+    finance,
+    fieldExpenses,
+    fieldPending,
+    kasbonSisa,
+    expenseToken: tour?.expenseToken ?? null,
+  };
 }
 
 export type CashPositionRow = {
@@ -577,6 +625,7 @@ export async function getNeraca() {
   const assets = [
     ...banks.map((b) => ({ label: b.name, amount: b.balance, group: "Kas & Bank" })),
     { label: "Piutang Peserta", amount: p.arPeserta, group: "Piutang" },
+    { label: "Uang Muka TL (Kasbon)", amount: p.uangMukaTL, group: "Uang Muka" },
     { label: "Biaya Trip Ditangguhkan", amount: p.wipCost, group: "Trip Berjalan" },
   ];
   const liabilities = [
@@ -589,4 +638,51 @@ export async function getNeraca() {
   ];
 
   return { position: p, assets, liabilities, equity };
+}
+
+// ── Pengeluaran Lapangan (queue approval) ────────────────────
+
+export type FieldExpenseRow = {
+  id: string;
+  tourId: string;
+  tourCode: string;
+  tourTitle: string;
+  date: Date;
+  category: string;
+  amount: number;
+  photoUrl: string;
+  note: string | null;
+  submittedBy: string;
+  status: string;
+  reviewNote: string | null;
+};
+
+export async function getLapanganData() {
+  const d = derive(await fetchAll());
+  const tourMap = new Map(d.all.tours.map((t) => [t.id, t]));
+  const rows: FieldExpenseRow[] = d.all.fieldExpenses.map((f) => {
+    const t = tourMap.get(f.tourId);
+    return {
+      id: f.id,
+      tourId: f.tourId,
+      tourCode: t ? tripCode(t) : "—",
+      tourTitle: t?.title ?? "—",
+      date: f.date,
+      category: f.category,
+      amount: f.amount,
+      photoUrl: f.photoUrl,
+      note: f.note,
+      submittedBy: f.submittedBy,
+      status: f.status,
+      reviewNote: f.reviewNote,
+    };
+  });
+  return {
+    rows,
+    pendingCount: rows.filter((r) => r.status === "PENDING").length,
+    pendingTotal: d.fieldPending,
+    approvedTotal: d.fieldApproved,
+    advanceTotal: d.advanceTotal,
+    uangMukaTL: d.position.uangMukaTL,
+  };
 }
