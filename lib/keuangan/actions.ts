@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { isTokenActive } from "@/lib/keuangan/calc";
 
 export type ActionState = { ok: boolean; error?: string };
 
@@ -346,6 +347,8 @@ export async function submitFieldExpense(
     if (!token) throw new Error("Link tidak valid.");
     const tour = await prisma.tour.findUnique({ where: { expenseToken: token } });
     if (!tour) throw new Error("Link tidak valid atau sudah dicabut.");
+    if (!isTokenActive(tour.tripDate))
+      throw new Error("Link sudah kedaluwarsa — minta link baru ke kantor.");
 
     const amount = n(fd, "amount");
     if (amount <= 0) throw new Error("Nominal harus lebih dari 0.");

@@ -2,18 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { generateExpenseToken, revokeExpenseToken } from "@/lib/keuangan/actions";
+import { isTokenActive, tokenExpiry } from "@/lib/keuangan/calc";
+import { fmtDate } from "@/lib/keuangan/format";
 
 export default function LinkTL({
   tourId,
   token,
+  tripDate,
 }: {
   tourId: string;
   token: string | null;
+  tripDate: Date | string | null;
 }) {
   const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
 
   useEffect(() => setOrigin(window.location.origin), []);
+
+  const td = tripDate ? new Date(tripDate) : null;
+  const active = isTokenActive(td);
+  const expiry = tokenExpiry(td);
 
   if (!token) {
     return (
@@ -67,6 +75,18 @@ export default function LinkTL({
           KIRIM WA
         </a>
       </div>
+      <div style={{ marginTop: 8, fontSize: 10 }}>
+        {active ? (
+          <span className="keu-up">
+            ● AKTIF{expiry ? ` — berlaku sampai ${fmtDate(expiry)}` : " — tanpa batas waktu"}
+          </span>
+        ) : (
+          <span className="keu-down">
+            ⏳ KEDALUWARSA — link tidak bisa dipakai TL lagi. Klik "GANTI LINK" untuk
+            menerbitkan link baru.
+          </span>
+        )}
+      </div>
       <div
         style={{
           display: "flex",
@@ -77,7 +97,8 @@ export default function LinkTL({
         }}
       >
         <span style={{ fontSize: 10, color: "var(--keu-faint)" }}>
-          Bagikan ke TL. Tanpa login — TL cukup buka link, foto struk, submit.
+          Bagikan ke TL. Tanpa login — TL cukup buka link, foto struk, submit. Link mati
+          otomatis 14 hari setelah trip berangkat.
         </span>
         <div style={{ display: "flex", gap: 8, marginLeft: "auto" }}>
           <form action={generateExpenseToken}>

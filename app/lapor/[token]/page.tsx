@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../lapor.css";
 import { prisma } from "@/lib/prisma";
 import { fmtDate } from "@/lib/keuangan/format";
+import { isTokenActive } from "@/lib/keuangan/calc";
 import LaporForm from "@/components/lapor/LaporForm";
 
 export const dynamic = "force-dynamic";
@@ -23,16 +24,18 @@ export default async function LaporPage({
     select: { id: true, title: true, country: true, tripDate: true },
   });
 
-  if (!tour) {
+  if (!tour || !isTokenActive(tour.tripDate)) {
+    const expired = !!tour; // ketemu tapi sudah lewat masa berlaku
     return (
       <div className="lapor">
         <div className="lapor-wrap">
           <div className="lapor-card lapor-invalid">
-            <div className="lapor-invalid-icon">🔒</div>
-            <h1>Link tidak valid</h1>
+            <div className="lapor-invalid-icon">{expired ? "⏳" : "🔒"}</div>
+            <h1>{expired ? "Link sudah kedaluwarsa" : "Link tidak valid"}</h1>
             <p>
-              Link pelaporan ini tidak ditemukan atau sudah dicabut kantor.
-              Hubungi kantor Sundaf Trip untuk mendapatkan link terbaru.
+              {expired
+                ? "Masa berlaku link pelaporan ini sudah habis (14 hari setelah trip berangkat). Hubungi kantor Sundaf Trip untuk link baru."
+                : "Link pelaporan ini tidak ditemukan atau sudah dicabut kantor. Hubungi kantor Sundaf Trip untuk mendapatkan link terbaru."}
             </p>
           </div>
         </div>

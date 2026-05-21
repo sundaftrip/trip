@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/cloudinary";
+import { isTokenActive } from "@/lib/keuangan/calc";
 
 // Upload foto bukti pengeluaran lapangan. PUBLIK tapi divalidasi token
 // trip — bukan sesi login. Hanya bisa upload kalau token valid.
@@ -28,10 +29,13 @@ export async function POST(req: NextRequest) {
 
   const tour = await prisma.tour.findUnique({
     where: { expenseToken: token },
-    select: { id: true },
+    select: { id: true, tripDate: true },
   });
   if (!tour) {
     return NextResponse.json({ error: "Link tidak valid." }, { status: 403 });
+  }
+  if (!isTokenActive(tour.tripDate)) {
+    return NextResponse.json({ error: "Link sudah kedaluwarsa." }, { status: 403 });
   }
 
   try {

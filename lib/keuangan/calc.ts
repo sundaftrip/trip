@@ -273,6 +273,23 @@ export function buildPosition(input: {
   };
 }
 
+// ── token link pelaporan TL ──────────────────────────────────
+
+/** Link /lapor aktif sampai N hari setelah trip berangkat. */
+export const TOKEN_GRACE_DAYS = 14;
+
+/** Tanggal token kedaluwarsa, atau null kalau trip belum punya tanggal. */
+export function tokenExpiry(tripDate: Date | null): Date | null {
+  if (!tripDate) return null;
+  return new Date(new Date(tripDate).getTime() + TOKEN_GRACE_DAYS * 86400000);
+}
+
+/** Token masih aktif? Trip tanpa tanggal dianggap selalu aktif. */
+export function isTokenActive(tripDate: Date | null): boolean {
+  const exp = tokenExpiry(tripDate);
+  return exp ? Date.now() <= exp.getTime() : true;
+}
+
 /** % perubahan a vs b, aman untuk pembagi 0. */
 export function growth(current: number, prev: number): number {
   if (prev === 0) return current === 0 ? 0 : 100;

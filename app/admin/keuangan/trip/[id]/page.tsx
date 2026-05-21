@@ -110,7 +110,7 @@ export default async function TripDetailPage({
 
       <Section title="Link Pelaporan TL" note="Untuk TL melapor pengeluaran dari lapangan" />
       <Panel pad ticked>
-        <LinkTL tourId={trip.id} token={expenseToken} />
+        <LinkTL tourId={trip.id} token={expenseToken} tripDate={trip.tripDate} />
       </Panel>
 
       <Section
