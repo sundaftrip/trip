@@ -1,0 +1,627 @@
+/* ════════════════════════════════════════════════════════════
+   SUNDAF · FINANCE TERMINAL — design system
+   Estetika "dark trading terminal": monospace, panel bersudut
+   tajam, garis grid, angka tabular. Sengaja dibuat jauh dari
+   tampilan dashboard SaaS generik.
+   Semua di-scope ke .keu agar tidak bocor ke admin lain.
+   ════════════════════════════════════════════════════════════ */
+
+.keu {
+  --keu-bg: #0a0c10;
+  --keu-bg2: #0d1016;
+  --keu-panel: #12161e;
+  --keu-panel2: #161c27;
+  --keu-line: #222a38;
+  --keu-line2: #2f3a4d;
+  --keu-text: #e7ebf2;
+  --keu-dim: #8b94a6;
+  --keu-faint: #59637a;
+  --keu-orange: #fe8032;
+  --keu-cyan: #35d6cf;
+  --keu-green: #3ddc8f;
+  --keu-red: #ff5f56;
+  --keu-amber: #f6b73c;
+
+  font-family: var(--font-anonymous-pro), ui-monospace, "SF Mono", Menlo, monospace;
+  background: var(--keu-bg);
+  color: var(--keu-text);
+  min-height: 100vh;
+  font-feature-settings: "tnum";
+  -webkit-font-smoothing: antialiased;
+}
+
+.keu *,
+.keu *::before,
+.keu *::after {
+  box-sizing: border-box;
+}
+
+/* grid texture latar */
+.keu-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--keu-bg);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(254, 128, 50, 0.06), transparent);
+  background-size: 44px 44px, 44px 44px, 100% 100%;
+}
+
+/* ── shell ──────────────────────────────────────────────── */
+
+.keu-shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100vh;
+}
+
+.keu-rail {
+  width: 232px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--keu-line);
+  background: linear-gradient(180deg, var(--keu-bg2), var(--keu-bg));
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.keu-brand {
+  padding: 18px 18px 16px;
+  border-bottom: 1px solid var(--keu-line);
+}
+.keu-brand-mark {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--keu-text);
+}
+.keu-brand-mark b {
+  color: var(--keu-orange);
+}
+.keu-brand-sub {
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  color: var(--keu-faint);
+  margin-top: 4px;
+}
+
+.keu-rail-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 10px;
+}
+.keu-rail-group {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: var(--keu-faint);
+  padding: 14px 10px 8px;
+}
+.keu-rail-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--keu-dim);
+  border-left: 2px solid transparent;
+  transition: background 0.12s, color 0.12s;
+  text-transform: uppercase;
+}
+.keu-rail-link:hover {
+  background: var(--keu-panel);
+  color: var(--keu-text);
+}
+.keu-rail-link.active {
+  background: linear-gradient(90deg, rgba(254, 128, 50, 0.14), transparent);
+  border-left-color: var(--keu-orange);
+  color: var(--keu-text);
+}
+.keu-rail-idx {
+  font-size: 10px;
+  color: var(--keu-faint);
+  width: 18px;
+}
+.keu-rail-link.active .keu-rail-idx {
+  color: var(--keu-orange);
+}
+.keu-rail-foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--keu-line);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--keu-faint);
+}
+
+.keu-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── topbar ─────────────────────────────────────────────── */
+
+.keu-topbar {
+  height: 50px;
+  border-bottom: 1px solid var(--keu-line);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 20px;
+  background: var(--keu-bg2);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.keu-live {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--keu-green);
+}
+.keu-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--keu-green);
+  box-shadow: 0 0 8px var(--keu-green);
+  animation: keu-blink 1.6s infinite;
+}
+@keyframes keu-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.keu-ticker {
+  flex: 1;
+  font-size: 11px;
+  color: var(--keu-dim);
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.keu-ticker b { color: var(--keu-text); }
+.keu-clock {
+  font-size: 11px;
+  color: var(--keu-cyan);
+  letter-spacing: 0.08em;
+}
+.keu-user {
+  font-size: 10.5px;
+  color: var(--keu-dim);
+  letter-spacing: 0.08em;
+  border-left: 1px solid var(--keu-line);
+  padding-left: 16px;
+}
+
+.keu-main {
+  padding: 24px 26px 60px;
+  max-width: 1320px;
+  width: 100%;
+}
+
+/* ── page head ──────────────────────────────────────────── */
+
+.keu-pagehead {
+  margin-bottom: 22px;
+}
+.keu-crumb {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--keu-faint);
+  margin-bottom: 8px;
+}
+.keu-crumb a:hover { color: var(--keu-orange); }
+.keu-h1 {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.keu-lede {
+  font-size: 11.5px;
+  color: var(--keu-dim);
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* ── section header ─────────────────────────────────────── */
+
+.keu-sec {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 26px 0 12px;
+}
+.keu-sec::before {
+  content: "";
+  width: 3px;
+  height: 13px;
+  background: var(--keu-orange);
+}
+.keu-sec h2 {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--keu-text);
+}
+.keu-sec .keu-sec-note {
+  font-size: 10px;
+  color: var(--keu-faint);
+  letter-spacing: 0.06em;
+}
+
+/* ── panel ──────────────────────────────────────────────── */
+
+.keu-panel {
+  position: relative;
+  background: var(--keu-panel);
+  border: 1px solid var(--keu-line);
+  border-radius: 3px;
+}
+.keu-panel-pad { padding: 16px; }
+.keu-panel-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--keu-faint);
+  text-transform: uppercase;
+  padding: 9px 14px 0;
+}
+.keu-panel-tab::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background: var(--keu-orange);
+}
+
+/* corner ticks dekoratif */
+.keu-ticked::before,
+.keu-ticked::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: var(--keu-line2);
+  border-style: solid;
+}
+.keu-ticked::before {
+  top: -1px; left: -1px;
+  border-width: 1px 0 0 1px;
+}
+.keu-ticked::after {
+  bottom: -1px; right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+/* ── hero ───────────────────────────────────────────────── */
+
+.keu-hero {
+  position: relative;
+  border: 1px solid var(--keu-line2);
+  border-radius: 3px;
+  background:
+    radial-gradient(ellipse 60% 120% at 0% 0%, rgba(61, 220, 143, 0.08), transparent),
+    var(--keu-panel);
+  padding: 22px 24px;
+  overflow: hidden;
+}
+.keu-hero::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--keu-green);
+}
+.keu-hero.neg {
+  border-color: rgba(255, 95, 86, 0.45);
+  background:
+    radial-gradient(ellipse 70% 130% at 0% 0%, rgba(255, 95, 86, 0.13), transparent),
+    var(--keu-panel);
+}
+.keu-hero.neg::after { background: var(--keu-red); }
+.keu-hero-label {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: var(--keu-dim);
+  text-transform: uppercase;
+}
+.keu-hero-num {
+  font-size: clamp(34px, 6vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  margin: 8px 0 6px;
+}
+.keu-hero-formula {
+  font-size: 11px;
+  color: var(--keu-faint);
+  letter-spacing: 0.05em;
+}
+
+/* ── stat / kpi ─────────────────────────────────────────── */
+
+.keu-statgrid {
+  display: grid;
+  gap: 12px;
+}
+.keu-stat {
+  background: var(--keu-panel);
+  border: 1px solid var(--keu-line);
+  border-radius: 3px;
+  padding: 13px 14px;
+  position: relative;
+}
+.keu-stat-k {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: var(--keu-faint);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.keu-stat-v {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 8px;
+  letter-spacing: -0.01em;
+}
+.keu-stat-sub {
+  font-size: 10px;
+  color: var(--keu-faint);
+  margin-top: 5px;
+  letter-spacing: 0.04em;
+}
+
+/* ── numbers / tones ────────────────────────────────────── */
+
+.keu-num { font-variant-numeric: tabular-nums; }
+.keu-up { color: var(--keu-green); }
+.keu-down { color: var(--keu-red); }
+.keu-accent { color: var(--keu-orange); }
+.keu-cyan-t { color: var(--keu-cyan); }
+.keu-amber-t { color: var(--keu-amber); }
+.keu-dim-t { color: var(--keu-dim); }
+.keu-faint-t { color: var(--keu-faint); }
+
+/* ── pill ───────────────────────────────────────────────── */
+
+.keu-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.keu-pill-cyan { color: var(--keu-cyan); background: rgba(53, 214, 207, 0.08); }
+.keu-pill-warn { color: var(--keu-amber); background: rgba(246, 183, 60, 0.08); }
+.keu-pill-dim { color: var(--keu-faint); background: rgba(89, 99, 122, 0.1); }
+.keu-pill-ok { color: var(--keu-green); background: rgba(61, 220, 143, 0.08); }
+.keu-pill-red { color: var(--keu-red); background: rgba(255, 95, 86, 0.08); }
+
+/* ── table ──────────────────────────────────────────────── */
+
+.keu-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+.keu-table thead th {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--keu-faint);
+  font-weight: 400;
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--keu-line2);
+  white-space: nowrap;
+}
+.keu-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--keu-line);
+  color: var(--keu-text);
+  vertical-align: middle;
+}
+.keu-table tbody tr:hover td {
+  background: rgba(254, 128, 50, 0.045);
+}
+.keu-table tbody tr:last-child td { border-bottom: none; }
+.keu-table .keu-r { text-align: right; font-variant-numeric: tabular-nums; }
+.keu-table tfoot td {
+  padding: 11px 12px;
+  border-top: 1px solid var(--keu-line2);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--keu-bg2);
+}
+.keu-table-link:hover { color: var(--keu-orange); }
+.keu-row-strong td { font-weight: 700; }
+
+/* ── buttons / forms ────────────────────────────────────── */
+
+.keu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 15px;
+  border-radius: 2px;
+  border: 1px solid var(--keu-line2);
+  background: var(--keu-panel2);
+  color: var(--keu-text);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.keu-btn:hover { border-color: var(--keu-orange); color: var(--keu-orange); }
+.keu-btn-primary {
+  background: var(--keu-orange);
+  border-color: var(--keu-orange);
+  color: #1a0e03;
+  font-weight: 700;
+}
+.keu-btn-primary:hover { background: #ff9450; color: #1a0e03; }
+.keu-btn-ghost {
+  background: transparent;
+  border-color: var(--keu-line);
+  color: var(--keu-dim);
+}
+.keu-btn-ghost:hover { border-color: var(--keu-red); color: var(--keu-red); }
+.keu-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.keu-label {
+  display: block;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--keu-dim);
+  margin-bottom: 6px;
+}
+.keu-input,
+.keu-select,
+.keu-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 12px;
+  background: var(--keu-bg);
+  border: 1px solid var(--keu-line2);
+  border-radius: 2px;
+  color: var(--keu-text);
+  padding: 9px 11px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+.keu-input:focus,
+.keu-select:focus,
+.keu-textarea:focus { border-color: var(--keu-orange); }
+.keu-input::placeholder { color: var(--keu-faint); }
+.keu-select { cursor: pointer; }
+.keu-select option { background: var(--keu-bg); }
+.keu-field { margin-bottom: 14px; }
+
+/* ── misc ───────────────────────────────────────────────── */
+
+.keu-bar {
+  height: 6px;
+  background: var(--keu-bg);
+  border: 1px solid var(--keu-line);
+  border-radius: 1px;
+  overflow: hidden;
+  display: flex;
+}
+.keu-bar span { display: block; height: 100%; }
+
+.keu-empty {
+  padding: 34px 16px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--keu-faint);
+}
+
+.keu-navcard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 15px;
+  background: var(--keu-panel);
+  border: 1px solid var(--keu-line);
+  border-radius: 3px;
+  transition: border-color 0.12s, background 0.12s;
+}
+.keu-navcard:hover {
+  border-color: var(--keu-orange);
+  background: var(--keu-panel2);
+}
+.keu-navcard-idx {
+  font-size: 10px;
+  color: var(--keu-faint);
+  letter-spacing: 0.1em;
+}
+.keu-navcard-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.keu-navcard-desc {
+  font-size: 10.5px;
+  color: var(--keu-dim);
+  line-height: 1.5;
+}
+
+.keu-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 56px;
+}
+.keu-spark-bar {
+  flex: 1;
+  background: var(--keu-line2);
+  border-radius: 1px 1px 0 0;
+  min-height: 2px;
+  position: relative;
+  transition: background 0.12s;
+}
+.keu-spark-bar:hover { background: var(--keu-orange); }
+
+.keu-rail-toggle {
+  display: none;
+}
+
+/* ── responsive ─────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .keu-rail {
+    position: fixed;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+    box-shadow: 24px 0 60px rgba(0, 0, 0, 0.6);
+  }
+  .keu-rail.open { transform: translateX(0); }
+  .keu-rail-toggle { display: inline-flex; }
+  .keu-main { padding: 18px 14px 50px; }
+  .keu-ticker { display: none; }
+}
+
+/* grid 2 kolom yang turun jadi 1 kolom di layar sempit */
+@media (max-width: 820px) {
+  .keu-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.keu-scrim {
+  display: none;
+}
+@media (max-width: 900px) {
+  .keu-scrim.show {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(0, 0, 0, 0.6);
+  }
+}

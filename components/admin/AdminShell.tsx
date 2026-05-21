@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info, ExternalLink,
+  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info, ExternalLink, Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ const navItems = [
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
+  { href: "/admin/keuangan", label: "Keuangan", icon: Wallet },
   { href: "/admin/about", label: "Tentang Kami", icon: Info },
   { href: "/admin/faq", label: "FAQ", icon: FileText },
   { href: "/admin/terms", label: "Syarat & Ketentuan", icon: FileText },

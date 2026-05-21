@@ -91,6 +91,9 @@ model Tour {
   updatedAt      DateTime   @updatedAt
 
   receipts       Receipt[]
+  finance        TripFinance?
+  vendorBills    VendorBill[]
+  ledgerEntries  LedgerEntry[]
 }
 
 model Blog {
@@ -214,4 +217,142 @@ model Testimonial {
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+//  MODUL KEUANGAN  —  real-time accounting untuk perusahaan travel
+//  Tabel baru, tidak menyentuh model website yang sudah ada.
+// ─────────────────────────────────────────────────────────────
+
+enum AccountKind {
+  BANK
+  CASH
+  EWALLET
+}
+
+enum EntryDirection {
+  IN
+  OUT
+}
+
+// Asal sebuah baris jurnal — dipakai untuk klasifikasi & ikon.
+enum EntrySource {
+  MANUAL          // entry manual non-trip
+  PESERTA         // pelunasan / DP peserta (cash in)
+  VENDOR_PAYMENT  // bayar tagihan vendor (HPP lunas)
+  DEPOSIT         // deposit PNR / titipan ke maskapai
+  OPERATIONAL     // biaya operasional kantor
+  REFUND          // pengembalian dana
+  OTHER
+}
+
+enum VendorCategory {
+  AIRLINE
+  HOTEL
+  LAND_OPERATOR
+  VISA
+  TRANSPORT
+  INSURANCE
+  GUIDE
+  OTHER
+}
+
+enum BillStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum TripFinanceStatus {
+  DRAFT      // proyeksi belum dikunci Finance
+  CONFIRMED  // proyeksi sudah dikunci → margin bisa dihitung
+}
+
+// Rekening bank / kas / e-wallet perusahaan.
+model BankAccount {
+  id             String        @id @default(cuid())
+  name           String
+  kind           AccountKind   @default(BANK)
+  accountNo      String?
+  openingBalance Float         @default(0)
+  note           String?
+  archived       Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  entries        LedgerEntry[]
+}
+
+// Mitra vendor: maskapai, hotel, land operator, dll.
+model Vendor {
+  id        String         @id @default(cuid())
+  name      String
+  category  VendorCategory @default(OTHER)
+  contact   String?
+  note      String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  bills     VendorBill[]
+}
+
+// Tagihan vendor (hutang). amountPaid dilunasi lewat LedgerEntry OUT.
+model VendorBill {
+  id          String        @id @default(cuid())
+  vendorId    String
+  vendor      Vendor        @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  tourId      String?
+  tour        Tour?         @relation(fields: [tourId], references: [id])
+  description String
+  amount      Float                        // SELALU dalam IDR (mata uang fungsional)
+  amountPaid  Float         @default(0)     // IDR
+  currency    String        @default("IDR") // mata uang asli tagihan: IDR/USD/RUB/EUR/SGD
+  fxRate      Float         @default(1)      // kurs ke IDR saat tagihan dibuat (amount = nominalAsing * fxRate)
+  status      BillStatus    @default(UNPAID)
+  isDeposit   Boolean       @default(false) // true = deposit PNR / titipan maskapai
+  dueDate     DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  payments    LedgerEntry[]
+
+  @@index([tourId])
+  @@index([vendorId])
+}
+
+// Proyeksi keuangan per trip — di-input tim Finance.
+model TripFinance {
+  id           String            @id @default(cuid())
+  tourId       String            @unique
+  tour         Tour              @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  sellingPrice Float             @default(0) // harga jual per pax
+  targetPax    Int               @default(0)
+  projHpp      Float             @default(0) // HPP proyeksi total
+  status       TripFinanceStatus @default(DRAFT)
+  note         String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+// Buku besar kas — setiap pergerakan uang masuk/keluar.
+model LedgerEntry {
+  id            String         @id @default(cuid())
+  date          DateTime       @default(now())
+  direction     EntryDirection
+  amount        Float
+  category      String
+  description   String?
+  source        EntrySource    @default(MANUAL)
+  bankAccountId String?
+  bankAccount   BankAccount?   @relation(fields: [bankAccountId], references: [id])
+  tourId        String?
+  tour          Tour?          @relation(fields: [tourId], references: [id])
+  vendorBillId  String?
+  vendorBill    VendorBill?    @relation(fields: [vendorBillId], references: [id])
+  createdById   String?
+  createdAt     DateTime       @default(now())
+
+  @@index([date])
+  @@index([tourId])
+  @@index([direction])
 }

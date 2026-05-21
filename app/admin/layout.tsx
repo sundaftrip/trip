@@ -8,9 +8,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
 
+  // Modul Keuangan punya shell sendiri (dark terminal) — lihat
+  // app/admin/keuangan/layout.tsx. Lewati AdminShell standar.
+  const isKeuangan = pathname.startsWith("/admin/keuangan");
   const isShellless = pathname === "/admin/login" || pathname.endsWith("/print");
   const session = isShellless ? null : await auth();
-  const showShell = !isShellless && !!session;
+  const showShell = !isShellless && !isKeuangan && !!session;
 
   if (!showShell) {
     return <AdminProviders>{children}</AdminProviders>;
