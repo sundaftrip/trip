@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getVendorData } from "@/lib/keuangan/data";
 import { rupiah, fmtDate, foreignAmount, fxNote } from "@/lib/keuangan/format";
 import { PageHead, Section, Panel, Stat, Pill, Empty } from "@/components/keuangan/ui";
-import { VendorForm, VendorBillForm, PayBillForm } from "@/components/keuangan/forms";
+import { VendorForm, VendorBillForm, PayBillForm, VoidBillButton } from "@/components/keuangan/forms";
 
 export const dynamic = "force-dynamic";
 
@@ -113,15 +113,19 @@ export default async function VendorPage() {
                   <th className="keu-r">Dibayar</th>
                   <th className="keu-r">Sisa</th>
                   <th>Jatuh Tempo</th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
                 {d.bills.map((b) => (
-                  <tr key={b.id}>
+                  <tr key={b.id} style={b.voided ? { opacity: 0.45 } : undefined}>
                     <td>
                       <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                        {b.description}
+                        <span style={b.voided ? { textDecoration: "line-through" } : undefined}>
+                          {b.description}
+                        </span>
                         {b.isDeposit && <Pill tone="warn">DEPOSIT</Pill>}
+                        {b.voided && <Pill tone="dim">VOID</Pill>}
                       </div>
                       <div style={{ fontSize: 9.5, color: "var(--keu-faint)" }}>
                         {b.vendorName} · {CAT_LABEL[b.vendorCategory] ?? b.vendorCategory}
@@ -129,13 +133,17 @@ export default async function VendorPage() {
                     </td>
                     <td className="keu-dim-t">{b.tourTitle ?? "—"}</td>
                     <td>
-                      <Pill
-                        tone={
-                          b.status === "PAID" ? "ok" : b.status === "PARTIAL" ? "warn" : "red"
-                        }
-                      >
-                        {b.status}
-                      </Pill>
+                      {b.voided ? (
+                        <Pill tone="dim">BATAL</Pill>
+                      ) : (
+                        <Pill
+                          tone={
+                            b.status === "PAID" ? "ok" : b.status === "PARTIAL" ? "warn" : "red"
+                          }
+                        >
+                          {b.status}
+                        </Pill>
+                      )}
                     </td>
                     <td className="keu-r keu-num">
                       <div>{rupiah(b.amount)}</div>
@@ -147,10 +155,15 @@ export default async function VendorPage() {
                       )}
                     </td>
                     <td className="keu-r keu-num keu-faint-t">{rupiah(b.amountPaid)}</td>
-                    <td className={`keu-r keu-num ${b.outstanding > 0 ? "keu-down" : "keu-up"}`}>
+                    <td className={`keu-r keu-num ${b.outstanding > 0 && !b.voided ? "keu-down" : "keu-up"}`}>
                       {rupiah(b.outstanding)}
                     </td>
                     <td className="keu-faint-t">{b.dueDate ? fmtDate(b.dueDate) : "—"}</td>
+                    <td className="keu-r">
+                      {!b.voided && b.amountPaid === 0 ? (
+                        <VoidBillButton id={b.id} />
+                      ) : null}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -160,7 +173,7 @@ export default async function VendorPage() {
                   <td className="keu-r">{rupiah(d.totalTagihan)}</td>
                   <td className="keu-r keu-faint-t">{rupiah(d.totalDibayar)}</td>
                   <td className="keu-r keu-down">{rupiah(d.totalHutang)}</td>
-                  <td />
+                  <td colSpan={2} />
                 </tr>
               </tfoot>
             </table>

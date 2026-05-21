@@ -235,14 +235,16 @@ enum EntryDirection {
   OUT
 }
 
-// Asal sebuah baris jurnal — dipakai untuk klasifikasi & ikon.
+// Asal sebuah baris jurnal — dipakai untuk klasifikasi akuntansi.
 enum EntrySource {
   MANUAL          // entry manual non-trip
   PESERTA         // pelunasan / DP peserta (cash in)
-  VENDOR_PAYMENT  // bayar tagihan vendor (HPP lunas)
+  VENDOR_PAYMENT  // bayar tagihan vendor (pelunasan hutang, BUKAN beban)
   DEPOSIT         // deposit PNR / titipan ke maskapai
-  OPERATIONAL     // biaya operasional kantor
+  OPERATIONAL     // biaya operasional kantor (beban P&L)
   REFUND          // pengembalian dana
+  CAPITAL         // setoran modal pemilik (menambah ekuitas, BUKAN pendapatan)
+  PRIVE           // penarikan pemilik (mengurangi ekuitas, BUKAN beban)
   OTHER
 }
 
@@ -311,6 +313,8 @@ model VendorBill {
   status      BillStatus    @default(UNPAID)
   isDeposit   Boolean       @default(false) // true = deposit PNR / titipan maskapai
   dueDate     DateTime?
+  voided      Boolean       @default(false) // dibatalkan — tidak ikut perhitungan, tetap tersimpan
+  voidedAt    DateTime?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -350,6 +354,8 @@ model LedgerEntry {
   vendorBillId  String?
   vendorBill    VendorBill?    @relation(fields: [vendorBillId], references: [id])
   createdById   String?
+  voided        Boolean        @default(false) // dibatalkan via jurnal balik — tetap tersimpan utk jejak audit
+  voidedAt      DateTime?
   createdAt     DateTime       @default(now())
 
   @@index([date])

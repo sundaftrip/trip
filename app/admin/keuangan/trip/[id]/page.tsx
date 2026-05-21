@@ -26,13 +26,6 @@ export default async function TripDetailPage({
   if (!data) notFound();
   const { trip, receipts, bills, ledger, finance } = data;
   const a = trip.agg;
-  const c = trip.cash;
-
-  const pnl = [
-    { metric: "Income", proj: a.projIncome, real: a.realCashIn },
-    { metric: "HPP / Cost", proj: a.projHpp, real: a.realCashOut },
-    { metric: "Profit", proj: a.projProfit, real: a.realProfit },
-  ];
 
   return (
     <>
@@ -48,55 +41,119 @@ export default async function TripDetailPage({
         actions={<Pill tone={trip.status.tone}>{trip.status.label}</Pill>}
       />
 
+      {/* status pengakuan akrual */}
+      <Panel ticked className={trip.departed ? "" : ""}>
+        <div style={{ fontSize: 11.5, lineHeight: 1.6 }}>
+          {trip.departed ? (
+            <>
+              <b className="keu-up">SUDAH BERANGKAT.</b>{" "}
+              <span className="keu-dim-t">
+                Pendapatan & HPP trip ini sudah diakui di Laba Rugi. Laba sesungguhnya{" "}
+                {rupiah(a.recognizedProfit)}.
+              </span>
+            </>
+          ) : (
+            <>
+              <b className="keu-amber-t">BELUM BERANGKAT.</b>{" "}
+              <span className="keu-dim-t">
+                Uang peserta {rupiah(a.pesertaCashIn)} masih berstatus{" "}
+                <b className="keu-amber-t">titipan (kewajiban)</b> — belum boleh dihitung
+                sebagai laba. Pendapatan baru diakui saat trip berangkat.
+              </span>
+            </>
+          )}
+        </div>
+      </Panel>
+
       <div
         className="keu-statgrid"
-        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", marginTop: 12 }}
       >
-        <Stat k="Real Cash In" v={rupiah(a.realCashIn)} tone="up" accent="var(--keu-green)" />
-        <Stat k="Real Cash Out" v={rupiah(a.realCashOut)} tone="down" accent="var(--keu-red)" />
+        <Stat k="Cash In" v={rupiah(a.cashIn)} tone="up" accent="var(--keu-green)" />
+        <Stat k="Cash Out" v={rupiah(a.cashOut)} tone="down" accent="var(--keu-red)" />
         <Stat
-          k="Net Real Profit"
-          v={rupiah(a.realProfit)}
-          tone={autoTone(a.realProfit)}
-          accent="var(--keu-orange)"
-        />
-        <Stat
-          k="Proyeksi Profit"
-          v={trip.hasFinance ? rupiah(a.projProfit) : "BELUM DI-SET"}
-          tone={trip.hasFinance ? autoTone(a.projProfit) : "faint"}
+          k="Arus Kas Bersih"
+          v={rupiah(a.netCashFlow)}
+          tone={autoTone(a.netCashFlow)}
           accent="var(--keu-cyan)"
+          sub="Basis kas"
         />
+        {trip.departed ? (
+          <Stat
+            k="Laba Diakui"
+            v={rupiah(a.recognizedProfit)}
+            tone={autoTone(a.recognizedProfit)}
+            accent="var(--keu-orange)"
+            sub="Pendapatan − HPP"
+          />
+        ) : (
+          <Stat
+            k="Titipan Peserta"
+            v={rupiah(a.deferredRevenue)}
+            tone="amber"
+            accent="var(--keu-amber)"
+            sub="Kewajiban, belum jadi laba"
+          />
+        )}
       </div>
 
       <Section
-        title="Klasifikasi Uang Saat Ini"
-        note="Ke mana cash trip ini sebenarnya milik"
+        title="Pengakuan Akrual"
+        note={trip.departed ? "Trip sudah jalan" : "Menunggu keberangkatan"}
       />
       <div
         className="keu-statgrid"
         style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}
       >
-        <Stat
-          k="Titipan (Untuk Vendor)"
-          accent="var(--keu-amber)"
-          v={rupiah(c.titipan)}
-          tone="amber"
-          sub="Wajib disetor ke vendor — HPP belum lunas"
-        />
-        <Stat
-          k="Cicilan Mengendap"
-          accent="var(--keu-cyan)"
-          v={rupiah(c.mengendap)}
-          tone={c.mengendap ? "cyan" : "faint"}
-          sub={a.hasProjection ? "Proyeksi sudah dikunci" : "HPP proyeksi BELUM di-set Finance"}
-        />
-        <Stat
-          k="Margin Locked"
-          accent="var(--keu-green)"
-          v={rupiah(c.marginLocked)}
-          tone={a.hasProjection ? autoTone(c.marginLocked) : "faint"}
-          sub={a.hasProjection ? "Sudah pasti milik perusahaan" : "Belum bisa dihitung"}
-        />
+        {trip.departed ? (
+          <>
+            <Stat
+              k="Pendapatan Diakui"
+              accent="var(--keu-green)"
+              v={rupiah(a.recognizedRevenue)}
+              tone="up"
+              sub="Total ditagihkan ke peserta"
+            />
+            <Stat
+              k="HPP Diakui"
+              accent="var(--keu-red)"
+              v={rupiah(a.recognizedHpp)}
+              tone="down"
+              sub="Total biaya trip"
+            />
+            <Stat
+              k="Piutang Peserta"
+              accent="var(--keu-cyan)"
+              v={rupiah(a.arPeserta)}
+              tone={a.arPeserta ? "cyan" : "faint"}
+              sub="Peserta belum lunas"
+            />
+          </>
+        ) : (
+          <>
+            <Stat
+              k="Titipan Peserta (Kewajiban)"
+              accent="var(--keu-amber)"
+              v={rupiah(a.deferredRevenue)}
+              tone="amber"
+              sub="Akan jadi pendapatan saat berangkat"
+            />
+            <Stat
+              k="Biaya Trip Ditangguhkan (Aset)"
+              accent="var(--keu-cyan)"
+              v={rupiah(a.wipCost)}
+              tone={a.wipCost ? "cyan" : "faint"}
+              sub="Akan jadi HPP saat berangkat"
+            />
+            <Stat
+              k="Estimasi Laba Saat Berangkat"
+              accent="var(--keu-orange)"
+              v={rupiah(a.billedTotal - a.hppTotal)}
+              tone={autoTone(a.billedTotal - a.hppTotal)}
+              sub="Ditagihkan − biaya (belum final)"
+            />
+          </>
+        )}
       </div>
 
       <Section title="Proyeksi vs Real" note="Finance vs Accounting" />
@@ -106,18 +163,34 @@ export default async function TripDetailPage({
             <tr>
               <th>Metrik</th>
               <th className="keu-r">Proyeksi (Finance)</th>
-              <th className="keu-r">Real (Accounting)</th>
+              <th className="keu-r">Real Diakui</th>
               <th className="keu-r">Selisih</th>
             </tr>
           </thead>
           <tbody>
-            {pnl.map((r) => (
-              <tr key={r.metric} className={r.metric === "Profit" ? "keu-row-strong" : ""}>
-                <td>{r.metric}</td>
+            {[
+              { m: "Pendapatan", proj: a.projIncome, real: a.recognizedRevenue },
+              { m: "HPP / Biaya", proj: a.projHpp, real: a.recognizedHpp },
+              { m: "Laba", proj: a.projProfit, real: a.recognizedProfit },
+            ].map((r) => (
+              <tr key={r.m} className={r.m === "Laba" ? "keu-row-strong" : ""}>
+                <td>{r.m}</td>
                 <td className="keu-r keu-cyan-t">{rupiah(r.proj)}</td>
-                <td className="keu-r">{rupiah(r.real)}</td>
                 <td className="keu-r">
-                  <SignedNum value={r.real - r.proj} />
+                  {trip.departed ? (
+                    rupiah(r.real)
+                  ) : (
+                    <span className="keu-faint-t" style={{ fontSize: 10 }}>
+                      BELUM DIAKUI
+                    </span>
+                  )}
+                </td>
+                <td className="keu-r">
+                  {trip.departed ? (
+                    <SignedNum value={r.real - r.proj} />
+                  ) : (
+                    <span className="keu-faint-t">—</span>
+                  )}
                 </td>
               </tr>
             ))}
@@ -143,15 +216,10 @@ export default async function TripDetailPage({
 
       <div
         className="keu-2col"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 14,
-          marginTop: 8,
-        }}
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 8 }}
       >
         <div>
-          <Section title="Real Cash In" note={`${receipts.length} payment peserta`} />
+          <Section title="Pemasukan Peserta" note={`${receipts.length} payment`} />
           <Panel pad={false} ticked>
             {receipts.length === 0 ? (
               <Empty>BELUM ADA PAYMENT PESERTA</Empty>
@@ -167,7 +235,9 @@ export default async function TripDetailPage({
                         </div>
                       </td>
                       <td>
-                        <Pill tone={r.status === "PAID" ? "ok" : r.status === "DP" ? "warn" : "dim"}>
+                        <Pill
+                          tone={r.status === "PAID" ? "ok" : r.status === "DP" ? "warn" : "dim"}
+                        >
                           {r.status}
                         </Pill>
                       </td>
@@ -177,7 +247,7 @@ export default async function TripDetailPage({
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={2}>CASH IN PESERTA</td>
+                    <td colSpan={2}>KAS DITERIMA</td>
                     <td className="keu-r">{rupiah(a.pesertaCashIn)}</td>
                   </tr>
                 </tfoot>
@@ -187,7 +257,7 @@ export default async function TripDetailPage({
         </div>
 
         <div>
-          <Section title="Real Cash Out" note={`${bills.length} tagihan vendor`} />
+          <Section title="Biaya Vendor (HPP)" note={`${bills.length} tagihan`} />
           <Panel pad={false} ticked>
             {bills.length === 0 && ledger.filter((l) => l.direction === "OUT").length === 0 ? (
               <Empty>BELUM ADA HPP / PENGELUARAN</Empty>
@@ -222,28 +292,12 @@ export default async function TripDetailPage({
                       </td>
                     </tr>
                   ))}
-                  {ledger
-                    .filter((l) => l.direction === "OUT" && !l.vendorBillId)
-                    .map((l) => (
-                      <tr key={l.id}>
-                        <td>
-                          <div>{l.category}</div>
-                          <div style={{ fontSize: 9.5, color: "var(--keu-faint)" }}>
-                            {l.description || "entry manual"}
-                          </div>
-                        </td>
-                        <td>
-                          <Pill tone="dim">MANUAL</Pill>
-                        </td>
-                        <td className="keu-r keu-num keu-down">{rupiah(l.amount)}</td>
-                      </tr>
-                    ))}
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={2}>HPP TOTAL · LUNAS</td>
+                    <td colSpan={2}>HPP TOTAL · DIBAYAR</td>
                     <td className="keu-r">
-                      {rupiah(a.hppTotal)} · {rupiah(a.hppLunas)}
+                      {rupiah(a.hppTotal)} · {rupiah(a.hppPaid)}
                     </td>
                   </tr>
                 </tfoot>

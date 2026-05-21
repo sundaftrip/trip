@@ -11,7 +11,8 @@ import {
   payVendorBill,
   upsertTripFinance,
   toggleBankArchive,
-  deleteLedgerEntry,
+  voidLedgerEntry,
+  voidVendorBill,
 } from "@/lib/keuangan/actions";
 import { CURRENCIES, rupiah } from "@/lib/keuangan/format";
 
@@ -194,12 +195,14 @@ export function JurnalForm({
         <Field label="Kategori">
           <input className="keu-input" name="category" placeholder="Operasional Kantor" required />
         </Field>
-        <Field label="Sumber">
-          <select className="keu-select" name="source" defaultValue="MANUAL">
-            <option value="MANUAL">Manual</option>
-            <option value="OPERATIONAL">Operasional</option>
+        <Field label="Sumber / Jenis">
+          <select className="keu-select" name="source" defaultValue="OPERATIONAL">
+            <option value="OPERATIONAL">Beban Operasional</option>
+            <option value="OTHER">Pendapatan/Beban Lain</option>
             <option value="REFUND">Refund</option>
-            <option value="OTHER">Lainnya</option>
+            <option value="CAPITAL">Setoran Modal (otomatis masuk)</option>
+            <option value="PRIVE">Penarikan Pemilik / Prive (otomatis keluar)</option>
+            <option value="MANUAL">Manual</option>
           </select>
         </Field>
         <Field label="Rekening">
@@ -507,17 +510,33 @@ export function TripFinanceForm({
 
 // ── Aksi kecil (ikon) ─────────────────────────────────────────
 
-export function DeleteEntryButton({ id }: { id: string }) {
+export function VoidEntryButton({ id }: { id: string }) {
   return (
-    <form action={deleteLedgerEntry} style={{ display: "inline" }}>
+    <form action={voidLedgerEntry} style={{ display: "inline" }}>
       <input type="hidden" name="id" value={id} />
       <button
         type="submit"
         className="keu-btn keu-btn-ghost"
         style={{ padding: "4px 8px", fontSize: 10 }}
-        title="Hapus entry"
+        title="Batalkan (void) — entry tetap tersimpan untuk jejak audit"
       >
-        HAPUS
+        VOID
+      </button>
+    </form>
+  );
+}
+
+export function VoidBillButton({ id }: { id: string }) {
+  return (
+    <form action={voidVendorBill} style={{ display: "inline" }}>
+      <input type="hidden" name="id" value={id} />
+      <button
+        type="submit"
+        className="keu-btn keu-btn-ghost"
+        style={{ padding: "4px 8px", fontSize: 10 }}
+        title="Batalkan tagihan (hanya bila belum ada pembayaran)"
+      >
+        VOID
       </button>
     </form>
   );

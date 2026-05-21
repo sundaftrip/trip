@@ -16,32 +16,33 @@ export default async function TripCashflowPage() {
             <Link href="/admin/keuangan">TERMINAL</Link> / 02 — CASHFLOW TRIP
           </>
         }
-        title="Cashflow Real per Trip"
-        lede="Angka real per trip dari payment peserta + HPP vendor — dibandingkan dengan proyeksi yang di-input tim Finance."
+        title="Cashflow & Laba per Trip"
+        lede="Arus kas per trip (basis kas) berdampingan dengan laba yang DIAKUI — laba hanya muncul untuk trip yang sudah berangkat. Trip belum berangkat: uangnya masih titipan."
       />
 
       <div
         className="keu-statgrid"
         style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}
       >
-        <Stat k="Real Cash In" v={rupiah(sum.realIn)} tone="up" accent="var(--keu-green)" />
-        <Stat k="Real Cash Out" v={rupiah(sum.realOut)} tone="down" accent="var(--keu-red)" />
+        <Stat k="Total Cash In" v={rupiah(sum.cashIn)} tone="up" accent="var(--keu-green)" />
+        <Stat k="Total Cash Out" v={rupiah(sum.cashOut)} tone="down" accent="var(--keu-red)" />
         <Stat
-          k="Real Net Profit"
-          v={rupiah(sum.realProfit)}
-          tone={autoTone(sum.realProfit)}
-          accent="var(--keu-orange)"
+          k="Arus Kas Bersih"
+          v={rupiah(sum.netCashFlow)}
+          tone={autoTone(sum.netCashFlow)}
+          accent="var(--keu-cyan)"
+          sub="Basis kas — bukan laba"
         />
         <Stat
-          k="Proyeksi Profit"
-          v={rupiah(sum.projProfit)}
-          tone={autoTone(sum.projProfit)}
-          accent="var(--keu-cyan)"
-          sub="Target dari Finance"
+          k="Laba Diakui"
+          v={rupiah(sum.recognizedProfit)}
+          tone={autoTone(sum.recognizedProfit)}
+          accent="var(--keu-orange)"
+          sub="Hanya trip sudah berangkat"
         />
       </div>
 
-      <Section title="Cashflow Real per Trip" note={`${trips.length} trip`} />
+      <Section title="Cashflow & Laba per Trip" note={`${trips.length} trip`} />
       <Panel pad={false} ticked>
         {trips.length === 0 ? (
           <Empty>BELUM ADA TRIP TERDAFTAR</Empty>
@@ -53,10 +54,10 @@ export default async function TripCashflowPage() {
                   <th>Trip</th>
                   <th>Status</th>
                   <th className="keu-r">Pax</th>
-                  <th className="keu-r">Real In</th>
-                  <th className="keu-r">Real Out</th>
-                  <th className="keu-r">Real Profit</th>
-                  <th className="keu-r">Proyeksi</th>
+                  <th className="keu-r">Cash In</th>
+                  <th className="keu-r">Cash Out</th>
+                  <th className="keu-r">Arus Kas</th>
+                  <th className="keu-r">Laba Diakui</th>
                   <th />
                 </tr>
               </thead>
@@ -65,8 +66,7 @@ export default async function TripCashflowPage() {
                   <tr key={t.id}>
                     <td>
                       <Link href={`/admin/keuangan/trip/${t.id}`} className="keu-table-link">
-                        <span className="keu-accent">{t.code}</span>{" "}
-                        <span>{t.title}</span>
+                        <span className="keu-accent">{t.code}</span> <span>{t.title}</span>
                       </Link>
                       <div style={{ fontSize: 9.5, color: "var(--keu-faint)", marginTop: 2 }}>
                         {t.country.toUpperCase()}
@@ -77,13 +77,21 @@ export default async function TripCashflowPage() {
                       <Pill tone={t.status.tone}>{t.status.label}</Pill>
                     </td>
                     <td className="keu-r keu-dim-t">{t.agg.pax}</td>
-                    <td className="keu-r keu-up">{rupiah(t.agg.realCashIn)}</td>
-                    <td className="keu-r keu-down">{rupiah(t.agg.realCashOut)}</td>
-                    <td className={`keu-r ${profitClass(t.agg.realProfit)}`}>
-                      {rupiah(t.agg.realProfit)}
+                    <td className="keu-r keu-up">{rupiah(t.agg.cashIn)}</td>
+                    <td className="keu-r keu-down">{rupiah(t.agg.cashOut)}</td>
+                    <td className={`keu-r ${toneCls(t.agg.netCashFlow)}`}>
+                      {rupiah(t.agg.netCashFlow)}
                     </td>
-                    <td className="keu-r keu-cyan-t">
-                      {t.hasFinance ? rupiah(t.agg.projProfit) : "—"}
+                    <td className="keu-r">
+                      {t.departed ? (
+                        <span className={`keu-num ${toneCls(t.agg.recognizedProfit)}`}>
+                          {rupiah(t.agg.recognizedProfit)}
+                        </span>
+                      ) : (
+                        <span className="keu-faint-t" style={{ fontSize: 10 }}>
+                          BELUM DIAKUI
+                        </span>
+                      )}
                     </td>
                     <td className="keu-r">
                       <Link
@@ -99,12 +107,14 @@ export default async function TripCashflowPage() {
               <tfoot>
                 <tr>
                   <td colSpan={3}>TOTAL</td>
-                  <td className="keu-r keu-up">{rupiah(sum.realIn)}</td>
-                  <td className="keu-r keu-down">{rupiah(sum.realOut)}</td>
-                  <td className={`keu-r ${profitClass(sum.realProfit)}`}>
-                    {rupiah(sum.realProfit)}
+                  <td className="keu-r keu-up">{rupiah(sum.cashIn)}</td>
+                  <td className="keu-r keu-down">{rupiah(sum.cashOut)}</td>
+                  <td className={`keu-r ${toneCls(sum.netCashFlow)}`}>
+                    {rupiah(sum.netCashFlow)}
                   </td>
-                  <td className="keu-r keu-cyan-t">{rupiah(sum.projProfit)}</td>
+                  <td className={`keu-r ${toneCls(sum.recognizedProfit)}`}>
+                    {rupiah(sum.recognizedProfit)}
+                  </td>
                   <td />
                 </tr>
               </tfoot>
@@ -112,10 +122,20 @@ export default async function TripCashflowPage() {
           </div>
         )}
       </Panel>
+
+      <Panel ticked style={{ marginTop: 14 }}>
+        <div style={{ fontSize: 10.5, color: "var(--keu-dim)", lineHeight: 1.7 }}>
+          <b className="keu-accent">CARA BACA.</b> "Arus Kas" = uang masuk − keluar (basis kas);
+          trip yang baru kumpulkan DP bisa tampak arus kas positif padahal belum untung.
+          "Laba Diakui" baru terisi setelah trip berangkat — itulah laba sesungguhnya
+          (pendapatan − HPP). Titipan peserta sebesar {rupiah(sum.deferredRevenue)} dari trip
+          yang belum berangkat masih berstatus kewajiban, belum jadi laba.
+        </div>
+      </Panel>
     </>
   );
 }
 
-function profitClass(n: number): string {
+function toneCls(n: number): string {
   return n > 0 ? "keu-up" : n < 0 ? "keu-down" : "keu-dim-t";
 }

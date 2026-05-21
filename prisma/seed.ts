@@ -165,7 +165,15 @@ async function seedFinance() {
     }
   }
 
-  const tours = await prisma.tour.findMany({ orderBy: { createdAt: "desc" }, take: 4 });
+  // Ambil 2 trip akan datang + 2 trip sudah lewat — supaya dashboard
+  // menampilkan dua sisi akrual sekaligus: titipan peserta (belum
+  // berangkat) vs pendapatan yang sudah diakui (sudah berangkat).
+  const now = new Date();
+  const [futureTours, pastTours] = await Promise.all([
+    prisma.tour.findMany({ where: { tripDate: { gt: now } }, orderBy: { tripDate: "asc" }, take: 2 }),
+    prisma.tour.findMany({ where: { tripDate: { lt: now } }, orderBy: { tripDate: "desc" }, take: 2 }),
+  ]);
+  const tours = [...futureTours, ...pastTours];
 
   if (tours[0]) {
     const t = tours[0];
@@ -203,8 +211,62 @@ async function seedFinance() {
     await bill({ vendor: "Zurich Travel Insurance", tourId: t.id, desc: "Asuransi perjalanan", amount: 8400000, paid: 8400000, date: day(50) });
   }
 
+  // Peserta demo — supaya pengakuan pendapatan akrual terlihat di dashboard.
+  // receiptNo diberi prefix "DEMO-" agar mudah dibedakan dari data asli.
+  async function seedReceipts(
+    tour: { id: string; title: string; tripDate: Date | null },
+    rows: { name: string; pax: number; amount: number; status: string; daysAgo: number }[],
+  ) {
+    let i = 0;
+    for (const r of rows) {
+      i++;
+      await prisma.receipt.create({
+        data: {
+          receiptNo: `DEMO-${tour.id.slice(-5).toUpperCase()}-${i}`,
+          customerName: r.name,
+          tourId: tour.id,
+          tourTitle: tour.title,
+          tripDate: tour.tripDate ? tour.tripDate.toISOString().slice(0, 10) : null,
+          pax: r.pax,
+          amount: r.amount,
+          paymentMethod: "Transfer Bank",
+          paymentDate: r.status === "UNPAID" ? null : day(r.daysAgo),
+          status: r.status,
+        },
+      });
+    }
+  }
+
+  // tours[0],[1] = akan datang (uang peserta jadi TITIPAN)
+  if (tours[0])
+    await seedReceipts(tours[0], [
+      { name: "Rombongan Andi Pratama", pax: 6, amount: 120000000, status: "DP", daysAgo: 35 },
+      { name: "Keluarga Siti Rahayu", pax: 4, amount: 128000000, status: "PAID", daysAgo: 28 },
+      { name: "Grup Budi Santoso", pax: 2, amount: 40000000, status: "DP", daysAgo: 14 },
+      { name: "Dewi Lestari", pax: 3, amount: 96000000, status: "UNPAID", daysAgo: 0 },
+    ]);
+  if (tours[1])
+    await seedReceipts(tours[1], [
+      { name: "Rombongan Rizki Hakim", pax: 8, amount: 224000000, status: "PAID", daysAgo: 22 },
+      { name: "Grup Maya Putri", pax: 3, amount: 42000000, status: "DP", daysAgo: 9 },
+      { name: "Joko Susilo", pax: 2, amount: 56000000, status: "UNPAID", daysAgo: 0 },
+    ]);
+  // tours[2],[3] = sudah berangkat (pendapatan sudah DIAKUI)
+  if (tours[2])
+    await seedReceipts(tours[2], [
+      { name: "Grup Putra Wijaya", pax: 3, amount: 96000000, status: "PAID", daysAgo: 60 },
+      { name: "Nina Kartika", pax: 2, amount: 60000000, status: "PAID", daysAgo: 52 },
+    ]);
+  if (tours[3])
+    await seedReceipts(tours[3], [
+      { name: "Rombongan Hendra Gunawan", pax: 7, amount: 210000000, status: "PAID", daysAgo: 95 },
+      { name: "Lia Anggraini", pax: 3, amount: 90000000, status: "PAID", daysAgo: 88 },
+      { name: "Sari Indah", pax: 2, amount: 60000000, status: "UNPAID", daysAgo: 0 },
+    ]);
+
   await prisma.ledgerEntry.createMany({
     data: [
+      { date: day(150), direction: "IN", amount: 400000000, category: "Setoran Modal Awal", source: "CAPITAL", description: "Modal disetor pemilik" },
       { date: day(120), direction: "OUT", amount: 12000000, category: "Gaji Tim", source: "OPERATIONAL", description: "Penggajian bulanan" },
       { date: day(118), direction: "OUT", amount: 5000000, category: "Sewa Kantor", source: "OPERATIONAL" },
       { date: day(90), direction: "OUT", amount: 12000000, category: "Gaji Tim", source: "OPERATIONAL" },
@@ -214,6 +276,7 @@ async function seedFinance() {
       { date: day(30), direction: "OUT", amount: 12000000, category: "Gaji Tim", source: "OPERATIONAL" },
       { date: day(12), direction: "IN", amount: 3500000, category: "Jasa Konsultasi Visa", source: "OTHER", description: "Fee pengurusan visa walk-in" },
       { date: day(5), direction: "OUT", amount: 1800000, category: "Internet & Utilitas", source: "OPERATIONAL" },
+      { date: day(20), direction: "OUT", amount: 20000000, category: "Prive Pemilik", source: "PRIVE", description: "Penarikan dana pemilik" },
     ],
   });
 

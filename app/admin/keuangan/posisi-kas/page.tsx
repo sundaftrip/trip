@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { getCashPosition } from "@/lib/keuangan/data";
 import { rupiah } from "@/lib/keuangan/format";
-import { PageHead, Section, Panel, Stat, Empty, StackBar, autoTone } from "@/components/keuangan/ui";
+import { PageHead, Section, Panel, Stat, Pill, Empty, StackBar, autoTone } from "@/components/keuangan/ui";
 
 export const dynamic = "force-dynamic";
 
 export default async function PosisiKasPage() {
   const d = await getCashPosition();
+  const p = d.position;
 
   return (
     <>
@@ -17,7 +18,7 @@ export default async function PosisiKasPage() {
           </>
         }
         title="Posisi Kas"
-        lede="Pisahkan mana cash yang masih earmark untuk vendor (titipan peserta) vs yang sudah pasti milik perusahaan. Inilah yang sering bikin travel kepleset."
+        lede="Pisahkan uang titipan peserta (kewajiban — trip belum berangkat) dari uang yang benar-benar bebas dipakai perusahaan. Inilah yang sering bikin travel kepleset."
       />
 
       <div
@@ -25,35 +26,35 @@ export default async function PosisiKasPage() {
         style={{ gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))" }}
       >
         <Stat
-          k="Uang Peserta (Titipan)"
+          k="Titipan Peserta (Kewajiban)"
           accent="var(--keu-amber)"
-          v={rupiah(d.uangPeserta)}
+          v={rupiah(p.deferredRevenue)}
           tone="amber"
-          sub={`Earmark vendor ${rupiah(d.agg.titipan)} · mengendap ${rupiah(d.agg.mengendap)}`}
-        />
-        <Stat
-          k="Uang Perusahaan"
-          accent="var(--keu-green)"
-          v={rupiah(d.uangPerusahaan)}
-          tone={autoTone(d.uangPerusahaan)}
-          sub="Cash yang sudah PASTI milik perusahaan"
+          sub={`${d.titipanCount} trip belum berangkat — BUKAN uang Anda`}
         />
         <Stat
           k="Hutang Vendor"
           accent="var(--keu-red)"
-          v={rupiah(d.hutangVendor)}
+          v={rupiah(p.hutangVendor)}
           tone="down"
-          sub="HPP yang belum dibayar — akan keluar dari bank"
+          sub="HPP yang belum dibayar"
+        />
+        <Stat
+          k="Uang Bebas Perusahaan"
+          accent="var(--keu-green)"
+          v={rupiah(p.uangBebas)}
+          tone={autoTone(p.uangBebas)}
+          sub="Kas − hutang vendor − titipan peserta"
         />
       </div>
 
-      <Section title="Komposisi Saldo Bank" note="Titipan vs mengendap vs uang perusahaan" />
+      <Section title="Komposisi Saldo Kas" note="Ke mana saldo bank sebenarnya milik" />
       <Panel pad ticked>
         <StackBar
           segments={[
-            { value: d.agg.titipan, color: "var(--keu-amber)" },
-            { value: d.agg.mengendap, color: "var(--keu-cyan)" },
-            { value: Math.max(0, d.uangPerusahaan), color: "var(--keu-green)" },
+            { value: p.deferredRevenue, color: "var(--keu-amber)" },
+            { value: p.hutangVendor, color: "var(--keu-red)" },
+            { value: Math.max(0, p.uangBebas), color: "var(--keu-green)" },
           ]}
         />
         <div
@@ -66,17 +67,20 @@ export default async function PosisiKasPage() {
             flexWrap: "wrap",
           }}
         >
-          <Legend color="var(--keu-amber)" label="TITIPAN TERIKAT" value={rupiah(d.agg.titipan)} />
-          <Legend color="var(--keu-cyan)" label="CICILAN MENGENDAP" value={rupiah(d.agg.mengendap)} />
+          <Legend color="var(--keu-amber)" label="TITIPAN PESERTA" value={rupiah(p.deferredRevenue)} />
+          <Legend color="var(--keu-red)" label="HAK VENDOR" value={rupiah(p.hutangVendor)} />
           <Legend
             color="var(--keu-green)"
-            label="UANG PERUSAHAAN"
-            value={rupiah(Math.max(0, d.uangPerusahaan))}
+            label="UANG BEBAS"
+            value={rupiah(Math.max(0, p.uangBebas))}
           />
+          <span style={{ color: "var(--keu-faint)", marginLeft: "auto" }}>
+            TOTAL KAS {rupiah(p.cash)}
+          </span>
         </div>
       </Panel>
 
-      <Section title="Detail per Trip — Uang Peserta vs Margin Locked" note={`${d.rows.length} trip`} />
+      <Section title="Detail per Trip" note={`${d.rows.length} trip dengan aktivitas`} />
       <Panel pad={false} ticked>
         {d.rows.length === 0 ? (
           <Empty>BELUM ADA PERGERAKAN KAS PER TRIP</Empty>
@@ -86,12 +90,12 @@ export default async function PosisiKasPage() {
               <thead>
                 <tr>
                   <th>Trip</th>
-                  <th className="keu-r">Cicilan Masuk</th>
-                  <th className="keu-r">HPP Lunas</th>
+                  <th>Status</th>
+                  <th className="keu-r">Cash Peserta</th>
+                  <th className="keu-r">HPP Dibayar</th>
                   <th className="keu-r">HPP Hutang</th>
                   <th className="keu-r">Titipan</th>
-                  <th className="keu-r">Mengendap</th>
-                  <th className="keu-r">Margin Locked</th>
+                  <th className="keu-r">Laba Diakui</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,34 +105,29 @@ export default async function PosisiKasPage() {
                       <Link href={`/admin/keuangan/trip/${r.id}`} className="keu-table-link">
                         <span className="keu-accent">{r.code}</span> {r.title}
                       </Link>
-                      {!r.hasFinance && (
-                        <div style={{ fontSize: 9, color: "var(--keu-amber)", marginTop: 2 }}>
-                          ⚠ HPP proyeksi belum di-set Finance
-                        </div>
-                      )}
                     </td>
-                    <td className="keu-r keu-num">{rupiah(r.cicilanMasuk)}</td>
-                    <td className="keu-r keu-num keu-faint-t">{rupiah(r.hppLunas)}</td>
+                    <td>
+                      <Pill tone={r.departed ? "ok" : "warn"}>
+                        {r.departed ? "BERANGKAT" : "BELUM"}
+                      </Pill>
+                    </td>
+                    <td className="keu-r keu-num">{rupiah(r.pesertaCashIn)}</td>
+                    <td className="keu-r keu-num keu-faint-t">{rupiah(r.hppPaid)}</td>
                     <td className="keu-r keu-num keu-down">{rupiah(r.hppHutang)}</td>
-                    <td className="keu-r keu-num keu-amber-t">{rupiah(r.titipan)}</td>
-                    <td className="keu-r keu-num keu-cyan-t">{rupiah(r.mengendap)}</td>
-                    <td className={`keu-r keu-num ${marginClass(r.marginLocked)}`}>
-                      {rupiah(r.marginLocked)}
+                    <td className="keu-r keu-num keu-amber-t">
+                      {r.departed ? "—" : rupiah(r.titipan)}
+                    </td>
+                    <td className={`keu-r keu-num ${r.departed ? toneCls(r.recognizedProfit) : "keu-faint-t"}`}>
+                      {r.departed ? rupiah(r.recognizedProfit) : "—"}
                     </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
                 <tr>
-                  <td>TOTAL</td>
-                  <td className="keu-r">{rupiah(d.agg.cicilanMasuk)}</td>
-                  <td className="keu-r">{rupiah(d.agg.hppLunas)}</td>
-                  <td className="keu-r keu-down">{rupiah(d.agg.hppHutang)}</td>
-                  <td className="keu-r keu-amber-t">{rupiah(d.agg.titipan)}</td>
-                  <td className="keu-r keu-cyan-t">{rupiah(d.agg.mengendap)}</td>
-                  <td className={`keu-r ${marginClass(d.agg.marginLocked)}`}>
-                    {rupiah(d.agg.marginLocked)}
-                  </td>
+                  <td colSpan={5}>TITIPAN PESERTA TOTAL</td>
+                  <td className="keu-r keu-amber-t">{rupiah(p.deferredRevenue)}</td>
+                  <td />
                 </tr>
               </tfoot>
             </table>
@@ -138,11 +137,11 @@ export default async function PosisiKasPage() {
 
       <Panel pad ticked style={{ marginTop: 14 }}>
         <div style={{ fontSize: 10.5, color: "var(--keu-dim)", lineHeight: 1.7 }}>
-          <b className="keu-accent">CARA BACA.</b> Titipan = uang peserta yang masih wajib
-          disetor ke vendor (HPP belum lunas). Mengendap = cicilan masuk tapi HPP proyeksi
-          belum dikunci Finance — statusnya belum jelas milik siapa. Margin locked = sisa
-          yang sudah pasti jadi keuntungan perusahaan, hanya muncul setelah proyeksi
-          di-confirm.
+          <b className="keu-accent">CARA BACA.</b> Selama trip belum berangkat, seluruh uang
+          peserta adalah <b className="keu-amber-t">titipan</b> — Anda wajib menyelenggarakan
+          trip atau mengembalikannya. Jangan dipakai untuk keperluan lain. Begitu trip
+          berangkat, uang itu resmi jadi pendapatan dan labanya pindah ke kolom "Laba Diakui".
+          "Uang Bebas" adalah satu-satunya angka yang aman Anda anggap milik perusahaan.
         </div>
       </Panel>
     </>
@@ -161,6 +160,6 @@ function Legend({ color, label, value }: { color: string; label: string; value: 
   );
 }
 
-function marginClass(n: number): string {
+function toneCls(n: number): string {
   return n > 0 ? "keu-up" : n < 0 ? "keu-down" : "keu-dim-t";
 }

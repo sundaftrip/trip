@@ -87,14 +87,21 @@ export async function createLedgerEntry(
     const category = s(fd, "category");
     if (!category) throw new Error("Kategori wajib diisi.");
     const dateStr = s(fd, "date");
+
+    // Setoran modal selalu uang masuk; penarikan pemilik selalu uang keluar.
+    const source = s(fd, "source") || "MANUAL";
+    let direction = s(fd, "direction") || "OUT";
+    if (source === "CAPITAL") direction = "IN";
+    if (source === "PRIVE") direction = "OUT";
+
     await prisma.ledgerEntry.create({
       data: {
         date: dateStr ? new Date(dateStr) : new Date(),
-        direction: (s(fd, "direction") || "OUT") as never,
+        direction: direction as never,
         amount,
         category,
         description: opt(fd, "description"),
-        source: (s(fd, "source") || "MANUAL") as never,
+        source: source as never,
         bankAccountId: opt(fd, "bankAccountId"),
         tourId: opt(fd, "tourId"),
         createdById: user.id,
@@ -103,12 +110,17 @@ export async function createLedgerEntry(
   });
 }
 
-export async function deleteLedgerEntry(fd: FormData): Promise<void> {
+/**
+ * Membatalkan baris jurnal (VOID) — bukan menghapus. Baris tetap
+ * tersimpan untuk jejak audit, hanya ditandai tidak berlaku dan
+ * tidak ikut perhitungan. Kalau baris ini pelunasan vendor, hutang
+ * tagihannya dikembalikan.
+ */
+export async function voidLedgerEntry(fd: FormData): Promise<void> {
   await guard();
   const id = s(fd, "id");
   const entry = await prisma.ledgerEntry.findUnique({ where: { id } });
-  if (!entry) return;
-  // kalau entry ini pelunasan vendor, kembalikan amountPaid tagihannya
+  if (!entry || entry.voided) return;
   if (entry.vendorBillId) {
     const bill = await prisma.vendorBill.findUnique({ where: { id: entry.vendorBillId } });
     if (bill) {
@@ -122,7 +134,29 @@ export async function deleteLedgerEntry(fd: FormData): Promise<void> {
       });
     }
   }
-  await prisma.ledgerEntry.delete({ where: { id } });
+  await prisma.ledgerEntry.update({
+    where: { id },
+    data: { voided: true, voidedAt: new Date() },
+  });
+  revalidate();
+}
+
+/**
+ * Membatalkan tagihan vendor (VOID). Hanya boleh kalau belum ada
+ * pembayaran sama sekali — kalau sudah dibayar, void dulu jurnal
+ * pembayarannya. Tagihan tetap tersimpan, hanya ditandai batal.
+ */
+export async function voidVendorBill(fd: FormData): Promise<void> {
+  await guard();
+  const id = s(fd, "id");
+  const bill = await prisma.vendorBill.findUnique({ where: { id } });
+  if (!bill || bill.voided) return;
+  if (bill.amountPaid > 0)
+    throw new Error("Tagihan sudah ada pembayaran — batalkan jurnal pembayarannya dulu.");
+  await prisma.vendorBill.update({
+    where: { id },
+    data: { voided: true, voidedAt: new Date() },
+  });
   revalidate();
 }
 

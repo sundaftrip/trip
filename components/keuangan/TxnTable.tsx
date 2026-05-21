@@ -11,6 +11,7 @@ export type TxnRow = {
   sub: string;
   amount: number;
   kind: string;
+  voided?: boolean;
 };
 
 const FILTERS = [
@@ -73,12 +74,14 @@ export default function TxnTable({
             </thead>
             <tbody>
               {rows.map((t) => (
-                <tr key={t.id}>
+                <tr key={t.id} style={t.voided ? { opacity: 0.4 } : undefined}>
                   <td className="keu-faint-t" style={{ whiteSpace: "nowrap" }}>
                     {fmtDateTime(t.date)}
                   </td>
                   <td>
-                    <div>{t.label}</div>
+                    <div style={t.voided ? { textDecoration: "line-through" } : undefined}>
+                      {t.label}
+                    </div>
                     {t.sub && (
                       <div style={{ fontSize: 10, color: "var(--keu-faint)", marginTop: 2 }}>
                         {t.sub}
@@ -86,10 +89,15 @@ export default function TxnTable({
                     )}
                   </td>
                   <td>
-                    <span className={`keu-pill keu-pill-${kindTone(t.kind)}`}>{t.kind}</span>
+                    <span className={`keu-pill keu-pill-${t.voided ? "dim" : kindTone(t.kind)}`}>
+                      {t.voided ? "VOID" : t.kind}
+                    </span>
                   </td>
                   <td
-                    className={`keu-r keu-num ${t.direction === "IN" ? "keu-up" : "keu-down"}`}
+                    className={`keu-r keu-num ${
+                      t.voided ? "keu-faint-t" : t.direction === "IN" ? "keu-up" : "keu-down"
+                    }`}
+                    style={t.voided ? { textDecoration: "line-through" } : undefined}
                   >
                     {t.direction === "IN" ? "+" : "−"}
                     {rupiah(t.amount).replace("−", "")}
@@ -114,6 +122,10 @@ function kindTone(kind: string): "cyan" | "warn" | "dim" | "ok" | "red" {
       return "warn";
     case "OPERATIONAL":
       return "cyan";
+    case "CAPITAL":
+      return "ok";
+    case "PRIVE":
+      return "warn";
     default:
       return "dim";
   }
