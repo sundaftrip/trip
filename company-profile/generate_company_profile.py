@@ -8,6 +8,8 @@ WhatsApp links. Edit the CONFIG block below, then run:
     python3 generate_company_profile.py
 """
 
+import os
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import simpleSplit
 from reportlab.pdfgen import canvas
@@ -15,9 +17,16 @@ from reportlab.pdfgen import canvas
 # --------------------------------------------------------------------------
 # CONFIG — edit these values, then re-run the script.
 # --------------------------------------------------------------------------
-OUTPUT_PATH = "/Users/ferdiansahyusuf/sundaftrip/public/sundaftrip-company-profile.pdf"
-PHOTO_DIR   = "/Users/ferdiansahyusuf/sundaftrip/public/trip-photos"
-LOGO_PATH   = "/Users/ferdiansahyusuf/sundaftrip/company-profile/logo-white.png"
+OUTPUT_PUBLIC   = "/Users/ferdiansahyusuf/sundaftrip/public/sundaftrip-company-profile.pdf"
+OUTPUT_INTERNAL = "/Users/ferdiansahyusuf/sundaftrip/company-profile/sundaftrip-company-profile-internal.pdf"
+PHOTO_DIR       = "/Users/ferdiansahyusuf/sundaftrip/public/trip-photos"
+LOGO_PATH       = "/Users/ferdiansahyusuf/sundaftrip/company-profile/logo-white.png"
+
+# Co-founder name is read from a local file kept OUT of this public repo
+# (company-profile/cofounder.local.txt, gitignored). Absent file → only the
+# public version, without a co-founder, is built.
+COFOUNDER_FILE  = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "cofounder.local.txt")
 
 EMAIL        = "info@sundaftrip.com"
 WEBSITE      = "sundaftrip.com"
@@ -163,7 +172,7 @@ def sep(c, x, y):
 # --------------------------------------------------------------------------
 # Page 1
 # --------------------------------------------------------------------------
-def page_one(c):
+def page_one(c, cofounder=None):
     draw_header(c)
     y = H - 118
 
@@ -175,11 +184,12 @@ def page_one(c):
               "international destinations. Our focus is delivering high-value "
               "travel experiences with personal attention — ensuring every "
               "trip is safe, enjoyable, and memorable.")
-    about2 = ("Founded by Ferdiansah with co-founder Billy, Sundaf Trip was "
-              "built on the belief that international travel should be "
-              "accessible to more people. We handle end-to-end trip "
-              "operations including itinerary design, group coordination, "
-              "and on-ground tour leadership.")
+    founder_line = (f"Founded by Ferdiansah with co-founder {cofounder}"
+                    if cofounder else "Founded by Ferdiansah")
+    about2 = (f"{founder_line}, Sundaf Trip was built on the belief that "
+              "international travel should be accessible to more people. "
+              "We handle end-to-end trip operations including itinerary "
+              "design, group coordination, and on-ground tour leadership.")
     y = paragraph(c, LM, y, about1, CW) - 5
     y = paragraph(c, LM, y, about2, CW) - 16
 
@@ -280,7 +290,7 @@ def page_one(c):
 # --------------------------------------------------------------------------
 # Page 2
 # --------------------------------------------------------------------------
-def page_two(c):
+def page_two(c, cofounder=None):
     draw_header(c)
     y = H - 118
 
@@ -345,8 +355,9 @@ def page_two(c):
     line_y = box_y + box_h - 54
     LH = 15.5
     light = (0.82, 0.85, 0.90)
-    text(c, ix, line_y, "Ferdiansah, Founder   ·   Billy, Co-Founder",
-         "Helvetica", 9.5, light)
+    leaders = (f"Ferdiansah, Founder   ·   {cofounder}, Co-Founder"
+               if cofounder else "Ferdiansah  |  Founder, Sundaf Trip")
+    text(c, ix, line_y, leaders, "Helvetica", 9.5, light)
     line_y -= LH
     lx = ix + text_label(c, ix, line_y, "Email:  ", light)
     link(c, lx, line_y, EMAIL, f"mailto:{EMAIL}",
@@ -375,11 +386,13 @@ def page_two(c):
 
     # --- COMPANY SNAPSHOT (fills lower page 2) ---
     y = section_heading(c, LM, y, "COMPANY SNAPSHOT")
+    founder_row = (("Founder & Co-Founder", f"Ferdiansah, {cofounder}")
+                   if cofounder else ("Founder", "Ferdiansah"))
     snapshot = [
         ("Legal Entity", "CV Sundaf Holiday Group"),
         ("Business License (NIB)", NIB),
         ("Headquarters", "Jakarta, Indonesia"),
-        ("Founder & Co-Founder", "Ferdiansah, Billy"),
+        founder_row,
         ("Business Model", "B2C + B2B (Tour Operator)"),
         ("Group Size", "10–20 pax per departure"),
         ("Tour Leadership", "Own Indonesian-speaking tour leader"),
@@ -451,19 +464,41 @@ def page_three(c):
 
 
 # --------------------------------------------------------------------------
-def main():
-    c = canvas.Canvas(OUTPUT_PATH, pagesize=A4)
+def read_cofounder():
+    """Co-founder name from a local file kept out of the public repo.
+    Absent file → only the public (no co-founder) PDF is generated."""
+    try:
+        with open(COFOUNDER_FILE) as f:
+            return f.read().strip() or None
+    except FileNotFoundError:
+        return None
+
+
+def build(output_path, cofounder=None):
+    c = canvas.Canvas(output_path, pagesize=A4)
     c.setTitle("Sundaf Trip — Company Profile")
     c.setAuthor("CV Sundaf Holiday Group")
     c.setSubject("Company Profile for DMC Partners")
-    page_one(c)
+    page_one(c, cofounder)
     c.showPage()
-    page_two(c)
+    page_two(c, cofounder)
     c.showPage()
     page_three(c)
     c.showPage()
     c.save()
-    print(f"PDF written to {OUTPUT_PATH}")
+    print(f"PDF written to {output_path}")
+
+
+def main():
+    # Public version — no co-founder — goes to the website's public folder.
+    build(OUTPUT_PUBLIC)
+    # Internal version — includes the co-founder — only when the local name
+    # file exists. Stays out of public/ and out of git.
+    name = read_cofounder()
+    if name:
+        build(OUTPUT_INTERNAL, cofounder=name)
+    else:
+        print("cofounder.local.txt tidak ditemukan — versi internal dilewati.")
 
 
 if __name__ == "__main__":
