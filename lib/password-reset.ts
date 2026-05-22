@@ -17,7 +17,7 @@ export async function requestPasswordReset(
   const email = String(fd.get("email") ?? "").trim().toLowerCase();
   if (!email) return { ok: false, error: "Email wajib diisi." };
 
-  if (!emailConfigured())
+  if (!(await emailConfigured()))
     return {
       ok: false,
       error: "Pengiriman email belum dikonfigurasi. Hubungi developer.",

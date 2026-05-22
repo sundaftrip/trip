@@ -1,23 +1,30 @@
 import nodemailer from "nodemailer";
+import { prisma } from "@/lib/prisma";
 
-// Pengiriman email via Gmail SMTP. Kredensial diisi lewat env:
-//   GMAIL_USER          — alamat Gmail pengirim
-//   GMAIL_APP_PASSWORD  — "App Password" 16 digit dari Google
-// Kalau belum di-set, emailConfigured() = false dan fitur yang
-// butuh email akan menolak dengan pesan jelas (tidak crash).
+// Pengiriman email via Gmail SMTP. Kredensial diambil dengan urutan:
+//   1. Environment variable GMAIL_USER + GMAIL_APP_PASSWORD (diutamakan)
+//   2. Kalau env kosong → dari tabel CompanyInfo (key gmail_user /
+//      gmail_app_password) — supaya berlaku di lokal & produksi tanpa
+//      perlu set env var di Vercel.
 
-export function emailConfigured(): boolean {
-  return !!(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD);
+type Creds = { user: string; pass: string };
+
+async function getEmailCreds(): Promise<Creds | null> {
+  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    return { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD };
+  }
+  const rows = await prisma.companyInfo.findMany({
+    where: { key: { in: ["gmail_user", "gmail_app_password"] } },
+  });
+  const m = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  if (m["gmail_user"] && m["gmail_app_password"]) {
+    return { user: m["gmail_user"], pass: m["gmail_app_password"] };
+  }
+  return null;
 }
 
-function getTransport() {
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
+export async function emailConfigured(): Promise<boolean> {
+  return !!(await getEmailCreds());
 }
 
 export async function sendPasswordResetEmail(opts: {
@@ -25,6 +32,9 @@ export async function sendPasswordResetEmail(opts: {
   name: string;
   link: string;
 }) {
+  const creds = await getEmailCreds();
+  if (!creds) throw new Error("Kredensial email belum dikonfigurasi.");
+
   const html = `
   <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;color:#1a2433">
     <div style="background:#0c2647;padding:22px 24px;border-radius:12px 12px 0 0">
@@ -54,8 +64,12 @@ export async function sendPasswordResetEmail(opts: {
     </div>
   </div>`;
 
-  await getTransport().sendMail({
-    from: `"Sundaf Trip — CMS" <${process.env.GMAIL_USER}>`,
+  const transport = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: creds.user, pass: creds.pass },
+  });
+  await transport.sendMail({
+    from: `"Sundaf Trip — CMS" <${creds.user}>`,
     to: opts.to,
     subject: "Reset Password CMS — Sundaf Trip",
     html,
