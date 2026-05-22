@@ -1,0 +1,234 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import visaData from "./visa-database.json";
+
+type Visa = "bebas" | "voa" | "evisa" | "wajib";
+
+interface VisaCountry {
+  id: number;
+  flag: string;
+  name: string;
+  en: string;
+  region: string;
+  visa: Visa;
+  stay: string;
+  cost: string;
+  notes: string;
+}
+
+const COUNTRIES = visaData as unknown as VisaCountry[];
+
+const VISA_LABEL: Record<Visa, string> = {
+  bebas: "Bebas Visa",
+  voa: "Visa on Arrival",
+  evisa: "E-Visa",
+  wajib: "Visa Wajib",
+};
+
+const VISA_BADGE: Record<Visa, string> = {
+  bebas: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  voa: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+  evisa: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+  wajib: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
+};
+
+const VISA_DOT: Record<Visa, string> = {
+  bebas: "bg-emerald-500",
+  voa: "bg-blue-500",
+  evisa: "bg-amber-500",
+  wajib: "bg-rose-500",
+};
+
+const REGIONS = Array.from(new Set(COUNTRIES.map((c) => c.region)));
+const VISA_KEYS = Object.keys(VISA_LABEL) as Visa[];
+
+const FIELD =
+  "px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-800 " +
+  "bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200 " +
+  "outline-none focus:border-gray-400 dark:focus:border-gray-600";
+
+export default function VisaDatabase() {
+  const [q, setQ] = useState("");
+  const [region, setRegion] = useState("");
+  const [visa, setVisa] = useState("");
+
+  const filtered = useMemo(() => {
+    const query = q.toLowerCase().trim();
+    return COUNTRIES.filter((c) => {
+      const matchQ =
+        !query ||
+        c.name.toLowerCase().includes(query) ||
+        c.en.toLowerCase().includes(query) ||
+        c.region.toLowerCase().includes(query);
+      return matchQ && (!region || c.region === region) && (!visa || c.visa === visa);
+    });
+  }, [q, region, visa]);
+
+  const counts = useMemo(() => {
+    const c: Record<Visa, number> = { bebas: 0, voa: 0, evisa: 0, wajib: 0 };
+    COUNTRIES.forEach((x) => {
+      c[x.visa] += 1;
+    });
+    return c;
+  }, []);
+
+  const hasFilter = Boolean(q || region || visa);
+
+  return (
+    <section className="mb-14">
+      <div className="flex items-center gap-2 mb-1">
+        <span
+          className="inline-block w-1.5 h-5 rounded-full"
+          style={{ background: "var(--site-accent,#2d6a4f)" }}
+        />
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+          Database Visa {COUNTRIES.length} Negara
+        </h2>
+      </div>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-xl leading-relaxed">
+        Cek persyaratan visa untuk pemegang paspor Indonesia. Data bersifat
+        informatif — selalu verifikasi ke kedutaan negara tujuan sebelum berangkat.
+      </p>
+
+      <div className="flex flex-wrap gap-x-5 gap-y-2 mb-5">
+        {VISA_KEYS.map((v) => (
+          <div key={v} className="flex items-center gap-1.5 text-xs">
+            <span className={`w-2.5 h-2.5 rounded-full ${VISA_DOT[v]}`} />
+            <span className="font-bold text-gray-900 dark:text-white">{counts[v]}</span>
+            <span className="text-gray-500 dark:text-gray-400">{VISA_LABEL[v]}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-2.5 mb-4">
+        <div className="relative flex-1 min-w-[180px] max-w-xs">
+          <Search
+            size={15}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Cari negara..."
+            className={`w-full pl-9 ${FIELD}`}
+          />
+        </div>
+        <select
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+          className={`${FIELD} cursor-pointer`}
+        >
+          <option value="">Semua Wilayah</option>
+          {REGIONS.map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
+        <select
+          value={visa}
+          onChange={(e) => setVisa(e.target.value)}
+          className={`${FIELD} cursor-pointer`}
+        >
+          <option value="">Semua Jenis Visa</option>
+          {VISA_KEYS.map((v) => (
+            <option key={v} value={v}>
+              {VISA_LABEL[v]}
+            </option>
+          ))}
+        </select>
+        {hasFilter && (
+          <button
+            type="button"
+            onClick={() => {
+              setQ("");
+              setRegion("");
+              setVisa("");
+            }}
+            className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+        <table className="w-full min-w-[680px] text-sm">
+          <thead>
+            <tr className="bg-gray-50 dark:bg-gray-900 text-left">
+              {["Negara", "Wilayah", "Jenis Visa", "Maks. Tinggal", "Biaya", "Catatan"].map(
+                (h) => (
+                  <th
+                    key={h}
+                    className="px-4 py-3 font-semibold text-[11px] uppercase tracking-wide text-gray-500 whitespace-nowrap"
+                  >
+                    {h}
+                  </th>
+                ),
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((c) => (
+              <tr
+                key={c.id}
+                className="border-t border-gray-100 dark:border-gray-800/70 align-top"
+              >
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-xl leading-none">{c.flag}</span>
+                    <div>
+                      <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+                        {c.name}
+                      </div>
+                      <div className="text-xs text-gray-400">{c.en}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                  {c.region}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${VISA_BADGE[c.visa]}`}
+                  >
+                    {VISA_LABEL[c.visa]}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                  {c.stay}
+                </td>
+                <td
+                  className={`px-4 py-3 whitespace-nowrap ${
+                    c.cost === "Gratis"
+                      ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+                      : "text-gray-700 dark:text-gray-300"
+                  }`}
+                >
+                  {c.cost}
+                </td>
+                <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[260px]">
+                  {c.notes}
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-12 text-center text-gray-400">
+                  Tidak ada negara yang cocok dengan pencarian.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+        {filtered.length} negara ditampilkan · Data per Mei 2026, dikompilasi dari
+        sumber resmi. Persyaratan visa dapat berubah sewaktu-waktu.
+      </p>
+    </section>
+  );
+}

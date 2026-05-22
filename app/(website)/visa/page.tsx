@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { MessageCircle, FileCheck } from "lucide-react";
+import VisaDatabase from "./VisaDatabase";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,7 @@ export default async function VisaPage() {
 
   return (
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
         <div className="flex items-center gap-2 mb-2">
           <FileCheck size={20} style={{ color: "var(--site-accent,#2d6a4f)" }} />
           <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Layanan</span>
@@ -55,7 +56,21 @@ export default async function VisaPage() {
           Pengurusan Visa
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
-          Bantu uruskan visa berbagai negara — proses jelas, dokumen dibimbing, dipantau sampai selesai.
+          Cek persyaratan visa 88 negara untuk paspor Indonesia, atau serahkan pengurusannya ke tim kami.
+        </p>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <VisaDatabase />
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Layanan Pengurusan Visa</h2>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-xl leading-relaxed">
+          Tidak mau repot mengurus sendiri? Kami bantu dari dokumen sampai visa terbit.
         </p>
 
         {countries.length === 0 ? (
