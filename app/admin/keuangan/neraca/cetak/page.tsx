@@ -1,6 +1,6 @@
 import "../../cetak.css";
 import { auth } from "@/lib/auth";
-import { getNeraca, getCompanyName } from "@/lib/keuangan/data";
+import { getNeraca, getCompanyIdentity } from "@/lib/keuangan/data";
 import { rupiah, fmtDate, fmtDateTime } from "@/lib/keuangan/format";
 import CetakToolbar from "@/components/keuangan/CetakToolbar";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function NeracaCetakPage() {
   const [d, company, session] = await Promise.all([
     getNeraca(),
-    getCompanyName(),
+    getCompanyIdentity(),
     auth(),
   ]);
   const p = d.position;
@@ -21,9 +21,13 @@ export default async function NeracaCetakPage() {
 
       <div className="cetak-doc">
         <div className="cetak-kop">
-          <div>
-            <div className="cetak-kop-co">{company}</div>
-            <div className="cetak-kop-sub">Laporan Keuangan Internal</div>
+          <div className="cetak-kop-left">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={company.logo} alt={company.name} className="cetak-kop-logo" />
+            <div>
+              <div className="cetak-kop-co">{company.name}</div>
+              <div className="cetak-kop-sub">Laporan Keuangan Internal</div>
+            </div>
           </div>
           <div className="cetak-kop-right">
             <div className="cetak-doctype">Neraca</div>
@@ -122,7 +126,7 @@ export default async function NeracaCetakPage() {
           <span>
             Dicetak oleh {session?.user?.name ?? "—"} · {fmtDateTime(now)}
           </span>
-          <span>{company} — dokumen internal</span>
+          <span>{company.name} — dokumen internal</span>
         </div>
       </div>
     </div>

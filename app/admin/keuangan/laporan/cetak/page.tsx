@@ -1,6 +1,6 @@
 import "../../cetak.css";
 import { auth } from "@/lib/auth";
-import { getLaporan, getCompanyName } from "@/lib/keuangan/data";
+import { getLaporan, getCompanyIdentity } from "@/lib/keuangan/data";
 import { rupiah, fmtDate, fmtDateTime, fmtMonthKey } from "@/lib/keuangan/format";
 import CetakToolbar from "@/components/keuangan/CetakToolbar";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function LaporanCetakPage() {
   const [d, company, session] = await Promise.all([
     getLaporan(),
-    getCompanyName(),
+    getCompanyIdentity(),
     auth(),
   ]);
   const cur = d.current;
@@ -22,9 +22,13 @@ export default async function LaporanCetakPage() {
 
       <div className="cetak-doc">
         <div className="cetak-kop">
-          <div>
-            <div className="cetak-kop-co">{company}</div>
-            <div className="cetak-kop-sub">Laporan Keuangan Internal</div>
+          <div className="cetak-kop-left">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={company.logo} alt={company.name} className="cetak-kop-logo" />
+            <div>
+              <div className="cetak-kop-co">{company.name}</div>
+              <div className="cetak-kop-sub">Laporan Keuangan Internal</div>
+            </div>
           </div>
           <div className="cetak-kop-right">
             <div className="cetak-doctype">Laba Rugi</div>
@@ -164,7 +168,7 @@ export default async function LaporanCetakPage() {
           <span>
             Dicetak oleh {session?.user?.name ?? "—"} · {fmtDateTime(now)}
           </span>
-          <span>{company} — dokumen internal</span>
+          <span>{company.name} — dokumen internal</span>
         </div>
       </div>
     </div>

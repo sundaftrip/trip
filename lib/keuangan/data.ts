@@ -687,8 +687,14 @@ export async function getLapanganData() {
   };
 }
 
-/** Nama perusahaan untuk kop dokumen cetak. */
-export async function getCompanyName() {
-  const row = await prisma.companyInfo.findFirst({ where: { key: "company_name" } });
-  return row?.value || process.env.NEXT_PUBLIC_APP_NAME || "Sundaf Trip";
+/** Nama + logo perusahaan untuk kop dokumen cetak. */
+export async function getCompanyIdentity() {
+  const rows = await prisma.companyInfo.findMany({
+    where: { key: { in: ["company_name", "company_logo"] } },
+  });
+  const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  return {
+    name: map["company_name"] || process.env.NEXT_PUBLIC_APP_NAME || "Sundaf Trip",
+    logo: map["company_logo"] || "/logo.png",
+  };
 }

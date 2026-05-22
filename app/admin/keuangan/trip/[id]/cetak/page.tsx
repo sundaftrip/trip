@@ -1,7 +1,7 @@
 import "../../../cetak.css";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { getTripDetail, getCompanyName } from "@/lib/keuangan/data";
+import { getTripDetail, getCompanyIdentity } from "@/lib/keuangan/data";
 import { rupiah, fmtDate, fmtDateTime } from "@/lib/keuangan/format";
 import CetakToolbar from "@/components/keuangan/CetakToolbar";
 
@@ -15,7 +15,7 @@ export default async function TripCetakPage({
   const { id } = await params;
   const [data, company, session] = await Promise.all([
     getTripDetail(id),
-    getCompanyName(),
+    getCompanyIdentity(),
     auth(),
   ]);
   if (!data) notFound();
@@ -29,9 +29,13 @@ export default async function TripCetakPage({
 
       <div className="cetak-doc">
         <div className="cetak-kop">
-          <div>
-            <div className="cetak-kop-co">{company}</div>
-            <div className="cetak-kop-sub">Laporan Keuangan Internal</div>
+          <div className="cetak-kop-left">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={company.logo} alt={company.name} className="cetak-kop-logo" />
+            <div>
+              <div className="cetak-kop-co">{company.name}</div>
+              <div className="cetak-kop-sub">Laporan Keuangan Internal</div>
+            </div>
           </div>
           <div className="cetak-kop-right">
             <div className="cetak-doctype">Datasheet Trip</div>
@@ -286,7 +290,7 @@ export default async function TripCetakPage({
           <span>
             Dicetak oleh {session?.user?.name ?? "—"} · {fmtDateTime(now)}
           </span>
-          <span>{company} — dokumen internal</span>
+          <span>{company.name} — dokumen internal</span>
         </div>
       </div>
     </div>

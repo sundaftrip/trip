@@ -76,6 +76,17 @@
   padding-bottom: 16px;
   margin-bottom: 22px;
 }
+.cetak-kop-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.cetak-kop-logo {
+  height: 44px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+}
 .cetak-kop-co {
   font-size: 18px;
   font-weight: 800;
