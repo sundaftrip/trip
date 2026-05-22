@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Search, RefreshCw, Rss, BookOpen, ExternalLink } from "lucide-react";
+import { Search, RefreshCw, Rss, BookOpen, ExternalLink, Sparkles } from "lucide-react";
 import ScrapedCard, { ScrapedPost } from "./ScrapedCard";
+import {
+  SCRAPER_STYLES,
+  DEFAULT_STYLE,
+  type ScraperStyleId,
+} from "@/lib/scraper-styles";
 
 type RewriteStatus = "idle" | "loading" | "done" | "error";
 
@@ -13,6 +18,7 @@ interface PostState extends ScrapedPost {
 
 export default function ScraperTool() {
   const [keyword, setKeyword] = useState("");
+  const [style, setStyle] = useState<ScraperStyleId>(DEFAULT_STYLE);
 
   const [posts, setPosts] = useState<PostState[]>([]);
   const [loading, setLoading] = useState(false);
@@ -86,6 +92,7 @@ export default function ScraperTool() {
           originalTitle: post.originalTitle,
           originalBody: post.originalBody,
           coverImage: post.coverImage ?? "",
+          style,
         }),
       });
 
@@ -247,6 +254,56 @@ export default function ScraperTool() {
               )}
               {loading ? "Mengambil data..." : "Cari Konten"}
             </button>
+          </div>
+
+          {/* Style picker — gaya penulisan AI (berlaku saat klik Rewrite) */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles size={16} className="text-violet-500" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Gaya Penulisan AI
+              </h3>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                berlaku saat Rewrite
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {SCRAPER_STYLES.map((s) => {
+                const active = s.id === style;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setStyle(s.id)}
+                    className={`text-left p-4 rounded-xl border-2 transition ${
+                      active
+                        ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20"
+                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span
+                        className={`font-semibold text-sm ${
+                          active
+                            ? "text-violet-700 dark:text-violet-300"
+                            : "text-gray-900 dark:text-white"
+                        }`}
+                      >
+                        {s.label}
+                      </span>
+                      {active && (
+                        <span className="text-xs font-semibold text-violet-600 dark:text-violet-400">
+                          ✓ Dipilih
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                      {s.description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Errors */}
