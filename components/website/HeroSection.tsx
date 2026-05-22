@@ -227,18 +227,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── GLOBE / WORLD LANDMARKS ── */
   if (theme === "globe") {
-    /* SUNDAF block — konten editable via /admin/texts (hero_sundaf_title + hero_sundaf).
-       Style hardcode minimalis. */
-    const sundafDefault =
-      "S — Small group, lebih dekat dan personal.\n" +
-      "U — Unforgettable moments di setiap destinasi.\n" +
-      "N — Nyaman dari awal sampai akhir.\n" +
-      "D — Dedikasi tim 24/7.\n" +
-      "A — Autentik, bukan turis biasa.\n" +
-      "F — Filosofi: pulang sebagai pribadi baru.";
-    const sundafTitle = t("hero_sundaf_title", "Mengapa Sundaf");
-    const sundafText = t("hero_sundaf", sundafDefault);
-
     return (
       <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
         style={{ background: "var(--gl-bg)" }}>
@@ -262,24 +250,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             style={{ color: "var(--gl-text)" }}>
             <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
           </h1>
-
-          {/* SUNDAF kolom kecil — bawah judul di mobile, samping kanan judul di desktop */}
-          <div className="hero-fade-up mb-10 lg:mb-12 lg:absolute lg:top-1/2 lg:right-6 xl:right-10 lg:-translate-y-1/2 lg:max-w-[260px] xl:max-w-[300px]">
-            <span className="text-[10px] tracking-[0.22em] uppercase opacity-60 block mb-2" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-              {sundafTitle}
-            </span>
-            <p
-              className="text-[12px] sm:text-[13px] leading-[1.7] whitespace-pre-line"
-              style={{
-                color: "var(--gl-text)",
-                fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace",
-                textAlign: "justify",
-                textJustify: "inter-word",
-              } as React.CSSProperties}
-            >
-              {sundafText}
-            </p>
-          </div>
 
           <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
             <span className="gl-pill" style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
