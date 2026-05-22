@@ -11,7 +11,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // Modul Keuangan punya shell sendiri (dark terminal) — lihat
   // app/admin/keuangan/layout.tsx. Lewati AdminShell standar.
   const isKeuangan = pathname.startsWith("/admin/keuangan");
-  const isShellless = pathname === "/admin/login" || pathname.endsWith("/print");
+  // Halaman tanpa shell: login, lupa/reset password, dan halaman cetak.
+  const isShellless =
+    pathname === "/admin/login" ||
+    pathname === "/admin/lupa-password" ||
+    pathname.startsWith("/admin/reset-password") ||
+    pathname.endsWith("/print");
   const session = isShellless ? null : await auth();
   const showShell = !isShellless && !isKeuangan && !!session;
 

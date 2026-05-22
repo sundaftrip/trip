@@ -13,13 +13,18 @@ export function proxy(req: NextRequest) {
   // Auth guard hanya untuk /admin (tidak pernah dijalankan untuk halaman publik)
   if (isAdmin) {
     const isLoginPage = pathname === "/admin/login";
+    // Halaman auth publik — boleh diakses tanpa login (user terkunci).
+    const isPublicAuthPage =
+      isLoginPage ||
+      pathname === "/admin/lupa-password" ||
+      pathname.startsWith("/admin/reset-password");
     const token =
       req.cookies.get("authjs.session-token")?.value ||
       req.cookies.get("__Secure-authjs.session-token")?.value ||
       req.cookies.get("next-auth.session-token")?.value ||
       req.cookies.get("__Secure-next-auth.session-token")?.value;
     const isAuthenticated = !!token;
-    if (!isLoginPage && !isAuthenticated) {
+    if (!isPublicAuthPage && !isAuthenticated) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
     if (isLoginPage && isAuthenticated) {
