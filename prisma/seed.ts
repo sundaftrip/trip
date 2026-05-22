@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import visaSeed from "./visa-seed.json";
 
 const prisma = new PrismaClient();
 
@@ -76,6 +77,31 @@ async function main() {
     });
   }
   console.log(`✅ Theme=${SEED_THEME}${SEED_COMPANY_NAME ? ` company=${SEED_COMPANY_NAME}` : ""}`);
+
+  // Seed database visa 88 negara — HANYA kalau tabel kosong.
+  // Sekali admin mengedit data via CMS, deploy berikutnya tidak akan menimpa.
+  const visaCount = await prisma.countryVisa.count();
+  if (visaCount === 0) {
+    await prisma.countryVisa.createMany({
+      data: (visaSeed as Array<{
+        id: number; flag: string; name: string; en: string;
+        region: string; visa: string; stay: string; cost: string; notes: string;
+      }>).map((c) => ({
+        sortOrder: c.id,
+        flag: c.flag,
+        name: c.name,
+        en: c.en,
+        region: c.region,
+        visa: c.visa,
+        stay: c.stay,
+        cost: c.cost,
+        notes: c.notes,
+      })),
+    });
+    console.log(`✅ ${visaSeed.length} entri visa di-seed`);
+  } else {
+    console.log(`ℹ️  ${visaCount} entri visa sudah ada, skip seed visa`);
+  }
 }
 
 main()

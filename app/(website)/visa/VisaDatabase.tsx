@@ -2,23 +2,20 @@
 
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import visaData from "./visa-database.json";
 
 type Visa = "bebas" | "voa" | "evisa" | "wajib";
 
-interface VisaCountry {
-  id: number;
+export interface VisaCountry {
+  id: string;
   flag: string;
   name: string;
   en: string;
   region: string;
-  visa: Visa;
+  visa: string;
   stay: string;
   cost: string;
   notes: string;
 }
-
-const COUNTRIES = visaData as unknown as VisaCountry[];
 
 const VISA_LABEL: Record<Visa, string> = {
   bebas: "Bebas Visa",
@@ -41,7 +38,6 @@ const VISA_DOT: Record<Visa, string> = {
   wajib: "bg-rose-500",
 };
 
-const REGIONS = Array.from(new Set(COUNTRIES.map((c) => c.region)));
 const VISA_KEYS = Object.keys(VISA_LABEL) as Visa[];
 
 const FIELD =
@@ -49,7 +45,17 @@ const FIELD =
   "bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200 " +
   "outline-none focus:border-gray-400 dark:focus:border-gray-600";
 
-export default function VisaDatabase() {
+function isVisa(v: string): v is Visa {
+  return v === "bebas" || v === "voa" || v === "evisa" || v === "wajib";
+}
+
+export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
+  const COUNTRIES = entries;
+  const REGIONS = useMemo(
+    () => Array.from(new Set(COUNTRIES.map((c) => c.region))),
+    [COUNTRIES],
+  );
+
   const [q, setQ] = useState("");
   const [region, setRegion] = useState("");
   const [visa, setVisa] = useState("");
@@ -64,15 +70,15 @@ export default function VisaDatabase() {
         c.region.toLowerCase().includes(query);
       return matchQ && (!region || c.region === region) && (!visa || c.visa === visa);
     });
-  }, [q, region, visa]);
+  }, [q, region, visa, COUNTRIES]);
 
   const counts = useMemo(() => {
     const c: Record<Visa, number> = { bebas: 0, voa: 0, evisa: 0, wajib: 0 };
     COUNTRIES.forEach((x) => {
-      c[x.visa] += 1;
+      if (isVisa(x.visa)) c[x.visa] += 1;
     });
     return c;
-  }, []);
+  }, [COUNTRIES]);
 
   const hasFilter = Boolean(q || region || visa);
 
@@ -191,24 +197,34 @@ export default function VisaDatabase() {
                   {c.region}
                 </td>
                 <td className="px-4 py-3">
-                  <span
-                    className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${VISA_BADGE[c.visa]}`}
-                  >
-                    {VISA_LABEL[c.visa]}
-                  </span>
+                  {isVisa(c.visa) ? (
+                    <span
+                      className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${VISA_BADGE[c.visa]}`}
+                    >
+                      {VISA_LABEL[c.visa]}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-400">{c.visa}</span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
                   {c.stay}
                 </td>
-                <td
-                  className={`px-4 py-3 whitespace-nowrap ${
-                    c.cost === "Gratis"
-                      ? "text-emerald-600 dark:text-emerald-400 font-semibold"
-                      : "text-gray-700 dark:text-gray-300"
-                  }`}
-                >
-                  {c.cost}
-                </td>
+                {(() => {
+                  const costText = c.cost.trim() || "Gratis";
+                  const isFree = costText === "Gratis";
+                  return (
+                    <td
+                      className={`px-4 py-3 whitespace-nowrap ${
+                        isFree
+                          ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+                          : "text-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {costText}
+                    </td>
+                  );
+                })()}
                 <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[260px]">
                   {c.notes}
                 </td>

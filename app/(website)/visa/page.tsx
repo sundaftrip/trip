@@ -28,9 +28,14 @@ function parseVisa(raw: string): VisaRow[] {
 }
 
 export default async function VisaPage() {
-  const rows = await prisma.companyInfo.findMany({
-    where: { key: { in: ["visa_catalog", "company_whatsapp", "company_name"] } },
-  });
+  const [rows, visaEntries] = await Promise.all([
+    prisma.companyInfo.findMany({
+      where: { key: { in: ["visa_catalog", "company_whatsapp", "company_name"] } },
+    }),
+    prisma.countryVisa.findMany({
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    }),
+  ]);
   const map: Record<string, string> = {};
   rows.forEach((r) => { map[r.key] = r.value; });
   const wa = toWaNumber(map["company_whatsapp"]);
@@ -61,7 +66,7 @@ export default async function VisaPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <VisaDatabase />
+        <VisaDatabase entries={visaEntries} />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

@@ -407,3 +407,22 @@ model LedgerEntry {
   @@index([tourId])
   @@index([direction])
 }
+
+// Database visa 88 negara — info persyaratan visa paspor Indonesia.
+// Dikelola lewat CMS (/admin/visa-database), tampil di halaman publik /visa.
+model CountryVisa {
+  id        String   @id @default(cuid())
+  sortOrder Int      @default(0)
+  flag      String
+  name      String
+  en        String
+  region    String
+  visa      String // "bebas" | "voa" | "evisa" | "wajib"
+  stay      String
+  cost      String // kosong = ditampilkan "Gratis"
+  notes     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
