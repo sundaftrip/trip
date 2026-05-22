@@ -4,12 +4,18 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { emailConfigured, sendPasswordResetEmail } from "@/lib/email";
+import { sendPasswordResetEmail } from "@/lib/email";
 import { hashResetToken } from "@/lib/reset-token";
 
-export type ResetState = { ok: boolean; error?: string; message?: string };
+export type ResetState = {
+  ok: boolean;
+  error?: string;
+  message?: string;
+  /** Link reset password. Ditampilkan di layar supaya tidak tergantung email. */
+  link?: string;
+};
 
-/** Permintaan reset: kirim link ke email user kalau terdaftar. */
+/** Permintaan reset: tampilkan link langsung di layar, kirim email best-effort. */
 export async function requestPasswordReset(
   _prev: ResetState,
   fd: FormData,
@@ -17,21 +23,14 @@ export async function requestPasswordReset(
   const email = String(fd.get("email") ?? "").trim().toLowerCase();
   if (!email) return { ok: false, error: "Email wajib diisi." };
 
-  if (!(await emailConfigured()))
-    return {
-      ok: false,
-      error: "Pengiriman email belum dikonfigurasi. Hubungi developer.",
-    };
-
-  // Jawaban selalu sama — tidak membocorkan apakah email terdaftar.
-  const generic: ResetState = {
-    ok: true,
-    message:
-      "Jika email terdaftar, link reset password sudah dikirim. Cek inbox dan folder spam.",
-  };
-
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return generic;
+  if (!user) {
+    return {
+      ok: true,
+      message:
+        "Kalau email ini terdaftar, link reset password akan muncul di sini.",
+    };
+  }
 
   // satu token aktif per user
   await prisma.passwordResetToken.deleteMany({ where: { userId: user.id } });
@@ -50,19 +49,22 @@ export async function requestPasswordReset(
     h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const link = `${proto}://${host}/admin/reset-password/${raw}`;
 
+  // Email best-effort — kalau gagal/tidak terkonfigurasi, link tetap muncul di layar.
   try {
     await sendPasswordResetEmail({ to: user.email, name: user.name, link });
   } catch (e) {
-    console.error("Gagal kirim email reset:", e);
-    return {
-      ok: false,
-      error: "Gagal mengirim email. Coba lagi sebentar atau hubungi developer.",
-    };
+    console.warn("Email reset gagal terkirim (link tetap aktif di layar):", e);
   }
-  return generic;
+
+  return {
+    ok: true,
+    message:
+      "Link reset password berhasil dibuat. Klik link di bawah untuk membuat password baru. Berlaku 1 jam.",
+    link,
+  };
 }
 
-/** Set password baru memakai token dari link email. */
+/** Set password baru memakai token dari link. */
 export async function doPasswordReset(
   _prev: ResetState,
   fd: FormData,

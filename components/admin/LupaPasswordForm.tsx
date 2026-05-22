@@ -15,7 +15,7 @@ function SubmitBtn() {
       disabled={pending}
       className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition"
     >
-      {pending ? "Mengirim…" : "Kirim Link Reset"}
+      {pending ? "Memproses…" : "Buat Link Reset"}
     </button>
   );
 }
@@ -26,7 +26,7 @@ export default function LupaPasswordForm() {
   return (
     <form action={action} className="space-y-4">
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Masukkan email akun CMS Anda. Kami kirimkan link untuk membuat password baru.
+        Masukkan email akun CMS Anda. Link reset password akan langsung muncul di layar.
       </p>
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -46,6 +46,25 @@ export default function LupaPasswordForm() {
           {state.message}
         </p>
       )}
+
+      {state.link && (
+        <div className="space-y-2 rounded-lg border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 p-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-orange-700 dark:text-orange-300">
+            Link reset password Anda
+          </p>
+          <a
+            href={state.link}
+            className="block break-all rounded-md bg-white dark:bg-gray-900 px-3 py-2 text-sm font-mono text-blue-700 dark:text-blue-400 hover:underline"
+          >
+            {state.link}
+          </a>
+          <p className="text-[11px] leading-relaxed text-orange-700/80 dark:text-orange-300/80">
+            Klik link di atas untuk membuat password baru. Link berlaku 1 jam dan
+            hanya bisa dipakai sekali.
+          </p>
+        </div>
+      )}
+
       {state.error && (
         <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">
           {state.error}
