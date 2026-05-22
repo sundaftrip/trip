@@ -49,6 +49,11 @@ function isVisa(v: string): v is Visa {
   return v === "bebas" || v === "voa" || v === "evisa" || v === "wajib";
 }
 
+function costInfo(raw: string) {
+  const text = raw.trim() || "Gratis";
+  return { text, isFree: text === "Gratis" };
+}
+
 export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
   const COUNTRIES = entries;
   const REGIONS = useMemo(
@@ -94,11 +99,12 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
         </h2>
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-xl leading-relaxed">
-        Cek persyaratan visa untuk pemegang paspor Indonesia. Data bersifat
-        informatif — selalu verifikasi ke kedutaan negara tujuan sebelum berangkat.
+        Data bersifat informatif. Selalu verifikasi ke kedutaan negara tujuan
+        sebelum berangkat.
       </p>
 
-      <div className="flex flex-wrap gap-x-5 gap-y-2 mb-5">
+      {/* Legend jumlah per kategori */}
+      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-5">
         {VISA_KEYS.map((v) => (
           <div key={v} className="flex items-center gap-1.5 text-xs">
             <span className={`w-2.5 h-2.5 rounded-full ${VISA_DOT[v]}`} />
@@ -108,8 +114,9 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-2.5 mb-4">
-        <div className="relative flex-1 min-w-[180px] max-w-xs">
+      {/* Filter — stack vertikal di mobile, sejajar di sm+ */}
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap mb-4">
+        <div className="relative sm:flex-1 sm:min-w-[180px] sm:max-w-xs">
           <Search
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -121,30 +128,32 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             className={`w-full pl-9 ${FIELD}`}
           />
         </div>
-        <select
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-          className={`${FIELD} cursor-pointer`}
-        >
-          <option value="">Semua Wilayah</option>
-          {REGIONS.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
-        <select
-          value={visa}
-          onChange={(e) => setVisa(e.target.value)}
-          className={`${FIELD} cursor-pointer`}
-        >
-          <option value="">Semua Jenis Visa</option>
-          {VISA_KEYS.map((v) => (
-            <option key={v} value={v}>
-              {VISA_LABEL[v]}
-            </option>
-          ))}
-        </select>
+        <div className="grid grid-cols-2 gap-2.5 sm:contents">
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className={`${FIELD} cursor-pointer w-full sm:w-auto`}
+          >
+            <option value="">Semua Wilayah</option>
+            {REGIONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+          <select
+            value={visa}
+            onChange={(e) => setVisa(e.target.value)}
+            className={`${FIELD} cursor-pointer w-full sm:w-auto`}
+          >
+            <option value="">Semua Jenis Visa</option>
+            {VISA_KEYS.map((v) => (
+              <option key={v} value={v}>
+                {VISA_LABEL[v]}
+              </option>
+            ))}
+          </select>
+        </div>
         {hasFilter && (
           <button
             type="button"
@@ -155,12 +164,87 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             }}
             className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
-            Reset
+            Reset filter
           </button>
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+      {/* MOBILE: card stack — sampai md */}
+      <div className="md:hidden space-y-3">
+        {filtered.map((c) => {
+          const cost = costInfo(c.cost);
+          return (
+            <article
+              key={c.id}
+              className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4"
+            >
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="text-2xl leading-none shrink-0" aria-hidden>
+                    {c.flag}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-gray-900 dark:text-white truncate">
+                      {c.name}
+                    </div>
+                    <div className="text-xs text-gray-400 truncate">{c.en}</div>
+                  </div>
+                </div>
+                {isVisa(c.visa) ? (
+                  <span
+                    className={`shrink-0 inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${VISA_BADGE[c.visa]}`}
+                  >
+                    {VISA_LABEL[c.visa]}
+                  </span>
+                ) : (
+                  <span className="shrink-0 text-[11px] text-gray-400">{c.visa}</span>
+                )}
+              </div>
+
+              <dl className="grid grid-cols-3 gap-2 text-[11px]">
+                <div>
+                  <dt className="text-gray-400 uppercase tracking-wide">Wilayah</dt>
+                  <dd className="mt-0.5 text-gray-700 dark:text-gray-300 font-medium">
+                    {c.region}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-400 uppercase tracking-wide">Maks. Tinggal</dt>
+                  <dd className="mt-0.5 text-gray-700 dark:text-gray-300 font-medium">
+                    {c.stay}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-400 uppercase tracking-wide">Biaya</dt>
+                  <dd
+                    className={`mt-0.5 font-semibold ${
+                      cost.isFree
+                        ? "text-emerald-600 dark:text-emerald-400"
+                        : "text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    {cost.text}
+                  </dd>
+                </div>
+              </dl>
+
+              {c.notes && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+                  {c.notes}
+                </p>
+              )}
+            </article>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 px-4 py-12 text-center text-sm text-gray-400">
+            Tidak ada negara yang cocok dengan pencarian.
+          </div>
+        )}
+      </div>
+
+      {/* DESKTOP: tabel — mulai md */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
         <table className="w-full min-w-[680px] text-sm">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-900 text-left">
@@ -177,59 +261,56 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((c) => (
-              <tr
-                key={c.id}
-                className="border-t border-gray-100 dark:border-gray-800/70 align-top"
-              >
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-xl leading-none">{c.flag}</span>
-                    <div>
-                      <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
-                        {c.name}
+            {filtered.map((c) => {
+              const cost = costInfo(c.cost);
+              return (
+                <tr
+                  key={c.id}
+                  className="border-t border-gray-100 dark:border-gray-800/70 align-top"
+                >
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl leading-none">{c.flag}</span>
+                      <div>
+                        <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+                          {c.name}
+                        </div>
+                        <div className="text-xs text-gray-400">{c.en}</div>
                       </div>
-                      <div className="text-xs text-gray-400">{c.en}</div>
                     </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                  {c.region}
-                </td>
-                <td className="px-4 py-3">
-                  {isVisa(c.visa) ? (
-                    <span
-                      className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${VISA_BADGE[c.visa]}`}
-                    >
-                      {VISA_LABEL[c.visa]}
-                    </span>
-                  ) : (
-                    <span className="text-xs text-gray-400">{c.visa}</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                  {c.stay}
-                </td>
-                {(() => {
-                  const costText = c.cost.trim() || "Gratis";
-                  const isFree = costText === "Gratis";
-                  return (
-                    <td
-                      className={`px-4 py-3 whitespace-nowrap ${
-                        isFree
-                          ? "text-emerald-600 dark:text-emerald-400 font-semibold"
-                          : "text-gray-700 dark:text-gray-300"
-                      }`}
-                    >
-                      {costText}
-                    </td>
-                  );
-                })()}
-                <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[260px]">
-                  {c.notes}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                    {c.region}
+                  </td>
+                  <td className="px-4 py-3">
+                    {isVisa(c.visa) ? (
+                      <span
+                        className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${VISA_BADGE[c.visa]}`}
+                      >
+                        {VISA_LABEL[c.visa]}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400">{c.visa}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                    {c.stay}
+                  </td>
+                  <td
+                    className={`px-4 py-3 whitespace-nowrap ${
+                      cost.isFree
+                        ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+                        : "text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    {cost.text}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[260px]">
+                    {c.notes}
+                  </td>
+                </tr>
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-12 text-center text-gray-400">
