@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tours", label: "Tour", icon: Map },
+  { href: "/admin/visa", label: "Katalog Visa", icon: FileText },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
