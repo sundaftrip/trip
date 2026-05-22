@@ -1,6 +1,7 @@
 "use server";
 
 import { randomBytes } from "crypto";
+import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -393,13 +394,15 @@ export async function resetKeuangan(
     if (user.role !== "SUPERADMIN")
       throw new Error("Hanya Super Admin yang boleh mereset data keuangan.");
 
-    const secret = process.env.KEUANGAN_RESET_SECRET;
-    if (!secret)
-      throw new Error(
-        "Fitur reset belum diaktifkan — set KEUANGAN_RESET_SECRET di environment.",
-      );
-    if (s(fd, "password") !== secret)
-      throw new Error("Password reset salah.");
+    // Password reset disimpan ter-hash (bcrypt) di CompanyInfo —
+    // berlaku sama di lokal maupun produksi (satu database).
+    const row = await prisma.companyInfo.findUnique({
+      where: { key: "keuangan_reset_hash" },
+    });
+    if (!row?.value)
+      throw new Error("Fitur reset belum dikonfigurasi. Hubungi developer.");
+    const ok = await bcrypt.compare(s(fd, "password"), row.value);
+    if (!ok) throw new Error("Password reset salah.");
 
     // urutan penting demi foreign key
     await prisma.$transaction([
