@@ -1,30 +1,46 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 
-// Pengiriman email via Gmail SMTP. Kredensial diambil dengan urutan:
-//   1. Environment variable GMAIL_USER + GMAIL_APP_PASSWORD (diutamakan)
-//   2. Kalau env kosong → dari tabel CompanyInfo (key gmail_user /
-//      gmail_app_password) — supaya berlaku di lokal & produksi tanpa
-//      perlu set env var di Vercel.
+// Pengiriman email reset password CMS via Resend (email transaksional).
+// Dipilih supaya email reset tetap masuk Inbox meski tujuannya akun Gmail
+// yang sama — Gmail SMTP dulu menyembunyikan email "kirim ke diri sendiri".
+//
+// Kredensial diambil dengan urutan:
+//   1. Environment variable RESEND_API_KEY (+ RESEND_FROM opsional)
+//   2. Kalau env kosong → dari tabel CompanyInfo (key resend_api_key /
+//      resend_from) — supaya berlaku di lokal & produksi tanpa perlu set
+//      env var di Vercel.
+//
+// Soal alamat pengirim (from):
+//   - Tanpa verifikasi domain → pakai "onboarding@resend.dev". Resend hanya
+//     mengizinkan kirim ke alamat email yang dipakai DAFTAR akun Resend.
+//   - Untuk kirim ke alamat apa pun → verifikasi domain sundaftrip.com di
+//     Resend, lalu set resend_from ke mis.
+//     "Sundaf Trip — CMS <noreply@sundaftrip.com>".
 
-type Creds = { user: string; pass: string };
+type Config = { apiKey: string; from: string };
 
-async function getEmailCreds(): Promise<Creds | null> {
-  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-    return { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD };
+const DEFAULT_FROM = "Sundaf Trip — CMS <onboarding@resend.dev>";
+
+async function getEmailConfig(): Promise<Config | null> {
+  if (process.env.RESEND_API_KEY) {
+    return {
+      apiKey: process.env.RESEND_API_KEY,
+      from: process.env.RESEND_FROM || DEFAULT_FROM,
+    };
   }
   const rows = await prisma.companyInfo.findMany({
-    where: { key: { in: ["gmail_user", "gmail_app_password"] } },
+    where: { key: { in: ["resend_api_key", "resend_from"] } },
   });
   const m = Object.fromEntries(rows.map((r) => [r.key, r.value]));
-  if (m["gmail_user"] && m["gmail_app_password"]) {
-    return { user: m["gmail_user"], pass: m["gmail_app_password"] };
+  if (m["resend_api_key"]) {
+    return { apiKey: m["resend_api_key"], from: m["resend_from"] || DEFAULT_FROM };
   }
   return null;
 }
 
 export async function emailConfigured(): Promise<boolean> {
-  return !!(await getEmailCreds());
+  return !!(await getEmailConfig());
 }
 
 export async function sendPasswordResetEmail(opts: {
@@ -32,8 +48,8 @@ export async function sendPasswordResetEmail(opts: {
   name: string;
   link: string;
 }) {
-  const creds = await getEmailCreds();
-  if (!creds) throw new Error("Kredensial email belum dikonfigurasi.");
+  const config = await getEmailConfig();
+  if (!config) throw new Error("Kredensial email belum dikonfigurasi.");
 
   const html = `
   <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;color:#1a2433">
@@ -64,14 +80,14 @@ export async function sendPasswordResetEmail(opts: {
     </div>
   </div>`;
 
-  const transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: { user: creds.user, pass: creds.pass },
-  });
-  await transport.sendMail({
-    from: `"Sundaf Trip — CMS" <${creds.user}>`,
+  const resend = new Resend(config.apiKey);
+  const { error } = await resend.emails.send({
+    from: config.from,
     to: opts.to,
     subject: "Reset Password CMS — Sundaf Trip",
     html,
   });
+  if (error) {
+    throw new Error(`Resend gagal kirim email: ${error.message}`);
+  }
 }
