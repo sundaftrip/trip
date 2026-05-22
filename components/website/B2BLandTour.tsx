@@ -1,0 +1,240 @@
+/* Shared B2B land-tour pitch for Indonesian travel agents.
+   Rendered by /partner (with co-founder) and /b2b (without). Single
+   content source so the two pages never drift apart. */
+import {
+  Building2, Compass, CheckCircle2, Phone, Mail, Download,
+  Hotel, Bus, Utensils, Ticket, UserCheck, Route, MapPin,
+} from "lucide-react";
+
+const COVERAGE = [
+  { Icon: Hotel, title: "Akomodasi", desc: "Hotel terkurasi di lokasi strategis dan nyaman untuk grup." },
+  { Icon: Bus, title: "Transportasi Darat", desc: "Coach atau minibus private dengan sopir berpengalaman." },
+  { Icon: Utensils, title: "Pengaturan Makan", desc: "Makan terjadwal, fleksibel — termasuk opsi halal." },
+  { Icon: Ticket, title: "Tiket Atraksi", desc: "Tiket masuk objek wisata utama di setiap destinasi." },
+  { Icon: UserCheck, title: "Tour Leader", desc: "Tour leader berbahasa Indonesia mendampingi penuh." },
+  { Icon: Route, title: "Desain Itinerary", desc: "Itinerary dirancang sesuai tema, budget, dan preferensi grup." },
+];
+
+const DESTINATIONS = [
+  { region: "Rusia", detail: "Moscow · St. Petersburg · Murmansk (aurora)" },
+  { region: "Asia Tengah", detail: "Kazakhstan · Uzbekistan · Kyrgyzstan · Tajikistan" },
+  { region: "India", detail: "Rute budaya & heritage" },
+  { region: "Berkembang ke", detail: "Eropa Barat & Skandinavia" },
+];
+
+const WHY = [
+  "Rekam jejak nyata — 20+ grup dan 700+ traveler dioperasikan sepanjang 2025.",
+  "Spesialis grup kecil 10–20 pax — operasional fokus dan terkoordinasi.",
+  "Tour leader sendiri, berbahasa Indonesia, di setiap keberangkatan.",
+  "Harga land tour kompetitif dengan rincian transparan — tanpa biaya tersembunyi.",
+  "Komunikasi responsif via WhatsApp dan email sepanjang proses.",
+];
+
+const STEPS = [
+  { n: "1", title: "Konsultasi", desc: "Sampaikan rencana grup Anda — destinasi, tanggal, jumlah pax, dan kisaran budget." },
+  { n: "2", title: "Penawaran", desc: "Kami susun penawaran land tour terinci: hotel, transport, makan, tiket, dan tour leader." },
+  { n: "3", title: "Konfirmasi", desc: "Review bersama, negosiasi, lalu finalisasi paket dan jadwal." },
+  { n: "4", title: "Operasional", desc: "Kami jalankan seluruh perjalanan di destinasi — Anda cukup memantau." },
+  { n: "5", title: "Laporan", desc: "Umpan balik pasca-trip untuk menyempurnakan keberangkatan berikutnya." },
+];
+
+const PHOTOS = [
+  { src: "/trip-photos/trip-1.jpg", caption: "Red Square · Moscow" },
+  { src: "/trip-photos/trip-4.jpg", caption: "Kaindy Lake · Kazakhstan" },
+  { src: "/trip-photos/trip-6.jpg", caption: "Keberangkatan grup · Moscow" },
+];
+
+const FOUNDERS = [
+  {
+    initial: "F",
+    name: "Ferdiansah",
+    role: "Founder",
+    desc: "Memimpin operasional Sundaf Trip — pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
+  },
+  {
+    initial: "B",
+    name: "Billy",
+    role: "Co-Founder",
+    desc: "Berpengalaman di industri travel dan memimpin perjalanan grup internasional. Memegang pengembangan kemitraan dan hubungan dengan travel agent.",
+  },
+];
+
+export default function B2BLandTour({ withCofounder = false }: { withCofounder?: boolean }) {
+  const founders = withCofounder ? FOUNDERS : FOUNDERS.slice(0, 1);
+
+  return (
+    <div className="min-h-screen pt-24 bg-white dark:bg-slate-950">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        {/* ── Hero ── */}
+        <span className="inline-block text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">
+          Land Tour Operator · B2B
+        </span>
+        <h1 className="text-4xl lg:text-5xl font-black leading-tight mb-5 text-gray-900 dark:text-white">
+          Land Operator Anda untuk Rusia, Asia Tengah &amp; India
+        </h1>
+        <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+          Sundaf Trip adalah land tour operator. Travel agent mengirimkan
+          grupnya, dan kami yang menangani seluruh operasional di destinasi —
+          hotel, transportasi, makan, tiket atraksi, hingga tour leader. Anda
+          fokus menjual; kami memastikan perjalanannya berjalan mulus.
+        </p>
+
+        {/* ── Positioning ── */}
+        <div className="mt-8 flex items-start gap-3 p-5 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+          <Building2 size={18} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+          <div className="text-sm">
+            <p className="font-black text-gray-900 dark:text-white">
+              Anda jual, kami yang operasikan
+            </p>
+            <p className="mt-1 text-gray-500 dark:text-gray-400">
+              Sundaf Trip — CV Sundaf Holiday Group — adalah pemasok (supplier)
+              land tour spesialis Rusia, Asia Tengah, dan India untuk travel
+              agent di Indonesia.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Coverage ── */}
+        <h2 className="mt-12 mb-5 text-2xl font-black text-gray-900 dark:text-white">
+          Yang Kami Tangani di Destinasi
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {COVERAGE.map(({ Icon, title, desc }) => (
+            <div key={title} className="flex items-start gap-3 p-5 rounded-xl border border-gray-100 dark:border-gray-800">
+              <div className="w-9 h-9 shrink-0 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950">
+                <Icon size={17} className="text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <p className="font-black text-gray-900 dark:text-white">{title}</p>
+                <p className="mt-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Destinations ── */}
+        <h2 className="mt-12 mb-5 text-2xl font-black text-gray-900 dark:text-white">
+          Destinasi yang Kami Layani
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {DESTINATIONS.map(({ region, detail }) => (
+            <div key={region} className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+              <MapPin size={15} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+              <div>
+                <p className="font-black text-sm text-gray-900 dark:text-white">{region}</p>
+                <p className="text-xs mt-0.5 text-gray-500 dark:text-gray-400">{detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Why ── */}
+        <h2 className="mt-12 mb-5 text-2xl font-black text-gray-900 dark:text-white">
+          Kenapa Land Tour Sundaf Trip
+        </h2>
+        <div className="space-y-3">
+          {WHY.map((point) => (
+            <div key={point} className="flex items-start gap-3">
+              <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+              <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">{point}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── How we work ── */}
+        <h2 className="mt-12 mb-5 text-2xl font-black text-gray-900 dark:text-white">
+          Cara Kerja Sama
+        </h2>
+        <div className="space-y-3">
+          {STEPS.map(({ n, title, desc }) => (
+            <div key={n} className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+              <div className="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg bg-blue-600 text-white font-black text-sm">
+                {n}
+              </div>
+              <div>
+                <p className="font-black text-gray-900 dark:text-white">{title}</p>
+                <p className="mt-0.5 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Real departures ── */}
+        <h2 className="mt-12 mb-1 text-2xl font-black text-gray-900 dark:text-white">
+          Keberangkatan Nyata
+        </h2>
+        <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
+          Sebagian grup yang telah kami operasikan di Rusia, Asia Tengah, dan sekitarnya.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {PHOTOS.map(({ src, caption }) => (
+            <div key={src} className="relative aspect-[3/2] rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={caption} loading="lazy" className="w-full h-full object-cover" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pt-8 pb-2">
+                <p className="text-[11px] font-semibold text-white">{caption}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Founders ── */}
+        <h2 className="mt-12 mb-5 text-2xl font-black text-gray-900 dark:text-white">
+          Pendiri Sundaf Trip
+        </h2>
+        <div className={`grid gap-4 ${withCofounder ? "sm:grid-cols-2" : "grid-cols-1"}`}>
+          {founders.map(({ initial, name, role, desc }) => (
+            <div key={name} className="p-5 rounded-xl border border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full bg-blue-600 text-white font-black text-lg">
+                  {initial}
+                </div>
+                <div>
+                  <p className="text-lg font-black text-gray-900 dark:text-white leading-tight">{name}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{role}</p>
+                </div>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── CTA ── */}
+        <div className="mt-12 p-6 rounded-2xl bg-gray-900 dark:bg-gray-800 text-center">
+          <h2 className="text-2xl font-black text-white mb-2">Kirim Grup Anda Bersama Kami</h2>
+          <p className="text-sm text-gray-300 mb-6">
+            Ceritakan rencana grup Anda — kami siapkan penawaran land tour-nya.
+            Kami merespons setiap pertanyaan.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="https://wa.me/6281775202759"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 font-black text-sm rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition"
+            >
+              <Phone size={16} /> Hubungi via WhatsApp
+            </a>
+            <a
+              href="/sundaftrip-company-profile.pdf"
+              download
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 font-black text-sm rounded-xl border border-gray-600 text-gray-200 hover:bg-gray-800 transition"
+            >
+              <Download size={16} /> Unduh Company Profile
+            </a>
+          </div>
+          <div className="mt-5 flex flex-col sm:flex-row gap-x-6 gap-y-1 justify-center text-xs text-gray-400">
+            <span className="inline-flex items-center gap-1.5">
+              <Mail size={12} /> info@sundaftrip.com
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Compass size={12} /> CV Sundaf Holiday Group · NIB 1601260060842
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

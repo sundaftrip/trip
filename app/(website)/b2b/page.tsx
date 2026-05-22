@@ -9,6 +9,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function PartnerPage() {
-  return <B2BLandTour withCofounder />;
+export default function B2BPage() {
+  return <B2BLandTour />;
 }
