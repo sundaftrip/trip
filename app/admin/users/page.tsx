@@ -136,8 +136,23 @@ export default function UsersPage() {
               <div>
                 <label className="label">{modal === "add" ? "Password" : "Password Baru (kosongkan jika tidak diubah)"}</label>
                 <div className="relative">
-                  <input className="input pr-10" type={showPw ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="••••••••" />
-                  <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <input
+                    className="input pr-10"
+                    type={showPw ? "text" : "password"}
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    placeholder={modal === "add" ? "Minimal 8 karakter" : "Ketik password baru di sini"}
+                    autoComplete="off"
+                    name="new-cms-password"
+                    data-lpignore="true"
+                    data-1p-ignore="true"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw((v) => !v)}
+                    aria-label={showPw ? "Sembunyikan password" : "Tampilkan password"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
