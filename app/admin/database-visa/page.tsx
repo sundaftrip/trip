@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Globe2, Info } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
+import ScrapeVisaButton from "@/components/admin/ScrapeVisaButton";
 
 export const dynamic = "force-dynamic";
 
@@ -26,26 +27,36 @@ export default async function VisaDatabasePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Database Visa</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {entries.length} negara tersedia di halaman /visa
-          </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
+            <Globe2 size={22} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Database Visa</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {entries.length} negara tampil di halaman publik /visa
+            </p>
+          </div>
         </div>
-        <Link
-          href="/admin/database-visa/new"
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
-        >
-          <Plus size={16} /> Tambah Negara
-        </Link>
+        <div className="flex items-center gap-2">
+          <ScrapeVisaButton />
+          <Link
+            href="/admin/database-visa/new"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm"
+          >
+            <Plus size={16} /> Tambah Negara
+          </Link>
+        </div>
       </div>
 
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-300">
+      <div className="flex items-start gap-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-300">
+        <Info size={16} className="shrink-0 mt-0.5" />
         <p>
-          <b>Catatan:</b> kolom <b>Biaya</b> bisa kamu isi dengan harga IDR-mu sendiri
+          Kolom <b>Biaya</b> bisa kamu isi dengan harga IDR-mu sendiri
           (mis. <code className="bg-blue-100 dark:bg-blue-800/40 px-1 rounded">Rp 950.000</code>).
-          Kosongkan kalau gratis — di halaman publik akan tampil &quot;Gratis&quot; warna hijau.
+          Kosongkan kalau gratis — di halaman publik tampil &quot;Gratis&quot; warna hijau.
+          Tombol <b>Scraping Visa</b> mengecek pembaruan dari Wikipedia tanpa pernah menyentuh kolom Biaya.
         </p>
       </div>
 
