@@ -34,20 +34,6 @@ model User {
   sessions      Session[]
   accounts      Account[]
   receipts      Receipt[]
-  resetTokens   PasswordResetToken[]
-}
-
-// Token reset password login CMS — dikirim lewat email.
-model PasswordResetToken {
-  id        String    @id @default(cuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash String    @unique // sha256 dari token mentah; mentahnya hanya di link email
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
-
-  @@index([userId])
 }
 
 model Account {

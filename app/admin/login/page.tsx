@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -92,12 +91,6 @@ export default function LoginPage() {
             {loading ? "Memproses..." : "Masuk"}
           </button>
         </form>
-        <Link
-          href="/admin/lupa-password"
-          className="block text-center text-sm text-blue-600 dark:text-blue-400 hover:underline mt-5"
-        >
-          Lupa password?
-        </Link>
       </div>
     </div>
   );
