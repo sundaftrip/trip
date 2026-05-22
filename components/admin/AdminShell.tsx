@@ -17,7 +17,6 @@ const navItems = [
   { href: "/admin/tours", label: "Tour", icon: Map },
   { href: "/admin/database-visa", label: "Database Visa", icon: Database },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
-  { href: "/admin/scraper", label: "Scraper Konten", icon: Newspaper },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },

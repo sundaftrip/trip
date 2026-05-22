@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Sparkles } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 
@@ -14,9 +14,20 @@ export default async function BlogAdminPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Blog</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">{posts.length} artikel</p>
         </div>
-        <Link href="/admin/blog/new" className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">
-          <Plus size={16} /> Tulis Artikel
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/scraper"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-medium rounded-lg transition shadow-sm"
+          >
+            <Sparkles size={16} /> Scrape Konten
+          </Link>
+          <Link
+            href="/admin/blog/new"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
+          >
+            <Plus size={16} /> Tulis Artikel
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
