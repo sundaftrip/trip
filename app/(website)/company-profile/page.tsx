@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     "Company profile of Sundaf Trip — an Indonesia-based small group tour "
     + "operator under CV Sundaf Holiday Group. Track record, services, "
     + "destinations, and contact details.",
+  robots: { index: false, follow: false },
 };
 
 const STATS = [
