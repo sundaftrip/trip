@@ -49,7 +49,18 @@ export default async function TripDetailPage({
         }
         title={trip.title}
         lede={`${trip.country.toUpperCase()}${trip.tripDate ? ` · Berangkat ${fmtDate(trip.tripDate)}` : ""} · ${a.pax} pax terkonfirmasi`}
-        actions={<Pill tone={trip.status.tone}>{trip.status.label}</Pill>}
+        actions={
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <Pill tone={trip.status.tone}>{trip.status.label}</Pill>
+            <Link
+              href={`/admin/keuangan/trip/${trip.id}/cetak`}
+              className="keu-btn keu-btn-ghost"
+              style={{ fontSize: 10 }}
+            >
+              CETAK DATASHEET
+            </Link>
+          </div>
+        }
       />
 
       {/* status pengakuan akrual */}

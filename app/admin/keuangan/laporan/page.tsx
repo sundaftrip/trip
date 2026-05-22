@@ -23,6 +23,15 @@ export default async function LaporanPage() {
         }
         title="Laporan Laba Rugi (Akrual)"
         lede="Pendapatan & HPP diakui pada bulan trip BERANGKAT — bukan saat uang masuk. Inilah ukuran kinerja yang sebenarnya."
+        actions={
+          <Link
+            href="/admin/keuangan/laporan/cetak"
+            className="keu-btn keu-btn-ghost"
+            style={{ fontSize: 10 }}
+          >
+            CETAK LAPORAN
+          </Link>
+        }
       />
 
       <div

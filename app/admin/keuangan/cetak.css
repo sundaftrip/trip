@@ -1,0 +1,294 @@
+/* ════════════════════════════════════════════════════════════
+   Halaman cetak modul keuangan — dokumen putih, ramah printer.
+   Tampil di layar sebagai "kertas", saat di-print bersih A4.
+   Scope: .cetak
+   ════════════════════════════════════════════════════════════ */
+
+.cetak {
+  --navy: #0c2647;
+  --orange: #fe8032;
+  --ink: #14202e;
+  --dim: #5d6675;
+  --line: #d6dbe3;
+  --soft: #f3f5f8;
+  --ok: #18794a;
+  --bad: #c1352a;
+
+  background: #e7eaef;
+  min-height: 100vh;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  padding: 24px 16px 60px;
+}
+.cetak * {
+  box-sizing: border-box;
+}
+
+/* toolbar — tidak ikut tercetak */
+.cetak-toolbar {
+  max-width: 820px;
+  margin: 0 auto 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.cetak-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--navy);
+  background: var(--navy);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cetak-btn-ghost {
+  background: #fff;
+  color: var(--navy);
+}
+.cetak-toolbar-note {
+  font-size: 11.5px;
+  color: #5d6675;
+  margin-left: auto;
+}
+
+/* lembar dokumen */
+.cetak-doc {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 40px 44px;
+  box-shadow: 0 4px 30px rgba(12, 38, 71, 0.12);
+}
+
+/* kop */
+.cetak-kop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid var(--navy);
+  padding-bottom: 16px;
+  margin-bottom: 22px;
+}
+.cetak-kop-co {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 0.01em;
+}
+.cetak-kop-co b {
+  color: var(--orange);
+}
+.cetak-kop-sub {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 3px;
+}
+.cetak-kop-right {
+  text-align: right;
+}
+.cetak-doctype {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+.cetak-docdate {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 4px;
+}
+
+/* judul dokumen */
+.cetak-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.cetak-subtitle {
+  font-size: 12.5px;
+  color: var(--dim);
+  margin-bottom: 22px;
+}
+
+/* meta grid (identitas trip dll) */
+.cetak-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2px 18px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+}
+.cetak-meta-k {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.cetak-meta-v {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* kartu ringkas */
+.cetak-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.cetak-card {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px 13px;
+}
+.cetak-card-k {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.cetak-card-v {
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 5px;
+}
+
+/* heading seksi */
+.cetak-sec {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  border-bottom: 1.5px solid var(--line);
+  padding-bottom: 5px;
+  margin: 22px 0 10px;
+}
+
+/* tabel */
+.cetak-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.cetak-table th {
+  text-align: left;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 700;
+  padding: 7px 9px;
+  border-bottom: 1.5px solid var(--line);
+}
+.cetak-table td {
+  padding: 7px 9px;
+  border-bottom: 1px solid var(--line);
+}
+.cetak-table tfoot td {
+  font-weight: 800;
+  border-top: 1.5px solid var(--navy);
+  border-bottom: none;
+  background: var(--soft);
+}
+.cetak-r {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.cetak-up { color: var(--ok); }
+.cetak-down { color: var(--bad); }
+.cetak-muted { color: var(--dim); }
+
+.cetak-empty {
+  font-size: 11.5px;
+  color: var(--dim);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* baris total besar */
+.cetak-grandtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--navy);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 7px;
+  margin-top: 16px;
+}
+.cetak-grandtotal-k {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cetak-grandtotal-v {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+/* dua kolom (neraca) */
+.cetak-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+/* footer */
+.cetak-foot {
+  margin-top: 30px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--dim);
+}
+
+.cetak-pill {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+}
+
+/* ── mode cetak ──────────────────────────────────────────── */
+@media print {
+  .cetak {
+    background: #fff;
+    padding: 0;
+  }
+  .cetak-toolbar {
+    display: none;
+  }
+  .cetak-doc {
+    box-shadow: none;
+    max-width: none;
+    padding: 0;
+  }
+  .cetak-grandtotal,
+  .cetak-table tfoot td,
+  .cetak-meta {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cetak-2col {
+    gap: 16px;
+  }
+}

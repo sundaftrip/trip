@@ -17,6 +17,7 @@ import {
   revokeExpenseToken,
   approveFieldExpense,
   rejectFieldExpense,
+  resetKeuangan,
 } from "@/lib/keuangan/actions";
 import { CURRENCIES, rupiah } from "@/lib/keuangan/format";
 
@@ -604,6 +605,114 @@ export function RejectExpenseButton({ id }: { id: string }) {
         ✕ TOLAK
       </button>
     </form>
+  );
+}
+
+// ── Reset Data Keuangan (Zona Berbahaya) ──────────────────────
+
+function ResetSubmit({ disabled }: { disabled: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      className="keu-btn"
+      disabled={disabled || pending}
+      style={{ background: "var(--keu-red)", borderColor: "var(--keu-red)", color: "#1a0606", fontWeight: 700 }}
+    >
+      {pending ? "MERESET…" : "RESET SEKARANG"}
+    </button>
+  );
+}
+
+export function ResetKeuanganForm() {
+  const [open, setOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [state, formAction] = useActionState(resetKeuangan, INIT);
+
+  if (!open) {
+    return (
+      <button
+        className="keu-btn keu-btn-ghost"
+        style={{ borderColor: "var(--keu-red)", color: "var(--keu-red)" }}
+        onClick={() => setOpen(true)}
+      >
+        ⚠ RESET SELURUH DATA KEUANGAN
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className="keu-panel"
+      style={{ borderColor: "var(--keu-red)", padding: 16, marginTop: 4 }}
+    >
+      <div style={{ fontSize: 11, color: "var(--keu-dim)", lineHeight: 1.7, marginBottom: 12 }}>
+        Tindakan ini <b className="keu-down">menghapus permanen</b> seluruh data modul
+        keuangan: rekening bank, vendor, tagihan, jurnal, proyeksi finance, dan
+        pengeluaran lapangan. Tidak bisa dibatalkan.{" "}
+        <b className="keu-dim-t">
+          Data Trip dan Receipt (pembayaran peserta) TIDAK ikut terhapus.
+        </b>
+      </div>
+
+      {state.ok && (
+        <div
+          className="keu-pill keu-pill-ok"
+          style={{ display: "block", marginBottom: 12, padding: "8px 10px" }}
+        >
+          ✓ Data keuangan sudah direset ke 0.
+        </div>
+      )}
+      {state.error && (
+        <div
+          className="keu-pill keu-pill-red"
+          style={{ display: "block", marginBottom: 12, padding: "8px 10px" }}
+        >
+          ⚠ {state.error}
+        </div>
+      )}
+
+      <form action={formAction}>
+        <label
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            fontSize: 11,
+            color: "var(--keu-dim)",
+            marginBottom: 12,
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={confirmed}
+            onChange={(e) => setConfirmed(e.target.checked)}
+          />
+          Saya paham data keuangan akan terhapus permanen.
+        </label>
+        <div className="keu-field">
+          <label className="keu-label">Password Reset</label>
+          <input
+            className="keu-input"
+            name="password"
+            type="password"
+            placeholder="Password reset keuangan"
+            autoComplete="off"
+            required
+          />
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <ResetSubmit disabled={!confirmed} />
+          <button
+            type="button"
+            className="keu-btn keu-btn-ghost"
+            onClick={() => setOpen(false)}
+          >
+            BATAL
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

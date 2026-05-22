@@ -376,3 +376,44 @@ export async function submitFieldExpense(
     revalidate();
   });
 }
+
+// ── Reset Data Keuangan (zona berbahaya) ──────────────────────
+
+/**
+ * Mengosongkan SELURUH data modul keuangan ke 0. Destruktif.
+ * Pengaman: hanya SUPERADMIN + harus tahu password reset
+ * (env KEUANGAN_RESET_SECRET). Tour & Receipt TIDAK disentuh.
+ */
+export async function resetKeuangan(
+  _prev: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  return run(async () => {
+    const user = await guard();
+    if (user.role !== "SUPERADMIN")
+      throw new Error("Hanya Super Admin yang boleh mereset data keuangan.");
+
+    const secret = process.env.KEUANGAN_RESET_SECRET;
+    if (!secret)
+      throw new Error(
+        "Fitur reset belum diaktifkan — set KEUANGAN_RESET_SECRET di environment.",
+      );
+    if (s(fd, "password") !== secret)
+      throw new Error("Password reset salah.");
+
+    // urutan penting demi foreign key
+    await prisma.$transaction([
+      prisma.fieldExpense.deleteMany({}),
+      prisma.ledgerEntry.deleteMany({}),
+      prisma.vendorBill.deleteMany({}),
+      prisma.tripFinance.deleteMany({}),
+      prisma.vendor.deleteMany({}),
+      prisma.bankAccount.deleteMany({}),
+      prisma.tour.updateMany({
+        where: { expenseToken: { not: null } },
+        data: { expenseToken: null },
+      }),
+    ]);
+    revalidate();
+  });
+}

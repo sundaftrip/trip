@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 import { getOverview } from "@/lib/keuangan/data";
 import { rupiah } from "@/lib/keuangan/format";
 import {
@@ -14,6 +15,7 @@ import {
   autoTone,
 } from "@/components/keuangan/ui";
 import TxnTable from "@/components/keuangan/TxnTable";
+import { ResetKeuanganForm } from "@/components/keuangan/forms";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +31,9 @@ const MODULES = [
 ];
 
 export default async function RingkasanPage() {
-  const d = await getOverview();
+  const [d, session] = await Promise.all([getOverview(), auth()]);
   const p = d.position;
+  const isSuperadmin = session?.user?.role === "SUPERADMIN";
 
   return (
     <>
@@ -215,6 +218,20 @@ export default async function RingkasanPage() {
           </Panel>
         </div>
       </div>
+
+      {isSuperadmin && (
+        <>
+          <Section title="Zona Berbahaya" note="Khusus pemilik — hati-hati" />
+          <Panel pad ticked style={{ borderColor: "var(--keu-line2)" }}>
+            <div style={{ fontSize: 11, color: "var(--keu-dim)", marginBottom: 12, lineHeight: 1.6 }}>
+              Mengosongkan seluruh data keuangan ke kondisi 0. Butuh password reset
+              yang hanya pemilik tahu. Dipakai mis. saat pindah dari fase uji coba ke
+              pemakaian sesungguhnya.
+            </div>
+            <ResetKeuanganForm />
+          </Panel>
+        </>
+      )}
     </>
   );
 }

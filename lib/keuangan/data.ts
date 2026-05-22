@@ -686,3 +686,9 @@ export async function getLapanganData() {
     uangMukaTL: d.position.uangMukaTL,
   };
 }
+
+/** Nama perusahaan untuk kop dokumen cetak. */
+export async function getCompanyName() {
+  const row = await prisma.companyInfo.findFirst({ where: { key: "company_name" } });
+  return row?.value || process.env.NEXT_PUBLIC_APP_NAME || "Sundaf Trip";
+}

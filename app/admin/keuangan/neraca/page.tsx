@@ -20,9 +20,18 @@ export default async function NeracaPage() {
         title="Neraca / Balance Sheet"
         lede="Posisi aset, kewajiban, dan ekuitas. Ekuitas dihitung independen (Modal + Laba Ditahan) — jadi keseimbangan neraca menjadi BUKTI pembukuan benar, bukan sekadar rumus."
         actions={
-          <Pill tone={p.balanced ? "ok" : "red"}>
-            {p.balanced ? "✓ SEIMBANG — PEMBUKUAN VALID" : "⚠ TIMPANG — ADA SALAH CATAT"}
-          </Pill>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <Pill tone={p.balanced ? "ok" : "red"}>
+              {p.balanced ? "✓ SEIMBANG — PEMBUKUAN VALID" : "⚠ TIMPANG — ADA SALAH CATAT"}
+            </Pill>
+            <Link
+              href="/admin/keuangan/neraca/cetak"
+              className="keu-btn keu-btn-ghost"
+              style={{ fontSize: 10 }}
+            >
+              CETAK NERACA
+            </Link>
+          </div>
         }
       />
 
