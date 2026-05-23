@@ -41,25 +41,30 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   ];
   const TitleWords = ({ extra }: { extra?: React.ReactNode }) => {
     let g = 0; // indeks huruf global — stagger tiap huruf rontok
+    const words = t("hero_title", "Wujudkan Perjalanan Impian Anda")
+      .split(/\s+/)
+      .filter(Boolean);
     return (
       <>
-        {t("hero_title", "Wujudkan Perjalanan Impian Anda")
-          .split(/\s+/).filter(Boolean)
-          .map((word, i) => (
-            <span key={i} className="block">
-              {word.charAt(0)}
-              {word.slice(1).split("").map((ch, j) => {
-                const gi = g++;
-                const p = FALL_PHYSICS[gi % FALL_PHYSICS.length];
-                return (
-                  <span key={j} className="sundaf-fall"
-                    style={{ ["--n" as string]: gi, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
-                    {ch}
-                  </span>
-                );
-              })}
-            </span>
-          ))}
+        {words.map((word, i) => (
+          <span key={i} className="block">
+            {word.charAt(0)}
+            {word.slice(1).split("").map((ch, j) => {
+              const gi = g++;
+              const p = FALL_PHYSICS[gi % FALL_PHYSICS.length];
+              return (
+                <span key={j} className="sundaf-fall"
+                  style={{ ["--n" as string]: gi, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
+                  {ch}
+                </span>
+              );
+            })}
+            {/* trailing space supaya textContent/screen-reader/SEO baca
+                "Saatnya Untuk Nikmatin ..." bukan satu kata gabung tanpa spasi.
+                Display:block bikin spasi ini tidak terlihat visual. */}
+            {i < words.length - 1 ? " " : ""}
+          </span>
+        ))}
         {extra}
       </>
     );
@@ -71,11 +76,11 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     const popColors = ["var(--fb-red)", "var(--fb-blue)", "var(--fb-accent)", "var(--fb-yellow)"];
     return (
       <section className="fb-page min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4">
-        <span className="absolute top-32 right-[12%] text-5xl fb-float-1 select-none pointer-events-none" style={{ color: "var(--fb-red)", ["--fb-r" as string]: "-12deg" }}>✶</span>
-        <span className="absolute top-52 right-[34%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-blue)" }}>✦</span>
-        <span className="absolute bottom-28 left-[10%] text-4xl fb-float-3 select-none pointer-events-none" style={{ color: "var(--fb-accent)", ["--fb-r" as string]: "8deg" }}>★</span>
-        <span className="absolute top-44 left-[40%] text-2xl fb-float-4 select-none pointer-events-none" style={{ color: "var(--fb-ink)" }}>✺</span>
-        <span className="absolute bottom-40 right-[20%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-red)" }}>✷</span>
+        <span aria-hidden="true" className="absolute top-32 right-[12%] text-5xl fb-float-1 select-none pointer-events-none" style={{ color: "var(--fb-red)", ["--fb-r" as string]: "-12deg" }}>✶</span>
+        <span aria-hidden="true" className="absolute top-52 right-[34%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-blue)" }}>✦</span>
+        <span aria-hidden="true" className="absolute bottom-28 left-[10%] text-4xl fb-float-3 select-none pointer-events-none" style={{ color: "var(--fb-accent)", ["--fb-r" as string]: "8deg" }}>★</span>
+        <span aria-hidden="true" className="absolute top-44 left-[40%] text-2xl fb-float-4 select-none pointer-events-none" style={{ color: "var(--fb-ink)" }}>✺</span>
+        <span aria-hidden="true" className="absolute bottom-40 right-[20%] text-3xl fb-float-2 select-none pointer-events-none" style={{ color: "var(--fb-red)" }}>✷</span>
 
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="fb-frame p-7 sm:p-14">
@@ -118,12 +123,12 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
       style={{ background: "var(--kw-bg)" }}>
       {/* Floating cute decorations */}
-      <span className="absolute top-32 right-12 lg:right-32 text-5xl kw-float-1 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.55 }}>♡</span>
-      <span className="absolute top-48 right-[35%] text-3xl kw-float-2 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.4 }}>✦</span>
-      <span className="absolute bottom-20 left-12 lg:left-24 text-4xl kw-float-3 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.45 }}>★</span>
-      <span className="absolute top-40 left-[42%] text-2xl kw-float-4 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.35 }}>✨</span>
-      <span className="absolute bottom-36 right-[22%] text-3xl kw-float-2 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.4, animationDelay: "1s" }}>♡</span>
-      <span className="absolute top-28 left-8 text-xl kw-float-3 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.3 }}>◇</span>
+      <span aria-hidden="true" className="absolute top-32 right-12 lg:right-32 text-5xl kw-float-1 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.55 }}>♡</span>
+      <span aria-hidden="true" className="absolute top-48 right-[35%] text-3xl kw-float-2 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.4 }}>✦</span>
+      <span aria-hidden="true" className="absolute bottom-20 left-12 lg:left-24 text-4xl kw-float-3 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.45 }}>★</span>
+      <span aria-hidden="true" className="absolute top-40 left-[42%] text-2xl kw-float-4 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.35 }}>✨</span>
+      <span aria-hidden="true" className="absolute bottom-36 right-[22%] text-3xl kw-float-2 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.4, animationDelay: "1s" }}>♡</span>
+      <span aria-hidden="true" className="absolute top-28 left-8 text-xl kw-float-3 pointer-events-none select-none" style={{ color: "var(--kw-border)", opacity: 0.3 }}>◇</span>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="mb-8 hero-fade-up">
@@ -134,7 +139,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--kw-text)" }}>
-          <TitleWords extra={<span className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>} />
+          <TitleWords extra={<span aria-hidden="true" className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>} />
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -228,16 +233,16 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
   /* ── GLOBE / WORLD LANDMARKS ── */
   if (theme === "globe") {
     return (
-      <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
+      <section className="min-h-[78vh] sm:min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
         style={{ background: "var(--gl-bg)" }}>
         {/* Floating landmark decorations */}
-        <span className="absolute top-32 right-12 lg:right-32 text-5xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.6 }}>🗼</span>
-        <span className="absolute top-48 right-[35%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45 }}>🏛️</span>
-        <span className="absolute bottom-20 left-12 lg:left-24 text-4xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.5 }}>🕌</span>
-        <span className="absolute top-40 left-[42%] text-2xl gl-float-4 pointer-events-none select-none" style={{ opacity: 0.4 }}>🗽</span>
-        <span className="absolute bottom-36 right-[22%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45, animationDelay: "1.2s" }}>✈️</span>
-        <span className="absolute top-28 left-8 text-xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.35 }}>🌍</span>
-        <span className="absolute bottom-14 right-8 text-2xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.4, animationDelay: "2s" }}>🏰</span>
+        <span aria-hidden="true" className="hidden sm:block absolute top-32 right-12 lg:right-32 text-5xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.6 }}>🗼</span>
+        <span aria-hidden="true" className="hidden sm:block absolute top-48 right-[35%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45 }}>🏛️</span>
+        <span aria-hidden="true" className="hidden sm:block absolute bottom-20 left-12 lg:left-24 text-4xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.5 }}>🕌</span>
+        <span aria-hidden="true" className="hidden sm:block absolute top-40 left-[42%] text-2xl gl-float-4 pointer-events-none select-none" style={{ opacity: 0.4 }}>🗽</span>
+        <span aria-hidden="true" className="hidden sm:block absolute bottom-36 right-[22%] text-3xl gl-float-2 pointer-events-none select-none" style={{ opacity: 0.45, animationDelay: "1.2s" }}>✈️</span>
+        <span aria-hidden="true" className="hidden sm:block absolute top-28 left-8 text-xl gl-float-3 pointer-events-none select-none" style={{ opacity: 0.35 }}>🌍</span>
+        <span aria-hidden="true" className="hidden sm:block absolute bottom-14 right-8 text-2xl gl-float-1 pointer-events-none select-none" style={{ opacity: 0.4, animationDelay: "2s" }}>🏰</span>
 
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="mb-8 hero-fade-up">
@@ -248,7 +253,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
           <h1 className="text-[clamp(2.8rem,7vw,6rem)] font-black leading-[0.92] tracking-tight max-w-3xl mb-10 hero-fade-up"
             style={{ color: "var(--gl-text)" }}>
-            <TitleWords extra={<span className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
+            <TitleWords extra={<span aria-hidden="true" className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
           </h1>
 
           <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">

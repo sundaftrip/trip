@@ -19,9 +19,17 @@ const getData = unstable_cache(async () => {
     // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
     // notes (long), description (long, di-excerpt di card). Hemat JSON
     // payload yang dikirim ke client hydration (ToursCatalog).
+    // Homepage HANYA tampilkan trip yang BISA DIBOOK:
+    //   - status ACTIVE (bukan FULL/DRAFT/CANCELLED)
+    //   - tripDate masih akan datang (atau belum di-set / open trip)
+    // Trip selesai pindah ke halaman /tours sebagai portfolio.
     prisma.tour.findMany({
-      where: { status: { in: ["ACTIVE", "FULL"] } },
+      where: {
+        status: "ACTIVE",
+        OR: [{ tripDate: null }, { tripDate: { gte: new Date() } }],
+      },
       orderBy: { tripDate: "asc" },
+      take: 9,
       select: {
         id: true, title: true, country: true, cityHighlight: true,
         price: true, promoPrice: true, seatsLeft: true,
@@ -33,18 +41,13 @@ const getData = unstable_cache(async () => {
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
-  // Beranda menampilkan SEMUA tour (halaman Paket Tour terpisah dihapus).
-  // Aktif di atas (tanggal terdekat dulu), tour selesai turun ke bawah.
-  const now = new Date();
-  const tours = [...toursRaw]
-    .sort((a, b) => {
-      const aDone = a.status === "FULL" || (!!a.tripDate && a.tripDate < now);
-      const bDone = b.status === "FULL" || (!!b.tripDate && b.tripDate < now);
-      if (aDone !== bDone) return aDone ? 1 : -1;
-      const at = a.tripDate ? a.tripDate.getTime() : Infinity;
-      const bt = b.tripDate ? b.tripDate.getTime() : Infinity;
-      return aDone ? bt - at : at - bt;
-    });
+  // Sudah difilter di query — tinggal urut: tanggal terdekat dulu, open-trip
+  // (tripDate null) di paling belakang.
+  const tours = [...toursRaw].sort((a, b) => {
+    const at = a.tripDate?.getTime() ?? Infinity;
+    const bt = b.tripDate?.getTime() ?? Infinity;
+    return at - bt;
+  });
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
@@ -85,6 +88,15 @@ export default async function HomePage() {
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
         <ToursCatalog tours={allTours} theme={theme} showFilter={theme === "globe"} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 -mt-6 text-center">
+          <a
+            href="/tours"
+            className="inline-flex items-center gap-2 text-sm font-semibold tracking-wide underline-offset-4 hover:underline"
+            style={{ color: "var(--site-accent,#2d6a4f)" }}
+          >
+            Lihat semua tour &amp; dokumentasi trip →
+          </a>
+        </div>
       </div>
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />

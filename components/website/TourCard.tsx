@@ -12,6 +12,19 @@ interface Tour {
   description?: string | null;
 }
 
+/* Helpers harga — jangan pernah render "Rp 0" karena bikin kartu terlihat broken.
+   Kalau harga = 0 (belum diisi di CMS) → "Tanya Harga".
+   strikePrice hanya muncul kalau promoPrice valid & lebih murah dari price asli. */
+function priceText(tour: Pick<Tour, "price" | "promoPrice">): string {
+  const effective = tour.promoPrice ?? tour.price;
+  return effective > 0 ? formatCurrency(effective) : "Tanya Harga";
+}
+function strikePrice(tour: Pick<Tour, "price" | "promoPrice">): string | null {
+  if (!tour.promoPrice || tour.promoPrice <= 0) return null;
+  if (tour.price <= 0 || tour.price <= tour.promoPrice) return null;
+  return formatCurrency(tour.price);
+}
+
 function StatusOverlay({ isFull, isExpired }: { isFull: boolean; isExpired: boolean }) {
   if (isFull) return (
     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -50,8 +63,8 @@ function ClassicCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         </div>
         <div className="flex items-end justify-between pt-4 border-t border-gray-100 dark:border-gray-900">
           <div>
-            {tour.promoPrice && <p className="text-[11px] text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
-            <p className="text-base font-bold" style={{ color: "var(--site-accent,#2d6a4f)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+            {strikePrice(tour) && <p className="text-[11px] text-gray-400 line-through">{strikePrice(tour)}</p>}
+            <p className="text-base font-bold" style={{ color: "var(--site-accent,#2d6a4f)" }}>{priceText(tour)}</p>
           </div>
           {!isDimmed && <span className="text-[11px] font-semibold text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Lihat Detail →</span>}
         </div>
@@ -87,7 +100,7 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 tr-pill font-black"
             style={{ background: priceColor, transform: "rotate(2deg)", color: "#111827" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </div>
         )}
         {tour.badge && !isDimmed && (
@@ -121,8 +134,8 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           )}
           <span className="tr-pill" style={{ background: "var(--tr-pink)", color: "var(--tr-text)" }}>👤 {tour.seatsLeft} seat</span>
         </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        {strikePrice(tour) && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
         )}
         {!isDimmed && (
           <div className="pt-3 border-t-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -181,13 +194,13 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           )}
           <span className="kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>👤 {tour.seatsLeft} seat</span>
         </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        {strikePrice(tour) && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
         )}
         <div className="pt-3 border-t-2 border-dashed flex items-center justify-between"
           style={{ borderColor: "var(--kw-border)" }}>
           <p className="font-black text-base" style={{ color: "var(--kw-border)" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </p>
           {!isDimmed && <span className="text-xs font-black" style={{ color: "var(--kw-subtext)" }}>Lihat →</span>}
         </div>
@@ -228,7 +241,7 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 px-pill font-black"
             style={{ background: accentColor, color: "#111827", transform: "none" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </div>
         )}
         {tour.badge && !isDimmed && (
@@ -262,8 +275,8 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           )}
           <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>👤 {tour.seatsLeft} SEAT</span>
         </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1" style={{ fontFamily: "monospace" }}>{formatCurrency(tour.price)}</p>
+        {strikePrice(tour) && (
+          <p className="text-[11px] text-gray-400 line-through mb-1" style={{ fontFamily: "monospace" }}>{strikePrice(tour)}</p>
         )}
         {!isDimmed && (
           <div className="pt-3 border-t-2 flex items-center justify-between" style={{ borderColor: "var(--px-border)" }}>
@@ -446,11 +459,11 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {/* Harga — promo besar + harga coret kecil di sebelahnya */}
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className="font-bold text-[17px] sm:text-[19px] lg:text-[21px] leading-tight" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-            {formatCurrency(hasPromo ? tour.promoPrice! : tour.price)}
+            {priceText(tour)}
           </span>
-          {hasPromo && (
+          {strikePrice(tour) && (
             <span className="text-[11px] sm:text-[12px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--gl-subtext)" }}>
-              {formatCurrency(tour.price)}
+              {strikePrice(tour)}
             </span>
           )}
         </div>
@@ -473,7 +486,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 mp-pill font-black"
             style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)", boxShadow: "2px 2px 0 0 var(--mp-border)" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </div>
         )}
         {tour.badge && !isDimmed && (
@@ -507,8 +520,8 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           )}
           <span className="mp-pill" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>{tour.seatsLeft} seat</span>
         </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1">{formatCurrency(tour.price)}</p>
+        {strikePrice(tour) && (
+          <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
         )}
         {!isDimmed && (
           <div className="pt-3 border-t-2 flex items-center justify-between"
@@ -535,7 +548,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 at-pill font-semibold"
             style={{ background: "var(--at-text)", color: "var(--at-bg)" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </div>
         )}
         {tour.badge && !isDimmed && (
@@ -569,8 +582,8 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           )}
           <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{tour.seatsLeft} seat</span>
         </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{formatCurrency(tour.price)}</p>
+        {strikePrice(tour) && (
+          <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{strikePrice(tour)}</p>
         )}
         {!isDimmed && (
           <div className={`pt-3 border-t flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
@@ -595,7 +608,7 @@ function FumayoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 fb-pill" style={{ background: "var(--fb-card)", fontWeight: 700 }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </div>
         )}
         {tour.badge && !isDimmed && (
@@ -628,8 +641,8 @@ function FumayoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           )}
           <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat</span>
         </div>
-        {tour.promoPrice && (
-          <p className="text-[11px] line-through mb-1 mt-auto" style={{ color: "var(--fb-subink)" }}>{formatCurrency(tour.price)}</p>
+        {strikePrice(tour) && (
+          <p className="text-[11px] line-through mb-1 mt-auto" style={{ color: "var(--fb-subink)" }}>{strikePrice(tour)}</p>
         )}
         {!isDimmed && (
           <div className={`pt-3 flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
@@ -665,7 +678,7 @@ function AtticCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           <span className="atc-pill"><Users size={10} /> {tour.seatsLeft} seat</span>
         </div>
         <p className="text-[10px] mt-auto" style={{ color: "var(--atc-ink-soft)" }}>mulai dari</p>
-        <p className="font-extrabold text-base" style={{ color: "var(--atc-pink-deep)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+        <p className="font-extrabold text-base" style={{ color: "var(--atc-pink-deep)" }}>{priceText(tour)}</p>
         {!isDimmed && <span className="atc-btn mt-2.5 w-full">Lihat Detail →</span>}
       </div>
     </div>
@@ -683,7 +696,7 @@ function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           : <div className="flex items-center justify-center h-full" style={{ background: "var(--teri-c2)" }}><MapPin size={28} /></div>}
         {!isDimmed && (
           <div className="absolute bottom-3 right-3 teri-pill" style={{ boxShadow: "3px 3px 0 0 var(--teri-c1)" }}>
-            {formatCurrency(tour.promoPrice ?? tour.price)}
+            {priceText(tour)}
           </div>
         )}
         {tour.badge && !isDimmed && (
@@ -703,7 +716,7 @@ function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.tripDate && <span className="teri-pill !shadow-none"><Calendar size={11} /> {formatDate(tour.tripDate, "id-ID")}</span>}
           <span className="teri-pill !shadow-none"><Users size={11} /> {tour.seatsLeft} seat</span>
         </div>
-        {tour.promoPrice && <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{formatCurrency(tour.price)}</p>}
+        {strikePrice(tour) && <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{strikePrice(tour)}</p>}
         {!isDimmed && (
           <div className={`pt-3 border-t-[2.5px] border-dashed flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
             style={{ borderColor: "var(--teri-line)" }}>
@@ -738,8 +751,8 @@ function CoreiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         </div>
         <div className="flex items-end justify-between pt-4" style={{ borderTop: "1px solid var(--corei-glass-line)" }}>
           <div>
-            {tour.promoPrice && <p className="text-[11px] line-through" style={{ color: "var(--corei-mute)" }}>{formatCurrency(tour.price)}</p>}
-            <p className="text-lg font-bold" style={{ color: "var(--corei-accent)" }}>{formatCurrency(tour.promoPrice ?? tour.price)}</p>
+            {strikePrice(tour) && <p className="text-[11px] line-through" style={{ color: "var(--corei-mute)" }}>{strikePrice(tour)}</p>}
+            <p className="text-lg font-bold" style={{ color: "var(--corei-accent)" }}>{priceText(tour)}</p>
           </div>
           {!isDimmed && <span className="text-[11px] font-semibold inline-flex items-center gap-1" style={{ color: "var(--corei-aurora-5)" }}>Lihat <ArrowRight size={12} /></span>}
         </div>

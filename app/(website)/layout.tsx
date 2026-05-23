@@ -1,6 +1,7 @@
 import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
 import ConsoleSidebar from "@/components/website/ConsoleSidebar";
+import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -31,21 +32,23 @@ const getSiteConfig = unstable_cache(
   async () => {
     try {
       const rows = await prisma.companyInfo.findMany({
-        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme", "site_font"] } },
+        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme", "site_font", "company_whatsapp"] } },
       });
       const colors = { ...COLOR_DEFAULTS };
       let logo = "";
       let theme = "classic";
       let font = "jost";
+      let whatsapp = "";
       rows.forEach((r) => {
         if (r.key === "company_logo") logo = r.value;
         else if (r.key === "site_theme") theme = r.value;
         else if (r.key === "site_font") font = r.value;
+        else if (r.key === "company_whatsapp") whatsapp = r.value;
         else colors[r.key] = r.value;
       });
-      return { colors, logo, theme, font };
+      return { colors, logo, theme, font, whatsapp };
     } catch {
-      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic", font: "jost" };
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic", font: "jost", whatsapp: "" };
     }
   },
   ["site-config"],
@@ -54,7 +57,7 @@ const getSiteConfig = unstable_cache(
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
   const config = await getSiteConfig();
-  const { colors, logo, font, theme } = config;
+  const { colors, logo, font, theme, whatsapp } = config;
   // Preview-theme via cookie sengaja dihilangkan dari server layout karena
   // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
@@ -101,6 +104,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
             <Footer theme="atlas" />
           </div>
         </div>
+        <StickyWhatsApp phone={whatsapp} />
       </>
     );
   }
@@ -114,6 +118,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
       <Navbar logo={logo} theme={theme} />
       <main className={`flex-1 ${isTeri ? "teri-bg" : ""}`} data-theme={theme}>{children}</main>
       <Footer theme={theme} />
+      <StickyWhatsApp phone={whatsapp} />
     </>
   );
 }
