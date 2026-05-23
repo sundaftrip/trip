@@ -92,7 +92,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
       <div className="flex items-center gap-2 mb-1">
         <span
           className="inline-block w-1.5 h-5 rounded-full"
-          style={{ background: "var(--site-accent,#2d6a4f)" }}
+          style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
         />
         <h2 className="text-lg font-bold text-gray-900 dark:text-white">
           Database Visa {COUNTRIES.length} Negara

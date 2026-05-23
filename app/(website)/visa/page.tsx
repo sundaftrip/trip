@@ -20,7 +20,7 @@ export default async function VisaPage() {
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
         <div className="flex items-center gap-2 mb-2">
-          <FileCheck size={20} style={{ color: "var(--site-accent,#2d6a4f)" }} />
+          <FileCheck size={20} style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
           <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
             Info Visa
           </span>
