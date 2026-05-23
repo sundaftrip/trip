@@ -60,15 +60,12 @@ export default async function VisaDetailPage({ params }: PageProps) {
   // (mis. "Berapa lama proses visa Rusia?") akan bocor ke semua halaman
   // negara. Sumber FAQ per-negara: country.faqs (Json di DB) atau
   // visaDefaults(category) sebagai fallback.
-  const [countries, testimonials, companyRows] = await Promise.all([
+  // Testimonial juga di-skip — yang ada di DB itu ulasan trip rombongan
+  // (Russia/Murmansk dll), bukan ulasan layanan visa — bisa misleading.
+  const [countries, companyRows] = await Promise.all([
     prisma.countryVisa.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: { variants: { orderBy: { sortOrder: "asc" } } },
-    }),
-    prisma.testimonial.findMany({
-      where: { published: true },
-      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-      take: 3,
     }),
     prisma.companyInfo.findMany({ where: { key: "company_whatsapp" } }),
   ]);
@@ -173,7 +170,6 @@ export default async function VisaDetailPage({ params }: PageProps) {
               ["#layanan", "Layanan & Harga"],
               ["#proses", "Proses"],
               ["#faq", "FAQ"],
-              ["#ulasan", "Ulasan"],
             ].map(([href, label]) => (
               <li key={href}>
                 <a
@@ -369,47 +365,9 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* ULASAN */}
-          {testimonials.length > 0 && (
-            <section id="ulasan">
-              <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-                Ulasan Pelanggan
-              </h2>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {testimonials.map((t) => (
-                  <div
-                    key={t.id}
-                    className="rounded-xl p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      {t.avatar ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={t.avatar}
-                          alt={t.name}
-                          className="w-9 h-9 rounded-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-sm font-bold text-gray-700 dark:text-gray-200">
-                          {t.name[0]}
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
-                          {t.name}
-                        </p>
-                        {t.role && <p className="text-xs text-gray-400 truncate">{t.role}</p>}
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-4">
-                      &ldquo;{t.content}&rdquo;
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          {/* Ulasan sengaja dihilangkan — testimonial di DB adalah ulasan trip
+              rombongan (Russia/Murmansk/dst), bukan ulasan layanan visa.
+              Memasangnya di sini misleading. */}
         </main>
 
         {/* STICKY ORDER FORM */}
