@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Plus, Trash2, GripVertical } from "lucide-react";
+
+interface VisaVariantEntry {
+  id?: string;
+  name: string;
+  priceIDR: number | null;
+  processingTime: string;
+  notes: string;
+}
 
 interface CountryVisaEntry {
   id?: string;
@@ -15,6 +24,7 @@ interface CountryVisaEntry {
   stay: string;
   cost: string;
   notes: string;
+  variants?: VisaVariantEntry[];
 }
 
 const REGIONS = [
@@ -47,17 +57,54 @@ const empty: CountryVisaEntry = {
   stay: "",
   cost: "",
   notes: "",
+  variants: [],
 };
+
+function emptyVariant(): VisaVariantEntry {
+  return { name: "", priceIDR: null, processingTime: "", notes: "" };
+}
 
 export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry }) {
   const router = useRouter();
   const isEdit = Boolean(entry?.id);
-  const [form, setForm] = useState<CountryVisaEntry>(entry ?? empty);
+  const [form, setForm] = useState<CountryVisaEntry>(() => ({
+    ...(entry ?? empty),
+    variants: entry?.variants ?? [],
+  }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function set<K extends keyof CountryVisaEntry>(key: K, value: CountryVisaEntry[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function setVariant(index: number, patch: Partial<VisaVariantEntry>) {
+    setForm((f) => {
+      const next = [...(f.variants ?? [])];
+      next[index] = { ...next[index], ...patch };
+      return { ...f, variants: next };
+    });
+  }
+
+  function addVariant() {
+    setForm((f) => ({ ...f, variants: [...(f.variants ?? []), emptyVariant()] }));
+  }
+
+  function removeVariant(index: number) {
+    setForm((f) => ({
+      ...f,
+      variants: (f.variants ?? []).filter((_, i) => i !== index),
+    }));
+  }
+
+  function moveVariant(index: number, dir: -1 | 1) {
+    setForm((f) => {
+      const list = [...(f.variants ?? [])];
+      const j = index + dir;
+      if (j < 0 || j >= list.length) return f;
+      [list[index], list[j]] = [list[j], list[index]];
+      return { ...f, variants: list };
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -75,6 +122,16 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       stay: form.stay.trim(),
       cost: form.cost.trim(),
       notes: form.notes.trim(),
+      variants: (form.variants ?? []).map((v, i) => ({
+        sortOrder: i,
+        name: v.name.trim(),
+        priceIDR:
+          typeof v.priceIDR === "number" && Number.isFinite(v.priceIDR) && v.priceIDR >= 0
+            ? v.priceIDR
+            : null,
+        processingTime: v.processingTime.trim(),
+        notes: v.notes.trim(),
+      })),
     };
 
     const res = await fetch(isEdit ? `/api/visa-database/${entry!.id}` : "/api/visa-database", {
@@ -92,6 +149,8 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       setError(data.error ?? "Gagal menyimpan. Coba lagi.");
     }
   }
+
+  const variants = form.variants ?? [];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -187,25 +246,143 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         </div>
 
         <Field
-          label="Biaya (IDR atau lainnya)"
-          hint="Kosongkan jika gratis — tampil &quot;Gratis&quot; (hijau) di website. Isi dengan harga IDR-mu, mis. &quot;Rp 950.000&quot;."
+          label="Biaya headline (di tabel /visa)"
+          hint='Kosongkan = "Gratis" hijau. Isi "Mulai Rp 300.000" kalau ada banyak varian, atau "Rp 950.000" untuk satu produk.'
         >
           <input
             className="input"
             value={form.cost}
             onChange={(e) => set("cost", e.target.value)}
-            placeholder="Kosongkan = Gratis, atau Rp 950.000"
+            placeholder="Mulai Rp 300.000"
           />
         </Field>
 
-        <Field label="Catatan">
+        <Field label="Catatan singkat (untuk tabel /visa)">
           <textarea
-            className="input min-h-[100px]"
+            className="input min-h-[80px]"
             value={form.notes}
             onChange={(e) => set("notes", e.target.value)}
-            placeholder="Info tambahan singkat — link aplikasi, syarat khusus, dll."
+            placeholder="Info singkat — syarat khusus, link resmi, dll."
           />
         </Field>
+      </div>
+
+      {/* ─── VARIANTS ─── */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="font-semibold text-gray-900 dark:text-white">Layanan &amp; Harga (Variants)</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Tiap varian tampil sebagai kartu di halaman publik <code>/visa/{form.en ? form.en.toLowerCase().replace(/\s+/g, "-") : "[slug]"}</code>.
+              Kosongkan harga = &quot;Tanya harga&quot;.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={addVariant}
+            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition"
+          >
+            <Plus size={14} /> Tambah Varian
+          </button>
+        </div>
+
+        {variants.length === 0 && (
+          <div className="text-center py-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Belum ada varian. Klik <b>Tambah Varian</b> untuk mulai.
+            </p>
+          </div>
+        )}
+
+        {variants.map((v, i) => (
+          <div
+            key={i}
+            className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50/40 dark:bg-gray-900/30 space-y-3"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                <GripVertical size={14} aria-hidden /> Varian #{i + 1}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => moveVariant(i, -1)}
+                  disabled={i === 0}
+                  className="px-2 py-1 text-xs rounded border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-40 hover:bg-white dark:hover:bg-gray-800"
+                  aria-label="Pindah ke atas"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveVariant(i, 1)}
+                  disabled={i === variants.length - 1}
+                  className="px-2 py-1 text-xs rounded border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-40 hover:bg-white dark:hover:bg-gray-800"
+                  aria-label="Pindah ke bawah"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeVariant(i)}
+                  className="px-2 py-1 text-xs rounded border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center gap-1"
+                  aria-label="Hapus varian"
+                >
+                  <Trash2 size={12} /> Hapus
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="sm:col-span-2">
+                <label className="label">Nama varian *</label>
+                <input
+                  className="input"
+                  value={v.name}
+                  onChange={(e) => setVariant(i, { name: e.target.value })}
+                  placeholder="Single Entry Jakarta"
+                  required
+                />
+              </div>
+              <div>
+                <label className="label">Harga (Rp)</label>
+                <input
+                  className="input"
+                  type="number"
+                  min={0}
+                  value={v.priceIDR ?? ""}
+                  onChange={(e) =>
+                    setVariant(i, {
+                      priceIDR: e.target.value === "" ? null : Number(e.target.value),
+                    })
+                  }
+                  placeholder="950000"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="label">Estimasi proses</label>
+                <input
+                  className="input"
+                  value={v.processingTime}
+                  onChange={(e) => setVariant(i, { processingTime: e.target.value })}
+                  placeholder="5-8 hari kerja"
+                />
+              </div>
+              <div>
+                <label className="label">Catatan (opsional)</label>
+                <input
+                  className="input"
+                  value={v.notes}
+                  onChange={(e) => setVariant(i, { notes: e.target.value })}
+                  placeholder="Syarat khusus, dll."
+                />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="flex items-center gap-3">

@@ -8,7 +8,10 @@ export default async function EditCountryVisaPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const entry = await prisma.countryVisa.findUnique({ where: { id } });
+  const entry = await prisma.countryVisa.findUnique({
+    where: { id },
+    include: { variants: { orderBy: { sortOrder: "asc" } } },
+  });
   if (!entry) notFound();
 
   return (
@@ -31,6 +34,13 @@ export default async function EditCountryVisaPage({
           stay: entry.stay,
           cost: entry.cost,
           notes: entry.notes,
+          variants: entry.variants.map((v) => ({
+            id: v.id,
+            name: v.name,
+            priceIDR: v.priceIDR,
+            processingTime: v.processingTime ?? "",
+            notes: v.notes ?? "",
+          })),
         }}
       />
     </div>

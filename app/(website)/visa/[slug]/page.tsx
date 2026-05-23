@@ -54,7 +54,10 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
   const [countries, faqs, testimonials, companyRows] = await Promise.all([
-    prisma.countryVisa.findMany({ orderBy: [{ sortOrder: "asc" }, { name: "asc" }] }),
+    prisma.countryVisa.findMany({
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      include: { variants: { orderBy: { sortOrder: "asc" } } },
+    }),
     prisma.faq.findMany({
       where: { active: true, section: { contains: "Visa" } },
       orderBy: { order: "asc" },
@@ -178,10 +181,64 @@ export default async function VisaDetailPage({ params }: PageProps) {
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
               Layanan &amp; Harga
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{layananText}</p>
-            <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-              Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu — konfirmasi sebelum pengajuan.
-            </p>
+            {country.variants.length > 0 ? (
+              <>
+                <div className="space-y-3">
+                  {country.variants.map((v) => {
+                    const variantWa = wa
+                      ? `https://wa.me/${wa}?text=${encodeURIComponent(
+                          `Halo, saya ingin pesan visa ${country.name} — paket "${v.name}".`,
+                        )}`
+                      : "";
+                    const priceLabel =
+                      typeof v.priceIDR === "number" && v.priceIDR > 0
+                        ? `Rp ${v.priceIDR.toLocaleString("id-ID")}`
+                        : "Tanya Harga";
+                    return (
+                      <div
+                        key={v.id}
+                        className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900 dark:text-white">{v.name}</p>
+                          {(v.processingTime || v.notes) && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                              {[v.processingTime, v.notes].filter(Boolean).join(" · ")}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                          <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-white whitespace-nowrap">
+                            {priceLabel}
+                          </span>
+                          {variantWa && (
+                            <a
+                              href={variantWa}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="shrink-0 px-3 py-2 rounded-lg text-white text-xs font-semibold transition hover:opacity-90"
+                              style={{ background: "#25D366" }}
+                            >
+                              Pesan
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu — konfirmasi sebelum pengajuan.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{layananText}</p>
+                <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu — konfirmasi sebelum pengajuan.
+                </p>
+              </>
+            )}
           </section>
 
           {/* PROSES */}

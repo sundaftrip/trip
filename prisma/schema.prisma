@@ -410,5 +410,24 @@ model CountryVisa {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  variants  VisaVariant[]
+
   @@index([sortOrder])
+}
+
+// Varian layanan visa per-negara — mis. "Single Entry Jakarta",
+// "Multiple Entry 6 bulan", dll. Harga sudah termasuk markup Sundaf.
+model VisaVariant {
+  id              String      @id @default(cuid())
+  countryVisaId   String
+  countryVisa     CountryVisa @relation(fields: [countryVisaId], references: [id], onDelete: Cascade)
+  sortOrder       Int         @default(0)
+  name            String
+  priceIDR        Int? // null = "tanya harga"
+  processingTime  String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([countryVisaId, sortOrder])
 }
