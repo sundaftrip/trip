@@ -397,20 +397,24 @@ model LedgerEntry {
 // Database visa 88 negara — info persyaratan visa paspor Indonesia.
 // Dikelola lewat CMS (/admin/visa-database), tampil di halaman publik /visa.
 model CountryVisa {
-  id        String   @id @default(cuid())
-  sortOrder Int      @default(0)
-  flag      String
-  name      String
-  en        String
-  region    String
-  visa      String // "bebas" | "voa" | "evisa" | "wajib"
-  stay      String
-  cost      String // kosong = ditampilkan "Gratis"
-  notes     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  sortOrder   Int      @default(0)
+  flag        String
+  name        String
+  en          String
+  region      String
+  visa        String // "bebas" | "voa" | "evisa" | "wajib"
+  stay        String
+  cost        String // kosong = ditampilkan "Gratis"
+  notes       String
+  // Konten kaya per-negara — kosong = fallback ke template per-kategori (lib/visa-defaults.ts).
+  eligibility String[] @default([])
+  documents   Json     @default("[]") // [{ name: string, hint?: string }]
+  faqs        Json     @default("[]") // [{ question: string, answer: string }]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  variants  VisaVariant[]
+  variants    VisaVariant[]
 
   @@index([sortOrder])
 }

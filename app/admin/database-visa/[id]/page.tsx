@@ -41,6 +41,19 @@ export default async function EditCountryVisaPage({
             processingTime: v.processingTime ?? "",
             notes: v.notes ?? "",
           })),
+          eligibility: Array.isArray(entry.eligibility) ? entry.eligibility : [],
+          documents: Array.isArray(entry.documents)
+            ? (entry.documents as Array<{ name?: string; hint?: string }>).map((d) => ({
+                name: d?.name ?? "",
+                hint: d?.hint ?? "",
+              }))
+            : [],
+          faqs: Array.isArray(entry.faqs)
+            ? (entry.faqs as Array<{ question?: string; answer?: string }>).map((f) => ({
+                question: f?.question ?? "",
+                answer: f?.answer ?? "",
+              }))
+            : [],
         }}
       />
     </div>

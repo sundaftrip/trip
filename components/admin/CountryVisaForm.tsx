@@ -13,6 +13,16 @@ interface VisaVariantEntry {
   notes: string;
 }
 
+interface VisaDocEntry {
+  name: string;
+  hint: string;
+}
+
+interface VisaFaqEntry {
+  question: string;
+  answer: string;
+}
+
 interface CountryVisaEntry {
   id?: string;
   sortOrder: number;
@@ -25,6 +35,9 @@ interface CountryVisaEntry {
   cost: string;
   notes: string;
   variants?: VisaVariantEntry[];
+  eligibility?: string[];
+  documents?: VisaDocEntry[];
+  faqs?: VisaFaqEntry[];
 }
 
 const REGIONS = [
@@ -58,6 +71,9 @@ const empty: CountryVisaEntry = {
   cost: "",
   notes: "",
   variants: [],
+  eligibility: [],
+  documents: [],
+  faqs: [],
 };
 
 function emptyVariant(): VisaVariantEntry {
@@ -70,6 +86,9 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
   const [form, setForm] = useState<CountryVisaEntry>(() => ({
     ...(entry ?? empty),
     variants: entry?.variants ?? [],
+    eligibility: entry?.eligibility ?? [],
+    documents: entry?.documents ?? [],
+    faqs: entry?.faqs ?? [],
   }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -132,6 +151,13 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         processingTime: v.processingTime.trim(),
         notes: v.notes.trim(),
       })),
+      eligibility: (form.eligibility ?? []).map((e) => e.trim()).filter(Boolean),
+      documents: (form.documents ?? [])
+        .map((d) => ({ name: d.name.trim(), hint: d.hint.trim() }))
+        .filter((d) => d.name.length > 0),
+      faqs: (form.faqs ?? [])
+        .map((f) => ({ question: f.question.trim(), answer: f.answer.trim() }))
+        .filter((f) => f.question.length > 0 && f.answer.length > 0),
     };
 
     const res = await fetch(isEdit ? `/api/visa-database/${entry!.id}` : "/api/visa-database", {
@@ -385,6 +411,180 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         ))}
       </div>
 
+      {/* ─── ELIGIBILITY ─── */}
+      <ArraySection
+        title="Syarat Kelayakan (Eligibility)"
+        hint="Daftar singkat siapa yang berhak ajukan. Kosongkan = pakai template default per kategori visa."
+        items={form.eligibility ?? []}
+        onAdd={() => set("eligibility", [...(form.eligibility ?? []), ""])}
+        onRemove={(i) =>
+          set(
+            "eligibility",
+            (form.eligibility ?? []).filter((_, j) => j !== i),
+          )
+        }
+        onChange={(i, val) =>
+          set(
+            "eligibility",
+            (form.eligibility ?? []).map((x, j) => (j === i ? val : x)),
+          )
+        }
+        placeholder="mis. Paspor berlaku min. 6 bulan"
+      />
+
+      {/* ─── DOCUMENTS ─── */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="font-semibold text-gray-900 dark:text-white">Dokumen Wajib</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Nama dokumen + hint singkat (opsional). Kosongkan = pakai template default.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() =>
+              set("documents", [...(form.documents ?? []), { name: "", hint: "" }])
+            }
+            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition"
+          >
+            <Plus size={14} /> Tambah Dokumen
+          </button>
+        </div>
+        {(form.documents ?? []).length === 0 && (
+          <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-500 dark:text-gray-400">
+            Belum ada dokumen. Default kategori akan dipakai di halaman publik.
+          </div>
+        )}
+        {(form.documents ?? []).map((d, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto] gap-3 items-end rounded-xl border border-gray-200 dark:border-gray-700 p-3 bg-gray-50/40 dark:bg-gray-900/30"
+          >
+            <div>
+              <label className="label text-xs">Nama dokumen *</label>
+              <input
+                className="input"
+                value={d.name}
+                onChange={(e) =>
+                  set(
+                    "documents",
+                    (form.documents ?? []).map((x, j) =>
+                      j === i ? { ...x, name: e.target.value } : x,
+                    ),
+                  )
+                }
+                placeholder="Paspor"
+              />
+            </div>
+            <div>
+              <label className="label text-xs">Hint singkat (opsional)</label>
+              <input
+                className="input"
+                value={d.hint}
+                onChange={(e) =>
+                  set(
+                    "documents",
+                    (form.documents ?? []).map((x, j) =>
+                      j === i ? { ...x, hint: e.target.value } : x,
+                    ),
+                  )
+                }
+                placeholder="Berlaku min. 6 bulan, halaman kosong 2 lembar"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                set(
+                  "documents",
+                  (form.documents ?? []).filter((_, j) => j !== i),
+                )
+              }
+              className="self-end h-10 px-3 rounded border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center gap-1 text-xs"
+            >
+              <Trash2 size={12} /> Hapus
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* ─── FAQS ─── */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="font-semibold text-gray-900 dark:text-white">FAQ Khusus Negara</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Tanya-jawab spesifik negara ini. Kosongkan = pakai template default kategori.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() =>
+              set("faqs", [...(form.faqs ?? []), { question: "", answer: "" }])
+            }
+            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition"
+          >
+            <Plus size={14} /> Tambah FAQ
+          </button>
+        </div>
+        {(form.faqs ?? []).length === 0 && (
+          <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-500 dark:text-gray-400">
+            Belum ada FAQ. Default kategori akan dipakai di halaman publik.
+          </div>
+        )}
+        {(form.faqs ?? []).map((f, i) => (
+          <div
+            key={i}
+            className="rounded-xl border border-gray-200 dark:border-gray-700 p-3 bg-gray-50/40 dark:bg-gray-900/30 space-y-2"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <label className="label text-xs">Pertanyaan *</label>
+                <input
+                  className="input"
+                  value={f.question}
+                  onChange={(e) =>
+                    set(
+                      "faqs",
+                      (form.faqs ?? []).map((x, j) =>
+                        j === i ? { ...x, question: e.target.value } : x,
+                      ),
+                    )
+                  }
+                  placeholder="Berapa lama proses visa Jepang?"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  set("faqs", (form.faqs ?? []).filter((_, j) => j !== i))
+                }
+                className="self-end h-10 px-3 rounded border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center gap-1 text-xs"
+              >
+                <Trash2 size={12} /> Hapus
+              </button>
+            </div>
+            <div>
+              <label className="label text-xs">Jawaban *</label>
+              <textarea
+                className="input min-h-[80px]"
+                value={f.answer}
+                onChange={(e) =>
+                  set(
+                    "faqs",
+                    (form.faqs ?? []).map((x, j) =>
+                      j === i ? { ...x, answer: e.target.value } : x,
+                    ),
+                  )
+                }
+                placeholder="Biasanya 5-8 hari kerja untuk single entry Jakarta, 5-10 hari kerja non-Jakarta."
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="flex items-center gap-3">
         <button
           type="submit"
@@ -418,6 +618,69 @@ function Field({
       <label className="label">{label}</label>
       {children}
       {hint && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{hint}</p>}
+    </div>
+  );
+}
+
+/* Editor list-of-strings sederhana (1 input per baris + add/remove). Dipakai
+   untuk eligibility checklist. */
+function ArraySection({
+  title,
+  hint,
+  items,
+  onAdd,
+  onRemove,
+  onChange,
+  placeholder,
+}: {
+  title: string;
+  hint?: string;
+  items: string[];
+  onAdd: () => void;
+  onRemove: (i: number) => void;
+  onChange: (i: number, val: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-gray-900 dark:text-white">{title}</h2>
+          {hint && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{hint}</p>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onAdd}
+          className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition"
+        >
+          <Plus size={14} /> Tambah
+        </button>
+      </div>
+      {items.length === 0 && (
+        <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-500 dark:text-gray-400">
+          Belum ada item. Default kategori akan dipakai di halaman publik.
+        </div>
+      )}
+      {items.map((value, i) => (
+        <div key={i} className="flex items-start gap-2">
+          <input
+            className="input flex-1"
+            value={value}
+            onChange={(e) => onChange(i, e.target.value)}
+            placeholder={placeholder}
+          />
+          <button
+            type="button"
+            onClick={() => onRemove(i)}
+            className="h-10 px-3 rounded border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center gap-1 text-xs"
+            aria-label="Hapus"
+          >
+            <Trash2 size={12} />
+          </button>
+        </div>
+      ))}
     </div>
   );
 }

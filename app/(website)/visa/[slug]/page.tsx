@@ -4,11 +4,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ChevronDown, MessageCircle, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ChevronDown, MessageCircle, CheckCircle2, FileText } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { visaSlug, findBySlug } from "@/lib/visa-slug";
+import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaults";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,20 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
   const country = findBySlug(countries, slug);
   if (!country) notFound();
+
+  // Eligibility / documents / faqs: pakai data per-negara kalau ada,
+  // kalau kosong fallback ke template per-kategori visa.
+  const defaults = visaDefaults(country.visa);
+  const eligibility =
+    Array.isArray(country.eligibility) && country.eligibility.length > 0
+      ? country.eligibility
+      : defaults.eligibility;
+  const docsRaw = (country.documents as unknown as VisaDocument[]) ?? [];
+  const documents: VisaDocument[] =
+    Array.isArray(docsRaw) && docsRaw.length > 0 ? docsRaw : defaults.documents;
+  const faqsRaw = (country.faqs as unknown as VisaFaq[]) ?? [];
+  const countryFaqs: VisaFaq[] =
+    Array.isArray(faqsRaw) && faqsRaw.length > 0 ? faqsRaw : defaults.faqs;
 
   const wa = toWaNumber(companyRows.find((r) => r.key === "company_whatsapp")?.value ?? "");
   const waMessage = `Halo, saya ingin tanya layanan visa ${country.name}.`;
@@ -144,9 +159,11 @@ export default async function VisaDetailPage({ params }: PageProps) {
       {/* ─── ANCHOR NAV (desktop) ─── */}
       <nav className="sticky top-20 z-30 bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 hidden md:block">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ul className="flex gap-6 text-sm font-medium">
+          <ul className="flex gap-5 text-sm font-medium overflow-x-auto">
             {[
               ["#overview", "Overview"],
+              ["#eligibility", "Kelayakan"],
+              ["#dokumen", "Dokumen"],
               ["#layanan", "Layanan & Harga"],
               ["#proses", "Proses"],
               ["#faq", "FAQ"],
@@ -173,6 +190,59 @@ export default async function VisaDetailPage({ params }: PageProps) {
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Overview</h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               {overviewText(visaKey, country.name, country.stay)}
+            </p>
+          </section>
+
+          {/* ELIGIBILITY */}
+          <section id="eligibility">
+            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+              Syarat Kelayakan
+            </h2>
+            <ul className="space-y-2">
+              {eligibility.map((item, i) => (
+                <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <CheckCircle2
+                    size={16}
+                    className="text-emerald-500 shrink-0 mt-0.5"
+                    aria-hidden
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* DOKUMEN */}
+          <section id="dokumen">
+            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+              Dokumen Wajib
+            </h2>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {documents.map((doc, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3"
+                >
+                  <FileText
+                    size={16}
+                    className="text-gray-400 shrink-0 mt-0.5"
+                    aria-hidden
+                  />
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm text-gray-900 dark:text-white">
+                      {doc.name}
+                    </p>
+                    {doc.hint && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+                        {doc.hint}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+              Daftar standar — beberapa negara mungkin minta dokumen tambahan. Tim kami konfirmasi sebelum pengajuan.
             </p>
           </section>
 
@@ -268,32 +338,48 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </ol>
           </section>
 
-          {/* FAQ */}
-          {faqs.length > 0 && (
-            <section id="faq">
-              <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">FAQ</h2>
-              <div className="space-y-3">
-                {faqs.map((f) => (
-                  <details
-                    key={f.id}
-                    className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
-                  >
-                    <summary className="cursor-pointer list-none p-4 font-semibold text-sm flex items-center justify-between gap-3 text-gray-900 dark:text-white">
-                      <span>{f.question}</span>
-                      <ChevronDown
-                        size={16}
-                        className="shrink-0 text-gray-400 transition-transform group-open:rotate-180"
-                        aria-hidden
-                      />
-                    </summary>
-                    <div className="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
-                      {f.answer}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </section>
-          )}
+          {/* FAQ — per-negara (atau default kategori), plus global Visa FAQ di bawah */}
+          <section id="faq">
+            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">FAQ</h2>
+            <div className="space-y-3">
+              {countryFaqs.map((f, i) => (
+                <details
+                  key={`country-${i}`}
+                  className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
+                >
+                  <summary className="cursor-pointer list-none p-4 font-semibold text-sm flex items-center justify-between gap-3 text-gray-900 dark:text-white">
+                    <span>{f.question}</span>
+                    <ChevronDown
+                      size={16}
+                      className="shrink-0 text-gray-400 transition-transform group-open:rotate-180"
+                      aria-hidden
+                    />
+                  </summary>
+                  <div className="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
+                    {f.answer}
+                  </div>
+                </details>
+              ))}
+              {faqs.map((f) => (
+                <details
+                  key={f.id}
+                  className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
+                >
+                  <summary className="cursor-pointer list-none p-4 font-semibold text-sm flex items-center justify-between gap-3 text-gray-900 dark:text-white">
+                    <span>{f.question}</span>
+                    <ChevronDown
+                      size={16}
+                      className="shrink-0 text-gray-400 transition-transform group-open:rotate-180"
+                      aria-hidden
+                    />
+                  </summary>
+                  <div className="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
+                    {f.answer}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
 
           {/* ULASAN */}
           {testimonials.length > 0 && (

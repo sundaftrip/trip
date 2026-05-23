@@ -11,6 +11,9 @@ type VariantInput = {
   notes?: string | null;
 };
 
+type DocInput = { name?: string; hint?: string };
+type FaqInput = { question?: string; answer?: string };
+
 type VisaInput = {
   sortOrder?: number;
   flag?: string;
@@ -21,6 +24,9 @@ type VisaInput = {
   stay?: string;
   cost?: string;
   notes?: string;
+  eligibility?: string[];
+  documents?: DocInput[];
+  faqs?: FaqInput[];
   variants?: VariantInput[];
 };
 
@@ -35,6 +41,25 @@ function pickInput(body: VisaInput) {
     stay: (body.stay ?? "").toString(),
     cost: (body.cost ?? "").toString(),
     notes: (body.notes ?? "").toString(),
+    eligibility: Array.isArray(body.eligibility)
+      ? body.eligibility.map((s) => (s ?? "").toString().trim()).filter(Boolean)
+      : [],
+    documents: Array.isArray(body.documents)
+      ? body.documents
+          .map((d) => ({
+            name: (d?.name ?? "").toString().trim(),
+            hint: (d?.hint ?? "").toString().trim() || undefined,
+          }))
+          .filter((d) => d.name.length > 0)
+      : [],
+    faqs: Array.isArray(body.faqs)
+      ? body.faqs
+          .map((f) => ({
+            question: (f?.question ?? "").toString().trim(),
+            answer: (f?.answer ?? "").toString().trim(),
+          }))
+          .filter((f) => f.question.length > 0 && f.answer.length > 0)
+      : [],
   };
 }
 
