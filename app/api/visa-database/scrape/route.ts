@@ -64,6 +64,10 @@ function classify(raw: string): string {
 
 function translateStay(raw: string): string {
   if (!raw) return "";
+  // Cap defensif: kolom "Allowed stay" Wikipedia kadang berisi paragraf
+  // eligibility panjang (mis. Taiwan TAC criteria). Itu bukan durasi —
+  // jangan diusulkan sebagai stay. Kalau lebih dari 60 char, skip.
+  if (raw.length > 60) return "";
   return raw
     .replace(/\bdays?\b/gi, "hari")
     .replace(/\bmonths?\b/gi, "bulan")
