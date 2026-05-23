@@ -129,7 +129,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
               flag={country.flag}
               rounded
               label={`Bendera ${country.name}`}
-              className="shrink-0 w-24 h-[72px] sm:w-32 sm:h-24 shadow-2xl ring-1 ring-white/10"
+              width={112}
+              className="shadow-2xl ring-1 ring-white/10"
             />
             <div className="flex-1 min-w-0">
               <p className="text-[11px] uppercase tracking-[0.18em] text-white/50 mb-1.5">
@@ -139,7 +140,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                 Visa {country.name}
               </h1>
               <p className="text-sm sm:text-base text-white/60 mb-5">
-                {country.en} &middot; untuk pemegang paspor Indonesia
+                Untuk pemegang paspor Indonesia &middot; {country.en}
               </p>
               <div className="flex flex-wrap gap-2">
                 <span

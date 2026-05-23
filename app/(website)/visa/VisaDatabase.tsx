@@ -184,12 +184,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             >
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <FlagIcon
-                    flag={c.flag}
-                    rounded
-                    label={c.name}
-                    className="shrink-0 w-7 h-[21px] sm:w-8 sm:h-6"
-                  />
+                  <FlagIcon flag={c.flag} rounded label={c.name} width={32} />
                   <div className="min-w-0">
                     <div className="font-semibold text-gray-900 dark:text-white truncate">
                       {c.name}
@@ -285,7 +280,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                       className="flex items-center gap-2.5"
                       aria-label={`Detail visa ${c.name}`}
                     >
-                      <FlagIcon flag={c.flag} rounded label={c.name} className="w-7 h-[21px] shrink-0" />
+                      <FlagIcon flag={c.flag} rounded label={c.name} width={28} />
                       <div>
                         <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap group-hover:underline underline-offset-4">
                           {c.name}

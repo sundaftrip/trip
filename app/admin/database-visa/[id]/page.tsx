@@ -18,7 +18,7 @@ export default async function EditCountryVisaPage({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <FlagIcon flag={entry.flag} rounded label={entry.name} className="w-9 h-7 shrink-0" />
+        <FlagIcon flag={entry.flag} rounded label={entry.name} width={36} />
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Edit {entry.name}

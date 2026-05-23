@@ -94,7 +94,7 @@ export default async function VisaDatabasePage() {
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <FlagIcon flag={c.flag} rounded label={c.name} className="w-6 h-[18px] shrink-0" />
+                        <FlagIcon flag={c.flag} rounded label={c.name} width={24} />
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">{c.name}</p>
                           <p className="text-xs text-gray-400">{c.en}</p>

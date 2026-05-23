@@ -177,7 +177,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-2">
+          <nav className="hidden xl:flex items-center gap-2">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}
                 className="gl-pill hover:opacity-80 transition-opacity font-black"
@@ -187,31 +187,40 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
           </nav>
 
-          <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 xl:gap-3 shrink-0">
+            {/* Lihat Tour = primary CTA — paling kontras. Wrapper menahan
+                cascade .gl-btn (unlayered) yang menang atas utility hidden. */}
+            <div className="hidden xl:block">
+              <Link href="/tours" className="gl-btn px-4 py-2 text-[11px] font-black"
+                style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }}>
+                {lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}
+              </Link>
+            </div>
+            {/* Language toggle = quiet outline */}
             <button onClick={toggleLang} className="gl-pill font-black"
-              style={{ background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }}>
+              style={{ background: "transparent", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 40%, transparent)" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
               <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="hidden xs:inline-flex sm:inline-flex gl-pill" style={{ background: "#fef9c3", color: "#111827", borderColor: "transparent" }}>
+                className="hidden xs:inline-flex sm:inline-flex gl-pill"
+                style={{ background: "transparent", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 40%, transparent)" }}>
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
-            <Link href="/tours" className="hidden lg:inline-flex gl-btn px-3 py-1.5 text-[10px] font-black"
-              style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
-              <span className="hidden xl:inline">{lang === "id" ? "Lihat Tour ✈" : "See Tours ✈"}</span>
-              <span className="xl:hidden">{lang === "id" ? "Tour ✈" : "Tour ✈"}</span>
-            </Link>
-            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden gl-pill"
-              style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
-              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
-            </button>
+            {/* Wrapper-nya yang punya breakpoint hide — supaya .gl-pill
+                (unlayered CSS) tidak menang atas utility xl:hidden di anak. */}
+            <div className="xl:hidden">
+              <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="gl-pill"
+                style={{ background: "color-mix(in srgb, var(--gl-bg) 80%, transparent)", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 30%, transparent)" }}>
+                {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
+              </button>
+            </div>
           </div>
         </div>
 
         {open && (
-          <div className="lg:hidden border-t py-4 space-y-1"
+          <div className="xl:hidden border-t py-4 space-y-1"
             style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)", background: "var(--gl-card)" }}>
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
