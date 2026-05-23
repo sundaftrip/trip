@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { Search, ChevronRight } from "lucide-react";
+import { visaSlug } from "@/lib/visa-slug";
 
 type Visa = "bebas" | "voa" | "evisa" | "wajib";
 
@@ -174,9 +176,10 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
         {filtered.map((c) => {
           const cost = costInfo(c.cost);
           return (
-            <article
+            <Link
               key={c.id}
-              className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4"
+              href={`/visa/${visaSlug(c.en)}`}
+              className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 transition-colors hover:border-gray-300 dark:hover:border-gray-700 active:bg-gray-50 dark:active:bg-gray-800/50"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -229,11 +232,14 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
               </dl>
 
               {c.notes && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 line-clamp-3">
                   {c.notes}
                 </p>
               )}
-            </article>
+              <div className="flex items-center justify-end gap-1 mt-2 text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+                Lihat detail <ChevronRight size={12} aria-hidden />
+              </div>
+            </Link>
           );
         })}
         {filtered.length === 0 && (
@@ -263,21 +269,26 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
           <tbody>
             {filtered.map((c) => {
               const cost = costInfo(c.cost);
+              const href = `/visa/${visaSlug(c.en)}`;
               return (
                 <tr
                   key={c.id}
-                  className="border-t border-gray-100 dark:border-gray-800/70 align-top"
+                  className="group border-t border-gray-100 dark:border-gray-800/70 align-top transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40"
                 >
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2.5">
+                    <Link
+                      href={href}
+                      className="flex items-center gap-2.5"
+                      aria-label={`Detail visa ${c.name}`}
+                    >
                       <span className="text-xl leading-none">{c.flag}</span>
                       <div>
-                        <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+                        <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap group-hover:underline underline-offset-4">
                           {c.name}
                         </div>
                         <div className="text-xs text-gray-400">{c.en}</div>
                       </div>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
                     {c.region}
