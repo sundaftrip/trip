@@ -72,8 +72,23 @@ export async function generateMetadata(): Promise<Metadata> {
       title: name,
       ...(logo ? { images: [logo] } : {}),
     },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: name,
+    },
+    ...(logo ? { icons: { icon: "/favicon.svg", apple: logo } } : {}),
   };
 }
+
+// theme-color sengaja dinamis: gelap saat dark scheme, terang saat light.
+// PWA splash + status bar Android jadi mengikuti tema sistem.
+export const viewport: import("next").Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
