@@ -56,14 +56,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function VisaDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const [countries, faqs, testimonials, companyRows] = await Promise.all([
+  // FAQ tidak diambil dari tabel global Faq lagi — pertanyaan spesifik
+  // (mis. "Berapa lama proses visa Rusia?") akan bocor ke semua halaman
+  // negara. Sumber FAQ per-negara: country.faqs (Json di DB) atau
+  // visaDefaults(category) sebagai fallback.
+  const [countries, testimonials, companyRows] = await Promise.all([
     prisma.countryVisa.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: { variants: { orderBy: { sortOrder: "asc" } } },
-    }),
-    prisma.faq.findMany({
-      where: { active: true, section: { contains: "Visa" } },
-      orderBy: { order: "asc" },
     }),
     prisma.testimonial.findMany({
       where: { published: true },
@@ -344,31 +344,13 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </ol>
           </section>
 
-          {/* FAQ — per-negara (atau default kategori), plus global Visa FAQ di bawah */}
+          {/* FAQ — per-negara dari CMS, atau fallback default per-kategori. */}
           <section id="faq">
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">FAQ</h2>
             <div className="space-y-3">
               {countryFaqs.map((f, i) => (
                 <details
                   key={`country-${i}`}
-                  className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
-                >
-                  <summary className="cursor-pointer list-none p-4 font-semibold text-sm flex items-center justify-between gap-3 text-gray-900 dark:text-white">
-                    <span>{f.question}</span>
-                    <ChevronDown
-                      size={16}
-                      className="shrink-0 text-gray-400 transition-transform group-open:rotate-180"
-                      aria-hidden
-                    />
-                  </summary>
-                  <div className="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
-                    {f.answer}
-                  </div>
-                </details>
-              ))}
-              {faqs.map((f) => (
-                <details
-                  key={f.id}
                   className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
                 >
                   <summary className="cursor-pointer list-none p-4 font-semibold text-sm flex items-center justify-between gap-3 text-gray-900 dark:text-white">
