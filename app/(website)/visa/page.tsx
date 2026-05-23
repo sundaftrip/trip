@@ -18,7 +18,7 @@ export default async function VisaPage() {
 
   return (
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
         <div className="flex items-center gap-2 mb-2">
           <FileCheck size={20} style={{ color: "var(--site-accent,#2d6a4f)" }} />
           <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -31,9 +31,7 @@ export default async function VisaPage() {
         <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
           Cek persyaratan visa untuk pemegang paspor Indonesia di 88 negara.
         </p>
-      </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <VisaDatabase entries={visaEntries} />
       </div>
     </div>
