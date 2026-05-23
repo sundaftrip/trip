@@ -11,6 +11,7 @@ import { toWaNumber } from "@/lib/utils";
 import { visaSlug, findBySlug } from "@/lib/visa-slug";
 import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaults";
 import { FlagIcon } from "@/lib/flag-icon";
+import VisaOrderForm from "@/components/website/VisaOrderForm";
 
 export const dynamic = "force-dynamic";
 
@@ -428,58 +429,20 @@ export default async function VisaDetailPage({ params }: PageProps) {
           )}
         </main>
 
-        {/* STICKY PRICING CARD */}
+        {/* STICKY ORDER FORM */}
         <aside className="lg:sticky lg:top-32 lg:self-start">
-          <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-1">
-              {costStartsWithMulai ? "Mulai dari" : "Biaya"}
-            </p>
-            <p
-              className={`text-3xl font-bold mb-1 ${
-                isFree ? "text-emerald-600 dark:text-emerald-400" : "text-gray-900 dark:text-white"
-              }`}
-            >
-              {costMain}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-5">
-              {isFree
-                ? "Tidak perlu visa untuk WNI"
-                : "Sudah termasuk biaya layanan Sundaf Trip"}
-            </p>
-
-            <div className="space-y-2 text-xs text-gray-600 dark:text-gray-400 mb-6">
-              {[
-                "Dokumen di-review tim profesional",
-                "Update progress via WhatsApp",
-                "Antar/jemput dokumen Jabodetabek",
-              ].map((line) => (
-                <div key={line} className="flex items-start gap-2">
-                  <CheckCircle2
-                    size={14}
-                    className="text-emerald-500 shrink-0 mt-0.5"
-                    aria-hidden
-                  />
-                  <span>{line}</span>
-                </div>
-              ))}
-            </div>
-
-            {waLink ? (
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noreferrer"
-                className="block w-full text-center px-5 py-3.5 rounded-xl text-white font-semibold transition hover:opacity-90 active:scale-[0.98]"
-                style={{ background: "#25D366" }}
-              >
-                Pesan via WhatsApp
-              </a>
-            ) : (
-              <p className="text-center text-xs text-gray-400">
-                Nomor WhatsApp belum di-set di CMS.
-              </p>
-            )}
-          </div>
+          <VisaOrderForm
+            countryName={country.name}
+            waNumber={wa}
+            variants={country.variants.map((v) => ({
+              id: v.id,
+              name: v.name,
+              priceIDR: v.priceIDR,
+              processingTime: v.processingTime,
+            }))}
+            fallbackCostLabel={costMain}
+            fallbackIsFree={isFree}
+          />
         </aside>
       </div>
 
