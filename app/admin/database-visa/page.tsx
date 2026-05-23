@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Plus, Pencil, Globe2, Info } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
 import ScrapeVisaButton from "@/components/admin/ScrapeVisaButton";
+import { FlagIcon } from "@/lib/flag-icon";
 
 export const dynamic = "force-dynamic";
 
@@ -92,8 +93,8 @@ export default async function VisaDatabasePage() {
                     className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition"
                   >
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg leading-none">{c.flag}</span>
+                      <div className="flex items-center gap-2.5">
+                        <FlagIcon flag={c.flag} rounded label={c.name} className="w-6 h-[18px] shrink-0" />
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">{c.name}</p>
                           <p className="text-xs text-gray-400">{c.en}</p>

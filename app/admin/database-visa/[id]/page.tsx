@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import CountryVisaForm from "@/components/admin/CountryVisaForm";
+import { FlagIcon } from "@/lib/flag-icon";
 
 export default async function EditCountryVisaPage({
   params,
@@ -16,11 +17,14 @@ export default async function EditCountryVisaPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Edit {entry.flag} {entry.name}
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{entry.en}</p>
+      <div className="flex items-center gap-3">
+        <FlagIcon flag={entry.flag} rounded label={entry.name} className="w-9 h-7 shrink-0" />
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Edit {entry.name}
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{entry.en}</p>
+        </div>
       </div>
       <CountryVisaForm
         entry={{

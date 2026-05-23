@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Anonymous_Pro, Caveat } from "next/font/google";
 import "./globals.css";
+import "flag-icons/css/flag-icons.min.css";
 import Providers from "@/components/Providers";
 import { prisma } from "@/lib/prisma";
 

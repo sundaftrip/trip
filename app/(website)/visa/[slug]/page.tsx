@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { visaSlug, findBySlug } from "@/lib/visa-slug";
 import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaults";
+import { FlagIcon } from "@/lib/flag-icon";
 
 export const dynamic = "force-dynamic";
 
@@ -123,9 +124,12 @@ export default async function VisaDetailPage({ params }: PageProps) {
           </Link>
 
           <div className="flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-7">
-            <div className="text-7xl sm:text-8xl leading-none shrink-0" aria-hidden>
-              {country.flag}
-            </div>
+            <FlagIcon
+              flag={country.flag}
+              rounded
+              label={`Bendera ${country.name}`}
+              className="shrink-0 w-24 h-[72px] sm:w-32 sm:h-24 shadow-2xl ring-1 ring-white/10"
+            />
             <div className="flex-1 min-w-0">
               <p className="text-[11px] uppercase tracking-[0.18em] text-white/50 mb-1.5">
                 {country.region}

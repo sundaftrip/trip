@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, Loader2, ArrowRight, CheckCircle2, AlertCircle, X } from "lucide-react";
+import { FlagIcon } from "@/lib/flag-icon";
 
 interface DiffChange {
   field: "visa" | "stay";
@@ -204,7 +205,7 @@ export default function ScrapeVisaButton() {
                           className="border border-gray-200 dark:border-gray-800 rounded-xl p-4"
                         >
                           <div className="flex items-center gap-2.5 mb-3">
-                            <span className="text-2xl leading-none">{d.flag}</span>
+                            <FlagIcon flag={d.flag} rounded label={d.name} className="w-8 h-6 shrink-0" />
                             <div>
                               <p className="font-semibold text-gray-900 dark:text-white">
                                 {d.name}
