@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HelpCircle, ChevronLeft } from "lucide-react";
+import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "FAQ Teknis Visa Schengen — Paspor Indonesia",
@@ -216,6 +216,61 @@ const UMUM: FaqItem[] = [
   },
 ];
 
+const REJECT_CASES: FaqItem[] = [
+  {
+    q: "Visa Australia ditolak 2 kali — pakai agen lain atau perbaiki sendiri?",
+    a: (
+      <>
+        <p>
+          Kasus nyata yang sering masuk ke saya: ibu ditolak via agen
+          (September), apply mandiri di Desember juga ditolak. Alasan keduanya
+          mirip — <i>"itinerary kurang jelas"</i> dan <i>"tidak ada niat
+          kembali ke Indonesia"</i>. Padahal pemohon punya usaha aktif, anak
+          masih sekolah, dan aset di Indonesia.
+        </p>
+        <p>
+          Tiga hal yang sering jadi akar masalah, walau dari luar dokumen
+          kelihatan lengkap:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Ikatan ke Indonesia ada secara fakta, tapi tidak ter-translasi
+            dalam dokumen.</b> Surat keterangan usaha tanpa angka omset, KK
+            tanpa konteks anak sekolah kelas berapa, aset tanpa bukti
+            kepemilikan terbaru — semua "lemah" di mata officer Australia.
+          </li>
+          <li>
+            <b>Itinerary terlalu generik.</b> "Hari 1: tiba Sydney, Hari 2:
+            Opera House" — ini pattern yang officer baca ratusan kali sehari.
+            Itinerary kuat menyebut konteks (kunjungan keluarga? acara?
+            booking spesifik?) dan menjelaskan kenapa harus saat ini.
+          </li>
+          <li>
+            <b>Mutasi rekening tidak natural.</b> Lump-sum 1–2 bulan sebelum
+            apply terbaca sebagai "uang titipan", bukan pendapatan organik.
+            Officer ingin lihat pola income yang konsisten 6 bulan ke
+            belakang.
+          </li>
+        </ul>
+        <p>
+          <b>Reject 2 kali bukan tentang agen vs mandiri</b> — itu sinyal
+          bahwa cara mempresentasikan profil ibu belum match dengan apa yang
+          officer cari. Ganti agen tanpa restruktur narrative biasanya hasilnya
+          sama. Reject ke-3 jauh lebih sulit dicairkan karena sudah ada
+          <b> riwayat penolakan berulang</b> di sistem.
+        </p>
+        <p>
+          Saran saya: <b>jangan apply lagi sebelum di-review menyeluruh</b>.
+          Cooling period 3–6 bulan, lalu apply dengan dokumen + cover letter +
+          itinerary yang sudah direstruktur dari nol. Untuk kasus dengan
+          riwayat reject seperti ini, kami biasanya kerjakan review profil
+          gratis dulu lewat WhatsApp sebelum memutuskan langkah selanjutnya.
+        </p>
+      </>
+    ),
+  },
+];
+
 function FaqList({ items }: { items: FaqItem[] }) {
   return (
     <div className="space-y-3">
@@ -264,8 +319,8 @@ export default function VisaFaqPage() {
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-2xl leading-relaxed">
           Jawaban praktis untuk situasi yang tidak ada di checklist standar
-          kedutaan — dari status cerai, anak di bawah 18, sampai apply dari
-          negara lain.
+          kedutaan — dari status cerai, anak di bawah 18, sampai strategi apply
+          ulang setelah visa ditolak.
         </p>
 
         <section className="mb-12">
@@ -301,6 +356,52 @@ export default function VisaFaqPage() {
           </p>
           <FaqList items={UMUM} />
         </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="inline-block w-1.5 h-5 rounded-full"
+              style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+            />
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Visa Ditolak — Strategi Apply Ulang
+            </h2>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+            Kasus nyata yang masuk ke kami, dibahas tanpa basa-basi. Reject
+            pernah terjadi bukan akhir cerita, tapi cara menanganinya
+            menentukan apply berikutnya.
+          </p>
+          <FaqList items={REJECT_CASES} />
+        </section>
+
+        <div
+          className="mb-12 p-6 sm:p-8 border"
+          style={{
+            background: "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 8%, transparent)",
+            borderColor: "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 25%, transparent)",
+          }}
+        >
+          <div className="flex items-start gap-3 mb-3">
+            <MessageCircle
+              size={20}
+              className="shrink-0 mt-0.5"
+              style={{ color: "var(--site-accent-ink,#2d6a4f)" }}
+            />
+            <div>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                Punya kasus yang tidak ada di sini?
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                Profil borderline, pernah reject, atau dokumen tidak standar —
+                setiap kasus punya konteks sendiri yang tidak bisa di-template.
+                Konsultasi gratis lewat WhatsApp di pojok kanan bawah halaman,
+                cerita kondisi kamu, saya bantu review apa yang sebaiknya
+                disiapkan sebelum apply.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-7">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
