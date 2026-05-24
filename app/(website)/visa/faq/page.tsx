@@ -22,7 +22,7 @@ type FaqItem = {
 const SCHENGEN_TEKNIS: FaqItem[] = [
   {
     q: "Status cerai, apa yang harus dilampirkan?",
-    layanan: "Butuh terjemahan tersumpah akta cerai atau notaris consent? Lihat layanan kami",
+    layanan: "Pengurusan visa via Sundaf sudah include terjemahan akta cerai dan notaris consent",
     a: (
       <>
         <p>
@@ -41,7 +41,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Anak di bawah 18 tahun, dokumen tambahan?",
-    layanan: "Butuh urus notaris consent orang tua atau terjemahan akta? Lihat layanan kami",
+    layanan: "Pengurusan visa via Sundaf sudah include notaris consent dan terjemahan akta",
     a: (
       <>
         <ul className="list-disc pl-5 space-y-1.5">
@@ -60,7 +60,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Anak di bawah 18 ke Spanyol, apostille?",
-    layanan: "Kami bantu apostille Kemenkumham, notaris, dan terjemahan tersumpah Spanyol",
+    layanan: "Apostille, notaris, dan terjemahan Spanyol sudah include dalam pengurusan visa kami",
     a: (
       <>
         <p>
@@ -83,7 +83,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Pergi sama suami, tapi suami tidak kerja",
-    layanan: "Butuh review surat sponsor pasangan atau bank reference? Lihat layanan kami",
+    layanan: "Kasus sponsor pasangan lebih aman ditangani via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -115,7 +115,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Rekening tipis atau mutasi berantakan",
-    layanan: "Kami bantu bank reference letter dan review profil finansial sebelum apply",
+    layanan: "Profil finansial borderline sebaiknya lewat pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -149,7 +149,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Apply Schengen dari negara lain (WNI tinggal di luar)",
-    layanan: "Butuh review dokumen residence permit dan timeline apply? Lihat layanan kami",
+    layanan: "Apply dari negara lain butuh koordinasi khusus, lebih aman via pengurusan lengkap",
     a: (
       <>
         <p>
@@ -183,7 +183,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
 const UMUM: FaqItem[] = [
   {
     q: "Dokumen bahasa Indonesia perlu diterjemahkan?",
-    layanan: "Kami punya penerjemah tersumpah 8 bahasa siap pakai",
+    layanan: "Terjemahan tersumpah 8 bahasa sudah include dalam pengurusan visa kami",
     a: (
       <p>
         Ya. Akta lahir, akta nikah, akta cerai, surat kerja, slip gaji, bank
@@ -196,7 +196,7 @@ const UMUM: FaqItem[] = [
   },
   {
     q: "Asuransi perjalanan, minimum berapa?",
-    layanan: "Asuransi Schengen €30.000 dan polis negara lain bisa diterbitkan via kami",
+    layanan: "Asuransi Schengen €30.000 dan polis negara lain sudah include dalam pengurusan visa kami",
     a: (
       <p>
         Schengen: <b>coverage minimum €30.000</b> untuk medical + repatriation,
@@ -220,7 +220,7 @@ const UMUM: FaqItem[] = [
   },
   {
     q: "Cover letter, perlu atau tidak?",
-    layanan: "Kami bantu draft cover letter yang sesuai profil dan negara tujuan",
+    layanan: "Draft cover letter sesuai profil dan negara tujuan sudah include dalam pengurusan visa kami",
     a: (
       <p>
         Sangat dianjurkan, terutama untuk profil borderline. Isinya: tujuan
@@ -235,7 +235,7 @@ const UMUM: FaqItem[] = [
 const PROFIL_NONSTANDAR: FaqItem[] = [
   {
     q: "Freelance / pekerja kreatif / digital nomad, bukti income?",
-    layanan: "Kami bantu review profil freelance, cover letter, dan bank reference",
+    layanan: "Profil freelance kompleks, pengurusan visa lengkap sudah include semua restrukturisasi dokumen",
     a: (
       <>
         <p>
@@ -278,7 +278,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "Baru pindah kerja / masa kerja kurang 6 bulan",
-    layanan: "Butuh review dokumen kerja dan cover letter? Lihat layanan kami",
+    layanan: "Profil masa kerja pendek sebaiknya didampingi via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -313,7 +313,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "Baru resign / sedang career break",
-    layanan: "Profil career break butuh restructuring narrative, kami siap bantu review",
+    layanan: "Career break butuh restrukturisasi narrative, sebaiknya via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -355,7 +355,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "ASN / PNS, perlu izin atasan?",
-    layanan: "Butuh terjemahan SK ASN dan format surat izin yang diterima konsulat?",
+    layanan: "Terjemahan SK ASN dan format surat izin sudah include dalam pengurusan visa kami",
     a: (
       <>
         <p>
@@ -394,7 +394,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "Pensiunan / lansia traveling, bukti finansial?",
-    layanan: "Kami bantu asuransi medical untuk lansia dan dokumen sponsor anak",
+    layanan: "Asuransi medical lansia dan dokumen sponsor anak sudah include dalam pengurusan visa kami",
     a: (
       <>
         <p>
@@ -437,7 +437,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
 const PASPOR_RIWAYAT: FaqItem[] = [
   {
     q: "Paspor masa berlaku tinggal <6 bulan, masih bisa apply?",
-    layanan: "Kami bantu review timeline perpanjangan paspor dan strategi apply visa",
+    layanan: "Koordinasi perpanjangan paspor dan timing apply sudah include dalam pengurusan visa kami",
     a: (
       <>
         <p>
@@ -469,7 +469,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
   },
   {
     q: "Paspor masih kosong, belum pernah ke luar negeri",
-    layanan: "Strategi negara pembuka dan review profil sebelum apply Schengen",
+    layanan: "Strategi negara pembuka biasanya kami atur via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -506,7 +506,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
   },
   {
     q: "Visa pernah ditolak, wajib declare?",
-    layanan: "Profil pasca-reject butuh review hati-hati, kami siap dampingi apply ulang",
+    layanan: "Apply ulang pasca-reject sebaiknya ditangani via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -558,7 +558,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
 const DOKUMEN_SENSITIF: FaqItem[] = [
   {
     q: "Ejaan nama beda antara paspor dan dokumen pendukung",
-    layanan: "Kami bantu surat sumpah notaris dan terjemahan tersumpah",
+    layanan: "Surat sumpah notaris dan terjemahan tersumpah sudah include dalam pengurusan visa kami",
     a: (
       <>
         <p>
@@ -605,7 +605,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
   },
   {
     q: "Gaji dibayar tunai, tidak ada slip + transfer bank",
-    layanan: "Kami bantu format surat keterangan kerja dan bank reference",
+    layanan: "Profil tanpa payroll bank sebaiknya didampingi via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -644,7 +644,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
   },
   {
     q: "Aset / transaksi crypto di rekening, masalah?",
-    layanan: "Profil dengan dominasi crypto sebaiknya konsultasi sebelum apply",
+    layanan: "Profil dominan crypto sebaiknya ditangani via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -685,45 +685,42 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
 
 const LAYANAN_PENDUKUNG: FaqItem[] = [
   {
-    q: "Apa saja yang bisa Sundaf bantu untuk urusan visa?",
+    q: "Apa saja yang termasuk saat urus visa via Sundaf?",
     layanan: null,
     a: (
       <>
         <p>
-          Selain paket tour, kami punya jaringan ekosistem pendukung yang
-          sering dibutuhkan calon pemohon visa. Tidak harus paket lengkap,
-          bisa per layanan saja sesuai kebutuhan.
+          Sundaf melayani pengurusan visa sebagai <b>satu paket utuh</b>,
+          bukan layanan satuan. Saat kamu percayakan visa ke kami, semua
+          kebutuhan di bawah ini sudah saya tangani, tanpa biaya kejutan
+          atau tagihan terpisah.
         </p>
-        <p>Yang biasa kami bantu:</p>
+        <p>Yang termasuk dalam pengurusan visa lengkap:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <b>Asuransi perjalanan</b>. Schengen coverage €30.000
-            medical+repatriation (AXA, MSIG, Allianz, Zurich). Bisa diterbitkan
-            di hari yang sama, format yang sudah ratusan kali diterima
-            konsulat.
+            <b>Review profil dan dokumen sebelum submit</b>. Saya cek
+            seluruh dokumen, cover letter, dan itinerary kamu. Borderline
+            atau riwayat reject saya tangani secara khusus.
           </li>
           <li>
-            <b>Apostille Kemenkumham</b>. Akta lahir, akta nikah, akta cerai,
-            ijazah, surat hak asuh, surat consent. Estimasi 3 hingga 5 hari
-            kerja, dokumen bisa dijemput dan dikirim balik.
+            <b>Asuransi perjalanan sesuai negara tujuan</b>. Schengen
+            coverage €30.000 medical+repatriation (AXA, MSIG, Allianz,
+            Zurich), atau polis negara lain yang diakui konsulat.
           </li>
           <li>
-            <b>Penerjemah tersumpah</b>. Bahasa Inggris, Spanyol, Jerman,
-            Belanda, Prancis, Mandarin, Jepang, Korea. Bersertifikat
-            HPI/Kemenkumham dengan format yang sudah disesuaikan kedutaan
-            masing-masing.
+            <b>Apostille Kemenkumham</b>. Akta lahir, akta nikah, akta
+            cerai, ijazah, surat hak asuh, surat consent. Saya yang antar
+            jemput, kamu tidak perlu ke Kemenkumham.
           </li>
           <li>
-            <b>Notaris</b>. Surat sumpah perbedaan ejaan nama, surat consent
-            orang tua untuk anak di bawah 18, surat sponsor pasangan atau
-            keluarga, surat keterangan usaha. Bisa same-day untuk kasus
-            mendesak.
+            <b>Penerjemah tersumpah</b>. Inggris, Spanyol, Jerman, Belanda,
+            Prancis, Mandarin, Jepang, Korea. Bersertifikat HPI/Kemenkumham
+            dengan format yang disesuaikan kedutaan masing-masing.
           </li>
           <li>
-            <b>Review profil dan dokumen sebelum submit</b>. Saya cek seluruh
-            dokumen, cover letter, dan itinerary kamu. Untuk profil borderline
-            atau riwayat reject, ini selalu lebih hemat daripada apply lalu
-            kena tolak.
+            <b>Notaris untuk surat khusus</b>. Surat sumpah perbedaan ejaan
+            nama, surat consent orang tua untuk anak di bawah 18, surat
+            sponsor pasangan atau keluarga.
           </li>
           <li>
             <b>Bank reference letter</b>. Pendampingan urus surat referensi
@@ -731,16 +728,19 @@ const LAYANAN_PENDUKUNG: FaqItem[] = [
             mutasi rekening kalau profil finansial perlu diperkuat.
           </li>
           <li>
-            <b>Pengurusan visa hulu ke hilir</b>. Untuk yang memang tidak
-            punya waktu, dari isi form aplikasi, booking slot biometric, urus
-            dokumen pendukung, sampai siap submit di VFS/BLS.
+            <b>Isi form aplikasi + booking slot biometric</b>. Dari awal
+            sampai dokumen siap submit di VFS/BLS.
+          </li>
+          <li>
+            <b>Pendampingan saat appointment</b>. Briefing apa yang harus
+            dibawa, apa yang akan ditanya, apa yang sebaiknya dijawab.
           </li>
         </ul>
         <p>
-          Semua bisa konsultasi gratis lewat WhatsApp di pojok kanan bawah.
-          Cerita kondisi kamu, saya bantu identifikasi layanan mana yang
-          memang dibutuhkan dan mana yang tidak. Tidak ada paksaan paket,
-          tidak ada upsell yang tidak perlu.
+          Konsultasi awal lewat WhatsApp gratis. Saya bantu identifikasi
+          dulu apakah kasus kamu memang butuh pengurusan lengkap, atau cukup
+          panduan mandiri yang sudah tersedia di FAQ ini. Saya tidak ambil
+          klien yang sebenarnya bisa urus sendiri.
         </p>
       </>
     ),
@@ -750,7 +750,7 @@ const LAYANAN_PENDUKUNG: FaqItem[] = [
 const REJECT_CASES: FaqItem[] = [
   {
     q: "Visa Australia ditolak 2 kali, pakai agen lain atau perbaiki sendiri?",
-    layanan: "Kasus reject berulang, kami review profil gratis dulu sebelum apply ke-3",
+    layanan: "Reject berulang seperti ini sebaiknya ditangani via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -803,7 +803,7 @@ const REJECT_CASES: FaqItem[] = [
   },
   {
     q: "Pernah overstay di negara lain, masih bisa apply visa baru?",
-    layanan: "Profil pasca-overstay sebaiknya konsultasi sebelum apply mandiri",
+    layanan: "Profil pasca-overstay sebaiknya ditangani via pengurusan visa lengkap",
     a: (
       <>
         <p>
@@ -859,7 +859,7 @@ const REJECT_CASES: FaqItem[] = [
 ];
 
 const DEFAULT_LAYANAN_CTA =
-  "Butuh bantuan dengan hal ini? Lihat Layanan Pendukung kami";
+  "Kasus ini lebih aman ditangani via pengurusan visa lengkap, lihat detail";
 
 function FaqList({ items }: { items: FaqItem[] }) {
   return (
@@ -1030,13 +1030,13 @@ export default function VisaFaqPage() {
               style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
             />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Layanan Pendukung yang Bisa Kami Bantu
+              Yang Sudah Termasuk Saat Urus Visa via Sundaf
             </h2>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
             Asuransi, apostille, terjemahan tersumpah, notaris, review
-            dokumen, sampai pengurusan visa hulu ke hilir. Bisa per layanan,
-            bisa lengkap.
+            dokumen, sampai pendampingan biometric. Semua sudah include dalam
+            satu pengurusan utuh.
           </p>
           <FaqList items={LAYANAN_PENDUKUNG} />
         </section>
@@ -1078,9 +1078,10 @@ export default function VisaFaqPage() {
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                 Profil borderline, pernah reject, atau dokumen tidak standar,
                 setiap kasus punya konteks sendiri yang tidak bisa di-template.
-                Konsultasi gratis lewat WhatsApp di pojok kanan bawah halaman,
-                cerita kondisi kamu, saya bantu review apa yang sebaiknya
-                disiapkan sebelum apply.
+                Konsultasi awal gratis lewat WhatsApp di pojok kanan bawah.
+                Cerita kondisi kamu, saya bantu tentukan apakah kasusnya butuh
+                pengurusan visa lengkap, atau cukup panduan mandiri yang sudah
+                ada di FAQ ini.
               </p>
             </div>
           </div>
