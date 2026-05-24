@@ -1769,3 +1769,26 @@ a.gl-pill:has(svg:only-child) {
 @media (prefers-reduced-motion: reduce) {
   .fb-float-1, .fb-float-2, .fb-float-3, .fb-float-4 { animation: none; }
 }
+
+/* ──────────────────────────────────────────────────────────────
+   SHARP-EDGES OVERRIDE
+   Menghapus semua border-radius supaya tampilan tidak terbaca
+   sebagai "AI-generated rounded-card aesthetic". Berlaku untuk
+   SEMUA tema (classic, jojo, teri, kawaii, console, fumayo, dst).
+
+   Pengecualian (tetap bulat) via class .keep-radius / .is-round.
+   ────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* Opt-in: kembalikan sudut bulat untuk elemen tertentu */
+.keep-radius,
+.keep-radius * {
+  border-radius: revert !important;
+}
+.is-round {
+  border-radius: 9999px !important;
+}
