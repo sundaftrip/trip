@@ -216,6 +216,446 @@ const UMUM: FaqItem[] = [
   },
 ];
 
+const PROFIL_NONSTANDAR: FaqItem[] = [
+  {
+    q: "Freelance / pekerja kreatif / digital nomad — bukti income?",
+    a: (
+      <>
+        <p>
+          Tidak punya surat kerja kantoran bukan disqualifier. Yang officer
+          cari adalah <b>pola income yang konsisten</b> dan bukti bahwa kerja
+          kamu nyata.
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Mutasi rekening 6 bulan</b> yang menunjukkan transfer masuk
+            rutin dari klien / platform (Fiverr, Upwork, brand, marketplace).
+          </li>
+          <li>
+            <b>NPWP + SPT tahunan</b> — bukti paling kuat bahwa kamu pajak
+            aktif sebagai freelancer / wirausaha perorangan.
+          </li>
+          <li>
+            <b>Sample kontrak / invoice</b> 2–3 buah dari klien berbeda,
+            dengan tanggal & nominal.
+          </li>
+          <li>
+            <b>Portfolio / profile platform</b> (LinkedIn, Behance, channel
+            YouTube, akun marketplace) sebagai konteks profesional.
+          </li>
+          <li>
+            <b>Cover letter</b> yang jelaskan model kerja kamu —
+            "remote/independent, income datang dari X klien di Y negara,
+            tools kerja saya internet jadi bisa pulang kapan saja".
+          </li>
+        </ul>
+        <p>
+          Untuk <b>digital nomad</b> dengan stay panjang (&gt;30 hari),
+          beberapa konsulat (terutama UK, AU) curiga "kerja ilegal". Pastikan
+          itinerary jelas turis, dan cover letter menegaskan kamu tetap
+          bekerja remote untuk klien luar negeri kamu, bukan mencari kerja
+          lokal.
+        </p>
+      </>
+    ),
+  },
+  {
+    q: "Baru pindah kerja / masa kerja kurang 6 bulan",
+    a: (
+      <>
+        <p>
+          Tidak otomatis menggagalkan, tapi memang masuk profil "ties belum
+          stabil" di mata officer. Cara menanganinya:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Surat kerja baru</b> mencantumkan: posisi, gaji, tanggal mulai,
+            durasi kontrak, status (probation/permanen).
+          </li>
+          <li>
+            <b>Surat approval cuti</b> tertulis dari atasan langsung —
+            spesifik tanggal & lama cuti, bukan template.
+          </li>
+          <li>
+            <b>Surat kerja dari perusahaan lama</b> (pengalaman kerja
+            sebelumnya) — menunjukkan kamu punya track record karir, bukan
+            baru pertama kerja.
+          </li>
+          <li>
+            Cover letter jelaskan posisi baru kamu strategis / butuh
+            kontinuitas — return motivation jadi natural.
+          </li>
+          <li>
+            <b>Mutasi rekening</b> dari pekerjaan lama + baru — bukti income
+            tetap masuk walau pindah kerja.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    q: "Baru resign / sedang career break",
+    a: (
+      <>
+        <p>
+          Ini profil paling rentan untuk visa turis karena 2 sinyal langsung
+          terlihat: <b>tidak ada income mengalir</b> + <b>tidak ada ties
+          pekerjaan</b>. Tidak otomatis ditolak, tapi butuh kompensasi kuat.
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Surat keterangan resign + paklaring</b> dari perusahaan lama,
+            jelaskan resign baik-baik & ada rencana lanjut.
+          </li>
+          <li>
+            <b>Bukti dana yang besar</b> (jauh di atas standar Rp 100 juta) —
+            tabungan, deposito, reksadana, BPKB, sertifikat tanah.
+          </li>
+          <li>
+            <b>Rencana setelah balik dari trip</b> yang konkret: surat
+            penerimaan kerja baru, surat penerimaan sekolah lanjut, atau bukti
+            usaha yang sudah didaftarkan (NIB / SIUP).
+          </li>
+          <li>
+            <b>Sponsor</b> dari pasangan atau orang tua sangat membantu —
+            menggeser "siapa membiayai" dari kamu ke pihak lain yang
+            tertambat di Indonesia.
+          </li>
+          <li>
+            Trip pendek (7–10 hari) lebih mudah lolos daripada 1 bulan.
+            Rencana lama bikin officer curiga niat kembali.
+          </li>
+        </ul>
+        <p>
+          Profil career break umumnya butuh narrative restructuring yang
+          hati-hati. Kasus seperti ini kami sarankan konsultasi via WhatsApp
+          dulu sebelum submit.
+        </p>
+      </>
+    ),
+  },
+  {
+    q: "ASN / PNS — perlu izin atasan?",
+    a: (
+      <>
+        <p>
+          Untuk <b>perjalanan pribadi / turis</b> (bukan dinas), umumnya
+          cukup <b>surat izin tertulis dari atasan langsung / pejabat
+          kepegawaian (PPK)</b> di instansi kamu. Tidak perlu izin Sekretariat
+          Negara / Biro KTLN — itu untuk perjalanan dinas resmi.
+        </p>
+        <p>
+          Yang dilampirkan saat apply visa:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Surat tugas / SK ASN</b> sebagai bukti pekerjaan tetap.
+          </li>
+          <li>
+            <b>Surat izin cuti</b> ditandatangani atasan, lengkap tanggal &
+            lama cuti.
+          </li>
+          <li>
+            <b>Surat keterangan dari instansi</b> menyebut status, golongan,
+            masa kerja, gaji pokok + tunjangan.
+          </li>
+          <li>
+            <b>Slip gaji</b> 3 bulan + mutasi rekening payroll.
+          </li>
+        </ul>
+        <p>
+          ASN biasanya profil kuat untuk visa turis — gaji tetap, ties ke
+          negara jelas, pensiun ke depan. Tapi <b>aturan internal tiap
+          instansi berbeda</b> (Kemenkumham, Kemlu, TNI/Polri ada protokol
+          khusus). Cek SOP instansi kamu sebelum proses.
+        </p>
+      </>
+    ),
+  },
+  {
+    q: "Pensiunan / lansia traveling — bukti finansial?",
+    a: (
+      <>
+        <p>
+          Pensiunan justru sering jadi profil <b>kuat</b> untuk visa turis:
+          income tetap dari pensiun, anak sudah mandiri, ties ke Indonesia
+          jelas (rumah, keluarga, makam keluarga, layanan kesehatan).
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>SK pensiun + Kartu Identitas Pensiun (Karip / Taspen)</b>.
+          </li>
+          <li>
+            <b>Mutasi rekening pensiun</b> 3–6 bulan menunjukkan pembayaran
+            rutin masuk.
+          </li>
+          <li>
+            <b>Bukti kepemilikan rumah / aset</b> (sertifikat, PBB).
+          </li>
+          <li>
+            Kalau dana pensiun kurang besar, <b>sponsor dari anak</b> yang
+            sudah bekerja — surat sponsor + bukti relasi (KK) + rekening
+            sponsor.
+          </li>
+          <li>
+            <b>Riwayat medical</b> tidak perlu disampaikan kecuali diminta,
+            tapi <b>asuransi perjalanan</b> dengan coverage medical wajib
+            ada (terutama Schengen).
+          </li>
+        </ul>
+        <p>
+          Untuk lansia &gt;75 tahun yang traveling sendiri tanpa pendamping,
+          beberapa konsulat tanya rencana kontak darurat / pendamping di
+          negara tujuan — siapkan kontak host atau hotel pickup service.
+        </p>
+      </>
+    ),
+  },
+];
+
+const PASPOR_RIWAYAT: FaqItem[] = [
+  {
+    q: "Paspor masa berlaku tinggal <6 bulan — masih bisa apply?",
+    a: (
+      <>
+        <p>
+          Aturan resmi Schengen: paspor harus valid <b>minimal 3 bulan</b>{" "}
+          setelah tanggal rencana keluar dari Schengen, dan harus{" "}
+          <b>diterbitkan dalam 10 tahun terakhir</b>. Tapi <b>UK, Australia,
+          NZ, Jepang, Korea, US</b> umumnya rekomen <b>6 bulan</b> validity
+          dari rencana pulang.
+        </p>
+        <p>Wajib juga:</p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Minimal 2 halaman kosong</b> (untuk sticker visa + cap
+            imigrasi). Halaman dengan stempel lama tidak dihitung kosong.
+          </li>
+          <li>
+            Tidak ada waiver untuk 10-year issuance rule dan 2 blank pages
+            untuk Schengen.
+          </li>
+        </ul>
+        <p>
+          Kalau paspor tinggal &lt;6 bulan: <b>perpanjang dulu sebelum
+          apply</b>. Kantor Imigrasi M-Paspor sekarang 3–5 hari kerja untuk
+          paspor biasa. Apply visa pakai paspor yang tinggal sebentar adalah
+          ambil risiko sia-sia.
+        </p>
+      </>
+    ),
+  },
+  {
+    q: "Paspor masih kosong — belum pernah ke luar negeri",
+    a: (
+      <>
+        <p>
+          Tidak otomatis menggagalkan, tapi memang "weak travel history" di
+          mata officer Schengen / UK / AU. Strategi yang umum dipakai:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Mulai dari negara "pembuka"</b>: Jepang, Korea, Singapura,
+            Malaysia, Thailand. Setelah ada 1–2 stamp Asia, profil naik.
+          </li>
+          <li>
+            <b>Profil finansial harus lebih kuat</b> dari standar untuk
+            mengkompensasi. Saldo lebih tebal, ties pekerjaan/usaha lebih
+            jelas.
+          </li>
+          <li>
+            <b>Cover letter</b> jelaskan secara natural kenapa pilih negara
+            tujuan tersebut — alasan personal (keluarga, ziarah, event),
+            bukan generic "lihat Menara Eiffel".
+          </li>
+          <li>
+            <b>Sponsor / travel partner</b> yang sudah punya riwayat travel
+            membantu — apply berbarengan dengan pasangan / saudara yang
+            pernah ke sana sebelumnya.
+          </li>
+          <li>
+            Jangan langsung apply Schengen multi-country 30 hari. Mulai dari
+            <b> trip pendek single-country</b> 7 hari.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    q: "Visa pernah ditolak — wajib declare?",
+    a: (
+      <>
+        <p>
+          <b>Wajib jujur — tanpa kompromi.</b> Form aplikasi Schengen, UK,
+          US, Australia, NZ semua punya kolom "have you ever been refused a
+          visa". Data refusal kamu sudah ada di database global (VIS untuk
+          Schengen, US Consular Lookout, Australia VEVO).
+        </p>
+        <p>
+          Konsekuensi tidak declare:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            Visa yang sudah terbit bisa <b>dianulir</b> kapan saja kalau
+            ketahuan.
+          </li>
+          <li>
+            <b>Permanent record</b> "misrepresentation" — masuk daftar
+            high-risk, susah apply ke depan.
+          </li>
+          <li>
+            Bisa dianggap pelanggaran hukum negara penerbit visa.
+          </li>
+        </ul>
+        <p>
+          Cara declare yang benar:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            Tick <b>"Yes"</b>, isi negara, tahun, alasan reject (kalau ada di
+            surat penolakan).
+          </li>
+          <li>
+            Di <b>cover letter</b>, tambah paragraf khusus jelaskan apa yang
+            berubah sejak reject. Misalnya: "ditolak karena rekening lemah
+            tahun X, sekarang saya lampirkan bukti deposit/aset baru dan
+            kontrak kerja yang sudah 2 tahun".
+          </li>
+          <li>
+            Jangan defensif / menyalahkan officer sebelumnya — fokus ke apa
+            yang sudah diperbaiki.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+];
+
+const DOKUMEN_SENSITIF: FaqItem[] = [
+  {
+    q: "Ejaan nama beda antara paspor dan dokumen pendukung",
+    a: (
+      <>
+        <p>
+          Salah satu alasan reject paling sering & paling mudah dihindari.
+          Yang umum terjadi:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            Paspor: "Muhammad Rizky" — KTP/akta: "Muhammad Rizki" (huruf
+            beda).
+          </li>
+          <li>
+            Paspor tanpa gelar (S.E., S.H.) — ijazah / surat kerja pakai
+            gelar.
+          </li>
+          <li>
+            Paspor pakai single name "Siti" — semua dokumen lain "Siti
+            Aminah".
+          </li>
+          <li>
+            Marga / nama belakang berbeda urutan.
+          </li>
+        </ul>
+        <p>
+          Cara menanganinya:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Surat sumpah / pernyataan</b> di atas materai (notaris lebih
+            kuat) — menjelaskan bahwa nama X di paspor dan Y di dokumen lain
+            adalah orang yang sama.
+          </li>
+          <li>
+            Lampirkan <b>akta lahir</b> sebagai dokumen sumber.
+          </li>
+          <li>
+            Untuk kasus berulang (apply visa terus), lebih baik{" "}
+            <b>perbaiki di paspor</b> via Kantor Imigrasi — minta endorsement
+            atau ganti paspor baru dengan nama lengkap konsisten.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    q: "Gaji dibayar tunai — tidak ada slip + transfer bank",
+    a: (
+      <>
+        <p>
+          Pekerja informal, UMKM cash-based, atau pegawai usaha kecil yang
+          gajinya cash sering kesulitan karena tidak ada jejak digital.
+          Kompensasinya:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Surat keterangan kerja</b> dari pemberi kerja yang menyebut
+            posisi, masa kerja, dan <b>nominal gaji tetap</b>.
+          </li>
+          <li>
+            <b>Tabungan rutin</b> ke rekening sendiri — pola setoran tunai
+            bulanan yang konsisten menunjukkan income natural.
+          </li>
+          <li>
+            <b>NPWP + SPT</b> — bukti pajak nominal tahunan.
+          </li>
+          <li>
+            <b>Sponsor</b> dari pasangan / anggota keluarga yang punya
+            payroll bank kalau memungkinkan.
+          </li>
+          <li>
+            <b>Bukti aset / usaha</b> sebagai pelengkap (sertifikat, BPKB,
+            NIB usaha).
+          </li>
+        </ul>
+        <p>
+          Hindari "memanipulasi" — setoran lump-sum mendadak ke rekening 1–2
+          bulan sebelum apply justru lebih berbahaya daripada tidak ada
+          payroll bank sama sekali.
+        </p>
+      </>
+    ),
+  },
+  {
+    q: "Aset / transaksi crypto di rekening — masalah?",
+    a: (
+      <>
+        <p>
+          Transaksi crypto (jual-beli IDR ↔ kripto via Tokocrypto / Indodax /
+          Binance) di mutasi rekening makin sering muncul. Officer visa
+          modern terlatih membaca pola ini — bukan otomatis red flag, tapi
+          butuh penjelasan kalau jadi sumber dana mayoritas.
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Print rekening exchange</b> (history trading + balance saat
+            ini) sebagai dokumen pendukung.
+          </li>
+          <li>
+            <b>Cover letter</b> jelaskan crypto adalah aktivitas investasi
+            pribadi, bukan profesi utama (kecuali memang full-time trader,
+            jelaskan apa adanya).
+          </li>
+          <li>
+            <b>NPWP + laporan pajak crypto</b> kalau ada (BAPPEBTI sudah
+            atur), menunjukkan compliance.
+          </li>
+          <li>
+            <b>Jangan</b> tarik crypto besar-besaran ke rekening 1–2 minggu
+            sebelum apply — terbaca sebagai "parking money" yang asal-usulnya
+            samar.
+          </li>
+        </ul>
+        <p>
+          Untuk profil yang income utamanya dari crypto, beberapa konsulat
+          (terutama UK, Schengen Jerman/Belanda) bisa minta source of funds
+          letter. Ini kasus khusus — sebaiknya konsultasi sebelum apply.
+        </p>
+      </>
+    ),
+  },
+];
+
 const REJECT_CASES: FaqItem[] = [
   {
     q: "Visa Australia ditolak 2 kali — pakai agen lain atau perbaiki sendiri?",
@@ -265,6 +705,60 @@ const REJECT_CASES: FaqItem[] = [
           itinerary yang sudah direstruktur dari nol. Untuk kasus dengan
           riwayat reject seperti ini, kami biasanya kerjakan review profil
           gratis dulu lewat WhatsApp sebelum memutuskan langkah selanjutnya.
+        </p>
+      </>
+    ),
+  },
+  {
+    q: "Pernah overstay di negara lain — masih bisa apply visa baru?",
+    a: (
+      <>
+        <p>
+          Bisa, tapi butuh strategi. Overstay tercatat di database imigrasi
+          negara penerbit dan sering di-share antar negara mitra. Schengen
+          punya VIS, UK punya Home Office record, Australia punya VEVO — data
+          ini cross-checkable.
+        </p>
+        <p>Konsekuensi yang umum:</p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Overstay &lt;90 hari</b> tanpa niat buruk biasanya tidak
+            permanent ban, tapi jadi catatan profil.
+          </li>
+          <li>
+            <b>Overstay yang lebih lama</b> di Schengen bisa kena{" "}
+            <b>entry ban 1–5 tahun</b> (SIS II flag).
+          </li>
+          <li>
+            Untuk apply visa <b>negara mana pun setelah overstay</b>, wajib
+            declare jujur — disembunyikan = misrepresentation, lebih berat.
+          </li>
+        </ul>
+        <p>Cara menanganinya:</p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Surat penjelasan</b> di cover letter — kronologi singkat,
+            alasan overstay (sakit, force majeure, salah hitung tanggal), dan
+            apa yang sudah dilakukan untuk koreksi (lapor diri, denda
+            dibayar, pulang sukarela).
+          </li>
+          <li>
+            <b>Bukti pulang</b> ke Indonesia setelah overstay (stempel
+            kedatangan, boarding pass).
+          </li>
+          <li>
+            <b>Cooling period</b> minimal 1 tahun sebelum apply ulang negara
+            yang sama. Untuk negara lain bisa lebih cepat tapi tetap deklare.
+          </li>
+          <li>
+            Bangun profil ulang dari "negara pembuka" yang lebih lenient
+            sebelum apply ulang Schengen / UK / AU.
+          </li>
+        </ul>
+        <p>
+          Kasus dengan riwayat overstay sebaiknya tidak di-apply mandiri —
+          satu jawaban salah di form bisa kunci profil kamu di banyak negara
+          sekaligus. Konsultasi dulu.
         </p>
       </>
     ),
@@ -347,14 +841,48 @@ export default function VisaFaqPage() {
               style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
             />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Dokumen Pendukung Umum
+              Profil Pemohon Non-Standar
             </h2>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-            Berlaku untuk hampir semua aplikasi visa turis — Schengen, UK,
-            Australia, NZ, Jepang, Korea.
+            Bukan karyawan kantoran tetap dengan slip gaji bulanan — bagaimana
+            memposisikan profil di mata officer.
           </p>
-          <FaqList items={UMUM} />
+          <FaqList items={PROFIL_NONSTANDAR} />
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="inline-block w-1.5 h-5 rounded-full"
+              style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+            />
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Paspor & Riwayat Visa
+            </h2>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+            Hal teknis seputar dokumen perjalanan dan jejak aplikasi visa
+            sebelumnya yang sering terlewat.
+          </p>
+          <FaqList items={PASPOR_RIWAYAT} />
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="inline-block w-1.5 h-5 rounded-full"
+              style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+            />
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Dokumen & Finansial Sensitif
+            </h2>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+            Inkonsistensi kecil yang bisa memicu pertanyaan tambahan atau
+            penolakan — dan cara meresponsnya dengan benar.
+          </p>
+          <FaqList items={DOKUMEN_SENSITIF} />
         </section>
 
         <section className="mb-12">
@@ -373,6 +901,23 @@ export default function VisaFaqPage() {
             menentukan apply berikutnya.
           </p>
           <FaqList items={REJECT_CASES} />
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="inline-block w-1.5 h-5 rounded-full"
+              style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+            />
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Dokumen Pendukung Umum
+            </h2>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+            Berlaku untuk hampir semua aplikasi visa turis — Schengen, UK,
+            Australia, NZ, Jepang, Korea.
+          </p>
+          <FaqList items={UMUM} />
         </section>
 
         <div
