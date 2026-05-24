@@ -1,6 +1,6 @@
-; Target hanya browser modern — Lighthouse "Legacy JavaScript" audit lulus.
-; >0.5% sudah cover hampir semua user nyata, sambil drop polyfill untuk
-; IE / Safari lama / Chrome <90 yang akan tambah ~14 KiB JS.
+# Target hanya browser modern — Lighthouse "Legacy JavaScript" audit lulus.
+# >0.5% sudah cover hampir semua user nyata, sambil drop polyfill untuk
+# IE / Safari lama / Chrome <90 yang akan tambah ~14 KiB JS.
 last 2 Chrome versions
 last 2 Edge versions
 last 2 Firefox versions
