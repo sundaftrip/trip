@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "FAQ Teknis Visa Schengen — Paspor Indonesia",
+  title: "FAQ Teknis Visa Schengen untuk Paspor Indonesia",
   description:
     "Kasus teknis Schengen yang sering bikin reject: cerai, anak di bawah 18, apostille Spanyol, sponsor pasangan, rekening kecil, apply dari negara lain.",
 };
@@ -15,13 +15,13 @@ type FaqItem = {
 
 const SCHENGEN_TEKNIS: FaqItem[] = [
   {
-    q: "Status cerai — apa yang harus dilampirkan?",
+    q: "Status cerai, apa yang harus dilampirkan?",
     a: (
       <>
         <p>
           Wajib lampirkan <b>akta cerai</b> (asli + fotokopi) sebagai bukti civil status,
           diterjemahkan tersumpah ke Inggris atau bahasa negara tujuan. Akta cerai
-          bukan dokumen negatif — justru menjelaskan kenapa apply sendiri tanpa
+          bukan dokumen negatif, justru menjelaskan kenapa apply sendiri tanpa
           pasangan, jangan disembunyikan.
         </p>
         <p>
@@ -33,7 +33,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
     ),
   },
   {
-    q: "Anak di bawah 18 tahun — dokumen tambahan?",
+    q: "Anak di bawah 18 tahun, dokumen tambahan?",
     a: (
       <>
         <ul className="list-disc pl-5 space-y-1.5">
@@ -51,13 +51,13 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
     ),
   },
   {
-    q: "Anak di bawah 18 ke Spanyol — apostille?",
+    q: "Anak di bawah 18 ke Spanyol, apostille?",
     a: (
       <>
         <p>
           Ya. Spanyol paling strict di Schengen untuk minor.{" "}
           <b>Akta lahir wajib di-apostille</b> di Kemenkumham (Indonesia sudah
-          anggota Konvensi Apostille sejak 2022 — tidak perlu legalisir kedutaan
+          anggota Konvensi Apostille sejak 2022, tidak perlu legalisir kedutaan
           lagi).
         </p>
         <p>
@@ -67,7 +67,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
         </p>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Urutan praktis: notaris → Kemenkumham (apostille) → translator
-          tersumpah Spanyol. Sediakan <b>3–4 minggu</b> sebelum tanggal submit.
+          tersumpah Spanyol. Sediakan <b>3 hingga 4 minggu</b> sebelum tanggal submit.
         </p>
       </>
     ),
@@ -82,16 +82,16 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <b>Istri sebagai sponsor</b> — istri lampirkan surat kerja, slip
+            <b>Istri sebagai sponsor</b>, istri lampirkan surat kerja, slip
             gaji, mutasi rekening, dan <b>surat sponsor</b> untuk suami. Suami
             statusnya "dependent".
           </li>
           <li>
-            <b>Sponsor pihak ketiga</b> (orang tua/saudara) — surat sponsor +
+            <b>Sponsor pihak ketiga</b> (orang tua/saudara), surat sponsor +
             bukti finansial sponsor + bukti relasi (KK/akta).
           </li>
           <li>
-            <b>Aset pasangan</b> — kalau suami pengusaha, lampirkan NIB / SIUP /
+            <b>Aset pasangan</b>, kalau suami pengusaha, lampirkan NIB / SIUP /
             akta usaha. "Tidak kerja kantoran" beda dengan "tidak punya income".
           </li>
         </ul>
@@ -109,17 +109,17 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
       <>
         <p>
           Acuan tidak resmi yang sering dipakai untuk paspor Indonesia:{" "}
-          <b>±Rp 100 juta</b> di rekening, atau setara <b>€50–100 per hari</b>{" "}
+          <b>±Rp 100 juta</b> di rekening, atau setara <b>€50 hingga €100 per hari</b>{" "}
           rencana perjalanan.
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
             <b>Jangan setor lump-sum mendadak</b> sebulan sebelum apply.
-            Petugas visa langsung baca itu sebagai "parking money" — high risk
+            Petugas visa langsung baca itu sebagai "parking money", high risk
             reject.
           </li>
           <li>
-            <b>Pakai sponsor</b> (orang tua, pasangan, saudara) — tunjukkan
+            <b>Pakai sponsor</b> (orang tua, pasangan, saudara), tunjukkan
             rekening sponsor + surat sponsor + bukti relasi.
           </li>
           <li>
@@ -129,7 +129,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
           </li>
           <li>
             <b>Bank reference letter</b> ("rekening aktif sejak…, saldo
-            rata-rata…") — minta 2 hari sebelum biometric.
+            rata-rata…"), minta 2 hari sebelum biometric.
           </li>
           <li>Mutasi 3 bulan asli cap bank, bukan e-statement biasa.</li>
         </ul>
@@ -142,7 +142,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
       <>
         <p>
           Aturan Schengen: apply di <b>negara tujuan utama</b>, di VAC/kedutaan
-          negara <b>tempat tinggal sah</b> kamu — bukan terbang dulu ke Jakarta.
+          negara <b>tempat tinggal sah</b> kamu, bukan terbang dulu ke Jakarta.
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
@@ -151,7 +151,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
           </li>
           <li>
             VAC di Indonesia hanya terima pemohon yang legal resident di
-            Indonesia — WNI di Dubai/Singapura/KL apply di sana.
+            Indonesia, WNI di Dubai/Singapura/KL apply di sana.
           </li>
           <li>
             Lampiran tambahan: residence permit/visa kerja/pelajar + bukti
@@ -174,7 +174,7 @@ const UMUM: FaqItem[] = [
     a: (
       <p>
         Ya. Akta lahir, akta nikah, akta cerai, surat kerja, slip gaji, bank
-        reference — semua dokumen pendukung wajib diterjemahkan oleh{" "}
+        reference, semua dokumen pendukung wajib diterjemahkan oleh{" "}
         <b>penerjemah tersumpah</b> ke Inggris atau bahasa negara tujuan.
         Mutasi rekening biasanya sudah dwi-bahasa dari bank, tapi konfirmasi
         dulu sebelum apply.
@@ -182,7 +182,7 @@ const UMUM: FaqItem[] = [
     ),
   },
   {
-    q: "Asuransi perjalanan — minimum berapa?",
+    q: "Asuransi perjalanan, minimum berapa?",
     a: (
       <p>
         Schengen: <b>coverage minimum €30.000</b> untuk medical + repatriation,
@@ -193,18 +193,18 @@ const UMUM: FaqItem[] = [
     ),
   },
   {
-    q: "Tiket pesawat & hotel — booking beneran atau dummy?",
+    q: "Tiket pesawat & hotel, booking beneran atau dummy?",
     a: (
       <p>
         <b>Jangan booking lunas</b> sebelum visa approve.
-        Pakai <b>reservation</b> tiket (hold 24–72 jam) dan booking hotel yang
+        Pakai <b>reservation</b> tiket (hold 24 hingga 72 jam) dan booking hotel yang
         bisa <b>free cancel</b> (Booking.com / Agoda). Cetak konfirmasi-nya
         untuk lampiran. Setelah visa terbit, baru issued tiket beneran.
       </p>
     ),
   },
   {
-    q: "Cover letter — perlu atau tidak?",
+    q: "Cover letter, perlu atau tidak?",
     a: (
       <p>
         Sangat dianjurkan, terutama untuk profil borderline. Isinya: tujuan
@@ -218,7 +218,7 @@ const UMUM: FaqItem[] = [
 
 const PROFIL_NONSTANDAR: FaqItem[] = [
   {
-    q: "Freelance / pekerja kreatif / digital nomad — bukti income?",
+    q: "Freelance / pekerja kreatif / digital nomad, bukti income?",
     a: (
       <>
         <p>
@@ -232,11 +232,11 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
             rutin dari klien / platform (Fiverr, Upwork, brand, marketplace).
           </li>
           <li>
-            <b>NPWP + SPT tahunan</b> — bukti paling kuat bahwa kamu pajak
+            <b>NPWP + SPT tahunan</b>, bukti paling kuat bahwa kamu pajak
             aktif sebagai freelancer / wirausaha perorangan.
           </li>
           <li>
-            <b>Sample kontrak / invoice</b> 2–3 buah dari klien berbeda,
+            <b>Sample kontrak / invoice</b> 2 hingga 3 buah dari klien berbeda,
             dengan tanggal & nominal.
           </li>
           <li>
@@ -244,7 +244,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
             YouTube, akun marketplace) sebagai konteks profesional.
           </li>
           <li>
-            <b>Cover letter</b> yang jelaskan model kerja kamu —
+            <b>Cover letter</b> yang jelaskan model kerja kamu ,
             "remote/independent, income datang dari X klien di Y negara,
             tools kerja saya internet jadi bisa pulang kapan saja".
           </li>
@@ -273,20 +273,20 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
             durasi kontrak, status (probation/permanen).
           </li>
           <li>
-            <b>Surat approval cuti</b> tertulis dari atasan langsung —
+            <b>Surat approval cuti</b> tertulis dari atasan langsung ,
             spesifik tanggal & lama cuti, bukan template.
           </li>
           <li>
             <b>Surat kerja dari perusahaan lama</b> (pengalaman kerja
-            sebelumnya) — menunjukkan kamu punya track record karir, bukan
+            sebelumnya), menunjukkan kamu punya track record karir, bukan
             baru pertama kerja.
           </li>
           <li>
             Cover letter jelaskan posisi baru kamu strategis / butuh
-            kontinuitas — return motivation jadi natural.
+            kontinuitas, return motivation jadi natural.
           </li>
           <li>
-            <b>Mutasi rekening</b> dari pekerjaan lama + baru — bukti income
+            <b>Mutasi rekening</b> dari pekerjaan lama + baru, bukti income
             tetap masuk walau pindah kerja.
           </li>
         </ul>
@@ -308,7 +308,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
             jelaskan resign baik-baik & ada rencana lanjut.
           </li>
           <li>
-            <b>Bukti dana yang besar</b> (jauh di atas standar Rp 100 juta) —
+            <b>Bukti dana yang besar</b> (jauh di atas standar Rp 100 juta) ,
             tabungan, deposito, reksadana, BPKB, sertifikat tanah.
           </li>
           <li>
@@ -317,12 +317,12 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
             usaha yang sudah didaftarkan (NIB / SIUP).
           </li>
           <li>
-            <b>Sponsor</b> dari pasangan atau orang tua sangat membantu —
+            <b>Sponsor</b> dari pasangan atau orang tua sangat membantu ,
             menggeser "siapa membiayai" dari kamu ke pihak lain yang
             tertambat di Indonesia.
           </li>
           <li>
-            Trip pendek (7–10 hari) lebih mudah lolos daripada 1 bulan.
+            Trip pendek (7 hingga 10 hari) lebih mudah lolos daripada 1 bulan.
             Rencana lama bikin officer curiga niat kembali.
           </li>
         </ul>
@@ -335,14 +335,14 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
     ),
   },
   {
-    q: "ASN / PNS — perlu izin atasan?",
+    q: "ASN / PNS, perlu izin atasan?",
     a: (
       <>
         <p>
           Untuk <b>perjalanan pribadi / turis</b> (bukan dinas), umumnya
           cukup <b>surat izin tertulis dari atasan langsung / pejabat
           kepegawaian (PPK)</b> di instansi kamu. Tidak perlu izin Sekretariat
-          Negara / Biro KTLN — itu untuk perjalanan dinas resmi.
+          Negara / Biro KTLN, itu untuk perjalanan dinas resmi.
         </p>
         <p>
           Yang dilampirkan saat apply visa:
@@ -364,7 +364,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
           </li>
         </ul>
         <p>
-          ASN biasanya profil kuat untuk visa turis — gaji tetap, ties ke
+          ASN biasanya profil kuat untuk visa turis, gaji tetap, ties ke
           negara jelas, pensiun ke depan. Tapi <b>aturan internal tiap
           instansi berbeda</b> (Kemenkumham, Kemlu, TNI/Polri ada protokol
           khusus). Cek SOP instansi kamu sebelum proses.
@@ -373,7 +373,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
     ),
   },
   {
-    q: "Pensiunan / lansia traveling — bukti finansial?",
+    q: "Pensiunan / lansia traveling, bukti finansial?",
     a: (
       <>
         <p>
@@ -386,7 +386,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
             <b>SK pensiun + Kartu Identitas Pensiun (Karip / Taspen)</b>.
           </li>
           <li>
-            <b>Mutasi rekening pensiun</b> 3–6 bulan menunjukkan pembayaran
+            <b>Mutasi rekening pensiun</b> 3 hingga 6 bulan menunjukkan pembayaran
             rutin masuk.
           </li>
           <li>
@@ -394,7 +394,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
           </li>
           <li>
             Kalau dana pensiun kurang besar, <b>sponsor dari anak</b> yang
-            sudah bekerja — surat sponsor + bukti relasi (KK) + rekening
+            sudah bekerja, surat sponsor + bukti relasi (KK) + rekening
             sponsor.
           </li>
           <li>
@@ -406,7 +406,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
         <p>
           Untuk lansia &gt;75 tahun yang traveling sendiri tanpa pendamping,
           beberapa konsulat tanya rencana kontak darurat / pendamping di
-          negara tujuan — siapkan kontak host atau hotel pickup service.
+          negara tujuan, siapkan kontak host atau hotel pickup service.
         </p>
       </>
     ),
@@ -415,7 +415,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
 
 const PASPOR_RIWAYAT: FaqItem[] = [
   {
-    q: "Paspor masa berlaku tinggal <6 bulan — masih bisa apply?",
+    q: "Paspor masa berlaku tinggal <6 bulan, masih bisa apply?",
     a: (
       <>
         <p>
@@ -438,7 +438,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
         </ul>
         <p>
           Kalau paspor tinggal &lt;6 bulan: <b>perpanjang dulu sebelum
-          apply</b>. Kantor Imigrasi M-Paspor sekarang 3–5 hari kerja untuk
+          apply</b>. Kantor Imigrasi M-Paspor sekarang 3 hingga 5 hari kerja untuk
           paspor biasa. Apply visa pakai paspor yang tinggal sebentar adalah
           ambil risiko sia-sia.
         </p>
@@ -446,7 +446,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
     ),
   },
   {
-    q: "Paspor masih kosong — belum pernah ke luar negeri",
+    q: "Paspor masih kosong, belum pernah ke luar negeri",
     a: (
       <>
         <p>
@@ -456,7 +456,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
             <b>Mulai dari negara "pembuka"</b>: Jepang, Korea, Singapura,
-            Malaysia, Thailand. Setelah ada 1–2 stamp Asia, profil naik.
+            Malaysia, Thailand. Setelah ada 1 hingga 2 stamp Asia, profil naik.
           </li>
           <li>
             <b>Profil finansial harus lebih kuat</b> dari standar untuk
@@ -465,12 +465,12 @@ const PASPOR_RIWAYAT: FaqItem[] = [
           </li>
           <li>
             <b>Cover letter</b> jelaskan secara natural kenapa pilih negara
-            tujuan tersebut — alasan personal (keluarga, ziarah, event),
+            tujuan tersebut, alasan personal (keluarga, ziarah, event),
             bukan generic "lihat Menara Eiffel".
           </li>
           <li>
             <b>Sponsor / travel partner</b> yang sudah punya riwayat travel
-            membantu — apply berbarengan dengan pasangan / saudara yang
+            membantu, apply berbarengan dengan pasangan / saudara yang
             pernah ke sana sebelumnya.
           </li>
           <li>
@@ -482,11 +482,11 @@ const PASPOR_RIWAYAT: FaqItem[] = [
     ),
   },
   {
-    q: "Visa pernah ditolak — wajib declare?",
+    q: "Visa pernah ditolak, wajib declare?",
     a: (
       <>
         <p>
-          <b>Wajib jujur — tanpa kompromi.</b> Form aplikasi Schengen, UK,
+          <b>Wajib jujur, tanpa kompromi.</b> Form aplikasi Schengen, UK,
           US, Australia, NZ semua punya kolom "have you ever been refused a
           visa". Data refusal kamu sudah ada di database global (VIS untuk
           Schengen, US Consular Lookout, Australia VEVO).
@@ -500,7 +500,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
             ketahuan.
           </li>
           <li>
-            <b>Permanent record</b> "misrepresentation" — masuk daftar
+            <b>Permanent record</b> "misrepresentation", masuk daftar
             high-risk, susah apply ke depan.
           </li>
           <li>
@@ -522,7 +522,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
             kontrak kerja yang sudah 2 tahun".
           </li>
           <li>
-            Jangan defensif / menyalahkan officer sebelumnya — fokus ke apa
+            Jangan defensif / menyalahkan officer sebelumnya, fokus ke apa
             yang sudah diperbaiki.
           </li>
         </ul>
@@ -542,15 +542,15 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            Paspor: "Muhammad Rizky" — KTP/akta: "Muhammad Rizki" (huruf
+            Paspor: "Muhammad Rizky", KTP/akta: "Muhammad Rizki" (huruf
             beda).
           </li>
           <li>
-            Paspor tanpa gelar (S.E., S.H.) — ijazah / surat kerja pakai
+            Paspor tanpa gelar (S.E., S.H.), ijazah / surat kerja pakai
             gelar.
           </li>
           <li>
-            Paspor pakai single name "Siti" — semua dokumen lain "Siti
+            Paspor pakai single name "Siti", semua dokumen lain "Siti
             Aminah".
           </li>
           <li>
@@ -563,7 +563,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
             <b>Surat sumpah / pernyataan</b> di atas materai (notaris lebih
-            kuat) — menjelaskan bahwa nama X di paspor dan Y di dokumen lain
+            kuat), menjelaskan bahwa nama X di paspor dan Y di dokumen lain
             adalah orang yang sama.
           </li>
           <li>
@@ -571,7 +571,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
           </li>
           <li>
             Untuk kasus berulang (apply visa terus), lebih baik{" "}
-            <b>perbaiki di paspor</b> via Kantor Imigrasi — minta endorsement
+            <b>perbaiki di paspor</b> via Kantor Imigrasi, minta endorsement
             atau ganti paspor baru dengan nama lengkap konsisten.
           </li>
         </ul>
@@ -579,7 +579,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
     ),
   },
   {
-    q: "Gaji dibayar tunai — tidak ada slip + transfer bank",
+    q: "Gaji dibayar tunai, tidak ada slip + transfer bank",
     a: (
       <>
         <p>
@@ -593,11 +593,11 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
             posisi, masa kerja, dan <b>nominal gaji tetap</b>.
           </li>
           <li>
-            <b>Tabungan rutin</b> ke rekening sendiri — pola setoran tunai
+            <b>Tabungan rutin</b> ke rekening sendiri, pola setoran tunai
             bulanan yang konsisten menunjukkan income natural.
           </li>
           <li>
-            <b>NPWP + SPT</b> — bukti pajak nominal tahunan.
+            <b>NPWP + SPT</b>, bukti pajak nominal tahunan.
           </li>
           <li>
             <b>Sponsor</b> dari pasangan / anggota keluarga yang punya
@@ -609,7 +609,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
           </li>
         </ul>
         <p>
-          Hindari "memanipulasi" — setoran lump-sum mendadak ke rekening 1–2
+          Hindari "memanipulasi", setoran lump-sum mendadak ke rekening 1 hingga 2
           bulan sebelum apply justru lebih berbahaya daripada tidak ada
           payroll bank sama sekali.
         </p>
@@ -617,13 +617,13 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
     ),
   },
   {
-    q: "Aset / transaksi crypto di rekening — masalah?",
+    q: "Aset / transaksi crypto di rekening, masalah?",
     a: (
       <>
         <p>
           Transaksi crypto (jual-beli IDR ↔ kripto via Tokocrypto / Indodax /
           Binance) di mutasi rekening makin sering muncul. Officer visa
-          modern terlatih membaca pola ini — bukan otomatis red flag, tapi
+          modern terlatih membaca pola ini, bukan otomatis red flag, tapi
           butuh penjelasan kalau jadi sumber dana mayoritas.
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
@@ -641,15 +641,78 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
             atur), menunjukkan compliance.
           </li>
           <li>
-            <b>Jangan</b> tarik crypto besar-besaran ke rekening 1–2 minggu
-            sebelum apply — terbaca sebagai "parking money" yang asal-usulnya
+            <b>Jangan</b> tarik crypto besar-besaran ke rekening 1 hingga 2 minggu
+            sebelum apply, terbaca sebagai "parking money" yang asal-usulnya
             samar.
           </li>
         </ul>
         <p>
           Untuk profil yang income utamanya dari crypto, beberapa konsulat
           (terutama UK, Schengen Jerman/Belanda) bisa minta source of funds
-          letter. Ini kasus khusus — sebaiknya konsultasi sebelum apply.
+          letter. Ini kasus khusus, sebaiknya konsultasi sebelum apply.
+        </p>
+      </>
+    ),
+  },
+];
+
+const LAYANAN_PENDUKUNG: FaqItem[] = [
+  {
+    q: "Apa saja yang bisa Sundaf bantu untuk urusan visa?",
+    a: (
+      <>
+        <p>
+          Selain paket tour, kami punya jaringan ekosistem pendukung yang
+          sering dibutuhkan calon pemohon visa. Tidak harus paket lengkap,
+          bisa per layanan saja sesuai kebutuhan.
+        </p>
+        <p>Yang biasa kami bantu:</p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <b>Asuransi perjalanan</b>. Schengen coverage €30.000
+            medical+repatriation (AXA, MSIG, Allianz, Zurich). Bisa diterbitkan
+            di hari yang sama, format yang sudah ratusan kali diterima
+            konsulat.
+          </li>
+          <li>
+            <b>Apostille Kemenkumham</b>. Akta lahir, akta nikah, akta cerai,
+            ijazah, surat hak asuh, surat consent. Estimasi 3 hingga 5 hari
+            kerja, dokumen bisa dijemput dan dikirim balik.
+          </li>
+          <li>
+            <b>Penerjemah tersumpah</b>. Bahasa Inggris, Spanyol, Jerman,
+            Belanda, Prancis, Mandarin, Jepang, Korea. Bersertifikat
+            HPI/Kemenkumham dengan format yang sudah disesuaikan kedutaan
+            masing-masing.
+          </li>
+          <li>
+            <b>Notaris</b>. Surat sumpah perbedaan ejaan nama, surat consent
+            orang tua untuk anak di bawah 18, surat sponsor pasangan atau
+            keluarga, surat keterangan usaha. Bisa same-day untuk kasus
+            mendesak.
+          </li>
+          <li>
+            <b>Review profil dan dokumen sebelum submit</b>. Saya cek seluruh
+            dokumen, cover letter, dan itinerary kamu. Untuk profil borderline
+            atau riwayat reject, ini selalu lebih hemat daripada apply lalu
+            kena tolak.
+          </li>
+          <li>
+            <b>Bank reference letter</b>. Pendampingan urus surat referensi
+            bank dengan format yang diakui kedutaan, plus saran restruktur
+            mutasi rekening kalau profil finansial perlu diperkuat.
+          </li>
+          <li>
+            <b>Pengurusan visa hulu ke hilir</b>. Untuk yang memang tidak
+            punya waktu, dari isi form aplikasi, booking slot biometric, urus
+            dokumen pendukung, sampai siap submit di VFS/BLS.
+          </li>
+        </ul>
+        <p>
+          Semua bisa konsultasi gratis lewat WhatsApp di pojok kanan bawah.
+          Cerita kondisi kamu, saya bantu identifikasi layanan mana yang
+          memang dibutuhkan dan mana yang tidak. Tidak ada paksaan paket,
+          tidak ada upsell yang tidak perlu.
         </p>
       </>
     ),
@@ -658,13 +721,13 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
 
 const REJECT_CASES: FaqItem[] = [
   {
-    q: "Visa Australia ditolak 2 kali — pakai agen lain atau perbaiki sendiri?",
+    q: "Visa Australia ditolak 2 kali, pakai agen lain atau perbaiki sendiri?",
     a: (
       <>
         <p>
           Kasus nyata yang sering masuk ke saya: ibu ditolak via agen
           (September), apply mandiri di Desember juga ditolak. Alasan keduanya
-          mirip — <i>"itinerary kurang jelas"</i> dan <i>"tidak ada niat
+          mirip, <i>"itinerary kurang jelas"</i> dan <i>"tidak ada niat
           kembali ke Indonesia"</i>. Padahal pemohon punya usaha aktif, anak
           masih sekolah, dan aset di Indonesia.
         </p>
@@ -677,23 +740,23 @@ const REJECT_CASES: FaqItem[] = [
             <b>Ikatan ke Indonesia ada secara fakta, tapi tidak ter-translasi
             dalam dokumen.</b> Surat keterangan usaha tanpa angka omset, KK
             tanpa konteks anak sekolah kelas berapa, aset tanpa bukti
-            kepemilikan terbaru — semua "lemah" di mata officer Australia.
+            kepemilikan terbaru, semua "lemah" di mata officer Australia.
           </li>
           <li>
             <b>Itinerary terlalu generik.</b> "Hari 1: tiba Sydney, Hari 2:
-            Opera House" — ini pattern yang officer baca ratusan kali sehari.
+            Opera House", ini pattern yang officer baca ratusan kali sehari.
             Itinerary kuat menyebut konteks (kunjungan keluarga? acara?
             booking spesifik?) dan menjelaskan kenapa harus saat ini.
           </li>
           <li>
-            <b>Mutasi rekening tidak natural.</b> Lump-sum 1–2 bulan sebelum
+            <b>Mutasi rekening tidak natural.</b> Lump-sum 1 hingga 2 bulan sebelum
             apply terbaca sebagai "uang titipan", bukan pendapatan organik.
             Officer ingin lihat pola income yang konsisten 6 bulan ke
             belakang.
           </li>
         </ul>
         <p>
-          <b>Reject 2 kali bukan tentang agen vs mandiri</b> — itu sinyal
+          <b>Reject 2 kali bukan tentang agen vs mandiri</b>, itu sinyal
           bahwa cara mempresentasikan profil ibu belum match dengan apa yang
           officer cari. Ganti agen tanpa restruktur narrative biasanya hasilnya
           sama. Reject ke-3 jauh lebih sulit dicairkan karena sudah ada
@@ -701,7 +764,7 @@ const REJECT_CASES: FaqItem[] = [
         </p>
         <p>
           Saran saya: <b>jangan apply lagi sebelum di-review menyeluruh</b>.
-          Cooling period 3–6 bulan, lalu apply dengan dokumen + cover letter +
+          Cooling period 3 hingga 6 bulan, lalu apply dengan dokumen + cover letter +
           itinerary yang sudah direstruktur dari nol. Untuk kasus dengan
           riwayat reject seperti ini, kami biasanya kerjakan review profil
           gratis dulu lewat WhatsApp sebelum memutuskan langkah selanjutnya.
@@ -710,13 +773,13 @@ const REJECT_CASES: FaqItem[] = [
     ),
   },
   {
-    q: "Pernah overstay di negara lain — masih bisa apply visa baru?",
+    q: "Pernah overstay di negara lain, masih bisa apply visa baru?",
     a: (
       <>
         <p>
           Bisa, tapi butuh strategi. Overstay tercatat di database imigrasi
           negara penerbit dan sering di-share antar negara mitra. Schengen
-          punya VIS, UK punya Home Office record, Australia punya VEVO — data
+          punya VIS, UK punya Home Office record, Australia punya VEVO, data
           ini cross-checkable.
         </p>
         <p>Konsekuensi yang umum:</p>
@@ -727,17 +790,17 @@ const REJECT_CASES: FaqItem[] = [
           </li>
           <li>
             <b>Overstay yang lebih lama</b> di Schengen bisa kena{" "}
-            <b>entry ban 1–5 tahun</b> (SIS II flag).
+            <b>entry ban 1 hingga 5 tahun</b> (SIS II flag).
           </li>
           <li>
             Untuk apply visa <b>negara mana pun setelah overstay</b>, wajib
-            declare jujur — disembunyikan = misrepresentation, lebih berat.
+            declare jujur, disembunyikan = misrepresentation, lebih berat.
           </li>
         </ul>
         <p>Cara menanganinya:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <b>Surat penjelasan</b> di cover letter — kronologi singkat,
+            <b>Surat penjelasan</b> di cover letter, kronologi singkat,
             alasan overstay (sakit, force majeure, salah hitung tanggal), dan
             apa yang sudah dilakukan untuk koreksi (lapor diri, denda
             dibayar, pulang sukarela).
@@ -756,7 +819,7 @@ const REJECT_CASES: FaqItem[] = [
           </li>
         </ul>
         <p>
-          Kasus dengan riwayat overstay sebaiknya tidak di-apply mandiri —
+          Kasus dengan riwayat overstay sebaiknya tidak di-apply mandiri ,
           satu jawaban salah di form bisa kunci profil kamu di banyak negara
           sekaligus. Konsultasi dulu.
         </p>
@@ -813,7 +876,7 @@ export default function VisaFaqPage() {
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-2xl leading-relaxed">
           Jawaban praktis untuk situasi yang tidak ada di checklist standar
-          kedutaan — dari status cerai, anak di bawah 18, sampai strategi apply
+          kedutaan, dari status cerai, anak di bawah 18, sampai strategi apply
           ulang setelah visa ditolak.
         </p>
 
@@ -824,7 +887,7 @@ export default function VisaFaqPage() {
               style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
             />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Schengen — Kasus Teknis
+              Schengen: Kasus Teknis
             </h2>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
@@ -845,7 +908,7 @@ export default function VisaFaqPage() {
             </h2>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-            Bukan karyawan kantoran tetap dengan slip gaji bulanan — bagaimana
+            Bukan karyawan kantoran tetap dengan slip gaji bulanan, bagaimana
             memposisikan profil di mata officer.
           </p>
           <FaqList items={PROFIL_NONSTANDAR} />
@@ -880,7 +943,7 @@ export default function VisaFaqPage() {
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
             Inkonsistensi kecil yang bisa memicu pertanyaan tambahan atau
-            penolakan — dan cara meresponsnya dengan benar.
+            penolakan, dan cara meresponsnya dengan benar.
           </p>
           <FaqList items={DOKUMEN_SENSITIF} />
         </section>
@@ -892,7 +955,7 @@ export default function VisaFaqPage() {
               style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
             />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Visa Ditolak — Strategi Apply Ulang
+              Visa Ditolak: Strategi Apply Ulang
             </h2>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
@@ -910,11 +973,29 @@ export default function VisaFaqPage() {
               style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
             />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Layanan Pendukung yang Bisa Kami Bantu
+            </h2>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+            Asuransi, apostille, terjemahan tersumpah, notaris, review
+            dokumen, sampai pengurusan visa hulu ke hilir. Bisa per layanan,
+            bisa lengkap.
+          </p>
+          <FaqList items={LAYANAN_PENDUKUNG} />
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="inline-block w-1.5 h-5 rounded-full"
+              style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+            />
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
               Dokumen Pendukung Umum
             </h2>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-            Berlaku untuk hampir semua aplikasi visa turis — Schengen, UK,
+            Berlaku untuk hampir semua aplikasi visa turis, Schengen, UK,
             Australia, NZ, Jepang, Korea.
           </p>
           <FaqList items={UMUM} />
@@ -938,7 +1019,7 @@ export default function VisaFaqPage() {
                 Punya kasus yang tidak ada di sini?
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                Profil borderline, pernah reject, atau dokumen tidak standar —
+                Profil borderline, pernah reject, atau dokumen tidak standar ,
                 setiap kasus punya konteks sendiri yang tidak bisa di-template.
                 Konsultasi gratis lewat WhatsApp di pojok kanan bawah halaman,
                 cerita kondisi kamu, saya bantu review apa yang sebaiknya
