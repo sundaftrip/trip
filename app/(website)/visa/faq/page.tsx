@@ -11,11 +11,18 @@ export const metadata: Metadata = {
 type FaqItem = {
   q: string;
   a: React.ReactNode;
+  /**
+   * Teks CTA kontekstual yang muncul di bawah jawaban.
+   * Default: "Butuh bantuan dengan hal ini? Lihat Layanan Pendukung kami".
+   * Set null untuk skip CTA (misal di FAQ Layanan Pendukung itu sendiri).
+   */
+  layanan?: string | null;
 };
 
 const SCHENGEN_TEKNIS: FaqItem[] = [
   {
     q: "Status cerai, apa yang harus dilampirkan?",
+    layanan: "Butuh terjemahan tersumpah akta cerai atau notaris consent? Lihat layanan kami",
     a: (
       <>
         <p>
@@ -34,6 +41,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Anak di bawah 18 tahun, dokumen tambahan?",
+    layanan: "Butuh urus notaris consent orang tua atau terjemahan akta? Lihat layanan kami",
     a: (
       <>
         <ul className="list-disc pl-5 space-y-1.5">
@@ -52,6 +60,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Anak di bawah 18 ke Spanyol, apostille?",
+    layanan: "Kami bantu apostille Kemenkumham, notaris, dan terjemahan tersumpah Spanyol",
     a: (
       <>
         <p>
@@ -74,6 +83,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Pergi sama suami, tapi suami tidak kerja",
+    layanan: "Butuh review surat sponsor pasangan atau bank reference? Lihat layanan kami",
     a: (
       <>
         <p>
@@ -105,6 +115,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Rekening tipis atau mutasi berantakan",
+    layanan: "Kami bantu bank reference letter dan review profil finansial sebelum apply",
     a: (
       <>
         <p>
@@ -138,6 +149,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
   },
   {
     q: "Apply Schengen dari negara lain (WNI tinggal di luar)",
+    layanan: "Butuh review dokumen residence permit dan timeline apply? Lihat layanan kami",
     a: (
       <>
         <p>
@@ -171,6 +183,7 @@ const SCHENGEN_TEKNIS: FaqItem[] = [
 const UMUM: FaqItem[] = [
   {
     q: "Dokumen bahasa Indonesia perlu diterjemahkan?",
+    layanan: "Kami punya penerjemah tersumpah 8 bahasa siap pakai",
     a: (
       <p>
         Ya. Akta lahir, akta nikah, akta cerai, surat kerja, slip gaji, bank
@@ -183,6 +196,7 @@ const UMUM: FaqItem[] = [
   },
   {
     q: "Asuransi perjalanan, minimum berapa?",
+    layanan: "Asuransi Schengen €30.000 dan polis negara lain bisa diterbitkan via kami",
     a: (
       <p>
         Schengen: <b>coverage minimum €30.000</b> untuk medical + repatriation,
@@ -194,6 +208,7 @@ const UMUM: FaqItem[] = [
   },
   {
     q: "Tiket pesawat & hotel, booking beneran atau dummy?",
+    layanan: null,
     a: (
       <p>
         <b>Jangan booking lunas</b> sebelum visa approve.
@@ -205,6 +220,7 @@ const UMUM: FaqItem[] = [
   },
   {
     q: "Cover letter, perlu atau tidak?",
+    layanan: "Kami bantu draft cover letter yang sesuai profil dan negara tujuan",
     a: (
       <p>
         Sangat dianjurkan, terutama untuk profil borderline. Isinya: tujuan
@@ -219,6 +235,7 @@ const UMUM: FaqItem[] = [
 const PROFIL_NONSTANDAR: FaqItem[] = [
   {
     q: "Freelance / pekerja kreatif / digital nomad, bukti income?",
+    layanan: "Kami bantu review profil freelance, cover letter, dan bank reference",
     a: (
       <>
         <p>
@@ -261,6 +278,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "Baru pindah kerja / masa kerja kurang 6 bulan",
+    layanan: "Butuh review dokumen kerja dan cover letter? Lihat layanan kami",
     a: (
       <>
         <p>
@@ -295,6 +313,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "Baru resign / sedang career break",
+    layanan: "Profil career break butuh restructuring narrative, kami siap bantu review",
     a: (
       <>
         <p>
@@ -336,6 +355,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "ASN / PNS, perlu izin atasan?",
+    layanan: "Butuh terjemahan SK ASN dan format surat izin yang diterima konsulat?",
     a: (
       <>
         <p>
@@ -374,6 +394,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
   },
   {
     q: "Pensiunan / lansia traveling, bukti finansial?",
+    layanan: "Kami bantu asuransi medical untuk lansia dan dokumen sponsor anak",
     a: (
       <>
         <p>
@@ -416,6 +437,7 @@ const PROFIL_NONSTANDAR: FaqItem[] = [
 const PASPOR_RIWAYAT: FaqItem[] = [
   {
     q: "Paspor masa berlaku tinggal <6 bulan, masih bisa apply?",
+    layanan: "Kami bantu review timeline perpanjangan paspor dan strategi apply visa",
     a: (
       <>
         <p>
@@ -447,6 +469,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
   },
   {
     q: "Paspor masih kosong, belum pernah ke luar negeri",
+    layanan: "Strategi negara pembuka dan review profil sebelum apply Schengen",
     a: (
       <>
         <p>
@@ -483,6 +506,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
   },
   {
     q: "Visa pernah ditolak, wajib declare?",
+    layanan: "Profil pasca-reject butuh review hati-hati, kami siap dampingi apply ulang",
     a: (
       <>
         <p>
@@ -534,6 +558,7 @@ const PASPOR_RIWAYAT: FaqItem[] = [
 const DOKUMEN_SENSITIF: FaqItem[] = [
   {
     q: "Ejaan nama beda antara paspor dan dokumen pendukung",
+    layanan: "Kami bantu surat sumpah notaris dan terjemahan tersumpah",
     a: (
       <>
         <p>
@@ -580,6 +605,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
   },
   {
     q: "Gaji dibayar tunai, tidak ada slip + transfer bank",
+    layanan: "Kami bantu format surat keterangan kerja dan bank reference",
     a: (
       <>
         <p>
@@ -618,6 +644,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
   },
   {
     q: "Aset / transaksi crypto di rekening, masalah?",
+    layanan: "Profil dengan dominasi crypto sebaiknya konsultasi sebelum apply",
     a: (
       <>
         <p>
@@ -659,6 +686,7 @@ const DOKUMEN_SENSITIF: FaqItem[] = [
 const LAYANAN_PENDUKUNG: FaqItem[] = [
   {
     q: "Apa saja yang bisa Sundaf bantu untuk urusan visa?",
+    layanan: null,
     a: (
       <>
         <p>
@@ -722,6 +750,7 @@ const LAYANAN_PENDUKUNG: FaqItem[] = [
 const REJECT_CASES: FaqItem[] = [
   {
     q: "Visa Australia ditolak 2 kali, pakai agen lain atau perbaiki sendiri?",
+    layanan: "Kasus reject berulang, kami review profil gratis dulu sebelum apply ke-3",
     a: (
       <>
         <p>
@@ -774,6 +803,7 @@ const REJECT_CASES: FaqItem[] = [
   },
   {
     q: "Pernah overstay di negara lain, masih bisa apply visa baru?",
+    layanan: "Profil pasca-overstay sebaiknya konsultasi sebelum apply mandiri",
     a: (
       <>
         <p>
@@ -828,27 +858,54 @@ const REJECT_CASES: FaqItem[] = [
   },
 ];
 
+const DEFAULT_LAYANAN_CTA =
+  "Butuh bantuan dengan hal ini? Lihat Layanan Pendukung kami";
+
 function FaqList({ items }: { items: FaqItem[] }) {
   return (
     <div className="space-y-3">
-      {items.map((item, i) => (
-        <details
-          key={i}
-          className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
-        >
-          <summary className="cursor-pointer list-none px-5 py-4 flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-gray-900/60">
-            <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base leading-snug">
-              {item.q}
-            </span>
-            <span className="shrink-0 mt-0.5 w-6 h-6 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-500 group-open:rotate-45 transition-transform text-lg leading-none">
-              +
-            </span>
-          </summary>
-          <div className="px-5 pb-5 pt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed space-y-3">
-            {item.a}
-          </div>
-        </details>
-      ))}
+      {items.map((item, i) => {
+        const ctaText =
+          item.layanan === null
+            ? null
+            : item.layanan ?? DEFAULT_LAYANAN_CTA;
+        return (
+          <details
+            key={i}
+            className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
+          >
+            <summary className="cursor-pointer list-none px-5 py-4 flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-gray-900/60">
+              <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base leading-snug">
+                {item.q}
+              </span>
+              <span className="shrink-0 mt-0.5 w-6 h-6 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-500 group-open:rotate-45 transition-transform text-lg leading-none">
+                +
+              </span>
+            </summary>
+            <div className="px-5 pb-5 pt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed space-y-3">
+              {item.a}
+              {ctaText && (
+                <div
+                  className="mt-4 pt-3 border-t"
+                  style={{
+                    borderColor:
+                      "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 18%, transparent)",
+                  }}
+                >
+                  <a
+                    href="#layanan-pendukung"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold hover:underline group/cta"
+                    style={{ color: "var(--site-accent-ink,#2d6a4f)" }}
+                  >
+                    <span aria-hidden="true">→</span>
+                    <span>{ctaText}</span>
+                  </a>
+                </div>
+              )}
+            </div>
+          </details>
+        );
+      })}
     </div>
   );
 }
@@ -966,7 +1023,7 @@ export default function VisaFaqPage() {
           <FaqList items={REJECT_CASES} />
         </section>
 
-        <section className="mb-12">
+        <section id="layanan-pendukung" className="mb-12 scroll-mt-24">
           <div className="flex items-center gap-2 mb-1">
             <span
               className="inline-block w-1.5 h-5 rounded-full"
@@ -1019,7 +1076,7 @@ export default function VisaFaqPage() {
                 Punya kasus yang tidak ada di sini?
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                Profil borderline, pernah reject, atau dokumen tidak standar ,
+                Profil borderline, pernah reject, atau dokumen tidak standar,
                 setiap kasus punya konteks sendiri yang tidak bisa di-template.
                 Konsultasi gratis lewat WhatsApp di pojok kanan bawah halaman,
                 cerita kondisi kamu, saya bantu review apa yang sebaiknya
@@ -1041,6 +1098,38 @@ export default function VisaFaqPage() {
           </p>
         </div>
       </div>
+
+      {/* Buka details Layanan Pendukung saat di-anchor dari FAQ lain */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(){
+              function openLayanan(){
+                var section = document.getElementById('layanan-pendukung');
+                if(!section) return;
+                var d = section.querySelector('details');
+                if(d) d.open = true;
+                section.scrollIntoView({behavior:'smooth', block:'start'});
+              }
+              document.addEventListener('click', function(e){
+                var t = e.target;
+                while(t && t !== document){
+                  if(t.tagName === 'A' && t.getAttribute('href') === '#layanan-pendukung'){
+                    e.preventDefault();
+                    if(history.pushState) history.pushState(null, '', '#layanan-pendukung');
+                    setTimeout(openLayanan, 10);
+                    return;
+                  }
+                  t = t.parentNode;
+                }
+              });
+              if(location.hash === '#layanan-pendukung'){
+                window.addEventListener('load', function(){ setTimeout(openLayanan, 50); });
+              }
+            })();
+          `,
+        }}
+      />
     </div>
   );
 }
