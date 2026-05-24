@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "prisma db push --skip-generate --accept-data-loss && tsx prisma/seed.ts && next build",
+    "dev": "next dev --webpack",
+    "build": "prisma db push --skip-generate --accept-data-loss && tsx prisma/seed.ts && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "db:push": "prisma db push",
