@@ -8,14 +8,13 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info, ExternalLink, Wallet, Database, Calculator,
+  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info, ExternalLink, Wallet, Database,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tours", label: "Tour", icon: Map },
-  { href: "/admin/kuotasi", label: "Kuotasi", icon: Calculator },
   { href: "/admin/database-visa", label: "Database Visa", icon: Database },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
