@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
@@ -11,6 +12,47 @@ export const metadata: Metadata = {
 };
 
 const SECTION_ORDER = ["Umum", "Visa & Dokumen", "Pembayaran & Deposit", "Di Lapangan"];
+
+// Auto-detect URL (http/https, www, atau bare domain) lalu render jadi <a>.
+// Trailing punctuation (.,;:!? dst) di-strip biar nggak ikut ke href.
+function linkifyText(text: string): ReactNode[] {
+  const URL_REGEX =
+    /((?:https?:\/\/|www\.)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+(?:com|net|org|id|co|io|app|dev|me|info|biz|xyz|trip|store|tech|site|online|page|link|tv|fm|gov|edu|ai|so|sh)(?:\/[^\s<>()\[\]]*)?)/gi;
+  const nodes: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = URL_REGEX.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(text.slice(lastIndex, match.index));
+    }
+    let raw = match[0];
+    let trailing = "";
+    const trail = raw.match(/[.,;:!?)\]}'"]+$/);
+    if (trail) {
+      trailing = trail[0];
+      raw = raw.slice(0, -trailing.length);
+    }
+    const href = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    nodes.push(
+      <a
+        key={key++}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="underline underline-offset-2 break-words hover:opacity-70 transition"
+        style={{ color: "var(--site-accent, #2563eb)" }}
+      >
+        {raw}
+      </a>
+    );
+    if (trailing) nodes.push(trailing);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
+  return nodes;
+}
 
 async function getData() {
   try {
@@ -166,7 +208,7 @@ export default async function FaqPage() {
                         className={`px-5 pb-5 text-sm leading-relaxed border-t ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400"}`}
                         style={isOutlined ? { color: subClr, borderColor: bdrClr } : undefined}
                       >
-                        <p className="pt-4">{answer}</p>
+                        <p className="pt-4 whitespace-pre-wrap">{linkifyText(answer)}</p>
                       </div>
                     </details>
                   ))}

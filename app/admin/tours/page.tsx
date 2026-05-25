@@ -5,7 +5,23 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 
 export default async function ToursPage() {
-  const tours = await prisma.tour.findMany({ orderBy: { createdAt: "desc" } });
+  const allTours = await prisma.tour.findMany({ orderBy: { createdAt: "desc" } });
+
+  // Urutkan: upcoming (terdekat duluan) → past (terbaru lewat duluan) → tanpa tanggal
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const upcoming = allTours
+    .filter((t) => t.tripDate && new Date(t.tripDate) >= now)
+    .sort((a, b) => new Date(a.tripDate!).getTime() - new Date(b.tripDate!).getTime());
+
+  const past = allTours
+    .filter((t) => t.tripDate && new Date(t.tripDate) < now)
+    .sort((a, b) => new Date(b.tripDate!).getTime() - new Date(a.tripDate!).getTime());
+
+  const noDate = allTours.filter((t) => !t.tripDate);
+
+  const tours = [...upcoming, ...past, ...noDate];
 
   return (
     <div className="space-y-6">
