@@ -1,22 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
+import { FaqList, PENGURUSAN_VISA_DETAIL, type FaqItem } from "./FaqList";
 
 export const metadata: Metadata = {
   title: "FAQ Teknis Visa Schengen untuk Paspor Indonesia",
   description:
     "Kasus teknis Schengen yang sering bikin reject: cerai, anak di bawah 18, apostille Spanyol, sponsor pasangan, rekening kecil, apply dari negara lain.",
-};
-
-type FaqItem = {
-  q: string;
-  a: React.ReactNode;
-  /**
-   * Teks CTA kontekstual yang muncul di bawah jawaban.
-   * Default: "Butuh bantuan dengan hal ini? Lihat Layanan Pendukung kami".
-   * Set null untuk skip CTA (misal di FAQ Layanan Pendukung itu sendiri).
-   */
-  layanan?: string | null;
 };
 
 const SCHENGEN_TEKNIS: FaqItem[] = [
@@ -687,90 +677,7 @@ const LAYANAN_PENDUKUNG: FaqItem[] = [
   {
     q: "Apa saja yang kami tangani saat urus visa untuk kamu?",
     layanan: null,
-    a: (
-      <>
-        <p>
-          Sundaf melayani pengurusan visa sebagai <b>satu paket utuh</b>,
-          bukan layanan satuan. Saat kamu percayakan visa ke kami, kami
-          koordinasikan dari hulu ke hilir. Kamu tidak perlu pusing cari
-          vendor sana-sini.
-        </p>
-        <p>
-          <b>Sudah termasuk dalam biaya pengurusan visa kami:</b>
-        </p>
-        <ul className="list-disc pl-5 space-y-1.5">
-          <li>
-            <b>Review profil dan dokumen sebelum submit</b>. Kami cek
-            seluruh dokumen, cover letter, dan itinerary kamu. Profil
-            borderline atau riwayat reject kami tangani secara khusus.
-          </li>
-          <li>
-            <b>Draft cover letter</b>. Disesuaikan profil kamu, negara
-            tujuan, dan poin-poin yang officer cari.
-          </li>
-          <li>
-            <b>Itinerary harian</b>. Disusun masuk akal untuk konsulat,
-            bukan sekadar nempel tempat wisata populer.
-          </li>
-          <li>
-            <b>Booking tiket pesawat dummy</b>. Reservation yang sah untuk
-            lampiran visa, kami yang urus, baru issued setelah visa
-            terbit.
-          </li>
-          <li>
-            <b>Booking hotel free cancel</b>. Format yang biasa diterima
-            konsulat sebagai bukti akomodasi.
-          </li>
-          <li>
-            <b>Isi form aplikasi visa lengkap</b>. Dari isi data,
-            verifikasi konsistensi antar dokumen, sampai sign-off.
-          </li>
-          <li>
-            <b>Booking slot biometric</b> di VFS / BLS.
-          </li>
-          <li>
-            <b>Briefing sebelum appointment</b>. Apa yang harus dibawa,
-            apa yang akan ditanya, dan apa yang sebaiknya dijawab.
-          </li>
-        </ul>
-        <p>
-          <b>Dikoordinasikan via kami (biaya terpisah, tergantung kasus):</b>
-        </p>
-        <ul className="list-disc pl-5 space-y-1.5">
-          <li>
-            <b>Asuransi perjalanan</b>. Schengen coverage €30.000
-            medical+repatriation (AXA, MSIG, Allianz, Zurich), atau polis
-            negara lain yang diakui konsulat.
-          </li>
-          <li>
-            <b>Apostille Kemenkumham</b>. Akta lahir, akta nikah, akta
-            cerai, ijazah, surat hak asuh, surat consent. Kami antar
-            jemput, kamu tidak perlu ke Kemenkumham sendiri.
-          </li>
-          <li>
-            <b>Penerjemah tersumpah</b>. Inggris, Spanyol, Jerman,
-            Belanda, Prancis, Mandarin, Jepang, Korea. Bersertifikat
-            HPI/Kemenkumham dengan format yang disesuaikan kedutaan.
-          </li>
-          <li>
-            <b>Notaris</b>. Surat sumpah perbedaan ejaan nama, surat
-            consent orang tua untuk anak di bawah 18, surat sponsor
-            pasangan atau keluarga.
-          </li>
-          <li>
-            <b>Bank reference letter</b>. Pendampingan urus surat
-            referensi bank dengan format yang diakui kedutaan.
-          </li>
-        </ul>
-        <p>
-          Untuk biaya pengurusan visa dan estimasi item-item tambahan,
-          kami sampaikan via WhatsApp setelah memahami negara tujuan,
-          jenis visa, dan dokumen spesifik yang kamu butuhkan. Konsultasi
-          awal gratis. Kami tidak ambil klien yang sebenarnya bisa urus
-          sendiri.
-        </p>
-      </>
-    ),
+    a: PENGURUSAN_VISA_DETAIL,
   },
 ];
 
@@ -884,58 +791,6 @@ const REJECT_CASES: FaqItem[] = [
     ),
   },
 ];
-
-const DEFAULT_LAYANAN_CTA =
-  "Kasus ini lebih aman ditangani via pengurusan visa lengkap, lihat detail";
-
-function FaqList({ items }: { items: FaqItem[] }) {
-  return (
-    <div className="space-y-3">
-      {items.map((item, i) => {
-        const ctaText =
-          item.layanan === null
-            ? null
-            : item.layanan ?? DEFAULT_LAYANAN_CTA;
-        return (
-          <details
-            key={i}
-            className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
-          >
-            <summary className="cursor-pointer list-none px-5 py-4 flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-gray-900/60">
-              <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base leading-snug">
-                {item.q}
-              </span>
-              <span className="shrink-0 mt-0.5 w-6 h-6 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-500 group-open:rotate-45 transition-transform text-lg leading-none">
-                +
-              </span>
-            </summary>
-            <div className="px-5 pb-5 pt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed space-y-3">
-              {item.a}
-              {ctaText && (
-                <div
-                  className="mt-4 pt-3 border-t"
-                  style={{
-                    borderColor:
-                      "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 18%, transparent)",
-                  }}
-                >
-                  <a
-                    href="#layanan-pendukung"
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold hover:underline group/cta"
-                    style={{ color: "var(--site-accent-ink,#2d6a4f)" }}
-                  >
-                    <span aria-hidden="true">→</span>
-                    <span>{ctaText}</span>
-                  </a>
-                </div>
-              )}
-            </div>
-          </details>
-        );
-      })}
-    </div>
-  );
-}
 
 export default function VisaFaqPage() {
   return (
@@ -1065,7 +920,7 @@ export default function VisaFaqPage() {
             pendukung (asuransi, apostille, terjemahan, notaris) yang kami
             koordinasikan untuk klien pengurusan visa kami.
           </p>
-          <FaqList items={LAYANAN_PENDUKUNG} />
+          <FaqList items={LAYANAN_PENDUKUNG} showInlinePreview={false} />
         </section>
 
         <section className="mb-12">
