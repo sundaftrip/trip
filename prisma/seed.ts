@@ -78,6 +78,63 @@ async function main() {
   }
   console.log(`✅ Theme=${SEED_THEME}${SEED_COMPANY_NAME ? ` company=${SEED_COMPANY_NAME}` : ""}`);
 
+  // Seed library komponen biaya untuk modul Kuotasi — HANYA kalau kosong.
+  // Data dasar dari sheet "MASTER DATA" RUSSIA 2026.xlsx — Ferdiansah.
+  const tplCount = await prisma.costComponentTemplate.count();
+  if (tplCount === 0) {
+    const rusiaTpl = [
+      // Hotel per kota — harga RUB per malam per pax
+      { category: "HOTEL", city: "Moscow", label: "Hotel Moscow standar", currency: "RUB", valueForeign: 7000 },
+      { category: "HOTEL", city: "St Petersburg", label: "Hotel St Petersburg standar", currency: "RUB", valueForeign: 6000 },
+      { category: "HOTEL", city: "Murmansk", label: "Hotel Murmansk standar", currency: "RUB", valueForeign: 10000 },
+      // Aktivitas
+      { category: "AKTIVITAS", city: "Murmansk", label: "Aurora hunting (paket utama)", currency: "RUB", valueForeign: 4000 },
+      { category: "AKTIVITAS", city: "Murmansk", label: "Husky sledding", currency: "RUB", valueForeign: 0, valueIdr: 1400000, isIdr: true },
+      { category: "AKTIVITAS", city: "Murmansk", label: "Sami Village", currency: "IDR", valueIdr: 1600000, isIdr: true },
+      { category: "AKTIVITAS", city: "Murmansk", label: "Teriberka day-trip", currency: "RUB", valueForeign: 4000 },
+      { category: "AKTIVITAS", city: "Murmansk", label: "Snow Mobile / ATV", currency: "IDR", valueIdr: 1600000, isIdr: true },
+      { category: "TIKET_MASUK", city: "St Petersburg", label: "Hermitage Museum", currency: "RUB", valueForeign: 0, valueIdr: 0 },
+      { category: "TIKET_MASUK", city: "St Petersburg", label: "Peterhof Palace", currency: "IDR", valueIdr: 400000, isIdr: true },
+      { category: "TIKET_MASUK", city: "Moscow", label: "Tsaritsyno Palace ticket", currency: "IDR", valueIdr: 200000, isIdr: true },
+      { category: "TIKET_MASUK", city: "Moscow", label: "Tsaritsyno Costume rental", currency: "IDR", valueIdr: 250000, isIdr: true },
+      // Transport
+      { category: "TRANSPORT", city: "Moscow→Murmansk", label: "Pesawat Moscow → Murmansk", currency: "RUB", valueForeign: 8000 },
+      { category: "TRANSPORT", city: "Murmansk→St Petersburg", label: "Pesawat Murmansk → St Petersburg", currency: "RUB", valueForeign: 8000 },
+      { category: "TRANSPORT", city: "St Petersburg→Moscow", label: "Sapsan Train Eco", currency: "RUB", valueForeign: 4000 },
+      { category: "TRANSPORT", city: "Moscow", label: "Aeroexpress airport transfer", currency: "RUB", valueForeign: 300 },
+      { category: "TRANSPORT", city: "Moscow", label: "Metro pass harian", currency: "RUB", valueForeign: 300 },
+      { category: "TRANSPORT", city: "Moscow", label: "Sewa Bus harian", currency: "RUB", valueForeign: 25000, perPax: false },
+      { category: "TRANSPORT", city: "St Petersburg", label: "Sewa Bus harian", currency: "RUB", valueForeign: 15000, perPax: false },
+      { category: "TRANSPORT", city: "Murmansk", label: "Sewa Bus harian", currency: "RUB", valueForeign: 20000, perPax: false },
+      // Makan & TL
+      { category: "MAKAN", city: "Murmansk", label: "Makan di Murmansk (paket harian)", currency: "RUB", valueForeign: 4000 },
+      { category: "TL_FEE", city: null, label: "TL fee harian", currency: "IDR", valueIdr: 7000, isIdr: true, perPax: false, notes: "per hari, flat" },
+      { category: "TL_FEE", city: null, label: "Tiket TL Jakarta", currency: "IDR", valueIdr: 22000000, isIdr: true, perPax: false, notes: "flat untuk seluruh trip" },
+      // Tax & lain
+      { category: "TAX", city: "Moscow", label: "Tax hotel Moscow", currency: "RUB", valueForeign: 6500 },
+      { category: "TAX", city: "St Petersburg", label: "Tax hotel St Petersburg", currency: "RUB", valueForeign: 5000 },
+      { category: "TAX", city: "Murmansk", label: "Tax hotel Murmansk", currency: "RUB", valueForeign: 8000 },
+      { category: "ASURANSI", city: null, label: "Asuransi perjalanan", currency: "IDR", valueIdr: 300000, isIdr: true },
+    ];
+
+    await prisma.costComponentTemplate.createMany({
+      data: rusiaTpl.map((t) => ({
+        category: t.category as never,
+        country: "Rusia",
+        city: t.city ?? null,
+        label: t.label,
+        currency: t.currency,
+        valueForeign: t.isIdr ? null : (t.valueForeign ?? null),
+        valueIdr: t.isIdr ? (t.valueIdr ?? null) : null,
+        perPax: t.perPax !== false,
+        notes: t.notes ?? null,
+      })),
+    });
+    console.log(`✅ ${rusiaTpl.length} cost templates di-seed untuk Rusia`);
+  } else {
+    console.log(`ℹ️  ${tplCount} cost templates sudah ada, skip seed`);
+  }
+
   // Seed database visa 88 negara — HANYA kalau tabel kosong.
   // Sekali admin mengedit data via CMS, deploy berikutnya tidak akan menimpa.
   const visaCount = await prisma.countryVisa.count();

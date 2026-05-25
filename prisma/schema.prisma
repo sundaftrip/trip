@@ -435,3 +435,159 @@ model VisaVariant {
 
   @@index([countryVisaId, sortOrder])
 }
+
+// ============================================================================
+// KUOTASI — generator quote + itinerary otomatis dari kalkulasi cost.
+// Mengganti workflow lama (manual: hitung di Excel COST, lalu ketik ulang
+// itinerary di Word). Lihat /admin/kuotasi.
+// ============================================================================
+
+enum QuotationStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  ARCHIVED
+}
+
+enum CostCategory {
+  HOTEL
+  AKTIVITAS
+  TRANSPORT
+  MAKAN
+  ASURANSI
+  TL_FEE
+  TAX
+  TIKET_MASUK
+  LAIN
+}
+
+model Quotation {
+  id            String          @id @default(cuid())
+  title         String
+  country       String          @default("Rusia")  // destinasi: "Rusia", "Jepang", "Turki", dll
+  durationDays  Int             @default(7)
+  status        QuotationStatus @default(DRAFT)
+
+  // Mata uang utama supplier di destinasi (RUB, JPY, USD, EUR, TRY, …).
+  // kursForeign = rate ke IDR. Cost item valueForeign dikonversi pakai ini.
+  // Trip Indonesia → currency="IDR", kursForeign=1.
+  currency      String          @default("RUB")
+  kursForeign   Float           @default(238)
+  marginPct     Float           @default(10)
+  roundIdrTo    Int             @default(100000)
+
+  validUntil    DateTime?
+  notes         String?
+
+  days     QuotationDay[]
+  costs    QuotationCostItem[]
+  pricings QuotationPricing[]
+  addons   QuotationAddon[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Satu baris = satu hari di itinerary. Narasi disimpan sebagai HTML
+// (Tiptap rich text) supaya bisa ditampilkan apa adanya di PDF/preview.
+model QuotationDay {
+  id            String    @id @default(cuid())
+  quotationId   String
+  quotation     Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  dayIndex      Int
+  date          DateTime?
+  city          String?
+  title         String?
+  narrativeHtml String    @default("")
+  highlights    String[]  @default([])
+  imageUrl      String?
+
+  costs QuotationCostItem[]
+
+  @@index([quotationId, dayIndex])
+}
+
+// Komponen biaya. Bisa terikat ke 1 hari (dayId) atau berlaku global
+// (mis. visa, asuransi, TL fee). valueRub & valueIdr: salah satu wajib;
+// saat recalc, valueRub dikonversi ke IDR pakai kursRub di header.
+model QuotationCostItem {
+  id          String        @id @default(cuid())
+  quotationId String
+  quotation   Quotation     @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  dayId       String?
+  day         QuotationDay? @relation(fields: [dayId], references: [id], onDelete: SetNull)
+
+  category    CostCategory
+  label       String
+  perPax      Boolean       @default(true)
+  // Salah satu wajib diisi:
+  // valueForeign → dalam mata uang Quotation.currency, dikonversi pakai kursForeign
+  // valueIdr     → langsung IDR (mis. visa, tiket pesawat domestik)
+  valueForeign Float?
+  valueIdr    Float?
+  qty         Float         @default(1)
+
+  notes       String?
+  order       Int           @default(0)
+
+  @@index([quotationId])
+  @@index([dayId])
+}
+
+// Hasil kalkulasi per tier PAX. Di-regenerate setiap kali user
+// edit cost items / kurs / margin.
+model QuotationPricing {
+  id            String    @id @default(cuid())
+  quotationId   String
+  quotation     Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  paxCount      Int
+
+  cogsForeignPerPax Float @default(0)
+  cogsIdrPerPax     Float @default(0)
+  marginIdr         Float @default(0)
+  sellingIdr        Float @default(0)
+
+  @@unique([quotationId, paxCount])
+  @@index([quotationId])
+}
+
+// Opsional add-ons (visa, husky tambahan, single suplement, dll).
+model QuotationAddon {
+  id          String    @id @default(cuid())
+  quotationId String
+  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  label       String
+  priceIdr    Float     @default(0)
+  notes       String?
+  order       Int       @default(0)
+
+  @@index([quotationId])
+}
+
+// Library komponen biaya re-usable, multi-negara. Pengguna pilih
+// dari sini saat menyusun cost items per quote — filter by country+city.
+// currency = mata uang asli dari supplier (RUB/JPY/USD/EUR/TRY/dll).
+// Saat dipakai di quote, dikonversi ke IDR via kursForeign di header.
+model CostComponentTemplate {
+  id          String       @id @default(cuid())
+  category    CostCategory
+  country     String                          // "Rusia", "Jepang", "Turki", "Eropa", "Global"
+  city        String?                         // "Moscow", "Tokyo", "Istanbul" — null = berlaku se-negara
+  label       String
+  currency    String       @default("IDR")    // "IDR" | "RUB" | "JPY" | "USD" | "EUR" | "TRY" | …
+  valueForeign Float?                          // nilai dalam mata uang asli (kalau bukan IDR)
+  valueIdr    Float?                          // nilai dalam IDR (kalau langsung IDR)
+  perPax      Boolean      @default(true)
+  notes       String?
+  active      Boolean      @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([country, category, active])
+  @@index([country, city])
+}
