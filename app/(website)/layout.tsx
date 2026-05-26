@@ -2,6 +2,7 @@ import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
 import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import StickyWhatsApp from "@/components/website/StickyWhatsApp";
+import OrganizationSchema from "@/components/website/OrganizationSchema";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -97,6 +98,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     return (
       <>
         {styleBlock}
+        <OrganizationSchema />
         <div className="flex flex-1 min-h-screen" style={{ background: "var(--at-bg)" }}>
           <ConsoleSidebar logo={logo} />
           <div className="flex-1 min-w-0 flex flex-col">
@@ -115,6 +117,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   return (
     <>
       {styleBlock}
+      <OrganizationSchema />
       <Navbar logo={logo} theme={theme} />
       <main className={`flex-1 ${isTeri ? "teri-bg" : ""}`} data-theme={theme}>{children}</main>
       <Footer theme={theme} />
