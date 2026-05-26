@@ -1770,6 +1770,207 @@ a.gl-pill:has(svg:only-child) {
   .fb-float-1, .fb-float-2, .fb-float-3, .fb-float-4 { animation: none; }
 }
 
+/* ════════════════════════════════════════════════════════════════
+   TEMA DAUN — Institutional Calm (IsDB-inspired)
+   DNA: white background, soft green pill highlights, generous whitespace,
+        rounded selects/buttons, mobile-first ringan tanpa backdrop-filter
+        atau gradient mahal. Aksen mengikuti --site-accent (default forest).
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --daun-bg:        #ffffff;
+  --daun-soft:      color-mix(in srgb, var(--site-accent, #2d6a4f) 5%, #ffffff);
+  --daun-card:      #ffffff;
+  --daun-ink:       #111827;
+  --daun-sub:       #6b7280;
+  --daun-line:      #e5e7eb;
+  --daun-line-soft: #f1f5f0;
+  --daun-accent:    var(--site-accent, #2d6a4f);
+  --daun-accent-soft: color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #ffffff);
+  --daun-on-accent: #ffffff;
+  --daun-shadow:    rgba(15, 42, 28, 0.06);
+}
+.dark {
+  --daun-bg:        #0a0f0c;
+  --daun-soft:      color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, #0a0f0c);
+  --daun-card:      #11181a;
+  --daun-ink:       #f3f4f6;
+  --daun-sub:       #9ca3af;
+  --daun-line:      #1f2a26;
+  --daun-line-soft: #182320;
+  --daun-accent:    color-mix(in srgb, var(--site-accent, #2d6a4f) 70%, #ffffff);
+  --daun-accent-soft: color-mix(in srgb, var(--site-accent, #2d6a4f) 25%, #0a0f0c);
+  --daun-on-accent: #0a0f0c;
+  --daun-shadow:    rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="daun"] {
+  background-color: var(--daun-bg);
+  color: var(--daun-ink);
+}
+.daun-bg { background-color: var(--daun-bg); }
+.daun-soft-bg { background-color: var(--daun-soft); }
+
+/* Pill button — IsDB hero pill, used for primary CTA + active nav.
+   :where() turunkan specificity ke 0 supaya Tailwind .hidden / hidden md:block
+   tetap menang. */
+:where(.daun-btn:not(.hidden)) { display: inline-flex; }
+.daun-btn {
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: var(--daun-accent);
+  color: var(--daun-on-accent);
+  border: 1px solid var(--daun-accent);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 999px !important;
+  transition: background 0.18s ease, transform 0.18s ease;
+  min-height: 40px;
+}
+.daun-btn:hover {
+  background: color-mix(in srgb, var(--daun-accent) 88%, black);
+  transform: translateY(-1px);
+}
+.daun-btn:active { transform: translateY(0); }
+
+:where(.daun-btn-ghost:not(.hidden)) { display: inline-flex; }
+.daun-btn-ghost {
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: transparent;
+  color: var(--daun-ink);
+  border: 1px solid var(--daun-line);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 999px !important;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+  min-height: 40px;
+}
+.daun-btn-ghost:hover {
+  border-color: var(--daun-accent);
+  color: var(--daun-accent);
+  background: var(--daun-soft);
+}
+
+/* Pill nav — quiet by default, green-filled when active */
+:where(.daun-pill:not(.hidden)) { display: inline-flex; }
+.daun-pill {
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: transparent;
+  color: var(--daun-sub);
+  border: 1px solid transparent;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 999px !important;
+  transition: color 0.15s ease, background 0.15s ease;
+  min-height: 36px;
+}
+.daun-pill:hover { color: var(--daun-ink); background: var(--daun-soft); }
+[data-theme="daun"] .daun-pill-active,
+.daun-pill-active {
+  background: var(--daun-accent) !important;
+  color: var(--daun-on-accent) !important;
+}
+.daun-pill-active:hover { background: var(--daun-accent) !important; }
+
+/* Outline pill (quiet badge) */
+:where(.daun-chip:not(.hidden)) { display: inline-flex; }
+.daun-chip {
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--daun-soft);
+  color: var(--daun-accent);
+  border: 1px solid color-mix(in srgb, var(--daun-accent) 22%, transparent);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 999px !important;
+}
+
+/* Card — clean white, soft line, gentle shadow */
+[data-theme="daun"] .daun-card,
+.daun-card {
+  background: var(--daun-card);
+  border: 1px solid var(--daun-line);
+  border-radius: 14px !important;
+  box-shadow: 0 1px 2px var(--daun-shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.daun-card:hover {
+  border-color: color-mix(in srgb, var(--daun-accent) 35%, var(--daun-line));
+  box-shadow: 0 6px 20px -10px var(--daun-shadow);
+  transform: translateY(-1px);
+}
+
+/* Form input — rounded select look from IsDB filter row */
+[data-theme="daun"] .daun-input,
+.daun-input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--daun-line);
+  background: var(--daun-card);
+  color: var(--daun-ink);
+  font-size: 14px;
+  outline: none;
+  border-radius: 999px !important;
+  min-height: 42px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.daun-input:focus {
+  border-color: var(--daun-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--daun-accent) 18%, transparent);
+}
+
+/* Headline — light editorial weight, breathable */
+.daun-headline {
+  font-weight: 600;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--daun-ink);
+}
+.daun-headline em {
+  color: var(--daun-accent);
+  font-style: normal;
+  font-weight: 700;
+}
+.daun-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--daun-accent);
+}
+.daun-sub {
+  color: var(--daun-sub);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+/* Section divider — subtle horizontal rule */
+.daun-rule {
+  height: 1px;
+  background: var(--daun-line);
+  width: 100%;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .daun-btn, .daun-btn-ghost, .daun-card, .daun-card:hover, .daun-pill { transition: none; transform: none; }
+}
+
 /* ──────────────────────────────────────────────────────────────
    SHARP-EDGES OVERRIDE
    Menghapus semua border-radius supaya tampilan tidak terbaca
@@ -1791,4 +1992,19 @@ a.gl-pill:has(svg:only-child) {
 }
 .is-round {
   border-radius: 9999px !important;
+}
+
+/* Daun theme — re-allow rounded radii setelah sharp-edges override.
+   Tema "daun" memang didesain rounded (IsDB-inspired). */
+[data-theme="daun"] .daun-btn,
+[data-theme="daun"] .daun-btn-ghost,
+[data-theme="daun"] .daun-pill,
+[data-theme="daun"] .daun-chip,
+[data-theme="daun"] .daun-input,
+.daun-btn, .daun-btn-ghost, .daun-pill, .daun-chip, .daun-input {
+  border-radius: 999px !important;
+}
+[data-theme="daun"] .daun-card,
+.daun-card {
+  border-radius: 14px !important;
 }

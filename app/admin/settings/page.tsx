@@ -40,6 +40,7 @@ const FONT_CSS_VAR: Record<string, string> = {
 
 const THEMES = [
   { key: "classic",  label: "Classic",  desc: "Minimalis & bersih. Tipografi besar, latar putih.",                   feature: null },
+  { key: "daun",     label: "Daun",     desc: "Institusional santai. Latar putih, pill hijau, sudut bulat lembut. Ringan untuk mobile.", feature: null },
   { key: "tropical", label: "Tropical", desc: "Vintage travel poster 1960s. Thin border + stripe top + drop shadow halus, postcard rectangular feel.",          feature: "theme_tropical" },
   { key: "kawaii",   label: "Kawaii",   desc: "Hand-drawn sticker scrapbook. Thick outline, organic blob radius, sedikit tilt -1.2deg, layered soft shadow, ✿ flower & ✦ sparkle decorations.",     feature: "theme_kawaii" },
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
@@ -302,6 +303,22 @@ export default function SettingsPage() {
                         <div className="h-1.5 w-12 rounded bg-gray-900 mb-1.5" />
                         <div className="h-3 w-20 rounded bg-gray-900 mb-1" />
                         <div className="h-1 w-16 rounded bg-gray-300" />
+                      </div>
+                    )}
+                    {key === "daun" && (
+                      <div className="absolute inset-0 flex flex-col justify-between p-2.5" style={{ background: "#ffffff" }}>
+                        <div className="flex items-center gap-1">
+                          <div className="h-4 px-2 rounded-full flex items-center text-[7px] font-semibold text-white" style={{ background: currentAccent }}>Tenders</div>
+                          <div className="h-4 px-1.5 rounded-full flex items-center text-[7px] text-gray-500">Home</div>
+                          <div className="h-4 px-1.5 rounded-full flex items-center text-[7px] text-gray-500">Docs</div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="h-3.5 flex-1 rounded-full border border-gray-200 bg-white" />
+                          <div className="h-3.5 w-6 rounded-full border border-gray-200 bg-white" />
+                        </div>
+                        <div className="h-5 w-16 rounded-full text-[8px] font-semibold flex items-center justify-center text-white" style={{ background: currentAccent }}>
+                          Pelajari
+                        </div>
                       </div>
                     )}
                     {key === "tropical" && (

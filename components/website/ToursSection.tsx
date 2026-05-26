@@ -302,12 +302,12 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
           </div>
         </AnimateIn>
 
-        {/* Classic: equal 3-column grid */}
-        {theme === "classic" && (
+        {/* Classic / Daun: equal 3-column grid (clean default) */}
+        {(theme === "classic" || theme === "daun") && (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {tours.map((tour, i) => (
               <AnimateIn key={tour.id} delay={i * 80}>
-                <TourCard tour={tour} theme="classic" />
+                <TourCard tour={tour} theme={theme === "daun" ? "classic" : "classic"} />
               </AnimateIn>
             ))}
           </div>
