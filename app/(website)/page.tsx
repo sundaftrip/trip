@@ -66,10 +66,14 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: `${name} — Paket Wisata Terpercaya`,
       description: `${name} menyediakan paket wisata terpercaya dengan pelayanan terbaik.`,
-      openGraph: { title: `${name} — Paket Wisata`, type: "website" },
+      openGraph: { title: `${name} — Paket Wisata`, type: "website", url: "https://sundaftrip.com" },
+      alternates: { canonical: "https://sundaftrip.com" },
     };
   } catch {
-    return { title: "Travel — Paket Wisata Terpercaya" };
+    return {
+      title: "Travel — Paket Wisata Terpercaya",
+      alternates: { canonical: "https://sundaftrip.com" },
+    };
   }
 }
 

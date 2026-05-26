@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import ToursCatalog from "@/components/website/ToursCatalog";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 export const revalidate = 300;
 
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   title: "Semua Paket Tour",
   description:
     "Daftar lengkap paket tour Sundaf Trip — upcoming bookable & dokumentasi trip yang sudah berlangsung.",
+  alternates: { canonical: "https://sundaftrip.com/tours" },
 };
 
 const getData = unstable_cache(
@@ -51,6 +53,12 @@ export default async function ToursPage() {
 
   return (
     <main className="pt-24">
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Semua Paket Tour", url: "/tours" },
+        ]}
+      />
       <header className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
         <div className="flex items-center gap-2 mb-2">
           <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />

@@ -5,10 +5,12 @@ import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
 import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award } from "lucide-react";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
   description: "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.",
+  alternates: { canonical: "https://sundaftrip.com/about" },
 };
 
 /* ── Default fallbacks (dipakai kalau admin belum mengisi CMS) ── */
@@ -128,6 +130,12 @@ export default async function AboutPage() {
       className={`min-h-screen pt-24 ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`}
       style={wrapperStyle}
     >
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Tentang Kami", url: "/about" },
+        ]}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* ── Hero ───────────────────────────────────────────────── */}

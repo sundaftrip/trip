@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
 import { MessageCircle, ChevronDown } from "lucide-react";
@@ -9,6 +10,7 @@ import { MessageCircle, ChevronDown } from "lucide-react";
 export const metadata: Metadata = {
   title: "FAQ — Pertanyaan Umum",
   description: "Jawaban atas pertanyaan paling sering tentang paket tour Rusia, Asia Tengah, dan aurora borealis bersama Sundaftrip.",
+  alternates: { canonical: "https://sundaftrip.com/faq" },
 };
 
 const SECTION_ORDER = ["Umum", "Visa & Dokumen", "Pembayaran & Deposit", "Di Lapangan"];
@@ -131,6 +133,12 @@ export default async function FaqPage() {
       className={`min-h-screen pt-24 ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`}
       style={wrapperStyle}
     >
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "FAQ", url: "/faq" },
+        ]}
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* ── Hero ── */}

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
 import { FaqList, PENGURUSAN_VISA_DETAIL, type FaqItem } from "./FaqList";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 export const metadata: Metadata = {
   title: "FAQ Teknis Visa Schengen untuk Paspor Indonesia",
   description:
     "Kasus teknis Schengen yang sering bikin reject: cerai, anak di bawah 18, apostille Spanyol, sponsor pasangan, rekening kecil, apply dari negara lain.",
+  alternates: { canonical: "https://sundaftrip.com/visa/faq" },
 };
 
 const SCHENGEN_TEKNIS: FaqItem[] = [
@@ -795,6 +797,13 @@ const REJECT_CASES: FaqItem[] = [
 export default function VisaFaqPage() {
   return (
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Info Visa", url: "/visa" },
+          { name: "FAQ Teknis Visa", url: "/visa/faq" },
+        ]}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
         <Link
           href="/visa"

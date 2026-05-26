@@ -1,9 +1,18 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+
+export const metadata: Metadata = {
+  title: "Blog & Tips Travel",
+  description:
+    "Tips travel ke Rusia, Asia Tengah, dan Aurora — cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.",
+  alternates: { canonical: "https://sundaftrip.com/blog" },
+};
 
 async function getSiteTheme() {
   try {
@@ -43,6 +52,12 @@ export default async function BlogPage() {
 
   return (
     <div className={`min-h-screen pt-24 ${!isOutlined ? "bg-gray-50 dark:bg-gray-950" : ""}`} style={wrapperStyle}>
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Blog & Tips Travel", url: "/blog" },
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* Heading */}
