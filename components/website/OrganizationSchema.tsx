@@ -114,9 +114,32 @@ export default async function OrganizationSchema() {
     organization.address = {
       "@type": "PostalAddress",
       streetAddress: c["company_address"],
+      addressLocality: "Jakarta Selatan",
+      addressRegion: "DKI Jakarta",
       addressCountry: "ID",
     };
   }
+
+  // Koordinat approximate Rasuna Epicentrum, Kuningan — bantu Knowledge
+  // Panel render map embed.
+  organization.geo = {
+    "@type": "GeoCoordinates",
+    latitude: -6.2236,
+    longitude: 106.8333,
+  };
+
+  // Price range — bantu Google paham positioning Sundaf Trip
+  organization.priceRange = "Rp 10.000.000 - Rp 50.000.000";
+
+  // Jam operasional kantor (Senin-Jumat 09:00-17:00 WIB)
+  organization.openingHoursSpecification = [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "17:00",
+    },
+  ];
 
   const contactPoints: Record<string, unknown>[] = [];
   if (phoneE164) {
