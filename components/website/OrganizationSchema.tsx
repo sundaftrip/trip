@@ -159,7 +159,8 @@ export default async function OrganizationSchema() {
   if (sameAs.length) organization.sameAs = sameAs;
 
   // ── WebSite JSON-LD ──
-  // Tidak include SearchAction karena site belum punya search URL fungsional.
+  // Include SearchAction → /search?q={search_term_string} ada beneran,
+  // jadi Google boleh kasih sitelinks search box di SERP brand query.
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -170,6 +171,14 @@ export default async function OrganizationSchema() {
     description,
     inLanguage: "id-ID",
     publisher: { "@id": `${SITE_URL}#organization` },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 
   return (

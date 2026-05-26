@@ -29,7 +29,14 @@ const ALL_FONT_VARS = [
   anonymousPro.variable, caveat.variable,
 ].join(" ");
 
-const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+
+// Brand-forward — hardcode "Sundaf Trip" sebagai brand consumer-facing.
+// Legal entity (CV SUNDAF HOLIDAY GROUP) tetap dipakai untuk schema/footer
+// via company_name di DB. Tapi title/meta pakai brand simpel agar Google
+// jelas paham "Sundaf Trip" itu entity utama, bukan typo "sunday trip".
+const BRAND_NAME = "Sundaf Trip";
+const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
 async function getCompanyMeta() {
   try {
@@ -38,44 +45,61 @@ async function getCompanyMeta() {
     });
     const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
     return {
-      name: map["company_name"] ?? process.env.NEXT_PUBLIC_APP_NAME ?? "Travel & Wisata",
+      legalName: map["company_name"] ?? "CV Sundaf Holiday Group",
       logo: map["company_logo"] ?? null,
     };
   } catch {
     return {
-      name: process.env.NEXT_PUBLIC_APP_NAME ?? "Travel & Wisata",
+      legalName: "CV Sundaf Holiday Group",
       logo: null,
     };
   }
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { name, logo } = await getCompanyMeta();
+  const { logo } = await getCompanyMeta();
+  const description =
+    "Sundaf Trip — spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
 
   return {
+    metadataBase: new URL(siteUrl),
     title: {
-      default: name,
-      template: `%s — ${name}`,
+      // Homepage default title — brand-forward
+      default: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
+      // Child pages: "{page title} | Sundaf Trip" — brand SELALU di belakang
+      template: `%s | ${BRAND_NAME}`,
     },
-    description: `Spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis. Dari visa sampai itinerary, semua dirancang untuk traveler Indonesia.`,
+    description,
+    applicationName: BRAND_NAME,
+    keywords: [
+      "Sundaf Trip",
+      "Sundaftrip",
+      "Sundaf",
+      "paket tour Rusia",
+      "trip aurora",
+      "tour Asia Tengah",
+      "open trip Rusia",
+      "visa Rusia Indonesia",
+    ],
     openGraph: {
-      title: name,
-      description: `Spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia`,
+      title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
+      description,
       url: siteUrl,
-      siteName: name,
+      siteName: BRAND_NAME,
       locale: "id_ID",
       type: "website",
-      ...(logo ? { images: [{ url: logo, width: 512, height: 512 }] } : {}),
+      ...(logo ? { images: [{ url: logo, width: 512, height: 512, alt: BRAND_NAME }] } : {}),
     },
     twitter: {
       card: "summary",
-      title: name,
+      title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
+      description,
       ...(logo ? { images: [logo] } : {}),
     },
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
-      title: name,
+      title: BRAND_NAME,
     },
     ...(logo ? { icons: { icon: "/favicon.svg", apple: logo } } : {}),
   };
