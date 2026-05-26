@@ -116,8 +116,17 @@ export default async function OrganizationSchema() {
       streetAddress: c["company_address"],
       addressLocality: "Jakarta Selatan",
       addressRegion: "DKI Jakarta",
+      postalCode: "12940", // Karet Kuningan, lokasi Epiwalk Epicentrum
       addressCountry: "ID",
     };
+  }
+
+  // LocalBusiness butuh `telephone` di top-level Organization (bukan cuma
+  // di contactPoint array). Pakai nomor WhatsApp Sundaf sebagai primary.
+  if (waE164) {
+    organization.telephone = waE164;
+  } else if (phoneE164) {
+    organization.telephone = phoneE164;
   }
 
   // Koordinat approximate Rasuna Epicentrum, Kuningan — bantu Knowledge
