@@ -23,6 +23,13 @@ export default async function ToursPage() {
 
   const tours = [...upcoming, ...past, ...noDate];
 
+  // Status tampilan: tour yang tanggalnya sudah lewat dianggap "SELESAI"
+  // (kecuali sudah CANCELLED, yang tetap dipertahankan).
+  const displayStatus = (tour: (typeof tours)[number]) =>
+    tour.tripDate && new Date(tour.tripDate) < now && tour.status !== "CANCELLED"
+      ? "SELESAI"
+      : tour.status;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -84,14 +91,20 @@ export default async function ToursPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{tour.seatsLeft}</td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      tour.status === "ACTIVE" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
-                      tour.status === "FULL" ? "bg-red-100 text-red-700" :
-                      tour.status === "CANCELLED" ? "bg-gray-100 text-gray-500" :
-                      "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                    }`}>
-                      {tour.status}
-                    </span>
+                    {(() => {
+                      const status = displayStatus(tour);
+                      return (
+                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          status === "ACTIVE" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
+                          status === "FULL" ? "bg-red-100 text-red-700" :
+                          status === "CANCELLED" ? "bg-gray-100 text-gray-500" :
+                          status === "SELESAI" ? "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300" :
+                          "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                        }`}>
+                          {status}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {tour.tripDate ? formatDate(tour.tripDate) : "-"}
