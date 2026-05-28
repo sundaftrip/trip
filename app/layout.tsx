@@ -3,6 +3,7 @@ import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Ral
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import Providers from "@/components/Providers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { prisma } from "@/lib/prisma";
 
 /* Font loading strategy:
@@ -124,6 +125,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Providers>{children}</Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
