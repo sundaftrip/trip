@@ -4,6 +4,7 @@ import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import Providers from "@/components/Providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 /* Font loading strategy:
@@ -39,23 +40,31 @@ const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 const BRAND_NAME = "Sundaf Trip";
 const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
-async function getCompanyMeta() {
-  try {
-    const rows = await prisma.companyInfo.findMany({
-      where: { key: { in: ["company_name", "company_logo"] } },
-    });
-    const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
-    return {
-      legalName: map["company_name"] ?? "CV Sundaf Holiday Group",
-      logo: map["company_logo"] ?? null,
-    };
-  } catch {
-    return {
-      legalName: "CV Sundaf Holiday Group",
-      logo: null,
-    };
-  }
-}
+// Di-cache 1 jam: nama & logo perusahaan nyaris tak pernah berubah.
+// Tanpa cache, query ini di generateMetadata memaksa SEMUA halaman jadi
+// dynamic rendering → kena DB tiap request → TTFB tinggi. Saat admin
+// mengubah company info, panggil revalidateTag("company-meta").
+const getCompanyMeta = unstable_cache(
+  async () => {
+    try {
+      const rows = await prisma.companyInfo.findMany({
+        where: { key: { in: ["company_name", "company_logo"] } },
+      });
+      const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+      return {
+        legalName: map["company_name"] ?? "CV Sundaf Holiday Group",
+        logo: map["company_logo"] ?? null,
+      };
+    } catch {
+      return {
+        legalName: "CV Sundaf Holiday Group",
+        logo: null,
+      };
+    }
+  },
+  ["company-meta"],
+  { revalidate: 3600, tags: ["company-meta"] }
+);
 
 export async function generateMetadata(): Promise<Metadata> {
   const { logo } = await getCompanyMeta();

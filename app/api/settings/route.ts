@@ -55,6 +55,7 @@ export async function PUT(req: NextRequest) {
   (revalidateTag as unknown as (t: string) => void)("site-colors");
   (revalidateTag as unknown as (t: string) => void)("footer-data");
   (revalidateTag as unknown as (t: string) => void)("home-data");
+  (revalidateTag as unknown as (t: string) => void)("company-meta");
   // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
   (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
 
