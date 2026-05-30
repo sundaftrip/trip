@@ -25,6 +25,7 @@ const FONTS = [
   { key: "playfair",      label: "Playfair Display",  desc: "Serif elegan, kesan premium & mewah", sample: "Perjalanan Impian" },
   { key: "raleway",       label: "Raleway",           desc: "Tipis & elegan, lifestyle & travel",  sample: "Perjalanan Impian" },
   { key: "poppins",       label: "Poppins",           desc: "Populer & friendly, sangat terbaca",  sample: "Perjalanan Impian" },
+  { key: "caveat",        label: "Caveat",            desc: "Tulisan tangan kasual — gaya personal & hangat", sample: "Perjalanan Impian" },
 ];
 
 const FONT_CSS_VAR: Record<string, string> = {
@@ -36,6 +37,7 @@ const FONT_CSS_VAR: Record<string, string> = {
   playfair:      "var(--font-playfair)",
   raleway:       "var(--font-raleway)",
   poppins:       "var(--font-poppins)",
+  caveat:        "var(--font-caveat)",
 };
 
 const THEMES = [
@@ -478,8 +480,7 @@ export default function SettingsPage() {
                     )}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <p className={`text-lg leading-tight ${active && unlocked ? "text-blue-600" : "text-gray-900 dark:text-white"}`}
-                      style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                    <p className={`text-sm font-semibold ${active && unlocked ? "text-blue-600" : "text-gray-900 dark:text-white"}`}>
                       {label}
                     </p>
                     {!unlocked && (

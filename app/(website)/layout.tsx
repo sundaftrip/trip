@@ -27,6 +27,7 @@ const FONT_CSS_VAR: Record<string, string> = {
   playfair:      "var(--font-playfair)",
   raleway:       "var(--font-raleway)",
   poppins:       "var(--font-poppins)",
+  caveat:        "var(--font-caveat)",
 };
 
 const getSiteConfig = unstable_cache(
