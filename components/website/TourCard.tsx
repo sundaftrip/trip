@@ -537,20 +537,19 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
+  const _tripDate = tour.tripDate ? new Date(tour.tripDate) : null;
+  const dateStr = _tripDate
+    ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
+    : "OPEN";
+  const duration = shortenDuration(tour.duration);
 
   return (
     <div className={`at-card group overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      <div className="relative h-52 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
+      <div className="relative h-40 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
         {tour.heroImg
           ? <Image src={cldOptimize(tour.heroImg, 600)} alt={tour.title} fill loading="lazy" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
 
-        {!isDimmed && (
-          <div className="absolute bottom-3 right-3 at-pill font-semibold"
-            style={{ background: "var(--at-text)", color: "var(--at-bg)" }}>
-            {priceText(tour)}
-          </div>
-        )}
         {tour.badge && !isDimmed && (
           <div className="absolute top-3 left-3 at-pill"
             style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
@@ -566,31 +565,29 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      <div className="p-5 flex-1 flex flex-col">
-        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--at-subtext)" }}>
+      {/* === BODY COMPACT — ala boarding pass: judul / durasi · tanggal / harga === */}
+      <div className="px-5 py-4 flex-1 flex flex-col space-y-2">
+        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
         </p>
-        <h3 className="font-semibold text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--at-text)" }}>
+        <h3 className="font-semibold text-[15px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
           {tour.title}
         </h3>
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {tour.duration && (
-            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{tour.duration}</span>
-          )}
-          {tour.tripDate && (
-            <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
-          )}
-          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>{tour.seatsLeft} seat</span>
+        <div className="flex items-center gap-2 text-[11px] sm:text-[12px] tracking-[0.08em] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
+          <span className="whitespace-nowrap">{duration || "—"}</span>
+          <span className="opacity-40">·</span>
+          <span className="whitespace-nowrap">{dateStr}</span>
         </div>
-        {strikePrice(tour) && (
-          <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{strikePrice(tour)}</p>
-        )}
-        {!isDimmed && (
-          <div className={`pt-3 border-t flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
-            style={{ borderColor: "var(--at-border)" }}>
-            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--at-subtext)" }}>Lihat detail →</span>
-          </div>
-        )}
+        <div className="flex items-baseline gap-2 flex-wrap mt-auto pt-1">
+          <span className="font-bold text-[17px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
+            {priceText(tour)}
+          </span>
+          {strikePrice(tour) && (
+            <span className="text-[11px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--at-subtext)" }}>
+              {strikePrice(tour)}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

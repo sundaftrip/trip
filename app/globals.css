@@ -1444,7 +1444,7 @@ a.gl-pill:has(svg:only-child) {
   --at-border:  color-mix(in srgb, var(--site-accent, #1a1a1a) 55%, #1a1a1a);
   --at-text:    color-mix(in srgb, var(--site-accent, #1a1a1a) 20%, #0a0a0a);
   --at-subtext: color-mix(in srgb, var(--site-accent, #1a1a1a) 32%, #6b7280);
-  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, transparent);
+  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 11%, transparent);
   --at-shadow:  rgba(0,0,0,0.07);
   --at-muted:   color-mix(in srgb, var(--site-accent, #1a1a1a) 9%,  #f5f5f5);
 }
@@ -1454,7 +1454,7 @@ a.gl-pill:has(svg:only-child) {
   --at-border:  color-mix(in srgb, var(--site-accent, #1a1a1a) 50%, rgba(255,255,255,0.20));
   --at-text:    color-mix(in srgb, var(--site-accent, #1a1a1a) 14%, #f5f5f5);
   --at-subtext: color-mix(in srgb, var(--site-accent, #1a1a1a) 28%, #9ca3af);
-  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 24%, transparent);
+  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, transparent);
   --at-shadow:  rgba(0,0,0,0.4);
   --at-muted:   color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, #1a1a1a);
 }
@@ -1516,11 +1516,11 @@ a.gl-pill:has(svg:only-child) {
 }
 .at-grid-bg {
   background-image:
-    linear-gradient(var(--at-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--at-grid) 1px, transparent 1px);
+    linear-gradient(var(--at-grid) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, var(--at-grid) 0.5px, transparent 0.5px);
   background-size: 32px 32px;
 }
-/* Grid lebih rapat di HP — 32px terasa terlalu besar di layar kecil */
+/* Grid lebih rapat & tipis di HP — 32px terasa terlalu besar di layar kecil */
 @media (max-width: 640px) {
   .at-grid-bg { background-size: 18px 18px; }
 }
