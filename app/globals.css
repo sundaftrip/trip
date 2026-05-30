@@ -19,8 +19,9 @@
 }
 
 :root {
+  /* REBRAND 2026-05-31 — SUNDAF charcoal/teal. Light bg, charcoal ink. */
   --background: #ffffff;
-  --foreground: #0d0d0d;
+  --foreground: #222831;
 
   /* ── Tropical vars ── border/shadow/bg follow color scheme accent ── */
   --tr-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #fffdf7);
@@ -51,8 +52,9 @@
 }
 
 .dark {
-  --background: #080f0a;
-  --foreground: #f0f7f3;
+  /* REBRAND 2026-05-31 — night mode = charcoal #222831 bg, light #EEEEEE ink. */
+  --background: #222831;
+  --foreground: #eeeeee;
 
   /* ── Tropical dark ── border lightened, bg tinted with accent ── */
   --tr-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 14%, #0d0d08);

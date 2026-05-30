@@ -6,13 +6,14 @@ import OrganizationSchema from "@/components/website/OrganizationSchema";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
+// REBRAND 2026-05-31 — SUNDAF charcoal/teal defaults (was forest green).
 const COLOR_DEFAULTS: Record<string, string> = {
-  color_hero: "#0d2018",
-  color_heading: "#111827",
-  color_tour_title: "#111827",
-  color_blog_title: "#111827",
-  color_accent: "#2d6a4f",
-  color_eyebrow: "#6b7280",
+  color_hero: "#222831",
+  color_heading: "#222831",
+  color_tour_title: "#222831",
+  color_blog_title: "#222831",
+  color_accent: "#00ADB5",
+  color_eyebrow: "#00ADB5",
 };
 
 const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
@@ -65,7 +66,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
 
   const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
-  const accent = colors["color_accent"] ?? "#2d6a4f";
+  const accent = colors["color_accent"] ?? "#00ADB5";
   const cssVars =
     Object.entries(colors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)

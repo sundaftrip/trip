@@ -15,6 +15,17 @@ export interface ColorScheme {
 
 export const COLOR_SCHEMES: ColorScheme[] = [
   {
+    id: "sundaf",
+    name: "SUNDAF",
+    desc: "Wajah baru SUNDAF — charcoal & teal",
+    swatch: ["#222831", "#393E46", "#00ADB5", "#EEEEEE"],
+    colors: {
+      color_hero: "#222831", color_heading: "#222831",
+      color_tour_title: "#222831", color_blog_title: "#222831",
+      color_accent: "#00ADB5", color_eyebrow: "#00ADB5",
+    },
+  },
+  {
     id: "forest",
     name: "Forest",
     desc: "Hijau alam yang elegan",
@@ -137,7 +148,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
   },
 ];
 
-export const DEFAULT_SCHEME_ID = "forest";
+export const DEFAULT_SCHEME_ID = "sundaf";
 
 export function getSchemeById(id: string): ColorScheme {
   return COLOR_SCHEMES.find((s) => s.id === id) ?? COLOR_SCHEMES[0];
