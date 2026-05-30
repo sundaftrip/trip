@@ -279,7 +279,7 @@ export default function SettingsPage() {
         <p className="text-xs text-gray-500 mb-5">Pilih tampilan layout halaman utama</p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {THEMES.map(({ key, label, desc, feature }) => {
+          {THEMES.map(({ key, label, feature }) => {
             const unlocked = !feature || isFeatureEnabled(feature);
             const active = (data["site_theme"] ?? "classic") === key;
             return (
@@ -477,15 +477,15 @@ export default function SettingsPage() {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <p className={`text-sm font-semibold ${active && unlocked ? "text-blue-600" : "text-gray-900 dark:text-white"}`}>
+                  <div className="flex items-center gap-1.5">
+                    <p className={`text-lg leading-tight ${active && unlocked ? "text-blue-600" : "text-gray-900 dark:text-white"}`}
+                      style={{ fontFamily: "var(--font-caveat), cursive" }}>
                       {label}
                     </p>
                     {!unlocked && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">PRO</span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500">{desc}</p>
                 </button>
               </div>
             );

@@ -18,6 +18,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       content: body.content,
       rating: Number(body.rating) || 5,
       avatar: body.avatar || null,
+      category: body.category === "visa" ? "visa" : "trip",
       published: body.published ?? true,
       order: Number(body.order) || 0,
     },

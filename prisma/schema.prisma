@@ -215,6 +215,7 @@ model Testimonial {
   content   String
   rating    Int      @default(5)
   avatar    String?
+  category  String   @default("trip") // "trip" | "visa" — pisahkan ulasan trip rombongan vs layanan visa
   published Boolean  @default(true)
   order     Int      @default(0)
   createdAt DateTime @default(now())

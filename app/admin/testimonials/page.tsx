@@ -3,10 +3,24 @@ import Link from "next/link";
 import { Plus, Star, Pencil } from "lucide-react";
 import TestimonialDeleteBtn from "./DeleteBtn";
 
-export default async function TestimonialsPage() {
+export default async function TestimonialsPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
+  const { cat } = await searchParams;
+  const filter = cat === "trip" || cat === "visa" ? cat : "all";
+
   const items = await prisma.testimonial.findMany({
+    where: filter === "all" ? undefined : { category: filter },
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
+
+  const counts = await prisma.testimonial.groupBy({ by: ["category"], _count: true });
+  const countOf = (c: string) => counts.find((x) => x.category === c)?._count ?? 0;
+  const total = counts.reduce((s, x) => s + x._count, 0);
+
+  const TABS = [
+    { key: "all", label: "Semua", count: total },
+    { key: "trip", label: "Trip", count: countOf("trip") },
+    { key: "visa", label: "Visa", count: countOf("visa") },
+  ] as const;
 
   return (
     <div className="space-y-6">
@@ -19,6 +33,23 @@ export default async function TestimonialsPage() {
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">
           <Plus size={16} /> Tambah
         </Link>
+      </div>
+
+      {/* Filter kategori */}
+      <div className="flex gap-2">
+        {TABS.map((t) => {
+          const active = filter === t.key;
+          return (
+            <Link key={t.key} href={t.key === "all" ? "/admin/testimonials" : `/admin/testimonials?cat=${t.key}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                active
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`}>
+              {t.label} <span className={active ? "text-white/70" : "text-gray-400"}>({t.count})</span>
+            </Link>
+          );
+        })}
       </div>
 
       {items.length === 0 && (
@@ -47,6 +78,13 @@ export default async function TestimonialsPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
+                  item.category === "visa"
+                    ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400"
+                    : "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400"
+                }`}>
+                  {item.category === "visa" ? "Visa" : "Trip"}
+                </span>
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
                   item.published ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                   : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"

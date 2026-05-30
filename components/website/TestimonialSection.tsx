@@ -383,7 +383,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
           <p className="text-xs tracking-[0.15em] uppercase text-gray-400 mb-3">Testimoni</p>
-          <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: "var(--site-heading,#111827)" }}>
+          <h2 className="text-4xl lg:text-6xl" style={{ color: "var(--site-heading,#111827)", fontFamily: "var(--font-caveat), cursive" }}>
             Kata Mereka
           </h2>
         </AnimateIn>

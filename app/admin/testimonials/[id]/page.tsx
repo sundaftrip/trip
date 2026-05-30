@@ -16,7 +16,7 @@ export default async function EditTestimonialPage({ params }: { params: Promise<
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <TestimonialForm id={item.id} initial={{
           name: item.name, role: item.role ?? "", content: item.content,
-          rating: item.rating, avatar: item.avatar ?? "", published: item.published, order: item.order,
+          rating: item.rating, avatar: item.avatar ?? "", category: item.category, published: item.published, order: item.order,
         }} />
       </div>
     </div>

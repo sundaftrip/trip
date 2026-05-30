@@ -12,6 +12,7 @@ import { visaSlug, findBySlug } from "@/lib/visa-slug";
 import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaults";
 import { FlagIcon } from "@/lib/flag-icon";
 import VisaOrderForm from "@/components/website/VisaOrderForm";
+import TestimonialSection from "@/components/website/TestimonialSection";
 
 export const dynamic = "force-dynamic";
 
@@ -60,14 +61,18 @@ export default async function VisaDetailPage({ params }: PageProps) {
   // (mis. "Berapa lama proses visa Rusia?") akan bocor ke semua halaman
   // negara. Sumber FAQ per-negara: country.faqs (Json di DB) atau
   // visaDefaults(category) sebagai fallback.
-  // Testimonial juga di-skip — yang ada di DB itu ulasan trip rombongan
-  // (Russia/Murmansk dll), bukan ulasan layanan visa — bisa misleading.
-  const [countries, companyRows] = await Promise.all([
+  // Testimonial: hanya ulasan kategori "visa" (layanan pengurusan visa),
+  // BUKAN ulasan trip rombongan — supaya relevan & tidak misleading.
+  const [countries, companyRows, testimonials] = await Promise.all([
     prisma.countryVisa.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: { variants: { orderBy: { sortOrder: "asc" } } },
     }),
-    prisma.companyInfo.findMany({ where: { key: "company_whatsapp" } }),
+    prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "site_theme"] } } }),
+    prisma.testimonial.findMany({
+      where: { published: true, category: "visa" },
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    }),
   ]);
 
   const country = findBySlug(countries, slug);
@@ -88,6 +93,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
     Array.isArray(faqsRaw) && faqsRaw.length > 0 ? faqsRaw : defaults.faqs;
 
   const wa = toWaNumber(companyRows.find((r) => r.key === "company_whatsapp")?.value ?? "");
+  const rawTheme = companyRows.find((r) => r.key === "site_theme")?.value || "classic";
+  const theme = rawTheme === "console" ? "atlas" : rawTheme;
   const waMessage = `Halo, saya ingin tanya layanan visa ${country.name}.`;
   const waLink = wa ? `https://wa.me/${wa}?text=${encodeURIComponent(waMessage)}` : "";
 
@@ -365,9 +372,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* Ulasan sengaja dihilangkan — testimonial di DB adalah ulasan trip
-              rombongan (Russia/Murmansk/dst), bukan ulasan layanan visa.
-              Memasangnya di sini misleading. */}
+          {/* Ulasan layanan visa (category="visa") dirender full-width
+              di bawah grid — lihat <TestimonialSection> setelah </aside>. */}
         </main>
 
         {/* STICKY ORDER FORM */}
@@ -386,6 +392,9 @@ export default async function VisaDetailPage({ params }: PageProps) {
           />
         </aside>
       </div>
+
+      {/* ULASAN LAYANAN VISA — hanya testimoni category="visa" */}
+      <TestimonialSection items={testimonials} theme={theme} />
 
       {/* BOTTOM CTA STRIP */}
       {waLink && (

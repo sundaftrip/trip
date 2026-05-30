@@ -7,7 +7,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 interface FormData {
   name: string; role: string; content: string;
-  rating: number; avatar: string; published: boolean; order: number;
+  rating: number; avatar: string; category: string; published: boolean; order: number;
 }
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
   initial?: Partial<FormData>;
 }
 
-const EMPTY: FormData = { name: "", role: "", content: "", rating: 5, avatar: "", published: true, order: 0 };
+const EMPTY: FormData = { name: "", role: "", content: "", rating: 5, avatar: "", category: "trip", published: true, order: 0 };
 
 export default function TestimonialForm({ id, initial }: Props) {
   const [form, setForm] = useState<FormData>({ ...EMPTY, ...initial });
@@ -80,6 +80,30 @@ export default function TestimonialForm({ id, initial }: Props) {
       <div>
         <label className="label">Keterangan</label>
         <input className="input" value={form.role} onChange={(e) => set("role", e.target.value)} placeholder="Jamaah Umroh 2024 · Jakarta" />
+      </div>
+
+      {/* Kategori — menentukan di mana testimoni tampil */}
+      <div>
+        <label className="label">Kategori</label>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { value: "trip", title: "Trip", desc: "Tampil di halaman utama" },
+            { value: "visa", title: "Visa", desc: "Tampil di halaman layanan visa" },
+          ].map((opt) => {
+            const active = form.category === opt.value;
+            return (
+              <button key={opt.value} type="button" onClick={() => set("category", opt.value)}
+                className={`text-left px-4 py-3 rounded-lg border transition ${
+                  active
+                    ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-600"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                }`}>
+                <p className={`text-sm font-semibold ${active ? "text-blue-700 dark:text-blue-400" : "text-gray-900 dark:text-white"}`}>{opt.title}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</p>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div>

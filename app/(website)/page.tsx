@@ -40,7 +40,7 @@ const getData = unstable_cache(async () => {
     }),
     prisma.blog.findMany({ where: { published: true }, take: 3, orderBy: { date: "desc" } }),
     prisma.companyInfo.findMany(),
-    prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
+    prisma.testimonial.findMany({ where: { published: true, category: "trip" }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
   // Sudah difilter di query — tinggal urut: tanggal terdekat dulu, open-trip
   // (tripDate null) di paling belakang.
