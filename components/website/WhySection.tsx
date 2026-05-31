@@ -121,9 +121,10 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
             <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>{subtitle}</p>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Mobile: geser 75% (snap) seperti testimoni. Desktop (sm+): grid 4 kolom. */}
+        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:gap-6 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-4">
           {items.map(({ title, desc, Icon }, i) => (
-            <AnimateIn key={title} delay={i * 100}>
+            <AnimateIn key={title} delay={i * 100} className="shrink-0 w-[75%] snap-start sm:w-auto sm:shrink">
               <div className="at-card p-7 h-full">
                 <p className="text-5xl font-bold mb-3" style={{ color: "var(--at-muted)" }}>0{i + 1}</p>
                 <div className="w-11 h-11 border flex items-center justify-center mb-4"

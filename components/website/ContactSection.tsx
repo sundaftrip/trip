@@ -219,22 +219,23 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
+          {/* Card bg = --at-text (inverts per mode); text must contrast = --at-bg. */}
           <div className="at-card p-10 flex flex-col justify-between" style={{ background: "var(--at-text)", borderColor: "var(--at-border)" }}>
             <div>
-              <span className="at-pill mb-6 inline-flex" style={{ color: "rgba(255,255,255,0.7)", borderColor: "rgba(255,255,255,0.3)" }}>
+              <span className="at-pill mb-6 inline-flex" style={{ color: "color-mix(in srgb, var(--at-bg) 78%, transparent)", borderColor: "color-mix(in srgb, var(--at-bg) 35%, transparent)" }}>
                 {ctaLabel}
               </span>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug text-white">{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed text-white/60">{ctaDesc}</p>
+              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug" style={{ color: "var(--at-bg)" }}>{ctaTitle}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "color-mix(in srgb, var(--at-bg) 72%, transparent)" }}>{ctaDesc}</p>
             </div>
             {wa ? (
               <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
                 className="mt-10 at-btn-solid px-6 py-3.5 text-sm self-start"
-                style={{ background: "rgba(255,255,255,0.1)", color: "#ffffff", borderColor: "rgba(255,255,255,0.3)" }}>
+                style={{ background: "color-mix(in srgb, var(--at-bg) 14%, transparent)", color: "var(--at-bg)", borderColor: "color-mix(in srgb, var(--at-bg) 35%, transparent)" }}>
                 <MessageCircle size={16} /> {waLabel}
               </a>
             ) : (
-              <p className="mt-10 text-sm text-white/40">{email}</p>
+              <p className="mt-10 text-sm" style={{ color: "color-mix(in srgb, var(--at-bg) 50%, transparent)" }}>{email}</p>
             )}
           </div>
         </div>
