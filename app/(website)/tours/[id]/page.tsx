@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import type React from "react";
 import { prisma } from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -74,7 +74,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     : 0;
 
   const now = new Date();
-  if (tour.tripDate && tour.tripDate < now) redirect("/tours");
+  // Trip yang tanggalnya sudah lewat TIDAK lagi dialihkan — tetap dibuka dalam
+  // mode "Trip Selesai" (read-only) supaya ulasan + rating tetap tampil & terindeks.
+  const isExpired = !!tour.tripDate && tour.tripDate < now;
 
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
@@ -481,7 +483,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
 
               {/* CTA */}
-              {tour.status === "FULL" ? (
+              {isExpired ? (
+                <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-xl"}`}
+                  style={isOutlined ? { background: tCard, color: tSub } : undefined}>
+                  <CheckCircle size={16} /> Trip Selesai
+                </div>
+              ) : tour.status === "FULL" ? (
                 <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-red-100 text-red-700 rounded-xl"}`}
                   style={isOutlined ? { background: "#fee2e2", color: "#991b1b" } : undefined}>
                   <Ban size={16} /> FULLY BOOKED
