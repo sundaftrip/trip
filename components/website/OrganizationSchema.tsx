@@ -26,6 +26,7 @@ const getOrgData = unstable_cache(
               "company_instagram",
               "company_nib",
               "company_description",
+              "company_legal_name",
             ],
           },
         },
@@ -97,7 +98,7 @@ export default async function OrganizationSchema() {
     "@id": `${SITE_URL}#organization`,
     name,
     alternateName: ["Sundaf Trip", "sundaftrip", "sundaftrip.com", "Sundaf", "Sundaf Holiday Group", DEFAULT_LEGAL],
-    legalName: DEFAULT_LEGAL,
+    legalName: c["company_legal_name"] || DEFAULT_LEGAL,
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
@@ -113,7 +114,9 @@ export default async function OrganizationSchema() {
   if (c["company_address"]) {
     organization.address = {
       "@type": "PostalAddress",
-      streetAddress: c["company_address"],
+      // Buang prefiks nama legal ("CV … - ") kalau ikut tertulis di alamat,
+      // supaya streetAddress bersih untuk konsistensi NAP.
+      streetAddress: c["company_address"].replace(/^CV\s+[^-]*-\s*/i, "").trim(),
       addressLocality: "Jakarta Selatan",
       addressRegion: "DKI Jakarta",
       postalCode: "12940", // Karet Kuningan, lokasi Epiwalk Epicentrum

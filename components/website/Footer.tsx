@@ -49,6 +49,9 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const name     = c["company_name"] || "";
   const logo     = c["company_logo"] || "";
   const nib      = c["company_nib"] || "";
+  const legalName = c["company_legal_name"] || "";
+  // Baris keterangan legal: "CV Sundaf Holiday Group · NIB 1601…"
+  const legalLine = [legalName, nib && `NIB ${nib}`].filter(Boolean).join(" · ");
   const address  = c["company_address"] || "";
   const phone    = c["company_phone"] || "";
   const whatsapp = toWaNumber(c["company_whatsapp"]);
@@ -82,7 +85,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
                 <Image src={logo || "/logo.png"} alt={name} width={176} height={54} style={{ height: 34, width: "auto" }} />
               </span>
               {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--fb-subink)" }}>{tagline}</p>}
-              {nib && <p className="text-xs mt-3" style={{ color: "var(--fb-subink)" }}>NIB {nib}</p>}
+              {legalLine && <p className="text-xs mt-3" style={{ color: "var(--fb-subink)" }}>{legalLine}</p>}
             </div>
 
             <div>
@@ -134,7 +137,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }}>{tagline}</p>}
-            {nib && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>NIB {nib}</p>}
+            {legalLine && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>{legalLine}</p>}
           </div>
 
           <div>
@@ -181,7 +184,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--gl-subtext)" }}>{tagline}</p>}
-            {nib && <p className="text-xs mt-3" style={{ color: "var(--gl-subtext)" }}>NIB {nib}</p>}
+            {legalLine && <p className="text-xs mt-3" style={{ color: "var(--gl-subtext)" }}>{legalLine}</p>}
           </div>
 
           <div>
@@ -227,7 +230,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--at-subtext)" }}>{tagline}</p>}
-            {nib && <p className="text-xs mt-3" style={{ color: "var(--at-subtext)" }}>NIB {nib}</p>}
+            {legalLine && <p className="text-xs mt-3" style={{ color: "var(--at-subtext)" }}>{legalLine}</p>}
           </div>
 
           <div>
@@ -275,7 +278,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--mp-subtext)" }}>{tagline}</p>}
-            {nib && <p className="text-xs mt-3" style={{ color: "var(--mp-subtext)" }}>NIB {nib}</p>}
+            {legalLine && <p className="text-xs mt-3" style={{ color: "var(--mp-subtext)" }}>{legalLine}</p>}
           </div>
 
           <div>
@@ -321,7 +324,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }}>{tagline}</p>}
-            {nib && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>NIB {nib}</p>}
+            {legalLine && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>{legalLine}</p>}
           </div>
 
           <div>
@@ -373,7 +376,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             {tagline && <p className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{tagline}</p>}
-            {nib && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>NIB {nib}</p>}
+            {legalLine && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{legalLine}</p>}
             {/* Pixel color blocks */}
             <div className="flex gap-2 mt-5">
               {["var(--px-red)","var(--px-yellow)","var(--px-cyan)","var(--px-purple)","var(--px-green)"].map((c, i) => (
@@ -425,7 +428,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
             {tagline && <p className="text-sm leading-relaxed text-gray-500 max-w-xs">{tagline}</p>}
-            {nib && <p className="text-xs text-gray-500 mt-3">NIB {nib}</p>}
+            {legalLine && <p className="text-xs text-gray-500 mt-3">{legalLine}</p>}
           </div>
 
           <div>
