@@ -1491,6 +1491,7 @@ a.gl-pill:has(svg:only-child) {
   justify-content: center;
   white-space: nowrap;
   gap: 8px;
+  color: var(--at-text);
   border: 1px solid var(--at-border);
   border-radius: 4px;
   font-weight: 600;
