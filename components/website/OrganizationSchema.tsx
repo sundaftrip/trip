@@ -96,7 +96,7 @@ export default async function OrganizationSchema() {
     "@type": ["Organization", "TravelAgency"],
     "@id": `${SITE_URL}#organization`,
     name,
-    alternateName: ["sundaftrip", "Sundaf", DEFAULT_LEGAL],
+    alternateName: ["Sundaf Trip", "sundaftrip", "sundaftrip.com", "Sundaf", "Sundaf Holiday Group", DEFAULT_LEGAL],
     legalName: DEFAULT_LEGAL,
     url: SITE_URL,
     logo: {
