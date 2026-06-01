@@ -56,6 +56,9 @@ export async function PUT(req: NextRequest) {
   (revalidateTag as unknown as (t: string) => void)("footer-data");
   (revalidateTag as unknown as (t: string) => void)("home-data");
   (revalidateTag as unknown as (t: string) => void)("company-meta");
+  // Schema Organization juga baca info perusahaan — ikut disegarkan biar sinkron
+  (revalidateTag as unknown as (t: string) => void)("site-org-schema");
+  (revalidateTag as unknown as (t: string) => void)("company-info");
   // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
   (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
 
