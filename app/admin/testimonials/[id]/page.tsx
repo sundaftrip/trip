@@ -4,7 +4,14 @@ import TestimonialForm from "../TestimonialForm";
 
 export default async function EditTestimonialPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const item = await prisma.testimonial.findUnique({ where: { id } });
+  const [item, tours] = await Promise.all([
+    prisma.testimonial.findUnique({ where: { id } }),
+    prisma.tour.findMany({
+      where: { status: { not: "DRAFT" } },
+      select: { id: true, title: true, country: true },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
   if (!item) notFound();
 
   return (
@@ -14,9 +21,10 @@ export default async function EditTestimonialPage({ params }: { params: Promise<
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.name}</p>
       </div>
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <TestimonialForm id={item.id} initial={{
+        <TestimonialForm id={item.id} tours={tours} initial={{
           name: item.name, role: item.role ?? "", content: item.content,
-          rating: item.rating, avatar: item.avatar ?? "", category: item.category, published: item.published, order: item.order,
+          rating: item.rating, avatar: item.avatar ?? "", category: item.category,
+          tourId: item.tourId ?? "", published: item.published, order: item.order,
         }} />
       </div>
     </div>

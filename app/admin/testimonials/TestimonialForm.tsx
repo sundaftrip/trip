@@ -7,17 +7,20 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 interface FormData {
   name: string; role: string; content: string;
-  rating: number; avatar: string; category: string; published: boolean; order: number;
+  rating: number; avatar: string; category: string; tourId: string; published: boolean; order: number;
 }
+
+interface TourOption { id: string; title: string; country: string }
 
 interface Props {
   id?: string;
   initial?: Partial<FormData>;
+  tours?: TourOption[];
 }
 
-const EMPTY: FormData = { name: "", role: "", content: "", rating: 5, avatar: "", category: "trip", published: true, order: 0 };
+const EMPTY: FormData = { name: "", role: "", content: "", rating: 5, avatar: "", category: "trip", tourId: "", published: true, order: 0 };
 
-export default function TestimonialForm({ id, initial }: Props) {
+export default function TestimonialForm({ id, initial, tours = [] }: Props) {
   const [form, setForm] = useState<FormData>({ ...EMPTY, ...initial });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -104,6 +107,20 @@ export default function TestimonialForm({ id, initial }: Props) {
             );
           })}
         </div>
+      </div>
+
+      {/* Tour terkait — dasar rating bintang per-tour di Google. Opsional. */}
+      <div>
+        <label className="label">Tour terkait (opsional)</label>
+        <select className="input" value={form.tourId} onChange={(e) => set("tourId", e.target.value)}>
+          <option value="">— Tidak terkait tour tertentu —</option>
+          {tours.map((t) => (
+            <option key={t.id} value={t.id}>{t.title}{t.country ? ` · ${t.country}` : ""}</option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-400 mt-1">
+          Kaitkan ke tour spesifik agar rating bintang (★) bisa muncul di hasil pencarian Google untuk halaman tour itu.
+        </p>
       </div>
 
       <div>

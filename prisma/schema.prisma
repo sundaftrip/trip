@@ -95,6 +95,7 @@ model Tour {
   vendorBills    VendorBill[]
   ledgerEntries  LedgerEntry[]
   fieldExpenses  FieldExpense[]
+  testimonials   Testimonial[]
   expenseToken   String?    @unique  // token link pelaporan pengeluaran TL
 }
 
@@ -218,8 +219,12 @@ model Testimonial {
   category  String   @default("trip") // "trip" | "visa" — pisahkan ulasan trip rombongan vs layanan visa
   published Boolean  @default(true)
   order     Int      @default(0)
+  tourId    String?  // ulasan ini untuk tour spesifik (opsional) — dasar aggregateRating per-tour
+  tour      Tour?    @relation(fields: [tourId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([tourId])
 }
 
 // ─────────────────────────────────────────────────────────────

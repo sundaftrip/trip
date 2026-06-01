@@ -10,6 +10,7 @@ export default async function TestimonialsPage({ searchParams }: { searchParams:
   const items = await prisma.testimonial.findMany({
     where: filter === "all" ? undefined : { category: filter },
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    include: { tour: { select: { title: true } } },
   });
 
   const counts = await prisma.testimonial.groupBy({ by: ["category"], _count: true });
@@ -105,7 +106,14 @@ export default async function TestimonialsPage({ searchParams }: { searchParams:
               ))}
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">"{item.content}"</p>
-            <p className="text-[11px] text-gray-400 mt-2">Urutan: {item.order}</p>
+            <div className="flex items-center gap-2 mt-2 text-[11px] text-gray-400">
+              <span>Urutan: {item.order}</span>
+              {item.tour && (
+                <span className="inline-flex items-center gap-1 text-blue-500 dark:text-blue-400 truncate">
+                  · 🔗 {item.tour.title}
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>

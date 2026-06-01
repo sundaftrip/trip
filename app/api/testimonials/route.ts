@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       rating: Number(body.rating) || 5,
       avatar: body.avatar || null,
       category: body.category === "visa" ? "visa" : "trip",
+      tourId: body.tourId || null,
       published: body.published ?? true,
       order: Number(body.order) || 0,
     },

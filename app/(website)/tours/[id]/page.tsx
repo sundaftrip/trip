@@ -8,7 +8,7 @@ import Link from "next/link";
 import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
   ArrowLeft, MessageCircle, Camera, Building2, FileText,
-  ClipboardList, Plane, Package, Ban, Route, Download,
+  ClipboardList, Plane, Package, Ban, Route, Download, Star,
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
@@ -57,11 +57,21 @@ export async function generateMetadata({
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [tour, companyRows] = await Promise.all([
+  const [tour, companyRows, reviews] = await Promise.all([
     prisma.tour.findUnique({ where: { id } }),
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
+    prisma.testimonial.findMany({
+      where: { tourId: id, published: true },
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    }),
   ]);
   if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
+
+  // Agregat rating dari ulasan ASLI tour ini (dasar AggregateRating JSON-LD).
+  const reviewCount = reviews.length;
+  const ratingValue = reviewCount
+    ? Math.round((reviews.reduce((s, r) => s + r.rating, 0) / reviewCount) * 10) / 10
+    : 0;
 
   const now = new Date();
   if (tour.tripDate && tour.tripDate < now) redirect("/tours");
@@ -139,6 +149,39 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     },
   };
 
+  /* ── Product schema dgn AggregateRating + Review (HANYA jika ada ulasan asli).
+       TouristTrip tidak memunculkan bintang di Google; Product didukung.
+       Rating dihitung dari testimoni nyata yang terikat ke tour ini. ── */
+  const productJsonLd = reviewCount > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: tour.title,
+    description: tour.description ?? tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country}`,
+    ...(tour.heroImg ? { image: [tour.heroImg] } : {}),
+    brand: { "@type": "Brand", name: companyName || "Sundaf Trip" },
+    offers: {
+      "@type": "Offer",
+      price: String(tour.promoPrice ?? tour.price),
+      priceCurrency: "IDR",
+      availability: tour.status === "FULL" ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+      url: `${siteUrl}/tours/${tour.id}`,
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: String(ratingValue),
+      reviewCount: String(reviewCount),
+      bestRating: "5",
+      worstRating: "1",
+    },
+    review: reviews.map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.name },
+      reviewRating: { "@type": "Rating", ratingValue: String(r.rating), bestRating: "5", worstRating: "1" },
+      reviewBody: r.content,
+      datePublished: r.createdAt.toISOString().slice(0, 10),
+    })),
+  } : null;
+
   return (
     <div className="min-h-screen pt-16" style={isOutlined ? { backgroundColor: tBg, ...pixelGridStyle } : undefined}>
       {/* JSON-LD */}
@@ -146,6 +189,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
       />
+      {productJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+      )}
       {/* Hero */}
       <div className={`relative h-80 lg:h-[480px] ${!tour.heroImg && !isOutlined ? "bg-gray-900 dark:bg-gray-950" : ""} ${isOutlined && !tour.heroImg ? "border-b-2" : ""}`}
         style={isOutlined && !tour.heroImg ? { borderColor: tBdr } : undefined}>
@@ -362,6 +411,41 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   style={isOutlined ? { background: tSun, color: tSub } : undefined}>
                   {tour.notes}
                 </p>
+              </div>
+            )}
+
+            {/* Ulasan Peserta — wajib tampil (dasar AggregateRating yang sah) */}
+            {reviewCount > 0 && (
+              <div>
+                <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined && <Star size={18} />} Ulasan Peserta
+                </h2>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-lg font-bold" style={isOutlined ? { color: tText } : undefined}>{ratingValue.toFixed(1)}</span>
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={16} className={i < Math.round(ratingValue) ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-400">({reviewCount} ulasan)</span>
+                </div>
+                <div className="space-y-3">
+                  {reviews.map((r) => (
+                    <div key={r.id} className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
+                      <div className="flex gap-0.5 mb-2">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} size={13} className={i < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
+                        ))}
+                      </div>
+                      <p className={`text-sm leading-relaxed ${isOutlined ? "" : "text-gray-600 dark:text-gray-300"}`} style={isOutlined ? { color: tSub } : undefined}>
+                        &ldquo;{r.content}&rdquo;
+                      </p>
+                      <p className={`text-xs font-semibold mt-2 ${isOutlined ? "" : "text-gray-900 dark:text-white"}`} style={isOutlined ? { color: tText } : undefined}>
+                        {r.name}{r.role ? <span className="font-normal text-gray-400"> · {r.role}</span> : null}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
