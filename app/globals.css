@@ -1486,7 +1486,10 @@ a.gl-pill:has(svg:only-child) {
   background: transparent;
 }
 .at-btn {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   gap: 8px;
   border: 1px solid var(--at-border);
   border-radius: 4px;
@@ -1504,7 +1507,10 @@ a.gl-pill:has(svg:only-child) {
   background: var(--at-text);
   color: var(--at-bg);
   border: 1px solid var(--at-text);
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   gap: 8px;
   border-radius: 4px;
   font-weight: 600;

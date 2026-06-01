@@ -453,18 +453,25 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <Link href="/tours"
-            className="at-btn-solid px-8 py-4 text-sm">
-            {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+        <div className="flex flex-col items-start gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/tours"
+              className="at-btn-solid px-8 py-4 text-sm">
+              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+            </Link>
+            {waNumber && (
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+                className="at-btn px-8 py-4 text-sm"
+                style={{ color: "var(--at-text)" }}>
+                WhatsApp
+              </a>
+            )}
+          </div>
+          <Link href="/visa"
+            className="at-btn px-8 py-4 text-sm"
+            style={{ color: "var(--at-text)" }}>
+            Servis Visa <ArrowRight size={15} />
           </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-              className="at-btn px-8 py-4 text-sm"
-              style={{ color: "var(--at-text)" }}>
-              WhatsApp
-            </a>
-          )}
         </div>
       </div>
     </section>
