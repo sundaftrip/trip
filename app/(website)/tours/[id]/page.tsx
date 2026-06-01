@@ -158,16 +158,20 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     "@context": "https://schema.org",
     "@type": "Product",
     name: tour.title,
-    description: tour.description ?? tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country}`,
+    description: (tour.description || tour.notes || tour.visaInfo || `Paket tour ${tour.country}`).trim(),
     ...(tour.heroImg ? { image: [tour.heroImg] } : {}),
     brand: { "@type": "Brand", name: companyName || "Sundaf Trip" },
-    offers: {
-      "@type": "Offer",
-      price: String(tour.promoPrice ?? tour.price),
-      priceCurrency: "IDR",
-      availability: tour.status === "FULL" ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
-      url: `${siteUrl}/tours/${tour.id}`,
-    },
+    // offers hanya disertakan kalau harga valid (>0). Harga 0 (trip lama) bikin
+    // "Rp 0" & warning Merchant listing — review snippet tidak butuh offers.
+    ...((tour.promoPrice ?? tour.price) > 0 ? {
+      offers: {
+        "@type": "Offer",
+        price: String(tour.promoPrice ?? tour.price),
+        priceCurrency: "IDR",
+        availability: (isExpired || tour.status === "FULL") ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+        url: `${siteUrl}/tours/${tour.id}`,
+      },
+    } : {}),
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: String(ratingValue),
