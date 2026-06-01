@@ -43,29 +43,39 @@ export default async function VisaPage() {
 
         <Link
           href="/visa/faq"
-          className="group inline-flex items-center gap-3 mb-10 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+          className="group flex items-center gap-3 mb-10 rounded-xl px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
+          style={{
+            background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 12%, transparent)",
+            border: "1.5px solid color-mix(in srgb, var(--site-accent,#2d6a4f) 55%, transparent)",
+          }}
         >
           <span
-            className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center"
+            className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
             style={{
-              background: "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 12%, transparent)",
+              background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, transparent)",
               color: "var(--site-accent-ink,#2d6a4f)",
             }}
           >
-            <HelpCircle size={17} />
+            <HelpCircle size={18} />
           </span>
           <span className="flex-1 min-w-0">
-            <span className="block text-sm font-semibold text-gray-900 dark:text-white">
+            <span className="block text-sm font-bold text-gray-900 dark:text-white">
               FAQ Teknis Visa Schengen
             </span>
             <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
               Cerai, anak di bawah 18, apostille Spanyol, sponsor pasangan, rekening kecil
             </span>
           </span>
-          <ArrowRight
-            size={16}
-            className="shrink-0 text-gray-400 group-hover:translate-x-0.5 transition-transform"
-          />
+          <span
+            className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"
+            style={{
+              background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, transparent)",
+              color: "var(--site-accent-ink,#2d6a4f)",
+            }}
+          >
+            Buka
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+          </span>
         </Link>
 
         <VisaDatabase entries={visaEntries} />
