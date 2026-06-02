@@ -272,7 +272,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
               return (
                 <tr
                   key={c.id}
-                  className="group border-t border-gray-100 dark:border-gray-800/70 align-top transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40"
+                  className="group border-t border-t-[color-mix(in_srgb,var(--site-accent)_28%,#e5e7eb)] dark:border-t-[color-mix(in_srgb,var(--site-accent)_25%,#374151)] align-top transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40"
                 >
                   <td className="px-4 py-3">
                     <Link
