@@ -111,18 +111,15 @@ export default async function OrganizationSchema() {
     knowsLanguage: ["id", "en"],
   };
 
-  if (c["company_address"]) {
-    organization.address = {
-      "@type": "PostalAddress",
-      // Buang prefiks nama legal ("CV … - ") kalau ikut tertulis di alamat,
-      // supaya streetAddress bersih untuk konsistensi NAP.
-      streetAddress: c["company_address"].replace(/^CV\s+[^-]*-\s*/i, "").trim(),
-      addressLocality: "Jakarta Selatan",
-      addressRegion: "DKI Jakarta",
-      postalCode: "12940", // Karet Kuningan, lokasi Epiwalk Epicentrum
-      addressCountry: "ID",
-    };
-  }
+  // Service Area Business: tidak ada kantor walk-in, jadi schema TIDAK
+  // menyebut alamat jalan (streetAddress/postalCode). Cukup kota + negara +
+  // areaServed — supaya jujur & sesuai pedoman Google untuk SAB.
+  organization.address = {
+    "@type": "PostalAddress",
+    addressLocality: "Jakarta",
+    addressRegion: "DKI Jakarta",
+    addressCountry: "ID",
+  };
 
   // LocalBusiness butuh `telephone` di top-level Organization (bukan cuma
   // di contactPoint array). Pakai nomor WhatsApp Sundaf sebagai primary.
