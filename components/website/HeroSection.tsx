@@ -453,23 +453,23 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           </span>
         </div>
 
-        <div className="flex flex-col items-start gap-4">
-          <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-col items-stretch sm:items-start gap-4">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-4">
             <Link href="/tours"
-              className="at-btn-solid px-8 py-4 text-sm min-w-[230px]">
+              className="at-btn-solid px-8 py-4 text-sm sm:min-w-[230px]">
               {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
             </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-                className="at-btn px-8 py-4 text-sm min-w-[230px]">
-                WhatsApp
-              </a>
-            )}
+            <Link href="/visa"
+              className="at-btn-solid px-8 py-4 text-sm sm:min-w-[230px]">
+              Servis Visa <ArrowRight size={15} />
+            </Link>
           </div>
-          <Link href="/visa"
-            className="at-btn px-8 py-4 text-sm min-w-[230px]">
-            Servis Visa <ArrowRight size={15} />
-          </Link>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              className="at-btn px-8 py-4 text-sm sm:min-w-[230px]">
+              WhatsApp
+            </a>
+          )}
         </div>
       </div>
     </section>
