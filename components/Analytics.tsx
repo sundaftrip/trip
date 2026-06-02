@@ -23,7 +23,9 @@ declare global {
   }
 }
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// GA4 Measurement ID Sundaf Trip. Bisa di-override via env NEXT_PUBLIC_GA_ID.
+// (Measurement ID bersifat publik — tampil di source halaman — jadi aman di-hardcode.)
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-G7P7VLBDYV";
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
 export default function Analytics() {
