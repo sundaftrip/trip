@@ -1,4 +1,4 @@
-/* GET /tours/[id]/pdf — generates a branded itinerary PDF on the fly
+/* GET /tours/[id]/pdf, generates a branded itinerary PDF on the fly
    from the Tour record and streams it back as a one-click download. */
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
@@ -18,7 +18,7 @@ function parseStory(raw?: string): string[] {
   try {
     const v = JSON.parse(raw);
     if (Array.isArray(v)) return v.filter((x) => typeof x === "string");
-  } catch { /* not JSON — treat as single paragraph */ }
+  } catch { /* not JSON, treat as single paragraph */ }
   return [raw];
 }
 

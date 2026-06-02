@@ -37,7 +37,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
 
   return (
     <>
-      {/* Gallery grid — editorial layout */}
+      {/* Gallery grid, editorial layout */}
       {images.length === 1 && (
         <button
           onClick={() => setActive(0)}
@@ -60,7 +60,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
 
       {images.length >= 3 && (
         <div className="grid grid-cols-3 grid-rows-2 gap-2 h-64 sm:h-80">
-          {/* Hero — 2 cols × 2 rows */}
+          {/* Hero, 2 cols × 2 rows */}
           <button onClick={() => setActive(0)}
             className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
             <Image src={images[0]} alt="Gallery 1" fill className="object-cover group-hover:scale-105 transition duration-500" />
@@ -105,7 +105,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             </button>
           </div>
 
-          {/* Image — adapts to any aspect ratio */}
+          {/* Image, adapts to any aspect ratio */}
           <div
             className="relative flex items-center justify-center px-16"
             style={{ width: "100%", height: "calc(100vh - 130px)" }}

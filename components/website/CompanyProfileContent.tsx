@@ -1,4 +1,4 @@
-/* Company profile page content — credibility page aimed at DMC partners.
+/* Company profile page content, credibility page aimed at DMC partners.
    Displayed in English or Russian via an in-page toggle (default English).
    PDF download offered in English and Russian. */
 "use client";
@@ -15,8 +15,8 @@ type Bi = { en: string; ru: string };
 const HERO = {
   eyebrow: { en: "Company Profile", ru: "Профиль компании" },
   intro: {
-    en: "Sundaf Trip is an Indonesia-based tour operator under CV Sundaf Holiday Group, running affordable, well-curated small group tours to international destinations. We handle every trip end-to-end — itinerary design, ground coordination, and on-ground tour leadership — so each journey is safe, enjoyable, and memorable.",
-    ru: "Sundaf Trip — индонезийский туроператор в составе CV Sundaf Holiday Group, организующий доступные, тщательно продуманные туры малыми группами по международным направлениям. Мы ведём каждую поездку под ключ — разработка маршрута, наземная координация и сопровождение тура — чтобы каждое путешествие было безопасным, приятным и запоминающимся.",
+    en: "Sundaf Trip is an Indonesia-based tour operator under CV Sundaf Holiday Group, running affordable, well-curated small group tours to international destinations. We handle every trip end-to-end, itinerary design, ground coordination, and on-ground tour leadership, so each journey is safe, enjoyable, and memorable.",
+    ru: "Sundaf Trip, индонезийский туроператор в составе CV Sundaf Holiday Group, организующий доступные, тщательно продуманные туры малыми группами по международным направлениям. Мы ведём каждую поездку под ключ, разработка маршрута, наземная координация и сопровождение тура, чтобы каждое путешествие было безопасным, приятным и запоминающимся.",
   },
   legal1: {
     en: "Registered business · NIB 1601260060842",
@@ -37,12 +37,12 @@ const STATS: { num: string; label: Bi }[] = [
 
 const ABOUT: Bi[] = [
   {
-    en: "Founded by Ferdiansah, Sundaf Trip was built on the belief that international travel should be accessible to more people. We focus on small group departures with personal attention — giving travelers a high-value experience without the price tag of a private trip.",
-    ru: "Компания Sundaf Trip, основанная Фердиансахом, родилась из убеждения, что международные путешествия должны быть доступны большему числу людей. Мы делаем ставку на выезды малыми группами с индивидуальным вниманием — давая путешественникам опыт высокой ценности без цены частного тура.",
+    en: "Founded by Ferdiansah, Sundaf Trip was built on the belief that international travel should be accessible to more people. We focus on small group departures with personal attention, giving travelers a high-value experience without the price tag of a private trip.",
+    ru: "Компания Sundaf Trip, основанная Фердиансахом, родилась из убеждения, что международные путешествия должны быть доступны большему числу людей. Мы делаем ставку на выезды малыми группами с индивидуальным вниманием, давая путешественникам опыт высокой ценности без цены частного тура.",
   },
   {
-    en: "From sourcing vendors and negotiating ground arrangements to designing itineraries and leading groups on location, our team manages the full operation in-house — keeping quality and cost under one roof.",
-    ru: "От поиска подрядчиков и согласования наземного обслуживания до разработки маршрутов и сопровождения групп на месте — наша команда ведёт весь процесс собственными силами, удерживая качество и стоимость в одних руках.",
+    en: "From sourcing vendors and negotiating ground arrangements to designing itineraries and leading groups on location, our team manages the full operation in-house, keeping quality and cost under one roof.",
+    ru: "От поиска подрядчиков и согласования наземного обслуживания до разработки маршрутов и сопровождения групп на месте, наша команда ведёт весь процесс собственными силами, удерживая качество и стоимость в одних руках.",
   },
 ];
 
@@ -57,8 +57,8 @@ const SERVICES: { title: Bi; desc: Bi }[] = [
   {
     title: { en: "End-to-End Coordination", ru: "Полная координация" },
     desc: {
-      en: "Flights, accommodation, ground transport, meals, and attraction tickets — organized under one roof.",
-      ru: "Авиаперелёты, проживание, наземный транспорт, питание и билеты на достопримечательности — всё в одних руках.",
+      en: "Flights, accommodation, ground transport, meals, and attraction tickets, organized under one roof.",
+      ru: "Авиаперелёты, проживание, наземный транспорт, питание и билеты на достопримечательности, всё в одних руках.",
     },
   },
   {
@@ -85,8 +85,8 @@ const SERVICES: { title: Bi; desc: Bi }[] = [
   {
     title: { en: "Content & Documentation", ru: "Контент и документация" },
     desc: {
-      en: "In-house content production — branded visuals, travel stories, and full trip documentation.",
-      ru: "Собственное производство контента — фирменные визуалы, истории путешествий и полная документация поездок.",
+      en: "In-house content production, branded visuals, travel stories, and full trip documentation.",
+      ru: "Собственное производство контента, фирменные визуалы, истории путешествий и полная документация поездок.",
     },
   },
 ];
@@ -110,12 +110,12 @@ const DESTINATIONS: { label: Bi; detail: Bi }[] = [
 
 const WHY: Bi[] = [
   {
-    en: "A proven track record — 20+ groups and 700+ travelers operated through 2025.",
-    ru: "Подтверждённый опыт — 20+ групп и 700+ путешественников за 2025 год.",
+    en: "A proven track record, 20+ groups and 700+ travelers operated through 2025.",
+    ru: "Подтверждённый опыт, 20+ групп и 700+ путешественников за 2025 год.",
   },
   {
     en: "Small group specialists, 10–20 pax, for focused and well-coordinated operations.",
-    ru: "Специалисты по малым группам, 10–20 человек — для чёткой и слаженной организации.",
+    ru: "Специалисты по малым группам, 10–20 человек, для чёткой и слаженной организации.",
   },
   {
     en: "Our own Indonesian-speaking tour leader on every departure.",
@@ -126,8 +126,8 @@ const WHY: Bi[] = [
     ru: "Полный цикл организации: структурированные маршруты, чёткая коммуникация, своевременная координация.",
   },
   {
-    en: "A long-term mindset — we build lasting relationships with partners and travelers.",
-    ru: "Настрой на долгосрочность — мы строим прочные отношения с партнёрами и путешественниками.",
+    en: "A long-term mindset, we build lasting relationships with partners and travelers.",
+    ru: "Настрой на долгосрочность, мы строим прочные отношения с партнёрами и путешественниками.",
   },
 ];
 
@@ -160,8 +160,8 @@ const DMC_STEPS: { n: string; title: Bi; desc: Bi }[] = [
     n: "4",
     title: { en: "On-Ground Execution", ru: "Работа на месте" },
     desc: {
-      en: "Our tour leader manages the group; the DMC partner handles local logistics — drivers, hotel check-ins, and daily coordination.",
-      ru: "Наш турлидер ведёт группу; DMC-партнёр отвечает за местную логистику — водитель, заселение, ежедневная координация.",
+      en: "Our tour leader manages the group; the DMC partner handles local logistics, drivers, hotel check-ins, and daily coordination.",
+      ru: "Наш турлидер ведёт группу; DMC-партнёр отвечает за местную логистику, водитель, заселение, ежедневная координация.",
     },
   },
   {
@@ -203,8 +203,8 @@ const TX = {
   snapshotHead: { en: "Company Snapshot", ru: "Кратко о компании" },
   ctaHead: { en: "Partner With Sundaf Trip", ru: "Партнёрство с Sundaf Trip" },
   ctaBody: {
-    en: "Download our full company profile, or reach out directly — we respond to every enquiry.",
-    ru: "Скачайте полный профиль компании или свяжитесь с нами напрямую — мы отвечаем на каждый запрос.",
+    en: "Download our full company profile, or reach out directly, we respond to every enquiry.",
+    ru: "Скачайте полный профиль компании или свяжитесь с нами напрямую, мы отвечаем на каждый запрос.",
   },
   ctaWa: { en: "Contact via WhatsApp", ru: "Написать в WhatsApp" },
   pdfPrefix: { en: "Company Profile", ru: "Профиль компании" },

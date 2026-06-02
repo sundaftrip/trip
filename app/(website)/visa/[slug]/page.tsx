@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!country) return { title: "Visa tidak ditemukan" };
   const summary = country.notes.replace(/^Layanan kami:\s*/i, "").slice(0, 140);
   return {
-    title: `Visa ${country.name} untuk WNI — Layanan Pengurusan | Sundaf Trip`,
+    title: `Visa ${country.name} untuk WNI, Layanan Pengurusan | Sundaf Trip`,
     description: `Informasi & layanan pengurusan visa ${country.name} (${country.en}) untuk pemegang paspor Indonesia. ${summary}`,
   };
 }
@@ -57,12 +57,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function VisaDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  // FAQ tidak diambil dari tabel global Faq lagi — pertanyaan spesifik
+  // FAQ tidak diambil dari tabel global Faq lagi, pertanyaan spesifik
   // (mis. "Berapa lama proses visa Rusia?") akan bocor ke semua halaman
   // negara. Sumber FAQ per-negara: country.faqs (Json di DB) atau
   // visaDefaults(category) sebagai fallback.
   // Testimonial: hanya ulasan kategori "visa" (layanan pengurusan visa),
-  // BUKAN ulasan trip rombongan — supaya relevan & tidak misleading.
+  // BUKAN ulasan trip rombongan, supaya relevan & tidak misleading.
   const [countries, companyRows, testimonials] = await Promise.all([
     prisma.countryVisa.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -108,7 +108,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
   // "Layanan kami: …" → buang prefiks, sisanya jadi paragraf layanan.
   const layananText = country.notes.replace(/^Layanan kami:\s*/i, "").trim();
 
-  // Ekstrak "proses X hari/minggu/bulan" dari notes — buat badge & timeline.
+  // Ekstrak "proses X hari/minggu/bulan" dari notes, buat badge & timeline.
   const processMatch = country.notes.match(
     /proses\s+([\d–\-]+\s*(?:hari|minggu|bulan)(?:\s+kerja)?)/i,
   );
@@ -230,7 +230,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                 className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
                 style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
               ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
-              — seperti formulir & itinerary — Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
+             , seperti formulir & itinerary, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
               {documents.map((doc, i) => {
@@ -270,7 +270,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
               })}
             </div>
             <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
-              Daftar standar — beberapa negara mungkin minta dokumen tambahan. Tim kami konfirmasi sebelum pengajuan.
+              Daftar standar, beberapa negara mungkin minta dokumen tambahan. Tim kami konfirmasi sebelum pengajuan.
             </p>
 
             {/* CTA ke FAQ teknis untuk kasus-kasus khusus */}
@@ -317,7 +317,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   {country.variants.map((v) => {
                     const variantWa = wa
                       ? `https://wa.me/${wa}?text=${encodeURIComponent(
-                          `Halo, saya ingin pesan visa ${country.name} — paket "${v.name}".`,
+                          `Halo, saya ingin pesan visa ${country.name}, paket "${v.name}".`,
                         )}`
                       : "";
                     const priceLabel =
@@ -358,14 +358,14 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   })}
                 </div>
                 <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu — konfirmasi sebelum pengajuan.
+                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu, konfirmasi sebelum pengajuan.
                 </p>
               </>
             ) : (
               <>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{layananText}</p>
                 <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu — konfirmasi sebelum pengajuan.
+                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu, konfirmasi sebelum pengajuan.
                 </p>
               </>
             )}
@@ -378,9 +378,9 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </h2>
             <ol className="relative space-y-3 text-sm">
               {[
-                "Konsultasi via WhatsApp — pilih jenis layanan sesuai kebutuhan",
+                "Konsultasi via WhatsApp, pilih jenis layanan sesuai kebutuhan",
                 "Kirim dokumen scan via WhatsApp atau email",
-                "Untuk visa yang butuh paspor fisik (mis. Eropa & Amerika): antar paspor ke kantor kami, atau cukup kirim via Gojek — tim kami yang terima",
+                "Untuk visa yang butuh paspor fisik (mis. Eropa & Amerika): antar paspor ke kantor kami, atau cukup kirim via Gojek, tim kami yang terima",
                 "Tim kami review dokumen & ajukan ke konsulat/sistem online",
                 processTime
                   ? `Visa terbit dalam ${processTime}`
@@ -412,7 +412,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </ol>
           </section>
 
-          {/* FAQ — per-negara dari CMS, atau fallback default per-kategori. */}
+          {/* FAQ, per-negara dari CMS, atau fallback default per-kategori. */}
           <section id="faq">
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">FAQ</h2>
             <div className="space-y-3">
@@ -438,7 +438,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
           </section>
 
           {/* Ulasan layanan visa (category="visa") dirender full-width
-              di bawah grid — lihat <TestimonialSection> setelah </aside>. */}
+              di bawah grid, lihat <TestimonialSection> setelah </aside>. */}
         </main>
 
         {/* STICKY ORDER FORM */}
@@ -458,7 +458,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
         </aside>
       </div>
 
-      {/* ULASAN LAYANAN VISA — hanya testimoni category="visa" */}
+      {/* ULASAN LAYANAN VISA, hanya testimoni category="visa" */}
       <TestimonialSection items={testimonials} theme={theme} />
     </article>
   );
@@ -471,9 +471,9 @@ function overviewText(visa: VisaKey, name: string, stay: string): string {
     case "voa":
       return `${name} memberikan Visa on Arrival (VOA) untuk pemegang paspor Indonesia. Visa diberikan saat tiba di bandara atau border, masa tinggal maksimal ${stay}. Layanan kami: bantu siapkan dokumen pelengkap dan informasi syarat terkini.`;
     case "evisa":
-      return `Visa ${name} diurus secara elektronik (e-Visa) — diajukan online sebelum keberangkatan. Masa tinggal maksimal ${stay}. Tim kami yang uruskan pengajuan e-Visa-nya, kamu cukup kirim dokumen via WhatsApp dan tunggu visa elektronik terbit di email.`;
+      return `Visa ${name} diurus secara elektronik (e-Visa), diajukan online sebelum keberangkatan. Masa tinggal maksimal ${stay}. Tim kami yang uruskan pengajuan e-Visa-nya, kamu cukup kirim dokumen via WhatsApp dan tunggu visa elektronik terbit di email.`;
     case "wajib":
-      return `Visa ${name} wajib diajukan terlebih dahulu sebelum berangkat — biasanya via kedutaan atau VFS Global. Masa tinggal sesuai visa yang diberikan. Tim kami dampingi seluruh proses: dari pengisian formulir, jadwal interview, sampai pengantaran paspor.`;
+      return `Visa ${name} wajib diajukan terlebih dahulu sebelum berangkat, biasanya via kedutaan atau VFS Global. Masa tinggal sesuai visa yang diberikan. Tim kami dampingi seluruh proses: dari pengisian formulir, jadwal interview, sampai pengantaran paspor.`;
   }
 }
 

@@ -12,7 +12,7 @@ interface Tour {
   description?: string | null;
 }
 
-/* Helpers harga — jangan pernah render "Rp 0" karena bikin kartu terlihat broken.
+/* Helpers harga, jangan pernah render "Rp 0" karena bikin kartu terlihat broken.
    Kalau harga = 0 (belum diisi di CMS) → "Tanya Harga".
    strikePrice hanya muncul kalau promoPrice valid & lebih murah dari price asli. */
 function priceText(tour: Pick<Tour, "price" | "promoPrice">): string {
@@ -325,7 +325,7 @@ function getIata(title: string, city?: string | null): string {
  *  "9 Hari" → "9D"
  */
 function shortenDuration(s: string | null | undefined): string {
-  if (!s) return "—";
+  if (!s) return "-";
   const t = s.trim();
   // Already compact like 7D6N
   if (/^\d+\s*[DH]\s*\d*\s*[NM]?$/i.test(t.replace(/\s/g, ""))) {
@@ -374,7 +374,7 @@ function excerpt(s: string | null | undefined, max = 120): string {
   return (lastSpace > 60 ? cut.slice(0, lastSpace) : cut) + "…";
 }
 
-/** Class code di boarding pass — semantic berdasarkan negara + durasi.
+/** Class code di boarding pass, semantic berdasarkan negara + durasi.
  *  F = First (signature long-haul 10+ hari)
  *  J = Business (international: Russia, Europe, non-Asia)
  *  Y = Economy (domestic Indonesia + regional Asia/SEA)
@@ -413,7 +413,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
   return (
     <div className={`gl-card gl-card-compact group ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      {/* === IMAGE — tetap punya identitas boarding pass (IATA + country) === */}
+      {/* === IMAGE, tetap punya identitas boarding pass (IATA + country) === */}
       <div className="relative h-40 sm:h-44 overflow-hidden rounded-t-[8px]">
         {tour.heroImg
           ? <Image src={cldOptimize(tour.heroImg, 600)} alt={tour.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-[1.04] transition-transform duration-700" />
@@ -427,7 +427,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           </div>
         )}
 
-        {/* BIG IATA + COUNTRY (overlay tetap — identitas tema) */}
+        {/* BIG IATA + COUNTRY (overlay tetap, identitas tema) */}
         <div className="absolute bottom-3 left-4 right-4" style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
           <div className="text-[48px] sm:text-[56px] font-bold text-white leading-[0.85] tracking-tight">{iata}</div>
           <div className="text-[10px] tracking-[0.2em] uppercase text-white/85 mt-0.5">{tour.country}</div>
@@ -442,7 +442,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY COMPACT — 3 baris: title / durasi · tanggal / harga === */}
+      {/* === BODY COMPACT, 3 baris: title / durasi · tanggal / harga === */}
       <div className="px-4 sm:px-5 py-3 sm:py-4 space-y-2">
         {/* Title */}
         <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[17px] leading-snug line-clamp-2" style={{ color: "var(--gl-text)" }}>
@@ -451,12 +451,12 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
         {/* Durasi · Tanggal */}
         <div className="flex items-center gap-2 text-[11px] sm:text-[12px] tracking-[0.08em] uppercase font-medium" style={{ color: "var(--gl-subtext)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
-          <span className="whitespace-nowrap">{duration || "—"}</span>
+          <span className="whitespace-nowrap">{duration || "-"}</span>
           <span className="opacity-40">·</span>
           <span className="whitespace-nowrap">{dateStr}</span>
         </div>
 
-        {/* Harga — promo besar + harga coret kecil di sebelahnya */}
+        {/* Harga, promo besar + harga coret kecil di sebelahnya */}
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className="font-bold text-[17px] sm:text-[19px] lg:text-[21px] leading-tight" style={{ color: "var(--gl-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
             {priceText(tour)}
@@ -565,7 +565,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      {/* === BODY COMPACT — ala boarding pass: judul / durasi · tanggal / harga === */}
+      {/* === BODY COMPACT, ala boarding pass: judul / durasi · tanggal / harga === */}
       <div className="px-5 py-4 flex-1 flex flex-col space-y-2">
         <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
@@ -574,7 +574,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.title}
         </h3>
         <div className="flex items-center gap-2 text-[11px] sm:text-[12px] tracking-[0.08em] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
-          <span className="whitespace-nowrap">{duration || "—"}</span>
+          <span className="whitespace-nowrap">{duration || "-"}</span>
           <span className="opacity-40">·</span>
           <span className="whitespace-nowrap">{dateStr}</span>
         </div>

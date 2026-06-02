@@ -157,7 +157,7 @@ export default async function OrganizationSchema() {
 
   // Service Area Business: tidak ada kantor walk-in, jadi schema TIDAK
   // menyebut alamat jalan (streetAddress/postalCode). Cukup kota + negara +
-  // areaServed — supaya jujur & sesuai pedoman Google untuk SAB.
+  // areaServed, supaya jujur & sesuai pedoman Google untuk SAB.
   organization.address = {
     "@type": "PostalAddress",
     addressLocality: "Jakarta",
@@ -173,7 +173,7 @@ export default async function OrganizationSchema() {
     organization.telephone = phoneE164;
   }
 
-  // Koordinat approximate Rasuna Epicentrum, Kuningan — bantu Knowledge
+  // Koordinat approximate Rasuna Epicentrum, Kuningan, bantu Knowledge
   // Panel render map embed.
   organization.geo = {
     "@type": "GeoCoordinates",
@@ -181,7 +181,7 @@ export default async function OrganizationSchema() {
     longitude: 106.8333,
   };
 
-  // Price range — bantu Google paham positioning Sundaf Trip
+  // Price range, bantu Google paham positioning Sundaf Trip
   organization.priceRange = "Rp 10.000.000 - Rp 50.000.000";
 
   // Jam operasional kantor (Senin-Jumat 09:00-17:00 WIB)

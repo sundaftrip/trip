@@ -38,9 +38,9 @@ const BEBAS: VisaDefaults = {
   ],
   documents: [
     COMMON_PASSPORT,
-    { name: "Tiket pulang", hint: "Dicetak atau softcopy — petugas imigrasi sering minta." },
+    { name: "Tiket pulang", hint: "Dicetak atau softcopy, petugas imigrasi sering minta." },
     { name: "Booking akomodasi", hint: "Hotel, Airbnb, atau alamat tempat menginap." },
-    { name: "Bukti dana (opsional)", hint: "Rekening atau kartu kredit — kadang ditanya petugas." },
+    { name: "Bukti dana (opsional)", hint: "Rekening atau kartu kredit, kadang ditanya petugas." },
   ],
   faqs: [
     {
@@ -56,7 +56,7 @@ const BEBAS: VisaDefaults = {
     {
       question: "Layanan kalian tetap dibutuhkan?",
       answer:
-        "Kalau kamu cuma butuh dokumen pendukung (surat sponsor, itinerary terpercaya, jaminan) — kami bantu siapkan. Untuk pengajuan visa: tidak diperlukan karena bebas visa.",
+        "Kalau kamu cuma butuh dokumen pendukung (surat sponsor, itinerary terpercaya, jaminan), kami bantu siapkan. Untuk pengajuan visa: tidak diperlukan karena bebas visa.",
     },
   ],
 };
@@ -75,7 +75,7 @@ const VOA: VisaDefaults = {
     { name: "Tiket pulang", hint: "Bisa printout atau email." },
     { name: "Booking akomodasi", hint: "Hotel atau Airbnb yang sudah dipesan." },
     { name: "Bukti dana", hint: "Cash USD atau kartu kredit aktif." },
-    { name: "Formulir VOA", hint: "Diisi di counter saat tiba — kami bantu siapkan formulirnya." },
+    { name: "Formulir VOA", hint: "Diisi di counter saat tiba, kami bantu siapkan formulirnya." },
   ],
   faqs: [
     {
@@ -109,7 +109,7 @@ const EVISA: VisaDefaults = {
     { name: "Foto digital terbaru", hint: "Latar putih, format JPG, ≤6 bulan terakhir." },
     { name: "Tiket pulang (booking)", hint: "Printout atau softcopy." },
     { name: "Booking akomodasi", hint: "Konfirmasi hotel/Airbnb." },
-    { name: "Itinerary perjalanan", hint: "Outline kasar tanggal & destinasi — kami bantu siapkan." },
+    { name: "Itinerary perjalanan", hint: "Outline kasar tanggal & destinasi, kami bantu siapkan." },
     {
       name: "Bukti dana (kadang diminta)",
       hint: "Rekening 1-3 bulan terakhir, tergantung negara.",
@@ -119,7 +119,7 @@ const EVISA: VisaDefaults = {
     {
       question: "Berapa lama proses e-Visa?",
       answer:
-        "Tergantung negara — paling cepat instan (Singapura tidak butuh visa, Turki dulu instan), umumnya 3-7 hari kerja. Untuk antisipasi, ajukan minimal 2 minggu sebelum keberangkatan.",
+        "Tergantung negara, paling cepat instan (Singapura tidak butuh visa, Turki dulu instan), umumnya 3-7 hari kerja. Untuk antisipasi, ajukan minimal 2 minggu sebelum keberangkatan.",
     },
     {
       question: "e-Visa harus dicetak?",
@@ -129,7 +129,7 @@ const EVISA: VisaDefaults = {
     {
       question: "Kalau visa ditolak, biaya kembali?",
       answer:
-        "Biaya kedutaan TIDAK refundable, biaya layanan kami juga tidak (kerjaan sudah dilakukan). Tapi konsultasi awal gratis — kami review dokumen dulu sebelum submit untuk minimalisir penolakan.",
+        "Biaya kedutaan TIDAK refundable, biaya layanan kami juga tidak (kerjaan sudah dilakukan). Tapi konsultasi awal gratis, kami review dokumen dulu sebelum submit untuk minimalisir penolakan.",
     },
   ],
 };
@@ -145,35 +145,35 @@ const WAJIB: VisaDefaults = {
   ],
   documents: [
     COMMON_PASSPORT,
-    { name: "Pas foto", hint: "Ukuran sesuai standar negara — biasanya 3.5x4.5 cm atau 5x5 cm, latar putih." },
-    { name: "Formulir visa", hint: "Diisi lengkap — kami bantu pengisian." },
+    { name: "Pas foto", hint: "Ukuran sesuai standar negara, biasanya 3.5x4.5 cm atau 5x5 cm, latar putih." },
+    { name: "Formulir visa", hint: "Diisi lengkap, kami bantu pengisian." },
     { name: "Bukti pekerjaan", hint: "Surat keterangan kerja + slip gaji 3 bulan, atau SIUP untuk pengusaha." },
-    { name: "Rekening koran 3 bulan", hint: "Saldo terlihat stabil, bukan deposit mendadak — kami bantu strategi presentasi keuangan yang jujur (surat referensi bank, gabung bukti aset & sponsor)." },
-    { name: "Tiket pulang (booking)", hint: "Belum lunas tidak masalah — yang penting ada bukti rencana. Kami bantu pesankan tiket reservasi." },
-    { name: "Booking hotel / akomodasi", hint: "Bisa free-cancel di Booking.com kalau belum yakin — kami bantu pesankan." },
-    { name: "Itinerary perjalanan", hint: "Outline harian — kami bantu susun yang masuk akal." },
+    { name: "Rekening koran 3 bulan", hint: "Saldo terlihat stabil, bukan deposit mendadak, kami bantu strategi presentasi keuangan yang jujur (surat referensi bank, gabung bukti aset & sponsor)." },
+    { name: "Tiket pulang (booking)", hint: "Belum lunas tidak masalah, yang penting ada bukti rencana. Kami bantu pesankan tiket reservasi." },
+    { name: "Booking hotel / akomodasi", hint: "Bisa free-cancel di Booking.com kalau belum yakin, kami bantu pesankan." },
+    { name: "Itinerary perjalanan", hint: "Outline harian, kami bantu susun yang masuk akal." },
     { name: "Surat sponsor (jika ada)", hint: "Untuk visa kunjungan keluarga atau dibiayai pihak lain." },
   ],
   faqs: [
     {
       question: "Berapa lama proses pengajuan?",
       answer:
-        "Tergantung kedutaan — biasanya 2-8 minggu. Untuk negara dengan banyak applicant (Schengen, US, UK, Jepang), pakai slot bulanan. Ajukan minimal 6-8 minggu sebelum keberangkatan.",
+        "Tergantung kedutaan, biasanya 2-8 minggu. Untuk negara dengan banyak applicant (Schengen, US, UK, Jepang), pakai slot bulanan. Ajukan minimal 6-8 minggu sebelum keberangkatan.",
     },
     {
       question: "Wawancara wajib?",
       answer:
-        "Tergantung negara. US, UK, Schengen sebagian: ya. Korea, Taiwan, Australia: sebagian besar tidak. Kami brief kamu kalau ada wawancara — apa yang akan ditanya, cara jawab yang aman, dan cara berpakaian.",
+        "Tergantung negara. US, UK, Schengen sebagian: ya. Korea, Taiwan, Australia: sebagian besar tidak. Kami brief kamu kalau ada wawancara, apa yang akan ditanya, cara jawab yang aman, dan cara berpakaian.",
     },
     {
       question: "Kalau visa ditolak, biaya kembali?",
       answer:
-        "Biaya kedutaan TIDAK refundable. Biaya layanan kami juga tidak — kerjaan sudah dilakukan. Tapi kami review dokumen dulu sebelum submit dan kasih estimasi peluang lolos secara jujur. Kalau dokumenmu kurang kuat, kami sarankan jangan submit dulu.",
+        "Biaya kedutaan TIDAK refundable. Biaya layanan kami juga tidak, kerjaan sudah dilakukan. Tapi kami review dokumen dulu sebelum submit dan kasih estimasi peluang lolos secara jujur. Kalau dokumenmu kurang kuat, kami sarankan jangan submit dulu.",
     },
     {
       question: "Saya pernah ditolak negara X, bisa apply ke negara Y?",
       answer:
-        "Bisa — tapi WAJIB declare di formulir visa. Kalau dikuping (kedutaan saling tukar info untuk daftar overstay), risiko ditolak lagi besar. Bicara terus-terang ke kami, kami susun strategi.",
+        "Bisa, tapi WAJIB declare di formulir visa. Kalau dikuping (kedutaan saling tukar info untuk daftar overstay), risiko ditolak lagi besar. Bicara terus-terang ke kami, kami susun strategi.",
     },
   ],
 };

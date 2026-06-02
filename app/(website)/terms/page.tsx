@@ -93,7 +93,7 @@ export default async function TermsPage({
           </>
         )}
 
-        {/* Language toggle — only shown when English content exists */}
+        {/* Language toggle, only shown when English content exists */}
         {hasEn && (
           <div className="flex gap-2 mb-8">
             <a href="/terms" className={lang === "id" ? activePill() : inactivePill()}

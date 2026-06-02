@@ -8,7 +8,7 @@ import Link from "next/link";
 import { MessageCircle, ChevronDown } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "FAQ — Pertanyaan Umum",
+  title: "FAQ, Pertanyaan Umum",
   description: "Jawaban atas pertanyaan paling sering tentang paket tour Rusia, Asia Tengah, dan aurora borealis bersama Sundaftrip.",
   alternates: { canonical: "https://sundaftrip.com/faq" },
 };
@@ -128,7 +128,7 @@ export default async function FaqPage() {
     grouped.push({ section: sec, items: faqs.filter(f => f.section === sec) });
   });
 
-  // FAQPage JSON-LD — bantu mesin AI (ChatGPT, Gemini, Perplexity, dll) &
+  // FAQPage JSON-LD, bantu mesin AI (ChatGPT, Gemini, Perplexity, dll) &
   // Google AI Overviews mengutip jawaban resmi Sundaf Trip langsung dari sini.
   const faqSchema = faqs.length
     ? {
@@ -263,7 +263,7 @@ export default async function FaqPage() {
             Masih ada pertanyaan?
           </h2>
           <p className="text-sm mb-5" style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
-            Tim kami siap membantu Anda merencanakan perjalanan impian — gratis, tanpa komitmen.
+            Tim kami siap membantu Anda merencanakan perjalanan impian, gratis, tanpa komitmen.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a

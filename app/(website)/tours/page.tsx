@@ -1,4 +1,4 @@
-/* Halaman daftar lengkap semua tour — upcoming bookable di atas,
+/* Halaman daftar lengkap semua tour, upcoming bookable di atas,
    trip selesai/sold-out turun ke bawah sebagai dokumentasi. */
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -11,7 +11,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Semua Paket Tour",
   description:
-    "Daftar lengkap paket tour Sundaf Trip — upcoming bookable & dokumentasi trip yang sudah berlangsung.",
+    "Daftar lengkap paket tour Sundaf Trip, upcoming bookable & dokumentasi trip yang sudah berlangsung.",
   alternates: { canonical: "https://sundaftrip.com/tours" },
 };
 
@@ -70,7 +70,7 @@ export default async function ToursPage() {
           Semua Paket Tour
         </h1>
         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">
-          {tours.length} paket — upcoming bookable di atas, trip yang sudah
+          {tours.length} paket, upcoming bookable di atas, trip yang sudah
           berlangsung di bawah sebagai dokumentasi perjalanan.
         </p>
       </header>

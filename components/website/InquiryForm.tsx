@@ -74,7 +74,7 @@ export default function InquiryForm({
 
   return (
     <form onSubmit={onSubmit} className={`space-y-3 ${className}`}>
-      {/* Honeypot — disembunyikan dari manusia, diisi bot */}
+      {/* Honeypot, disembunyikan dari manusia, diisi bot */}
       <input
         type="text"
         name="website"
@@ -122,7 +122,7 @@ export default function InquiryForm({
         {status === "loading" ? "Mengirim…" : "Kirim Permintaan Konsultasi"}
       </button>
       <p className="text-xs text-gray-400">
-        Atau langsung chat WhatsApp kami — respons lebih cepat di jam kerja.
+        Atau langsung chat WhatsApp kami, respons lebih cepat di jam kerja.
       </p>
     </form>
   );

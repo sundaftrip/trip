@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Info Visa Paspor Indonesia",
   description:
-    "Database persyaratan visa 88 negara untuk pemegang paspor Indonesia — dikurasi dari sumber resmi oleh Sundaf Trip.",
+    "Database persyaratan visa 88 negara untuk pemegang paspor Indonesia, dikurasi dari sumber resmi oleh Sundaf Trip.",
   alternates: { canonical: "https://sundaftrip.com/visa" },
 };
 

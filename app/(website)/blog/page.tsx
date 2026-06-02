@@ -10,7 +10,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 export const metadata: Metadata = {
   title: "Blog & Tips Travel",
   description:
-    "Tips travel ke Rusia, Asia Tengah, dan Aurora — cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.",
+    "Tips travel ke Rusia, Asia Tengah, dan Aurora, cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.",
   alternates: { canonical: "https://sundaftrip.com/blog" },
 };
 

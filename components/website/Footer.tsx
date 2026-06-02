@@ -30,7 +30,7 @@ const navLinks = [["Beranda", "/"], ["Blog", "/blog"], ["Tentang Kami", "/about"
 
 type IconProps = { size?: number; className?: string; style?: CSSProperties };
 
-// lucide-react menghapus ikon brand — pakai SVG Instagram inline (currentColor)
+// lucide-react menghapus ikon brand, pakai SVG Instagram inline (currentColor)
 function InstagramIcon({ size = 16, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"

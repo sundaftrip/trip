@@ -58,7 +58,7 @@ export default function ToursCatalog({
   );
 }
 
-/* Filter chips — versi client (button, bukan Link). */
+/* Filter chips, versi client (button, bukan Link). */
 function FilterChips({
   active,
   onChange,
@@ -99,7 +99,7 @@ function FilterChips({
   );
 }
 
-/* Pagination — versi client (button, bukan Link).
+/* Pagination, versi client (button, bukan Link).
    Tetap aesthetic boarding-pass flight info bar. */
 function PaginationBar({
   current,

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-/* Filter region tour — minimalist boarding-pass style.
+/* Filter region tour, minimalist boarding-pass style.
    Map negara → region untuk tampilan filter. */
 export const REGIONS = [
   { key: "all", label: "Semua" },

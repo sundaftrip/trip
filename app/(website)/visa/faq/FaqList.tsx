@@ -109,7 +109,7 @@ export function FaqList({
   items: FaqItem[];
   /**
    * Saat true (default), CTA pink jadi tombol toggle yang expand
-   * `PENGURUSAN_VISA_DETAIL` inline di tempat — user tidak perlu scroll.
+   * `PENGURUSAN_VISA_DETAIL` inline di tempat, user tidak perlu scroll.
    * Saat false (untuk section "Pengurusan Visa via Sundaf" itu sendiri),
    * jatuh kembali ke anchor link `#layanan-pendukung`.
    */

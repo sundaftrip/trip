@@ -1,4 +1,4 @@
-// ISR — homepage di-revalidate setiap 5 menit lewat unstable_cache di getData().
+// ISR, homepage di-revalidate setiap 5 menit lewat unstable_cache di getData().
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
 export const revalidate = 300;
 import type { Metadata } from "next";
@@ -16,7 +16,7 @@ import TestimonialSection from "@/components/website/TestimonialSection";
 const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
     prisma.siteText.findMany(),
-    // SELECT explicit — homepage card hanya butuh field ini. Skip:
+    // SELECT explicit, homepage card hanya butuh field ini. Skip:
     // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
     // notes (long), description (long, di-excerpt di card). Hemat JSON
     // payload yang dikirim ke client hydration (ToursCatalog).
@@ -42,7 +42,7 @@ const getData = unstable_cache(async () => {
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true, category: "trip" }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
-  // Sudah difilter di query — tinggal urut: tanggal terdekat dulu, open-trip
+  // Sudah difilter di query, tinggal urut: tanggal terdekat dulu, open-trip
   // (tripDate null) di paling belakang.
   const tours = [...toursRaw].sort((a, b) => {
     const at = a.tripDate?.getTime() ?? Infinity;
@@ -64,21 +64,21 @@ export async function generateMetadata(): Promise<Metadata> {
     rows.forEach((r) => { c[r.key] = r.value; });
     const name = c["company_name"] || "Travel";
     return {
-      title: `${name} — Paket Wisata Terpercaya`,
+      title: `${name}, Paket Wisata Terpercaya`,
       description: `${name} menyediakan paket wisata terpercaya dengan pelayanan terbaik.`,
-      openGraph: { title: `${name} — Paket Wisata`, type: "website", url: "https://sundaftrip.com" },
+      openGraph: { title: `${name}, Paket Wisata`, type: "website", url: "https://sundaftrip.com" },
       alternates: { canonical: "https://sundaftrip.com" },
     };
   } catch {
     return {
-      title: "Travel — Paket Wisata Terpercaya",
+      title: "Travel, Paket Wisata Terpercaya",
       alternates: { canonical: "https://sundaftrip.com" },
     };
   }
 }
 
 export default async function HomePage() {
-  // Tidak ada searchParams — pagination + filter region ditangani di
+  // Tidak ada searchParams, pagination + filter region ditangani di
   // client (lihat ToursCatalog). Hasilnya: page HTML jadi STATIC dan
   // bisa di-cache Vercel Edge.
   const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();

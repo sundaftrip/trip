@@ -34,7 +34,7 @@ const ALL_FONT_VARS = [
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 
-// Brand-forward — hardcode "Sundaf Trip" sebagai brand consumer-facing.
+// Brand-forward, hardcode "Sundaf Trip" sebagai brand consumer-facing.
 // Legal entity (CV SUNDAF HOLIDAY GROUP) tetap dipakai untuk schema/footer
 // via company_name di DB. Tapi title/meta pakai brand simpel agar Google
 // jelas paham "Sundaf Trip" itu entity utama, bukan typo "sunday trip".
@@ -70,14 +70,14 @@ const getCompanyMeta = unstable_cache(
 export async function generateMetadata(): Promise<Metadata> {
   const { logo } = await getCompanyMeta();
   const description =
-    "Sundaf Trip — spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
+    "Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
 
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      // Homepage default title — brand-forward
-      default: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
-      // Child pages: "{page title} | Sundaf Trip" — brand SELALU di belakang
+      // Homepage default title, brand-forward
+      default: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
+      // Child pages: "{page title} | Sundaf Trip", brand SELALU di belakang
       template: `%s | ${BRAND_NAME}`,
     },
     description,
@@ -93,7 +93,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "visa Rusia Indonesia",
     ],
     openGraph: {
-      title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
+      title: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
       description,
       url: siteUrl,
       siteName: BRAND_NAME,
@@ -103,7 +103,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
+      title: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
       description,
     },
     appleWebApp: {

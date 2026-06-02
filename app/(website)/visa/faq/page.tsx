@@ -812,7 +812,7 @@ function faqAnswerToText(node: FaqItem["a"]): string {
   return extractText(node).replace(/\s+/g, " ").trim();
 }
 
-// FAQPage JSON-LD — bantu mesin AI (ChatGPT, Gemini, Perplexity, dll) & Google
+// FAQPage JSON-LD, bantu mesin AI (ChatGPT, Gemini, Perplexity, dll) & Google
 // AI Overviews mengutip jawaban teknis visa resmi Sundaf Trip. Section promosi
 // "Pengurusan Visa via Sundaf" SENGAJA tidak dimasukkan (pedoman Google
 // melarang markup konten iklan/promosi).

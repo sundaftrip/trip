@@ -6,7 +6,7 @@ import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, C
 import { formatCurrency, toWaNumber } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Wisata Murmansk & Aurora Borealis dari Indonesia — Sundaftrip",
+  title: "Wisata Murmansk & Aurora Borealis dari Indonesia, Sundaftrip",
   description:
     "Panduan lengkap wisata Murmansk, Rusia untuk traveler Indonesia: cara ke sana, visa, waktu terbaik lihat aurora borealis, estimasi budget dalam rupiah, dan paket tur tersedia.",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "aurora borealis indonesia", "tur rusia murmansk", "sundaftrip rusia",
   ],
   openGraph: {
-    title: "Wisata Murmansk & Aurora Borealis — Sundaftrip",
+    title: "Wisata Murmansk & Aurora Borealis, Sundaftrip",
     description: "Panduan lengkap wisata Murmansk Rusia untuk traveler Indonesia. Visa, flight, aurora, budget IDR.",
     type: "article",
     images: [{ url: "https://picsum.photos/seed/murmansk-aurora/1200/630", width: 1200, height: 630 }],
@@ -143,7 +143,7 @@ export default async function MurmanskPage() {
 
       {/* ── HERO ── */}
       <div className="relative h-[72vh] min-h-[520px] flex items-end">
-        {/* Foto HD aurora Pexels — tampil di semua theme */}
+        {/* Foto HD aurora Pexels, tampil di semua theme */}
         <Image
           src="https://images.pexels.com/photos/30173400/pexels-photo-30173400.jpeg?auto=compress&cs=tinysrgb&w=1920"
           alt="Aurora Borealis di Murmansk, Rusia"
@@ -152,7 +152,7 @@ export default async function MurmanskPage() {
           priority
           sizes="100vw"
         />
-        {/* Cinematic overlay — bawah gelap agar teks terbaca */}
+        {/* Cinematic overlay, bawah gelap agar teks terbaca */}
         <div className="absolute inset-0" style={{
           background: "linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.52) 42%, rgba(0,0,0,0.15) 100%)",
         }} />
@@ -188,7 +188,7 @@ export default async function MurmanskPage() {
               : "Kota di atas Lingkar Arktik. Tempat matahari tak terbit selama berminggu-minggu, dan langitnya meledak dengan cahaya hijau magis yang sungguh memukau."}
           </p>
 
-          {/* CTA — paket tour dulu, WA sebagai sekunder */}
+          {/* CTA, paket tour dulu, WA sebagai sekunder */}
           <div className="flex flex-wrap gap-3">
             {tours.length > 0 ? (
               <a href="#paket-tour"

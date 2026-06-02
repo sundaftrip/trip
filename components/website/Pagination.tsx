@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-/* Navigasi halaman katalog tour — aesthetic boarding pass / flight info bar.
+/* Navigasi halaman katalog tour, aesthetic boarding pass / flight info bar.
    Monospace + bordered pills supaya konsisten dengan theme Globe. */
 export default function Pagination({
   currentPage,

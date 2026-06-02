@@ -75,7 +75,7 @@ function Carousel({ items, renderCard, darkDots = false }: {
 
   return (
     <div>
-      {/* Track — 75% card width + 25% peek */}
+      {/* Track, 75% card width + 25% peek */}
       <div
         ref={trackRef}
         className="flex gap-4 overflow-x-auto pb-2"
@@ -92,7 +92,7 @@ function Carousel({ items, renderCard, darkDots = false }: {
 
       {/* Controls */}
       <div className="flex items-center justify-between mt-6 px-6 gap-4">
-        {/* Dots — untuk banyak item tampilkan counter saja (ringkas) */}
+        {/* Dots, untuk banyak item tampilkan counter saja (ringkas) */}
         {items.length > 10 ? (
           <div className={`text-xs font-medium tabular-nums ${darkDots ? "text-white/70" : "text-gray-500 dark:text-gray-400"}`}>
             {current + 1} / {items.length}

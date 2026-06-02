@@ -16,7 +16,7 @@ import TourShareButtons from "@/components/website/TourShareButtons";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
-/* ── generateMetadata — og:image dari heroImg tour ───────────────── */
+/* ── generateMetadata, og:image dari heroImg tour ───────────────── */
 export async function generateMetadata({
   params,
 }: {
@@ -74,7 +74,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     : 0;
 
   const now = new Date();
-  // Trip yang tanggalnya sudah lewat TIDAK lagi dialihkan — tetap dibuka dalam
+  // Trip yang tanggalnya sudah lewat TIDAK lagi dialihkan, tetap dibuka dalam
   // mode "Trip Selesai" (read-only) supaya ulasan + rating tetap tampil & terindeks.
   const isExpired = !!tour.tripDate && tour.tripDate < now;
 
@@ -162,7 +162,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ...(tour.heroImg ? { image: [tour.heroImg] } : {}),
     brand: { "@type": "Brand", name: companyName || "Sundaf Trip" },
     // offers hanya disertakan kalau harga valid (>0). Harga 0 (trip lama) bikin
-    // "Rp 0" & warning Merchant listing — review snippet tidak butuh offers.
+    // "Rp 0" & warning Merchant listing, review snippet tidak butuh offers.
     ...((tour.promoPrice ?? tour.price) > 0 ? {
       offers: {
         "@type": "Offer",
@@ -222,12 +222,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             </span>
           )}
 
-          {/* Hero title — plain white, readable on any tour photo */}
+          {/* Hero title, plain white, readable on any tour photo */}
           <h1 className="text-4xl lg:text-6xl font-black leading-tight mb-4 tracking-tight text-white drop-shadow-lg">
             {tour.title}
           </h1>
 
-          {/* Info pills — frosted glass style, consistent across all themes */}
+          {/* Info pills, frosted glass style, consistent across all themes */}
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
             {[
               { icon: <MapPin size={11} />, text: `${tour.country}${tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}` },
@@ -257,7 +257,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
 
-            {/* Deskripsi Tour — evocative copy, paragraf + bonus/optional */}
+            {/* Deskripsi Tour, evocative copy, paragraf + bonus/optional */}
             {tour.description && (
               <div>
                 <div className={`text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line ${isOutlined ? "" : "text-gray-700 dark:text-gray-300"}`}
@@ -317,7 +317,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </h2>
 
                 {isAtlas ? (
-                  /* Atlas: clean vertical timeline — black & white */
+                  /* Atlas: clean vertical timeline, black & white */
                   <div className="space-y-0">
                     {itinerary.map((item, idx) => (
                       <div key={item.day} className="flex gap-5">
@@ -420,7 +420,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
             )}
 
-            {/* Ulasan Peserta — wajib tampil (dasar AggregateRating yang sah) */}
+            {/* Ulasan Peserta, wajib tampil (dasar AggregateRating yang sah) */}
             {reviewCount > 0 && (
               <div>
                 <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>

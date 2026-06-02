@@ -190,7 +190,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2 xl:gap-3 shrink-0">
-            {/* Lihat Tour = primary CTA — paling kontras. Wrapper menahan
+            {/* Lihat Tour = primary CTA, paling kontras. Wrapper menahan
                 cascade .gl-btn (unlayered) yang menang atas utility hidden. */}
             <div className="hidden xl:block">
               <Link href="/tours" className="gl-btn px-4 py-2 text-[11px] font-black"
@@ -210,7 +210,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
-            {/* Wrapper-nya yang punya breakpoint hide — supaya .gl-pill
+            {/* Wrapper-nya yang punya breakpoint hide, supaya .gl-pill
                 (unlayered CSS) tidak menang atas utility xl:hidden di anak. */}
             <div className="xl:hidden">
               <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="gl-pill"
@@ -506,7 +506,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
     </header>
   );
 
-  /* ── DAUN — IsDB-inspired clean white + green pill nav ── */
+  /* ── DAUN, IsDB-inspired clean white + green pill nav ── */
   if (theme === "daun") {
     return (
       <header className={cn(

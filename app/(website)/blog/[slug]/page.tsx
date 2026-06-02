@@ -25,7 +25,7 @@ async function getSiteInfo() {
   }
 }
 
-/* ── #5: generateMetadata — og:image dari cover artikel ─────────────── */
+/* ── #5: generateMetadata, og:image dari cover artikel ─────────────── */
 export async function generateMetadata({
   params,
 }: {
@@ -72,7 +72,7 @@ export default async function BlogDetailPage({
     await Promise.all([
       prisma.blog.findFirst({ where: { slug, published: true } }),
       getSiteInfo(),
-      /* #2: Related articles — 3 artikel terbaru selain ini */
+      /* #2: Related articles, 3 artikel terbaru selain ini */
       prisma.blog.findMany({
         where: { published: true, slug: { not: slug } },
         orderBy: { date: "desc" },
@@ -82,7 +82,7 @@ export default async function BlogDetailPage({
           category: true, readTime: true, date: true,
         },
       }),
-      /* #3: Tour CTA — 2 paket mendatang */
+      /* #3: Tour CTA, 2 paket mendatang */
       prisma.tour.findMany({
         where: { status: { not: "DRAFT" }, tripDate: { gte: new Date() } },
         orderBy: { tripDate: "asc" },
@@ -126,7 +126,7 @@ export default async function BlogDetailPage({
 
   const wrapperStyle = pageBg ? { backgroundColor: pageBg, ...pixelGrid } : undefined;
 
-  /* ── #4: JSON-LD — Article schema ──────────────────────────────── */
+  /* ── #4: JSON-LD, Article schema ──────────────────────────────── */
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -280,7 +280,7 @@ export default async function BlogDetailPage({
               <p
                 className={`text-sm mb-6 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`}
                 style={isOutlined ? { color: subClr } : undefined}>
-                Semua paket dirancang khusus untuk traveler Indonesia — dari visa, tiket, sampai guide lokal.
+                Semua paket dirancang khusus untuk traveler Indonesia, dari visa, tiket, sampai guide lokal.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">

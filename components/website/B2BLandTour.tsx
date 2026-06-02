@@ -11,7 +11,7 @@ import { lora } from "@/lib/fonts";
 const COVERAGE: { Icon: LucideIcon; title: string; desc: string }[] = [
   { Icon: Hotel, title: "Akomodasi", desc: "Hotel terkurasi di lokasi strategis dan nyaman untuk grup." },
   { Icon: Bus, title: "Transportasi Darat", desc: "Coach atau minibus private dengan sopir berpengalaman." },
-  { Icon: Utensils, title: "Pengaturan Makan", desc: "Makan terjadwal, fleksibel — termasuk opsi halal." },
+  { Icon: Utensils, title: "Pengaturan Makan", desc: "Makan terjadwal, fleksibel, termasuk opsi halal." },
   { Icon: Ticket, title: "Tiket Atraksi", desc: "Tiket masuk objek wisata utama di setiap destinasi." },
   { Icon: UserCheck, title: "Tour Leader", desc: "Tour leader berbahasa Indonesia mendampingi grup secara penuh." },
   { Icon: Route, title: "Desain Itinerary", desc: "Itinerary dirancang sesuai tema, budget, dan preferensi grup." },
@@ -25,18 +25,18 @@ const DESTINATIONS: { region: string; detail: string }[] = [
 ];
 
 const WHY: string[] = [
-  "Rekam jejak nyata — 20+ grup dan 700+ traveler dioperasikan sepanjang 2025.",
-  "Spesialis grup kecil 10–20 pax — operasional fokus dan terkoordinasi.",
+  "Rekam jejak nyata, 20+ grup dan 700+ traveler dioperasikan sepanjang 2025.",
+  "Spesialis grup kecil 10–20 pax, operasional fokus dan terkoordinasi.",
   "Tour leader sendiri, berbahasa Indonesia, di setiap keberangkatan.",
-  "Harga land tour kompetitif dengan rincian transparan — tanpa biaya tersembunyi.",
+  "Harga land tour kompetitif dengan rincian transparan, tanpa biaya tersembunyi.",
   "Komunikasi responsif via WhatsApp dan email sepanjang proses.",
 ];
 
 const STEPS: { n: string; title: string; desc: string }[] = [
-  { n: "1", title: "Konsultasi", desc: "Sampaikan rencana grup Anda — destinasi, tanggal, jumlah pax, dan kisaran budget." },
+  { n: "1", title: "Konsultasi", desc: "Sampaikan rencana grup Anda, destinasi, tanggal, jumlah pax, dan kisaran budget." },
   { n: "2", title: "Penawaran", desc: "Kami susun penawaran land tour terinci: hotel, transport, makan, tiket, dan tour leader." },
   { n: "3", title: "Konfirmasi", desc: "Review bersama, negosiasi, lalu finalisasi paket dan jadwal." },
-  { n: "4", title: "Operasional", desc: "Kami jalankan seluruh perjalanan di destinasi — Anda cukup memantau." },
+  { n: "4", title: "Operasional", desc: "Kami jalankan seluruh perjalanan di destinasi, Anda cukup memantau." },
   { n: "5", title: "Laporan", desc: "Umpan balik pasca-trip untuk menyempurnakan keberangkatan berikutnya." },
 ];
 
@@ -56,7 +56,7 @@ const FERDIANSAH = {
   initial: "F",
   name: "Ferdiansah",
   role: "Founder",
-  desc: "Memimpin operasional Sundaf Trip — pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
+  desc: "Memimpin operasional Sundaf Trip, pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
 };
 
 const BILLY = {
@@ -86,7 +86,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         </h1>
         <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
           Sundaf Trip adalah land tour operator. Travel agent mengirimkan
-          grupnya, dan kami yang menangani seluruh operasional di destinasi —
+          grupnya, dan kami yang menangani seluruh operasional di destinasi,
           hotel, transportasi, makan, tiket atraksi, hingga tour leader. Anda
           fokus menjual; kami memastikan perjalanannya berjalan mulus.
         </p>
@@ -97,7 +97,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
           <div className="text-sm">
             <p className="font-bold text-gray-900 dark:text-white">Anda jual, kami yang operasikan</p>
             <p className="mt-1 text-gray-500 dark:text-gray-400">
-              Sundaf Trip — CV Sundaf Holiday Group — adalah pemasok (supplier)
+              Sundaf Trip, CV Sundaf Holiday Group, adalah pemasok (supplier)
               land tour spesialis Rusia, Asia Tengah, dan India untuk travel
               agent di Indonesia.
             </p>
@@ -197,7 +197,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         <div className="mt-12 p-6 rounded-2xl bg-gray-900 dark:bg-gray-800 text-center">
           <h2 className={`text-2xl font-bold text-white mb-2 ${lora.className}`}>Kirim Grup Anda Bersama Kami</h2>
           <p className="text-sm text-gray-300 mb-6">
-            Ceritakan rencana grup Anda — kami siapkan penawaran land tour-nya.
+            Ceritakan rencana grup Anda, kami siapkan penawaran land tour-nya.
             Kami merespons setiap pertanyaan.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">

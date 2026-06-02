@@ -6,7 +6,7 @@ import { MapPin, Clock, MessageCircle, ChevronRight, Plane, Thermometer, Camera,
 import { formatCurrency, toWaNumber } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Wisata Kazakhstan dari Indonesia — Almaty, Astana & Alam Liar — Sundaftrip",
+  title: "Wisata Kazakhstan dari Indonesia, Almaty, Astana & Alam Liar, Sundaftrip",
   description:
     "Panduan lengkap wisata Kazakhstan untuk traveler Indonesia: visa, penerbangan dari Jakarta, Almaty, Astana, Danau Kaindy, Charyn Canyon, estimasi budget rupiah, dan paket tur tersedia.",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "tour asia tengah", "sundaftrip kazakhstan",
   ],
   openGraph: {
-    title: "Wisata Kazakhstan — Almaty, Astana & Alam Liar — Sundaftrip",
+    title: "Wisata Kazakhstan, Almaty, Astana & Alam Liar, Sundaftrip",
     description: "Panduan wisata Kazakhstan untuk traveler Indonesia. Visa gratis 30 hari, alam epik, dan kota modern.",
     type: "article",
     images: [{ url: "https://picsum.photos/seed/kazakhstan-almaty/1200/630", width: 1200, height: 630 }],
@@ -210,8 +210,8 @@ export default async function KazakhstanPage() {
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}
           >
             {isPixel
-              ? "KAZAKHSTAN —\nNEGERI NOMADEN"
-              : <>Kazakhstan —<br />
+              ? "KAZAKHSTAN,\nNEGERI NOMADEN"
+              : <>Kazakhstan,<br />
                 <span style={{ color: isOutlined ? (headClr ?? "var(--site-accent)") : "var(--site-accent,#c8860a)" }}>
                   Negeri Nomaden
                 </span>

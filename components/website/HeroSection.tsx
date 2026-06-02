@@ -26,7 +26,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     return val.id || val.en || fallback;
   };
   const eyebrow = companyName
-    ? `${companyName} — ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
+    ? `${companyName}, ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
 
   /* Render tiap kata sebagai block. Huruf pertama (akronim S-U-N-D-A-F)
@@ -40,7 +40,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     { dx: "88px",   rot: "868deg"  },
   ];
   const TitleWords = ({ extra }: { extra?: React.ReactNode }) => {
-    let g = 0; // indeks huruf global — stagger tiap huruf rontok
+    let g = 0; // indeks huruf global, stagger tiap huruf rontok
     const words = t("hero_title", "Wujudkan Perjalanan Impian Anda")
       .split(/\s+/)
       .filter(Boolean);
@@ -295,7 +295,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       {/* Animated lat/lon grid overlay */}
       <div className="absolute inset-0 mp-grid-bg pointer-events-none" />
 
-      {/* Parchment land silhouette — large organic shape, top-right */}
+      {/* Parchment land silhouette, large organic shape, top-right */}
       <div className="absolute -top-32 right-0 w-[55%] h-[110%] pointer-events-none hidden lg:block"
         style={{ background: "var(--mp-land)", clipPath: "polygon(18% 0%, 100% 0%, 100% 100%, 8% 100%, 0% 60%, 5% 30%)", opacity: 0.72 }} />
 
@@ -310,13 +310,13 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
       <div className="absolute mp-pin pointer-events-none" style={{ top: "220px", left: "35%", animationDelay: "0.8s" }} />
       <div className="absolute mp-pin pointer-events-none" style={{ top: "220px", left: "50%", animationDelay: "1.6s" }} />
 
-      {/* Compass rose — bottom-right of land area */}
+      {/* Compass rose, bottom-right of land area */}
       <div className="absolute bottom-12 right-[8%] mp-compass hidden lg:flex items-center justify-center" style={{ width: 56, height: 56 }}>
         <div className="mp-compass-n" />
         <div className="mp-compass-c" />
       </div>
 
-      {/* Outer frame border — like a real map */}
+      {/* Outer frame border, like a real map */}
       <div className="absolute inset-3 border pointer-events-none hidden lg:block" style={{ borderColor: "color-mix(in srgb, var(--mp-border) 30%, transparent)" }} />
 
       <div className="max-w-7xl mx-auto w-full relative z-10">

@@ -1,5 +1,5 @@
-/* Halaman /search?q=... — search lintas tour, blog, dan visa entry.
-   Tidak hanya untuk user — juga supaya SearchAction schema valid,
+/* Halaman /search?q=..., search lintas tour, blog, dan visa entry.
+   Tidak hanya untuk user, juga supaya SearchAction schema valid,
    yang berpotensi memunculkan sitelinks search box di SERP Google. */
 import type { Metadata } from "next";
 import Link from "next/link";

@@ -35,7 +35,7 @@ export default function TourShareButtons({
       await navigator.clipboard.writeText(getUrl());
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
-    } catch { /* ignore — browser may block */ }
+    } catch { /* ignore, browser may block */ }
   };
 
   const handleShare = async () => {

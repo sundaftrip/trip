@@ -1,4 +1,4 @@
-/* Tombol WhatsApp mengambang — selalu terlihat saat scroll halaman panjang.
+/* Tombol WhatsApp mengambang, selalu terlihat saat scroll halaman panjang.
    Karena halaman publik bisa sangat panjang, CTA persistent ini penting buat
    konversi mobile. Server component (link biasa, tidak butuh state). */
 import { toWaNumber } from "@/lib/utils";

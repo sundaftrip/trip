@@ -6,7 +6,7 @@ import OrganizationSchema from "@/components/website/OrganizationSchema";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
-// REBRAND 2026-05-31 — SUNDAF charcoal/teal defaults (was forest green).
+// REBRAND 2026-05-31, SUNDAF charcoal/teal defaults (was forest green).
 const COLOR_DEFAULTS: Record<string, string> = {
   color_hero: "#222831",
   color_heading: "#222831",
@@ -75,7 +75,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     // Aksen aman-kontras untuk dipakai sebagai teks (light = aksen apa adanya)
     ` --site-accent-ink: ${accent};` +
     ` --site-font-family: ${fontFamily};` +
-    // Background bernuansa lembut dari warna aksen — ikut berubah saat skema diganti
+    // Background bernuansa lembut dari warna aksen, ikut berubah saat skema diganti
     ` --site-bg: color-mix(in srgb, ${accent} 5%, #ffffff);` +
     ` --site-bg-soft: color-mix(in srgb, ${accent} 9%, #ffffff);`;
 
@@ -95,7 +95,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     `}</style>
   );
 
-  /* ── CONSOLE — layout sidebar ala dashboard ── */
+  /* ── CONSOLE, layout sidebar ala dashboard ── */
   if (theme === "console") {
     return (
       <>
@@ -113,7 +113,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     );
   }
 
-  /* ── TERI — tema original (honeycomb + shadow warni + tepi bergerigi) ── */
+  /* ── TERI, tema original (honeycomb + shadow warni + tepi bergerigi) ── */
   const isTeri = theme === "teri";
 
   return (

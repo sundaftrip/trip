@@ -1,10 +1,10 @@
 "use client";
 
-/* Form pemesanan visa per-negara — menggantikan kartu harga statis di
+/* Form pemesanan visa per-negara, menggantikan kartu harga statis di
    /visa/[slug]. User pilih varian + jumlah applicant + opsional catatan,
    submit → buka WhatsApp dengan pesan terstruktur (country, paket,
    jumlah, subtotal, catatan).
-   Tidak ada payment gateway — alur tetap WA-first, sesuai pola situs. */
+   Tidak ada payment gateway, alur tetap WA-first, sesuai pola situs. */
 
 import { useMemo, useState } from "react";
 import { CheckCircle2, Minus, Plus, MessageCircle } from "lucide-react";

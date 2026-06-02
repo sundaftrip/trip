@@ -43,16 +43,16 @@ const DEFAULT_DESTINATIONS = [
 const VALUE_ICONS = [Users, ShieldCheck, Heart, Sparkles];
 
 const DEFAULT_VALUES = [
-  { title: "Grup Kecil, Pengalaman Besar", desc: "Maksimal 10–12 orang per keberangkatan. Bukan rombongan bus — perjalanan yang terasa personal." },
-  { title: "Pendampingan Penuh",           desc: "Dari proses visa, tiket, akomodasi, hingga kepulangan — semuanya kami handle dengan transparan." },
+  { title: "Grup Kecil, Pengalaman Besar", desc: "Maksimal 10–12 orang per keberangkatan. Bukan rombongan bus, perjalanan yang terasa personal." },
+  { title: "Pendampingan Penuh",           desc: "Dari proses visa, tiket, akomodasi, hingga kepulangan, semuanya kami handle dengan transparan." },
   { title: "Itinerary Manusiawi",          desc: "Tidak terburu-buru, tidak terlalu padat. Kami beri ruang untuk menikmati, bukan sekadar centang daftar." },
   { title: "Informasi Terkini",            desc: "Kami update kondisi visa, situasi lapangan, dan tips lokal sebelum setiap keberangkatan." },
 ];
 
 const DEFAULT_STORY = [
-  "Kami mulai dengan satu paket ke Moskow dan St. Petersburg — di saat kebanyakan agen wisata Indonesia masih fokus di Eropa Barat dan Asia Tenggara. Hasilnya? Peserta kami pulang dengan cerita yang tidak bisa mereka temukan di majalah travel mana pun.",
+  "Kami mulai dengan satu paket ke Moskow dan St. Petersburg, di saat kebanyakan agen wisata Indonesia masih fokus di Eropa Barat dan Asia Tenggara. Hasilnya? Peserta kami pulang dengan cerita yang tidak bisa mereka temukan di majalah travel mana pun.",
   "Dari sana kami meluas. Kazakhstan dengan danau-danau terpencilnya. Uzbekistan dengan Samarkand yang biru. Kyrgyzstan yang masih sangat jarang disentuh traveler Indonesia. Tajikistan dengan jalan Pamir yang legendaris. Dan aurora borealis di Tromsø yang membuat kamera gemetar.",
-  "Lebih dari 700 traveler Indonesia telah mempercayakan perjalanan mereka kepada kami. Sebagian besar kembali lagi — dengan mengajak keluarga atau teman yang penasaran dengan cerita mereka.",
+  "Lebih dari 700 traveler Indonesia telah mempercayakan perjalanan mereka kepada kami. Sebagian besar kembali lagi, dengan mengajak keluarga atau teman yang penasaran dengan cerita mereka.",
 ];
 
 async function getData() {
@@ -178,7 +178,7 @@ export default async function AboutPage() {
           <p
             className={`text-lg leading-relaxed max-w-2xl ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
-            {tagline || `${name} lahir dari keyakinan bahwa destinasi yang jarang dikunjungi traveler Indonesia justru menyimpan pengalaman paling tak terlupakan. Kami memulai ketika sangat sedikit agen wisata Indonesia yang berani masuk ke pasar Rusia dan Asia Tengah — dan kami terus di sini.`}
+            {tagline || `${name} lahir dari keyakinan bahwa destinasi yang jarang dikunjungi traveler Indonesia justru menyimpan pengalaman paling tak terlupakan. Kami memulai ketika sangat sedikit agen wisata Indonesia yang berani masuk ke pasar Rusia dan Asia Tengah, dan kami terus di sini.`}
           </p>
 
           {nib && (
@@ -324,7 +324,7 @@ export default async function AboutPage() {
           </h2>
           <p className="text-sm mb-6"
             style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
-            Isi formulir ini — ceritakan tujuan dan rencana Anda, tim kami akan menghubungi via WhatsApp.
+            Isi formulir ini, ceritakan tujuan dan rencana Anda, tim kami akan menghubungi via WhatsApp.
           </p>
           <InquiryForm />
         </div>
@@ -341,7 +341,7 @@ export default async function AboutPage() {
           </h2>
           <p className="text-sm mb-6"
             style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
-            Konsultasi gratis — ceritakan tujuan dan budget Anda, kami bantu rancang itinerary terbaik.
+            Konsultasi gratis, ceritakan tujuan dan budget Anda, kami bantu rancang itinerary terbaik.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a

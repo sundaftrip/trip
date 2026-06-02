@@ -117,7 +117,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
         ))}
       </div>
 
-      {/* Filter — stack vertikal di mobile, sejajar di sm+ */}
+      {/* Filter, stack vertikal di mobile, sejajar di sm+ */}
       <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap mb-4">
         <div className="relative sm:flex-1 sm:min-w-[180px] sm:max-w-xs">
           <Search
@@ -172,7 +172,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
         )}
       </div>
 
-      {/* MOBILE: card stack — sampai md */}
+      {/* MOBILE: card stack, sampai md */}
       <div className="md:hidden space-y-3">
         {filtered.map((c) => {
           const cost = costInfo(c.cost);
@@ -248,7 +248,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
         )}
       </div>
 
-      {/* DESKTOP: tabel — mulai md */}
+      {/* DESKTOP: tabel, mulai md */}
       <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
         <table className="w-full min-w-[680px] text-sm">
           <thead>

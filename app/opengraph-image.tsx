@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 // untuk semua halaman kecuali yang punya opengraph-image sendiri.
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Sundaf Trip — Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
+export const alt = "Sundaf Trip, Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
 // Palet rebrand 2026: charcoal / slate / teal / light
 const CHARCOAL = "#222831";
