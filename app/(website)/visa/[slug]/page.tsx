@@ -376,18 +376,32 @@ export default async function VisaDetailPage({ params }: PageProps) {
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
               Proses Pengurusan
             </h2>
-            <ol className="space-y-3 text-sm">
+            <ol className="relative space-y-3 text-sm">
               {[
                 "Konsultasi via WhatsApp — pilih jenis layanan sesuai kebutuhan",
                 "Kirim dokumen scan via WhatsApp atau email",
+                "Untuk visa yang butuh paspor fisik (mis. Eropa & Amerika): antar paspor ke kantor kami, atau cukup kirim via Gojek — tim kami yang terima",
                 "Tim kami review dokumen & ajukan ke konsulat/sistem online",
                 processTime
                   ? `Visa terbit dalam ${processTime}`
                   : "Visa terbit sesuai estimasi konsulat",
-                "Visa diantar ke alamatmu atau ambil di kantor kami",
-              ].map((step, i) => (
-                <li key={i} className="flex gap-3">
-                  <span className="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold">
+                "Paspor + visa bisa diambil langsung di kantor kami, atau kami kirim via Gojek/kurir ke alamatmu",
+              ].map((step, i, arr) => (
+                <li key={i} className="relative flex gap-3">
+                  {i < arr.length - 1 && (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute left-[8px] top-[14px] -bottom-5 w-3"
+                      style={{
+                        backgroundImage:
+                          "url(\"data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='18'%3E%3Cpath%20d='M6%200%20C10%204.5%202%2013.5%206%2018'%20fill='none'%20stroke='%2300ADB5'%20stroke-width='2'%20stroke-linecap='round'/%3E%3C/svg%3E\")",
+                        backgroundRepeat: "repeat-y",
+                        backgroundPosition: "center top",
+                        opacity: 0.55,
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10 shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold">
                     {i + 1}
                   </span>
                   <span className="pt-1 text-gray-600 dark:text-gray-400 leading-relaxed">
