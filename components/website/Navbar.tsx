@@ -278,7 +278,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
             <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+              className="h-8 sm:h-11 w-auto logo-theme" priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1.5">
@@ -302,12 +302,6 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
-            <Link href="/visa" className="hidden lg:inline-flex at-btn px-4 py-2 text-xs">
-              {lang === "id" ? "Layanan Visa" : "Visa Service"}
-            </Link>
-            <Link href="/tours" className="hidden lg:inline-flex at-btn-solid px-4 py-2 text-xs">
-              {lang === "id" ? "Lihat Tour" : "See Tours"}
-            </Link>
             <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden at-pill"
               style={{ color: "var(--at-text)" }}>
               {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
