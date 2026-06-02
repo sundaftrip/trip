@@ -4,7 +4,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ChevronDown, MessageCircle, CheckCircle2, FileText } from "lucide-react";
+import { ChevronLeft, ChevronDown, MessageCircle, CheckCircle2, FileText, HelpCircle, ArrowRight } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
@@ -223,36 +223,89 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
           {/* DOKUMEN */}
           <section id="dokumen">
-            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold mb-1.5 text-gray-900 dark:text-white">
               Dokumen Wajib
             </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-2xl leading-relaxed">
+              Kamu cukup siapkan dokumen pribadi. Yang bertanda
+              {" "}<span
+                className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
+                style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+              ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
+              — seperti formulir & itinerary — Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
+            </p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {documents.map((doc, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3"
-                >
-                  <FileText
-                    size={16}
-                    className="text-gray-400 shrink-0 mt-0.5"
-                    aria-hidden
-                  />
-                  <div className="min-w-0">
-                    <p className="font-semibold text-sm text-gray-900 dark:text-white">
-                      {doc.name}
-                    </p>
-                    {doc.hint && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
-                        {doc.hint}
-                      </p>
-                    )}
+              {documents.map((doc, i) => {
+                const assisted = (doc.hint ?? "").toLowerCase().includes("kami bantu");
+                return (
+                  <div
+                    key={i}
+                    className="flex items-start gap-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3"
+                  >
+                    <FileText
+                      size={16}
+                      className="text-gray-400 shrink-0 mt-0.5"
+                      aria-hidden
+                    />
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-semibold text-sm text-gray-900 dark:text-white">
+                          {doc.name}
+                        </p>
+                        {assisted && (
+                          <span
+                            className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                            style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+                          >
+                            <CheckCircle2 size={10} /> Kami bantu
+                          </span>
+                        )}
+                      </div>
+                      {doc.hint && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+                          {doc.hint}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
               Daftar standar — beberapa negara mungkin minta dokumen tambahan. Tim kami konfirmasi sebelum pengajuan.
             </p>
+
+            {/* CTA ke FAQ teknis untuk kasus-kasus khusus */}
+            <Link
+              href="/visa/faq"
+              className="group mt-4 flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              style={{
+                background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 12%, transparent)",
+                border: "1.5px solid color-mix(in srgb, var(--site-accent,#2d6a4f) 55%, transparent)",
+              }}
+            >
+              <span
+                className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+              >
+                <HelpCircle size={18} />
+              </span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-sm font-bold text-gray-900 dark:text-white">
+                  Kasus khusus? Lihat FAQ Teknis Visa
+                </span>
+                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Cerai, anak di bawah 18, apostille, sponsor pasangan, rekening kecil
+                </span>
+              </span>
+              <span
+                className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"
+                style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+              >
+                Buka
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </span>
+            </Link>
           </section>
 
           {/* LAYANAN */}
