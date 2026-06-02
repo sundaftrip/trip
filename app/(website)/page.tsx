@@ -58,23 +58,18 @@ const getData = unstable_cache(async () => {
 }, ["home-page-data"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const rows = await prisma.companyInfo.findMany({ where: { key: { in: ["company_name", "company_website"] } } });
-    const c: Record<string, string> = {};
-    rows.forEach((r) => { c[r.key] = r.value; });
-    const name = c["company_name"] || "Travel";
-    return {
-      title: `${name}, Paket Wisata Terpercaya`,
-      description: `${name} menyediakan paket wisata terpercaya dengan pelayanan terbaik.`,
-      openGraph: { title: `${name}, Paket Wisata`, type: "website", url: "https://sundaftrip.com" },
-      alternates: { canonical: "https://sundaftrip.com" },
-    };
-  } catch {
-    return {
-      title: "Travel, Paket Wisata Terpercaya",
-      alternates: { canonical: "https://sundaftrip.com" },
-    };
-  }
+  // Title, description, keywords, OG & Twitter card — semuanya diwarisi dari
+  // root layout (app/layout.tsx) yang sudah brand-forward + kaya kata kunci
+  // niche (Rusia/Asia Tengah/Aurora). og:image diambil otomatis dari
+  // app/opengraph-image.tsx (kartu 1200×630).
+  //
+  // PENTING: jangan men-deklarasi `openGraph` di sini tanpa `images`. Object
+  // openGraph kosong itu yang dulu MEMATIKAN kartu share (og:image hilang).
+  // Override lama ("Paket Wisata Terpercaya") juga melemahkan SEO niche.
+  // Cukup kunci canonical-nya saja.
+  return {
+    alternates: { canonical: "https://sundaftrip.com" },
+  };
 }
 
 export default async function HomePage() {

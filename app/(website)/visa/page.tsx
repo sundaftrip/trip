@@ -15,8 +15,23 @@ export const metadata: Metadata = {
 };
 
 export default async function VisaPage() {
+  // Hanya ambil 9 field yang dirender VisaDatabase (index). Field kaya
+  // per-negara (eligibility[], documents Json, faqs Json) cuma dipakai di
+  // halaman detail /visa/[slug] — kalau ikut ditarik untuk 88 negara, HTML
+  // index membengkak ratusan KB & berat di mobile. select = payload ramping.
   const visaEntries = await prisma.countryVisa.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: {
+      id: true,
+      flag: true,
+      name: true,
+      en: true,
+      region: true,
+      visa: true,
+      stay: true,
+      cost: true,
+      notes: true,
+    },
   });
 
   return (
