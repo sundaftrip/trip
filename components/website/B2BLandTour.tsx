@@ -7,6 +7,21 @@ import {
   Hotel, Bus, Utensils, Ticket, UserCheck, Route, MapPin,
 } from "lucide-react";
 import { lora } from "@/lib/fonts";
+import fs from "node:fs";
+import path from "node:path";
+
+/* Proof-wall: foto keberangkatan nyata, dibaca otomatis dari /public/b2b-gallery. */
+function getProofPhotos(): string[] {
+  try {
+    return fs
+      .readdirSync(path.join(process.cwd(), "public", "b2b-gallery"))
+      .filter((f) => /\.(webp|jpe?g|png)$/i.test(f))
+      .sort()
+      .map((f) => `/b2b-gallery/${f}`);
+  } catch {
+    return [];
+  }
+}
 
 const COVERAGE: { Icon: LucideIcon; title: string; desc: string }[] = [
   { Icon: Hotel, title: "Akomodasi", desc: "Hotel terkurasi di lokasi strategis dan nyaman untuk grup." },
@@ -40,17 +55,6 @@ const STEPS: { n: string; title: string; desc: string }[] = [
   { n: "5", title: "Laporan", desc: "Umpan balik pasca-trip untuk menyempurnakan keberangkatan berikutnya." },
 ];
 
-const PHOTOS = [
-  { src: "/trip-photos/aurora-b2b-1.webp", caption: "Aurora Borealis · Murmansk" },
-  { src: "/trip-photos/aurora-b2b-2.webp", caption: "Grup di bawah aurora · Murmansk" },
-  { src: "/trip-photos/aurora-b2b-3.webp", caption: "Berburu aurora · Murmansk" },
-  { src: "/trip-photos/trip-1.jpg", caption: "Red Square · Moscow" },
-  { src: "/trip-photos/trip-4.jpg", caption: "Danau Kaindy · Kazakhstan" },
-  { src: "/trip-photos/trip-6.jpg", caption: "Keberangkatan grup · Moscow" },
-  { src: "/trip-photos/aurora-b2b-4.webp", caption: "Malam aurora · Murmansk" },
-  { src: "/trip-photos/aurora-b2b-5.webp", caption: "Peserta Sundaf · Murmansk" },
-  { src: "/trip-photos/aurora-b2b-6.webp", caption: "Cahaya utara · Murmansk" },
-];
 
 const FERDIANSAH = {
   initial: "F",
@@ -67,6 +71,7 @@ const BILLY = {
 };
 
 export default function B2BLandTour({ withCofounder = false }: { withCofounder?: boolean }) {
+  const proofPhotos = getProofPhotos();
   const person = withCofounder ? BILLY : FERDIANSAH;
   const pdfHref = withCofounder
     ? "/sundaftrip-company-profile-billy.pdf"
@@ -164,16 +169,21 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         {/* ── Real departures ── */}
         <h2 className={`mt-12 mb-1 ${head}`}>Keberangkatan Nyata</h2>
         <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-          Sebagian grup yang telah kami operasikan di Rusia, Asia Tengah, dan sekitarnya.
+          Sebagian grup yang telah kami operasikan di Rusia, Asia Tengah, dan sekitarnya — peserta nyata, bukan foto stok.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {PHOTOS.map(({ src, caption }) => (
-            <div key={src} className="relative aspect-[3/2] rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
+          {proofPhotos.map((src, i) => (
+            <div
+              key={src}
+              className="group relative aspect-square rounded-lg overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={caption} loading="lazy" className="w-full h-full object-cover" />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pt-8 pb-2">
-                <p className="text-[11px] font-semibold text-white">{caption}</p>
-              </div>
+              <img
+                src={src}
+                alt={`Keberangkatan grup Sundaf Trip ${i + 1}`}
+                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
           ))}
         </div>
