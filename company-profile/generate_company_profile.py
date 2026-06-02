@@ -42,8 +42,10 @@ NIB          = "1601260060842"
 # --------------------------------------------------------------------------
 # Brand palette / geometry
 # --------------------------------------------------------------------------
-NAVY   = (0x0C / 255, 0x26 / 255, 0x47 / 255)
-ORANGE = (0xFE / 255, 0x80 / 255, 0x32 / 255)
+# REBRAND 2026: charcoal/teal (navy+oranye pensiun). Nama konstanta tetap
+# NAVY/ORANGE agar tak perlu ubah seluruh pemakaian — hanya nilainya diganti.
+NAVY   = (0x22 / 255, 0x28 / 255, 0x31 / 255)   # charcoal (dulu navy)
+ORANGE = (0x00 / 255, 0xAD / 255, 0xB5 / 255)   # teal (dulu oranye)
 WHITE  = (1, 1, 1)
 GREY   = (0.36, 0.38, 0.42)
 LGREY  = (0.55, 0.57, 0.60)
@@ -458,12 +460,12 @@ EN = {
                      "Central Asia, China, and India — every trip accompanied "
                      "by our own Indonesian-speaking tour leader."),
     "photos": [
+        ("cp-1.jpg", "Aurora borealis — Murmansk"),
+        ("cp-2.jpg", "Group under the northern lights — Murmansk"),
         ("trip-1.jpg", "Red Square, Moscow"),
-        ("trip-2.jpg", "Taj Mahal, India"),
-        ("trip-3.jpg", "Jade Dragon Snow Mountain, China"),
         ("trip-4.jpg", "Kaindy Lake, Kazakhstan"),
-        ("trip-5.jpg", "Aurora borealis, Murmansk"),
-        ("trip-6.jpg", "Group departure — Moscow (Sheremetyevo)"),
+        ("cp-3.jpg", "Aurora hunting — Murmansk"),
+        ("cp-4.jpg", "Sundaf Trip travelers — Murmansk"),
     ],
     "name_ferdiansah": "Ferdiansah", "role_ferdiansah": "Founder",
     "name_billy": "Billy", "role_billy": "Co-Founder",
@@ -598,12 +600,12 @@ RU = {
                      "Центральной Азии, Китаю и Индии — каждую поездку "
                      "сопровождал наш собственный турлидер."),
     "photos": [
+        ("cp-1.jpg", "Северное сияние — Мурманск"),
+        ("cp-2.jpg", "Группа под северным сиянием — Мурманск"),
         ("trip-1.jpg", "Красная площадь, Москва"),
-        ("trip-2.jpg", "Тадж-Махал, Индия"),
-        ("trip-3.jpg", "Гора Юйлун, Китай"),
         ("trip-4.jpg", "Озеро Каинды, Казахстан"),
-        ("trip-5.jpg", "Северное сияние, Мурманск"),
-        ("trip-6.jpg", "Вылет группы — Москва (Шереметьево)"),
+        ("cp-3.jpg", "Охота за сиянием — Мурманск"),
+        ("cp-4.jpg", "Путешественники Sundaf Trip — Мурманск"),
     ],
     "name_ferdiansah": "Фердиансах", "role_ferdiansah": "Основатель",
     "name_billy": "Билли", "role_billy": "Сооснователь",
