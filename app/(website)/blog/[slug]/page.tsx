@@ -307,8 +307,8 @@ export default async function BlogDetailPage({
                         {t.title}
                       </p>
                       <p
-                        className={`text-xs mt-1 font-bold ${!isOutlined ? "text-blue-600 dark:text-blue-400" : ""}`}
-                        style={isOutlined ? { color: mintClr ?? headClr } : undefined}>
+                        className={`text-lg sm:text-xl mt-1.5 font-extrabold ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+                        style={isOutlined ? { color: headClr } : undefined}>
                         {formatCurrency(t.promoPrice ?? t.price)}
                       </p>
                     </div>
