@@ -73,6 +73,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
+            <Link href="/visa" className="hidden lg:inline-flex fb-pill px-4 py-2 text-xs">
+              {lang === "id" ? "Layanan Visa" : "Visa Service"}
+            </Link>
             <Link href="/tours" className="hidden lg:inline-flex fb-btn px-4 py-2 text-xs">
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
@@ -91,7 +94,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex fb-pill px-5 py-2.5 text-xs w-full justify-center">
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex fb-btn px-5 py-2.5 text-xs w-full justify-center">
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
@@ -135,6 +142,10 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
+            <Link href="/visa" className="hidden lg:inline-flex kw-pill px-4 py-2 text-xs font-black"
+              style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
+              {lang === "id" ? "Layanan Visa" : "Visa Service"}
+            </Link>
             <Link href="/tours" className="hidden lg:inline-flex kw-btn px-4 py-2 text-xs font-black"
               style={{ background: "var(--kw-border)", color: "#ffffff" }}>
               {lang === "id" ? "Lihat Tour ♡" : "See Tours ♡"}
@@ -155,7 +166,12 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex kw-pill px-5 py-2.5 text-xs font-black w-full justify-center"
+                style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex kw-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--kw-border)", color: "#ffffff" }}>
@@ -190,6 +206,13 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2 xl:gap-3 shrink-0">
+            {/* Layanan Visa = CTA sekunder (outline) */}
+            <div className="hidden xl:block">
+              <Link href="/visa" className="gl-pill font-black"
+                style={{ background: "transparent", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 40%, transparent)" }}>
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
+            </div>
             {/* Lihat Tour = primary CTA, paling kontras. Wrapper menahan
                 cascade .gl-btn (unlayered) yang menang atas utility hidden. */}
             <div className="hidden xl:block">
@@ -230,7 +253,12 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex gl-pill px-5 py-2.5 text-xs font-black w-full justify-center"
+                style={{ background: "transparent", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 40%, transparent)" }}>
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex gl-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
@@ -344,6 +372,10 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
+            <Link href="/visa" className="hidden lg:inline-flex mp-pill text-xs"
+              style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+              {lang === "id" ? "Layanan Visa" : "Visa Service"}
+            </Link>
             <Link href="/tours" className="hidden lg:inline-flex mp-btn text-xs"
               style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
               {lang === "id" ? "Lihat Tour" : "See Tours"}
@@ -364,7 +396,12 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex mp-pill text-xs w-full justify-center"
+                style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex mp-btn text-xs w-full justify-center"
                 style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>
@@ -409,6 +446,10 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
+            <Link href="/visa" className="hidden lg:inline-flex tr-pill px-4 py-2 text-xs font-black"
+              style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
+              {lang === "id" ? "Layanan Visa" : "Visa Service"}
+            </Link>
             <Link href="/tours" className="hidden lg:inline-flex tr-btn px-4 py-2 text-xs font-black"
               style={{ background: "var(--site-accent)", color: "#ffffff" }}>
               {lang === "id" ? "Lihat Tour 🌴" : "See Tours 🌴"}
@@ -429,7 +470,12 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex tr-pill px-5 py-2.5 text-xs font-black w-full justify-center"
+                style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex tr-btn px-5 py-2.5 text-xs font-black w-full justify-center"
                 style={{ background: "var(--site-accent)", color: "#ffffff" }}>
@@ -480,6 +526,10 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
+            <Link href="/visa" className="hidden lg:inline-flex px-pill px-4 py-2 text-xs"
+              style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+              {lang === "id" ? "LAYANAN VISA" : "VISA SERVICE"}
+            </Link>
             <Link href="/tours" className="hidden lg:inline-flex px-btn px-4 py-2 text-xs"
               style={{ background: "var(--site-accent)", color: "#ffffff" }}>
               {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
@@ -500,7 +550,12 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex px-pill px-5 py-2.5 text-xs w-full justify-center"
+                style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+                {lang === "id" ? "LAYANAN VISA" : "VISA SERVICE"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex px-btn px-5 py-2.5 text-xs w-full justify-center"
                 style={{ background: "var(--site-accent)", color: "#ffffff" }}>
@@ -552,6 +607,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 </button>
               )}
               <div className="hidden lg:block">
+                <Link href="/visa" className="daun-pill" style={{ padding: "9px 18px", fontSize: 13 }}>
+                  {lang === "id" ? "Layanan Visa" : "Visa Service"}
+                </Link>
+              </div>
+              <div className="hidden lg:block">
                 <Link href="/tours" className="daun-btn" style={{ padding: "9px 20px", fontSize: 13 }}>
                   {lang === "id" ? "Lihat Tour" : "See Tours"}
                 </Link>
@@ -576,7 +636,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                   {link.label[lang]}
                 </Link>
               ))}
-              <div className="px-4 pt-2">
+              <div className="px-4 pt-2 space-y-2">
+                <Link href="/visa" onClick={() => setOpen(false)}
+                  className="flex daun-pill w-full justify-center" style={{ fontSize: 13 }}>
+                  {lang === "id" ? "Layanan Visa" : "Visa Service"}
+                </Link>
                 <Link href="/tours" onClick={() => setOpen(false)}
                   className="flex daun-btn w-full justify-center" style={{ fontSize: 13 }}>
                   {lang === "id" ? "Lihat Tour" : "See Tours"}
@@ -634,6 +698,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               </button>
             )}
 
+            <Link href="/visa"
+              className="hidden lg:inline-flex px-4 py-2 text-sm font-semibold rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-gray-400 dark:hover:border-gray-500 transition">
+              {lang === "id" ? "Layanan Visa" : "Visa Service"}
+            </Link>
+
             <Link href="/tours"
               className="hidden lg:inline-flex px-4 py-2 text-white text-sm font-semibold rounded-xl transition"
               style={{ background: "var(--site-accent, #2d6a4f)" }}>
@@ -655,6 +724,17 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex justify-center px-4 py-2.5 text-sm font-semibold rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200">
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
+              <Link href="/tours" onClick={() => setOpen(false)}
+                className="flex justify-center px-4 py-2.5 text-white text-sm font-semibold rounded-xl"
+                style={{ background: "var(--site-accent, #2d6a4f)" }}>
+                {lang === "id" ? "Lihat Tour" : "See Tours"}
+              </Link>
+            </div>
           </div>
         )}
       </div>
