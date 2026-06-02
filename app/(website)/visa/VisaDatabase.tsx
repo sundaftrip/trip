@@ -34,13 +34,6 @@ const VISA_BADGE: Record<Visa, string> = {
   wajib: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
 };
 
-const VISA_DOT: Record<Visa, string> = {
-  bebas: "bg-emerald-500",
-  voa: "bg-blue-500",
-  evisa: "bg-amber-500",
-  wajib: "bg-rose-500",
-};
-
 const VISA_KEYS = Object.keys(VISA_LABEL) as Visa[];
 
 const FIELD =
@@ -80,43 +73,10 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
     });
   }, [q, region, visa, COUNTRIES]);
 
-  const counts = useMemo(() => {
-    const c: Record<Visa, number> = { bebas: 0, voa: 0, evisa: 0, wajib: 0 };
-    COUNTRIES.forEach((x) => {
-      if (isVisa(x.visa)) c[x.visa] += 1;
-    });
-    return c;
-  }, [COUNTRIES]);
-
   const hasFilter = Boolean(q || region || visa);
 
   return (
     <section className="mb-14">
-      <div className="flex items-center gap-2 mb-1">
-        <span
-          className="inline-block w-1.5 h-5 rounded-full"
-          style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
-        />
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-          Database Visa {COUNTRIES.length} Negara
-        </h2>
-      </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-xl leading-relaxed">
-        Data bersifat informatif. Selalu verifikasi ke kedutaan negara tujuan
-        sebelum berangkat.
-      </p>
-
-      {/* Legend jumlah per kategori */}
-      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-5">
-        {VISA_KEYS.map((v) => (
-          <div key={v} className="flex items-center gap-1.5 text-xs">
-            <span className={`w-2.5 h-2.5 rounded-full ${VISA_DOT[v]}`} />
-            <span className="font-bold text-gray-900 dark:text-white">{counts[v]}</span>
-            <span className="text-gray-500 dark:text-gray-400">{VISA_LABEL[v]}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Filter, stack vertikal di mobile, sejajar di sm+ */}
       <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap mb-4">
         <div className="relative sm:flex-1 sm:min-w-[180px] sm:max-w-xs">

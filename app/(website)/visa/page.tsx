@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { FileCheck, HelpCircle, ArrowRight } from "lucide-react";
+import { HelpCircle, ArrowRight } from "lucide-react";
 import VisaDatabase from "./VisaDatabase";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
@@ -43,18 +43,9 @@ export default async function VisaPage() {
         ]}
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
-        <div className="flex items-center gap-2 mb-2">
-          <FileCheck size={20} style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Info Visa
-          </span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8">
           Visa Paspor Indonesia
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
-          Cek persyaratan visa untuk pemegang paspor Indonesia di 88 negara.
-        </p>
 
         <Link
           href="/visa/faq"
