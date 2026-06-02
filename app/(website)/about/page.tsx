@@ -89,7 +89,7 @@ async function getData() {
 }
 
 export default async function AboutPage() {
-  const { theme, company, tourCount, blogCount, story, values, destinations, tagline } = await getData();
+  const { theme, company, blogCount, story, values, destinations, tagline } = await getData();
   const gallery = getGalleryImages();
 
   const isKawaii   = theme === "kawaii";
@@ -141,7 +141,6 @@ export default async function AboutPage() {
     { value: "700+", label: "Traveler yang sudah kami fasilitasi" },
     { value: "1000+", label: "Pemohon visa yang kami bantu" },
     { value: "99%", label: "Approval rate pengurusan visa" },
-    { value: `${tourCount || "5"}+`, label: "Paket tour aktif tersedia" },
     { value: `${blogCount || "10"}+`, label: "Artikel perjalanan ditulis tim kami" },
   ];
 
@@ -193,7 +192,7 @@ export default async function AboutPage() {
 
         {/* ── Stats ──────────────────────────────────────────────── */}
         <div
-          className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 p-6 mb-2 ${isOutlined ? "border-2" : "rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800"}`}
+          className={`grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 mb-2 ${isOutlined ? "border-2" : "rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800"}`}
           style={isOutlined ? { background: cardBg, borderColor: bdrClr } : undefined}>
           {STATS.map(({ value, label }) => (
             <div key={label} className="text-center">

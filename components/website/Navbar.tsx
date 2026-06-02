@@ -274,6 +274,9 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
+            <Link href="/visa" className="hidden lg:inline-flex at-btn px-4 py-2 text-xs">
+              {lang === "id" ? "Layanan Visa" : "Visa Service"}
+            </Link>
             <Link href="/tours" className="hidden lg:inline-flex at-btn-solid px-4 py-2 text-xs">
               {lang === "id" ? "Lihat Tour" : "See Tours"}
             </Link>
@@ -293,7 +296,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
                 {link.label[lang]}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 space-y-2">
+              <Link href="/visa" onClick={() => setOpen(false)}
+                className="flex at-btn px-5 py-2.5 text-xs w-full justify-center">
+                {lang === "id" ? "Layanan Visa" : "Visa Service"}
+              </Link>
               <Link href="/tours" onClick={() => setOpen(false)}
                 className="flex at-btn-solid px-5 py-2.5 text-xs w-full justify-center">
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
