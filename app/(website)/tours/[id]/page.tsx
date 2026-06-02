@@ -24,9 +24,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const [tour, companyRow] = await Promise.all([
-    prisma.tour.findUnique({
-      where: { id },
-      select: { title: true, heroImg: true, description: true, notes: true, visaInfo: true, country: true },
+    prisma.tour.findFirst({
+      where: { OR: [{ slug: id }, { id }] },
+      select: { id: true, slug: true, title: true, heroImg: true, description: true, notes: true, visaInfo: true, country: true },
     }),
     prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
   ]);
@@ -35,13 +35,15 @@ export async function generateMetadata({
   const companyName = companyRow?.value ?? "Sundaftrip";
   const description = tour.description ?? tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country} bersama ${companyName}`;
 
+  const canonicalPath = `/tours/${tour.slug ?? tour.id}`;
   return {
     title: tour.title,
     description,
+    alternates: { canonical: `${siteUrl}${canonicalPath}` },
     openGraph: {
       title: tour.title,
       description,
-      url: `${siteUrl}/tours/${id}`,
+      url: `${siteUrl}${canonicalPath}`,
       type: "website",
       siteName: companyName,
       ...(tour.heroImg ? { images: [{ url: tour.heroImg, width: 1200, height: 630, alt: tour.title }] } : {}),
@@ -57,15 +59,16 @@ export async function generateMetadata({
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [tour, companyRows, reviews] = await Promise.all([
-    prisma.tour.findUnique({ where: { id } }),
+  // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
+  const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
+  if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
+  const [companyRows, reviews] = await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
-      where: { tourId: id, published: true },
+      where: { tourId: tour.id, published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     }),
   ]);
-  if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
 
   // Agregat rating dari ulasan ASLI tour ini (dasar AggregateRating JSON-LD).
   const reviewCount = reviews.length;
@@ -142,7 +145,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         tour.status === "FULL"
           ? "https://schema.org/SoldOut"
           : "https://schema.org/InStock",
-      url: `${siteUrl}/tours/${tour.id}`,
+      url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
     },
     provider: {
       "@type": "Organization",
@@ -169,7 +172,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         price: String(tour.promoPrice ?? tour.price),
         priceCurrency: "IDR",
         availability: (isExpired || tour.status === "FULL") ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
-        url: `${siteUrl}/tours/${tour.id}`,
+        url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
       },
     } : {}),
     aggregateRating: {

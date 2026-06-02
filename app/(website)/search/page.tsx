@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 type SearchResults = {
   tours: Array<{
     id: string;
+    slug: string | null;
     title: string;
     country: string;
     cityHighlight: string | null;
@@ -60,7 +61,7 @@ async function doSearch(q: string): Promise<SearchResults> {
         ],
       },
       select: {
-        id: true, title: true, country: true, cityHighlight: true,
+        id: true, slug: true, title: true, country: true, cityHighlight: true,
         price: true, promoPrice: true, tripDate: true, heroImg: true,
       },
       orderBy: { tripDate: "asc" },
@@ -183,7 +184,7 @@ export default async function SearchPage({
               {tours.map((t) => (
                 <Link
                   key={t.id}
-                  href={`/tours/${t.id}`}
+                  href={`/tours/${t.slug ?? t.id}`}
                   className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
                 >
                   <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">

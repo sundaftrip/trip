@@ -22,7 +22,7 @@ const getData = unstable_cache(
         where: { status: { in: ["ACTIVE", "FULL"] } },
         orderBy: { tripDate: "asc" },
         select: {
-          id: true, title: true, country: true, cityHighlight: true,
+          id: true, slug: true, title: true, country: true, cityHighlight: true,
           price: true, promoPrice: true, seatsLeft: true,
           tripDate: true, duration: true, heroImg: true, badge: true,
           status: true,

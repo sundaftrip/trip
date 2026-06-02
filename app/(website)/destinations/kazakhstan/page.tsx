@@ -421,7 +421,7 @@ export default async function KazakhstanPage() {
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {tours.map((tour) => (
-                <Link key={tour.id} href={`/tours/${tour.id}`}
+                <Link key={tour.id} href={`/tours/${tour.slug ?? tour.id}`}
                   className={`group block overflow-hidden transition-all duration-300 hover:-translate-y-1 ${isOutlined ? cardClass : "bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-gray-300"}`}
                   style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
                   <div className="relative h-44 bg-gray-100 dark:bg-slate-800 overflow-hidden">

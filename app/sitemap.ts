@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
     prisma.tour.findMany({
       where: { status: { in: ["ACTIVE", "FULL"] } },
-      select: { id: true, updatedAt: true },
+      select: { id: true, slug: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
     }),
     prisma.countryVisa.findMany({
@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const tourUrls: MetadataRoute.Sitemap = tours.map((tour) => ({
-    url: `${base}/tours/${tour.id}`,
+    url: `${base}/tours/${tour.slug ?? tour.id}`,
     lastModified: tour.updatedAt,
     changeFrequency: "weekly",
     priority: 0.8,

@@ -67,6 +67,7 @@ model Session {
 model Tour {
   id             String     @id @default(cuid())
   title          String
+  slug           String?    @unique // URL rapi: /tours/<slug>; null → fallback ke id
   country        String
   cityHighlight  String?
   price          Float

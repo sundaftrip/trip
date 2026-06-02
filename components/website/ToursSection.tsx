@@ -2,6 +2,7 @@ import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
 
 interface Tour {
+  slug?: string | null;
   id: string; title: string; country: string; cityHighlight: string | null;
   price: number; promoPrice: number | null; seatsLeft: number;
   tripDate: Date | null; duration: string | null; heroImg: string | null;
@@ -32,7 +33,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
               {tours.map((tour) => {
                 const price = tour.promoPrice ?? tour.price;
                 return (
-                  <a key={tour.id} href={`/tours/${tour.id}`} className="nu-row">
+                  <a key={tour.id} href={`/tours/${tour.slug ?? tour.id}`} className="nu-row">
                     <div className="nu-row-thumb">
                       {tour.heroImg
                         // eslint-disable-next-line @next/next/no-img-element

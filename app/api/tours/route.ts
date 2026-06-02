@@ -3,6 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import slugify from "slugify";
+
+/** Slug URL rapi & unik dari judul tour (mis. "Russia Aurora" → "russia-aurora"). */
+async function uniqueTourSlug(title: string): Promise<string> {
+  const base = slugify(title || "tour", { lower: true, strict: true }) || "tour";
+  let s = base;
+  let i = 2;
+  while (await prisma.tour.findUnique({ where: { slug: s } })) s = `${base}-${i++}`;
+  return s;
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -24,6 +34,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Tidak memiliki izin untuk membuat tour" }, { status: 403 });
 
   const body = await req.json();
+  if (!body.slug) body.slug = await uniqueTourSlug(body.title ?? "");
   const tour = await prisma.tour.create({ data: body });
 
   await logActivity({

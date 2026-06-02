@@ -4,6 +4,7 @@ import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
 import { formatCurrency, formatDate, cldOptimize } from "@/lib/utils";
 
 interface Tour {
+  slug?: string | null;
   id: string; title: string; country: string; cityHighlight?: string | null;
   price: number; promoPrice?: number | null; seatsLeft: number;
   tripDate?: Date | null; duration?: string | null; heroImg?: string | null;
@@ -775,5 +776,5 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
-  return <Link href={`/tours/${tour.id}`} className="block h-full">{card}</Link>;
+  return <Link href={`/tours/${tour.slug ?? tour.id}`} className="block h-full">{card}</Link>;
 }

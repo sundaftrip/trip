@@ -88,7 +88,7 @@ export default async function BlogDetailPage({
         orderBy: { tripDate: "asc" },
         take: 2,
         select: {
-          id: true, title: true, heroImg: true,
+          id: true, slug: true, title: true, heroImg: true,
           price: true, promoPrice: true, duration: true, country: true,
         },
       }),
@@ -285,7 +285,7 @@ export default async function BlogDetailPage({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 {upcomingTours.map((t) => (
-                  <Link key={t.id} href={`/tours/${t.id}`}
+                  <Link key={t.id} href={`/tours/${t.slug ?? t.id}`}
                     className={`block overflow-hidden transition hover:opacity-90 ${
                       isOutlined ? "border-2" : "rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
                     }`}

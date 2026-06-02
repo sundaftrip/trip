@@ -32,7 +32,7 @@ const getData = unstable_cache(async () => {
       orderBy: { tripDate: "asc" },
       take: 9,
       select: {
-        id: true, title: true, country: true, cityHighlight: true,
+        id: true, slug: true, title: true, country: true, cityHighlight: true,
         price: true, promoPrice: true, seatsLeft: true,
         tripDate: true, duration: true, heroImg: true, badge: true,
         status: true,
