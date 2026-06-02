@@ -173,7 +173,7 @@ export default async function AboutPage() {
           <h1
             className={`text-4xl lg:text-5xl font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Spesialis Perjalanan ke Rusia, Asia Tengah &amp; Aurora
+            Spesialis Perjalanan &amp; Pengurusan Visa ke Rusia, Asia Tengah &amp; Aurora
           </h1>
 
           <p
