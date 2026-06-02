@@ -272,7 +272,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
               return (
                 <tr
                   key={c.id}
-                  className="group border-t border-t-[color-mix(in_srgb,var(--site-accent)_28%,#e5e7eb)] dark:border-t-[color-mix(in_srgb,var(--site-accent)_25%,#374151)] align-top transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40"
+                  className="group align-top transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40"
                 >
                   <td className="px-4 py-3">
                     <Link
@@ -282,8 +282,22 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                     >
                       <FlagIcon flag={c.flag} rounded label={c.name} width={28} />
                       <div>
-                        <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap group-hover:underline underline-offset-4">
-                          {c.name}
+                        <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+                          <span className="relative inline-block">
+                            {/* Stabilo: sapuan highlighter tak beraturan, muncul saat baris di-hover */}
+                            <span
+                              aria-hidden
+                              className="pointer-events-none absolute -inset-x-2 -inset-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              style={{
+                                backgroundImage:
+                                  "url(\"data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%2040'%20preserveAspectRatio='none'%3E%3Cpath%20d='M4%2011%20C26%204%2056%207%2085%205%20C106%203%20118%208%20115%2016%20C118%2027%20113%2036%20103%2035%20C71%2039%2039%2036%2019%2038%20C6%2039%201%2032%205%2024%20C1%2018%201%2014%204%2011%20Z'%20fill='%2300ADB5'%20fill-opacity='0.42'/%3E%3C/svg%3E\")",
+                                backgroundRepeat: "no-repeat",
+                                backgroundSize: "100% 100%",
+                                transform: "rotate(-1.3deg)",
+                              }}
+                            />
+                            <span className="relative">{c.name}</span>
+                          </span>
                         </div>
                         <div className="text-xs text-gray-400">{c.en}</div>
                       </div>
