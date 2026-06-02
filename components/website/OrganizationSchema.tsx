@@ -24,6 +24,12 @@ const getOrgData = unstable_cache(
               "company_phone",
               "company_whatsapp",
               "company_instagram",
+              "company_tiktok",
+              "company_youtube",
+              "company_facebook",
+              "company_twitter",
+              "company_linkedin",
+              "company_google_business",
               "company_nib",
               "company_description",
               "company_legal_name",
@@ -65,6 +71,32 @@ function toInstagramUrl(input: string | undefined): string | undefined {
   return `https://www.instagram.com/${v.replace(/^instagram\.com\//i, "").replace(/\/$/, "")}`;
 }
 
+/**
+ * Normalisasi profil sosial → URL absolut untuk `sameAs`.
+ * Terima input berupa URL penuh, username, atau "@username".
+ * `prefix` = base URL profil platform (mis. https://www.tiktok.com/@).
+ */
+function toSocialUrl(input: string | undefined, prefix: string): string | undefined {
+  if (!input) return undefined;
+  const v = input.trim();
+  if (!v) return undefined;
+  if (/^https?:\/\//i.test(v)) return v.replace(/^http:\/\//i, "https://");
+  const handle = v.replace(/^@/, "").replace(/\/$/, "");
+  if (!handle) return undefined;
+  return prefix + handle;
+}
+
+/** YouTube: handle "@nama" → /@nama, nama biasa → /@nama, URL → apa adanya. */
+function toYouTubeUrl(input: string | undefined): string | undefined {
+  if (!input) return undefined;
+  const v = input.trim();
+  if (!v) return undefined;
+  if (/^https?:\/\//i.test(v)) return v.replace(/^http:\/\//i, "https://");
+  const handle = v.replace(/^@/, "").replace(/\/$/, "");
+  if (!handle) return undefined;
+  return `https://www.youtube.com/@${handle}`;
+}
+
 /** Normalisasi nomor telepon ke format E.164 internasional (best-effort). */
 function toE164(raw: string | undefined): string | undefined {
   if (!raw) return undefined;
@@ -88,8 +120,20 @@ export default async function OrganizationSchema() {
     c["company_description"] ||
     "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
 
-  const sameAs: string[] = [];
-  if (igUrl) sameAs.push(igUrl);
+  // sameAs: kumpulan profil resmi lintas platform. Makin lengkap & konsisten,
+  // makin kuat mesin AI (Gemini, ChatGPT, dll) & Google mengenali "entity"
+  // Sundaf Trip sebagai satu organisasi yang sama di seluruh web.
+  const sameAsCandidates = [
+    igUrl,
+    toSocialUrl(c["company_tiktok"], "https://www.tiktok.com/@"),
+    toYouTubeUrl(c["company_youtube"]),
+    toSocialUrl(c["company_facebook"], "https://www.facebook.com/"),
+    toSocialUrl(c["company_twitter"], "https://x.com/"),
+    toSocialUrl(c["company_linkedin"], "https://www.linkedin.com/company/"),
+    toSocialUrl(c["company_google_business"], "https://"),
+  ];
+  // Dedup & buang yang kosong.
+  const sameAs: string[] = [...new Set(sameAsCandidates.filter((u): u is string => !!u))];
 
   // ── Organization + TravelAgency JSON-LD ──
   const organization: Record<string, unknown> = {

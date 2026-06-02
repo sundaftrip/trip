@@ -128,6 +128,25 @@ export default async function FaqPage() {
     grouped.push({ section: sec, items: faqs.filter(f => f.section === sec) });
   });
 
+  // FAQPage JSON-LD — bantu mesin AI (ChatGPT, Gemini, Perplexity, dll) &
+  // Google AI Overviews mengutip jawaban resmi Sundaf Trip langsung dari sini.
+  const faqSchema = faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": "https://sundaftrip.com/faq#faqpage",
+        inLanguage: "id-ID",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: f.answer,
+          },
+        })),
+      }
+    : null;
+
   return (
     <div
       className={`min-h-screen pt-24 ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`}
@@ -139,6 +158,13 @@ export default async function FaqPage() {
           { name: "FAQ", url: "/faq" },
         ]}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* ── Hero ── */}

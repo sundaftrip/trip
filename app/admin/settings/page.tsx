@@ -14,6 +14,12 @@ const INFO_FIELDS = [
   { key: "company_email", label: "Email" },
   { key: "company_website", label: "Website" },
   { key: "company_instagram", label: "Instagram (username, mis. sundaf.trip)" },
+  { key: "company_tiktok", label: "TikTok (username, mis. sundaf.trip)" },
+  { key: "company_youtube", label: "YouTube (URL channel atau @handle)" },
+  { key: "company_facebook", label: "Facebook (URL halaman atau username)" },
+  { key: "company_twitter", label: "X / Twitter (username, mis. sundaftrip)" },
+  { key: "company_linkedin", label: "LinkedIn (URL halaman perusahaan)" },
+  { key: "company_google_business", label: "Google Business / Maps (URL profil)" },
 ];
 
 const FONTS = [

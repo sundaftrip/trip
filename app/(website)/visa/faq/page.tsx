@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { isValidElement, type ReactNode } from "react";
 import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
 import { FaqList, PENGURUSAN_VISA_DETAIL, type FaqItem } from "./FaqList";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
@@ -794,6 +795,49 @@ const REJECT_CASES: FaqItem[] = [
   },
 ];
 
+// Telusuri pohon ReactNode → teks polos untuk FAQPage JSON-LD.
+// (App Router melarang react-dom/server di komponen halaman, jadi kita
+// ekstrak teks dari props.children secara rekursif tanpa merender.)
+function extractText(node: ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join(" ");
+  if (isValidElement(node)) {
+    return extractText((node.props as { children?: ReactNode }).children);
+  }
+  return "";
+}
+
+function faqAnswerToText(node: FaqItem["a"]): string {
+  return extractText(node).replace(/\s+/g, " ").trim();
+}
+
+// FAQPage JSON-LD — bantu mesin AI (ChatGPT, Gemini, Perplexity, dll) & Google
+// AI Overviews mengutip jawaban teknis visa resmi Sundaf Trip. Section promosi
+// "Pengurusan Visa via Sundaf" SENGAJA tidak dimasukkan (pedoman Google
+// melarang markup konten iklan/promosi).
+const VISA_FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://sundaftrip.com/visa/faq#faqpage",
+  inLanguage: "id-ID",
+  mainEntity: [
+    ...SCHENGEN_TEKNIS,
+    ...PROFIL_NONSTANDAR,
+    ...PASPOR_RIWAYAT,
+    ...DOKUMEN_SENSITIF,
+    ...REJECT_CASES,
+    ...UMUM,
+  ].map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faqAnswerToText(f.a),
+    },
+  })),
+};
+
 export default function VisaFaqPage() {
   return (
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
@@ -803,6 +847,11 @@ export default function VisaFaqPage() {
           { name: "Info Visa", url: "/visa" },
           { name: "FAQ Teknis Visa", url: "/visa/faq" },
         ]}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(VISA_FAQ_SCHEMA) }}
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
         <Link
