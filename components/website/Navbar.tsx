@@ -277,8 +277,14 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
-              className={`h-10 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            {/* Alas solid: tema atlas melukis grid (at-grid-bg) di header.
+                Logo transparan -> grid menembus & nabrak garis teal logo
+                ("hancur"). Span solid var(--at-bg) menutup grid di area logo
+                saja, jadi logo selalu duduk di permukaan bersih. */}
+            <span className="inline-flex items-center rounded-lg px-2 py-1" style={{ background: "var(--at-bg)" }}>
+              <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+                className={`h-10 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+            </span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1.5">
