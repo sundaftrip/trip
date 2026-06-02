@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award } from "lucide-react";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import GalleryZoom from "@/components/website/GalleryZoom";
+import InquiryForm from "@/components/website/InquiryForm";
 
 /* Daftar foto galeri dibaca otomatis dari /public/about-gallery (webp/jpg/png). */
 function getGalleryImages(): string[] {
@@ -309,6 +310,23 @@ export default async function AboutPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* ── Divider ────────────────────────────────────────────── */}
+        <div className={divCls} style={divStyle} />
+
+        {/* ── Form Konsultasi ────────────────────────────────────── */}
+        <div className="mb-12">
+          <h2
+            className={`text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            style={isOutlined ? { color: headClr } : undefined}>
+            Konsultasi Gratis
+          </h2>
+          <p className="text-sm mb-6"
+            style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
+            Isi formulir ini — ceritakan tujuan dan rencana Anda, tim kami akan menghubungi via WhatsApp.
+          </p>
+          <InquiryForm />
         </div>
 
         {/* ── Divider ────────────────────────────────────────────── */}

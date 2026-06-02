@@ -441,3 +441,26 @@ model VisaVariant {
 
   @@index([countryVisaId, sortOrder])
 }
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+// Lead dari form konsultasi situs (selain WhatsApp langsung).
+model Inquiry {
+  id          String        @id @default(cuid())
+  name        String
+  whatsapp    String
+  email       String?
+  destination String? // tujuan yang diminati (mis. "Rusia", "Aurora")
+  travelDate  String? // teks bebas, mis. "Desember 2026" / "belum tahu"
+  message     String?
+  source      String? // halaman asal submit (mis. "/tours/abc", "/about")
+  status      InquiryStatus @default(NEW)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status, createdAt])
+}
