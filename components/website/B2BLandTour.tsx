@@ -41,9 +41,15 @@ const STEPS: { n: string; title: string; desc: string }[] = [
 ];
 
 const PHOTOS = [
+  { src: "/trip-photos/aurora-b2b-1.webp", caption: "Aurora Borealis · Murmansk" },
+  { src: "/trip-photos/aurora-b2b-2.webp", caption: "Grup di bawah aurora · Murmansk" },
+  { src: "/trip-photos/aurora-b2b-3.webp", caption: "Berburu aurora · Murmansk" },
   { src: "/trip-photos/trip-1.jpg", caption: "Red Square · Moscow" },
   { src: "/trip-photos/trip-4.jpg", caption: "Danau Kaindy · Kazakhstan" },
   { src: "/trip-photos/trip-6.jpg", caption: "Keberangkatan grup · Moscow" },
+  { src: "/trip-photos/aurora-b2b-4.webp", caption: "Malam aurora · Murmansk" },
+  { src: "/trip-photos/aurora-b2b-5.webp", caption: "Peserta Sundaf · Murmansk" },
+  { src: "/trip-photos/aurora-b2b-6.webp", caption: "Cahaya utara · Murmansk" },
 ];
 
 const FERDIANSAH = {
