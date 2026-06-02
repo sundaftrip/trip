@@ -1,4 +1,6 @@
 export const dynamic = "force-dynamic";
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import React from "react";
 import { prisma } from "@/lib/prisma";
@@ -6,6 +8,20 @@ import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
 import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award } from "lucide-react";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import GalleryZoom from "@/components/website/GalleryZoom";
+
+/* Daftar foto galeri dibaca otomatis dari /public/about-gallery (webp/jpg/png). */
+function getGalleryImages(): string[] {
+  try {
+    return fs
+      .readdirSync(path.join(process.cwd(), "public", "about-gallery"))
+      .filter((f) => /\.(webp|jpe?g|png)$/i.test(f))
+      .sort()
+      .map((f) => `/about-gallery/${encodeURIComponent(f)}`);
+  } catch {
+    return [];
+  }
+}
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
@@ -73,6 +89,7 @@ async function getData() {
 
 export default async function AboutPage() {
   const { theme, company, tourCount, blogCount, story, values, destinations, tagline } = await getData();
+  const gallery = getGalleryImages();
 
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
@@ -207,6 +224,25 @@ export default async function AboutPage() {
             ))}
           </div>
         </div>
+
+        {/* ── Galeri ─────────────────────────────────────────────── */}
+        {gallery.length > 0 && (
+          <>
+            <div className={divCls} style={divStyle} />
+            <div className="mb-12">
+              <h2
+                className={`text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+                style={isOutlined ? { color: headClr } : undefined}>
+                Momen Perjalanan
+              </h2>
+              <p className="text-sm mb-6"
+                style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
+                Cuplikan dari perjalanan peserta kami. Klik untuk melihat lebih dekat.
+              </p>
+              <GalleryZoom images={gallery} />
+            </div>
+          </>
+        )}
 
         {/* ── Divider ────────────────────────────────────────────── */}
         <div className={divCls} style={divStyle} />

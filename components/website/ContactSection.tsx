@@ -39,13 +39,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
   ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
 
-  const waMsg = encodeURIComponent(lang === "id" ? "Halo, saya ingin konsultasi paket tour" : "Hello, I'd like to inquire about tour packages");
-
   const headLabel = lang === "id" ? "Hubungi Kami" : "Contact Us";
-  const ctaLabel  = lang === "id" ? "Konsultasi Gratis" : "Free Consultation";
-  const ctaTitle  = lang === "id" ? "Bicara langsung dengan tim kami." : "Talk directly with our team.";
-  const ctaDesc   = lang === "id" ? "Kami bantu pilihkan paket sesuai kebutuhan dan anggaran Anda." : "We help you choose the right package for your needs and budget.";
-  const waLabel   = lang === "id" ? "WhatsApp Sekarang" : "WhatsApp Now";
   const bankLabel = lang === "id" ? "Rekening Pembayaran" : "Payment Account";
 
   /* ── FUMAYO ── */
@@ -62,7 +56,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }, i) => {
               const bgs = ["var(--fb-blue)", "var(--fb-yellow)", "var(--fb-green)", "var(--fb-pink)"];
@@ -91,21 +85,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="fb-frame p-10 flex flex-col justify-between" style={{ background: "var(--fb-accent)" }}>
-            <div>
-              <span className="fb-pill mb-6 inline-flex" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>★ {ctaLabel}</span>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug text-white" style={{ fontFamily: "var(--fb-font)" }}>{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed text-white/75">{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 fb-btn-outline px-6 py-3.5 text-sm self-start" style={{ background: "#ffffff" }}>
-                <MessageCircle size={16} /> {waLabel}
-              </a>
-            ) : (
-              <p className="mt-10 text-sm text-white/50">{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -126,7 +105,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }, i) => {
               const bgs  = ["var(--gl-sky)", "#fef9c3", "#dcfce7", "var(--gl-lavender)"];
@@ -156,24 +135,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="gl-card p-10 flex flex-col justify-between" style={{ background: "var(--gl-border)", borderColor: "var(--gl-border)" }}>
-            <div>
-              <span className="gl-pill mb-6 inline-flex" style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", borderColor: "rgba(255,255,255,0.4)" }}>
-                🌍 {ctaLabel}
-              </span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white">{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed text-white/70">{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 gl-btn px-6 py-3.5 text-sm font-black self-start"
-                style={{ background: "var(--gl-card)", color: "var(--gl-border)", borderColor: "var(--gl-card)" }}>
-                <MessageCircle size={16} /> {waLabel} ✈
-              </a>
-            ) : (
-              <p className="mt-10 text-sm text-white/40">{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -193,7 +154,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }) => (
               <div key={label} className="at-card p-5 flex items-start gap-4">
@@ -219,25 +180,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          {/* Card bg = --at-text (inverts per mode); text must contrast = --at-bg. */}
-          <div className="at-card p-10 flex flex-col justify-between" style={{ background: "var(--at-text)", borderColor: "var(--at-border)" }}>
-            <div>
-              <span className="at-pill mb-6 inline-flex" style={{ color: "color-mix(in srgb, var(--at-bg) 78%, transparent)", borderColor: "color-mix(in srgb, var(--at-bg) 35%, transparent)" }}>
-                {ctaLabel}
-              </span>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug" style={{ color: "var(--at-bg)" }}>{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "color-mix(in srgb, var(--at-bg) 72%, transparent)" }}>{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 at-btn-solid px-6 py-3.5 text-sm self-start"
-                style={{ background: "color-mix(in srgb, var(--at-bg) 14%, transparent)", color: "var(--at-bg)", borderColor: "color-mix(in srgb, var(--at-bg) 35%, transparent)" }}>
-                <MessageCircle size={16} /> {waLabel}
-              </a>
-            ) : (
-              <p className="mt-10 text-sm" style={{ color: "color-mix(in srgb, var(--at-bg) 50%, transparent)" }}>{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -260,7 +202,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }, i) => {
               const bgs = ["var(--mp-water)", "var(--mp-land)", "var(--mp-accent)", "var(--mp-navy)"];
@@ -290,24 +232,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="mp-card p-10 flex flex-col justify-between" style={{ background: "var(--mp-accent)", borderColor: "var(--mp-border)" }}>
-            <div>
-              <span className="mp-pill mb-6 inline-flex" style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", borderColor: "rgba(255,255,255,0.4)" }}>
-                {ctaLabel}
-              </span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug" style={{ color: "var(--mp-on-accent)" }}>{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--mp-on-accent)", opacity: 0.75 }}>{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 mp-btn px-6 py-3.5 text-sm self-start"
-                style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
-                <MessageCircle size={16} /> {waLabel}
-              </a>
-            ) : (
-              <p className="mt-10 text-sm" style={{ color: "var(--mp-on-accent)", opacity: 0.5 }}>{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -327,7 +251,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }) => (
               <div key={label} className="kw-card p-5 flex items-start gap-4" style={{ background: "var(--kw-peach)" }}>
@@ -353,24 +277,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="kw-card p-10 flex flex-col justify-between" style={{ background: "var(--kw-border)", borderColor: "var(--kw-border)" }}>
-            <div>
-              <span className="kw-pill mb-6 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)", borderColor: "var(--kw-text)" }}>
-                ✦ {ctaLabel}
-              </span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white">{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed text-white/70">{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 kw-btn px-6 py-3.5 text-sm font-black self-start"
-                style={{ background: "var(--kw-card)", color: "var(--kw-border)", borderColor: "var(--kw-card)" }}>
-                <MessageCircle size={16} /> {waLabel} ♡
-              </a>
-            ) : (
-              <p className="mt-10 text-sm text-white/40">{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -394,14 +300,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </div>
         ))}
       </div>
-      {wa && (
-        <div className="mt-4 text-center">
-          <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-            className="atc-btn" style={{ background: "#5fbf6a" }}>
-            <MessageCircle size={15} /> {waLabel}
-          </a>
-        </div>
-      )}
     </section>
   );
 
@@ -418,7 +316,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-14">
+        <div className="max-w-2xl">
           <div className="space-y-7">
             {contacts.map(({ Icon, label, value, href }) => (
               <div key={label} className="teri-card p-5 flex items-start gap-4">
@@ -443,20 +341,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
               </div>
             )}
           </div>
-          <div className="teri-card p-10 flex flex-col justify-between">
-            <div>
-              <span className="teri-pill mb-6 inline-flex">✦ {ctaLabel}</span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug" style={{ color: "var(--teri-ink)" }}>{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--teri-sub)" }}>{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer" className="mt-10 teri-btn self-start">
-                <MessageCircle size={16} /> {waLabel}
-              </a>
-            ) : (
-              <p className="mt-10 text-sm" style={{ color: "var(--teri-sub)" }}>{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -475,7 +359,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }, i) => {
               const bgs = ["var(--tr-mint)", "var(--tr-sky)", "var(--tr-peach)", "var(--tr-pink)"];
@@ -504,24 +388,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="tr-card p-10 flex flex-col justify-between" style={{ background: "var(--tr-text)", borderColor: "var(--tr-border)" }}>
-            <div>
-              <span className="tr-pill mb-6 inline-flex" style={{ background: "var(--tr-mint)", color: "var(--tr-text)", borderColor: "var(--tr-border)" }}>
-                🌴 {ctaLabel}
-              </span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white">{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed text-white/60">{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 tr-btn px-6 py-3.5 text-sm font-black self-start"
-                style={{ background: "var(--site-accent)", color: "#ffffff", borderColor: "var(--site-accent)" }}>
-                <MessageCircle size={16} /> {waLabel}
-              </a>
-            ) : (
-              <p className="mt-10 text-sm text-white/40">{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -545,7 +411,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="max-w-2xl">
           <div className="space-y-4">
             {contacts.map(({ Icon, label, value, href }, i) => {
               const bgs = ["var(--px-cyan)", "var(--px-yellow)", "var(--px-purple)", "var(--px-green)"];
@@ -575,24 +441,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="px-card p-10 flex flex-col justify-between" style={{ background: "var(--px-border)", borderColor: "var(--px-border)" }}>
-            <div>
-              <span className="px-pill mb-6 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)", borderColor: "var(--px-text)" }}>
-                ► {ctaLabel.toUpperCase()}
-              </span>
-              <h3 className="text-2xl lg:text-3xl font-black mb-4 leading-snug text-white" style={{ fontFamily: "monospace" }}>{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed text-white/60" style={{ fontFamily: "monospace" }}>{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 px-btn px-6 py-3.5 text-xs self-start"
-                style={{ background: "var(--site-accent)", color: "#ffffff", borderColor: "var(--px-card)" }}>
-                <MessageCircle size={16} /> {waLabel.toUpperCase()} ►
-              </a>
-            ) : (
-              <p className="mt-10 text-sm text-white/40 font-mono">{email}</p>
-            )}
-          </div>
         </div>
       </div>
     </section>
@@ -613,7 +461,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="max-w-2xl">
           <div className="space-y-6">
             {contacts.map(({ Icon, label, value, href }) => (
               <div key={label} className="flex items-start gap-4 pb-6 border-b border-gray-100 dark:border-gray-900 last:border-0">
@@ -637,22 +485,6 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             )}
           </div>
 
-          <div className="flex flex-col justify-between bg-gray-950 dark:bg-gray-900 rounded-2xl p-10 text-white">
-            <div>
-              <p className="text-xs tracking-[0.15em] uppercase mb-6" style={{ color: "#7abea4" }}>{ctaLabel}</p>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-snug">{ctaTitle}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{ctaDesc}</p>
-            </div>
-            {wa ? (
-              <a href={`https://wa.me/${wa}?text=${waMsg}`} target="_blank" rel="noreferrer"
-                className="mt-10 inline-flex items-center gap-2 px-6 py-3.5 text-sm font-bold rounded-xl transition-all self-start"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
-                <MessageCircle size={16} /> {waLabel}
-              </a>
-            ) : (
-              <p className="mt-10 text-sm opacity-40">{email}</p>
-            )}
-          </div>
         </div>
 
       </div>
