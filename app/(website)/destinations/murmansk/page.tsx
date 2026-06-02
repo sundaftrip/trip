@@ -400,7 +400,7 @@ export default async function MurmanskPage() {
                       <p className={`text-xs mb-1 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{tour.country} · {tour.duration}</p>
                       <h3 className={`font-bold text-sm leading-tight mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{tour.title}</h3>
                       <p className="font-black" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
-                        {tour.promoPrice ? formatCurrency(tour.promoPrice) : formatCurrency(tour.price)}
+                        {(tour.promoPrice ?? tour.price) > 0 ? formatCurrency(tour.promoPrice ?? tour.price) : "Tanya Harga"}
                       </p>
                     </div>
                   </Link>
