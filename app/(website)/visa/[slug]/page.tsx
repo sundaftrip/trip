@@ -4,7 +4,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ChevronDown, MessageCircle, CheckCircle2, FileText, HelpCircle, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
@@ -95,8 +95,6 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const wa = toWaNumber(companyRows.find((r) => r.key === "company_whatsapp")?.value ?? "");
   const rawTheme = companyRows.find((r) => r.key === "site_theme")?.value || "classic";
   const theme = rawTheme === "console" ? "atlas" : rawTheme;
-  const waMessage = `Halo, saya ingin tanya layanan visa ${country.name}.`;
-  const waLink = wa ? `https://wa.me/${wa}?text=${encodeURIComponent(waMessage)}` : "";
 
   const visaKey: VisaKey = isVisaKey(country.visa) ? country.visa : "wajib";
   const visaLabel = VISA_LABEL[visaKey];
@@ -448,31 +446,6 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
       {/* ULASAN LAYANAN VISA — hanya testimoni category="visa" */}
       <TestimonialSection items={testimonials} theme={theme} />
-
-      {/* BOTTOM CTA STRIP */}
-      {waLink && (
-        <section className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-10 px-4">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                Siap urus visa {country.name}?
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Tim kami siap bantu dari konsultasi sampai visa terbit.
-              </p>
-            </div>
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noreferrer"
-              className="shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-semibold transition hover:opacity-90 active:scale-[0.98]"
-              style={{ background: "#25D366" }}
-            >
-              <MessageCircle size={16} aria-hidden /> Mulai Konsultasi
-            </a>
-          </div>
-        </section>
-      )}
     </article>
   );
 }
