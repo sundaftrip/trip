@@ -3,6 +3,7 @@ import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Ral
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import Providers from "@/components/Providers";
+import Analytics from "@/components/Analytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -98,13 +99,12 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: BRAND_NAME,
       locale: "id_ID",
       type: "website",
-      ...(logo ? { images: [{ url: logo, width: 512, height: 512, alt: BRAND_NAME }] } : {}),
+      // Gambar OG diambil otomatis dari app/opengraph-image.tsx (kartu 1200×630).
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
       description,
-      ...(logo ? { images: [logo] } : {}),
     },
     appleWebApp: {
       capable: true,
@@ -134,6 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Providers>{children}</Providers>
+        <Analytics />
         <SpeedInsights />
       </body>
     </html>
