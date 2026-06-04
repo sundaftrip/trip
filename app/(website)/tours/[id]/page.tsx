@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
-  ArrowLeft, MessageCircle, Camera, Building2, FileText,
+  ArrowLeft, Camera, Building2, FileText,
   ClipboardList, Plane, Package, Ban, Route, Download, Star, ArrowRight,
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
@@ -15,6 +15,7 @@ import { visaSlug, matchCountryFuzzy } from "@/lib/visa-slug";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import ItineraryFold from "@/components/website/ItineraryFold";
 import TourShareButtons from "@/components/website/TourShareButtons";
+import TourBookingCTA from "@/components/website/TourBookingCTA";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
@@ -134,6 +135,14 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           `\n• Estimasi total: ${formatCurrency(startingTotal)} / orang`
         : "")
   );
+
+  // Ringkasan plain-text untuk catatan lead (Lead Masuk di CMS)
+  const waSummary =
+    mandatoryTotal > 0
+      ? `Paket: ${formatCurrency(basePrice)}` +
+        mandatoryAddOns.map((a) => ` · ${a.name} (wajib): ${formatCurrency(a.price)}`).join("") +
+        ` · Estimasi total: ${formatCurrency(startingTotal)}/orang`
+      : `Harga paket: ${formatCurrency(basePrice)}/orang`;
 
   const secTitle = isOutlined
     ? "text-2xl font-black flex items-center gap-2"
@@ -524,11 +533,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <Ban size={16} /> FULLY BOOKED
                 </div>
               ) : (
-                <a href={`https://wa.me/${waNumber}?text=${waMessage}`} target="_blank" rel="noreferrer"
-                  className={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
-                  style={isOutlined ? { background: "var(--site-accent)", color: "#fff", justifyContent: "center" } : undefined}>
-                  <MessageCircle size={18} /> Pesan via WhatsApp
-                </a>
+                <TourBookingCTA
+                  waHref={`https://wa.me/${waNumber}?text=${waMessage}`}
+                  destination={tour.title}
+                  summary={waSummary}
+                  buttonClassName={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition disabled:opacity-60 ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
+                  buttonStyle={isOutlined ? { background: "var(--site-accent)", color: "#fff", justifyContent: "center" } : undefined}
+                />
               )}
 
               {/* Download itinerary PDF */}
