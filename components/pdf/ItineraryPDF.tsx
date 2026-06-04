@@ -6,9 +6,9 @@ import {
   Document, Page, View, Text, Image, Link, StyleSheet,
 } from "@react-pdf/renderer";
 
-const NAVY = "#1E3A5F";
+const CHARCOAL = "#222831"; // rebrand 2026 — gantikan navy lama
 const INK = "#2B2B2B";
-const ORANGE = "#FE8032";
+const TEAL = "#00ADB5"; // rebrand 2026 — aksen gantikan oranye lama
 const GREEN = "#2E7D4F";
 const RED = "#B23B2A";
 const SUB = "#6B6B6B";
@@ -61,27 +61,27 @@ const s = StyleSheet.create({
 
   logo: { height: 22, width: 79, objectFit: "contain" },
   logoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  logoFallback: { fontFamily: "Helvetica-Bold", fontSize: 12, color: NAVY, letterSpacing: 1 },
-  docTag: { fontFamily: "Helvetica-Bold", fontSize: 7, color: ORANGE, letterSpacing: 1 },
+  logoFallback: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL, letterSpacing: 1 },
+  docTag: { fontFamily: "Helvetica-Bold", fontSize: 7, color: TEAL, letterSpacing: 1 },
 
-  kicker: { fontFamily: "Helvetica-Bold", fontSize: 8, color: ORANGE, letterSpacing: 1, marginTop: 22 },
-  title: { fontFamily: "Helvetica-Bold", fontSize: 23, color: NAVY, marginTop: 5, lineHeight: 1.15 },
+  kicker: { fontFamily: "Helvetica-Bold", fontSize: 8, color: TEAL, letterSpacing: 1, marginTop: 22 },
+  title: { fontFamily: "Helvetica-Bold", fontSize: 23, color: CHARCOAL, marginTop: 5, lineHeight: 1.15 },
 
   hero: { width: "100%", height: 188, objectFit: "cover", marginTop: 12 },
 
   metaRow: { flexDirection: "row", marginTop: 12, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 9 },
   metaCell: { flex: 1 },
   metaLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: SUB, letterSpacing: 0.5 },
-  metaValue: { fontFamily: "Helvetica-Bold", fontSize: 9.5, color: NAVY, marginTop: 3 },
+  metaValue: { fontFamily: "Helvetica-Bold", fontSize: 9.5, color: CHARCOAL, marginTop: 3 },
 
   priceWrap: { marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: HAIR },
-  priceCap: { fontFamily: "Helvetica-Bold", fontSize: 7, color: ORANGE, letterSpacing: 0.5 },
-  priceBig: { fontFamily: "Helvetica-Bold", fontSize: 22, color: NAVY, marginTop: 3 },
+  priceCap: { fontFamily: "Helvetica-Bold", fontSize: 7, color: TEAL, letterSpacing: 0.5 },
+  priceBig: { fontFamily: "Helvetica-Bold", fontSize: 22, color: CHARCOAL, marginTop: 3 },
   priceCoret: { fontSize: 9, color: "#9A9A9A", marginTop: 3, textDecoration: "line-through" },
   priceLand: { fontSize: 8.5, color: SUB, marginTop: 3 },
 
-  secHead: { fontFamily: "Helvetica-Bold", fontSize: 12, color: NAVY, marginTop: 22 },
-  secAccent: { width: 30, height: 2, backgroundColor: ORANGE, marginTop: 4, marginBottom: 10 },
+  secHead: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL, marginTop: 22 },
+  secAccent: { width: 30, height: 2, backgroundColor: TEAL, marginTop: 4, marginBottom: 10 },
 
   /* itinerary */
   dayRow: {
@@ -89,10 +89,10 @@ const s = StyleSheet.create({
     borderBottomWidth: 1, borderBottomColor: HAIR,
   },
   dayNumCol: { width: 46 },
-  dayNumLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: ORANGE, letterSpacing: 0.5 },
-  dayNum: { fontFamily: "Helvetica-Bold", fontSize: 17, color: NAVY, marginTop: 1 },
+  dayNumLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: TEAL, letterSpacing: 0.5 },
+  dayNum: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, marginTop: 1 },
   dayBody: { flex: 1 },
-  dayTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.5, color: NAVY },
+  dayTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.5, color: CHARCOAL },
   dayDesc: { fontSize: 9, color: INK, lineHeight: 1.5, marginTop: 3 },
 
   /* lists */
@@ -105,18 +105,18 @@ const s = StyleSheet.create({
 
   para: { fontSize: 9, lineHeight: 1.55, color: INK, marginTop: 4 },
 
-  ctaBox: { borderWidth: 1, borderColor: NAVY, padding: 12, marginTop: 22 },
-  ctaTitle: { fontFamily: "Helvetica-Bold", fontSize: 11, color: NAVY },
+  ctaBox: { borderWidth: 1, borderColor: CHARCOAL, padding: 12, marginTop: 22 },
+  ctaTitle: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL },
   ctaBody: { fontSize: 9, color: INK, lineHeight: 1.5, marginTop: 4 },
 
   faqLine: { fontSize: 9, color: SUB, lineHeight: 1.5, marginTop: 10 },
-  faqLink: { color: ORANGE, fontFamily: "Helvetica-Bold", textDecoration: "none" },
-  waLink: { color: ORANGE, fontFamily: "Helvetica-Bold", textDecoration: "none" },
+  faqLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
+  waLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
 
   /* profile */
   profileWrap: { marginTop: 22, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 14 },
-  profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: NAVY },
-  profileTag: { fontSize: 9, color: ORANGE, fontFamily: "Helvetica-Bold", marginTop: 2 },
+  profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL },
+  profileTag: { fontSize: 9, color: TEAL, fontFamily: "Helvetica-Bold", marginTop: 2 },
   contactRow: { flexDirection: "row", marginTop: 3 },
   contactLabel: { width: 70, fontFamily: "Helvetica-Bold", fontSize: 8, color: SUB },
   contactValue: { flex: 1, fontSize: 8.5, color: INK },
