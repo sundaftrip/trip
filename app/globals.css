@@ -141,6 +141,10 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
+/* Sembunyikan scrollbar (carousel ulasan mobile) tanpa kehilangan scroll */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 /* Badge REKOMENDASI — gaya premium: gradient hijau + soft glow + KILAU
    cahaya yang menyapu (shine sweep) seperti label produk mewah.
    Cahaya menyapu sekali, jeda, lalu menyapu lagi. */

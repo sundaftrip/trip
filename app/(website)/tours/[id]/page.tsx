@@ -617,9 +617,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
               <span className="text-sm text-gray-400">({reviewCount} ulasan)</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {/* Mobile: carousel peek (~73% + 25% intip kartu berikutnya). Tablet/desktop: grid. */}
+            <div className="no-scrollbar flex sm:grid snap-x snap-mandatory overflow-x-auto sm:overflow-visible gap-3 sm:grid-cols-2 lg:grid-cols-3 -mx-4 px-4 sm:mx-0 sm:px-0 pb-3 sm:pb-0">
               {reviews.map((r) => (
-                <div key={r.id} className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
+                <div key={r.id} className={`min-w-[80%] snap-start sm:min-w-0 ${isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}`}>
                   <div className="flex gap-0.5 mb-2">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star key={i} size={13} className={i < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
