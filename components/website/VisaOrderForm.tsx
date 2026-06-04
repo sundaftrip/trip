@@ -43,6 +43,10 @@ export default function VisaOrderForm({
   const [applicants, setApplicants] = useState(1);
   const [notes, setNotes] = useState("");
   const [showNotes, setShowNotes] = useState(false);
+  const [name, setName] = useState("");
+  const [wa, setWa] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState("");
 
   const selected = useMemo(
     () => variants.find((v) => v.id === selectedId) ?? variants[0] ?? null,
@@ -79,6 +83,34 @@ export default function VisaOrderForm({
     lines.push("Mohon info proses dan dokumen yang dibutuhkan. Terima kasih.");
     return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
   }, [waNumber, countryName, selected, applicants, subtotal, notes]);
+
+  // Submit: rekam lead ke CMS (Lead Masuk) lalu lanjut ke WhatsApp.
+  async function submitOrder() {
+    setErr("");
+    if (!name.trim()) { setErr("Nama wajib diisi."); return; }
+    if (wa.replace(/\D/g, "").length < 8) { setErr("Nomor WhatsApp belum valid."); return; }
+    if (!waLink) return;
+    setSubmitting(true);
+    const parts: string[] = [];
+    if (selected) parts.push(`Paket: ${selected.name}`);
+    parts.push(`Jumlah pelamar: ${applicants}`);
+    if (subtotal !== null) parts.push(`Subtotal: ${formatRp(subtotal)}`);
+    if (notes.trim()) parts.push(`Catatan: ${notes.trim()}`);
+    try {
+      await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          whatsapp: wa.trim(),
+          destination: `Visa ${countryName}`,
+          message: parts.join(" · "),
+          source: typeof window !== "undefined" ? window.location.pathname : "",
+        }),
+      });
+    } catch { /* tetap lanjut ke WhatsApp meski perekaman gagal */ }
+    window.location.href = waLink;
+  }
 
   return (
     <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
@@ -206,18 +238,38 @@ export default function VisaOrderForm({
         ))}
       </div>
 
+      {/* Data pemesan — direkam ke CMS (Lead Masuk) */}
+      {waLink && (
+        <div className="space-y-2 mb-3">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nama lengkap *"
+            className="w-full text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-2.5 outline-none focus:border-gray-400 dark:focus:border-gray-600"
+          />
+          <input
+            value={wa}
+            onChange={(e) => setWa(e.target.value)}
+            inputMode="tel"
+            placeholder="No. WhatsApp * (mis. 0812xxxx)"
+            className="w-full text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-2.5 outline-none focus:border-gray-400 dark:focus:border-gray-600"
+          />
+          {err && <p className="text-xs text-red-500">{err}</p>}
+        </div>
+      )}
+
       {/* CTA */}
       {waLink ? (
-        <a
-          href={waLink}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center justify-center gap-2 w-full text-center px-5 py-3.5 rounded-xl text-white font-semibold transition hover:opacity-90 active:scale-[0.98]"
+        <button
+          type="button"
+          onClick={submitOrder}
+          disabled={submitting}
+          className="flex items-center justify-center gap-2 w-full text-center px-5 py-3.5 rounded-xl text-white font-semibold transition hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
           style={{ background: "#25D366" }}
         >
           <MessageCircle size={16} aria-hidden />
-          Pesan via WhatsApp
-        </a>
+          {submitting ? "Memproses…" : "Pesan via WhatsApp"}
+        </button>
       ) : (
         <p className="text-center text-xs text-gray-400">
           Nomor WhatsApp belum di-set di CMS.
