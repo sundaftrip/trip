@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties, ComponentType } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import FooterTagline from "./FooterTagline";
@@ -45,6 +46,7 @@ function InstagramIcon({ size = 16, className, style }: IconProps) {
 
 export default async function Footer({ theme = "classic" }: { theme?: string }) {
   const { t, c } = await getFooterData();
+  const isAbout = ((await headers()).get("x-pathname") || "") === "/about";
 
   const tagline  = t["footer_tagline"] || "";
   const name     = c["company_name"] || "";
@@ -89,7 +91,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
                 style={{ border: "2px solid var(--fb-line)", background: "var(--fb-yellow)", boxShadow: "0 3px 0 0 var(--fb-line)" }}>
                 <Image src={logo || "/logo.png"} alt={name} width={176} height={54} style={{ height: 34, width: "auto" }} />
               </span>
-              <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--fb-subink)" }} />
+              <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--fb-subink)" }} />
               {legalLine && <p className="text-xs mt-3" style={{ color: "var(--fb-subink)" }}>{legalLine}</p>}
             </div>
 
@@ -141,7 +143,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--kw-border)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }} />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }} />
             {legalLine && <p className="text-xs mt-3" style={{ color: "var(--kw-subtext)" }}>{legalLine}</p>}
           </div>
 
@@ -188,7 +190,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "color-mix(in srgb, var(--gl-border) 20%, transparent)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--gl-subtext)" }} />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--gl-subtext)" }} />
             {legalLine && <p className="text-xs mt-3" style={{ color: "var(--gl-subtext)" }}>{legalLine}</p>}
           </div>
 
@@ -234,7 +236,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b" style={{ borderColor: "var(--at-border)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--at-subtext)" }} />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--at-subtext)" }} />
             {legalLine && <p className="text-xs mt-3" style={{ color: "var(--at-subtext)" }}>{legalLine}</p>}
           </div>
 
@@ -282,7 +284,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--mp-border)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--mp-subtext)" }} />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--mp-subtext)" }} />
             {legalLine && <p className="text-xs mt-3" style={{ color: "var(--mp-subtext)" }}>{legalLine}</p>}
           </div>
 
@@ -328,7 +330,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--tr-border)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }} />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }} />
             {legalLine && <p className="text-xs mt-3" style={{ color: "var(--tr-subtext)" }}>{legalLine}</p>}
           </div>
 
@@ -380,7 +382,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }} />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }} />
             {legalLine && <p className="text-xs mt-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{legalLine}</p>}
             {/* Pixel color blocks */}
             <div className="flex gap-2 mt-5">
@@ -432,7 +434,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-gray-900">
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-dark" style={{ height: 40, width: "auto", marginBottom: 20 }} />
-            <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed text-gray-500 max-w-xs" />
+            <FooterTagline isAbout={isAbout} tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed text-gray-500 max-w-xs" />
             {legalLine && <p className="text-xs text-gray-500 mt-3">{legalLine}</p>}
           </div>
 

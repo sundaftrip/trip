@@ -1,24 +1,22 @@
-"use client";
-
-import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 
-/* Tagline footer yang sadar-rute: di halaman /about tampilkan pesan B2B
-   (menggantikan blurb umum), di halaman lain tampilkan tagline biasa. */
+/* Tagline footer: di halaman /about (isAbout) tampilkan pesan B2B
+   (menggantikan blurb umum), di halaman lain tampilkan tagline biasa.
+   Server component — keputusan dibuat dari header x-pathname (lihat Footer). */
 export default function FooterTagline({
+  isAbout,
   tagline,
   waB2B,
   className = "",
   style,
 }: {
+  isAbout: boolean;
   tagline: string;
   waB2B?: string;
   className?: string;
   style?: CSSProperties;
 }) {
-  const pathname = usePathname();
-
-  if (pathname === "/about") {
+  if (isAbout) {
     return (
       <p className="text-sm leading-relaxed max-w-md" style={style}>
         <span className="font-semibold">Untuk travel agent &amp; mitra B2B —</span>{" "}
