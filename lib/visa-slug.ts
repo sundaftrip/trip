@@ -48,7 +48,7 @@ function levenshtein(a: string, b: string): number {
   return prev[n];
 }
 
-function similarity(a: string, b: string): number {
+export function similarity(a: string, b: string): number {
   if (!a || !b) return 0;
   const max = Math.max(a.length, b.length);
   return max === 0 ? 0 : 1 - levenshtein(a, b) / max;

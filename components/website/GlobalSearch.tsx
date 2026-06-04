@@ -8,9 +8,10 @@ type Results = {
   tours: { title: string; country: string; statusLabel: string; active: boolean; dateLabel?: string | null; href: string }[];
   visa: { name: string; en: string; href: string }[];
   faqs: { question: string; section: string; href: string }[];
+  suggestion?: string | null;
 };
 
-const EMPTY: Results = { tours: [], visa: [], faqs: [] };
+const EMPTY: Results = { tours: [], visa: [], faqs: [], suggestion: null };
 
 export default function GlobalSearch({
   lang = "id",
@@ -120,6 +121,17 @@ export default function GlobalSearch({
 
             {/* Results */}
             <div className="max-h-[60vh] overflow-y-auto py-2">
+              {res.suggestion && q.trim().length >= 2 && (
+                <div className="px-4 pt-2 pb-1 text-sm text-gray-500 dark:text-gray-400">
+                  {t("Mungkin maksud Anda:", "Did you mean:")}{" "}
+                  <button type="button" onClick={() => setQ(res.suggestion!)}
+                    className="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
+                    {res.suggestion}
+                  </button>
+                  ?
+                </div>
+              )}
+
               {q.trim().length < 2 && (
                 <p className="px-4 py-8 text-center text-sm text-gray-400">
                   {t("Ketik minimal 2 huruf untuk mencari.", "Type at least 2 letters to search.")}
