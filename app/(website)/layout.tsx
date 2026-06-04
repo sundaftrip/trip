@@ -66,7 +66,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
 
   const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
-  const accent = colors["color_accent"] ?? "#00ADB5";
+  const accent = colors["color_accent"] ?? "#C97B63";
   const cssVars =
     Object.entries(colors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)

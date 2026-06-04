@@ -1471,26 +1471,26 @@ a.gl-pill:has(svg:only-child) {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
-/* ─── ATLAS THEME UTILITIES — ikut warna skema (color-mix) ─── */
+/* ─── ATLAS THEME UTILITIES — WARM EDITORIAL PALETTE (preview) ─── */
 :root {
-  --at-bg:      color-mix(in srgb, var(--site-accent, #1a1a1a) 4%,  #ffffff);
-  --at-card:    color-mix(in srgb, var(--site-accent, #1a1a1a) 2.5%, #ffffff);
-  --at-border:  color-mix(in srgb, var(--site-accent, #1a1a1a) 55%, #1a1a1a);
-  --at-text:    color-mix(in srgb, var(--site-accent, #1a1a1a) 20%, #0a0a0a);
-  --at-subtext: color-mix(in srgb, var(--site-accent, #1a1a1a) 32%, #6b7280);
-  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 11%, transparent);
-  --at-shadow:  rgba(0,0,0,0.07);
-  --at-muted:   color-mix(in srgb, var(--site-accent, #1a1a1a) 9%,  #f5f5f5);
+  --at-bg:      #F8F5F0;            /* Soft Cream — latar */
+  --at-card:    #FFFFFF;            /* warm white — kartu */
+  --at-border:  #C5CDB4;            /* Sage tint — border */
+  --at-text:    #3A332B;            /* Espresso — teks */
+  --at-subtext: #8A7E6E;            /* Taupe — subteks */
+  --at-grid:    rgba(163,177,138,0.20); /* Sage faint — grid */
+  --at-shadow:  rgba(80,60,40,0.08);
+  --at-muted:   #E9D8C4;            /* Warm Beige — pill/band */
 }
 .dark {
-  --at-bg:      color-mix(in srgb, var(--site-accent, #1a1a1a) 10%, #0a0a0a);
-  --at-card:    color-mix(in srgb, var(--site-accent, #1a1a1a) 13%, #111111);
-  --at-border:  color-mix(in srgb, var(--site-accent, #1a1a1a) 50%, rgba(255,255,255,0.20));
-  --at-text:    color-mix(in srgb, var(--site-accent, #1a1a1a) 14%, #f5f5f5);
-  --at-subtext: color-mix(in srgb, var(--site-accent, #1a1a1a) 28%, #9ca3af);
-  --at-grid:    color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, transparent);
+  --at-bg:      #2A2520;            /* warm espresso */
+  --at-card:    #332D27;
+  --at-border:  #4A4138;
+  --at-text:    #F4ECE0;
+  --at-subtext: #C3B6A3;
+  --at-grid:    rgba(163,177,138,0.12);
   --at-shadow:  rgba(0,0,0,0.4);
-  --at-muted:   color-mix(in srgb, var(--site-accent, #1a1a1a) 16%, #1a1a1a);
+  --at-muted:   #3E362E;
 }
 .at-card {
   border: 1px solid var(--at-border);
@@ -1537,9 +1537,9 @@ a.gl-pill:has(svg:only-child) {
   color: var(--at-bg);
 }
 .at-btn-solid {
-  background: var(--at-text);
-  color: var(--at-bg);
-  border: 1px solid var(--at-text);
+  background: var(--site-accent);
+  color: #ffffff;
+  border: 1px solid var(--site-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
