@@ -2057,3 +2057,23 @@ a.gl-pill:has(svg:only-child) {
 .daun-card {
   border-radius: 14px !important;
 }
+
+/* ── CTA "Lihat semua tour" — pill minimalis adaptif aksen tema ───────── */
+.tours-cta {
+  border: 1px solid color-mix(in srgb, var(--site-accent, #2d6a4f) 30%, transparent);
+  background-color: color-mix(in srgb, var(--site-accent, #2d6a4f) 5%, transparent);
+  transition: border-color .3s ease, background-color .3s ease, transform .3s ease;
+  backdrop-filter: blur(2px);
+}
+.tours-cta:hover {
+  border-color: color-mix(in srgb, var(--site-accent, #2d6a4f) 62%, transparent);
+  background-color: color-mix(in srgb, var(--site-accent, #2d6a4f) 12%, transparent);
+}
+.tours-cta:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--site-accent, #2d6a4f) 70%, transparent);
+  outline-offset: 3px;
+}
+.tours-cta .tours-cta-arrow { transition: transform .3s ease; }
+.tours-cta:hover .tours-cta-arrow { transform: translateX(4px); }
+
+.tours-cta { border-radius: 999px !important; }

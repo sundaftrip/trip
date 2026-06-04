@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
-import Link from "next/link";
 import HeroSection from "@/components/website/HeroSection";
 import WhySection from "@/components/website/WhySection";
 import ToursCatalog from "@/components/website/ToursCatalog";
@@ -87,17 +86,7 @@ export default async function HomePage() {
     <>
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
-        <ToursCatalog tours={allTours} theme={theme} showFilter={theme === "globe"} />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-4 text-center">
-          <Link
-            href="/tours"
-            prefetch
-            className="relative z-10 inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold tracking-wide underline-offset-4 hover:underline rounded-lg"
-            style={{ color: "var(--site-accent,#2d6a4f)" }}
-          >
-            Lihat semua tour &amp; dokumentasi trip →
-          </Link>
-        </div>
+        <ToursCatalog tours={allTours} theme={theme} showFilter={theme === "globe"} showAllLink />
       </div>
       <WhySection texts={texts} theme={theme} />
       <BlogSection posts={posts} theme={theme} />

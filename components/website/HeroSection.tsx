@@ -427,49 +427,53 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden pt-24 lg:pt-28 pb-20 px-4 at-grid-bg"
+    <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-10 lg:pb-16 px-4 at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="mb-8 hero-fade-up">
-          <span className="at-pill" style={{ color: "var(--at-text)" }}>
-            {eyebrow}
-          </span>
-        </div>
+        {/* Desktop: dua kolom (judul kiri, aksi di samping). Mobile: tumpuk rapat. */}
+        <div className="lg:flex lg:items-end lg:gap-12">
+          {/* Kiri — eyebrow + judul */}
+          <div className="flex-1 min-w-0">
+            <div className="mb-3 hero-fade-up">
+              <span className="at-pill" style={{ color: "var(--at-text)" }}>
+                {eyebrow}
+              </span>
+            </div>
+            <h1 className="text-[clamp(2.3rem,7vw,6rem)] font-bold leading-[0.95] tracking-tight max-w-4xl mb-6 lg:mb-0 hero-fade-up"
+              style={{ color: "var(--at-text)" }}>
+              <TitleWords />
+            </h1>
+          </div>
 
-        <h1 className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
-          style={{ color: "var(--at-text)" }}>
-          <TitleWords />
-        </h1>
-
-        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
-          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-            {t("hero_subtitle", "Destinasi Pilihan")}
-          </span>
-          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-            Paket Lengkap
-          </span>
-          <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-            Terpercaya
-          </span>
-        </div>
-
-        <div className="flex flex-col items-stretch sm:items-start gap-4">
-          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-4">
+          {/* Kanan — tombol aksi di samping hero + trust badge */}
+          <div className="lg:w-[300px] shrink-0 flex flex-col gap-2.5 hero-fade-up">
             <Link href="/tours"
-              className="at-btn-solid px-8 py-4 text-sm sm:min-w-[230px]">
+              className="at-btn-solid w-full px-6 py-3.5 text-sm">
               {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
             </Link>
             <Link href="/visa"
-              className="at-btn-solid px-8 py-4 text-sm sm:min-w-[230px]">
+              className="at-btn-solid w-full px-6 py-3.5 text-sm">
               Servis Visa <ArrowRight size={15} />
             </Link>
+            {waNumber && (
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+                className="at-btn w-full px-6 py-3.5 text-sm">
+                WhatsApp
+              </a>
+            )}
+            <p className="text-[12px] leading-relaxed mt-1 opacity-80"
+              style={{ color: "var(--at-subtext)" }}>
+              {t("hero_subtitle", "Destinasi pilihan, paket lengkap & terpercaya.")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+                Paket Lengkap
+              </span>
+              <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+                Terpercaya
+              </span>
+            </div>
           </div>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-              className="at-btn px-8 py-4 text-sm sm:min-w-[230px]">
-              WhatsApp
-            </a>
-          )}
         </div>
       </div>
     </section>

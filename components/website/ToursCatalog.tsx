@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import ToursSection from "./ToursSection";
 import { REGIONS, regionOf, type RegionKey } from "./TourFilter";
@@ -21,10 +22,13 @@ export default function ToursCatalog({
   tours,
   theme,
   showFilter = false,
+  showAllLink = false,
 }: {
   tours: Tour[];
   theme: string;
   showFilter?: boolean;
+  /* Tampilkan CTA "Lihat semua tour" di dalam section (homepage saja). */
+  showAllLink?: boolean;
 }) {
   const [region, setRegion] = useState<RegionKey>("all");
   const [page, setPage] = useState(1);
@@ -54,6 +58,20 @@ export default function ToursCatalog({
     <ToursSection tours={paged} theme={theme}>
       {showFilter && <FilterChips active={region} onChange={changeRegion} />}
       <PaginationBar current={current} total={totalPages} onChange={changePage} />
+      {showAllLink && (
+        <div className="flex justify-center pt-2 pb-2">
+          <Link
+            href="/tours"
+            prefetch
+            aria-label="Lihat semua tour dan dokumentasi trip"
+            className="tours-cta group inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-semibold tracking-wide"
+            style={{ color: "var(--site-accent,#2d6a4f)" }}
+          >
+            <span>Lihat semua tour &amp; dokumentasi trip</span>
+            <ArrowRight size={16} aria-hidden="true" className="tours-cta-arrow" />
+          </Link>
+        </div>
+      )}
     </ToursSection>
   );
 }
