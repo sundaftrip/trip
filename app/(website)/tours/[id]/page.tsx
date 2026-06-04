@@ -8,9 +8,10 @@ import Link from "next/link";
 import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
   ArrowLeft, MessageCircle, Camera, Building2, FileText,
-  ClipboardList, Plane, Package, Ban, Route, Download, Star,
+  ClipboardList, Plane, Package, Ban, Route, Download, Star, ArrowRight,
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
+import { visaSlug } from "@/lib/visa-slug";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import ItineraryFold from "@/components/website/ItineraryFold";
 import TourShareButtons from "@/components/website/TourShareButtons";
@@ -63,12 +64,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
   const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
   if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
-  const [companyRows, reviews] = await Promise.all([
+  const [companyRows, reviews, visaCountries] = await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
       where: { tourId: tour.id, published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     }),
+    prisma.countryVisa.findMany({ select: { name: true, en: true } }),
   ]);
 
   // Agregat rating dari ulasan ASLI tour ini (dasar AggregateRating JSON-LD).
@@ -107,6 +109,18 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
   const addOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[]) ?? [];
   const hotelInfo = tour.hotel as Record<string, string> | null;
+
+  // Untuk add-on visa: deteksi & arahkan otomatis ke halaman visa negara terkait.
+  // Cocokkan nama negara (ID/EN) yang muncul di dalam nama add-on, mis. "Visa Russia".
+  function resolveVisaHref(addOnName: string): string | null {
+    if (!/visa/i.test(addOnName)) return null;
+    const hay = addOnName.toLowerCase();
+    // pilih kecocokan nama negara terpanjang yang muncul di nama add-on
+    const match = visaCountries
+      .filter((c) => (c.name && hay.includes(c.name.toLowerCase())) || (c.en && hay.includes(c.en.toLowerCase())))
+      .sort((a, b) => Math.max(b.name?.length ?? 0, b.en?.length ?? 0) - Math.max(a.name?.length ?? 0, a.en?.length ?? 0))[0];
+    return match ? `/visa/${visaSlug(match.en)}` : "/visa";
+  }
 
   // Add-on WAJIB praktis harus dibeli peserta → dilipat ke total harga awal.
   const basePrice = tour.promoPrice ?? tour.price;
@@ -584,6 +598,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         </div>
                         {item.desc && (
                           <p className="mt-0.5 text-[11px] leading-snug text-gray-400 dark:text-gray-500 break-words">{item.desc}</p>
+                        )}
+                        {resolveVisaHref(item.name) && (
+                          <Link href={resolveVisaHref(item.name)!}
+                            className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
+                            Bisa dibantu — cek info visa
+                            <ArrowRight size={11} />
+                          </Link>
                         )}
                       </div>
                     ))}
