@@ -105,7 +105,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const tBdr  = isFumayo ? "var(--fb-border)" : isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : isAtlas ? "var(--at-border)" : undefined;
 
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
-  const addOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended" }[]) ?? [];
+  const addOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[]) ?? [];
   const hotelInfo = tour.hotel as Record<string, string> | null;
 
   // Add-on WAJIB praktis harus dibeli peserta → dilipat ke total harga awal.
@@ -570,16 +570,21 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     style={isOutlined ? { color: tSub } : undefined}>
                     {isOutlined && <Package size={12} />} Add Ons <span className="font-normal normal-case tracking-normal text-gray-400">(opsional)</span>
                   </p>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {optionalAddOns.map((item) => (
-                      <div key={item.name} className="flex justify-between items-center gap-2 text-xs">
-                        <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
-                          <span className="break-words">{item.name}</span>
-                          {item.tag === "recommended" && (
-                            <span className="flag-wave shrink-0 -translate-y-1 px-1 py-0.5 text-[6px] font-bold leading-none tracking-tight text-white">REKOMENDASI</span>
-                          )}
-                        </span>
-                        <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
+                      <div key={item.name} className="text-xs">
+                        <div className="flex justify-between items-center gap-2">
+                          <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
+                            <span className="break-words">{item.name}</span>
+                            {item.tag === "recommended" && (
+                              <span className="flag-wave shrink-0 -translate-y-1 px-1 py-0.5 text-[6px] font-bold leading-none tracking-tight text-white">REKOMENDASI</span>
+                            )}
+                          </span>
+                          <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
+                        </div>
+                        {item.desc && (
+                          <p className="mt-0.5 text-[11px] leading-snug text-gray-400 dark:text-gray-500 break-words">{item.desc}</p>
+                        )}
                       </div>
                     ))}
                   </div>

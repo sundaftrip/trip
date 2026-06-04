@@ -25,7 +25,7 @@ interface TourData {
   description?: string;
   visaInfo?: string;
   itinerary?: { day: number; title: string; description: string }[];
-  addOns?: { name: string; price: number; tag?: AddOnTag }[];
+  addOns?: { name: string; price: number; tag?: AddOnTag; desc?: string }[];
 }
 
 type AddOnTag = "" | "wajib" | "recommended";
@@ -64,7 +64,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
   const [editingExclusionIdx, setEditingExclusionIdx] = useState<number | null>(null);
   const [itineraryItem, setItineraryItem] = useState({ day: 1, title: "", description: "" });
   const [editingItineraryIdx, setEditingItineraryIdx] = useState<number | null>(null);
-  const [addOnItem, setAddOnItem] = useState<{ name: string; price: string | number }>({ name: "", price: "" });
+  const [addOnItem, setAddOnItem] = useState<{ name: string; price: string | number; desc: string }>({ name: "", price: "", desc: "" });
 
   // commit helpers untuk inclusions/exclusions (tambah baru ATAU simpan editan)
   function commitInclusion() {
@@ -94,6 +94,9 @@ export default function TourForm({ tour }: { tour?: TourData }) {
   function cycleAddOnTag(i: number) {
     const next: Record<AddOnTag, AddOnTag> = { "": "wajib", wajib: "recommended", recommended: "" };
     set("addOns", (form.addOns ?? []).map((a, j) => (j === i ? { ...a, tag: next[a.tag ?? ""] } : a)));
+  }
+  function setAddOnDesc(i: number, desc: string) {
+    set("addOns", (form.addOns ?? []).map((a, j) => (j === i ? { ...a, desc } : a)));
   }
 
   function set(key: keyof TourData, value: unknown) {
@@ -413,44 +416,44 @@ export default function TourForm({ tour }: { tour?: TourData }) {
           <label className="label text-xs">Harga (Rp)</label>
           <span />
         </div>
-        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-3">
+        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-2">
           <input placeholder="cth: Airport Transfer" className="input" value={addOnItem.name}
             onChange={(e) => setAddOnItem((p) => ({ ...p, name: e.target.value }))}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.currentTarget.nextElementSibling as HTMLInputElement | null)?.focus(); }}} />
           <input type="number" min={0} placeholder="0" className="input" value={addOnItem.price}
-            onChange={(e) => setAddOnItem((p) => ({ ...p, price: e.target.value }))}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                if (addOnItem.name) {
-                  set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0 }]);
-                  setAddOnItem({ name: "", price: "" });
-                }
-              }
-            }} />
+            onChange={(e) => setAddOnItem((p) => ({ ...p, price: e.target.value }))} />
           <button type="button"
-            onClick={() => { if (addOnItem.name) { set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0 }]); setAddOnItem({ name: "", price: "" }); }}}
+            onClick={() => { if (addOnItem.name) { set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0, desc: addOnItem.desc.trim() || undefined }]); setAddOnItem({ name: "", price: "", desc: "" }); }}}
             className="px-4 bg-blue-600 text-white rounded-lg text-sm">Tambah</button>
         </div>
+        <input placeholder="Keterangan (opsional) — apa saja yang didapat? cth: Menginap 1 malam di Sammi Village + makan malam tradisional" className="input mb-4 text-sm"
+          value={addOnItem.desc} onChange={(e) => setAddOnItem((p) => ({ ...p, desc: e.target.value }))} />
         <div className="space-y-2">
           {(form.addOns ?? []).map((item, i) => (
-            <div key={i} className="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg text-sm">
-              <span className="font-medium text-gray-900 dark:text-white min-w-0 break-words">{item.name}</span>
-              <div className="flex items-center gap-3 shrink-0">
-                <button type="button" onClick={() => cycleAddOnTag(i)}
-                  title="Klik untuk ganti: netral → WAJIB → REKOMENDASI"
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wide transition-colors ${
-                    item.tag === "wajib"
-                      ? "bg-red-600 text-white hover:bg-red-700"
-                      : item.tag === "recommended"
-                      ? "bg-green-500 text-white hover:bg-green-600"
-                      : "bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
-                  }`}>
-                  {item.tag === "wajib" ? "WAJIB" : item.tag === "recommended" ? "REKOMENDASI" : "+ Badge"}
-                </button>
-                <span className="text-gray-600 dark:text-gray-400">Rp {Number(item.price).toLocaleString("id-ID")}</span>
-                <button type="button" onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
+            <div key={i} className="bg-gray-50 dark:bg-gray-700 px-4 py-2.5 rounded-lg text-sm">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium text-gray-900 dark:text-white min-w-0 break-words">{item.name}</span>
+                <div className="flex items-center gap-3 shrink-0">
+                  <button type="button" onClick={() => cycleAddOnTag(i)}
+                    title="Klik untuk ganti: netral → WAJIB → REKOMENDASI"
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wide transition-colors ${
+                      item.tag === "wajib"
+                        ? "bg-red-600 text-white hover:bg-red-700"
+                        : item.tag === "recommended"
+                        ? "bg-green-500 text-white hover:bg-green-600"
+                        : "bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
+                    }`}>
+                    {item.tag === "wajib" ? "WAJIB" : item.tag === "recommended" ? "REKOMENDASI" : "+ Badge"}
+                  </button>
+                  <span className="text-gray-600 dark:text-gray-400">Rp {Number(item.price).toLocaleString("id-ID")}</span>
+                  <button type="button" onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
+                </div>
               </div>
+              <textarea
+                value={item.desc ?? ""}
+                onChange={(e) => setAddOnDesc(i, e.target.value)}
+                placeholder="Keterangan (opsional): apa saja yang didapat peserta?"
+                className="input mt-2 w-full text-xs min-h-[2.25rem] resize-y bg-white/60 dark:bg-gray-800/60" />
             </div>
           ))}
         </div>
