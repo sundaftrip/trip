@@ -11,7 +11,7 @@ import {
   ClipboardList, Plane, Package, Ban, Route, Download, Star, ArrowRight,
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
-import { visaSlug } from "@/lib/visa-slug";
+import { visaSlug, matchCountryFuzzy } from "@/lib/visa-slug";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import ItineraryFold from "@/components/website/ItineraryFold";
 import TourShareButtons from "@/components/website/TourShareButtons";
@@ -111,14 +111,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const hotelInfo = tour.hotel as Record<string, string> | null;
 
   // Untuk add-on visa: deteksi & arahkan otomatis ke halaman visa negara terkait.
-  // Cocokkan nama negara (ID/EN) yang muncul di dalam nama add-on, mis. "Visa Russia".
+  // Pencocokan toleran typo (fuzzy): "Visa Kirgyztan" tetap nyambung ke "Kyrgyzstan".
   function resolveVisaHref(addOnName: string): string | null {
     if (!/visa/i.test(addOnName)) return null;
-    const hay = addOnName.toLowerCase();
-    // pilih kecocokan nama negara terpanjang yang muncul di nama add-on
-    const match = visaCountries
-      .filter((c) => (c.name && hay.includes(c.name.toLowerCase())) || (c.en && hay.includes(c.en.toLowerCase())))
-      .sort((a, b) => Math.max(b.name?.length ?? 0, b.en?.length ?? 0) - Math.max(a.name?.length ?? 0, a.en?.length ?? 0))[0];
+    const match = matchCountryFuzzy(visaCountries, addOnName);
     return match ? `/visa/${visaSlug(match.en)}` : "/visa";
   }
 
