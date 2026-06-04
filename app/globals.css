@@ -141,19 +141,26 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
-/* Badge REKOMENDASI — berkibar pelan seperti bendera (pivot dari kiri) */
-@keyframes flag-wave {
-  0%, 100% { transform: rotate(-2.5deg) skewX(0deg); }
-  25%      { transform: rotate(0.5deg) skewX(-4deg); }
-  50%      { transform: rotate(2.5deg) skewX(0deg); }
-  75%      { transform: rotate(0.5deg) skewX(4deg); }
+/* Badge REKOMENDASI — bendera berkibar: riak gelombang (SVG displacement)
+   merambat dari pangkal + ayunan kain organik. Pivot dari kiri (tiang). */
+@keyframes flag-sway {
+  0%   { transform: rotate(-1.5deg) skewX(0deg)  skewY(0deg); }
+  18%  { transform: rotate(0.8deg)  skewX(-7deg) skewY(2deg); }
+  36%  { transform: rotate(2deg)    skewX(3deg)  skewY(-1.5deg); }
+  54%  { transform: rotate(0.6deg)  skewX(-5deg) skewY(1.5deg); }
+  72%  { transform: rotate(1.6deg)  skewX(4deg)  skewY(-2deg); }
+  90%  { transform: rotate(-0.4deg) skewX(-2deg) skewY(1deg); }
+  100% { transform: rotate(-1.5deg) skewX(0deg)  skewY(0deg); }
 }
 .flag-wave {
+  display: inline-block;
   transform-origin: left center;
-  animation: flag-wave 2.2s ease-in-out infinite;
+  animation: flag-sway 1.5s ease-in-out infinite;
+  filter: url(#flagWave);
+  will-change: transform, filter;
 }
 @media (prefers-reduced-motion: reduce) {
-  .flag-wave { animation: none; }
+  .flag-wave { animation: none; filter: none; }
 }
 
 
