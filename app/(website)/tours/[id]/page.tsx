@@ -576,7 +576,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
                           <span className="break-words">{item.name}</span>
                           {item.tag === "recommended" && (
-                            <span className="flag-wave shrink-0 -translate-y-1 px-1.5 py-0.5 text-[7px] font-bold leading-none tracking-tight text-white">REKOMENDASI</span>
+                            <span className="flag-wave shrink-0 -translate-y-1 px-1 py-0.5 text-[6px] font-bold leading-none tracking-tight text-white">REKOMENDASI</span>
                           )}
                         </span>
                         <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
