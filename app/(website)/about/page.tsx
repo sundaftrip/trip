@@ -129,7 +129,6 @@ export default async function AboutPage() {
   const nib       = company["company_nib"]       ?? "";
   const whatsapp  = toWaNumber(company["company_whatsapp"]);
   const waLink    = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi paket wisata.")}` : "/tours";
-  const waB2BLink = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya dari travel agent / B2B. Saya ingin menanyakan skema kerja sama partner untuk Rusia.")}` : "/tours";
 
   const divStyle = isOutlined
     ? { borderColor: bdrClr }
@@ -365,23 +364,6 @@ export default async function AboutPage() {
               Lihat Paket Tour
             </Link>
           </div>
-        </div>
-
-        {/* ── Catatan B2B — diskret, ditujukan untuk travel agent/mitra ─────── */}
-        <div className="mt-10 pt-6 border-t text-center"
-          style={isOutlined ? { borderColor: bdrClr } : { borderColor: "rgba(0,0,0,0.08)" }}>
-          <p className="text-xs leading-relaxed max-w-2xl mx-auto"
-            style={isOutlined ? { color: subClr } : { color: "#9ca3af" }}>
-            <span className="font-semibold">Untuk travel agent &amp; mitra B2B —</span>{" "}
-            khusus Rusia kami tangani langsung sebagai operator lokal (tangan pertama).
-            Sejumlah travel agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami;
-            atas permintaan mitra, identitas dan rincian kerja sama kami jaga kerahasiaannya dan hanya
-            dibuka untuk agent terverifikasi.{" "}
-            <a href={waB2BLink} target="_blank" rel="noreferrer"
-              className="font-semibold underline underline-offset-2 hover:opacity-80">
-              Hubungi kami untuk skema partner
-            </a>.
-          </p>
         </div>
 
       </div>
