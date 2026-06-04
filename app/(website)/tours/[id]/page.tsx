@@ -208,22 +208,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="min-h-screen pt-16" style={isOutlined ? { backgroundColor: tBg, ...pixelGridStyle } : undefined}>
-      {/* Filter SVG untuk badge REKOMENDASI — riak gelombang bendera yang merambat */}
-      {optionalAddOns.some((a) => a.tag === "recommended") && (
-        <svg width="0" height="0" aria-hidden className="absolute pointer-events-none">
-          <defs>
-            <filter id="flagWave" x="-25%" y="-40%" width="150%" height="180%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.045" numOctaves="2" seed="7" result="noise">
-                <animate attributeName="baseFrequency" dur="2.4s" values="0.012 0.045;0.02 0.06;0.012 0.045" repeatCount="indefinite" />
-              </feTurbulence>
-              <feOffset in="noise" dx="0" dy="0" result="moved">
-                <animate attributeName="dx" values="0;60" dur="1.5s" repeatCount="indefinite" />
-              </feOffset>
-              <feDisplacementMap in="SourceGraphic" in2="moved" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
-            </filter>
-          </defs>
-        </svg>
-      )}
       {/* JSON-LD */}
       <script
         type="application/ld+json"
