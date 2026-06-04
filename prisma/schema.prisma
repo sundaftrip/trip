@@ -465,3 +465,16 @@ model Inquiry {
 
   @@index([status, createdAt])
 }
+
+// Cache terjemahan mesin (ID -> EN) untuk fitur auto-translate situs.
+// Sekali sebuah string diterjemahkan, hasilnya dipakai ulang semua pengunjung.
+model Translation {
+  id        String   @id @default(cuid())
+  hash      String   @unique // sha1(source + ":" + target)
+  source    String   @db.Text
+  target    String   // "en"
+  text      String   @db.Text // hasil terjemahan
+  createdAt DateTime @default(now())
+
+  @@index([target])
+}

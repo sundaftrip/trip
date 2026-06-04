@@ -3,6 +3,7 @@ import Footer from "@/components/website/Footer";
 import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import OrganizationSchema from "@/components/website/OrganizationSchema";
+import AutoTranslate from "@/components/website/AutoTranslate";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -109,6 +110,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
           </div>
         </div>
         <StickyWhatsApp phone={whatsapp} />
+        <AutoTranslate />
       </>
     );
   }
@@ -124,6 +126,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
       <main className={`flex-1 ${isTeri ? "teri-bg" : ""}`} data-theme={theme}>{children}</main>
       <Footer theme={theme} />
       <StickyWhatsApp phone={whatsapp} />
+      <AutoTranslate />
     </>
   );
 }

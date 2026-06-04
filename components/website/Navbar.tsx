@@ -38,6 +38,8 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
     const next = lang === "id" ? "en" : "id";
     setLang(next);
     localStorage.setItem("lang", next);
+    // beri tahu AutoTranslate (tab yang sama) untuk terjemah/kembalikan konten
+    window.dispatchEvent(new Event("sundaf:langchange"));
   }
 
   const isDark = mounted && resolvedTheme === "dark";
