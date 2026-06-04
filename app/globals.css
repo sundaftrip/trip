@@ -141,6 +141,21 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
+/* Badge REKOMENDASI — berkibar pelan seperti bendera (pivot dari kiri) */
+@keyframes flag-wave {
+  0%, 100% { transform: rotate(-2.5deg) skewX(0deg); }
+  25%      { transform: rotate(0.5deg) skewX(-4deg); }
+  50%      { transform: rotate(2.5deg) skewX(0deg); }
+  75%      { transform: rotate(0.5deg) skewX(4deg); }
+}
+.flag-wave {
+  transform-origin: left center;
+  animation: flag-wave 2.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flag-wave { animation: none; }
+}
+
 
 /* Animasi judul hero — tiap huruf meloncat masuk dari atas lalu
    memantul-mantul (bouncy) sebelum diam. Stagger antar huruf via --n. */

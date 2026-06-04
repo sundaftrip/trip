@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
 import GalleryZoom from "@/components/website/GalleryZoom";
+import ItineraryFold from "@/components/website/ItineraryFold";
 import TourShareButtons from "@/components/website/TourShareButtons";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
@@ -294,8 +295,81 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
             )}
 
-            {/* Inclusions & Exclusions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Itinerary — tampil lebih dulu, bisa dilipat & di-extend */}
+            {itinerary.length > 0 && (
+              <div>
+                <h2 className={`${secTitle} mb-6`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined && <Route size={18} />} Itinerary
+                </h2>
+
+                {isAtlas ? (
+                  /* Atlas: clean vertical timeline, black & white */
+                  <ItineraryFold count={itinerary.length} accent="var(--at-text)">
+                    <div className="space-y-0">
+                      {itinerary.map((item, idx) => (
+                        <div key={item.day} className="flex gap-5">
+                          <div className="flex flex-col items-center">
+                            <div
+                              className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-xs font-bold flex items-center justify-center shrink-0"
+                              style={{ borderColor: "var(--at-border)", color: "var(--at-text)" }}
+                            >
+                              {String(item.day).padStart(2, "0")}
+                            </div>
+                            {idx < itinerary.length - 1 && (
+                              <div className="w-px flex-1 bg-black/10 dark:bg-white/10 my-1 min-h-8" />
+                            )}
+                          </div>
+                          <div className="pb-8 pt-1.5 flex-1">
+                            <h3 className="font-semibold text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
+                            {item.description && (
+                              <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ItineraryFold>
+                ) : isOutlined ? (
+                  /* Other outlined themes: card + pill badge */
+                  <ItineraryFold count={itinerary.length} accent="var(--site-accent)">
+                    <div className="space-y-3">
+                      {itinerary.map((item) => (
+                        <div key={item.day} className={`flex gap-4 ${pfx}-card p-4`}>
+                          <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
+                          <div>
+                            <h3 className="font-black" style={{ color: tText }}>{item.title}</h3>
+                            {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ItineraryFold>
+                ) : (
+                  /* Classic: blue circle + vertical line */
+                  <ItineraryFold count={itinerary.length}>
+                    <div className="space-y-3">
+                      {itinerary.map((item) => (
+                        <div key={item.day} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0">
+                              {item.day}
+                            </span>
+                            <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
+                          </div>
+                          <div className="pb-6">
+                            <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+                            {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ItineraryFold>
+                )}
+              </div>
+            )}
+
+            {/* Inclusions & Exclusions — berdampingan termasuk di mobile */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-6">
               {tour.inclusions.length > 0 && (
                 <div className={isOutlined ? `${pfx}-card p-5` : ""}>
                   <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
@@ -325,73 +399,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               )}
             </div>
-
-            {/* Itinerary */}
-            {itinerary.length > 0 && (
-              <div>
-                <h2 className={`${secTitle} mb-6`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined && <Route size={18} />} Itinerary
-                </h2>
-
-                {isAtlas ? (
-                  /* Atlas: clean vertical timeline, black & white */
-                  <div className="space-y-0">
-                    {itinerary.map((item, idx) => (
-                      <div key={item.day} className="flex gap-5">
-                        <div className="flex flex-col items-center">
-                          <div
-                            className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-xs font-bold flex items-center justify-center shrink-0"
-                            style={{ borderColor: "var(--at-border)", color: "var(--at-text)" }}
-                          >
-                            {String(item.day).padStart(2, "0")}
-                          </div>
-                          {idx < itinerary.length - 1 && (
-                            <div className="w-px flex-1 bg-black/10 dark:bg-white/10 my-1 min-h-8" />
-                          )}
-                        </div>
-                        <div className="pb-8 pt-1.5 flex-1">
-                          <h3 className="font-semibold text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
-                          {item.description && (
-                            <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.description}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : isOutlined ? (
-                  /* Other outlined themes: card + pill badge */
-                  <div className="space-y-3">
-                    {itinerary.map((item) => (
-                      <div key={item.day} className={`flex gap-4 ${pfx}-card p-4`}>
-                        <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
-                        <div>
-                          <h3 className="font-black" style={{ color: tText }}>{item.title}</h3>
-                          {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  /* Classic: blue circle + vertical line */
-                  <div className="space-y-3">
-                    {itinerary.map((item) => (
-                      <div key={item.day} className="flex gap-4">
-                        <div className="flex flex-col items-center">
-                          <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0">
-                            {item.day}
-                          </span>
-                          <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
-                        </div>
-                        <div className="pb-6">
-                          <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
-                          {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Hotel */}
             {hotelInfo && Object.keys(hotelInfo).length > 0 && (
@@ -600,10 +607,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <div className="space-y-1.5">
                     {optionalAddOns.map((item) => (
                       <div key={item.name} className="flex justify-between items-center gap-2 text-xs">
-                        <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1.5 min-w-0">
+                        <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
                           <span className="break-words">{item.name}</span>
                           {item.tag === "recommended" && (
-                            <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide bg-green-500 text-white">REKOMENDASI</span>
+                            <span className="flag-wave shrink-0 -translate-y-1.5 inline-block px-1 py-px rounded-sm text-[8px] font-bold leading-none tracking-wide bg-green-500 text-white shadow-sm">REKOMENDASI</span>
                           )}
                         </span>
                         <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
