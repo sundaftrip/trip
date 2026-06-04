@@ -467,7 +467,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
 function overviewText(visa: VisaKey, name: string, stay: string): string {
   switch (visa) {
     case "bebas":
-      return `Pemegang paspor Indonesia BEBAS VISA masuk ${name} dengan masa tinggal maksimal ${stay}. Cukup paspor berlaku min. 6 bulan, tiket pulang, dan bukti akomodasi. Tim kami siap bantu kalau kamu butuh dokumen pendamping atau itinerary terpercaya.`;
+      return `Pemegang paspor Indonesia BEBAS VISA masuk ${name} (masa tinggal maksimal ${stay}) — jadi tidak perlu mengurus visa. Tapi "bebas visa" bukan berarti bebas syarat: petugas imigrasi tetap bisa meminta tiket pulang-pergi, bukti akomodasi, dana yang cukup, hingga asuransi perjalanan. Di sinilah kami bantu — menyiapkan dokumen pendukung, itinerary resmi, dan mengatur seluruh perjalanannya supaya kedatanganmu mulus tanpa drama di imigrasi.`;
     case "voa":
       return `${name} memberikan Visa on Arrival (VOA) untuk pemegang paspor Indonesia. Visa diberikan saat tiba di bandara atau border, masa tinggal maksimal ${stay}. Layanan kami: bantu siapkan dokumen pelengkap dan informasi syarat terkini.`;
     case "evisa":
