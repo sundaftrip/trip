@@ -11,7 +11,7 @@ import GlobalSearch from "./GlobalSearch";
 
 const navLinks = [
   { href: "/", label: { id: "Beranda", en: "Home" } },
-  { href: "/visa", label: { id: "Visa", en: "Visa" } },
+  { href: "/visa", label: { id: "Layanan Visa", en: "Visa Service" } },
   { href: "/blog", label: { id: "Blog", en: "Blog" } },
   { href: "/about", label: { id: "Tentang Kami", en: "About" } },
   { href: "/#contact", label: { id: "Kontak", en: "Contact" } },

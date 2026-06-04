@@ -366,6 +366,21 @@ export default async function AboutPage() {
           </div>
         </div>
 
+        {/* ── Catatan B2B — diskret, ditujukan untuk travel agent/mitra ─────── */}
+        <div className="mt-10 pt-6 border-t text-center"
+          style={isOutlined ? { borderColor: bdrClr } : { borderColor: "rgba(0,0,0,0.08)" }}>
+          <p className="text-xs leading-relaxed max-w-2xl mx-auto"
+            style={isOutlined ? { color: subClr } : { color: "#9ca3af" }}>
+            <span className="font-semibold">Untuk travel agent &amp; mitra B2B —</span>{" "}
+            khusus Rusia kami tangani langsung (tangan pertama) sebagai operator lokal, dengan
+            skema kerja sama dan penawaran khusus partner.{" "}
+            <Link href="/partner" className="font-semibold underline underline-offset-2 hover:opacity-80">
+              Lihat halaman partner
+            </Link>{" "}
+            atau hubungi kami.
+          </p>
+        </div>
+
       </div>
     </div>
   );
