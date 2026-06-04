@@ -111,7 +111,11 @@ export async function generateMetadata(): Promise<Metadata> {
       statusBarStyle: "black-translucent",
       title: BRAND_NAME,
     },
-    ...(logo ? { icons: { icon: "/favicon.svg", apple: logo } } : {}),
+    icons: {
+      icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+      shortcut: "/favicon.svg",
+      apple: logo || "/favicon.svg",
+    },
   };
 }
 
