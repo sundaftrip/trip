@@ -62,7 +62,7 @@ async function getData() {
       prisma.companyInfo.findFirst({ where: { key: "site_theme" } }),
       prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp"] } } }),
       prisma.faq.findMany({
-        where: { active: true },
+        where: { active: true, group: "umum" },
         orderBy: [{ section: "asc" }, { order: "asc" }, { createdAt: "asc" }],
       }),
     ]);

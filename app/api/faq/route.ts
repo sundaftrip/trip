@@ -7,9 +7,10 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const showAll = searchParams.get("all") === "true";
+    const group = searchParams.get("group") || undefined;
 
     const faqs = await prisma.faq.findMany({
-      where: showAll ? undefined : { active: true },
+      where: { ...(group ? { group } : {}), ...(showAll ? {} : { active: true }) },
       orderBy: [{ section: "asc" }, { order: "asc" }, { createdAt: "asc" }],
     });
     return NextResponse.json(faqs);
@@ -25,14 +26,19 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { section, question, answer, order, active } = body;
+    const { group, section, question, answer, service, order, active } = body;
 
     if (!section || !question || !answer) {
       return NextResponse.json({ error: "section, question, answer wajib diisi" }, { status: 400 });
     }
 
     const faq = await prisma.faq.create({
-      data: { section, question, answer, order: order ?? 0, active: active ?? true },
+      data: {
+        group: group === "visa" ? "visa" : "umum",
+        section, question, answer,
+        service: typeof service === "string" && service.trim() ? service : null,
+        order: order ?? 0, active: active ?? true,
+      },
     });
     return NextResponse.json(faq, { status: 201 });
   } catch {

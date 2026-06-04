@@ -5,19 +5,28 @@ import { Plus, Pencil, Trash2, Check, X, ChevronDown, ChevronUp, Eye, EyeOff } f
 
 interface FaqItem {
   id: string;
+  group: string;
   section: string;
   question: string;
   answer: string;
+  service: string | null;
   order: number;
   active: boolean;
 }
 
-const SECTIONS = ["Umum", "Visa & Dokumen", "Pembayaran & Deposit", "Di Lapangan"];
+type Group = "umum" | "visa";
+
+const SECTIONS_BY_GROUP: Record<Group, string[]> = {
+  umum: ["Umum", "Visa & Dokumen", "Pembayaran & Deposit", "Di Lapangan"],
+  visa: ["Teknis Schengen", "Profil Non-Standar", "Paspor & Riwayat", "Dokumen Sensitif", "Kasus Reject", "Pengurusan Visa via Sundaf", "Umum"],
+};
 
 const EMPTY: Omit<FaqItem, "id"> = {
+  group: "umum",
   section: "Umum",
   question: "",
   answer: "",
+  service: null,
   order: 0,
   active: true,
 };
@@ -30,17 +39,18 @@ export default function AdminFaqPage() {
   const [form, setForm] = useState<Omit<FaqItem, "id">>(EMPTY);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [group, setGroup] = useState<Group>("umum");
   const formRef = useRef<HTMLDivElement>(null);
 
-  async function load() {
+  async function load(g: Group = group) {
     setLoading(true);
-    const r = await fetch("/api/faq?all=true");
+    const r = await fetch(`/api/faq?all=true&group=${g}`);
     const data = await r.json();
     setItems(Array.isArray(data) ? data : []);
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(group); cancelForm(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [group]);
 
   // Scroll form into view whenever it opens
   useEffect(() => {
@@ -55,13 +65,13 @@ export default function AdminFaqPage() {
   function startAdd() {
     setAdding(true);
     setEditing(null);
-    setForm(EMPTY);
+    setForm({ ...EMPTY, group, section: SECTIONS_BY_GROUP[group][0] });
   }
 
   function startEdit(item: FaqItem) {
     setEditing(item);
     setAdding(false);
-    setForm({ section: item.section, question: item.question, answer: item.answer, order: item.order, active: item.active });
+    setForm({ group: item.group, section: item.section, question: item.question, answer: item.answer, service: item.service, order: item.order, active: item.active });
   }
 
   function cancelForm() {
@@ -120,7 +130,7 @@ export default function AdminFaqPage() {
     load();
   }
 
-  const grouped = SECTIONS.map(sec => ({
+  const grouped = SECTIONS_BY_GROUP[group].map(sec => ({
     section: sec,
     faqs: items.filter(i => i.section === sec).sort((a, b) => a.order - b.order),
   }));
@@ -131,7 +141,9 @@ export default function AdminFaqPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">FAQ</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Kelola pertanyaan yang tampil di <a href="/faq" target="_blank" className="text-blue-500 underline">/faq</a></p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Kelola pertanyaan di <a href="/faq" target="_blank" className="text-blue-500 underline">/faq</a> (Umum) &amp; <a href="/visa/faq" target="_blank" className="text-blue-500 underline">/visa/faq</a> (Visa)
+          </p>
         </div>
         <button
           onClick={startAdd}
@@ -139,6 +151,23 @@ export default function AdminFaqPage() {
         >
           <Plus size={16} /> Tambah FAQ
         </button>
+      </div>
+
+      {/* Tab grup */}
+      <div className="flex gap-2">
+        {([["umum", "FAQ Umum (/faq)"], ["visa", "FAQ Visa (/visa/faq)"]] as [Group, string][]).map(([g, label]) => (
+          <button
+            key={g}
+            onClick={() => setGroup(g)}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
+              group === g
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Add / Edit Form */}
@@ -156,7 +185,7 @@ export default function AdminFaqPage() {
                 onChange={e => setForm(f => ({ ...f, section: e.target.value }))}
                 className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
               >
-                {SECTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                {SECTIONS_BY_GROUP[group].map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
@@ -182,15 +211,35 @@ export default function AdminFaqPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Jawaban</label>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+              Jawaban <span className="font-normal text-gray-400">(boleh pakai HTML: &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;&lt;li&gt;, &lt;a href&gt;)</span>
+            </label>
             <textarea
-              rows={4}
+              rows={group === "visa" ? 8 : 4}
               value={form.answer}
               onChange={e => setForm(f => ({ ...f, answer: e.target.value }))}
               placeholder="Tulis jawaban lengkap..."
-              className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white resize-y"
+              className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white resize-y font-mono"
             />
           </div>
+
+          {group === "visa" && (
+            <div>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                Tombol CTA / Layanan <span className="font-normal text-gray-400">(opsional)</span>
+              </label>
+              <input
+                type="text"
+                value={form.service ?? ""}
+                onChange={e => setForm(f => ({ ...f, service: e.target.value === "" ? null : e.target.value }))}
+                placeholder='Kosongkan = CTA default. Ketik "__NONE__" = tanpa tombol. Atau teks tombol kustom.'
+                className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Kosong → tombol konsultasi default. <code className="text-gray-500">__NONE__</code> → sembunyikan tombol. Teks lain → jadi label tombol kustom.
+              </p>
+            </div>
+          )}
 
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2 cursor-pointer">

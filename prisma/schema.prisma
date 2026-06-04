@@ -171,13 +171,17 @@ model TermsCondition {
 
 model Faq {
   id        String   @id @default(cuid())
+  group     String   @default("umum") // "umum" (/faq) atau "visa" (/visa/faq)
   section   String   // e.g. "Umum", "Visa & Dokumen"
   question  String
-  answer    String   @db.Text
+  answer    String   @db.Text // HTML
+  service   String?  @db.Text // CTA layanan per item (visa): null=default, "__NONE__"=tanpa CTA, lainnya=teks custom
   order     Int      @default(0)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([group, section, order])
 }
 
 model CompanyInfo {
