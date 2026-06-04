@@ -1471,26 +1471,26 @@ a.gl-pill:has(svg:only-child) {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
-/* ─── ATLAS THEME UTILITIES — WARM EDITORIAL PALETTE (preview) ─── */
+/* ─── ATLAS THEME UTILITIES — PLAYFUL BLUE/YELLOW (kol.id-inspired, preview) ─── */
 :root {
-  --at-bg:      #F8F5F0;            /* Soft Cream — latar */
-  --at-card:    #FFFFFF;            /* warm white — kartu */
-  --at-border:  #C5CDB4;            /* Sage tint — border */
-  --at-text:    #3A332B;            /* Espresso — teks */
-  --at-subtext: #8A7E6E;            /* Taupe — subteks */
-  --at-grid:    rgba(163,177,138,0.20); /* Sage faint — grid */
-  --at-shadow:  rgba(80,60,40,0.08);
-  --at-muted:   #E9D8C4;            /* Warm Beige — pill/band */
+  --at-bg:      #4C61E8;                 /* Royal blue — latar */
+  --at-card:    #5B6FEC;                 /* lighter blue — kartu frosted */
+  --at-border:  rgba(255,255,255,0.24);  /* garis putih lembut */
+  --at-text:    #FFFFFF;                 /* teks putih di atas biru */
+  --at-subtext: rgba(255,255,255,0.78);
+  --at-grid:    rgba(255,255,255,0.14);  /* grid putih dashed */
+  --at-shadow:  rgba(20,28,90,0.22);
+  --at-muted:   rgba(255,255,255,0.12);  /* surface lembut */
 }
 .dark {
-  --at-bg:      #2A2520;            /* warm espresso */
-  --at-card:    #332D27;
-  --at-border:  #4A4138;
-  --at-text:    #F4ECE0;
-  --at-subtext: #C3B6A3;
-  --at-grid:    rgba(163,177,138,0.12);
-  --at-shadow:  rgba(0,0,0,0.4);
-  --at-muted:   #3E362E;
+  --at-bg:      #1B2356;                 /* deep indigo */
+  --at-card:    #242D67;
+  --at-border:  rgba(255,255,255,0.16);
+  --at-text:    #FFFFFF;
+  --at-subtext: rgba(255,255,255,0.70);
+  --at-grid:    rgba(255,255,255,0.08);
+  --at-shadow:  rgba(0,0,0,0.45);
+  --at-muted:   rgba(255,255,255,0.08);
 }
 .at-card {
   border: 1px solid var(--at-border);
@@ -1538,7 +1538,7 @@ a.gl-pill:has(svg:only-child) {
 }
 .at-btn-solid {
   background: var(--site-accent);
-  color: #ffffff;
+  color: #21307A;
   border: 1px solid var(--site-accent);
   display: inline-flex;
   align-items: center;
