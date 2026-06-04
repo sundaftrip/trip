@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 import slugify from "slugify";
 
 /** Slug URL rapi & unik dari judul tour (mis. "Russia Aurora" → "russia-aurora"). */
@@ -43,5 +44,6 @@ export async function POST(req: NextRequest) {
     resourceId: tour.id, resourceName: tour.title,
   });
 
+  revalidatePublicContent();
   return NextResponse.json(tour, { status: 201 });
 }

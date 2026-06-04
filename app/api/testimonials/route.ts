@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 export async function GET() {
   const items = await prisma.testimonial.findMany({
@@ -37,5 +38,6 @@ export async function POST(req: NextRequest) {
     detail: "Tambah testimoni",
   });
 
+  revalidatePublicContent();
   return NextResponse.json(item);
 }

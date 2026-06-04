@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -31,6 +32,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     resourceId: item.id, resourceName: item.name, detail: "Edit testimoni",
   });
 
+  revalidatePublicContent();
   return NextResponse.json(item);
 }
 
@@ -47,5 +49,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     resourceId: id, resourceName: item.name, detail: "Hapus testimoni",
   });
 
+  revalidatePublicContent();
   return NextResponse.json({ success: true });
 }

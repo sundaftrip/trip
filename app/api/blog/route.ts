@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -30,5 +31,6 @@ export async function POST(req: NextRequest) {
     resourceId: post.id, resourceName: post.title,
   });
 
+  revalidatePublicContent();
   return NextResponse.json(post, { status: 201 });
 }

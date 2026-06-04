@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -32,6 +33,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     detail: isPublishOnly ? (body.published ? "Dipublish" : "Di-unpublish") : undefined,
   });
 
+  revalidatePublicContent();
   return NextResponse.json(post);
 }
 
@@ -51,5 +53,6 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     resourceId: id, resourceName: post?.title,
   });
 
+  revalidatePublicContent();
   return NextResponse.json({ success: true });
 }

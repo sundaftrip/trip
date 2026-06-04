@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 export async function GET() {
   const texts = await prisma.siteText.findMany();
@@ -34,5 +35,6 @@ export async function PUT(req: NextRequest) {
     detail: `Update ${Object.keys(body).join(", ")}`,
   });
 
+  revalidatePublicContent();
   return NextResponse.json({ success: true });
 }

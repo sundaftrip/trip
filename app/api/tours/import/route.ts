@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 interface ImportRow {
   title?: string;
@@ -50,5 +51,6 @@ export async function POST(req: NextRequest) {
     detail: `Import massal ${result.count} tour`,
   });
 
+  revalidatePublicContent();
   return NextResponse.json({ created: result.count }, { status: 201 });
 }
