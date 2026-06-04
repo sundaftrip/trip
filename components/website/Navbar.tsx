@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import GlobalSearch from "./GlobalSearch";
 
 const navLinks = [
   { href: "/", label: { id: "Beranda", en: "Home" } },
@@ -64,6 +65,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="fb-pill" triggerStyle={{ background: "var(--fb-blue)", color: "#1a1a1a" }} />
             <button onClick={toggleLang} className="fb-pill" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
@@ -132,6 +134,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="kw-pill" triggerStyle={{ background: "var(--kw-peach)", color: "var(--kw-text)" }} />
             <button onClick={toggleLang} className="kw-pill font-black"
               style={{ background: "var(--kw-peach)", color: "var(--kw-text)" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -222,6 +225,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
               </Link>
             </div>
             {/* Language toggle = quiet outline */}
+            <GlobalSearch lang={lang} triggerClassName="gl-pill" triggerStyle={{ background: "transparent", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 40%, transparent)" }} />
             <button onClick={toggleLang} className="gl-pill font-black"
               style={{ background: "transparent", color: "var(--gl-text)", borderColor: "color-mix(in srgb, var(--gl-border) 40%, transparent)" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -292,6 +296,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="at-pill" triggerStyle={{ color: "var(--at-text)" }} />
             <button onClick={toggleLang} className="at-pill"
               style={{ color: "var(--at-text)" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -356,6 +361,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="mp-pill" triggerStyle={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }} />
             <button onClick={toggleLang} className="mp-pill"
               style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -430,6 +436,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="tr-pill" triggerStyle={{ background: "var(--tr-mint)", color: "var(--tr-text)" }} />
             <button onClick={toggleLang} className="tr-pill font-black"
               style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -510,6 +517,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="px-pill" triggerStyle={{ background: "var(--px-yellow)", color: "#111827" }} />
             <button onClick={toggleLang} className="px-pill"
               style={{ background: "var(--px-yellow)", color: "#111827" }}>
               {lang === "id" ? "EN" : "ID"}
@@ -591,6 +599,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             </nav>
 
             <div className="flex items-center gap-1.5 sm:gap-2">
+              <GlobalSearch lang={lang} triggerClassName="daun-pill" />
               <button onClick={toggleLang} className="daun-pill" aria-label="Toggle language">
                 {lang === "id" ? "EN" : "ID"}
               </button>
@@ -678,6 +687,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           </nav>
 
           <div className="flex items-center gap-2">
+            <GlobalSearch lang={lang} triggerClassName="text-[11px] font-bold px-2 py-1 rounded border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 transition" />
             <button onClick={toggleLang}
               className="text-[11px] font-bold px-2 py-1 rounded border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 transition">
               {lang === "id" ? "EN" : "ID"}
