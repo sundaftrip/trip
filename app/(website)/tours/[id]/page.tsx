@@ -464,40 +464,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
             )}
 
-            {/* Ulasan Peserta, wajib tampil (dasar AggregateRating yang sah) */}
-            {reviewCount > 0 && (
-              <div>
-                <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined && <Star size={18} />} Ulasan Peserta
-                </h2>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-lg font-bold" style={isOutlined ? { color: tText } : undefined}>{ratingValue.toFixed(1)}</span>
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} size={16} className={i < Math.round(ratingValue) ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-400">({reviewCount} ulasan)</span>
-                </div>
-                <div className="space-y-3">
-                  {reviews.map((r) => (
-                    <div key={r.id} className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
-                      <div className="flex gap-0.5 mb-2">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star key={i} size={13} className={i < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
-                        ))}
-                      </div>
-                      <p className={`text-sm leading-relaxed ${isOutlined ? "" : "text-gray-600 dark:text-gray-300"}`} style={isOutlined ? { color: tSub } : undefined}>
-                        &ldquo;{r.content}&rdquo;
-                      </p>
-                      <p className={`text-xs font-semibold mt-2 ${isOutlined ? "" : "text-gray-900 dark:text-white"}`} style={isOutlined ? { color: tText } : undefined}>
-                        {r.name}{r.role ? <span className="font-normal text-gray-400"> · {r.role}</span> : null}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Sidebar Booking */}
@@ -655,6 +621,41 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             </div>
           </div>
         </div>
+
+        {/* Ulasan Peserta — full-width, paling bawah (setelah card harga) */}
+        {reviewCount > 0 && (
+          <div className="mt-12">
+            <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
+              {isOutlined && <Star size={18} />} Ulasan Peserta
+            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg font-bold" style={isOutlined ? { color: tText } : undefined}>{ratingValue.toFixed(1)}</span>
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={16} className={i < Math.round(ratingValue) ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
+                ))}
+              </div>
+              <span className="text-sm text-gray-400">({reviewCount} ulasan)</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {reviews.map((r) => (
+                <div key={r.id} className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
+                  <div className="flex gap-0.5 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={13} className={i < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"} />
+                    ))}
+                  </div>
+                  <p className={`text-sm leading-relaxed ${isOutlined ? "" : "text-gray-600 dark:text-gray-300"}`} style={isOutlined ? { color: tSub } : undefined}>
+                    &ldquo;{r.content}&rdquo;
+                  </p>
+                  <p className={`text-xs font-semibold mt-2 ${isOutlined ? "" : "text-gray-900 dark:text-white"}`} style={isOutlined ? { color: tText } : undefined}>
+                    {r.name}{r.role ? <span className="font-normal text-gray-400"> · {r.role}</span> : null}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
