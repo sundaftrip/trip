@@ -230,9 +230,9 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="py-24 overflow-hidden at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="py-14 overflow-hidden at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto">
-        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-7">
           <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Testimoni</span>
           <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Kata Mereka</h2>
         </AnimateIn>

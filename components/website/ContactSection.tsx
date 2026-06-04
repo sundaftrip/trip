@@ -142,9 +142,9 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section id="contact" className="py-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section id="contact" className="py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 max-w-xl">
+        <div className="mb-10 max-w-xl">
           <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>{headLabel}</span>
           <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>
             {t("contact_title", "Siap Membantu Perjalanan Anda")}

@@ -110,10 +110,10 @@ export default function WhySection({ texts, theme = "classic" }: Props) {
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="py-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
             <div>
               <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Keunggulan Kami</span>
               <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>{title}</h2>
