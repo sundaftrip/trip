@@ -104,11 +104,25 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const tBdr  = isFumayo ? "var(--fb-border)" : isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : isAtlas ? "var(--at-border)" : undefined;
 
   const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
-  const addOns = (tour.addOns as { name: string; price: number }[]) ?? [];
+  const addOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended" }[]) ?? [];
   const hotelInfo = tour.hotel as Record<string, string> | null;
 
+  // Add-on WAJIB praktis harus dibeli peserta → dilipat ke total harga awal.
+  const basePrice = tour.promoPrice ?? tour.price;
+  const mandatoryAddOns = addOns.filter((a) => a.tag === "wajib");
+  const optionalAddOns = addOns.filter((a) => a.tag !== "wajib");
+  const mandatoryTotal = mandatoryAddOns.reduce((sum, a) => sum + (Number(a.price) || 0), 0);
+  const startingTotal = basePrice + mandatoryTotal;
+
   const greeting = companyName ? `Halo ${companyName}` : "Halo";
-  const waMessage = encodeURIComponent(`${greeting}, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.`);
+  const waMessage = encodeURIComponent(
+    `${greeting}, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.` +
+      (mandatoryTotal > 0
+        ? `\n\nRincian harga:\n• Paket: ${formatCurrency(basePrice)}` +
+          mandatoryAddOns.map((a) => `\n• ${a.name} (wajib): ${formatCurrency(a.price)}`).join("") +
+          `\n• Estimasi total: ${formatCurrency(startingTotal)} / orang`
+        : "")
+  );
 
   const secTitle = isOutlined
     ? "text-2xl font-black flex items-center gap-2"
@@ -489,6 +503,32 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 )}
               </div>
 
+              {/* Rincian wajib — add-on WAJIB ikut total */}
+              {mandatoryTotal > 0 && (
+                <div className={`mb-5 -mt-1 p-3 text-xs rounded-xl ${isOutlined ? `${pfx}-card` : "bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700"}`}
+                  style={isOutlined ? { background: tCard } : undefined}>
+                  <div className="flex justify-between text-gray-500 dark:text-gray-400">
+                    <span>Paket</span>
+                    <span>{formatCurrency(basePrice)}</span>
+                  </div>
+                  {mandatoryAddOns.map((a) => (
+                    <div key={a.name} className="flex justify-between items-center gap-2 mt-1 text-gray-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1.5 min-w-0">
+                        <span className="break-words">{a.name}</span>
+                        <span className="shrink-0 px-1 py-0.5 rounded text-[9px] font-bold bg-red-600 text-white">WAJIB</span>
+                      </span>
+                      <span className="shrink-0">+{formatCurrency(a.price)}</span>
+                    </div>
+                  ))}
+                  <div className={`flex justify-between mt-2 pt-2 font-black text-gray-900 dark:text-white ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-200 dark:border-gray-700"}`}
+                    style={isOutlined ? { borderColor: tBdr } : undefined}>
+                    <span>Total mulai</span>
+                    <span>{formatCurrency(startingTotal)}</span>
+                  </div>
+                  <p className="mt-1 text-[10px] text-gray-400">Sudah termasuk item wajib di atas, per orang.</p>
+                </div>
+              )}
+
               {/* CTA */}
               {isExpired ? (
                 <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-xl"}`}
@@ -549,19 +589,24 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
 
-              {/* Add Ons */}
-              {addOns.length > 0 && (
+              {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total mulai di atas) */}
+              {optionalAddOns.length > 0 && (
                 <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
                   style={isOutlined ? { borderColor: tBdr } : undefined}>
                   <p className={`text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 ${isOutlined ? "font-black" : "font-semibold text-gray-500"}`}
                     style={isOutlined ? { color: tSub } : undefined}>
-                    {isOutlined && <Package size={12} />} Add Ons
+                    {isOutlined && <Package size={12} />} Add Ons <span className="font-normal normal-case tracking-normal text-gray-400">(opsional)</span>
                   </p>
                   <div className="space-y-1.5">
-                    {addOns.map((item) => (
-                      <div key={item.name} className="flex justify-between text-xs">
-                        <span className="text-gray-600 dark:text-gray-400">{item.name}</span>
-                        <span className={`font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
+                    {optionalAddOns.map((item) => (
+                      <div key={item.name} className="flex justify-between items-center gap-2 text-xs">
+                        <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1.5 min-w-0">
+                          <span className="break-words">{item.name}</span>
+                          {item.tag === "recommended" && (
+                            <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide bg-green-500 text-white">REKOMENDASI</span>
+                          )}
+                        </span>
+                        <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
                       </div>
                     ))}
                   </div>

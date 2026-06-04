@@ -25,8 +25,10 @@ interface TourData {
   description?: string;
   visaInfo?: string;
   itinerary?: { day: number; title: string; description: string }[];
-  addOns?: { name: string; price: number }[];
+  addOns?: { name: string; price: number; tag?: AddOnTag }[];
 }
+
+type AddOnTag = "" | "wajib" | "recommended";
 
 export default function TourForm({ tour }: { tour?: TourData }) {
   const router = useRouter();
@@ -58,9 +60,41 @@ export default function TourForm({ tour }: { tour?: TourData }) {
 
   const [inclusionInput, setInclusionInput] = useState("");
   const [exclusionInput, setExclusionInput] = useState("");
+  const [editingInclusionIdx, setEditingInclusionIdx] = useState<number | null>(null);
+  const [editingExclusionIdx, setEditingExclusionIdx] = useState<number | null>(null);
   const [itineraryItem, setItineraryItem] = useState({ day: 1, title: "", description: "" });
   const [editingItineraryIdx, setEditingItineraryIdx] = useState<number | null>(null);
   const [addOnItem, setAddOnItem] = useState<{ name: string; price: string | number }>({ name: "", price: "" });
+
+  // commit helpers untuk inclusions/exclusions (tambah baru ATAU simpan editan)
+  function commitInclusion() {
+    if (!inclusionInput.trim()) return;
+    if (editingInclusionIdx !== null) {
+      const updated = [...(form.inclusions ?? [])];
+      updated[editingInclusionIdx] = inclusionInput.trim();
+      set("inclusions", updated);
+      setEditingInclusionIdx(null);
+    } else {
+      set("inclusions", [...(form.inclusions ?? []), inclusionInput.trim()]);
+    }
+    setInclusionInput("");
+  }
+  function commitExclusion() {
+    if (!exclusionInput.trim()) return;
+    if (editingExclusionIdx !== null) {
+      const updated = [...(form.exclusions ?? [])];
+      updated[editingExclusionIdx] = exclusionInput.trim();
+      set("exclusions", updated);
+      setEditingExclusionIdx(null);
+    } else {
+      set("exclusions", [...(form.exclusions ?? []), exclusionInput.trim()]);
+    }
+    setExclusionInput("");
+  }
+  function cycleAddOnTag(i: number) {
+    const next: Record<AddOnTag, AddOnTag> = { "": "wajib", wajib: "recommended", recommended: "" };
+    set("addOns", (form.addOns ?? []).map((a, j) => (j === i ? { ...a, tag: next[a.tag ?? ""] } : a)));
+  }
 
   function set(key: keyof TourData, value: unknown) {
     setForm((p) => ({ ...p, [key]: value }));
@@ -185,15 +219,30 @@ export default function TourForm({ tour }: { tour?: TourData }) {
             <label className="label mb-2">Termasuk</label>
             <div className="flex gap-2 mb-2">
               <input className="input flex-1" value={inclusionInput} onChange={(e) => setInclusionInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (inclusionInput) { set("inclusions", [...(form.inclusions ?? []), inclusionInput]); setInclusionInput(""); }}}} placeholder="Tekan Enter untuk tambah" />
-              <button type="button" onClick={() => { if (inclusionInput) { set("inclusions", [...(form.inclusions ?? []), inclusionInput]); setInclusionInput(""); }}}
-                className="px-3 py-2 bg-green-600 text-white rounded-lg text-sm">+</button>
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitInclusion(); }}}
+                placeholder={editingInclusionIdx !== null ? "Edit lalu Enter / Simpan" : "Tekan Enter untuk tambah"} />
+              <button type="button" onClick={commitInclusion}
+                className={`px-3 py-2 text-white rounded-lg text-sm whitespace-nowrap ${editingInclusionIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"}`}>
+                {editingInclusionIdx !== null ? "Simpan" : "+"}</button>
+              {editingInclusionIdx !== null && (
+                <button type="button" onClick={() => { setEditingInclusionIdx(null); setInclusionInput(""); }}
+                  className="px-3 py-2 bg-gray-400 text-white rounded-lg text-sm">Batal</button>
+              )}
             </div>
             <ul className="space-y-1">
               {(form.inclusions ?? []).map((item, i) => (
-                <li key={i} className="flex items-center justify-between text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 px-3 py-1.5 rounded">
-                  <span>✓ {item}</span>
-                  <button type="button" onClick={() => set("inclusions", form.inclusions!.filter((_, j) => j !== i))} className="text-red-500 ml-2">×</button>
+                <li key={i} className={`flex items-center justify-between text-sm px-3 py-1.5 rounded ${editingInclusionIdx === i ? "ring-2 ring-blue-400 bg-green-50 dark:bg-green-900/20" : "bg-green-50 dark:bg-green-900/20"} text-green-800 dark:text-green-300`}>
+                  <span className="min-w-0 break-words">✓ {item}</span>
+                  <span className="flex items-center gap-1 shrink-0 ml-2">
+                    <button type="button" title="Edit"
+                      onClick={() => { setInclusionInput(item); setEditingInclusionIdx(i); setEditingExclusionIdx(null); }}
+                      className="text-blue-500 hover:text-blue-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                    <button type="button" title="Hapus" onClick={() => { if (editingInclusionIdx === i) { setEditingInclusionIdx(null); setInclusionInput(""); } set("inclusions", form.inclusions!.filter((_, j) => j !== i)); }} className="text-red-500">×</button>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -202,15 +251,30 @@ export default function TourForm({ tour }: { tour?: TourData }) {
             <label className="label mb-2">Tidak Termasuk</label>
             <div className="flex gap-2 mb-2">
               <input className="input flex-1" value={exclusionInput} onChange={(e) => setExclusionInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (exclusionInput) { set("exclusions", [...(form.exclusions ?? []), exclusionInput]); setExclusionInput(""); }}}} placeholder="Tekan Enter untuk tambah" />
-              <button type="button" onClick={() => { if (exclusionInput) { set("exclusions", [...(form.exclusions ?? []), exclusionInput]); setExclusionInput(""); }}}
-                className="px-3 py-2 bg-red-500 text-white rounded-lg text-sm">+</button>
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitExclusion(); }}}
+                placeholder={editingExclusionIdx !== null ? "Edit lalu Enter / Simpan" : "Tekan Enter untuk tambah"} />
+              <button type="button" onClick={commitExclusion}
+                className={`px-3 py-2 text-white rounded-lg text-sm whitespace-nowrap ${editingExclusionIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-red-500 hover:bg-red-600"}`}>
+                {editingExclusionIdx !== null ? "Simpan" : "+"}</button>
+              {editingExclusionIdx !== null && (
+                <button type="button" onClick={() => { setEditingExclusionIdx(null); setExclusionInput(""); }}
+                  className="px-3 py-2 bg-gray-400 text-white rounded-lg text-sm">Batal</button>
+              )}
             </div>
             <ul className="space-y-1">
               {(form.exclusions ?? []).map((item, i) => (
-                <li key={i} className="flex items-center justify-between text-sm bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 px-3 py-1.5 rounded">
-                  <span>✗ {item}</span>
-                  <button type="button" onClick={() => set("exclusions", form.exclusions!.filter((_, j) => j !== i))} className="text-red-500 ml-2">×</button>
+                <li key={i} className={`flex items-center justify-between text-sm px-3 py-1.5 rounded ${editingExclusionIdx === i ? "ring-2 ring-blue-400 bg-red-50 dark:bg-red-900/20" : "bg-red-50 dark:bg-red-900/20"} text-red-800 dark:text-red-300`}>
+                  <span className="min-w-0 break-words">✗ {item}</span>
+                  <span className="flex items-center gap-1 shrink-0 ml-2">
+                    <button type="button" title="Edit"
+                      onClick={() => { setExclusionInput(item); setEditingExclusionIdx(i); setEditingInclusionIdx(null); }}
+                      className="text-blue-500 hover:text-blue-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                    <button type="button" title="Hapus" onClick={() => { if (editingExclusionIdx === i) { setEditingExclusionIdx(null); setExclusionInput(""); } set("exclusions", form.exclusions!.filter((_, j) => j !== i)); }} className="text-red-500">×</button>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -338,7 +402,12 @@ export default function TourForm({ tour }: { tour?: TourData }) {
 
       {/* Add Ons */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Add Ons</h2>
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Add Ons <span className="font-normal text-gray-400 text-sm">(tidak wajib / opsional)</span></h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          Layanan tambahan di luar paket. Klik badge tiap item untuk menandai:
+          <span className="mx-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white">WAJIB</span>(harus dibeli, mis. bagasi domestik) atau
+          <span className="mx-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-500 text-white">REKOMENDASI</span>(sangat disarankan). Klik lagi untuk netral.
+        </p>
         <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-1">
           <label className="label text-xs">Nama Add-On</label>
           <label className="label text-xs">Harga (Rp)</label>
@@ -365,9 +434,20 @@ export default function TourForm({ tour }: { tour?: TourData }) {
         </div>
         <div className="space-y-2">
           {(form.addOns ?? []).map((item, i) => (
-            <div key={i} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg text-sm">
-              <span className="font-medium text-gray-900 dark:text-white">{item.name}</span>
-              <div className="flex items-center gap-3">
+            <div key={i} className="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg text-sm">
+              <span className="font-medium text-gray-900 dark:text-white min-w-0 break-words">{item.name}</span>
+              <div className="flex items-center gap-3 shrink-0">
+                <button type="button" onClick={() => cycleAddOnTag(i)}
+                  title="Klik untuk ganti: netral → WAJIB → REKOMENDASI"
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wide transition-colors ${
+                    item.tag === "wajib"
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : item.tag === "recommended"
+                      ? "bg-green-500 text-white hover:bg-green-600"
+                      : "bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
+                  }`}>
+                  {item.tag === "wajib" ? "WAJIB" : item.tag === "recommended" ? "REKOMENDASI" : "+ Badge"}
+                </button>
                 <span className="text-gray-600 dark:text-gray-400">Rp {Number(item.price).toLocaleString("id-ID")}</span>
                 <button type="button" onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
               </div>
