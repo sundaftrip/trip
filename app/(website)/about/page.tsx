@@ -173,13 +173,13 @@ export default async function AboutPage() {
           <h1
             className={`text-4xl lg:text-5xl font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Spesialis Perjalanan &amp; Pengurusan Visa ke Rusia, Asia Tengah &amp; Aurora
+            Spesialis perjalanan ke Rusia &amp; negeri pecahan Uni Soviet
           </h1>
 
           <p
             className={`text-lg leading-relaxed max-w-2xl ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
-            {tagline || `${name} lahir dari keyakinan bahwa destinasi yang jarang dikunjungi traveler Indonesia justru menyimpan pengalaman paling tak terlupakan. Kami memulai ketika sangat sedikit agen wisata Indonesia yang berani masuk ke pasar Rusia dan Asia Tengah, dan kami terus di sini.`}
+            {tagline || `Bukan sekadar menyusun itinerary — kami juga berpengalaman mengurus visa dan dokumen perjalanannya, dari persiapan sampai pengajuan, termasuk untuk negara yang visanya kerap dianggap rumit.`}
           </p>
 
           {nib && (
