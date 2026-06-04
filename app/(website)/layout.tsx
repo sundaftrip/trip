@@ -9,12 +9,12 @@ import { unstable_cache } from "next/cache";
 
 // REBRAND 2026-05-31, SUNDAF charcoal/teal defaults (was forest green).
 const COLOR_DEFAULTS: Record<string, string> = {
-  color_hero: "#FFFFFF",
-  color_heading: "#FFFFFF",
-  color_tour_title: "#FFFFFF",
-  color_blog_title: "#FFFFFF",
-  color_accent: "#FBD324",
-  color_eyebrow: "#FBD324",
+  color_hero: "#222831",
+  color_heading: "#222831",
+  color_tour_title: "#222831",
+  color_blog_title: "#222831",
+  color_accent: "#00ADB5",
+  color_eyebrow: "#00ADB5",
 };
 
 const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
@@ -55,7 +55,7 @@ const getSiteConfig = unstable_cache(
       return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic", font: "jost", whatsapp: "" };
     }
   },
-  ["site-config-v2"],
+  ["site-config-v3"],
   { revalidate: 3600, tags: ["site-colors"] }
 );
 
@@ -67,7 +67,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
 
   const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
-  const accent = colors["color_accent"] ?? "#FBD324";
+  const accent = colors["color_accent"] ?? "#00ADB5";
   const cssVars =
     Object.entries(colors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
@@ -84,11 +84,12 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     <style>{`
       :root { ${cssVars} }
       .dark {
+        --site-accent: #FBD324;
         --site-hero: #ffffff;
         --site-heading: #f9fafb;
         --site-tour-title: #f3f4f6;
         --site-blog-title: #f3f4f6;
-        --site-eyebrow: #9ca3af;
+        --site-eyebrow: #FBD324;
         --site-bg: color-mix(in srgb, var(--site-accent) 14%, #060606);
         --site-bg-soft: color-mix(in srgb, var(--site-accent) 20%, #0a0a0a);
         --site-accent-ink: color-mix(in srgb, var(--site-accent) 55%, #ffffff);

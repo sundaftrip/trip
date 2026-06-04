@@ -1471,19 +1471,21 @@ a.gl-pill:has(svg:only-child) {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
-/* ─── ATLAS THEME UTILITIES — PLAYFUL BLUE/YELLOW (kol.id-inspired, preview) ─── */
+/* ─── ATLAS THEME — SIANG: original putih/charcoal/teal · MALAM: biru/indigo ─── */
 :root {
-  --at-bg:      #4C61E8;                 /* Royal blue — latar */
-  --at-card:    #5B6FEC;                 /* lighter blue — kartu frosted */
-  --at-border:  rgba(255,255,255,0.24);  /* garis putih lembut */
-  --at-text:    #FFFFFF;                 /* teks putih di atas biru */
-  --at-subtext: rgba(255,255,255,0.78);
-  --at-grid:    rgba(255,255,255,0.14);  /* grid putih dashed */
-  --at-shadow:  rgba(20,28,90,0.22);
-  --at-muted:   rgba(255,255,255,0.12);  /* surface lembut */
+  /* LIGHT (mode siang) — original, diturunkan dari --site-accent (teal) */
+  --at-bg:      color-mix(in srgb, var(--site-accent, #00ADB5) 4%,  #ffffff);
+  --at-card:    color-mix(in srgb, var(--site-accent, #00ADB5) 2.5%, #ffffff);
+  --at-border:  color-mix(in srgb, var(--site-accent, #00ADB5) 55%, #1a1a1a);
+  --at-text:    color-mix(in srgb, var(--site-accent, #00ADB5) 20%, #0a0a0a);
+  --at-subtext: color-mix(in srgb, var(--site-accent, #00ADB5) 32%, #6b7280);
+  --at-grid:    color-mix(in srgb, var(--site-accent, #00ADB5) 11%, transparent);
+  --at-shadow:  rgba(0,0,0,0.07);
+  --at-muted:   color-mix(in srgb, var(--site-accent, #00ADB5) 9%,  #f5f5f5);
 }
 .dark {
-  --at-bg:      #1B2356;                 /* deep indigo */
+  /* NIGHT (mode malam) — biru/indigo, dipertahankan */
+  --at-bg:      #1B2356;
   --at-card:    #242D67;
   --at-border:  rgba(255,255,255,0.16);
   --at-text:    #FFFFFF;
@@ -1538,7 +1540,7 @@ a.gl-pill:has(svg:only-child) {
 }
 .at-btn-solid {
   background: var(--site-accent);
-  color: #21307A;
+  color: #ffffff;
   border: 1px solid var(--site-accent);
   display: inline-flex;
   align-items: center;
@@ -1551,6 +1553,8 @@ a.gl-pill:has(svg:only-child) {
   cursor: pointer;
   text-decoration: none;
 }
+/* Mode malam: CTA kuning -> teks navy supaya kontras */
+.dark .at-btn-solid { color: #21307A; }
 .at-btn-solid:hover {
   background: transparent;
   color: var(--at-text);
