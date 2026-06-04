@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, X, Loader2, MapPin, FileCheck, HelpCircle, ArrowRight } from "lucide-react";
 
 type Results = {
-  tours: { title: string; country: string; duration?: string | null; heroImg?: string | null; href: string }[];
+  tours: { title: string; country: string; statusLabel: string; active: boolean; dateLabel?: string | null; href: string }[];
   visa: { name: string; en: string; href: string }[];
   faqs: { question: string; section: string; href: string }[];
 };
@@ -136,7 +136,17 @@ export default function GlobalSearch({
                 <Group label={t("Tour", "Tours")}>
                   {res.tours.map((it) => (
                     <Row key={it.href} icon={<MapPin size={15} />} onClick={() => go(it.href)}
-                      title={it.title} sub={[it.country, it.duration].filter(Boolean).join(" · ")} />
+                      title={it.title}
+                      sub={
+                        <span className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`px-1.5 py-px rounded text-[10px] font-bold ${
+                            it.active ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                            : it.statusLabel === "Selesai" ? "bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+                            : "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
+                          }`}>{it.statusLabel}</span>
+                          <span className="text-gray-400">{[it.country, it.dateLabel].filter(Boolean).join(" · ")}</span>
+                        </span>
+                      } />
                   ))}
                 </Group>
               )}
@@ -175,7 +185,7 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Row({ icon, title, sub, onClick }: { icon: React.ReactNode; title: string; sub?: string; onClick: () => void }) {
+function Row({ icon, title, sub, onClick }: { icon: React.ReactNode; title: string; sub?: React.ReactNode; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick}
       className="group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
