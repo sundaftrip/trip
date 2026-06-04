@@ -596,11 +596,16 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           <p className="mt-0.5 text-[11px] leading-snug text-gray-400 dark:text-gray-500 break-words">{item.desc}</p>
                         )}
                         {resolveVisaHref(item.name) && (
-                          <Link href={resolveVisaHref(item.name)!}
-                            className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
-                            Bisa dibantu — cek info visa
-                            <ArrowRight size={11} />
-                          </Link>
+                          <>
+                            <p className="mt-0.5 text-[11px] leading-snug text-emerald-600 dark:text-emerald-400 break-words">
+                              Harga bundling paket — lebih hemat dari urus visa terpisah.
+                            </p>
+                            <Link href={resolveVisaHref(item.name)!}
+                              className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
+                              Bisa dibantu — cek info visa
+                              <ArrowRight size={11} />
+                            </Link>
+                          </>
                         )}
                       </div>
                     ))}
