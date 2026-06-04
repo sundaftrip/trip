@@ -141,16 +141,32 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
-/* Badge REKOMENDASI — HANYA gerak ombak kain (riak mengalir), tanpa ayunan.
-   Riak dibuat dari SVG displacement (#flagWave) yang dianimasikan halus
-   bolak-balik, jadi gelombang mengalir di permukaan teks. */
+/* Badge REKOMENDASI — gaya premium: gradient hijau + soft glow + KILAU
+   cahaya yang menyapu (shine sweep) seperti label produk mewah.
+   Cahaya menyapu sekali, jeda, lalu menyapu lagi. */
 .flag-wave {
+  position: relative;
   display: inline-block;
-  filter: url(#flagWave);
-  will-change: filter;
+  overflow: hidden;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #15803d 0%, #22c55e 48%, #16a34a 100%);
+  box-shadow: 0 1px 5px rgba(34, 197, 94, 0.5), inset 0 0 0 0.5px rgba(255, 255, 255, 0.3);
+  isolation: isolate;
+}
+.flag-wave::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.9) 50%, transparent 70%);
+  transform: translateX(-130%) skewX(-18deg);
+  animation: badge-shine 3s ease-in-out infinite;
+}
+@keyframes badge-shine {
+  0%, 15%   { transform: translateX(-130%) skewX(-18deg); }
+  48%, 100% { transform: translateX(230%)  skewX(-18deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .flag-wave { filter: none; }
+  .flag-wave::before { animation: none; display: none; }
 }
 
 
