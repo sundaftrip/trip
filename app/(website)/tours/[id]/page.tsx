@@ -383,7 +383,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {tour.inclusions.length > 0 && (
                 <div className={isOutlined ? `${pfx}-card p-5` : ""}>
                   <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                    {isOutlined && <CheckCircle size={18} />} Sudah Termasuk
+                    Sudah Termasuk
                   </h2>
                   <ul className="space-y-2">
                     {tour.inclusions.map((item, i) => (
@@ -397,7 +397,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {tour.exclusions.length > 0 && (
                 <div className={isOutlined ? `${pfx}-card p-5` : ""}>
                   <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
-                    {isOutlined && <XCircle size={18} />} Tidak Termasuk
+                    Tidak Termasuk
                   </h2>
                   <ul className="space-y-2">
                     {tour.exclusions.map((item, i) => (
