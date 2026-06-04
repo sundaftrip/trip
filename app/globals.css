@@ -141,27 +141,16 @@ body {
 .hero-fade-up  { animation: hero-up   0.85s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 
-/* Badge REKOMENDASI — banner kain menggelembung & mengayun halus 3D,
-   menggantung dari atas (seperti panji tertiup angin). Bukan riak tajam,
-   melainkan gelombang perspektif yang mengalir terus-menerus. */
-@keyframes flag-banner {
-  0%   { transform: perspective(160px) rotateY(-24deg) rotateZ(-2.5deg) skewX(3deg); }
-  20%  { transform: perspective(160px) rotateY(-8deg)  rotateZ(0.6deg)  skewX(-1deg); }
-  40%  { transform: perspective(160px) rotateY(13deg)  rotateZ(2.6deg)  skewX(-3deg); }
-  60%  { transform: perspective(160px) rotateY(24deg)  rotateZ(1deg)    skewX(2deg); }
-  80%  { transform: perspective(160px) rotateY(7deg)   rotateZ(-1.4deg) skewX(1.5deg); }
-  100% { transform: perspective(160px) rotateY(-24deg) rotateZ(-2.5deg) skewX(3deg); }
-}
+/* Badge REKOMENDASI — HANYA gerak ombak kain (riak mengalir), tanpa ayunan.
+   Riak dibuat dari SVG displacement (#flagWave) yang dianimasikan halus
+   bolak-balik, jadi gelombang mengalir di permukaan teks. */
 .flag-wave {
   display: inline-block;
-  transform-origin: 50% 0;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  animation: flag-banner 2.4s ease-in-out infinite;
-  will-change: transform;
+  filter: url(#flagWave);
+  will-change: filter;
 }
 @media (prefers-reduced-motion: reduce) {
-  .flag-wave { animation: none; }
+  .flag-wave { filter: none; }
 }
 
 

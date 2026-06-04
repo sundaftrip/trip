@@ -208,6 +208,26 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="min-h-screen pt-16" style={isOutlined ? { backgroundColor: tBg, ...pixelGridStyle } : undefined}>
+      {/* Filter SVG badge REKOMENDASI — gerak ombak kain mengalir (tanpa ayunan) */}
+      {optionalAddOns.some((a) => a.tag === "recommended") && (
+        <svg width="0" height="0" aria-hidden className="absolute pointer-events-none">
+          <defs>
+            <filter id="flagWave" x="-15%" y="-60%" width="130%" height="220%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.008 0.07" numOctaves="2" seed="4" result="noise">
+                <animate attributeName="baseFrequency" dur="4s"
+                  values="0.008 0.06;0.016 0.085;0.008 0.06" keyTimes="0;0.5;1"
+                  calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" repeatCount="indefinite" />
+              </feTurbulence>
+              <feOffset in="noise" dx="0" dy="0" result="moved">
+                <animate attributeName="dx" dur="3s"
+                  values="-14;14;-14" keyTimes="0;0.5;1"
+                  calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" repeatCount="indefinite" />
+              </feOffset>
+              <feDisplacementMap in="SourceGraphic" in2="moved" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
+      )}
       {/* JSON-LD */}
       <script
         type="application/ld+json"
@@ -610,7 +630,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
                           <span className="break-words">{item.name}</span>
                           {item.tag === "recommended" && (
-                            <span className="flag-wave shrink-0 -translate-y-1.5 inline-block px-1 py-px rounded-sm text-[8px] font-bold leading-none tracking-wide bg-green-500 text-white shadow-sm">REKOMENDASI</span>
+                            <span className="flag-wave shrink-0 -translate-y-1 inline-block px-1 py-px rounded-[3px] text-[6.5px] font-bold leading-none tracking-tight bg-green-500 text-white shadow-sm">REKOMENDASI</span>
                           )}
                         </span>
                         <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
