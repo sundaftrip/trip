@@ -129,6 +129,7 @@ export default async function AboutPage() {
   const nib       = company["company_nib"]       ?? "";
   const whatsapp  = toWaNumber(company["company_whatsapp"]);
   const waLink    = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi paket wisata.")}` : "/tours";
+  const waB2BLink = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya dari travel agent / B2B. Saya ingin menanyakan skema kerja sama partner untuk Rusia.")}` : "/tours";
 
   const divStyle = isOutlined
     ? { borderColor: bdrClr }
@@ -376,7 +377,7 @@ export default async function AboutPage() {
             Sejumlah travel agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami;
             atas permintaan mitra, identitas dan rincian kerja sama kami jaga kerahasiaannya dan hanya
             dibuka untuk agent terverifikasi.{" "}
-            <a href={waLink} target="_blank" rel="noreferrer"
+            <a href={waB2BLink} target="_blank" rel="noreferrer"
               className="font-semibold underline underline-offset-2 hover:opacity-80">
               Hubungi kami untuk skema partner
             </a>.
