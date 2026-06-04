@@ -372,12 +372,14 @@ export default async function AboutPage() {
           <p className="text-xs leading-relaxed max-w-2xl mx-auto"
             style={isOutlined ? { color: subClr } : { color: "#9ca3af" }}>
             <span className="font-semibold">Untuk travel agent &amp; mitra B2B —</span>{" "}
-            khusus Rusia kami tangani langsung (tangan pertama) sebagai operator lokal, dengan
-            skema kerja sama dan penawaran khusus partner.{" "}
-            <Link href="/partner" className="font-semibold underline underline-offset-2 hover:opacity-80">
-              Lihat halaman partner
-            </Link>{" "}
-            atau hubungi kami.
+            khusus Rusia kami tangani langsung sebagai operator lokal (tangan pertama).
+            Sejumlah travel agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami;
+            atas permintaan mitra, identitas dan rincian kerja sama kami jaga kerahasiaannya dan hanya
+            dibuka untuk agent terverifikasi.{" "}
+            <a href={waLink} target="_blank" rel="noreferrer"
+              className="font-semibold underline underline-offset-2 hover:opacity-80">
+              Hubungi kami untuk skema partner
+            </a>.
           </p>
         </div>
 
