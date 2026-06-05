@@ -363,6 +363,14 @@ export default async function AboutPage() {
               style={isOutlined ? { background: cardBg, color: headClr, borderColor: bdrClr } : undefined}>
               Lihat Paket Tour
             </Link>
+            <Link
+              href="/visa"
+              className={`inline-flex items-center justify-center gap-2 px-6 py-3 font-black text-sm transition ${
+                isOutlined ? `${pfx}-pill` : "border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900"
+              }`}
+              style={isOutlined ? { background: cardBg, color: headClr, borderColor: bdrClr } : undefined}>
+              Layanan Visa
+            </Link>
           </div>
         </div>
 
