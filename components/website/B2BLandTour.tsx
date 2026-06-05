@@ -60,6 +60,7 @@ const FERDIANSAH = {
   initial: "F",
   name: "Ferdiansah",
   role: "Founder",
+  photo: "",
   desc: "Memimpin operasional Sundaf Trip, pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
 };
 
@@ -67,6 +68,7 @@ const BILLY = {
   initial: "B",
   name: "Billy",
   role: "Co-Founder",
+  photo: "/partner/billy.jpg",
   desc: "Berpengalaman di industri travel dan memimpin perjalanan grup internasional. Memegang pengembangan kemitraan dan hubungan dengan travel agent.",
 };
 
@@ -192,9 +194,19 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         <h2 className={`mt-12 mb-5 ${head}`}>{withCofounder ? "Co-Founder Sundaf Trip" : "Pendiri Sundaf Trip"}</h2>
         <div className="p-5 rounded-xl border border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold text-lg">
-              {person.initial}
-            </div>
+            {person.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={person.photo}
+                alt={person.name}
+                loading="lazy"
+                className="is-round w-16 h-16 shrink-0 object-cover ring-2 ring-blue-600/30 dark:ring-blue-400/30"
+              />
+            ) : (
+              <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold text-lg">
+                {person.initial}
+              </div>
+            )}
             <div>
               <p className={`text-lg font-bold text-gray-900 dark:text-white leading-tight ${lora.className}`}>{person.name}</p>
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
