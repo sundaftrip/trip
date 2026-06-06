@@ -174,12 +174,6 @@ const DMC_STEPS: { n: string; title: Bi; desc: Bi }[] = [
   },
 ];
 
-const PHOTOS: { src: string; caption: Bi }[] = [
-  { src: "/trip-photos/trip-1.jpg", caption: { en: "Red Square · Moscow", ru: "Красная площадь · Москва" } },
-  { src: "/trip-photos/trip-4.jpg", caption: { en: "Kaindy Lake · Kazakhstan", ru: "Озеро Каинды · Казахстан" } },
-  { src: "/trip-photos/trip-6.jpg", caption: { en: "Group departure · Moscow", ru: "Вылет группы · Москва" } },
-];
-
 const SNAPSHOT: { k: Bi; v: Bi }[] = [
   { k: { en: "Legal Entity", ru: "Юридическое лицо" }, v: { en: "CV Sundaf Holiday Group", ru: "CV Sundaf Holiday Group" } },
   { k: { en: "Business License (NIB)", ru: "Лицензия (NIB)" }, v: { en: "1601260060842", ru: "1601260060842" } },
@@ -210,7 +204,7 @@ const TX = {
   pdfPrefix: { en: "Company Profile", ru: "Профиль компании" },
 };
 
-export default function CompanyProfileContent() {
+export default function CompanyProfileContent({ proofPhotos = [] }: { proofPhotos?: string[] }) {
   const [lang, setLang] = useState<Lang>("en");
   const t = (v: Bi) => v[lang];
   const head = `mt-12 mb-5 text-2xl font-bold text-gray-900 dark:text-white ${lora.className}`;
@@ -331,14 +325,19 @@ export default function CompanyProfileContent() {
         {/* ── Real departures ── */}
         <h2 className={`${head} mb-1`}>{t(TX.photosHead)}</h2>
         <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">{t(TX.photosSub)}</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {PHOTOS.map(({ src, caption }) => (
-            <div key={src} className="relative aspect-[3/2] rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
+          {proofPhotos.map((src, i) => (
+            <div
+              key={src}
+              className="group relative aspect-square rounded-lg overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={t(caption)} loading="lazy" className="w-full h-full object-cover" />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pt-8 pb-2">
-                <p className="text-[11px] font-semibold text-white">{t(caption)}</p>
-              </div>
+              <img
+                src={src}
+                alt={`${t(TX.photosHead)} ${i + 1}`}
+                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
           ))}
         </div>

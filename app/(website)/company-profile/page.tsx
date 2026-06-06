@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import CompanyProfileContent from "@/components/website/CompanyProfileContent";
+import { getProofPhotos } from "@/lib/b2bGallery";
 
 export const metadata: Metadata = {
   title: "Company Profile, Sundaf Trip",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function CompanyProfilePage() {
-  return <CompanyProfileContent />;
+  return <CompanyProfileContent proofPhotos={getProofPhotos()} />;
 }
