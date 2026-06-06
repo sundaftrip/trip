@@ -28,7 +28,7 @@ const getFooterData = unstable_cache(
   { revalidate: 3600, tags: ["footer-data", "site-colors"] }
 );
 
-const navLinks = [["Beranda", "/"], ["Blog", "/blog"], ["Tentang Kami", "/about"], ["FAQ", "/faq"], ["Syarat & Ketentuan", "/terms"]];
+const navLinks = [["Beranda", "/"], ["Layanan Visa", "/visa"], ["Blog", "/blog"], ["Tentang Kami", "/about"], ["FAQ", "/faq"], ["Syarat & Ketentuan", "/terms"]];
 
 type IconProps = { size?: number; className?: string; style?: CSSProperties };
 
