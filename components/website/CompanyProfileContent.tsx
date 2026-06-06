@@ -29,16 +29,16 @@ const HERO = {
 };
 
 const STATS: { num: string; label: Bi }[] = [
-  { num: "20+", label: { en: "Groups operated in 2025", ru: "Групп проведено в 2025" } },
-  { num: "700+", label: { en: "Travelers served", ru: "Путешественников обслужено" } },
+  { num: "50+", label: { en: "Groups operated", ru: "Групп проведено" } },
+  { num: "1500+", label: { en: "Travelers guided", ru: "Путешественников сопровождено" } },
   { num: "10–20", label: { en: "Pax per departure", ru: "Человек на выезд" } },
   { num: "B2C + B2B", label: { en: "Business model", ru: "Модель бизнеса" } },
 ];
 
 const ABOUT: Bi[] = [
   {
-    en: "Founded by Ferdiansah, Sundaf Trip was built on the belief that international travel should be accessible to more people. We focus on small group departures with personal attention, giving travelers a high-value experience without the price tag of a private trip.",
-    ru: "Компания Sundaf Trip, основанная Фердиансахом, родилась из убеждения, что международные путешествия должны быть доступны большему числу людей. Мы делаем ставку на выезды малыми группами с индивидуальным вниманием, давая путешественникам опыт высокой ценности без цены частного тура.",
+    en: "Sundaf Trip was built on the belief that international travel should be accessible to more people. We focus on small group departures with personal attention, giving travelers a high-value experience without the price tag of a private trip.",
+    ru: "Компания Sundaf Trip родилась из убеждения, что международные путешествия должны быть доступны большему числу людей. Мы делаем ставку на выезды малыми группами с индивидуальным вниманием, давая путешественникам опыт высокой ценности без цены частного тура.",
   },
   {
     en: "From sourcing vendors and negotiating ground arrangements to designing itineraries and leading groups on location, our team manages the full operation in-house, keeping quality and cost under one roof.",
@@ -110,8 +110,8 @@ const DESTINATIONS: { label: Bi; detail: Bi }[] = [
 
 const WHY: Bi[] = [
   {
-    en: "A proven track record, 20+ groups and 700+ travelers operated through 2025.",
-    ru: "Подтверждённый опыт, 20+ групп и 700+ путешественников за 2025 год.",
+    en: "A proven track record — 50+ groups and 1500+ travelers operated on the ground over several years.",
+    ru: "Подтверждённый опыт — 50+ групп и 1500+ путешественников за несколько лет.",
   },
   {
     en: "Small group specialists, 10–20 pax, for focused and well-coordinated operations.",
@@ -178,7 +178,6 @@ const SNAPSHOT: { k: Bi; v: Bi }[] = [
   { k: { en: "Legal Entity", ru: "Юридическое лицо" }, v: { en: "CV Sundaf Holiday Group", ru: "CV Sundaf Holiday Group" } },
   { k: { en: "Business License (NIB)", ru: "Лицензия (NIB)" }, v: { en: "1601260060842", ru: "1601260060842" } },
   { k: { en: "Headquarters", ru: "Главный офис" }, v: { en: "Jakarta, Indonesia", ru: "Джакарта, Индонезия" } },
-  { k: { en: "Founder", ru: "Основатель" }, v: { en: "Ferdiansah", ru: "Фердиансах" } },
   { k: { en: "Business Model", ru: "Модель бизнеса" }, v: { en: "B2C + B2B Tour Operator", ru: "Туроператор B2C + B2B" } },
   { k: { en: "Tour Leadership", ru: "Сопровождение" }, v: { en: "Own Indonesian-speaking tour leader", ru: "Собственный турлидер со знанием индонезийского" } },
 ];

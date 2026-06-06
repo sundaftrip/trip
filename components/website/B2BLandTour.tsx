@@ -26,7 +26,7 @@ const DESTINATIONS: { region: string; detail: string }[] = [
 ];
 
 const WHY: string[] = [
-  "Rekam jejak nyata, 20+ grup dan 700+ traveler dioperasikan sepanjang 2025.",
+  "Rekam jejak nyata: 50+ grup dan 1500+ traveler ditangani langsung di lapangan selama bertahun-tahun.",
   "Spesialis grup kecil 10–20 pax, operasional fokus dan terkoordinasi.",
   "Tour leader sendiri, berbahasa Indonesia, di setiap keberangkatan.",
   "Harga land tour kompetitif dengan rincian transparan, tanpa biaya tersembunyi.",

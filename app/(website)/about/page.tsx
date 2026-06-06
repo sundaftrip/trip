@@ -52,7 +52,7 @@ const DEFAULT_VALUES = [
 const DEFAULT_STORY = [
   "Kami mulai dengan satu paket ke Moskow dan St. Petersburg, di saat kebanyakan agen wisata Indonesia masih fokus di Eropa Barat dan Asia Tenggara. Hasilnya? Peserta kami pulang dengan cerita yang tidak bisa mereka temukan di majalah travel mana pun.",
   "Dari sana kami meluas. Kazakhstan dengan danau-danau terpencilnya. Uzbekistan dengan Samarkand yang biru. Kyrgyzstan yang masih sangat jarang disentuh traveler Indonesia. Tajikistan dengan jalan Pamir yang legendaris. Dan aurora borealis di Tromsø yang membuat kamera gemetar.",
-  "Lebih dari 700 traveler Indonesia telah mempercayakan perjalanan mereka kepada kami. Sebagian besar kembali lagi, dengan mengajak keluarga atau teman yang penasaran dengan cerita mereka.",
+  "Lebih dari 1500 traveler telah kami tangani langsung di lapangan, lintas tahun, lintas musim, dari Rusia hingga Asia Tengah. Pengalaman operasional itulah yang kini menjadi fondasi cara kami merancang setiap perjalanan.",
 ];
 
 async function getData() {
