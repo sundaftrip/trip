@@ -84,6 +84,12 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
           fokus menjual; kami memastikan perjalanannya berjalan mulus.
         </p>
 
+        {/* ── Highlighted positioning (stabilo) ── */}
+        <div className="mt-7 space-y-3 text-lg sm:text-xl leading-relaxed font-medium text-gray-900 dark:text-gray-100">
+          <p>Rusia <span className="stabilo">kami tangani langsung sebagai operator lokal</span> &mdash; bukan sekadar reseller.</p>
+          <p>Sejumlah travel agent telah <span className="stabilo">mempercayakan operasional perjalanan mereka kepada kami</span>, dan rekam jejaknya bisa diverifikasi.</p>
+        </div>
+
         {/* ── Positioning ── */}
         <div className="mt-8 flex items-start gap-3 p-5 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
           <Building2 size={18} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
