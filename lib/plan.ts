@@ -2,7 +2,7 @@
  * Definisi plan & fitur — MURNI, tanpa dependensi server.
  * Aman di-import dari client component maupun server.
  *
- * Resolusi plan aktual (fetch dari MASTER) ada di lib/license.ts (server-only).
+ * Resolusi plan aktual ada di lib/license.ts (server-only, baca env NEXT_PUBLIC_PLAN).
  */
 
 export type Plan = "basic" | "pro";
