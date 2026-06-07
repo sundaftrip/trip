@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, type CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import ToursSection from "./ToursSection";
@@ -68,9 +68,10 @@ export default function ToursCatalog({
 
     return (
       <>
-        {showFilter && <FilterChips active={region} onChange={changeRegion} />}
+        {showFilter && <FilterChips active={region} onChange={changeRegion} theme={theme} />}
 
         <SectionHead
+          theme={theme}
           eyebrow="Bisa Dipesan"
           sub={
             bookable.length > 0
@@ -83,6 +84,9 @@ export default function ToursCatalog({
         {done.length > 0 && (
           <>
             <SectionHead
+              big
+              highlight
+              theme={theme}
               eyebrow="Dokumentasi Perjalanan"
               sub={`${done.length} trip yang sudah kami pandu, bukti rekam jejak, bukan katalog kosong.`}
             />
@@ -102,7 +106,7 @@ export default function ToursCatalog({
 
   return (
     <ToursSection tours={paged} theme={theme}>
-      {showFilter && <FilterChips active={region} onChange={changeRegion} />}
+      {showFilter && <FilterChips active={region} onChange={changeRegion} theme={theme} />}
       <PaginationBar current={current} total={totalPages} onChange={changePage} />
       {showAllLink && (
         <div className="flex justify-center pt-2 pb-2">
@@ -124,16 +128,35 @@ export default function ToursCatalog({
 
 /* Heading section katalog (P2.1). Gaya theme-neutral (gray + site-accent),
    selaras dengan <header> halaman /tours di semua tema. */
-function SectionHead({ eyebrow, sub }: { eyebrow: string; sub?: string | null }) {
+/* Background grid sesuai tema aktif → konten duduk di atas grid, bukan papan polos. */
+function gridBg(theme?: string): { className: string; style: CSSProperties } {
+  if (theme === "atlas") return { className: "at-grid-bg", style: { backgroundColor: "var(--at-bg)" } };
+  if (theme === "map") return { className: "", style: { background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" } };
+  if (theme === "pixel") return { className: "", style: { background: "var(--px-bg)", backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)", backgroundSize: "24px 24px" } };
+  if (theme === "globe") return { className: "", style: { background: "var(--gl-bg)" } };
+  if (theme === "kawaii") return { className: "", style: { background: "var(--kw-bg)" } };
+  if (theme === "tropical") return { className: "", style: { background: "var(--tr-bg)" } };
+  if (theme === "fumayo") return { className: "fb-page", style: {} };
+  return { className: "", style: {} };
+}
+
+function SectionHead({ eyebrow, sub, big = false, highlight = false, theme }: { eyebrow: string; sub?: string | null; big?: boolean; highlight?: boolean; theme?: string }) {
+  const gb = gridBg(theme);
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-1">
-      <div className="flex items-center gap-2 mb-1.5">
-        <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
-        <span className="text-sm font-bold uppercase tracking-widest text-gray-700 dark:text-gray-200">
-          {eyebrow}
-        </span>
+    <div className={gb.className} style={gb.style}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-2">
+        {big ? (
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight uppercase leading-none text-gray-900 dark:text-white">
+            {highlight ? <span className="stabilo">{eyebrow}</span> : eyebrow}
+          </h2>
+        ) : (
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
+            <span className="text-sm font-bold uppercase tracking-widest text-gray-700 dark:text-gray-200">{eyebrow}</span>
+          </div>
+        )}
+        {sub && <p className={`text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed ${big ? "mt-4" : ""}`}>{sub}</p>}
       </div>
-      {sub && <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">{sub}</p>}
     </div>
   );
 }
@@ -142,13 +165,17 @@ function SectionHead({ eyebrow, sub }: { eyebrow: string; sub?: string | null })
 function FilterChips({
   active,
   onChange,
+  theme,
 }: {
   active: RegionKey;
   onChange: (r: RegionKey) => void;
+  theme?: string;
 }) {
+  const gb = gridBg(theme);
   return (
+    <div className={gb.className} style={gb.style}>
     <div
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-6"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-6"
       style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}
     >
       <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
@@ -175,6 +202,7 @@ function FilterChips({
           );
         })}
       </div>
+    </div>
     </div>
   );
 }

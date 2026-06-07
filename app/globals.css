@@ -2084,35 +2084,20 @@ a.gl-pill:has(svg:only-child) {
 .tours-cta { border-radius: 999px !important; }
 
 /* ── Stabilo highlighter (coretan marker organik, à la buku catatan) ── */
+/* Coretan stabilo natural (tepi bergerigi seperti goresan tangan) via SVG */
 .stabilo {
-  background-image: linear-gradient(
-    104deg,
-    rgba(255, 222, 89, 0) 0.4%,
-    rgba(255, 222, 89, 0.85) 2.2%,
-    rgba(255, 222, 89, 0.78) 5.8%,
-    rgba(255, 222, 89, 0.62) 93%,
-    rgba(255, 222, 89, 0.85) 96%,
-    rgba(255, 222, 89, 0) 99%
-  );
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%23ffe14d' fill-opacity='0.85'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-size: 100% 62%;
-  background-position: 0 80%;
-  padding: 0 0.14em;
-  margin: 0 -0.04em;
-  border-radius: 0.45em 0.28em 0.5em 0.22em;
+  background-size: 100% 68%;
+  background-position: 0 74%;
+  padding: 0 0.2em;
+  margin: 0 -0.06em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 /* varian warna alternatif (teal SUNDAF) */
 .stabilo--mint {
-  background-image: linear-gradient(
-    104deg,
-    rgba(0, 209, 178, 0) 0.4%,
-    rgba(0, 209, 178, 0.55) 2.2%,
-    rgba(0, 209, 178, 0.45) 93%,
-    rgba(0, 209, 178, 0.55) 96%,
-    rgba(0, 209, 178, 0) 99%
-  );
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%2300d1b2' fill-opacity='0.58'/%3E%3C/svg%3E");
 }
 
 /* ── WhyGallery: marquee foto homepage (arah kanan-kiri-kanan) ── */
