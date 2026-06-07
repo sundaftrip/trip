@@ -2101,14 +2101,25 @@ a.gl-pill:has(svg:only-child) {
 }
 
 /* ── WhyGallery: marquee foto homepage (arah kanan-kiri-kanan) ── */
+/* ===== Galeri marquee gaya portfolio (lattice editorial) =====
+   2 baris berlawanan arah, foto rasio natural (tinggi tetap, lebar ikut foto),
+   sudut tajam, garis tipis pemisah, dibingkai kotak max-width. */
+.wg-frame {
+  --wg-line: rgba(127, 127, 127, 0.30);
+  max-width: 1240px;
+  margin: 0 auto;
+  border-top: 1px solid var(--wg-line);
+  border-left: 1px solid var(--wg-line);
+  border-right: 1px solid var(--wg-line);
+}
 .wg-row {
+  height: 150px;
   overflow: hidden;
-  /* fade lembut & lebar di tepi (bukan potongan tajam) */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 11%, #000 89%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 11%, #000 89%, transparent 100%);
+  border-bottom: 1px solid var(--wg-line);
 }
 .wg-track {
   display: flex;
+  height: 100%;
   width: max-content;
   animation-name: wg-scroll;
   animation-timing-function: linear;
@@ -2124,37 +2135,28 @@ a.gl-pill:has(svg:only-child) {
 .wg-tile {
   position: relative;
   flex: 0 0 auto;
-  width: 168px;
-  height: 112px;
-  margin-right: 4px;
-  border-radius: 28px !important;
-  overflow: hidden;
-  background: #e5e7eb;
-}
-.wg-img {
-  width: 100%;
   height: 100%;
+  overflow: hidden;
+  border-right: 1px solid var(--wg-line);
+  background: #0a0a0a;
+}
+/* foto biarkan berwarna (aurora = warna), rasio natural mengikuti tinggi baris */
+.wg-img {
+  height: 100%;
+  width: auto;
   object-fit: cover;
   display: block;
-  /* sabuk pengaman: bulatkan langsung di gambar juga, tak bergantung clip parent */
-  border-radius: 28px !important;
 }
-.wg-wm {
+/* gradasi tipis bawah untuk kohesi editorial */
+.wg-tile::after {
+  content: "";
   position: absolute;
-  right: 9px;
-  bottom: 8px;
-  height: 15px;
-  width: auto;
-  opacity: 0.72;
-  /* jadikan logo putih + bayangan halus supaya terbaca di foto apa pun */
-  filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  inset: 0;
   pointer-events: none;
-  user-select: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 64%, rgba(0, 0, 0, 0.38) 100%);
 }
 @media (min-width: 640px) {
-  .wg-tile { width: 210px; height: 140px; margin-right: 5px; border-radius: 34px !important; }
-  .wg-img { border-radius: 34px !important; }
-  .wg-wm { height: 18px; right: 11px; bottom: 10px; }
+  .wg-row { height: 208px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .wg-track { animation: none; }

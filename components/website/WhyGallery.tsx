@@ -1,18 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import type { CSSProperties } from "react";
-/* Galeri marquee homepage (mengganti "Mengapa Kami").
-   3 baris foto berjalan otomatis dengan arah berselang: kanan, kiri, kanan.
-   Foto sumber sudah ber-watermark Sundaf (baked-in), jadi TANPA overlay tambahan (hindari watermark dobel).
+/* Galeri marquee homepage (gaya portfolio: lattice editorial).
+   2 baris foto berlawanan arah (kiri lalu kanan), rasio natural, sudut tajam,
+   dibingkai kotak dengan garis tipis. 3 baris terasa redundant.
+   Foto sumber sudah ber-watermark Sundaf (baked-in), jadi TANPA overlay tambahan.
    Server component, animasi CSS murni (tanpa JS) → ringan & hemat. */
 const ROWS: string[][] = [
-  ["01", "02", "03", "04", "05", "06", "07", "08"],
-  ["09", "10", "11", "12", "13", "14", "15", "16"],
-  ["17", "18", "19", "20", "21", "22", "23", "24"],
+  ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+  ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"],
 ].map((group) => group.map((n) => `/about-gallery/${n}-aurora.webp`));
 
-// Arah per baris (kanan, kiri, kanan) + durasi beda supaya terasa organik.
-const DIRECTIONS: ("right" | "left")[] = ["right", "left", "right"];
-const DURATIONS = [58, 74, 64]; // detik
+// Dua baris berlawanan arah (kiri lalu kanan), durasi beda supaya organik.
+const DIRECTIONS: ("right" | "left")[] = ["left", "right"];
+const DURATIONS = [66, 80]; // detik
 
 export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
   // Samakan background dengan section lain agar carousel berjalan DI ATAS
@@ -30,7 +30,7 @@ export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
   return (
     <section className={secClass} style={secStyle}>
 
-      <div className="flex flex-col gap-1 sm:gap-1.5">
+      <div className="wg-frame">
         {ROWS.map((imgs, i) => (
           <div key={i} className="wg-row">
             <div
