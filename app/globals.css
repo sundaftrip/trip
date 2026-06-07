@@ -2127,7 +2127,7 @@ a.gl-pill:has(svg:only-child) {
   width: 168px;
   height: 112px;
   margin-right: 4px;
-  border-radius: 32px;
+  border-radius: 28px !important;
   overflow: hidden;
   background: #e5e7eb;
 }
@@ -2136,6 +2136,8 @@ a.gl-pill:has(svg:only-child) {
   height: 100%;
   object-fit: cover;
   display: block;
+  /* sabuk pengaman: bulatkan langsung di gambar juga, tak bergantung clip parent */
+  border-radius: 28px !important;
 }
 .wg-wm {
   position: absolute;
@@ -2150,7 +2152,8 @@ a.gl-pill:has(svg:only-child) {
   user-select: none;
 }
 @media (min-width: 640px) {
-  .wg-tile { width: 210px; height: 140px; margin-right: 5px; }
+  .wg-tile { width: 210px; height: 140px; margin-right: 5px; border-radius: 34px !important; }
+  .wg-img { border-radius: 34px !important; }
   .wg-wm { height: 18px; right: 11px; bottom: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
