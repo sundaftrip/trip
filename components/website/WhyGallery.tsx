@@ -30,7 +30,7 @@ export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
   return (
     <section className={secClass} style={secStyle}>
 
-      <div className="flex flex-col gap-3 sm:gap-4">
+      <div className="flex flex-col gap-1 sm:gap-1.5">
         {ROWS.map((imgs, i) => (
           <div key={i} className="wg-row">
             <div
