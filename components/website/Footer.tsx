@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import FooterTagline from "./FooterTagline";
+import { footerNav } from "@/lib/nav";
 import { unstable_cache } from "next/cache";
 
 const getFooterData = unstable_cache(
@@ -28,7 +29,9 @@ const getFooterData = unstable_cache(
   { revalidate: 3600, tags: ["footer-data", "site-colors"] }
 );
 
-const navLinks = [["Beranda", "/"], ["Layanan Visa", "/visa"], ["Blog", "/blog"], ["Tentang Kami", "/about"], ["FAQ", "/faq"], ["Syarat & Ketentuan", "/terms"]];
+// Tuple [label, href] di-derive dari sumber tunggal footerNav (lihat lib/nav.ts).
+// Bentuk tuple dipertahankan supaya blok render tiap tema tidak perlu diubah.
+const navLinks: [string, string][] = footerNav.map((n) => [n.label.id, n.href]);
 
 type IconProps = { size?: number; className?: string; style?: CSSProperties };
 

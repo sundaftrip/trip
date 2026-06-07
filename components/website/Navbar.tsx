@@ -8,14 +8,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import GlobalSearch from "./GlobalSearch";
-
-const navLinks = [
-  { href: "/", label: { id: "Beranda", en: "Home" } },
-  { href: "/visa", label: { id: "Layanan Visa", en: "Visa Service" } },
-  { href: "/blog", label: { id: "Blog", en: "Blog" } },
-  { href: "/about", label: { id: "Tentang Kami", en: "About" } },
-  { href: "/#contact", label: { id: "Kontak", en: "Contact" } },
-];
+import { primaryNav as navLinks } from "@/lib/nav";
 
 export default function Navbar({ logo, theme = "classic" }: { logo?: string; theme?: string }) {
   const { setTheme, resolvedTheme } = useTheme();
