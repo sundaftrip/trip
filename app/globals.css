@@ -2115,9 +2115,7 @@ a.gl-pill:has(svg:only-child) {
   animation-iteration-count: infinite;
   will-change: transform;
 }
-.wg-track:hover {
-  animation-play-state: paused;
-}
+/* tetap berjalan walau kursor mendekat (tanpa pause-on-hover) */
 /* Dua salinan identik berdampingan → geser tepat satu salinan (-50%) = mulus. */
 @keyframes wg-scroll {
   from { transform: translate3d(0, 0, 0); }
@@ -2129,7 +2127,7 @@ a.gl-pill:has(svg:only-child) {
   width: 168px;
   height: 112px;
   margin-right: 4px;
-  border-radius: 14px;
+  border-radius: 32px;
   overflow: hidden;
   background: #e5e7eb;
 }
