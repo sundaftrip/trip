@@ -20,8 +20,9 @@ export default function FooterTagline({
     return (
       <p className="text-sm leading-relaxed max-w-md" style={style}>
         <span className="font-semibold">Untuk travel agent &amp; mitra B2B —</span>{" "}
-        khusus Rusia kami tangani langsung sebagai operator lokal (tangan pertama). Sejumlah travel
-        agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami; atas permintaan
+        khusus Rusia{" "}
+        <span className="stabilo">kami tangani langsung sebagai operator lokal (tangan pertama)</span>.{" "}
+        <span className="stabilo">Sejumlah travel agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami</span>; atas permintaan
         mitra, identitas dan rincian kerja sama kami jaga kerahasiaannya dan hanya dibuka untuk agent
         terverifikasi.
         {waB2B ? (
