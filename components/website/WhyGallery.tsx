@@ -17,7 +17,7 @@ const DURATIONS = [58, 74, 64]; // detik
 export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
   // Samakan background dengan section lain agar carousel berjalan DI ATAS
   // background grid tema aktif (bukan papan polos). Bekerja gelap & terang.
-  let secClass = "py-20 sm:py-24 overflow-hidden";
+  let secClass = "py-12 sm:py-16 overflow-hidden";
   let secStyle: CSSProperties = {};
   if (theme === "atlas") { secClass += " at-grid-bg"; secStyle = { backgroundColor: "var(--at-bg)" }; }
   else if (theme === "map") { secStyle = { background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }; }
@@ -29,20 +29,6 @@ export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
 
   return (
     <section className={secClass} style={secStyle}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
-          <span className="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-            Galeri Perjalanan
-          </span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-          Potret dari lapangan
-        </h2>
-        <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">
-          Momen nyata dari perjalanan yang kami pandu — Rusia, Asia Tengah, dan perburuan aurora.
-        </p>
-      </div>
 
       <div className="flex flex-col gap-3 sm:gap-4">
         {ROWS.map((imgs, i) => (
