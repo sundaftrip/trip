@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Wisata Murmansk & Aurora Borealis, Sundaftrip",
     description: "Panduan lengkap wisata Murmansk Rusia untuk traveler Indonesia. Visa, flight, aurora, budget IDR.",
     type: "article",
-    images: [{ url: "https://picsum.photos/seed/murmansk-aurora/1200/630", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", width: 1200, height: 630, alt: "Aurora borealis di Murmansk, Rusia bersama Sundaf Trip" }],
   },
   alternates: { canonical: "https://sundaftrip.com/destinations/murmansk" },
 };
@@ -140,6 +140,47 @@ export default async function MurmanskPage() {
 
   return (
     <div className={`min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
+
+      {/* ── SEO: structured data (Article + Breadcrumb + FAQ) ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Article",
+              headline: "Wisata Murmansk & Aurora Borealis dari Indonesia",
+              description: "Panduan lengkap wisata Murmansk, Rusia untuk traveler Indonesia: cara ke sana, visa, waktu terbaik lihat aurora borealis, estimasi budget, dan paket tur.",
+              image: "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg",
+              inLanguage: "id-ID",
+              mainEntityOfPage: "https://sundaftrip.com/destinations/murmansk",
+              author: { "@type": "Organization", name: "Sundaf Trip", url: "https://sundaftrip.com" },
+              publisher: { "@type": "Organization", name: "Sundaf Trip", url: "https://sundaftrip.com" },
+              about: [
+                { "@type": "TouristDestination", name: "Murmansk", address: { "@type": "PostalAddress", addressCountry: "RU" } },
+                { "@type": "Thing", name: "Aurora Borealis (Northern Lights)" },
+                { "@type": "TouristDestination", name: "Teriberka", address: { "@type": "PostalAddress", addressCountry: "RU" } },
+              ],
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Beranda", item: "https://sundaftrip.com" },
+                { "@type": "ListItem", position: 2, name: "Destinasi", item: "https://sundaftrip.com/destinations" },
+                { "@type": "ListItem", position: 3, name: "Murmansk", item: "https://sundaftrip.com/destinations/murmansk" },
+              ],
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: FAQ.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            },
+          ],
+        }) }}
+      />
 
       {/* ── HERO ── */}
       <div className="relative h-[72vh] min-h-[520px] flex items-end">
