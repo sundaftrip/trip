@@ -138,7 +138,7 @@ export default async function AboutPage() {
     : "border-t border-gray-200 dark:border-gray-800 my-12";
 
   const STATS = [
-    { value: "700+", label: "Traveler yang sudah kami fasilitasi" },
+    { value: "1500+", label: "Traveler yang kami tangani di lapangan" },
     { value: "1000+", label: "Pemohon visa yang kami bantu" },
     { value: "99%", label: "Approval rate pengurusan visa" },
     { value: `${blogCount || "10"}+`, label: "Artikel perjalanan ditulis tim kami" },
