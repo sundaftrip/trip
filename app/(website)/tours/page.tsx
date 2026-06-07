@@ -2,6 +2,7 @@
    trip selesai/sold-out turun ke bawah sebagai dokumentasi. */
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
+import { CheckCircle, CalendarClock } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
@@ -69,6 +70,14 @@ export default async function ToursPage() {
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as
     | "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
+  // Hitung rekam jejak dari data nyata (P2.1): trip yang sudah berlangsung
+  // dibingkai sebagai bukti pengalaman, bukan katalog kosong.
+  const now = new Date();
+  const doneCount = tours.filter(
+    (t) => t.status === "FULL" || (!!t.tripDate && t.tripDate < now),
+  ).length;
+  const bookableCount = tours.length - doneCount;
+
   return (
     <main className="pt-24">
       <BreadcrumbSchema
@@ -84,17 +93,37 @@ export default async function ToursPage() {
             Katalog Lengkap
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3">
           Semua Paket Tour
         </h1>
+
+        {/* Badge rekam jejak — angka dihitung dari data tour (akurat, bukan estimasi) */}
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          {doneCount > 0 && (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 12%, transparent)", color: "var(--site-accent,#2d6a4f)" }}
+            >
+              <CheckCircle size={13} aria-hidden="true" />
+              {doneCount} perjalanan terdokumentasi
+            </span>
+          )}
+          {bookableCount > 0 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300">
+              <CalendarClock size={13} aria-hidden="true" />
+              {bookableCount} keberangkatan terbuka
+            </span>
+          )}
+        </div>
+
         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">
-          {tours.length} paket, upcoming bookable di atas, trip yang sudah
-          berlangsung di bawah sebagai dokumentasi perjalanan.
+          Paket yang bisa dipesan ada di atas. Di bawahnya, dokumentasi
+          perjalanan yang sudah kami pandu — bukti rekam jejak, bukan katalog kosong.
         </p>
       </header>
 
       <div id="tours">
-        <ToursCatalog tours={tours} theme={theme} showFilter />
+        <ToursCatalog tours={tours} theme={theme} showFilter split />
       </div>
     </main>
   );

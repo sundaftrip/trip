@@ -23,12 +23,16 @@ export default function ToursCatalog({
   theme,
   showFilter = false,
   showAllLink = false,
+  split = false,
 }: {
   tours: Tour[];
   theme: string;
   showFilter?: boolean;
   /* Tampilkan CTA "Lihat semua tour" di dalam section (homepage saja). */
   showAllLink?: boolean;
+  /* Pisahkan jadi dua section berlabel: "Bisa Dipesan" vs "Dokumentasi
+     Perjalanan" (halaman /tours saja). Homepage tetap satu grid. */
+  split?: boolean;
 }) {
   const [region, setRegion] = useState<RegionKey>("all");
   const [page, setPage] = useState(1);
@@ -36,10 +40,6 @@ export default function ToursCatalog({
   const filtered = region === "all"
     ? tours
     : tours.filter((t) => regionOf(t.country) === region);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const current = Math.min(totalPages, Math.max(1, page));
-  const paged = filtered.slice((current - 1) * PER_PAGE, current * PER_PAGE);
 
   const changeRegion = useCallback((r: RegionKey) => {
     setRegion(r);
@@ -53,6 +53,52 @@ export default function ToursCatalog({
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
+
+  /* ── Mode split (P2.1): bookable di atas, dokumentasi di bawah ── */
+  if (split) {
+    const isDone = (t: Tour) =>
+      t.status === "FULL" || (!!t.tripDate && new Date(t.tripDate).getTime() < Date.now());
+    const bookable = filtered.filter((t) => !isDone(t));
+    const done = filtered.filter(isDone);
+
+    // Paginasi hanya bagian dokumentasi (daftar panjang). Bookable tampil semua.
+    const totalPages = Math.max(1, Math.ceil(done.length / PER_PAGE));
+    const current = Math.min(totalPages, Math.max(1, page));
+    const pagedDone = done.slice((current - 1) * PER_PAGE, current * PER_PAGE);
+
+    return (
+      <>
+        {showFilter && <FilterChips active={region} onChange={changeRegion} />}
+
+        <SectionHead
+          eyebrow="Bisa Dipesan"
+          sub={
+            bookable.length > 0
+              ? "Tanggal keberangkatan terbuka, kursi masih tersedia."
+              : "Belum ada keberangkatan terbuka untuk filter ini — hubungi kami untuk private trip."
+          }
+        />
+        {bookable.length > 0 && <ToursSection tours={bookable} theme={theme} />}
+
+        {done.length > 0 && (
+          <>
+            <SectionHead
+              eyebrow="Dokumentasi Perjalanan"
+              sub={`${done.length} trip yang sudah kami pandu, bukti rekam jejak, bukan katalog kosong.`}
+            />
+            <ToursSection tours={pagedDone} theme={theme}>
+              <PaginationBar current={current} total={totalPages} onChange={changePage} />
+            </ToursSection>
+          </>
+        )}
+      </>
+    );
+  }
+
+  /* ── Mode default (homepage): satu grid, paginasi seluruh hasil ── */
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const current = Math.min(totalPages, Math.max(1, page));
+  const paged = filtered.slice((current - 1) * PER_PAGE, current * PER_PAGE);
 
   return (
     <ToursSection tours={paged} theme={theme}>
@@ -73,6 +119,22 @@ export default function ToursCatalog({
         </div>
       )}
     </ToursSection>
+  );
+}
+
+/* Heading section katalog (P2.1). Gaya theme-neutral (gray + site-accent),
+   selaras dengan <header> halaman /tours di semua tema. */
+function SectionHead({ eyebrow, sub }: { eyebrow: string; sub?: string | null }) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-1">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
+        <span className="text-sm font-bold uppercase tracking-widest text-gray-700 dark:text-gray-200">
+          {eyebrow}
+        </span>
+      </div>
+      {sub && <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">{sub}</p>}
+    </div>
   );
 }
 

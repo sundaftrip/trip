@@ -152,8 +152,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const startingTotal = basePrice + mandatoryTotal;
 
   const greeting = companyName ? `Halo ${companyName}` : "Halo";
+  // P2.2: sisipkan tanggal keberangkatan ke prefill biar lead lebih kualified
+  // (hanya untuk trip yang belum lewat — tanggal lampau tak relevan).
+  const departureInfo = tour.tripDate && !isExpired ? ` (keberangkatan ${formatDate(tour.tripDate)})` : "";
   const waMessage = encodeURIComponent(
-    `${greeting}, saya tertarik dengan paket *${tour.title}*. Mohon informasi lebih lanjut.` +
+    `${greeting}, saya tertarik dengan paket *${tour.title}*${departureInfo}. Mohon informasi lebih lanjut.` +
       (mandatoryTotal > 0
         ? `\n\nRincian harga:\n• Paket: ${formatCurrency(basePrice)}` +
           mandatoryAddOns.map((a) => `\n• ${a.name} (wajib): ${formatCurrency(a.price)}`).join("") +
