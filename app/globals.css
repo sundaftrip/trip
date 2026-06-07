@@ -2139,6 +2139,8 @@ a.gl-pill:has(svg:only-child) {
   overflow: hidden;
   border-right: 1px solid var(--wg-line);
   background: #0a0a0a;
+  /* iOS: matikan menu "Save Image" saat long-press */
+  -webkit-touch-callout: none;
 }
 /* foto biarkan berwarna (aurora = warna), rasio natural mengikuti tinggi baris */
 .wg-img {
@@ -2146,6 +2148,13 @@ a.gl-pill:has(svg:only-child) {
   width: auto;
   object-fit: cover;
   display: block;
+  /* anti-curi kasual: tidak bisa di-drag, tidak bisa diseleksi,
+     dan klik-kanan jatuh ke div (bukan <img>) → menu "Save Image" tak muncul. */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 /* gradasi tipis bawah untuk kohesi editorial */
 .wg-tile::after {

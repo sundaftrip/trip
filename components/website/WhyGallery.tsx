@@ -8,7 +8,8 @@ import type { CSSProperties } from "react";
 const ROWS: string[][] = [
   ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
   ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"],
-].map((group) => group.map((n) => `/about-gallery/${n}-aurora.webp`));
+  // versi-kecil (660×440, watermark tetap) → ringan + tak worth dicuri.
+].map((group) => group.map((n) => `/about-gallery-sm/${n}-aurora.webp`));
 
 // Dua baris berlawanan arah (kiri lalu kanan), durasi beda supaya organik.
 const DIRECTIONS: ("right" | "left")[] = ["left", "right"];
