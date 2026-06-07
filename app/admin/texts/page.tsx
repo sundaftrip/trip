@@ -3,6 +3,13 @@ import TextsForm from "@/components/admin/TextsForm";
 
 const TEXT_KEYS = [
   { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"] },
+  // Kartu "Mengapa Kami?" (WhySection) — sebelumnya tak bisa diedit dari admin.
+  { section: "Keunggulan (Mengapa Kami)", keys: [
+    "why_1_title", "why_1_desc",
+    "why_2_title", "why_2_desc",
+    "why_3_title", "why_3_desc",
+    "why_4_title", "why_4_desc",
+  ] },
   { section: "Footer", keys: ["footer_tagline"] },
   { section: "Kontak", keys: ["contact_title", "contact_desc"] },
   { section: "Pembayaran", keys: ["payment_bank_name", "payment_bank_acc", "payment_bank_holder"] },
