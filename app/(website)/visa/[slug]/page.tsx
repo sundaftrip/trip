@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!country) return { title: "Visa tidak ditemukan" };
   const summary = country.notes.replace(/^Layanan kami:\s*/i, "").slice(0, 140);
   return {
-    title: `Visa ${country.name} untuk WNI, Layanan Pengurusan | Sundaf Trip`,
+    title: `Visa ${country.name} untuk WNI, Layanan Pengurusan · Sundaf Trip`,
     description: `Informasi & layanan pengurusan visa ${country.name} (${country.en}) untuk pemegang paspor Indonesia. ${summary}`,
   };
 }

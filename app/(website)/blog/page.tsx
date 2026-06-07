@@ -7,7 +7,7 @@ import { Clock, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
-const BLOG_TITLE = "Blog & Tips Travel | Sundaf Trip";
+const BLOG_TITLE = "Blog & Tips Travel · Sundaf Trip";
 const BLOG_DESC =
   "Tips travel ke Rusia, Asia Tengah, dan Aurora, cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.";
 

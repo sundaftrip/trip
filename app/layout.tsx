@@ -77,8 +77,8 @@ export async function generateMetadata(): Promise<Metadata> {
     title: {
       // Homepage default title, brand-forward
       default: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
-      // Child pages: "{page title} | Sundaf Trip", brand SELALU di belakang
-      template: `%s | ${BRAND_NAME}`,
+      // Child pages: "{page title} · Sundaf Trip", brand SELALU di belakang
+      template: `%s · ${BRAND_NAME}`,
     },
     description,
     applicationName: BRAND_NAME,
