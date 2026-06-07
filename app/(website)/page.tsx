@@ -6,7 +6,7 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import HeroSection from "@/components/website/HeroSection";
-import WhySection from "@/components/website/WhySection";
+import WhyGallery from "@/components/website/WhyGallery";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
@@ -88,7 +88,7 @@ export default async function HomePage() {
       <div id="tours">
         <ToursCatalog tours={allTours} theme={theme} showFilter={theme === "globe"} showAllLink />
       </div>
-      <WhySection texts={texts} theme={theme} />
+      <WhyGallery />
       <BlogSection posts={posts} theme={theme} />
       <TestimonialSection items={testimonials} theme={theme} />
       <ContactSection texts={texts} company={company} theme={theme} />

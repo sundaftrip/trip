@@ -2109,3 +2109,61 @@ a.gl-pill:has(svg:only-child) {
     rgba(0, 209, 178, 0) 99%
   );
 }
+
+/* ── WhyGallery: marquee foto homepage (arah kanan-kiri-kanan) ── */
+.wg-row {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.wg-track {
+  display: flex;
+  width: max-content;
+  animation-name: wg-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.wg-track:hover {
+  animation-play-state: paused;
+}
+/* Dua salinan identik berdampingan → geser tepat satu salinan (-50%) = mulus. */
+@keyframes wg-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+.wg-tile {
+  position: relative;
+  flex: 0 0 auto;
+  width: 240px;
+  height: 168px;
+  margin-right: 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+.wg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.wg-wm {
+  position: absolute;
+  right: 9px;
+  bottom: 8px;
+  height: 15px;
+  width: auto;
+  opacity: 0.72;
+  /* jadikan logo putih + bayangan halus supaya terbaca di foto apa pun */
+  filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+  user-select: none;
+}
+@media (min-width: 640px) {
+  .wg-tile { width: 300px; height: 200px; margin-right: 14px; }
+  .wg-wm { height: 18px; right: 11px; bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wg-track { animation: none; }
+}
