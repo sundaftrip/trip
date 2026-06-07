@@ -2,6 +2,11 @@
 @plugin "@tailwindcss/typography";
 @variant dark (&:where(.dark, .dark *));
 
+/* Highlight/seleksi teks — stabilo kuning, font SELALU hitam (kontras di light & dark) */
+::selection { background: #ffe66d; color: #111827; text-shadow: none; }
+::-moz-selection { background: #ffe66d; color: #111827; text-shadow: none; }
+mark { background: #ffe66d; color: #111827; }
+
 @theme {
   --font-jost: "Jost", sans-serif;
 
