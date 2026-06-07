@@ -7,11 +7,28 @@ import { Clock, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
+const BLOG_TITLE = "Blog & Tips Travel | Sundaf Trip";
+const BLOG_DESC =
+  "Tips travel ke Rusia, Asia Tengah, dan Aurora, cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.";
+
 export const metadata: Metadata = {
   title: "Blog & Tips Travel",
-  description:
-    "Tips travel ke Rusia, Asia Tengah, dan Aurora, cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.",
+  description: BLOG_DESC,
   alternates: { canonical: "https://sundaftrip.com/blog" },
+  // Override OG/Twitter agar share menampilkan judul blog, bukan beranda (brief P0.3).
+  openGraph: {
+    title: BLOG_TITLE,
+    description: BLOG_DESC,
+    url: "https://sundaftrip.com/blog",
+    siteName: "Sundaf Trip",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: BLOG_TITLE,
+    description: BLOG_DESC,
+  },
 };
 
 async function getSiteTheme() {

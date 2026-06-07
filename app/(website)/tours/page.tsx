@@ -8,11 +8,29 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 export const revalidate = 300;
 
+const TOURS_TITLE = "Semua Paket Tour | Sundaf Trip";
+const TOURS_DESC =
+  "Daftar lengkap paket tour Sundaf Trip, upcoming bookable & dokumentasi trip yang sudah berlangsung.";
+
 export const metadata: Metadata = {
   title: "Semua Paket Tour",
-  description:
-    "Daftar lengkap paket tour Sundaf Trip, upcoming bookable & dokumentasi trip yang sudah berlangsung.",
+  description: TOURS_DESC,
   alternates: { canonical: "https://sundaftrip.com/tours" },
+  // Override OG/Twitter agar share ke WhatsApp/IG menampilkan judul halaman ini,
+  // bukan preview beranda (root layout default-nya beranda). Lihat brief P0.3.
+  openGraph: {
+    title: TOURS_TITLE,
+    description: TOURS_DESC,
+    url: "https://sundaftrip.com/tours",
+    siteName: "Sundaf Trip",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TOURS_TITLE,
+    description: TOURS_DESC,
+  },
 };
 
 const getData = unstable_cache(
