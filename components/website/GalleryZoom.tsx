@@ -116,12 +116,17 @@ export default function GalleryZoom({ images }: { images: string[] }) {
               key={active}
               src={images[active]}
               alt={`Foto ${active + 1}`}
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
                 objectFit: "contain",
                 borderRadius: "14px",
                 display: "block",
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                WebkitTouchCallout: "none",
               }}
             />
           </div>
