@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* Galeri marquee homepage (mengganti "Mengapa Kami").
    3 baris foto berjalan otomatis dengan arah berselang: kanan, kiri, kanan.
-   Tiap foto diberi watermark logo Sundaf (putih, transparan) di pojok.
+   Foto sumber sudah ber-watermark Sundaf (baked-in), jadi TANPA overlay tambahan (hindari watermark dobel).
    Server component, animasi CSS murni (tanpa JS) → ringan & hemat. */
 const ROWS: string[][] = [
   ["01", "02", "03", "04", "05", "06", "07", "08"],
@@ -54,7 +54,6 @@ export default function WhyGallery() {
                       decoding="async"
                       className="wg-img"
                     />
-                    <img src="/logo.png" alt="" aria-hidden="true" className="wg-wm" />
                   </div>
                 );
               })}
