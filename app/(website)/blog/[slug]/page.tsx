@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Calendar, User, MapPin } from "lucide-react";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
@@ -153,6 +154,13 @@ export default async function BlogDetailPage({
       style={wrapperStyle}
     >
       {/* #4: JSON-LD structured data */}
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Blog", url: "/blog" },
+          { name: post.title, url: `/blog/${slug}` },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}

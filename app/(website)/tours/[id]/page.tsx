@@ -16,6 +16,8 @@ import GalleryZoom from "@/components/website/GalleryZoom";
 import ItineraryFold from "@/components/website/ItineraryFold";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import TourBookingCTA from "@/components/website/TourBookingCTA";
+import TourCard from "@/components/website/TourCard";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
@@ -65,14 +67,37 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
   const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
   if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
-  const [companyRows, reviews, visaCountries] = await Promise.all([
+  const [companyRows, reviews, visaCountries, relatedRaw] = await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
       where: { tourId: tour.id, published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     }),
     prisma.countryVisa.findMany({ select: { name: true, en: true } }),
+    // P1.3 internal linking: tour upcoming bookable lain (untuk "Tour Lainnya").
+    // Khususnya berharga di halaman trip selesai → arahkan user ke yang masih bisa dipesan.
+    prisma.tour.findMany({
+      where: {
+        id: { not: tour.id },
+        status: { in: ["ACTIVE", "FULL"] },
+        OR: [{ tripDate: { gte: new Date() } }, { tripDate: null }],
+      },
+      orderBy: { tripDate: "asc" },
+      take: 6,
+      select: {
+        id: true, slug: true, title: true, country: true, cityHighlight: true,
+        price: true, promoPrice: true, seatsLeft: true, tripDate: true,
+        duration: true, heroImg: true, badge: true, status: true,
+        notes: true, description: true,
+      },
+    }),
   ]);
+
+  // Prioritaskan tour negara yang sama, lalu lengkapi dengan lainnya. Maks 3.
+  const relatedTours = [
+    ...relatedRaw.filter((t) => t.country === tour.country),
+    ...relatedRaw.filter((t) => t.country !== tour.country),
+  ].slice(0, 3);
 
   // Agregat rating dari ulasan ASLI tour ini (dasar AggregateRating JSON-LD).
   const reviewCount = reviews.length;
@@ -228,6 +253,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   return (
     <div className="min-h-screen pt-16" style={isOutlined ? { backgroundColor: tBg, ...pixelGridStyle } : undefined}>
       {/* JSON-LD */}
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Paket Tour", url: "/tours" },
+          { name: tour.title, url: `/tours/${tour.slug ?? tour.id}` },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
@@ -671,6 +703,20 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     {r.name}{r.role ? <span className="font-normal text-gray-400"> · {r.role}</span> : null}
                   </p>
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* P1.3: Tour Lainnya — internal linking ke paket upcoming yang masih bisa dipesan */}
+        {relatedTours.length > 0 && (
+          <div className="mt-12">
+            <h2 className={`${secTitle} mb-5`} style={isOutlined ? { color: tText } : undefined}>
+              {isOutlined && <MapPin size={18} />} {isExpired ? "Tour yang Masih Bisa Dipesan" : "Tour Lainnya"}
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {relatedTours.map((t) => (
+                <TourCard key={t.id} tour={t} theme={siteTheme} />
               ))}
             </div>
           </div>
