@@ -88,7 +88,7 @@ export default async function HomePage() {
       <div id="tours">
         <ToursCatalog tours={allTours} theme={theme} showFilter={theme === "globe"} showAllLink />
       </div>
-      <WhyGallery />
+      <WhyGallery theme={theme} />
       <BlogSection posts={posts} theme={theme} />
       <TestimonialSection items={testimonials} theme={theme} />
       <ContactSection texts={texts} company={company} theme={theme} />

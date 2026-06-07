@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import type { CSSProperties } from "react";
 /* Galeri marquee homepage (mengganti "Mengapa Kami").
    3 baris foto berjalan otomatis dengan arah berselang: kanan, kiri, kanan.
    Foto sumber sudah ber-watermark Sundaf (baked-in), jadi TANPA overlay tambahan (hindari watermark dobel).
@@ -13,9 +14,21 @@ const ROWS: string[][] = [
 const DIRECTIONS: ("right" | "left")[] = ["right", "left", "right"];
 const DURATIONS = [58, 74, 64]; // detik
 
-export default function WhyGallery() {
+export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
+  // Samakan background dengan section lain agar carousel berjalan DI ATAS
+  // background grid tema aktif (bukan papan polos). Bekerja gelap & terang.
+  let secClass = "py-20 sm:py-24 overflow-hidden";
+  let secStyle: CSSProperties = {};
+  if (theme === "atlas") { secClass += " at-grid-bg"; secStyle = { backgroundColor: "var(--at-bg)" }; }
+  else if (theme === "map") { secStyle = { background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }; }
+  else if (theme === "pixel") { secStyle = { background: "var(--px-bg)", backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)", backgroundSize: "24px 24px" }; }
+  else if (theme === "globe") { secStyle = { background: "var(--gl-bg)" }; }
+  else if (theme === "kawaii") { secStyle = { background: "var(--kw-bg)" }; }
+  else if (theme === "tropical") { secStyle = { background: "var(--tr-bg)" }; }
+  else if (theme === "fumayo") { secClass = "fb-page " + secClass; }
+
   return (
-    <section className="py-20 sm:py-24 overflow-hidden">
+    <section className={secClass} style={secStyle}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
         <div className="flex items-center gap-2 mb-2">
           <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
