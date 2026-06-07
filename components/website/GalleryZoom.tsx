@@ -3,6 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { cldOptimize } from "@/lib/utils";
+
+/* Batasi resolusi yang DISAJIKAN (Cloudinary di-cap via URL, file lokal lewat
+   apa adanya) → original full-res tak pernah ikut ke browser. */
+const grid = (u: string) => cldOptimize(u, 1100);
+const big = (u: string) => cldOptimize(u, 1366);
 
 export default function GalleryZoom({ images }: { images: string[] }) {
   const [active, setActive] = useState<number | null>(null);
@@ -37,13 +43,15 @@ export default function GalleryZoom({ images }: { images: string[] }) {
 
   return (
     <>
-      {/* Gallery grid, editorial layout */}
+      {/* Gallery grid, editorial layout.
+          select-none + blokir klik-kanan + drag mati = anti-curi kasual. */}
+      <div onContextMenu={(e) => e.preventDefault()} className="select-none">
       {images.length === 1 && (
         <button
           onClick={() => setActive(0)}
           className="relative w-full h-72 sm:h-96 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group block"
         >
-          <Image src={images[0]} alt="Gallery" fill className="object-cover group-hover:scale-105 transition duration-500" />
+          <Image src={grid(images[0])} alt="Gallery" fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
         </button>
       )}
 
@@ -52,7 +60,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
           {images.map((url, i) => (
             <button key={i} onClick={() => setActive(i)}
               className="relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-              <Image src={url} alt={`Gallery ${i + 1}`} fill className="object-cover group-hover:scale-105 transition duration-500" />
+              <Image src={grid(url)} alt={`Gallery ${i + 1}`} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             </button>
           ))}
         </div>
@@ -63,7 +71,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
           {/* Hero, 2 cols × 2 rows */}
           <button onClick={() => setActive(0)}
             className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-            <Image src={images[0]} alt="Gallery 1" fill className="object-cover group-hover:scale-105 transition duration-500" />
+            <Image src={grid(images[0])} alt="Gallery 1" fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center bg-black/10" />
           </button>
 
@@ -74,7 +82,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             return (
               <button key={idx} onClick={() => setActive(idx)}
                 className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-                <Image src={url} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition duration-500" />
+                <Image src={grid(url)} alt={`Gallery ${idx + 1}`} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
                 {isLast && (
                   <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
                     <span className="text-white font-bold text-base">+{extras + 1}</span>
@@ -85,12 +93,14 @@ export default function GalleryZoom({ images }: { images: string[] }) {
           })}
         </div>
       )}
+      </div>
 
       {/* ── LIGHTBOX ── */}
       {active !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex flex-col items-center justify-center select-none"
           onClick={() => setActive(null)}
+          onContextMenu={(e) => e.preventDefault()}
         >
           {/* Top bar */}
           <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-5 py-4 z-10">
@@ -114,7 +124,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               key={active}
-              src={images[active]}
+              src={big(images[active])}
               alt={`Foto ${active + 1}`}
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}
@@ -172,7 +182,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                  <img src={cldOptimize(url,160)} alt={`Thumbnail ${i + 1}`} draggable={false} className="w-full h-full object-cover pointer-events-none" />
                 </button>
               ))}
             </div>
