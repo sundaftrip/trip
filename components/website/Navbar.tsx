@@ -45,7 +45,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           <Link href="/" className="flex items-center">
             <span className="inline-flex items-center rounded-xl px-3 py-1.5"
               style={{ border: "2px solid var(--fb-line)", background: "var(--fb-yellow)", boxShadow: "0 3px 0 0 var(--fb-line)" }}>
-              <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
                 className="h-8 w-auto" priority />
             </span>
           </Link>
@@ -114,7 +114,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -189,7 +189,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           <Link href="/" className="flex items-center shrink-0">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -276,7 +276,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
               className="h-8 sm:h-11 w-auto logo-theme" priority />
           </Link>
 
@@ -341,7 +341,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -416,7 +416,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -497,7 +497,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -577,7 +577,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54}
+              <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
                 className={`h-8 sm:h-10 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
             </Link>
 
@@ -665,7 +665,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           <Link href="/" className="flex items-center">
             <Image
               src={logo || "/logo.png"}
-              alt="Logo"
+              alt="Sundaf Trip"
               width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`}
               priority
