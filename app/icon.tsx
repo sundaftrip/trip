@@ -1,54 +1,38 @@
 import { ImageResponse } from "next/og";
-import { prisma } from "@/lib/prisma";
 
 // 192×192 (kelipatan 48) — syarat favicon Google. Ukuran 32px ditolak Google.
 export const size = { width: 192, height: 192 };
 export const contentType = "image/png";
-export const dynamic = "force-dynamic";
 
-export default async function Icon() {
-  try {
-    const rows = await prisma.companyInfo.findMany({
-      where: { key: { in: ["favicon_logo", "company_logo"] } },
-    });
-    const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
-    const logoUrl = map["favicon_logo"] || map["company_logo"];
+/**
+ * Mark persegi SUNDAF 2026 (kotak teal + jalan "S" putih + bendera).
+ * Dirender langsung dari SVG, BUKAN dari wordmark lebar di DB —
+ * supaya favicon Google selalu 1:1 dan tidak gepeng di lingkaran hasil pencarian.
+ * Sumber identik dengan /public/favicon.svg.
+ */
+const MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="192" height="192">
+  <rect width="64" height="64" rx="15" fill="#00ADB5"/>
+  <path d="M43 17 C 27 13, 18 25, 31 31 C 44 37, 36 50, 21 47" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M43 17 C 27 13, 18 25, 31 31 C 44 37, 36 50, 21 47" fill="none" stroke="#00ADB5" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2.2 4"/>
+  <line x1="45" y1="9" x2="45" y2="19" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M45 10 L 54 12.5 L 45 15 Z" fill="#222831"/>
+  <circle cx="21" cy="47" r="3.4" fill="#222831"/>
+</svg>`;
 
-    if (logoUrl) {
-      return new ImageResponse(
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={logoUrl}
-          width={32}
-          height={32}
-          alt="logo"
-          style={{ objectFit: "contain", width: "100%", height: "100%" }}
-        />,
-        { ...size }
-      );
-    }
-  } catch {
-    /* fallback ke default */
-  }
+export default function Icon() {
+  const dataUri = `data:image/svg+xml;base64,${Buffer.from(MARK_SVG).toString("base64")}`;
 
-  /* Fallback: huruf S di atas navy */
   return new ImageResponse(
-    <div
-      style={{
-        background: "#1e3a5f",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#f97316",
-        fontSize: 132,
-        fontWeight: 900,
-        borderRadius: 36,
-      }}
-    >
-      S
-    </div>,
+    (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={dataUri}
+        width={size.width}
+        height={size.height}
+        alt="Sundaf Trip"
+        style={{ width: "100%", height: "100%" }}
+      />
+    ),
     { ...size }
   );
 }
