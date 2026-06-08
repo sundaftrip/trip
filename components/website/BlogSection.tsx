@@ -38,7 +38,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block fb-card overflow-hidden group h-full">
                 <div className="relative h-44 overflow-hidden" style={{ borderBottom: "2px solid var(--fb-line)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--fb-paper)", color: "var(--fb-line)" }}>✦</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
@@ -78,7 +78,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="teri-card group overflow-hidden h-full flex flex-col">
                 <div className="relative h-44 overflow-hidden border-b-[2.5px] shrink-0" style={{ borderColor: "var(--teri-line)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--teri-c2)" }}>✈️</div>}
                   {post.category && <span className="absolute top-3 left-3 teri-pill">{post.category}</span>}
                 </div>
@@ -119,7 +119,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block gl-card overflow-hidden group">
                 <div className="relative h-44 overflow-hidden rounded-t-[18px]">
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-4xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 gl-pill" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", transform: "rotate(-2deg)", borderColor: "transparent" }}>
@@ -164,7 +164,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block at-card overflow-hidden group">
                 <div className="relative h-44 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
                   {post.category && (
                     <span className="absolute top-3 left-3 at-pill" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
@@ -210,7 +210,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block mp-card overflow-hidden group">
                 <div className="relative h-44 overflow-hidden border-b-2" style={{ borderColor: "var(--mp-border)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="h-full" style={{ background: "var(--mp-water)", opacity: 0.3 }} />}
                   {post.category && (
                     <span className="absolute top-3 left-3 mp-pill" style={{ background: "var(--mp-rust)", color: "var(--mp-on-rust)", borderColor: "var(--mp-border)" }}>
@@ -255,7 +255,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block kw-card overflow-hidden group">
                 <div className="relative h-44 overflow-hidden rounded-t-[22px] border-b-2" style={{ borderColor: "var(--kw-border)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--kw-peach)" }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-2deg)" }}>
@@ -300,7 +300,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block tr-card overflow-hidden group">
                 <div className="relative h-44 overflow-hidden rounded-t-[18px] border-b-2" style={{ borderColor: "var(--tr-border)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--tr-mint)" }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 tr-pill" style={{ background: "var(--tr-peach)", color: "var(--tr-text)", transform: "rotate(-2deg)" }}>
@@ -349,7 +349,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
               <Link href={`/blog/${post.slug}`} className="block px-card overflow-hidden group">
                 <div className="relative h-44 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover" />
                     : <div className="flex items-center justify-center h-full text-3xl" style={{ background: "var(--px-cyan)", opacity: 0.3 }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
@@ -403,7 +403,7 @@ export default function BlogSection({ posts, theme = "classic" }: Props) {
                 className={`group block border rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 ${cardBg}`}>
                 <div className="relative h-44 bg-gray-100 dark:bg-gray-900 overflow-hidden">
                   {post.cover
-                    ? <Image src={cldOptimize(post.cover, 600)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-3xl opacity-30">✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 px-2.5 py-1 text-white text-[10px] font-semibold rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }}>

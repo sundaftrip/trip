@@ -2170,3 +2170,24 @@ a.gl-pill:has(svg:only-child) {
 @media (prefers-reduced-motion: reduce) {
   .wg-track { animation: none; }
 }
+
+/* === Scroll-reveal CSS-only — gantikan AnimateIn (IntersectionObserver) ===
+   Browser tanpa animation-timeline: view() menampilkan konten apa adanya
+   (tidak ada opacity:0 di luar @supports → fallback aman, konten selalu terlihat). */
+.ai-reveal { --ai-from: translateY(40px); }
+.ai-reveal[data-dir="left"]  { --ai-from: translateX(-32px); }
+.ai-reveal[data-dir="right"] { --ai-from: translateX(32px); }
+.ai-reveal[data-dir="none"]  { --ai-from: none; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .ai-reveal {
+      animation: ai-reveal-kf 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+    @keyframes ai-reveal-kf {
+      from { opacity: 0; transform: var(--ai-from, translateY(40px)); }
+      to   { opacity: 1; transform: none; }
+    }
+  }
+}

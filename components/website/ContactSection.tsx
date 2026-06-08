@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { toWaNumber } from "@/lib/utils";
 
@@ -11,16 +8,10 @@ interface Props {
 }
 
 export default function ContactSection({ texts, company, theme = "classic" }: Props) {
-  const [lang, setLang] = useState<"id" | "en">("id");
-  useEffect(() => {
-    const stored = localStorage.getItem("lang") as "id" | "en" | null;
-    if (stored) setLang(stored);
-  }, []);
-
+  // Server Component: render teks ID; AutoTranslate menangani EN.
   const t = (key: string, fallback: string) => {
     const val = texts[key];
     if (!val) return fallback;
-    if (lang === "en") return val.en || val.id || fallback;
     return val.id || val.en || fallback;
   };
   const bankName   = texts["payment_bank_name"]?.id || "";
@@ -39,8 +30,8 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
   ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
 
-  const headLabel = lang === "id" ? "Hubungi Kami" : "Contact Us";
-  const bankLabel = lang === "id" ? "Rekening Pembayaran" : "Payment Account";
+  const headLabel = "Hubungi Kami";
+  const bankLabel = "Rekening Pembayaran";
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") return (

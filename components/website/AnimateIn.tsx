@@ -1,7 +1,3 @@
-"use client";
-
-import { useRef, useEffect, useState } from "react";
-
 interface Props {
   children: React.ReactNode;
   delay?: number;
@@ -9,39 +5,15 @@ interface Props {
   className?: string;
 }
 
-export default function AnimateIn({ children, delay = 0, direction = "up", className = "" }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const initialTransform = {
-    up: "translateY(40px)",
-    left: "translateX(-32px)",
-    right: "translateX(32px)",
-    none: "none",
-  }[direction];
-
+/* CSS-only scroll reveal (lihat .ai-reveal di globals.css).
+   Server Component — TIDAK ada IntersectionObserver/JS, jadi tidak menambah
+   island ke client bundle. Browser tanpa `animation-timeline: view()`
+   menampilkan konten apa adanya (fallback aman).
+   `delay` dipertahankan demi kompatibilitas API tapi tidak dipakai
+   (stagger berbasis waktu tidak berlaku pada view-timeline). */
+export default function AnimateIn({ children, direction = "up", className = "" }: Props) {
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "none" : initialTransform,
-        transition: `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
-        willChange: "opacity, transform",
-      }}
-    >
+    <div className={`ai-reveal ${className}`} data-dir={direction}>
       {children}
     </div>
   );
