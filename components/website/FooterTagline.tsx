@@ -1,21 +1,25 @@
+"use client";
 import type { CSSProperties } from "react";
+import { usePathname } from "next/navigation";
 
-/* Tagline footer: di halaman /about (isAbout) tampilkan pesan B2B
-   (menggantikan blurb umum), di halaman lain tampilkan tagline biasa.
-   Server component — keputusan dibuat dari header x-pathname (lihat Footer). */
+/* Tagline footer: di halaman /about tampilkan pesan B2B (menggantikan blurb
+   umum), di halaman lain tampilkan tagline biasa.
+   CLIENT component — path dideteksi via usePathname() agar Footer TIDAK perlu
+   memanggil headers() di server. headers() adalah Dynamic API yang membuat
+   SELURUH segmen (website) jadi dynamic → no-store → edge cache mati.
+   usePathname() aman untuk halaman static (beda dengan useSearchParams). */
 export default function FooterTagline({
-  isAbout,
   tagline,
   waB2B,
   className = "",
   style,
 }: {
-  isAbout: boolean;
   tagline: string;
   waB2B?: string;
   className?: string;
   style?: CSSProperties;
 }) {
+  const isAbout = usePathname() === "/about";
   if (isAbout) {
     return (
       <p className="text-sm leading-relaxed max-w-md" style={style}>
