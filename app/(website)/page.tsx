@@ -1,6 +1,6 @@
 // ISR, homepage di-revalidate setiap 5 menit lewat unstable_cache di getData().
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
-export const revalidate = 300;
+export const revalidate = 60;
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";

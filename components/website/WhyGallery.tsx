@@ -50,6 +50,8 @@ export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
                     <img
                       src={src}
                       alt={isClone ? "" : "Dokumentasi perjalanan Sundaf Trip"}
+                      width={660}
+                      height={440}
                       loading="lazy"
                       decoding="async"
                       className="wg-img"

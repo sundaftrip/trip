@@ -16,7 +16,7 @@ import { prisma } from "@/lib/prisma";
      15 woff2 preload → 2.
 */
 const jost         = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
-const anonymousPro = Anonymous_Pro({ weight: ["400","700"], subsets: ["latin"], variable: "--font-anonymous-pro", display: "swap" });
+const anonymousPro = Anonymous_Pro({ weight: ["400","700"], subsets: ["latin"], variable: "--font-anonymous-pro", display: "swap", preload: false });
 const plusJakarta  = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap", preload: false });
 const dmSans       = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap", preload: false });
 const outfit       = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap", preload: false });

@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 const TOURS_TITLE = "Semua Paket Tour · Sundaf Trip";
 const TOURS_DESC =

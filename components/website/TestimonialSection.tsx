@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import AnimateIn from "./AnimateIn";
 import ExpandableQuote from "./ExpandableQuote";
+import { cldOptimize } from "@/lib/utils";
 
 interface Testimonial {
   id: string; name: string; role: string | null;
@@ -27,7 +28,7 @@ function Stars({ rating }: { rating: number }) {
 }
 
 function Avatar({ avatar, name }: { avatar: string | null; name: string }) {
-  if (avatar) return <Image src={avatar} alt={name} width={44} height={44} className="w-11 h-11 rounded-full object-cover shrink-0" />;
+  if (avatar) return <Image src={cldOptimize(avatar, 88)} alt={name} width={44} height={44} sizes="44px" className="w-11 h-11 rounded-full object-cover shrink-0" />;
   return (
     <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
       style={{ background: "var(--site-accent,#2d6a4f)" }}>
