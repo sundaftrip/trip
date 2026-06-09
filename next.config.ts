@@ -75,6 +75,10 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https:",
+              // media-src untuk <video>/<audio>. Tanpa ini, video dari CDN
+              // (Cloudinary, dll) DIBLOKIR karena fallback ke default-src 'self'
+              // — poster (img) tetap muncul tapi video tak bisa load.
+              "media-src 'self' blob: data: https:",
               "font-src 'self' https://fonts.gstatic.com data:",
               "connect-src 'self' https: wss:",
               "object-src 'none'",
