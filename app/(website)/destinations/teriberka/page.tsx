@@ -4,6 +4,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber } from "@/lib/utils";
+import ActivityVideo from "@/components/website/ActivityVideo";
 
 // ⚠️ FOTO PLACEHOLDER: URL gambar di bawah masih memakai aset Murmansk.
 // Ganti semua URL Cloudinary/Pexels dengan foto Teriberka kamu sendiri.
@@ -77,9 +78,11 @@ const QUICK_FACTS = [
   { icon: Wallet,      label: "Estimasi day-trip",    value: "Rp 1,5–3 juta/orang" },
 ];
 
-const ACTIVITIES = [
+const ACTIVITIES: { img: string; title: string; desc: string; video?: string }[] = [
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Jauh dari polusi cahaya kota, langit Teriberka jadi salah satu kanvas aurora paling gelap dan jernih di Kola Peninsula. Bulan terbaik: Desember–Februari." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Whale Watching Laut Barents", desc: "Naik perahu menyusuri Laut Barents untuk melihat paus bungkuk dan paus beluga di habitat aslinya. Musim terbaik Juni–Oktober saat laut tidak membeku." },
+  // Video whale-watching (Cloudinary). Di-optimasi on-the-fly: q_auto:eco,w_640 ≈ 3 MB (asli 44 MB).
+  // `img` dipakai sebagai poster (frame awal sebelum autoplay video jalan).
+  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_640/20260131_121402_etevcv.mp4", img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/w_640/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Whale Watching Laut Barents", desc: "Naik perahu menyusuri Laut Barents untuk melihat paus bungkuk dan paus beluga di habitat aslinya. Musim terbaik Juni–Oktober saat laut tidak membeku." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Pantai Telur Naga", desc: "Hamparan batu bulat raksasa hasil tempaan ombak ribuan tahun di tepi pantai. Orang lokal menyebutnya 'telur dinosaurus', spot foto paling ikonik di Teriberka." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Kuburan Kapal & Bangkai Paus", desc: "Bangkai kapal nelayan tua yang teronggok di teluk dan kerangka paus di pantai. Pemandangan magis-melankolis yang membuat Teriberka terasa seperti negeri lain." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Air Terjun Batareyskiy", desc: "Trek menyusuri tebing menuju air terjun yang jatuh langsung dari danau ke Laut Barents. Pemandangan tundra Arktik yang keras tapi memukau." },
@@ -341,10 +344,14 @@ export default async function TeriberkaPage() {
             Apa yang Bisa Kita Lakukan di Teriberka
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACTIVITIES.map(({ img, title, desc }) => (
+            {ACTIVITIES.map(({ img, title, desc, video }) => (
               <div key={title} className={`${cardClass} overflow-hidden`} style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
-                <div className="relative h-40 w-full overflow-hidden">
-                  <Image src={img} alt={title} fill className="object-cover transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                <div className="relative h-40 w-full overflow-hidden group">
+                  {video ? (
+                    <ActivityVideo video={video} poster={img} title={title} />
+                  ) : (
+                    <Image src={img} alt={title} fill className="object-cover transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                  )}
                 </div>
                 <div className="p-5">
                   <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{title}</h3>
