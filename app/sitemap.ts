@@ -55,6 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/search`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/terms`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/destinations/murmansk`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/destinations/teriberka`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/destinations/kazakhstan`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     ...visaUrls,
     ...tourUrls,
