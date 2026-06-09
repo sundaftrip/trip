@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "fastly.picsum.photos" },
       { protocol: "https", hostname: "images.pexels.com" },
       { protocol: "https", hostname: "**.pexels.com" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,

@@ -80,16 +80,16 @@ const QUICK_FACTS = [
   { icon: Wallet,      label: "Estimasi day-trip",    value: "Rp 1,5–3 juta/orang" },
 ];
 
-const ACTIVITIES: { img: string; title: string; desc: string; video?: string }[] = [
+const ACTIVITIES: { img: string; title: string; desc: string; video?: string; credit?: string }[] = [
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Jauh dari polusi cahaya kota, langit Teriberka jadi salah satu kanvas aurora paling gelap dan jernih di Kola Peninsula. Bulan terbaik: Desember–Februari." },
-  // Video whale-watching (Cloudinary). Di-optimasi on-the-fly: q_auto:eco,w_640 ≈ 3 MB (asli 44 MB).
-  // `img` dipakai sebagai poster (frame awal sebelum autoplay video jalan).
-  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_640/20260131_121402_etevcv.mp4", img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/w_640/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Whale Watching Laut Barents", desc: "Naik perahu menyusuri Laut Barents untuk melihat paus bungkuk dan paus beluga di habitat aslinya. Musim terbaik Juni–Oktober saat laut tidak membeku." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Pantai Telur Naga", desc: "Hamparan batu bulat raksasa hasil tempaan ombak ribuan tahun di tepi pantai. Orang lokal menyebutnya 'telur dinosaurus', spot foto paling ikonik di Teriberka." },
+  // Video: trip perahu di Laut Barents (Cloudinary, q_auto:eco,w_640 ≈ 3 MB).
+  // `img` = poster. Deskripsi disederhanakan agar sesuai isi video (boat trip).
+  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_640/20260131_121402_etevcv.mp4", img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/w_640/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Susur Laut Barents", desc: "Naik perahu nelayan menyusuri perairan Laut Barents bersama rombongan, menikmati lanskap Arktik yang membeku langsung dari atas air." },
+  { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Stone_beach_on_the_way_to_Batareyskiy_waterfall.jpg/1280px-Stone_beach_on_the_way_to_Batareyskiy_waterfall.jpg", credit: "Foto: Vsatinet / Wikimedia Commons · CC BY-SA 4.0", title: "Pantai Telur Naga", desc: "Hamparan batu bulat raksasa hasil tempaan ombak ribuan tahun di tepi pantai. Orang lokal menyebutnya 'telur dinosaurus', spot foto paling ikonik di Teriberka." },
   // Video perahu tua di teluk (Cloudinary). Di-optimasi q_auto:eco,w_540,du_10 ≈ 3 MB.
-  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_540,du_10/20260127_130726_wmoh3n.mp4", img: "https://res.cloudinary.com/dlmgl1grq/video/upload/so_5,w_640,q_auto/20260127_130726_wmoh3n.jpg", title: "Kuburan Kapal & Bangkai Paus", desc: "Bangkai kapal nelayan tua yang teronggok di teluk dan kerangka paus di pantai. Pemandangan magis-melankolis yang membuat Teriberka terasa seperti negeri lain." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Air Terjun Batareyskiy", desc: "Trek menyusuri tebing menuju air terjun yang jatuh langsung dari danau ke Laut Barents. Pemandangan tundra Arktik yang keras tapi memukau." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Jejak Film Leviathan", desc: "Teriberka adalah lokasi syuting film 'Leviathan' (nominasi Oscar 2015). Susuri lanskap dramatis yang membuat desa kecil ini mendunia." },
+  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_540,du_10/20260127_130726_wmoh3n.mp4", img: "https://res.cloudinary.com/dlmgl1grq/video/upload/so_5,w_640,q_auto/20260127_130726_wmoh3n.jpg", title: "Perahu Nelayan Tua di Teluk", desc: "Perahu nelayan tua tertambat di teluk Teriberka yang diselimuti salju — potret sunyi kehidupan di tepi Laut Barents." },
+  { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/%D0%92%D0%BE%D0%B4%D0%BE%D0%BF%D0%B0%D0%B4_%D1%83_%D0%9C%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE_%D0%91%D0%B0%D1%82%D0%B0%D1%80%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B3%D0%BE.jpg/1280px-%D0%92%D0%BE%D0%B4%D0%BE%D0%BF%D0%B0%D0%B4_%D1%83_%D0%9C%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE_%D0%91%D0%B0%D1%82%D0%B0%D1%80%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B3%D0%BE.jpg", credit: "Foto: Vsatinet / Wikimedia Commons · CC BY-SA 4.0", title: "Air Terjun Batareyskiy", desc: "Trek menyusuri tebing menuju air terjun yang jatuh langsung dari danau ke Laut Barents. Pemandangan tundra Arktik yang keras tapi memukau." },
+  { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Graveyard_of_ships_in_old_part_of_Teriberka.jpg/1280px-Graveyard_of_ships_in_old_part_of_Teriberka.jpg", credit: "Foto: Vsatinet / Wikimedia Commons · CC BY-SA 4.0", title: "Jejak Film Leviathan", desc: "Teriberka adalah lokasi syuting film 'Leviathan' (nominasi Oscar 2015). Susuri lanskap dramatis yang membuat desa kecil ini mendunia." },
 ];
 
 const FAQ = [
@@ -347,7 +347,7 @@ export default async function TeriberkaPage() {
             Apa yang Bisa Kita Lakukan di Teriberka
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACTIVITIES.map(({ img, title, desc, video }) => (
+            {ACTIVITIES.map(({ img, title, desc, video, credit }) => (
               <div key={title} className={`${cardClass} overflow-hidden`} style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
                 <div className="relative h-40 w-full overflow-hidden group">
                   {video ? (
@@ -359,6 +359,9 @@ export default async function TeriberkaPage() {
                 <div className="p-5">
                   <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{title}</h3>
                   <p className={`text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-200" : ""}`} style={{ color: subClr }}>{desc}</p>
+                  {credit && (
+                    <p className="text-[10px] leading-tight mt-2 opacity-50" style={{ color: subClr }}>{credit}</p>
+                  )}
                 </div>
               </div>
             ))}
