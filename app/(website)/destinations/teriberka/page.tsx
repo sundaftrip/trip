@@ -6,8 +6,10 @@ import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, C
 import { formatCurrency, toWaNumber } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 
-// ⚠️ FOTO PLACEHOLDER: URL gambar di bawah masih memakai aset Murmansk.
-// Ganti semua URL Cloudinary/Pexels dengan foto Teriberka kamu sendiri.
+// CATATAN FOTO: Aurora (foto) + Whale Watching & Kuburan Kapal (video) sudah sesuai.
+// MASIH perlu foto Teriberka yang BENAR untuk: Pantai Telur Naga (kini foto king
+// crab), Air Terjun Batareyskiy (kini snowmobile), Jejak Film Leviathan (kini
+// kereta rusa). Ganti URL `img` di entri ACTIVITIES terkait bila foto sudah ada.
 
 export const metadata: Metadata = {
   title: "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip",
@@ -84,7 +86,8 @@ const ACTIVITIES: { img: string; title: string; desc: string; video?: string }[]
   // `img` dipakai sebagai poster (frame awal sebelum autoplay video jalan).
   { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_640/20260131_121402_etevcv.mp4", img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/w_640/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Whale Watching Laut Barents", desc: "Naik perahu menyusuri Laut Barents untuk melihat paus bungkuk dan paus beluga di habitat aslinya. Musim terbaik Juni–Oktober saat laut tidak membeku." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Pantai Telur Naga", desc: "Hamparan batu bulat raksasa hasil tempaan ombak ribuan tahun di tepi pantai. Orang lokal menyebutnya 'telur dinosaurus', spot foto paling ikonik di Teriberka." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Kuburan Kapal & Bangkai Paus", desc: "Bangkai kapal nelayan tua yang teronggok di teluk dan kerangka paus di pantai. Pemandangan magis-melankolis yang membuat Teriberka terasa seperti negeri lain." },
+  // Video perahu tua di teluk (Cloudinary). Di-optimasi q_auto:eco,w_540,du_10 ≈ 3 MB.
+  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_540,du_10/20260127_130726_wmoh3n.mp4", img: "https://res.cloudinary.com/dlmgl1grq/video/upload/so_5,w_640,q_auto/20260127_130726_wmoh3n.jpg", title: "Kuburan Kapal & Bangkai Paus", desc: "Bangkai kapal nelayan tua yang teronggok di teluk dan kerangka paus di pantai. Pemandangan magis-melankolis yang membuat Teriberka terasa seperti negeri lain." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Air Terjun Batareyskiy", desc: "Trek menyusuri tebing menuju air terjun yang jatuh langsung dari danau ke Laut Barents. Pemandangan tundra Arktik yang keras tapi memukau." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Jejak Film Leviathan", desc: "Teriberka adalah lokasi syuting film 'Leviathan' (nominasi Oscar 2015). Susuri lanskap dramatis yang membuat desa kecil ini mendunia." },
 ];
@@ -193,10 +196,10 @@ export default async function TeriberkaPage() {
 
       {/* ── HERO ── */}
       <div className="relative h-[72vh] min-h-[520px] flex items-end">
-        {/* ⚠️ FOTO PLACEHOLDER, ganti dengan foto Teriberka HD-mu */}
+        {/* Hero: frame asli dari footage Teriberka (perahu tua di teluk membeku) */}
         <Image
-          src="https://images.pexels.com/photos/30173400/pexels-photo-30173400.jpeg?auto=compress&cs=tinysrgb&w=1920"
-          alt="Teriberka di tepi Laut Barents, Rusia"
+          src="https://res.cloudinary.com/dlmgl1grq/video/upload/so_5,w_1920,h_1080,c_fill,q_auto/20260127_130726_wmoh3n.jpg"
+          alt="Perahu nelayan tua di teluk Teriberka yang membeku, tepi Laut Barents, Rusia"
           fill
           className="object-cover object-center"
           priority
