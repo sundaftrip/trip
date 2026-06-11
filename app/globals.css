@@ -1567,15 +1567,10 @@ a.gl-pill:has(svg:only-child) {
   background: transparent;
   color: var(--at-text);
 }
+/* Garis grid Atlas dihilangkan atas permintaan (2026-06-11) — kelas
+   dipertahankan karena dipakai luas sebagai pembawa warna latar. */
 .at-grid-bg {
-  background-image:
-    linear-gradient(var(--at-grid) 0.5px, transparent 0.5px),
-    linear-gradient(90deg, var(--at-grid) 0.5px, transparent 0.5px);
-  background-size: 32px 32px;
-}
-/* Grid lebih rapat & tipis di HP — 32px terasa terlalu besar di layar kecil */
-@media (max-width: 640px) {
-  .at-grid-bg { background-size: 18px 18px; }
+  background-image: none;
 }
 
 /* ─── CONSOLE THEME — layout sidebar, turunan Atlas ─── */
