@@ -69,8 +69,22 @@ export default async function ToursPage() {
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as
     | "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
+  /* Latar main mengikuti tema aktif — tanpa ini, padding navbar (pt-24)
+     transparan dan memperlihatkan body charcoal sebagai pita gelap di bawah
+     navbar. Atlas memakai kelas grid agar polanya menyambung mulus. */
+  const bgTema: Record<string, { cls?: string; style?: React.CSSProperties }> = {
+    atlas: { cls: "at-grid-bg", style: { backgroundColor: "var(--at-bg)" } },
+    map: { style: { background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" } },
+    pixel: { style: { background: "var(--px-bg)", backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)", backgroundSize: "24px 24px" } },
+    globe: { style: { background: "var(--gl-bg)" } },
+    kawaii: { style: { background: "var(--kw-bg)" } },
+    tropical: { style: { background: "var(--tr-bg)" } },
+    fumayo: { cls: "fb-page" },
+  };
+  const bg = bgTema[theme] ?? {};
+
   return (
-    <main className="pt-24">
+    <main className={`pt-24${bg.cls ? ` ${bg.cls}` : ""}`} style={bg.style}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
