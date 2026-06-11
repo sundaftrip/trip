@@ -2108,17 +2108,15 @@ a.gl-pill:has(svg:only-child) {
    2 baris berlawanan arah, foto rasio natural (tinggi tetap, lebar ikut foto),
    sudut tajam, garis tipis pemisah, dibingkai kotak max-width. */
 .wg-frame {
-  --wg-line: rgba(127, 127, 127, 0.30);
+  /* Garis lattice dihilangkan atas permintaan (2026-06-11): border dihapus
+     total (bukan transparan — border bening tetap memesan ruang 1px dan
+     memperlihatkan latar sebagai garis). Foto kini rapat tanpa pemisah. */
   max-width: 1240px;
   margin: 0 auto;
-  border-top: 1px solid var(--wg-line);
-  border-left: 1px solid var(--wg-line);
-  border-right: 1px solid var(--wg-line);
 }
 .wg-row {
   height: 150px;
   overflow: hidden;
-  border-bottom: 1px solid var(--wg-line);
 }
 .wg-track {
   display: flex;
@@ -2140,7 +2138,6 @@ a.gl-pill:has(svg:only-child) {
   flex: 0 0 auto;
   height: 100%;
   overflow: hidden;
-  border-right: 1px solid var(--wg-line);
   background: #0a0a0a;
   /* iOS: matikan menu "Save Image" saat long-press */
   -webkit-touch-callout: none;
