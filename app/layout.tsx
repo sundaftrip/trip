@@ -68,7 +68,8 @@ const getCompanyMeta = unstable_cache(
 );
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { logo } = await getCompanyMeta();
+  // logo dari getCompanyMeta() tidak dipakai lagi di sini — apple icon kini
+  // PNG persegi statis di /icons (logo.png 862×241 tidak persegi).
   const description =
     "Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
 
@@ -114,7 +115,8 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: {
       icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
       shortcut: "/favicon.svg",
-      apple: logo || "/favicon.svg",
+      // PNG persegi 180×180 (logo.png 862×241 bikin ikon homescreen iOS gepeng).
+      apple: "/icons/apple-touch-icon.png",
     },
   };
 }

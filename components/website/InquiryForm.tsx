@@ -70,7 +70,7 @@ export default function InquiryForm({
   }
 
   const inputCls =
-    "w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--site-accent,#00ADB5)] focus:border-transparent transition";
+    "w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--site-accent,#00ADB5)] focus:border-transparent transition";
 
   return (
     <form onSubmit={onSubmit} className={`space-y-3 ${className}`}>

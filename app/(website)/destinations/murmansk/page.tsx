@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
-import { formatCurrency, toWaNumber } from "@/lib/utils";
+import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Wisata Murmansk & Aurora Borealis dari Indonesia, Sundaftrip",
@@ -75,7 +75,7 @@ const QUICK_FACTS = [
 const ACTIVITIES = [
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk ukurannya luar biasa, rasanya lebih luar biasa lagi. Ini bukan kepiting biasa, ini pengalaman makan yang tak terlupakan seumur hidup." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik yang menenangkan jiwa." },
+  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/w_800,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik yang menenangkan jiwa." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Berburu Paus di Teriberka", desc: "Susuri Laut Barents menuju Teriberka, desa nelayan terpencil yang jadi spot terbaik melihat paus bungkuk di habitat aslinya." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
   { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Naik Rusa di Tundra", desc: "Duduk di slede kayu ditarik rusa kutub menembus hutan pinus bersalju. Rasanya seperti masuk ke dalam dongeng Natal, tapi ini nyata." },
@@ -513,7 +513,7 @@ export default async function MurmanskPage() {
                   style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
                   <div className="relative h-36 bg-gray-100 dark:bg-slate-800 overflow-hidden">
                     {post.cover
-                      ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       : <div className="flex items-center justify-center h-full"><Camera size={24} className="text-gray-300" /></div>}
                   </div>
                   <div className="p-4">

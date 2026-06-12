@@ -92,6 +92,10 @@ export default async function ToursPage() {
         ]}
       />
       <div id="tours" className="pt-2">
+        {/* h1 satu-satunya di halaman ini (SEO/a11y). Header visual sengaja
+           dihapus (commit 9ecf179), jadi judul dipasang sr-only agar desain
+           tidak berubah tapi hierarki heading tetap benar (h1 → h2). */}
+        <h1 className="sr-only">Semua Paket Tour Sundaf Trip</h1>
         <ToursCatalog tours={tours} theme={theme} showFilter split />
       </div>
     </main>

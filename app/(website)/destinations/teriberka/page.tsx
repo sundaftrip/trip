@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
-import { formatCurrency, toWaNumber } from "@/lib/utils";
+import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 
 // CATATAN FOTO: Aurora (foto) + Whale Watching & Kuburan Kapal (video) sudah sesuai.
@@ -531,7 +531,7 @@ export default async function TeriberkaPage() {
                   style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
                   <div className="relative h-36 bg-gray-100 dark:bg-slate-800 overflow-hidden">
                     {post.cover
-                      ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       : <div className="flex items-center justify-center h-full"><Camera size={24} className="text-gray-300" /></div>}
                   </div>
                   <div className="p-4">

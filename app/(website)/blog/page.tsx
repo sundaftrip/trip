@@ -1,10 +1,11 @@
-export const dynamic = "force-dynamic";
+// ISR: list blog di-revalidate on-write oleh revalidatePublicContent() di API blog.
+export const revalidate = 300;
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDate, cldOptimize } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 const BLOG_TITLE = "Blog & Tips Travel · Sundaf Trip";
@@ -113,7 +114,7 @@ export default async function BlogPage() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="block gl-card overflow-hidden group">
                 <div className="relative h-48 overflow-hidden rounded-t-[18px]">
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--gl-sky)", opacity: 0.25 }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 gl-pill" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", transform: "rotate(-2deg)", borderColor: "transparent" }}>
@@ -138,7 +139,7 @@ export default async function BlogPage() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="block kw-card overflow-hidden group">
                 <div className="relative h-48 overflow-hidden rounded-t-[22px] border-b-2" style={{ borderColor: "var(--kw-border)" }}>
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--kw-peach)" }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)", transform: "rotate(-2deg)" }}>
@@ -163,7 +164,7 @@ export default async function BlogPage() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="block tr-card overflow-hidden group">
                 <div className="relative h-48 overflow-hidden rounded-t-[18px] border-b-2" style={{ borderColor: "var(--tr-border)" }}>
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--tr-mint)" }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 tr-pill" style={{ background: "var(--tr-peach)", color: "var(--tr-text)", transform: "rotate(-2deg)" }}>
@@ -188,7 +189,7 @@ export default async function BlogPage() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="block px-card overflow-hidden group">
                 <div className="relative h-48 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover" />
                     : <div className="flex items-center justify-center h-full text-5xl" style={{ background: "var(--px-cyan)", opacity: 0.3 }}>✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
@@ -213,7 +214,7 @@ export default async function BlogPage() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="block at-card overflow-hidden group">
                 <div className="relative h-48 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
                   {post.category && (
                     <span className="absolute top-3 left-3 at-pill" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
@@ -238,7 +239,7 @@ export default async function BlogPage() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="block fb-card overflow-hidden group">
                 <div className="relative h-48 overflow-hidden" style={{ borderBottom: "2px solid var(--fb-line)" }}>
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-4xl" style={{ background: "var(--fb-paper)", color: "var(--fb-line)" }}>✦</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>
@@ -264,7 +265,7 @@ export default async function BlogPage() {
                 className="group block bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:-translate-y-1 transition-all">
                 <div className="relative h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
                   {post.cover
-                    ? <Image src={post.cover} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="flex items-center justify-center h-full text-5xl">✈️</div>}
                   {post.category && (
                     <span className="absolute top-3 left-3 px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">{post.category}</span>

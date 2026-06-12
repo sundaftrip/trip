@@ -38,7 +38,7 @@ const VISA_KEYS = Object.keys(VISA_LABEL) as Visa[];
 
 const FIELD =
   "px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-800 " +
-  "bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200 " +
+  "bg-white dark:bg-gray-900 text-base sm:text-sm text-gray-700 dark:text-gray-200 " +
   "outline-none focus:border-gray-400 dark:focus:border-gray-600";
 
 function isVisa(v: string): v is Visa {

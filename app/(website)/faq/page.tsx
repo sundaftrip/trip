@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+// ISR: konten CMS jarang berubah — edit dari admin tampil maksimal 5 menit.
+export const revalidate = 300;
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
