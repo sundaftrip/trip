@@ -75,7 +75,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     phone    && { Icon: Phone,  label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
     whatsapp && { Icon: Phone,  label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
     email    && { Icon: Mail,   label: "Email", value: email, href: `mailto:${email}` },
-    igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://instagram.com/${igUser}` },
+    igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
   ].filter(Boolean) as { Icon: ComponentType<IconProps>; label: string; value: string; href: string | null }[];
 
   /* ── FUMAYO ── */

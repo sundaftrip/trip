@@ -32,7 +32,11 @@ export async function GET() {
   const items = await prisma.countryVisa.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
   });
-  return NextResponse.json(items);
+  return NextResponse.json(items, {
+    // Data publik — boleh di-cache CDN. Alur admin tidak membaca lewat
+    // endpoint ini (halaman admin pakai Prisma langsung / route [id]).
+    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+  });
 }
 
 export async function POST(req: NextRequest) {

@@ -19,7 +19,9 @@ import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
-const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+// Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
+// canonical/OG/JSON-LD jangan sampai menunjuk localhost.
+const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 
 /* ── generateMetadata, og:image dari heroImg tour ───────────────── */
 export async function generateMetadata({
@@ -191,6 +193,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ) : label;
 
   /* ── #4: JSON-LD TouristTrip schema ──────────────────────────── */
+  // schema.org Duration wajib ISO 8601: "9 hari 7 malam" → "P9D".
+  // Konversi HANYA untuk JSON-LD, teks UI tetap pakai string asli.
+  // Kalau angka sebelum "hari" tak ketemu, duration di-skip (string bebas invalid).
+  const durationDays = tour.duration?.match(/(\d+)\s*hari/i)?.[1];
+  const isoDuration = durationDays ? `P${durationDays}D` : null;
   const tourJsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
@@ -198,7 +205,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     description: tour.description ?? tour.notes ?? tour.visaInfo ?? undefined,
     image: tour.heroImg ? [tour.heroImg] : undefined,
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
-    ...(tour.duration ? { duration: tour.duration } : {}),
+    ...(isoDuration ? { duration: isoDuration } : {}),
     offers: {
       "@type": "Offer",
       price: String(tour.promoPrice ?? tour.price),

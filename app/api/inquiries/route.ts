@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 const str = (v: unknown, max = 500) =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
 
 // POST publik — pengunjung submit form konsultasi (tanpa login).
 export async function POST(req: NextRequest) {
+  // Rate limit per IP: 5 request/menit (anti spam form publik)
+  if (!rateLimit(`inquiry:${clientIp(req)}`, 5, 60_000)) {
+    return NextResponse.json(
+      { error: "Terlalu banyak permintaan. Coba lagi sebentar." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();

@@ -5,7 +5,8 @@ import { HelpCircle, ArrowRight } from "lucide-react";
 import VisaDatabase from "./VisaDatabase";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
-export const dynamic = "force-dynamic";
+// ISR: database visa jarang berubah — edit dari admin tampil maksimal 5 menit.
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Info Visa Paspor Indonesia",

@@ -40,8 +40,15 @@ export async function GET(req: NextRequest) {
         id: true, slug: true, title: true, country: true, cityHighlight: true,
         duration: true, description: true, itinerary: true, status: true, tripDate: true,
       },
+      // Batasi muatan per request publik — tour terbaru diprioritaskan
+      orderBy: { createdAt: "desc" },
+      take: 200,
     }),
-    prisma.countryVisa.findMany({ select: { name: true, en: true } }),
+    prisma.countryVisa.findMany({
+      select: { name: true, en: true },
+      orderBy: { sortOrder: "asc" },
+      take: 200,
+    }),
     prisma.faq.findMany({
       where: { active: true, OR: [{ question: like }, { answer: like }] },
       select: { id: true, question: true, section: true },
@@ -156,6 +163,9 @@ export async function GET(req: NextRequest) {
     visa,
     faqs: faqs.map((f) => ({ question: f.question, section: f.section, href: `/faq` })),
     suggestion: totalExact > 0 && !anyTypo ? null : suggestion,
+  }, {
+    // Cache di CDN: query sama dalam 60 dtk dilayani tanpa menyentuh DB
+    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
   });
 }
 

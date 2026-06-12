@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   // Tree-shake lucide-react & icon libraries — cut JS bundle signifikan.
   // Tanpa ini, import { Foo } dari "lucide-react" akan bawa seluruh barrel.
   experimental: {
-    optimizePackageImports: ["lucide-react", "@auth/prisma-adapter"],
+    optimizePackageImports: ["lucide-react"],
     // optimizeCss: pakai critters untuk inline critical CSS + defer sisanya.
     // Target "Render blocking requests" insight Lighthouse.
     optimizeCss: true,

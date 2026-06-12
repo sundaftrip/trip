@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "prisma db push --skip-generate && tsx prisma/seed.ts && next build --webpack",
+    "build": "node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint",
     "db:push": "prisma db push",
@@ -17,8 +17,6 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.95.2",
-    "@auth/prisma-adapter": "^2.11.2",
-    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -49,7 +47,6 @@
     "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "critters": "^0.0.23",
-    "date-fns": "^4.1.0",
     "flag-icons": "^7.5.0",
     "groq-sdk": "^1.2.0",
     "lucide-react": "^1.14.0",

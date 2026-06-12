@@ -1,6 +1,7 @@
 /* PWA manifest untuk Sundaf Trip, Next auto-serve di /manifest.webmanifest.
-   Icons pakai favicon.svg (scalable) + logo.png (referensi untuk Android
-   install splash). theme_color disinkronkan dengan latar hero gelap supaya
+   Icons pakai favicon.svg (scalable) + PNG persegi di /icons (rasterisasi
+   favicon.svg; logo.png 862x241 tidak persegi sehingga ditolak installability
+   audit). theme_color disinkronkan dengan latar hero gelap supaya
    status bar Android & PWA splash terlihat satu nada. */
 import type { MetadataRoute } from "next";
 
@@ -25,13 +26,19 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
       {
-        src: "/logo.png",
+        src: "/icons/icon-192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/logo.png",
+        src: "/icons/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/icon-512-maskable.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",

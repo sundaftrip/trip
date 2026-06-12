@@ -8,11 +8,16 @@ node_modules/
 out/
 build/
 
-# env
-.env
-.env.local
-.env.production
-.env.*.local
+# env — blok semua varian, kecuali template
+.env*
+!.env.example
+
+# python (script bantu company-profile)
+__pycache__/
+*.pyc
+
+# tooling lokal
+.claude/
 
 # misc
 .DS_Store

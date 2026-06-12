@@ -38,7 +38,10 @@ export function toWaNumber(raw?: string | null) {
 export function cldOptimize(url: string | null | undefined, width: number): string {
   if (!url) return "";
   if (!url.includes("res.cloudinary.com")) return url;
-  const seg = `w_${width},c_fill,q_auto,f_auto`;
+  // Kartu kecil (≤480px) boleh kompresi lebih agresif — q_auto:eco hemat ±16-40% byte
+  // (terukur 150KB → 126KB di kartu tour) tanpa beda visual berarti di ukuran thumbnail.
+  const q = width <= 480 ? "q_auto:eco" : "q_auto";
+  const seg = `w_${width},c_fill,${q},f_auto`;
   if (url.includes(`/upload/${seg}/`) || url.includes(`/upload/${seg},`)) return url;
   return url.replace("/upload/", `/upload/${seg}/`);
 }

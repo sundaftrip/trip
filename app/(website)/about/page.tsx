@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+// ISR: konten CMS jarang berubah; revalidatePublicContent() me-revalidate on-write.
+export const revalidate = 300;
 import fs from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
