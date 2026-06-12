@@ -14,7 +14,11 @@ async function main() {
   // Bikin superadmin HANYA kalau DB benar-benar kosong (tidak ada user sama sekali).
   // Mencegah clutter user dummy di deployment existing yang sudah punya admin.
   const userCount = await prisma.user.count();
-  if (userCount === 0) {
+  const isProduction = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+  if (userCount === 0 && isProduction && !process.env.SEED_ADMIN_PASSWORD) {
+    // Jangan pernah membuat admin production dengan password default yang tertulis di repo.
+    console.warn("⚠️  DB kosong tapi SEED_ADMIN_PASSWORD tidak di-set — skip pembuatan admin. Set env lalu jalankan ulang seed.");
+  } else if (userCount === 0) {
     await prisma.user.create({
       data: {
         name: ADMIN_NAME,
