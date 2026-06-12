@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 type VisaInput = {
   sortOrder?: number;
@@ -50,5 +51,6 @@ export async function POST(req: NextRequest) {
   }
 
   const entry = await prisma.countryVisa.create({ data });
+  revalidatePublicContent(); // /visa & /visa/[slug] kini ISR — segarkan langsung
   return NextResponse.json(entry, { status: 201 });
 }

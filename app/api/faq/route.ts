@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 // GET — ?all=true returns all items (admin), otherwise only active (public)
 export async function GET(req: Request) {
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
         order: order ?? 0, active: active ?? true,
       },
     });
+    revalidatePublicContent(); // /faq & /visa/faq kini ISR — segarkan langsung
     return NextResponse.json(faq, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Gagal membuat FAQ" }, { status: 500 });

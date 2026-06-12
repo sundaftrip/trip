@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 type VariantInput = {
   id?: string;
@@ -121,6 +122,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   });
 
+  revalidatePublicContent(); // /visa & /visa/[slug] kini ISR — segarkan langsung
   return NextResponse.json(result);
 }
 
@@ -131,5 +133,6 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
   // VisaVariant otomatis ke-cascade lewat onDelete: Cascade di schema.
   await prisma.countryVisa.delete({ where: { id } });
+  revalidatePublicContent();
   return NextResponse.json({ success: true });
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revalidatePublicContent } from "@/lib/revalidate";
 
 // PUT — update a FAQ item
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -24,6 +25,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         ...(active    !== undefined && { active }),
       },
     });
+    revalidatePublicContent(); // /faq & /visa/faq kini ISR — segarkan langsung
     return NextResponse.json(faq);
   } catch {
     return NextResponse.json({ error: "Gagal mengupdate FAQ" }, { status: 500 });
@@ -38,6 +40,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   try {
     await prisma.faq.delete({ where: { id } });
+    revalidatePublicContent();
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Gagal menghapus FAQ" }, { status: 500 });
