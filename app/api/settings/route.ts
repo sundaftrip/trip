@@ -6,6 +6,7 @@ import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { PLAN_FEATURES } from "@/lib/plan";
 import { getPlan } from "@/lib/license";
+import { apiError } from "@/lib/api-error";
 
 export async function GET() {
   const items = await prisma.companyInfo.findMany();
@@ -18,7 +19,14 @@ export async function PUT(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body: Record<string, string> = await req.json();
+  let body: Record<string, string>;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Bad request" }, { status: 400 });
+  }
+  // Hanya nilai string yang diterima (kolom CompanyInfo.value bertipe String)
+  for (const k of Object.keys(body)) {
+    if (typeof body[k] !== "string") delete body[k];
+  }
 
   // Keep the WhatsApp number in the digits-only form wa.me links need,
   // regardless of how it was typed in the admin panel.
@@ -47,26 +55,30 @@ export async function PUT(req: NextRequest) {
   if (!await checkPermission(session, permKey))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
-  await Promise.all(
-    Object.entries(body).map(([key, value]) =>
-      prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
-    )
-  );
-  (revalidateTag as unknown as (t: string) => void)("site-colors");
-  (revalidateTag as unknown as (t: string) => void)("footer-data");
-  (revalidateTag as unknown as (t: string) => void)("home-data");
-  (revalidateTag as unknown as (t: string) => void)("company-meta");
-  // Schema Organization juga baca info perusahaan — ikut disegarkan biar sinkron
-  (revalidateTag as unknown as (t: string) => void)("site-org-schema");
-  (revalidateTag as unknown as (t: string) => void)("company-info");
-  // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
-  (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
+  try {
+    await Promise.all(
+      Object.entries(body).map(([key, value]) =>
+        prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
+      )
+    );
+    (revalidateTag as unknown as (t: string) => void)("site-colors");
+    (revalidateTag as unknown as (t: string) => void)("footer-data");
+    (revalidateTag as unknown as (t: string) => void)("home-data");
+    (revalidateTag as unknown as (t: string) => void)("company-meta");
+    // Schema Organization juga baca info perusahaan — ikut disegarkan biar sinkron
+    (revalidateTag as unknown as (t: string) => void)("site-org-schema");
+    (revalidateTag as unknown as (t: string) => void)("company-info");
+    // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
+    (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
 
-  await logActivity({
-    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
-    userRole: session.user.role, action: "UPDATE", resource: "SETTINGS",
-    detail: isColorChange ? "Update warna/tema" : "Update info perusahaan",
-  });
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "UPDATE", resource: "SETTINGS",
+      detail: isColorChange ? "Update warna/tema" : "Update info perusahaan",
+    });
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return apiError(err);
+  }
 }

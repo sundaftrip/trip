@@ -4,6 +4,9 @@ import { auth } from "@/lib/auth";
 import { generateReceiptNo } from "@/lib/utils";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
+import { pickInput, badNumber, RECEIPT_INPUT_FIELDS } from "@/lib/api-input";
+import { apiError } from "@/lib/api-error";
+import type { Prisma } from "@prisma/client";
 
 export async function GET() {
   const session = await auth();
@@ -24,17 +27,39 @@ export async function POST(req: NextRequest) {
   if (!await checkPermission(session, "receipt_create"))
     return NextResponse.json({ error: "Tidak memiliki izin untuk membuat receipt" }, { status: 403 });
 
-  const body = await req.json();
-  const receipt = await prisma.receipt.create({
-    data: { ...body, receiptNo: generateReceiptNo(), createdById: session.user.id },
-  });
+  let body: Record<string, unknown>;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Bad request" }, { status: 400 });
+  }
 
-  await logActivity({
-    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
-    userRole: session.user.role, action: "CREATE", resource: "RECEIPT",
-    resourceId: receipt.id, resourceName: receipt.customerName,
-    detail: `Receipt ${receipt.receiptNo}`,
-  });
+  // Whitelist field — receiptNo & createdById selalu di-set server, bukan dari klien
+  const data = pickInput(body, RECEIPT_INPUT_FIELDS);
 
-  return NextResponse.json(receipt, { status: 201 });
+  if (typeof data.customerName !== "string" || !data.customerName.trim())
+    return NextResponse.json({ error: "Nama pelanggan wajib diisi." }, { status: 422 });
+  if (badNumber(data.amount))
+    return NextResponse.json({ error: "Nominal harus berupa angka dan tidak boleh negatif." }, { status: 422 });
+  if (data.pax !== undefined && (typeof data.pax !== "number" || !Number.isInteger(data.pax) || data.pax < 1))
+    return NextResponse.json({ error: "Jumlah pax minimal 1." }, { status: 422 });
+
+  try {
+    const receipt = await prisma.receipt.create({
+      data: {
+        ...(data as unknown as Omit<Prisma.ReceiptUncheckedCreateInput, "receiptNo">),
+        receiptNo: generateReceiptNo(),
+        createdById: session.user.id,
+      },
+    });
+
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "CREATE", resource: "RECEIPT",
+      resourceId: receipt.id, resourceName: receipt.customerName,
+      detail: `Receipt ${receipt.receiptNo}`,
+    });
+
+    return NextResponse.json(receipt, { status: 201 });
+  } catch (err) {
+    return apiError(err);
+  }
 }

@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /* Auto-translate (ID -> EN) via endpoint Google Translate gratis (gtx),
    dengan cache di DB: sekali sebuah string diterjemahkan, dipakai ulang.
-   Client kirim daftar teks unik; route balikin peta { source: translated }. */
+   Client kirim daftar teks unik; route balikin peta { source: translated }.
+   Pemanggil: components/website/AutoTranslate.tsx (client-side, fetch same-origin). */
 
 export const runtime = "nodejs";
+
+// Origin yang boleh memanggil endpoint ini (anti pemakaian lintas situs).
+// Origin yang absen TIDAK ditolak — beberapa client legit tidak mengirimnya.
+const ALLOWED_ORIGIN_HOSTS = new Set([
+  "sundaftrip.com", "www.sundaftrip.com", "localhost", "127.0.0.1",
+]);
 
 const hashOf = (s: string, target: string) =>
   crypto.createHash("sha1").update(`${target}:${s}`).digest("hex");
@@ -43,15 +51,34 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (x: T) => Promise<R
 }
 
 export async function POST(req: NextRequest) {
+  // Tolak Origin asing (kalau header-nya ADA dan bukan host kita)
+  const origin = req.headers.get("origin");
+  if (origin) {
+    let host = "";
+    try { host = new URL(origin).hostname; } catch { /* origin rusak → host kosong → ditolak */ }
+    if (!ALLOWED_ORIGIN_HOSTS.has(host)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+
+  // Rate limit per IP: 10 request/menit (endpoint fan-out ke Google + tulis DB)
+  if (!rateLimit(`translate:${clientIp(req)}`, 10, 60_000)) {
+    return NextResponse.json(
+      { error: "Terlalu banyak permintaan. Coba lagi sebentar." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
+
   let body: { texts?: unknown; target?: unknown };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "bad json" }, { status: 400 }); }
 
   const target = typeof body.target === "string" && /^[a-z]{2}$/.test(body.target) ? body.target : "en";
   const raw = Array.isArray(body.texts) ? body.texts : [];
-  // bersihkan & batasi
+  // bersihkan & batasi (cap 50/request — AutoTranslate akan minta ulang sisa
+  // teks yang belum di-cache pada run berikutnya via MutationObserver)
   const texts = Array.from(new Set(
     raw.filter((t): t is string => typeof t === "string").map((t) => t.trim()).filter((t) => t.length > 0)
-  )).slice(0, 300);
+  )).slice(0, 50);
 
   if (texts.length === 0) return NextResponse.json({ translations: {} });
 

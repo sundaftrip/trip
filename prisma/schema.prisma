@@ -98,6 +98,11 @@ model Tour {
   fieldExpenses  FieldExpense[]
   testimonials   Testimonial[]
   expenseToken   String?    @unique  // token link pelaporan pengeluaran TL
+
+  // Index untuk query publik yang sering: filter status/negara & sort tanggal trip
+  @@index([status])
+  @@index([country])
+  @@index([tripDate])
 }
 
 model Blog {

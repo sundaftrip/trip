@@ -4,6 +4,9 @@ import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
+import { pickInput, badNumber, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
+import { apiError } from "@/lib/api-error";
+import type { Prisma } from "@prisma/client";
 import slugify from "slugify";
 
 /** Slug URL rapi & unik dari judul tour (mis. "Russia Aurora" → "russia-aurora"). */
@@ -34,16 +37,38 @@ export async function POST(req: NextRequest) {
   if (!await checkPermission(session, "tour_create"))
     return NextResponse.json({ error: "Tidak memiliki izin untuk membuat tour" }, { status: 403 });
 
-  const body = await req.json();
-  if (!body.slug) body.slug = await uniqueTourSlug(body.title ?? "");
-  const tour = await prisma.tour.create({ data: body });
+  let body: Record<string, unknown>;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Bad request" }, { status: 400 });
+  }
 
-  await logActivity({
-    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
-    userRole: session.user.role, action: "CREATE", resource: "TOUR",
-    resourceId: tour.id, resourceName: tour.title,
-  });
+  // Whitelist field — hanya kolom Tour yang sah yang diteruskan ke Prisma
+  const data = pickInput(body, TOUR_INPUT_FIELDS);
 
-  revalidatePublicContent();
-  return NextResponse.json(tour, { status: 201 });
+  // Validasi ringan
+  if (typeof data.title !== "string" || !data.title.trim())
+    return NextResponse.json({ error: "Judul tour wajib diisi." }, { status: 422 });
+  if (typeof data.country !== "string" || !data.country.trim())
+    return NextResponse.json({ error: "Negara wajib diisi." }, { status: 422 });
+  if (badNumber(data.price) || badNumber(data.promoPrice) || badNumber(data.priceLandTour) || badNumber(data.seatsLeft))
+    return NextResponse.json({ error: "Harga/kursi harus berupa angka dan tidak boleh negatif." }, { status: 422 });
+  if (data.status !== undefined && !VALID_TOUR_STATUSES.includes(data.status as (typeof VALID_TOUR_STATUSES)[number]))
+    return NextResponse.json({ error: "Status tour tidak valid." }, { status: 422 });
+
+  if (!data.slug) data.slug = await uniqueTourSlug(data.title);
+
+  try {
+    const tour = await prisma.tour.create({ data: data as unknown as Prisma.TourUncheckedCreateInput });
+
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "CREATE", resource: "TOUR",
+      resourceId: tour.id, resourceName: tour.title,
+    });
+
+    revalidatePublicContent();
+    return NextResponse.json(tour, { status: 201 });
+  } catch (err) {
+    return apiError(err, { duplicate: "Slug tour sudah dipakai." });
+  }
 }
