@@ -98,6 +98,8 @@ export async function GET(
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="Itinerary-${slugify(tour.title)}.pdf"`,
       "Cache-Control": "no-store, must-revalidate",
+      // Jangan sampai PDF terindex sebagai duplikat halaman tour di Google.
+      "X-Robots-Tag": "noindex",
     },
   });
 }

@@ -13,8 +13,11 @@ import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaul
 import { FlagIcon } from "@/lib/flag-icon";
 import VisaOrderForm from "@/components/website/VisaOrderForm";
 import TestimonialSection from "@/components/website/TestimonialSection";
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
-export const dynamic = "force-dynamic";
+// ISR 5 menit: konten visa jarang berubah, force-dynamic bikin TTFB lambat
+// & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
+export const revalidate = 300;
 
 type VisaKey = "bebas" | "voa" | "evisa" | "wajib";
 
@@ -48,9 +51,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const country = findBySlug(countries, slug);
   if (!country) return { title: "Visa tidak ditemukan" };
   const summary = country.notes.replace(/^Layanan kami:\s*/i, "").slice(0, 140);
+  // Suffix "· Sundaf Trip" TIDAK ditulis manual — root layout sudah punya
+  // title template `%s · Sundaf Trip` (kalau ditulis lagi jadi dobel).
+  const title = `Visa ${country.name} untuk WNI, Layanan Pengurusan`;
+  const description = `Informasi & layanan pengurusan visa ${country.name} (${country.en}) untuk pemegang paspor Indonesia. ${summary}`;
+  const pageUrl = `https://sundaftrip.com/visa/${slug}`;
   return {
-    title: `Visa ${country.name} untuk WNI, Layanan Pengurusan · Sundaf Trip`,
-    description: `Informasi & layanan pengurusan visa ${country.name} (${country.en}) untuk pemegang paspor Indonesia. ${summary}`,
+    title,
+    description,
+    alternates: { canonical: pageUrl },
+    // Override OG agar share ke WhatsApp/IG menampilkan judul halaman ini,
+    // bukan preview beranda (pola sama dengan /tours).
+    openGraph: {
+      title: `${title} · Sundaf Trip`,
+      description,
+      url: pageUrl,
+      siteName: "Sundaf Trip",
+      locale: "id_ID",
+      type: "website",
+    },
   };
 }
 
@@ -114,8 +133,40 @@ export default async function VisaDetailPage({ params }: PageProps) {
   );
   const processTime = processMatch?.[1].trim() ?? null;
 
+  // FAQPage JSON-LD dari FAQ per-negara yang sama dengan yang dirender
+  // sebagai <details> di bawah — bantu AI & Google AI Overviews
+  // (pola sama dengan /visa/faq).
+  const faqSchema =
+    countryFaqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "@id": `https://sundaftrip.com/visa/${slug}#faqpage`,
+          inLanguage: "id-ID",
+          mainEntity: countryFaqs.map((f) => ({
+            "@type": "Question" as const,
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer" as const, text: f.answer },
+          })),
+        }
+      : null;
+
   return (
     <article className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-950">
+      <BreadcrumbSchema
+        crumbs={[
+          { name: "Beranda", url: "/" },
+          { name: "Info Visa", url: "/visa" },
+          { name: `Visa ${country.name}`, url: `/visa/${slug}` },
+        ]}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       {/* ─── HERO ─── */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-950 dark:to-black text-white py-10 sm:py-14 px-4">
         <div className="max-w-6xl mx-auto">

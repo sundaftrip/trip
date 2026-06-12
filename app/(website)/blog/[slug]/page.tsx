@@ -1,15 +1,19 @@
-export const dynamic = "force-dynamic";
+// ISR 5 menit: artikel blog jarang berubah, force-dynamic bikin TTFB lambat
+// & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
+export const revalidate = 300;
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Clock, Calendar, User, MapPin } from "lucide-react";
-import { formatDate, formatCurrency } from "@/lib/utils";
+import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
-const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+// Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
+// canonical/OG/JSON-LD jangan sampai menunjuk localhost.
+const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 
 async function getSiteInfo() {
   try {
@@ -136,6 +140,7 @@ export default async function BlogDetailPage({
     description: post.excerpt ?? undefined,
     image: post.cover ? [post.cover] : undefined,
     datePublished: post.date.toISOString(),
+    dateModified: post.updatedAt.toISOString(),
     author: { "@type": "Organization", name: companyName, url: siteUrl },
     publisher: { "@type": "Organization", name: companyName, url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blog/${slug}` },
@@ -238,7 +243,7 @@ export default async function BlogDetailPage({
               : isOutlined ? { borderColor: bdrClr, boxShadow: `4px 4px 0 0 ${bdrClr}` }
               : undefined
             }>
-            <Image src={post.cover} alt={post.title} fill className="object-cover" priority />
+            <Image src={cldOptimize(post.cover, 1200)} alt={post.title} fill className="object-cover" priority />
           </div>
         )}
 
@@ -301,7 +306,7 @@ export default async function BlogDetailPage({
                     style={isOutlined ? { borderColor: bdrClr } : undefined}>
                     <div className="relative h-36">
                       {t.heroImg
-                        ? <Image src={t.heroImg} alt={t.title} fill className="object-cover" />
+                        ? <Image src={cldOptimize(t.heroImg, 480)} alt={t.title} fill className="object-cover" />
                         : <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />}
                     </div>
                     <div className="p-3" style={isOutlined ? { background: cardBg } : undefined}>
@@ -356,7 +361,7 @@ export default async function BlogDetailPage({
                     style={isOutlined ? { borderColor: bdrClr } : undefined}>
                     <div className="relative h-28">
                       {rp.cover
-                        ? <Image src={rp.cover} alt={rp.title} fill className="object-cover" />
+                        ? <Image src={cldOptimize(rp.cover, 480)} alt={rp.title} fill className="object-cover" />
                         : <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />}
                     </div>
                     <div className="p-3" style={isOutlined ? { background: cardBg } : undefined}>
