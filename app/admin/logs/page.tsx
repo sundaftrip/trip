@@ -52,7 +52,10 @@ export default function LogsPage() {
     setLoading(false);
   }, [page, filterResource, filterAction]);
 
-  useEffect(() => { fetchLogs(); }, [fetchLogs]);
+  useEffect(() => {
+    const id = window.setTimeout(() => { fetchLogs(); }, 0);
+    return () => window.clearTimeout(id);
+  }, [fetchLogs]);
 
   const handleClean = async () => {
     if (!confirm("Hapus log lebih dari 90 hari?")) return;

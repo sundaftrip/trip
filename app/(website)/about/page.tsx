@@ -136,7 +136,6 @@ export default async function AboutPage() {
 
   const wrapperStyle = pageBg ? { backgroundColor: pageBg, ...pixelGrid, ...(isFumayo ? { fontFamily: "var(--fb-font)" } : {}) } : undefined;
 
-  const name      = company["company_name"]      ?? "Sundaftrip";
   const nib       = company["company_nib"]       ?? "";
   const whatsapp  = toWaNumber(company["company_whatsapp"]);
   const waLink    = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi paket wisata.")}` : "/tours";

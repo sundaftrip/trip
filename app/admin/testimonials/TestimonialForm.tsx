@@ -66,6 +66,7 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
         <label className="label">Foto (opsional)</label>
         <div className="flex items-center gap-4">
           {form.avatar
+            // eslint-disable-next-line @next/next/no-img-element
             ? <img src={form.avatar} alt="" className="w-16 h-16 rounded-full object-cover border border-gray-200 dark:border-gray-700" />
             : <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 text-xl font-bold border border-gray-200 dark:border-gray-700">
                 {form.name ? form.name.charAt(0).toUpperCase() : "?"}

@@ -17,7 +17,10 @@ export default function LinkTL({
   const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => setOrigin(window.location.origin), []);
+  useEffect(() => {
+    const id = window.setTimeout(() => setOrigin(window.location.origin), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const td = tripDate ? new Date(tripDate) : null;
   const active = isTokenActive(td);
@@ -82,7 +85,7 @@ export default function LinkTL({
           </span>
         ) : (
           <span className="keu-down">
-            ⏳ KEDALUWARSA — link tidak bisa dipakai TL lagi. Klik "GANTI LINK" untuk
+            ⏳ KEDALUWARSA — link tidak bisa dipakai TL lagi. Klik &quot;GANTI LINK&quot; untuk
             menerbitkan link baru.
           </span>
         )}

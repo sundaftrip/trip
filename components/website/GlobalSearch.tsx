@@ -49,23 +49,37 @@ export default function GlobalSearch({
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      setTimeout(() => inputRef.current?.focus(), 30);
-    } else {
-      document.body.style.overflow = "";
+      const focusTimer = setTimeout(() => inputRef.current?.focus(), 30);
+      return () => {
+        window.clearTimeout(focusTimer);
+        document.body.style.overflow = "";
+      };
+    }
+    document.body.style.overflow = "";
+    const resetTimer = window.setTimeout(() => {
       setQ("");
       setRes(EMPTY);
-    }
-    return () => { document.body.style.overflow = ""; };
+    }, 0);
+    return () => {
+      window.clearTimeout(resetTimer);
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   // Debounced fetch
   useEffect(() => {
     if (!open) return;
     const query = q.trim();
-    if (query.length < 2) { setRes(EMPTY); setLoading(false); return; }
-    setLoading(true);
+    if (query.length < 2) {
+      const resetTimer = window.setTimeout(() => {
+        setRes(EMPTY);
+        setLoading(false);
+      }, 0);
+      return () => window.clearTimeout(resetTimer);
+    }
     const ctrl = new AbortController();
     const timer = setTimeout(async () => {
+      setLoading(true);
       try {
         const r = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: ctrl.signal });
         const d = (await r.json()) as Results;

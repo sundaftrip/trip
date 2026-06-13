@@ -140,8 +140,8 @@ export default async function PosisiKasPage() {
           <b className="keu-accent">CARA BACA.</b> Selama trip belum berangkat, seluruh uang
           peserta adalah <b className="keu-amber-t">titipan</b> — Anda wajib menyelenggarakan
           trip atau mengembalikannya. Jangan dipakai untuk keperluan lain. Begitu trip
-          berangkat, uang itu resmi jadi pendapatan dan labanya pindah ke kolom "Laba Diakui".
-          "Uang Bebas" adalah satu-satunya angka yang aman Anda anggap milik perusahaan.
+          berangkat, uang itu resmi jadi pendapatan dan labanya pindah ke kolom &quot;Laba Diakui&quot;.
+          &quot;Uang Bebas&quot; adalah satu-satunya angka yang aman Anda anggap milik perusahaan.
         </div>
       </Panel>
     </>

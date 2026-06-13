@@ -19,12 +19,18 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   const [lang, setLang] = useState<"id" | "en">("id");
 
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("lang") as "id" | "en" | null;
-    if (stored) setLang(stored);
     const onScroll = () => setScrolled(window.scrollY > 40);
+    const id = window.setTimeout(() => {
+      setMounted(true);
+      const stored = localStorage.getItem("lang") as "id" | "en" | null;
+      if (stored) setLang(stored);
+      onScroll();
+    }, 0);
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   function toggleLang() {

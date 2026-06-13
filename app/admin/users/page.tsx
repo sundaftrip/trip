@@ -28,7 +28,10 @@ export default function UsersPage() {
     if (r.ok) setUsers(await r.json());
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => { load(); }, 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   function openAdd() { setForm(EMPTY); setEditing(null); setError(""); setModal("add"); }
   function openEdit(u: User) { setForm({ name: u.name, email: u.email, role: u.role, password: "" }); setEditing(u); setError(""); setModal("edit"); }

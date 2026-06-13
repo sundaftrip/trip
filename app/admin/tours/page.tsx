@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Pencil, Trash2, Upload } from "lucide-react";
+import { Plus, Pencil, Upload } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 

@@ -5,7 +5,6 @@ import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
-import cloudinary from "@/lib/cloudinary";
 import { getStyle } from "@/lib/scraper-styles";
 
 export const maxDuration = 120;
@@ -22,19 +21,6 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
     slug = `${baseSlug}-${counter++}`;
   }
   return slug;
-}
-
-async function mirrorToCloudinary(imageUrl: string): Promise<string> {
-  try {
-    const result = await cloudinary.uploader.upload(imageUrl, {
-      folder: "blog-scraper",
-      resource_type: "image",
-      timeout: 15000,
-    });
-    return result.secure_url;
-  } catch {
-    return imageUrl; // fallback ke URL asli jika upload gagal
-  }
 }
 
 async function fetchFullArticle(url: string): Promise<string> {
@@ -152,22 +138,6 @@ function injectImagesIntoBody(
   }
 
   return result;
-}
-
-async function fetchOgImage(url: string): Promise<string> {
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) return "";
-    const html = await res.text();
-    const m = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
-      || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/i);
-    return m ? m[1] : "";
-  } catch {
-    return "";
-  }
 }
 
 export async function POST(req: NextRequest) {

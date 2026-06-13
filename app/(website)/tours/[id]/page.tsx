@@ -676,7 +676,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 tCard={tCard}
                 tBdr={tBdr}
                 tSub={tSub}
-                tMint={tMint}
               />
             </div>
           </div>

@@ -16,12 +16,70 @@ const NAV = [
   { href: "/#contact", label: "Kontak",       icon: Phone },
 ];
 
+function isActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href.split("#")[0]);
+}
+
+function NavList({ pathname, onClose }: { pathname: string; onClose: () => void }) {
+  return (
+    <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <p className="px-3 pb-2 text-[10px] font-semibold tracking-[0.18em] uppercase" style={{ color: "var(--at-subtext)" }}>
+        Menu
+      </p>
+      {NAV.map(({ href, label, icon: Icon }) => (
+        <Link key={href} href={href} onClick={onClose}
+          data-active={isActive(pathname, href)}
+          className="cns-navlink flex items-center gap-2.5 px-3 py-2 text-[13px]">
+          <Icon size={15} /> {label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function Bottom({
+  mounted,
+  isDark,
+  onClose,
+  onToggleLang,
+  onToggleTheme,
+}: {
+  mounted: boolean;
+  isDark: boolean;
+  onClose: () => void;
+  onToggleLang: () => void;
+  onToggleTheme: () => void;
+}) {
+  return (
+    <div className="px-3 py-3 space-y-2" style={{ borderTop: "1px solid var(--at-border)" }}>
+      <Link href="/tours" onClick={onClose}
+        className="flex items-center justify-center gap-1.5 w-full py-2.5 text-[12px] font-semibold rounded-md"
+        style={{ background: "var(--at-text)", color: "var(--at-bg)" }}>
+        Lihat Paket Tour <ArrowRight size={13} />
+      </Link>
+      <div className="flex gap-2">
+        <button onClick={onToggleLang} className="cns-mini-btn flex-1">
+          {mounted && localStorage.getItem("lang") === "en" ? "ID" : "EN"}
+        </button>
+        {mounted && (
+          <button onClick={onToggleTheme} className="cns-mini-btn flex-1" aria-label="Toggle dark mode">
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function ConsoleSidebar({ logo }: { logo?: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
   const isDark = mounted && resolvedTheme === "dark";
 
   function toggleLang() {
@@ -30,43 +88,8 @@ export default function ConsoleSidebar({ logo }: { logo?: string }) {
     window.location.reload();
   }
 
-  const active = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href.split("#")[0]);
-
-  const NavList = () => (
-    <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-      <p className="px-3 pb-2 text-[10px] font-semibold tracking-[0.18em] uppercase" style={{ color: "var(--at-subtext)" }}>
-        Menu
-      </p>
-      {NAV.map(({ href, label, icon: Icon }) => (
-        <Link key={href} href={href} onClick={() => setOpen(false)}
-          data-active={active(href)}
-          className="cns-navlink flex items-center gap-2.5 px-3 py-2 text-[13px]">
-          <Icon size={15} /> {label}
-        </Link>
-      ))}
-    </nav>
-  );
-
-  const Bottom = () => (
-    <div className="px-3 py-3 space-y-2" style={{ borderTop: "1px solid var(--at-border)" }}>
-      <Link href="/tours" onClick={() => setOpen(false)}
-        className="flex items-center justify-center gap-1.5 w-full py-2.5 text-[12px] font-semibold rounded-md"
-        style={{ background: "var(--at-text)", color: "var(--at-bg)" }}>
-        Lihat Paket Tour <ArrowRight size={13} />
-      </Link>
-      <div className="flex gap-2">
-        <button onClick={toggleLang} className="cns-mini-btn flex-1">
-          {mounted && (localStorage.getItem("lang") === "en") ? "ID" : "EN"}
-        </button>
-        {mounted && (
-          <button onClick={() => setTheme(isDark ? "light" : "dark")} className="cns-mini-btn flex-1" aria-label="Toggle dark mode">
-            {isDark ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
-        )}
-      </div>
-    </div>
-  );
+  const close = () => setOpen(false);
+  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   return (
     <>
@@ -87,8 +110,8 @@ export default function ConsoleSidebar({ logo }: { logo?: string }) {
             <Image src={logo || "/logo.png"} alt="Logo" width={176} height={54} className="h-8 w-auto cns-logo" priority />
           </Link>
         </div>
-        <NavList />
-        <Bottom />
+        <NavList pathname={pathname} onClose={close} />
+        <Bottom mounted={mounted} isDark={isDark} onClose={close} onToggleLang={toggleLang} onToggleTheme={toggleTheme} />
       </aside>
 
       {/* Mobile drawer */}
@@ -102,8 +125,8 @@ export default function ConsoleSidebar({ logo }: { logo?: string }) {
                 <X size={16} />
               </button>
             </div>
-            <NavList />
-            <Bottom />
+            <NavList pathname={pathname} onClose={close} />
+            <Bottom mounted={mounted} isDark={isDark} onClose={close} onToggleLang={toggleLang} onToggleTheme={toggleTheme} />
           </aside>
         </div>
       )}

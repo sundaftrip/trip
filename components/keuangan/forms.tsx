@@ -54,9 +54,12 @@ function FormShell({
 
   useEffect(() => {
     if (state.ok) {
-      ref.current?.reset();
-      onReset?.();
-      setOpen(false);
+      const id = window.setTimeout(() => {
+        ref.current?.reset();
+        onReset?.();
+        setOpen(false);
+      }, 0);
+      return () => window.clearTimeout(id);
     }
   }, [state, onReset]);
 

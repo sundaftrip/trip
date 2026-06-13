@@ -14,8 +14,11 @@ interface Props {
 export default function WhySection({ texts, theme = "classic" }: Props) {
   const [lang, setLang] = useState<"id" | "en">("id");
   useEffect(() => {
-    const stored = localStorage.getItem("lang") as "id" | "en" | null;
-    if (stored) setLang(stored);
+    const id = window.setTimeout(() => {
+      const stored = localStorage.getItem("lang") as "id" | "en" | null;
+      if (stored) setLang(stored);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   const t = (key: string, fallback: string) => {

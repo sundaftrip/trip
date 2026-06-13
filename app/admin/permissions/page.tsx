@@ -130,7 +130,10 @@ export default function PermissionsPage() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => { load(); }, 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
     <div className="max-w-2xl mx-auto">

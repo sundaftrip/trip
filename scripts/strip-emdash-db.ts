@@ -42,7 +42,9 @@ function hasEm(v: unknown): boolean {
   return false;
 }
 
-type Spec = { model: string; fields: string[]; find: () => Promise<any[]>; update: (id: string, data: any) => Promise<any> };
+type Row = Record<string, unknown> & { id: string; key?: string };
+type Patch = Record<string, unknown>;
+type Spec = { model: string; fields: string[]; find: () => Promise<unknown[]>; update: (id: string, data: Patch) => Promise<unknown> };
 
 const specs: Spec[] = [
   { model: "Blog", fields: ["title", "excerpt", "body", "category", "author"],
@@ -67,11 +69,12 @@ async function main() {
   let totalRows = 0;
   let totalFields = 0;
   for (const spec of specs) {
-    let rows: any[];
+    let rows: unknown[];
     try { rows = await spec.find(); }
-    catch (e: any) { console.log(`! skip ${spec.model}: ${e.message}`); continue; }
-    for (const row of rows) {
-      const patch: Record<string, unknown> = {};
+    catch (e: unknown) { console.log(`! skip ${spec.model}: ${e instanceof Error ? e.message : String(e)}`); continue; }
+    for (const item of rows) {
+      const row = item as Row;
+      const patch: Patch = {};
       for (const f of spec.fields) {
         if (!(f in row)) continue;
         if (!hasEm(row[f])) continue;

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* Itinerary PDF document — rendered server-side via @react-pdf/renderer.
    Clean white layout: company logo, one hero image, the rest is text,
    plus a Sundaf company profile. All content comes from the Tour record

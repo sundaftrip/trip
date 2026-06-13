@@ -50,7 +50,14 @@ export default function AdminFaqPage() {
     setLoading(false);
   }
 
-  useEffect(() => { load(group); cancelForm(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [group]);
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      load(group);
+      cancelForm();
+    }, 0);
+    return () => window.clearTimeout(id);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [group]);
 
   // Scroll form into view whenever it opens
   useEffect(() => {

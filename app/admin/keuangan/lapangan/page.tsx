@@ -62,7 +62,7 @@ export default async function LapanganPage() {
 
       <Panel pad ticked style={{ marginTop: 14 }}>
         <div style={{ fontSize: 10.5, color: "var(--keu-dim)", lineHeight: 1.7 }}>
-          <b className="keu-accent">CARA KERJA.</b> Buka halaman trip → "Buat Link TL" →
+          <b className="keu-accent">CARA KERJA.</b> Buka halaman trip → &quot;Buat Link TL&quot; →
           kirim link ke TL via WhatsApp. TL foto tiap struk dan submit lewat link itu
           (tanpa login). Pengeluaran masuk sini berstatus MENUNGGU. Verifikasi fotonya,
           lalu APPROVE — nominalnya langsung jadi HPP trip dan mengurangi sisa kasbon TL.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type CSSProperties } from "react";
+import { useState, useCallback, useEffect, type CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import ToursSection from "./ToursSection";
@@ -36,6 +36,12 @@ export default function ToursCatalog({
 }) {
   const [region, setRegion] = useState<RegionKey>("all");
   const [page, setPage] = useState(1);
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setNow(Date.now()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const filtered = region === "all"
     ? tours
@@ -57,7 +63,7 @@ export default function ToursCatalog({
   /* ── Mode split (P2.1): bookable di atas, dokumentasi di bawah ── */
   if (split) {
     const isDone = (t: Tour) =>
-      t.status === "FULL" || (!!t.tripDate && new Date(t.tripDate).getTime() < Date.now());
+      t.status === "FULL" || (!!now && !!t.tripDate && new Date(t.tripDate).getTime() < now);
     const bookable = filtered.filter((t) => !isDone(t));
     const done = filtered.filter(isDone);
 

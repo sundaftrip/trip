@@ -22,7 +22,6 @@ export default function AppleIcon() {
 
   return new ImageResponse(
     (
-      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={dataUri}
         width={size.width}

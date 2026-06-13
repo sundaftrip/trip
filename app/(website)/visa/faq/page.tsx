@@ -94,7 +94,6 @@ export default async function VisaFaqPage() {
       />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(VISA_FAQ_SCHEMA) }}
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">

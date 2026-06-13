@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import { Map, BookOpen, Receipt, Users } from "lucide-react";
 
 async function getStats() {
@@ -55,7 +56,7 @@ export default async function AdminDashboard() {
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Tour Terbaru</h2>
         <div className="space-y-3">
           {recentTours.length === 0 && (
-            <p className="text-gray-400 text-sm">Belum ada tour. <a href="/admin/tours/new" className="text-blue-600">Tambah sekarang →</a></p>
+            <p className="text-gray-400 text-sm">Belum ada tour. <Link href="/admin/tours/new" className="text-blue-600">Tambah sekarang →</Link></p>
           )}
           {recentTours.map((tour) => (
             <div key={tour.id} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">

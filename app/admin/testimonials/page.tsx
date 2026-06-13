@@ -68,6 +68,7 @@ export default async function TestimonialsPage({ searchParams }: { searchParams:
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 {item.avatar
+                  // eslint-disable-next-line @next/next/no-img-element
                   ? <img src={item.avatar} alt={item.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
                   : <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center shrink-0 text-blue-600 dark:text-blue-400 font-bold text-sm">
                       {item.name.charAt(0).toUpperCase()}
@@ -105,7 +106,7 @@ export default async function TestimonialsPage({ searchParams }: { searchParams:
                 <Star key={i} size={13} className={i < item.rating ? "fill-amber-400 text-amber-400" : "text-gray-200 dark:text-gray-700"} />
               ))}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">"{item.content}"</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">&ldquo;{item.content}&rdquo;</p>
             <div className="flex items-center gap-2 mt-2 text-[11px] text-gray-400">
               <span>Urutan: {item.order}</span>
               {item.tour && (

@@ -8,6 +8,46 @@ interface Props {
   theme?: "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 }
 
+const FALL_PHYSICS = [
+  { dx: "-118px", rot: "-684deg" },
+  { dx: "104px",  rot: "548deg"  },
+  { dx: "-72px",  rot: "-912deg" },
+  { dx: "136px",  rot: "742deg"  },
+  { dx: "-128px", rot: "-596deg" },
+  { dx: "88px",   rot: "868deg"  },
+];
+
+function renderTitleWords(heroTitle: string, extra?: React.ReactNode) {
+  let g = 0; // indeks huruf global, stagger tiap huruf rontok
+  const words = heroTitle.split(/\s+/).filter(Boolean);
+  /* aria-hidden: ~45 span per-huruf bikin screen reader mengeja satu-satu.
+     Teks utuh dibacakan lewat aria-label di <h1> pemanggil. */
+  return (
+    <span aria-hidden="true">
+      {words.map((word, i) => (
+        <span key={i} className="block">
+          {word.charAt(0)}
+          {word.slice(1).split("").map((ch, j) => {
+            const gi = g++;
+            const p = FALL_PHYSICS[gi % FALL_PHYSICS.length];
+            return (
+              <span key={j} className="sundaf-fall"
+                style={{ ["--n" as string]: gi, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
+                {ch}
+              </span>
+            );
+          })}
+          {/* trailing space supaya textContent/screen-reader/SEO baca
+              "Saatnya Untuk Nikmatin ..." bukan satu kata gabung tanpa spasi.
+              Display:block bikin spasi ini tidak terlihat visual. */}
+          {i < words.length - 1 ? " " : ""}
+        </span>
+      ))}
+      {extra}
+    </span>
+  );
+}
+
 export default function HeroSection({ texts, waNumber, companyName, theme = "classic" }: Props) {
   // Server Component: render teks ID; AutoTranslate yang menerjemahkan ke EN saat dipilih.
   const t = (key: string, fallback: string) => {
@@ -19,47 +59,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName}, ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
   const heroTitle = t("hero_title", "Wujudkan Perjalanan Impian Anda");
-
-  /* Render tiap kata sebagai block. Huruf pertama (akronim S-U-N-D-A-F)
-     tetap berdiri & warna asal; sisa kata di belakangnya rontok fisika. */
-  const FALL_PHYSICS = [
-    { dx: "-118px", rot: "-684deg" },
-    { dx: "104px",  rot: "548deg"  },
-    { dx: "-72px",  rot: "-912deg" },
-    { dx: "136px",  rot: "742deg"  },
-    { dx: "-128px", rot: "-596deg" },
-    { dx: "88px",   rot: "868deg"  },
-  ];
-  const TitleWords = ({ extra }: { extra?: React.ReactNode }) => {
-    let g = 0; // indeks huruf global, stagger tiap huruf rontok
-    const words = heroTitle.split(/\s+/).filter(Boolean);
-    /* aria-hidden: ~45 span per-huruf bikin screen reader mengeja satu-satu.
-       Teks utuh dibacakan lewat aria-label di <h1> pemanggil. */
-    return (
-      <span aria-hidden="true">
-        {words.map((word, i) => (
-          <span key={i} className="block">
-            {word.charAt(0)}
-            {word.slice(1).split("").map((ch, j) => {
-              const gi = g++;
-              const p = FALL_PHYSICS[gi % FALL_PHYSICS.length];
-              return (
-                <span key={j} className="sundaf-fall"
-                  style={{ ["--n" as string]: gi, ["--dx" as string]: p.dx, ["--rot" as string]: p.rot }}>
-                  {ch}
-                </span>
-              );
-            })}
-            {/* trailing space supaya textContent/screen-reader/SEO baca
-                "Saatnya Untuk Nikmatin ..." bukan satu kata gabung tanpa spasi.
-                Display:block bikin spasi ini tidak terlihat visual. */}
-            {i < words.length - 1 ? " " : ""}
-          </span>
-        ))}
-        {extra}
-      </span>
-    );
-  };
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") {
@@ -130,7 +129,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--kw-text)" }}>
-          <TitleWords extra={<span aria-hidden="true" className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>} />
+          {renderTitleWords(heroTitle, <span aria-hidden="true" className="inline-block ml-3 text-[35%] align-middle kw-float-1" style={{ color: "var(--kw-border)" }}>♡</span>)}
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -188,7 +187,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--tr-text)" }}>
-          <TitleWords />
+          {renderTitleWords(heroTitle)}
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -244,7 +243,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
           <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,7vw,6rem)] font-black leading-[0.92] tracking-tight max-w-3xl mb-10 hero-fade-up"
             style={{ color: "var(--gl-text)" }}>
-            <TitleWords extra={<span aria-hidden="true" className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>} />
+            {renderTitleWords(heroTitle, <span aria-hidden="true" className="inline-block ml-3 text-[30%] align-middle gl-float-1" style={{ opacity: 0.7 }}>🌍</span>)}
           </h1>
 
           <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -319,7 +318,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,8vw,6.5rem)] leading-[0.95] tracking-tight max-w-3xl mb-10 hero-fade-up"
           style={{ color: "var(--mp-text)", fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 900 }}>
-          <TitleWords />
+          {renderTitleWords(heroTitle)}
         </h1>
 
         <div className="flex flex-wrap gap-2.5 mb-12 hero-fade-up">
@@ -383,7 +382,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
         <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
           style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
-          <TitleWords />
+          {renderTitleWords(heroTitle)}
         </h1>
 
         <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
@@ -432,7 +431,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             </div>
             <h1 aria-label={heroTitle} className="text-[clamp(2.3rem,7vw,6rem)] font-bold leading-[0.95] tracking-tight max-w-4xl mb-6 lg:mb-0 hero-fade-up"
               style={{ color: "var(--at-text)" }}>
-              <TitleWords />
+              {renderTitleWords(heroTitle)}
             </h1>
           </div>
 
@@ -481,7 +480,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         </p>
         <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.0] tracking-tight max-w-4xl mb-10"
           style={{ color: "var(--site-hero,#0d2018)" }}>
-          <TitleWords />
+          {renderTitleWords(heroTitle)}
         </h1>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 pt-8 border-t border-gray-100 dark:border-gray-900">
           <p className="text-base text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed">

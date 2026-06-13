@@ -98,15 +98,21 @@ export default function LaporForm({
   const today = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
-    setTlName(localStorage.getItem("lapor-tl-name") || "");
+    const id = window.setTimeout(() => {
+      setTlName(localStorage.getItem("lapor-tl-name") || "");
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   useEffect(() => {
     if (state.ok) {
-      formRef.current?.reset();
-      setPhotoUrl("");
-      setUploadErr("");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const id = window.setTimeout(() => {
+        formRef.current?.reset();
+        setPhotoUrl("");
+        setUploadErr("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 0);
+      return () => window.clearTimeout(id);
     }
   }, [state]);
 

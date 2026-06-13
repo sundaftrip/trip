@@ -125,9 +125,9 @@ export default async function TripCashflowPage() {
 
       <Panel ticked style={{ marginTop: 14 }}>
         <div style={{ fontSize: 10.5, color: "var(--keu-dim)", lineHeight: 1.7 }}>
-          <b className="keu-accent">CARA BACA.</b> "Arus Kas" = uang masuk − keluar (basis kas);
+          <b className="keu-accent">CARA BACA.</b> &quot;Arus Kas&quot; = uang masuk − keluar (basis kas);
           trip yang baru kumpulkan DP bisa tampak arus kas positif padahal belum untung.
-          "Laba Diakui" baru terisi setelah trip berangkat — itulah laba sesungguhnya
+          &quot;Laba Diakui&quot; baru terisi setelah trip berangkat — itulah laba sesungguhnya
           (pendapatan − HPP). Titipan peserta sebesar {rupiah(sum.deferredRevenue)} dari trip
           yang belum berangkat masih berstatus kewajiban, belum jadi laba.
         </div>

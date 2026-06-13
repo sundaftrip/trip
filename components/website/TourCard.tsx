@@ -289,14 +289,6 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
-/* ─── Globe / World Landmarks card ─── */
-const GL_BADGE_COLORS = ["#e0f2fe", "#fef9c3", "#dcfce7", "#fce7f3", "#ede9fe", "#ffedd5"];
-function hashGlobeColor(str: string, offset = 0) {
-  let h = offset * 31;
-  for (let i = 0; i < str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
-  return GL_BADGE_COLORS[Math.abs(h) % GL_BADGE_COLORS.length];
-}
-
 /** Map title/city → IATA 3-letter code untuk feel boarding pass yang otentik. */
 const IATA_MAP: Record<string, string> = {
   murmansk: "MMK", moskow: "SVO", moscow: "SVO", "st petersburg": "LED",
@@ -345,62 +337,6 @@ function shortenDuration(s: string | null | undefined): string {
   return numMatch ? `${numMatch[1]}D` : t.slice(0, 6);
 }
 
-/** Shorten city list ke max 3 entries supaya tinggi card konsisten.
- *  "Almaty · Bishkek · Issyk · Samarkand · Tashkent" → "Almaty · Bishkek · Issyk +2"
- */
-function shortenRoute(s: string | null | undefined, max = 3): string {
-  if (!s) return "";
-  const parts = s.split(/[·•,]/).map(p => p.trim()).filter(Boolean);
-  if (parts.length <= max) return parts.join(" · ");
-  const rest = parts.length - max;
-  return parts.slice(0, max).join(" · ") + ` +${rest}`;
-}
-
-/** Ambil excerpt evocative dari tour.notes untuk dipajang di card.
- *  Strip newline/bullet markers, ambil ~120 char pertama yang berakhir di kata. */
-function excerpt(s: string | null | undefined, max = 120): string {
-  if (!s) return "";
-  // Buang baris yang berisi cuma simbol/bullet, gabung sisa jadi 1 paragraf
-  const flat = s
-    .split(/\n+/)
-    .map(line => line.trim())
-    .filter(line => line && !/^[+&\-*•·]/.test(line))
-    .join(" ")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (flat.length <= max) return flat;
-  // Cut di spasi terdekat sebelum max, lalu …
-  const cut = flat.slice(0, max);
-  const lastSpace = cut.lastIndexOf(" ");
-  return (lastSpace > 60 ? cut.slice(0, lastSpace) : cut) + "…";
-}
-
-/** Class code di boarding pass, semantic berdasarkan negara + durasi.
- *  F = First (signature long-haul 10+ hari)
- *  J = Business (international: Russia, Europe, non-Asia)
- *  Y = Economy (domestic Indonesia + regional Asia/SEA)
- */
-function getFlightClass(tour: Tour): string {
-  const country = (tour.country || "").toLowerCase();
-  // Parse duration like "14D13N" or "9 Hari" → ambil angka pertama
-  const days = parseInt(String(tour.duration || "0").match(/\d+/)?.[0] || "0", 10);
-
-  // F: signature panjang
-  if (days >= 10) return "F";
-
-  // Domestic + regional Asia/SEA → Y
-  const isAsia = [
-    "indonesia", "indo", "id ",
-    "singapura", "singapore", "malaysia", "thailand", "vietnam",
-    "filipina", "philippines", "kamboja", "cambodia", "laos", "myanmar",
-    "brunei", "asia tenggara"
-  ].some(k => country.includes(k));
-  if (isAsia) return "Y";
-
-  // International (Russia, Europe, dll) → J
-  return "J";
-}
-
 function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
@@ -410,7 +346,6 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
     ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
     : "OPEN";
   const duration = shortenDuration(tour.duration);
-  const hasPromo = !!tour.promoPrice && tour.promoPrice < tour.price;
 
   return (
     <div className={`gl-card gl-card-compact group ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
@@ -773,6 +708,9 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
   else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "fumayo") card = <FumayoCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "attic") card = <AtticCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "teri") card = <TeriCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "corei") card = <CoreiCard tour={tour} isDimmed={isDimmed} />;
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;

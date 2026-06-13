@@ -40,8 +40,6 @@ const BRAND_NAME = "Sundaf Trip";
 const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
 export async function generateMetadata(): Promise<Metadata> {
-  // logo dari getCompanyMeta() tidak dipakai lagi di sini — apple icon kini
-  // PNG persegi statis di /icons (logo.png 862×241 tidak persegi).
   const description =
     "Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
 

@@ -11,7 +11,6 @@ interface TourShareButtonsProps {
   tCard?: string;
   tBdr?: string;
   tSub?: string;
-  tMint?: string;
 }
 
 export default function TourShareButtons({
@@ -23,7 +22,6 @@ export default function TourShareButtons({
   tCard,
   tBdr,
   tSub,
-  tMint,
 }: TourShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 

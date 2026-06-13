@@ -46,14 +46,18 @@ export default function KeuShell({
         }),
       );
     };
-    tick();
+    const initial = setTimeout(tick, 0);
     const t = setInterval(tick, 1000);
-    return () => clearInterval(t);
+    return () => {
+      clearTimeout(initial);
+      clearInterval(t);
+    };
   }, []);
 
-  useEffect(() => setOpen(false), [pathname]);
-
-  let lastGroup = "";
+  useEffect(() => {
+    const id = setTimeout(() => setOpen(false), 0);
+    return () => clearTimeout(id);
+  }, [pathname]);
 
   return (
     <div className="keu-shell">
@@ -72,9 +76,8 @@ export default function KeuShell({
         </div>
 
         <nav className="keu-rail-nav">
-          {NAV.map((item) => {
-            const showGroup = item.group !== lastGroup;
-            lastGroup = item.group;
+          {NAV.map((item, index) => {
+            const showGroup = item.group !== NAV[index - 1]?.group;
             return (
               <div key={item.href}>
                 {showGroup && <div className="keu-rail-group">{item.group}</div>}

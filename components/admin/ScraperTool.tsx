@@ -137,7 +137,7 @@ export default function ScraperTool() {
         )
       );
     }
-  }, []);
+  }, [style]);
 
   const rewriteSelected = useCallback(async () => {
     const toRewrite = posts.filter((p) => selected.has(p.sourceUrl) && !p.alreadyImported);
@@ -149,7 +149,8 @@ export default function ScraperTool() {
   const toggleSelect = useCallback((url: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      next.has(url) ? next.delete(url) : next.add(url);
+      if (next.has(url)) next.delete(url);
+      else next.add(url);
       return next;
     });
   }, []);
@@ -356,7 +357,7 @@ export default function ScraperTool() {
           {!loading && posts.length === 0 && !error && (
             <div className="text-center py-12 text-gray-400 dark:text-gray-600">
               <Search size={40} className="mx-auto mb-3 opacity-40" />
-              <p className="text-sm">Masukkan destinasi lalu klik "Cari Konten" untuk mengambil artikel dari Wikivoyage</p>
+              <p className="text-sm">Masukkan destinasi lalu klik &quot;Cari Konten&quot; untuk mengambil artikel dari Wikivoyage</p>
             </div>
           )}
         </>
