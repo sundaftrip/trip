@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getGeoPageContent } from "@/lib/geo-pages";
-import { MapPin, Clock, MessageCircle, Star, ChevronRight, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
+import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 
@@ -16,6 +16,13 @@ const ROUTE_PATH = "/destinations/teriberka";
 const DEFAULT_META_DESCRIPTION =
   "Panduan lengkap wisata Teriberka, Rusia untuk traveler Indonesia: cara ke sana dari Murmansk, whale watching Laut Barents, aurora borealis, pantai telur naga, lokasi film Leviathan, dan estimasi budget dalam rupiah.";
 const OG_IMAGE = "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg";
+const QUICK_FACT_ICONS = {
+  plane: Plane,
+  calendar: Calendar,
+  thermometer: Thermometer,
+  wallet: Wallet,
+  "map-pin": MapPin,
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const geoContent = await getGeoPageContent(ROUTE_PATH);
@@ -86,34 +93,6 @@ async function getData() {
   };
 }
 
-const QUICK_FACTS = [
-  { icon: MapPin,      label: "Jarak dari Murmansk", value: "±120 km (2–3 jam mobil)" },
-  { icon: Calendar,    label: "Waktu terbaik",        value: "Aurora: Okt–Mar · Paus: Jun–Okt" },
-  { icon: Thermometer, label: "Suhu musim dingin",    value: "-8°C s/d -22°C" },
-  { icon: Wallet,      label: "Estimasi day-trip",    value: "Rp 1,5–3 juta/orang" },
-];
-
-const ACTIVITIES: { img: string; title: string; desc: string; video?: string; credit?: string }[] = [
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Jauh dari polusi cahaya kota, langit Teriberka jadi salah satu kanvas aurora paling gelap dan jernih di Kola Peninsula. Bulan terbaik: Desember–Februari." },
-  // Video: trip perahu di Laut Barents (Cloudinary, q_auto:eco,w_640 ≈ 3 MB).
-  // `img` = poster. Deskripsi disederhanakan agar sesuai isi video (boat trip).
-  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_640/20260131_121402_etevcv.mp4", img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/w_640/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Susur Laut Barents", desc: "Naik perahu nelayan menyusuri perairan Laut Barents bersama rombongan, menikmati lanskap Arktik yang membeku langsung dari atas air." },
-  { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Stone_beach_on_the_way_to_Batareyskiy_waterfall.jpg/1280px-Stone_beach_on_the_way_to_Batareyskiy_waterfall.jpg", credit: "Foto: Vsatinet / Wikimedia Commons · CC BY-SA 4.0", title: "Pantai Telur Naga", desc: "Hamparan batu bulat raksasa hasil tempaan ombak ribuan tahun di tepi pantai. Orang lokal menyebutnya 'telur dinosaurus', spot foto paling ikonik di Teriberka." },
-  // Video perahu tua di teluk (Cloudinary). Di-optimasi q_auto:eco,w_540,du_10 ≈ 3 MB.
-  { video: "https://res.cloudinary.com/dlmgl1grq/video/upload/q_auto:eco,w_540,du_10/20260127_130726_wmoh3n.mp4", img: "https://res.cloudinary.com/dlmgl1grq/video/upload/so_5,w_640,q_auto/20260127_130726_wmoh3n.jpg", title: "Perahu Nelayan Tua di Teluk", desc: "Perahu nelayan tua tertambat di teluk Teriberka yang diselimuti salju — potret sunyi kehidupan di tepi Laut Barents." },
-  { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/%D0%92%D0%BE%D0%B4%D0%BE%D0%BF%D0%B0%D0%B4_%D1%83_%D0%9C%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE_%D0%91%D0%B0%D1%82%D0%B0%D1%80%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B3%D0%BE.jpg/1280px-%D0%92%D0%BE%D0%B4%D0%BE%D0%BF%D0%B0%D0%B4_%D1%83_%D0%9C%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE_%D0%91%D0%B0%D1%82%D0%B0%D1%80%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B3%D0%BE.jpg", credit: "Foto: Vsatinet / Wikimedia Commons · CC BY-SA 4.0", title: "Air Terjun Batareyskiy", desc: "Trek menyusuri tebing menuju air terjun yang jatuh langsung dari danau ke Laut Barents. Pemandangan tundra Arktik yang keras tapi memukau." },
-  { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Graveyard_of_ships_in_old_part_of_Teriberka.jpg/1280px-Graveyard_of_ships_in_old_part_of_Teriberka.jpg", credit: "Foto: Vsatinet / Wikimedia Commons · CC BY-SA 4.0", title: "Jejak Film Leviathan", desc: "Teriberka adalah lokasi syuting film 'Leviathan' (nominasi Oscar 2015). Susuri lanskap dramatis yang membuat desa kecil ini mendunia." },
-];
-
-const FAQ = [
-  { q: "Teriberka itu di mana?", a: "Teriberka adalah desa nelayan terpencil di tepi Laut Barents, Kola Peninsula, Rusia. Berjarak sekitar 120 km dari Murmansk, ditempuh 2–3 jam berkendara melewati jalan tundra P-10." },
-  { q: "Bagaimana cara ke Teriberka?", a: "Tidak ada transportasi umum reguler. Cara paling umum adalah sewa mobil + sopir atau ikut day-tour dari Murmansk. Saat musim dingin, jalan bisa ditutup sementara karena badai salju, jadi jadwal harus fleksibel." },
-  { q: "Kapan waktu terbaik melihat paus?", a: "Musim paus di Laut Barents berlangsung Juni–Oktober saat laut tidak membeku. Untuk aurora, datang Oktober–Maret. Kalau ingin keduanya, awal musim gugur (September–awal Oktober) adalah jendela terbaik." },
-  { q: "Apakah aurora di Teriberka lebih bagus dari Murmansk?", a: "Secara peluang teknis, ya. Teriberka jauh lebih gelap karena minim polusi cahaya, jadi aurora terlihat lebih jelas. Banyak aurora hunter dari Murmansk justru mengejar titik gelap ke arah Teriberka." },
-  { q: "Berapa lama sebaiknya di Teriberka?", a: "Day-trip dari Murmansk (berangkat pagi, pulang malam) sudah cukup untuk highlight utama. Tapi kalau ingin mengejar aurora dengan tenang, menginap 1 malam di guesthouse lokal sangat layak." },
-  { q: "Bagaimana penginapan dan makanan di Teriberka?", a: "Pilihan terbatas: beberapa guesthouse dan glamping kecil, serta sedikit kafe/restoran seafood. Pilihan halal nyaris tidak ada, jadi bawa snack & mie instan dari Indonesia. Seafood segar (ikan, kepiting) biasanya aman." },
-];
-
 export default async function TeriberkaPage() {
   const { wa, theme, tours, relatedPosts, geoContent } = await getData();
 
@@ -161,9 +140,8 @@ export default async function TeriberkaPage() {
 
   const waMsg = encodeURIComponent("Halo Sundaftrip! Saya tertarik dengan paket wisata Teriberka (Laut Barents / aurora / whale watching). Bisa tolong info lebih lanjut?");
   const waUrl = wa ? `https://wa.me/${wa}?text=${waMsg}` : "#";
-  const geoFaq = geoContent.faqs.length > 0
-    ? geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }))
-    : FAQ;
+  const destination = geoContent.destination!;
+  const geoFaq = geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }));
 
   return (
     <div className={`min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
@@ -214,8 +192,8 @@ export default async function TeriberkaPage() {
       <div className="relative h-[72vh] min-h-[520px] flex items-end">
         {/* Hero: frame asli dari footage Teriberka (perahu tua di teluk membeku) */}
         <Image
-          src="https://res.cloudinary.com/dlmgl1grq/video/upload/so_5,w_1920,h_1080,c_fill,q_auto/20260127_130726_wmoh3n.jpg"
-          alt="Perahu nelayan tua di teluk Teriberka yang membeku, tepi Laut Barents, Rusia"
+          src={destination.hero.image}
+          alt={destination.hero.imageAlt}
           fill
           className="object-cover object-center"
           priority
@@ -235,26 +213,26 @@ export default async function TeriberkaPage() {
           <span className="inline-flex items-center gap-1.5 mb-5 text-xs font-bold px-3 py-1.5 rounded-full"
             style={{ background: "rgba(255,255,255,0.14)", color: "#fff", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.28)" }}>
             <MapPin size={11} />
-            Rusia · Laut Barents
+            {destination.hero.eyebrow}
           </span>
 
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight mb-5 tracking-tight"
             style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             <span className="text-white drop-shadow-lg">
-              {isPixel ? "TERIBERKA," : "Teriberka,"}
+              {isPixel ? destination.hero.titleLine1.toUpperCase() : destination.hero.titleLine1}
             </span>
             <br />
             {isPixel
-              ? <span className="text-white drop-shadow-lg">DESA DI UJUNG DUNIA</span>
-              : <span className="aurora-text aurora-glow">Desa di Ujung Dunia</span>
+              ? <span className="text-white drop-shadow-lg">{destination.hero.titleLine2.toUpperCase()}</span>
+              : <span className="aurora-text aurora-glow">{destination.hero.titleLine2}</span>
             }
           </h1>
 
           <p className="text-base sm:text-lg max-w-xl mb-8 text-white/80 leading-relaxed"
             style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             {isPixel
-              ? "> Desa nelayan di tepi Laut Barents. Paus, aurora, dan pantai telur naga di garis akhir daratan Rusia."
-              : "Desa nelayan terpencil di tepi Laut Barents, tempat daratan Rusia berakhir. Paus bungkuk, aurora paling gelap, dan pantai batu raksasa yang membuat dunia terasa baru."}
+              ? `> ${destination.hero.description}`
+              : destination.hero.description}
           </p>
 
           {/* CTA, paket tour dulu, WA sebagai sekunder */}
@@ -264,14 +242,14 @@ export default async function TeriberkaPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
                 style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
                 <Star size={15} />
-                Lihat Paket Teriberka
+                {destination.hero.primaryCtaLabel}
               </a>
             ) : (
               <Link href="/tours"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
                 style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
                 <Star size={15} />
-                Lihat Semua Paket Tour
+                {destination.hero.allToursCtaLabel}
               </Link>
             )}
             {wa && (
@@ -279,7 +257,7 @@ export default async function TeriberkaPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition border-2 text-white hover:bg-white/10"
                 style={{ borderColor: "rgba(255,255,255,0.38)", backdropFilter: "blur(8px)" }}>
                 <MessageCircle size={15} />
-                Tanya via WhatsApp
+                {destination.hero.secondaryCtaLabel}
               </a>
             )}
           </div>
@@ -289,7 +267,9 @@ export default async function TeriberkaPage() {
       {/* ── QUICK FACTS ── */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 mb-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
+          {destination.quickFacts.map(({ icon, label, value }) => {
+            const Icon = QUICK_FACT_ICONS[icon] ?? MapPin;
+            return (
             <div key={label} className={`${cardClass} p-4`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
               <div className="flex items-start gap-3">
                 <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
@@ -299,7 +279,8 @@ export default async function TeriberkaPage() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -339,16 +320,16 @@ export default async function TeriberkaPage() {
         {/* ── KENAPA TERIBERKA ── */}
         <section>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► TENTANG DESTINASI" : "Tentang Destinasi"}
+            {isPixel ? `► ${destination.intro.eyebrow.toUpperCase()}` : destination.intro.eyebrow}
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Kenapa Harus Sampai ke Teriberka?
+            {destination.intro.title}
           </h2>
           <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-100" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>
-            <p>Banyak yang berhenti di Murmansk dan pulang. Padahal 120 kilometer lebih jauh ke utara, di titik tempat daratan Rusia benar-benar berakhir, ada Teriberka, desa nelayan kecil di tepi Laut Barents yang terasa seperti ujung dunia.</p>
-            <p>Teriberka bukan kota wisata. Ini desa yang sunyi, keras, dan jujur. Bangkai kapal teronggok di teluk, kerangka paus tergeletak di pantai, dan ombak Samudra Arktik menempa batu menjadi bulat sempurna selama ribuan tahun. Justru itulah yang membuatnya begitu memikat. Film <strong>Leviathan</strong> (nominasi Oscar 2015) mengambil lanskap dramatis Teriberka sebagai latar, dan sejak itu nama desa kecil ini mendunia.</p>
-            <p>Buat traveler Indonesia, Teriberka menawarkan tiga hal sekaligus yang sulit ditemukan di satu tempat: aurora borealis di langit paling gelap, whale watching di Laut Barents, dan pemandangan tundra Arktik yang tidak akan pernah kamu lupakan.</p>
+            {destination.intro.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
         </section>
 
@@ -358,21 +339,14 @@ export default async function TeriberkaPage() {
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
             : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, #0c0c0c)" }}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "rgba(255,255,255,0.15)", color: "#fff" }}>
-            {isPixel ? "► PANDUAN ALAM" : "Panduan Alam"}
+            {isPixel ? `► ${destination.guide.eyebrow.toUpperCase()}` : destination.guide.eyebrow}
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-white" : ""}`}
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
-            Aurora, Paus & Laut Barents: Yang Perlu Kita Tahu
+            {destination.guide.title}
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
-            {[
-              { title: "Aurora Paling Gelap", content: "Teriberka jauh dari polusi cahaya kota, jadi peluang aurora terlihat jelas lebih tinggi dari Murmansk. Musim aurora Oktober–Maret, puncaknya Desember–Februari." },
-              { title: "Musim Paus", content: "Paus bungkuk dan beluga muncul di Laut Barents saat laut tidak membeku, Juni–Oktober. Trip perahu berangkat tergantung cuaca, jadi siapkan jadwal fleksibel." },
-              { title: "Pantai Telur Naga", content: "Batu-batu bulat raksasa di pantai Teriberka, terbentuk oleh ombak Arktik selama ribuan tahun. Spot foto paling ikonik, terbaik saat matahari rendah." },
-              { title: "Jalan Bisa Ditutup", content: "Akses Murmansk–Teriberka lewat jalan tundra P-10. Saat badai salju musim dingin, jalan bisa ditutup sementara. Selalu cek cuaca dan punya rencana cadangan." },
-              { title: "Berapa Lama Ideal", content: "Day-trip dari Murmansk cukup untuk highlight. Tapi untuk berburu aurora dengan tenang, menginap 1 malam di guesthouse lokal jauh lebih nyaman." },
-              { title: "Persiapan Fisik", content: "Angin Laut Barents membuat suhu terasa jauh lebih dingin. Pakai berlapis, base layer wool, jaket windproof, sarung tangan tebal, dan hand warmer." },
-            ].map(({ title, content }) => (
+            {destination.guide.cards.map(({ title, content }) => (
               <div key={title} className="flex gap-3">
                 <div className="w-1 rounded-full shrink-0 mt-1" style={{ background: "var(--site-accent,#2d6a4f)" }} />
                 <div>
@@ -387,14 +361,14 @@ export default async function TeriberkaPage() {
         {/* ── ACTIVITIES ── */}
         <section>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► AKTIVITAS" : "Aktivitas"}
+            {isPixel ? `► ${destination.activities.eyebrow.toUpperCase()}` : destination.activities.eyebrow}
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Apa yang Bisa Kita Lakukan di Teriberka
+            {destination.activities.title}
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACTIVITIES.map(({ img, title, desc, video, credit }) => (
+            {destination.activities.items.map(({ img, title, desc, video, credit }) => (
               <div key={title} className={`${cardClass} overflow-hidden`} style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
                 <div className="relative h-40 w-full overflow-hidden group">
                   {video ? (
@@ -418,18 +392,14 @@ export default async function TeriberkaPage() {
         {/* ── CARA KE SANA ── */}
         <section>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► PERJALANAN DARI INDONESIA" : "Perjalanan dari Indonesia"}
+            {isPixel ? `► ${destination.travel.eyebrow.toUpperCase()}` : destination.travel.eyebrow}
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Cara ke Teriberka dari Jakarta
+            {destination.travel.title}
           </h2>
           <div className="space-y-4">
-            {[
-              { step: "01", title: "Jakarta → Murmansk", desc: "Rutenya Jakarta → Dubai/Doha → Moskow → Murmansk, total ±18–22 jam. Detail lengkap rute dan budget ada di halaman destinasi Murmansk kami." },
-              { step: "02", title: "Murmansk → Teriberka", desc: "±120 km lewat jalan tundra P-10, ditempuh 2–3 jam dengan mobil. Tidak ada bus reguler, jadi sewa mobil + sopir atau ikut day-tour. Di musim dingin jalan bisa ditutup saat badai, jadwal harus fleksibel." },
-              { step: "03", title: "Di Teriberka", desc: "Desa kecil yang bisa dijelajahi jalan kaki. Untuk whale watching dan spot terpencil, pakai pemandu lokal. Sinyal dan fasilitas terbatas, download Google Translate & peta offline sebelum berangkat." },
-            ].map(({ step, title, desc }, i, arr) => (
+            {destination.travel.steps.map(({ step, title, desc }, i, arr) => (
               <div key={step} className="flex gap-5">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-black text-xs"
                   style={accentStyle}>
@@ -449,20 +419,14 @@ export default async function TeriberkaPage() {
         <section className={`${isOutlined ? "" : "bg-gray-50 dark:bg-slate-900 rounded-3xl"} p-8`}
           style={isOutlined ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `4px 4px 0 0 ${bdrClr}` : undefined } : {}}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► ESTIMASI BUDGET" : "Estimasi Budget"}
+            {isPixel ? `► ${destination.budget.eyebrow.toUpperCase()}` : destination.budget.eyebrow}
           </span>
           <h2 className={`text-2xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Berapa Tambahan Budget untuk Teriberka?
+            {destination.budget.title}
           </h2>
           <div className="space-y-0">
-            {[
-              { item: "Sewa mobil + sopir PP (day-trip dari Murmansk)", range: "Rp 1.200.000 – 2.500.000 / mobil" },
-              { item: "Day-tour gabungan (aurora / Teriberka)", range: "Rp 1.500.000 – 3.000.000 / orang" },
-              { item: "Whale watching boat trip (musim paus)", range: "Rp 1.500.000 – 3.500.000 / orang" },
-              { item: "Menginap 1 malam (guesthouse / glamping)", range: "Rp 700.000 – 2.500.000 / malam" },
-              { item: "Makan seafood lokal", range: "Rp 200.000 – 500.000 / orang" },
-            ].map(({ item, range }) => (
+            {destination.budget.items.map(({ item, range }) => (
               <div key={item} className={`flex items-center justify-between gap-4 py-3 border-b ${!isOutlined ? "border-gray-200 dark:border-slate-800" : ""}`}
                 style={{ borderColor: bdrClr }}>
                 <span className={`text-sm ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`} style={{ color: subClr }}>{item}</span>
@@ -470,12 +434,12 @@ export default async function TeriberkaPage() {
               </div>
             ))}
             <div className="flex items-center justify-between gap-4 pt-4">
-              <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>Estimasi Tambahan</span>
-              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>Rp 2 – 6 juta / orang</span>
+              <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>{destination.budget.totalLabel}</span>
+              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>{destination.budget.totalValue}</span>
             </div>
           </div>
           <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-400 dark:text-gray-600" : ""}`} style={{ color: subClr, opacity: 0.7 }}>
-            * Estimasi tambahan di luar budget Murmansk. Dengan paket tur Sundaftrip, Teriberka biasanya sudah termasuk dalam itinerary Rusia Arktik.
+            {destination.budget.note}
           </p>
         </section>
 
@@ -522,17 +486,17 @@ export default async function TeriberkaPage() {
             /* Fallback: belum ada paket aktif → arahkan ke halaman tour */
             <div className={`${isOutlined ? cardClass : "bg-gray-50 dark:bg-slate-900 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700"} p-8 text-center`}
               style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
-              <div className="text-4xl mb-3">🐋</div>
+              <div className="text-4xl mb-3">{destination.emptyTours.icon}</div>
               <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>
-                Paket Teriberka Segera Hadir
+                {destination.emptyTours.title}
               </h3>
               <p className={`text-sm mb-5 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
-                Tim kami sedang mempersiapkan keberangkatan Rusia Arktik berikutnya, termasuk ekskursi ke Teriberka. Sementara itu, jelajahi paket destinasi lain.
+                {destination.emptyTours.description}
               </p>
-              <Link href="/tours"
+              <Link href={destination.emptyTours.ctaHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90"
                 style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
-                Jelajahi Semua Paket Tour <ChevronRight size={14} />
+                {destination.emptyTours.ctaLabel} <ChevronRight size={14} />
               </Link>
             </div>
           )}
@@ -601,16 +565,16 @@ export default async function TeriberkaPage() {
               : { background: "var(--site-accent,#2d6a4f)" }}>
             <h2 className={`text-3xl font-black mb-3 ${!isOutlined ? "text-white" : ""}`}
               style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
-              {isPixel ? "> SIAP KE UJUNG DUNIA?" : isKawaii ? "Siap ke Ujung Dunia? ✨" : "Siap ke Ujung Dunia?"}
+              {isPixel ? `> ${destination.finalCta.title.toUpperCase()}` : destination.finalCta.title}
             </h2>
             <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
-              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Teriberka dari awal sampai akhir: visa, tiket, transport Murmansk–Teriberka, whale watching, dan aurora hunting guide lokal.
+              {destination.finalCta.description}
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}
               style={isOutlined ? accentStyle : { color: "var(--site-accent-ink,#2d6a4f)" }}>
               <MessageCircle size={18} />
-              {isPixel ? "[ CHAT WHATSAPP SEKARANG ]" : "Chat WhatsApp Sekarang"}
+              {isPixel ? `[ ${destination.finalCta.buttonLabel.toUpperCase()} ]` : destination.finalCta.buttonLabel}
             </a>
           </section>
         )}

@@ -21,6 +21,7 @@ const FIELDS = [
   "secondaryCtaHref",
   "sections",
   "faqs",
+  "content",
   "schemaType",
   "published",
   "order",
@@ -46,8 +47,11 @@ function validate(data: Record<string, unknown>): string | null {
   if ("routePath" in data && (!data.routePath || typeof data.routePath !== "string")) return "Route path wajib diisi.";
   if ("title" in data && (typeof data.title !== "string" || !data.title.trim())) return "Title wajib diisi.";
   if ("answer" in data && (typeof data.answer !== "string" || !data.answer.trim())) return "Jawaban singkat wajib diisi.";
-  if ("sections" in data && !Array.isArray(data.sections)) return "Sections harus berupa array JSON.";
-  if ("faqs" in data && !Array.isArray(data.faqs)) return "FAQ harus berupa array JSON.";
+  if ("sections" in data && !Array.isArray(data.sections)) return "Konten tambahan harus berupa data valid.";
+  if ("faqs" in data && !Array.isArray(data.faqs)) return "FAQ harus berupa data valid.";
+  if ("content" in data && data.content !== null && (typeof data.content !== "object" || Array.isArray(data.content))) {
+    return "Konten halaman harus berupa data valid.";
+  }
   return null;
 }
 
@@ -124,4 +128,3 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     return apiError(err);
   }
 }
-

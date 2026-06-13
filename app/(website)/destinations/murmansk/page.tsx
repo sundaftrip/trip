@@ -5,11 +5,19 @@ import { prisma } from "@/lib/prisma";
 import { getGeoPageContent } from "@/lib/geo-pages";
 import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
+import ActivityVideo from "@/components/website/ActivityVideo";
 
 const ROUTE_PATH = "/destinations/murmansk";
 const DEFAULT_META_DESCRIPTION =
   "Panduan lengkap wisata Murmansk, Rusia untuk traveler Indonesia: cara ke sana, visa, waktu terbaik lihat aurora borealis, estimasi budget dalam rupiah, dan paket tur tersedia.";
 const OG_IMAGE = "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg";
+const QUICK_FACT_ICONS = {
+  plane: Plane,
+  calendar: Calendar,
+  thermometer: Thermometer,
+  wallet: Wallet,
+  "map-pin": MapPin,
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const geoContent = await getGeoPageContent(ROUTE_PATH);
@@ -78,31 +86,6 @@ async function getData() {
   };
 }
 
-const QUICK_FACTS = [
-  { icon: Plane,       label: "Flight dari Jakarta",  value: "±18–22 jam (transit)" },
-  { icon: Calendar,    label: "Waktu terbaik",         value: "Oktober – Maret" },
-  { icon: Thermometer, label: "Suhu musim dingin",     value: "-10°C s/d -25°C" },
-  { icon: Wallet,      label: "Estimasi budget",       value: "Rp 25–45 juta/orang" },
-];
-
-const ACTIVITIES = [
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg", title: "Berburu Aurora Borealis", desc: "Langit di atas Laut Barents jadi salah satu spot terbaik di dunia buat lihat aurora. Bulan terbaik: Desember–Februari saat langit paling gelap." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586062/WhatsApp_Image_2026-05-12_at_18.23.40_ht8etl.jpg", title: "Makan Kepiting Alaska di Murmansk", desc: "Kepiting Raja Murmansk ukurannya luar biasa, rasanya lebih luar biasa lagi. Ini bukan kepiting biasa, ini pengalaman makan yang tak terlupakan seumur hidup." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/w_800,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.27_jbbrt6.jpg", title: "Husky Sledding", desc: "Berkeliling tundra bersalju ditarik anjing husky. Suara lonceng slede, napas anjing, dan langit biru arktik yang menenangkan jiwa." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", title: "Berburu Paus di Teriberka", desc: "Susuri Laut Barents menuju Teriberka, desa nelayan terpencil yang jadi spot terbaik melihat paus bungkuk di habitat aslinya." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586767/WhatsApp_Image_2026-05-12_at_18.48.44_c45msv.jpg", title: "Snowmobile Safari", desc: "Ngebut di atas salju dengan snowmobile sampai ke titik terpencil di hutan Arktik." },
-  { img: "https://res.cloudinary.com/dlmgl1grq/image/upload/q_auto/f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.34.36_zfojhy.jpg", title: "Naik Rusa di Tundra", desc: "Duduk di slede kayu ditarik rusa kutub menembus hutan pinus bersalju. Rasanya seperti masuk ke dalam dongeng Natal, tapi ini nyata." },
-];
-
-const FAQ = [
-  { q: "Apakah Indonesia bisa masuk Rusia tanpa visa?", a: "Belum. Indonesia perlu apply visa turis Rusia. Prosesnya bisa lewat kedutaan Rusia di Jakarta atau agen perjalanan. Perkirakan 2–3 minggu sebelum keberangkatan." },
-  { q: "Berapa lama penerbangan dari Jakarta ke Murmansk?", a: "Tidak ada penerbangan langsung. Rutenya Jakarta → Dubai/Doha → Moskow → Murmansk. Total sekitar 18–22 jam. Dari Moskow ke Murmansk bisa naik pesawat (~2 jam) atau kereta malam (~30 jam)." },
-  { q: "Kapan waktu terbaik lihat aurora di Murmansk?", a: "Oktober sampai Maret. Puncaknya Desember–Februari karena langit paling gelap. Minimal 5–7 malam biar peluangnya bagus." },
-  { q: "Berapa budget yang dibutuhkan?", a: "Estimasi 7–10 hari: tiket PP Rp 12–18 juta, hotel Rp 4–8 juta, aktivitas Rp 5–10 juta, makan & transport Rp 3–5 juta. Total sekitar Rp 25–45 juta/orang." },
-  { q: "Apa yang harus dibawa ke Murmansk?", a: "Jaket thermal berlapis, base layer wool, sepatu boots waterproof, sarung tangan tebal, topi penutup telinga, dan hand warmer sebanyak-banyaknya. -25°C itu bukan bercanda." },
-  { q: "Apakah makanan halal tersedia di Murmansk?", a: "Murmansk kota kecil, pilihan halal terbatas. Bawa mie instan dan snack halal dari Indonesia. Seafood (ikan, salmon) biasanya aman." },
-];
-
 export default async function MurmanskPage() {
   const { wa, theme, tours, relatedPosts, geoContent } = await getData();
 
@@ -150,9 +133,8 @@ export default async function MurmanskPage() {
 
   const waMsg = encodeURIComponent("Halo Sundaftrip! Saya tertarik dengan paket wisata Murmansk / Aurora Borealis. Bisa tolong info lebih lanjut?");
   const waUrl = wa ? `https://wa.me/${wa}?text=${waMsg}` : "#";
-  const geoFaq = geoContent.faqs.length > 0
-    ? geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }))
-    : FAQ;
+  const destination = geoContent.destination!;
+  const geoFaq = geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }));
 
   return (
     <div className={`min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
@@ -202,8 +184,8 @@ export default async function MurmanskPage() {
       <div className="relative h-[72vh] min-h-[520px] flex items-end">
         {/* Foto HD aurora Pexels, tampil di semua theme */}
         <Image
-          src="https://images.pexels.com/photos/30173400/pexels-photo-30173400.jpeg?auto=compress&cs=tinysrgb&w=1920"
-          alt="Aurora Borealis di Murmansk, Rusia"
+          src={destination.hero.image}
+          alt={destination.hero.imageAlt}
           fill
           className="object-cover object-center"
           priority
@@ -223,26 +205,26 @@ export default async function MurmanskPage() {
           <span className="inline-flex items-center gap-1.5 mb-5 text-xs font-bold px-3 py-1.5 rounded-full"
             style={{ background: "rgba(255,255,255,0.14)", color: "#fff", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.28)" }}>
             <MapPin size={11} />
-            Rusia · Arktik
+            {destination.hero.eyebrow}
           </span>
 
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight mb-5 tracking-tight"
             style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             <span className="text-white drop-shadow-lg">
-              {isPixel ? "MURMANSK &" : "Murmansk &"}
+              {isPixel ? destination.hero.titleLine1.toUpperCase() : destination.hero.titleLine1}
             </span>
             <br />
             {isPixel
-              ? <span className="text-white drop-shadow-lg">AURORA BOREALIS</span>
-              : <span className="aurora-text aurora-glow">Aurora Borealis</span>
+              ? <span className="text-white drop-shadow-lg">{destination.hero.titleLine2.toUpperCase()}</span>
+              : <span className="aurora-text aurora-glow">{destination.hero.titleLine2}</span>
             }
           </h1>
 
           <p className="text-base sm:text-lg max-w-xl mb-8 text-white/80 leading-relaxed"
             style={{ fontFamily: isPixel ? "monospace" : undefined }}>
             {isPixel
-              ? "> Kota di atas Lingkar Arktik. Langit meledak dengan cahaya hijau magis yang sungguh memukau."
-              : "Kota di atas Lingkar Arktik. Tempat matahari tak terbit selama berminggu-minggu, dan langitnya meledak dengan cahaya hijau magis yang sungguh memukau."}
+              ? `> ${destination.hero.description}`
+              : destination.hero.description}
           </p>
 
           {/* CTA, paket tour dulu, WA sebagai sekunder */}
@@ -252,14 +234,14 @@ export default async function MurmanskPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
                 style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
                 <Star size={15} />
-                Lihat Paket Murmansk
+                {destination.hero.primaryCtaLabel}
               </a>
             ) : (
               <Link href="/tours"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
                 style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
                 <Star size={15} />
-                Lihat Semua Paket Tour
+                {destination.hero.allToursCtaLabel}
               </Link>
             )}
             {wa && (
@@ -267,7 +249,7 @@ export default async function MurmanskPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition border-2 text-white hover:bg-white/10"
                 style={{ borderColor: "rgba(255,255,255,0.38)", backdropFilter: "blur(8px)" }}>
                 <MessageCircle size={15} />
-                Tanya via WhatsApp
+                {destination.hero.secondaryCtaLabel}
               </a>
             )}
           </div>
@@ -277,7 +259,9 @@ export default async function MurmanskPage() {
       {/* ── QUICK FACTS ── */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 mb-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
+          {destination.quickFacts.map(({ icon, label, value }) => {
+            const Icon = QUICK_FACT_ICONS[icon] ?? MapPin;
+            return (
             <div key={label} className={`${cardClass} p-4`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
               <div className="flex items-start gap-3">
                 <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
@@ -287,7 +271,8 @@ export default async function MurmanskPage() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -327,16 +312,16 @@ export default async function MurmanskPage() {
         {/* ── KENAPA MURMANSK ── */}
         <section>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► TENTANG DESTINASI" : "Tentang Destinasi"}
+            {isPixel ? `► ${destination.intro.eyebrow.toUpperCase()}` : destination.intro.eyebrow}
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Kenapa Murmansk, Bukan Finlandia atau Norwegia?
+            {destination.intro.title}
           </h2>
           <div className={`space-y-4 text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-100" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>
-            <p>Kalau ingin melihat aurora, Finlandia dan Norwegia memang lebih populer. Lebih banyak travel agency, lebih mudah diakses. Tapi justru itu yang menjadi masalahnya. Anda akan bersaing dengan ratusan turis lain yang sama-sama mengangkat kamera untuk memotret langit yang sama.</p>
-            <p>Murmansk menawarkan sesuatu yang berbeda: <strong>keaslian</strong>. Ini kota industri Arktik yang nyata, bukan desa wisata yang dirancang untuk turis. Penduduknya bersahaja tapi hangat, landscape-nya keras tapi cantik, dan auranya sama spektakularnya namun bisa dinikmati tanpa berdesakan.</p>
-            <p>Murmansk adalah kota terbesar di dunia yang berada di dalam Lingkar Arktik. Infrastrukturnya jauh lebih lengkap dari yang dibayangkan. Ada hotel yang layak, restoran yang baik, dan transportasi yang tetap berfungsi meski di tengah badai salju -25°C.</p>
+            {destination.intro.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
         </section>
 
@@ -346,21 +331,14 @@ export default async function MurmanskPage() {
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
             : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, #0c0c0c)" }}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "rgba(255,255,255,0.15)", color: "#fff" }}>
-            {isPixel ? "► PANDUAN AURORA" : "Panduan Aurora"}
+            {isPixel ? `► ${destination.guide.eyebrow.toUpperCase()}` : destination.guide.eyebrow}
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-white" : ""}`}
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
-            Aurora Borealis: Yang Perlu Kita Tahu
+            {destination.guide.title}
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
-            {[
-              { title: "Waktu Terbaik", content: "Oktober–Maret adalah musim aurora. Puncaknya Desember–Februari saat Polar Night, ketika matahari tidak terbit sama sekali. Langit semakin gelap berarti aurora semakin terlihat jelas." },
-              { title: "Kapan Muncul?", content: "Biasanya pukul 21.00–02.00 waktu lokal. Gunakan aplikasi SpaceWeatherLive atau My Aurora Forecast buat pantau aktivitas badai matahari." },
-              { title: "Tips Foto Aurora", content: "Pakai tripod, ISO 800–3200, aperture f/2.8, shutter 5–15 detik. Tangan gemetar karena dingin? Gunakan remote shutter atau timer." },
-              { title: "Hindari Polusi Cahaya", content: "Keluar dari pusat kota. Spot terbaik: Kola Peninsula, tepian Danau Seydozero, atau ikut aurora hunting tour ke titik gelap terbaik." },
-              { title: "Durasi yang Realistis", content: "Minimal 5 malam di Murmansk agar peluang lihat aurora bagus. Idealnya 7–10 malam. Jangan datang 2 malam dan berharap pasti kena." },
-              { title: "Persiapan Fisik", content: "Menunggu aurora bisa 1–3 jam di luar dengan suhu -20°C. Bawa hand warmer, pakai berlapis, dan jangan lupa minum teh panas dari termos." },
-            ].map(({ title, content }) => (
+            {destination.guide.cards.map(({ title, content }) => (
               <div key={title} className="flex gap-3">
                 <div className="w-1 rounded-full shrink-0 mt-1" style={{ background: "var(--site-accent,#2d6a4f)" }} />
                 <div>
@@ -375,21 +353,28 @@ export default async function MurmanskPage() {
         {/* ── ACTIVITIES ── */}
         <section>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► AKTIVITAS" : "Aktivitas"}
+            {isPixel ? `► ${destination.activities.eyebrow.toUpperCase()}` : destination.activities.eyebrow}
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Apa yang Bisa Kita Lakukan di Murmansk
+            {destination.activities.title}
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACTIVITIES.map(({ img, title, desc }) => (
+            {destination.activities.items.map(({ img, title, desc, video, credit }) => (
               <div key={title} className={`${cardClass} overflow-hidden`} style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
-                <div className="relative h-40 w-full overflow-hidden">
-                  <Image src={img} alt={title} fill className="object-cover transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                <div className="relative h-40 w-full overflow-hidden group">
+                  {video ? (
+                    <ActivityVideo video={video} poster={img} title={title} />
+                  ) : (
+                    <Image src={img} alt={title} fill className="object-cover transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                  )}
                 </div>
                 <div className="p-5">
                   <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{title}</h3>
                   <p className={`text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-200" : ""}`} style={{ color: subClr }}>{desc}</p>
+                  {credit && (
+                    <p className="text-[10px] leading-tight mt-2 opacity-50" style={{ color: subClr }}>{credit}</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -399,18 +384,14 @@ export default async function MurmanskPage() {
         {/* ── CARA KE SANA ── */}
         <section>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► PERJALANAN DARI INDONESIA" : "Perjalanan dari Indonesia"}
+            {isPixel ? `► ${destination.travel.eyebrow.toUpperCase()}` : destination.travel.eyebrow}
           </span>
           <h2 className={`text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Cara ke Murmansk dari Jakarta
+            {destination.travel.title}
           </h2>
           <div className="space-y-4">
-            {[
-              { step: "01", title: "Jakarta → Moskow", desc: "Via Dubai (Emirates), Doha (Qatar Airways), atau Abu Dhabi (Etihad). Durasi total ±12–15 jam. Harga tiket PP Rp 10–18 juta tergantung maskapai dan musim." },
-              { step: "02", title: "Moskow ke Murmansk", desc: "Opsi pertama: pesawat Aeroflot atau Pobeda, sekitar 2 jam, Rp 400–800 ribu. Opsi kedua: kereta malam Arktika, 30 jam. Tidur sambil melewati hutan birch Rusia yang perlahan berubah menjadi tundra. Pengalaman yang jauh lebih berkesan." },
-              { step: "03", title: "Di Murmansk", desc: "Kota kompak, bisa dijelajahi dengan taksi atau angkutan lokal. Sewa mobil + sopir sangat direkomendasikan untuk aurora hunting ke luar kota. Google Translate offline wajib download." },
-            ].map(({ step, title, desc }, i, arr) => (
+            {destination.travel.steps.map(({ step, title, desc }, i, arr) => (
               <div key={step} className="flex gap-5">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-black text-xs"
                   style={accentStyle}>
@@ -430,21 +411,14 @@ export default async function MurmanskPage() {
         <section className={`${isOutlined ? "" : "bg-gray-50 dark:bg-slate-900 rounded-3xl"} p-8`}
           style={isOutlined ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `4px 4px 0 0 ${bdrClr}` : undefined } : {}}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► ESTIMASI BUDGET" : "Estimasi Budget"}
+            {isPixel ? `► ${destination.budget.eyebrow.toUpperCase()}` : destination.budget.eyebrow}
           </span>
           <h2 className={`text-2xl font-black mt-3 mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Berapa yang Perlu Kita Siapkan?
+            {destination.budget.title}
           </h2>
           <div className="space-y-0">
-            {[
-              { item: "Tiket pesawat PP (Jakarta–Moskow–Murmansk)", range: "Rp 12.000.000 – 20.000.000" },
-              { item: "Akomodasi 7 malam (hotel bintang 3)", range: "Rp 4.000.000 – 8.000.000" },
-              { item: "Aurora hunting & activities", range: "Rp 5.000.000 – 12.000.000" },
-              { item: "Makan & transport lokal", range: "Rp 3.000.000 – 5.000.000" },
-              { item: "Visa turis Rusia", range: "Rp 700.000 – 1.500.000" },
-              { item: "Asuransi perjalanan", range: "Rp 500.000 – 1.000.000" },
-            ].map(({ item, range }) => (
+            {destination.budget.items.map(({ item, range }) => (
               <div key={item} className={`flex items-center justify-between gap-4 py-3 border-b ${!isOutlined ? "border-gray-200 dark:border-slate-800" : ""}`}
                 style={{ borderColor: bdrClr }}>
                 <span className={`text-sm ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`} style={{ color: subClr }}>{item}</span>
@@ -452,12 +426,12 @@ export default async function MurmanskPage() {
               </div>
             ))}
             <div className="flex items-center justify-between gap-4 pt-4">
-              <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>Total Estimasi</span>
-              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>Rp 25 – 47 juta / orang</span>
+              <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>{destination.budget.totalLabel}</span>
+              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>{destination.budget.totalValue}</span>
             </div>
           </div>
           <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-400 dark:text-gray-600" : ""}`} style={{ color: subClr, opacity: 0.7 }}>
-            * Estimasi kasar 7–10 hari. Dengan paket tur Sundaftrip, biasanya lebih hemat karena sudah bundled.
+            {destination.budget.note}
           </p>
         </section>
 
@@ -504,17 +478,17 @@ export default async function MurmanskPage() {
             /* Fallback: belum ada paket aktif → arahkan ke halaman tour */
             <div className={`${isOutlined ? cardClass : "bg-gray-50 dark:bg-slate-900 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700"} p-8 text-center`}
               style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
-              <div className="text-4xl mb-3">🏔️</div>
+              <div className="text-4xl mb-3">{destination.emptyTours.icon}</div>
               <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>
-                Paket Murmansk Segera Hadir
+                {destination.emptyTours.title}
               </h3>
               <p className={`text-sm mb-5 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
-                Tim kami sedang mempersiapkan keberangkatan Murmansk berikutnya. Sementara itu, jelajahi paket destinasi lain.
+                {destination.emptyTours.description}
               </p>
-              <Link href="/tours"
+              <Link href={destination.emptyTours.ctaHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90"
                 style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
-                Jelajahi Semua Paket Tour <ChevronRight size={14} />
+                {destination.emptyTours.ctaLabel} <ChevronRight size={14} />
               </Link>
             </div>
           )}
@@ -583,16 +557,16 @@ export default async function MurmanskPage() {
               : { background: "var(--site-accent,#2d6a4f)" }}>
             <h2 className={`text-3xl font-black mb-3 ${!isOutlined ? "text-white" : ""}`}
               style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
-              {isPixel ? "> SIAP BERBURU AURORA?" : isKawaii ? "Siap Berburu Aurora? ✨" : "Siap Berburu Aurora?"}
+              {isPixel ? `> ${destination.finalCta.title.toUpperCase()}` : destination.finalCta.title}
             </h2>
             <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
-              Tim Sundaftrip siap bantu Anda merencanakan perjalanan ke Murmansk dari awal sampai akhir: visa, tiket, hotel, dan aurora hunting guide lokal.
+              {destination.finalCta.description}
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}
               style={isOutlined ? accentStyle : { color: "var(--site-accent-ink,#2d6a4f)" }}>
               <MessageCircle size={18} />
-              {isPixel ? "[ CHAT WHATSAPP SEKARANG ]" : "Chat WhatsApp Sekarang"}
+              {isPixel ? `[ ${destination.finalCta.buttonLabel.toUpperCase()} ]` : destination.finalCta.buttonLabel}
             </a>
           </section>
         )}

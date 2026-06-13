@@ -21,6 +21,7 @@ const FIELDS = [
   "secondaryCtaHref",
   "sections",
   "faqs",
+  "content",
   "schemaType",
   "published",
   "order",
@@ -46,8 +47,11 @@ function validate(data: Record<string, unknown>): string | null {
   if (typeof data.routePath !== "string" || !data.routePath) return "Route path wajib diisi.";
   if (typeof data.title !== "string" || !data.title.trim()) return "Title wajib diisi.";
   if (typeof data.answer !== "string" || !data.answer.trim()) return "Jawaban singkat wajib diisi.";
-  if (!Array.isArray(data.sections)) return "Sections harus berupa array JSON.";
-  if (!Array.isArray(data.faqs)) return "FAQ harus berupa array JSON.";
+  if (!Array.isArray(data.sections)) return "Konten tambahan harus berupa data valid.";
+  if (!Array.isArray(data.faqs)) return "FAQ harus berupa data valid.";
+  if ("content" in data && data.content !== null && (typeof data.content !== "object" || Array.isArray(data.content))) {
+    return "Konten halaman harus berupa data valid.";
+  }
   return null;
 }
 
@@ -88,4 +92,3 @@ export async function POST(req: NextRequest) {
     return apiError(err, { duplicate: "Route path GEO sudah dipakai." });
   }
 }
-

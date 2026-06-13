@@ -136,6 +136,7 @@ model GeoPage {
   secondaryCtaHref  String?
   sections          Json?
   faqs              Json?
+  content           Json?
   schemaType        String   @default("WebPage")
   published         Boolean  @default(true)
   order             Int      @default(0)
