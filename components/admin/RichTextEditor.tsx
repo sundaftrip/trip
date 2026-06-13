@@ -270,8 +270,14 @@ export default function RichTextEditor({ value, onChange }: Props) {
 
       {/* Inline styles */}
       <style>{`
-        .ProseMirror mark { background: #fef08a; color: inherit; border-radius: 2px; padding: 0 2px; }
-        .dark .ProseMirror mark { background: #854d0e; color: #fef9c3; }
+        .ProseMirror mark,
+        .dark .ProseMirror mark {
+          background: #ffe66d;
+          color: #111827;
+          text-shadow: none;
+          border-radius: 2px;
+          padding: 0 2px;
+        }
 
         /* Clean table styling */
         .ProseMirror table { border-collapse: collapse; width: 100%; margin: 1rem 0; }

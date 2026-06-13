@@ -5,7 +5,7 @@
 /* Highlight/seleksi teks — stabilo kuning, font SELALU hitam (kontras di light & dark) */
 ::selection { background: #ffe66d; color: #111827; text-shadow: none; }
 ::-moz-selection { background: #ffe66d; color: #111827; text-shadow: none; }
-mark { background: #ffe66d; color: #111827; }
+mark { background: #ffe66d; color: #111827; text-shadow: none; }
 
 @theme {
   --font-jost: "Jost", sans-serif;
@@ -1674,8 +1674,14 @@ a.gl-pill:has(svg:only-child) {
 .dark .prose code { color: #e2e8f0; background: #1e293b; }
 
 /* ── Highlight / mark — website rendering ── */
-.prose mark { background: #fef08a; color: #1a1a1a; border-radius: 3px; padding: 0 3px; }
-.dark .prose mark { background: #854d0e; color: #fef9c3; }
+.prose mark,
+.dark .prose mark {
+  background: #ffe66d;
+  color: #111827;
+  text-shadow: none;
+  border-radius: 3px;
+  padding: 0 3px;
+}
 
 /* ── Table — website rendering ── */
 .prose table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; border-collapse: collapse; width: max-content; max-width: 100%; min-width: min(100%, 400px); margin: 1.5rem 0; font-size: 0.9rem; }
@@ -2089,10 +2095,16 @@ a.gl-pill:has(svg:only-child) {
 /* ── Stabilo highlighter (coretan marker organik, à la buku catatan) ── */
 /* Coretan stabilo natural (tepi bergerigi seperti goresan tangan) via SVG */
 .stabilo {
+  --stabilo-bg: rgba(255, 225, 77, 0.86);
+  --stabilo-text: #111827;
+  background-color: var(--stabilo-bg);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%23ffe14d' fill-opacity='0.85'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-size: 100% 68%;
-  background-position: 0 74%;
+  background-size: 100% 92%;
+  background-position: 0 58%;
+  color: var(--stabilo-text);
+  text-shadow: none;
+  border-radius: 2px;
   padding: 0 0.2em;
   margin: 0 -0.06em;
   -webkit-box-decoration-break: clone;
@@ -2100,6 +2112,8 @@ a.gl-pill:has(svg:only-child) {
 }
 /* varian warna alternatif (teal SUNDAF) */
 .stabilo--mint {
+  --stabilo-bg: rgba(0, 209, 178, 0.58);
+  --stabilo-text: #031b18;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%2300d1b2' fill-opacity='0.58'/%3E%3C/svg%3E");
 }
 
