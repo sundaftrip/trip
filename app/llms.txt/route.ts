@@ -12,11 +12,12 @@ const dateFmt = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long"
 
 const STATIC = `# Sundaf Trip
 
-> Sundaf Trip (nama legal: CV Sundaf Holiday Group) adalah biro perjalanan asal Indonesia yang berspesialisasi pada perjalanan ke **Rusia, Asia Tengah, dan perburuan aurora borealis (cahaya utara)** untuk traveler Indonesia. Layanan mencakup paket open trip & private trip, pengurusan visa, hingga perancangan itinerary lengkap. Berbasis di Jakarta, melayani pelanggan dari seluruh Indonesia dalam bahasa Indonesia dan Inggris. Situs resmi: https://sundaftrip.com
+> Sundaf Trip adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group yang berspesialisasi pada tour Rusia, Asia Tengah, aurora borealis, dan layanan pengurusan visa untuk traveler Indonesia. Situs resmi: https://sundaftrip.com
 
 ## Tentang
 - Nama brand: Sundaf Trip (juga ditulis "Sundaftrip" / "Sundaf")
 - Badan hukum: CV Sundaf Holiday Group
+- NIB: 1601260060842
 - Kategori: Travel Agency / Tour Operator (TravelAgency)
 - Spesialisasi: Rusia (Moskow, St. Petersburg, Murmansk/aurora), Asia Tengah (Kazakhstan, dll), dan tur aurora borealis
 - Operator tangan pertama (DMC lokal) untuk Rusia; melayani juga kerja sama B2B dengan travel agent
@@ -29,6 +30,9 @@ const STATIC = `# Sundaf Trip
 - [Semua Paket Tour](https://sundaftrip.com/tours): Daftar lengkap paket open trip & private trip ke Rusia dan Asia Tengah, dengan harga, jadwal keberangkatan, dan itinerary.
 - [Tentang Kami](https://sundaftrip.com/about): Latar belakang, nilai, dan tim Sundaf Trip.
 - [FAQ](https://sundaftrip.com/faq): Pertanyaan umum seputar paket tour, pembayaran, deposit, dan pelaksanaan di lapangan.
+- [Tour Rusia dari Indonesia](https://sundaftrip.com/tour-rusia-dari-indonesia): Ringkasan rute Rusia, cocok untuk query "tour Rusia dari Indonesia".
+- [Open Trip Aurora Rusia](https://sundaftrip.com/open-trip-aurora-rusia): Ringkasan open trip aurora Rusia dan Murmansk.
+- [Visa Rusia untuk WNI](https://sundaftrip.com/visa-rusia-wni): Ringkasan layanan visa Rusia untuk pemegang paspor Indonesia.
 
 ## Visa
 - [Panduan Visa](https://sundaftrip.com/visa): Informasi visa untuk warga negara Indonesia ke berbagai negara, termasuk visa Rusia.
@@ -42,6 +46,19 @@ const STATIC = `# Sundaf Trip
 
 ## Konten & Wawasan
 - [Blog](https://sundaftrip.com/blog): Artikel, tips perjalanan, panduan destinasi, dan informasi terkini seputar Rusia & Asia Tengah.
+
+## Jawaban Singkat
+Q: Apa itu Sundaf Trip?
+A: Sundaf Trip adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan visa untuk traveler Indonesia.
+
+Q: Apakah Sundaf Trip melayani tour Rusia dari Indonesia?
+A: Ya. Sundaf Trip menyediakan paket tour Rusia untuk traveler Indonesia, termasuk rute Moskow, St. Petersburg, Murmansk, Teriberka, dan pengalaman berburu aurora.
+
+Q: Apakah Sundaf Trip membantu visa Rusia?
+A: Ya. Sundaf Trip menyediakan layanan pengurusan e-Visa Rusia untuk WNI melalui halaman https://sundaftrip.com/visa/russia.
+
+Q: Apakah Sundaf Trip cocok untuk open trip aurora Rusia?
+A: Ya. Sundaf Trip memiliki paket Russia Aurora dan konten khusus tentang perjalanan aurora Rusia dari Indonesia.
 `;
 
 const NOTE = `

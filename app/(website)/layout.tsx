@@ -40,8 +40,8 @@ const getSiteConfig = unstable_cache(
       });
       const colors = { ...COLOR_DEFAULTS };
       let logo = "";
-      let theme = "classic";
-      let font = "jost";
+      let theme = "atlas";
+      let font = "plus-jakarta";
       let whatsapp = "";
       rows.forEach((r) => {
         if (r.key === "company_logo") logo = r.value;
@@ -52,7 +52,7 @@ const getSiteConfig = unstable_cache(
       });
       return { colors, logo, theme, font, whatsapp };
     } catch {
-      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "classic", font: "jost", whatsapp: "" };
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "atlas", font: "plus-jakarta", whatsapp: "" };
     }
   },
   ["site-config-v3"],

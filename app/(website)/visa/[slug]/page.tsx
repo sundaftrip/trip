@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRigh
 
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
-import { visaSlug, findBySlug } from "@/lib/visa-slug";
+import { findBySlug } from "@/lib/visa-slug";
 import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaults";
 import { FlagIcon } from "@/lib/flag-icon";
 import VisaOrderForm from "@/components/website/VisaOrderForm";
@@ -108,7 +108,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const documents: VisaDocument[] =
     Array.isArray(docsRaw) && docsRaw.length > 0 ? docsRaw : defaults.documents;
   const faqsRaw = (country.faqs as unknown as VisaFaq[]) ?? [];
-  const countryFaqs: VisaFaq[] =
+  let countryFaqs: VisaFaq[] =
     Array.isArray(faqsRaw) && faqsRaw.length > 0 ? faqsRaw : defaults.faqs;
 
   const wa = toWaNumber(companyRows.find((r) => r.key === "company_whatsapp")?.value ?? "");
@@ -121,7 +121,6 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
   const costRaw = country.cost?.trim() || "Gratis";
   const isFree = costRaw === "Gratis";
-  const costStartsWithMulai = /^mulai\s+/i.test(costRaw);
   const costMain = costRaw.replace(/^mulai\s+/i, "");
 
   // "Layanan kami: …" → buang prefiks, sisanya jadi paragraf layanan.
@@ -132,6 +131,11 @@ export default async function VisaDetailPage({ params }: PageProps) {
     /proses\s+([\d–\-]+\s*(?:hari|minggu|bulan)(?:\s+kerja)?)/i,
   );
   const processTime = processMatch?.[1].trim() ?? null;
+
+  const isRussia = slug === "russia" || country.en.toLowerCase() === "russia";
+  if (isRussia) {
+    countryFaqs = russiaVisaFaqs(costMain, processTime, country.stay);
+  }
 
   // FAQPage JSON-LD dari FAQ per-negara yang sama dengan yang dirender
   // sebagai <details> di bawah — bantu AI & Google AI Overviews
@@ -151,6 +155,31 @@ export default async function VisaDetailPage({ params }: PageProps) {
         }
       : null;
 
+  const serviceSchema =
+    isRussia
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "@id": "https://sundaftrip.com/visa/russia#service",
+          name: "Layanan Pengurusan Visa Rusia untuk WNI",
+          serviceType: "Visa assistance",
+          provider: { "@id": "https://sundaftrip.com#organization" },
+          areaServed: { "@type": "Country", name: "Indonesia" },
+          audience: {
+            "@type": "Audience",
+            audienceType: "Pemegang paspor Indonesia yang ingin berkunjung ke Rusia",
+          },
+          url: "https://sundaftrip.com/visa/russia",
+          offers: {
+            "@type": "Offer",
+            price: costMain.replace(/\D/g, "") || undefined,
+            priceCurrency: "IDR",
+            availability: "https://schema.org/InStock",
+            url: "https://sundaftrip.com/visa/russia",
+          },
+        }
+      : null;
+
   return (
     <article className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-950">
       <BreadcrumbSchema
@@ -163,8 +192,13 @@ export default async function VisaDetailPage({ params }: PageProps) {
       {faqSchema && (
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+      {serviceSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
         />
       )}
       {/* ─── HERO ─── */}
@@ -249,6 +283,24 @@ export default async function VisaDetailPage({ params }: PageProps) {
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               {overviewText(visaKey, country.name, country.stay)}
             </p>
+            {isRussia && (
+              <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/30">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+                  Jawaban singkat
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                  WNI memerlukan visa untuk masuk ke Rusia. Sundaf Trip membantu pengurusan
+                  e-Visa Rusia untuk pemegang paspor Indonesia, termasuk pengecekan dokumen,
+                  pengajuan, dan arahan persiapan perjalanan.
+                </p>
+                <Link
+                  href="/visa-rusia-wni"
+                  className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-amber-800 underline-offset-4 hover:underline dark:text-amber-200"
+                >
+                  Baca ringkasan visa Rusia untuk WNI <ArrowRight size={13} />
+                </Link>
+              </div>
+            )}
           </section>
 
           {/* ELIGIBILITY */}
@@ -528,3 +580,29 @@ function overviewText(visa: VisaKey, name: string, stay: string): string {
   }
 }
 
+function russiaVisaFaqs(costLabel: string, processTime: string | null, stay: string): VisaFaq[] {
+  return [
+    {
+      question: "Apakah WNI perlu visa untuk ke Rusia?",
+      answer:
+        "Ya. Pemegang paspor Indonesia perlu visa untuk masuk ke Rusia. Untuk perjalanan wisata tertentu, WNI dapat mengajukan e-Visa Rusia jika memenuhi syarat yang berlaku.",
+    },
+    {
+      question: "Apakah Sundaf Trip membantu pengurusan visa Rusia?",
+      answer:
+        "Ya. Sundaf Trip membantu pengurusan e-Visa Rusia untuk WNI, termasuk pengecekan dokumen, pengisian pengajuan, dan arahan persiapan sebelum keberangkatan.",
+    },
+    {
+      question: "Berapa biaya layanan visa Rusia di Sundaf Trip?",
+      answer: `Biaya layanan e-Visa Rusia yang ditampilkan di situs Sundaf Trip adalah ${costLabel}. Harga dapat berubah, jadi calon traveler sebaiknya konfirmasi ulang sebelum pengajuan.`,
+    },
+    {
+      question: "Berapa lama proses e-Visa Rusia?",
+      answer: `Estimasi proses e-Visa Rusia yang ditampilkan di situs Sundaf Trip adalah ${processTime ?? "mengikuti estimasi sistem pengajuan"}. Untuk perjalanan yang sudah dekat, sebaiknya konsultasi lebih awal agar ada waktu koreksi dokumen.`,
+    },
+    {
+      question: "Berapa lama masa tinggal dengan e-Visa Rusia?",
+      answer: `Masa tinggal yang ditampilkan di halaman Sundaf Trip adalah ${stay}. Aturan visa dapat berubah, sehingga detail final perlu dikonfirmasi sebelum pengajuan.`,
+    },
+  ];
+}
