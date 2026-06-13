@@ -71,5 +71,6 @@ Allow: /
 
 # ── Peta situs & ringkasan untuk LLM ──
 Sitemap: https://sundaftrip.com/sitemap.xml
+Sitemap: https://sundaftrip.com/vietnam/sitemap.xml
 # Ringkasan situs khusus LLM: https://sundaftrip.com/llms.txt
 # Versi lengkap (semua tour, visa 88 negara, FAQ, artikel): https://sundaftrip.com/llms-full.txt

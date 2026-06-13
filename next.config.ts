@@ -55,6 +55,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // Landing page statis trip perdana Vietnam (file di public/vietnam/).
+      // Sajikan di URL bersih /vietnam tanpa trailing slash; aset & /vietnam/
+      // tetap jalan karena semua path di halaman ini absolut (/vietnam/...).
+      { source: "/vietnam", destination: "/vietnam/index.html" },
+    ];
+  },
   async headers() {
     return [
       {

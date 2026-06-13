@@ -47,6 +47,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
     // /tours listing — penting sebagai kandidat sitelink "Semua Paket Tour"
     { url: `${base}/tours`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
+    // Landing page konversi trip perdana Vietnam (Sapa & Halong). Halaman
+    // statis di public/vietnam/, punya juga sitemap khusus /vietnam/sitemap.xml.
+    { url: `${base}/vietnam`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa/faq`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
