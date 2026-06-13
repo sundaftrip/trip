@@ -122,6 +122,29 @@ model Blog {
   scrapedContent ScrapedContent?
 }
 
+model GeoPage {
+  id                String   @id @default(cuid())
+  routePath         String   @unique
+  title             String
+  eyebrow           String?
+  metaTitle         String?
+  metaDescription   String?  @db.Text
+  answer            String   @db.Text
+  primaryCtaLabel   String?
+  primaryCtaHref    String?
+  secondaryCtaLabel String?
+  secondaryCtaHref  String?
+  sections          Json?
+  faqs              Json?
+  schemaType        String   @default("WebPage")
+  published         Boolean  @default(true)
+  order             Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([published, order])
+}
+
 model ScrapedContent {
   id             String   @id @default(cuid())
   sourceUrl      String   @unique

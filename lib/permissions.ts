@@ -18,7 +18,8 @@ export async function checkPermission(
     });
     if (user?.permissions) {
       const perms = user.permissions as Record<string, boolean>;
-      return perms[key] === true;
+      if (key in perms) return perms[key] === true;
+      return DEFAULT_PERMISSIONS[user.role]?.[key] === true;
     }
     // No custom permissions — fall back to role defaults
     return DEFAULT_PERMISSIONS[user?.role ?? "EDITOR"]?.[key] === true;
@@ -35,7 +36,9 @@ export async function getUsersWithPermissions() {
   });
   return users.map((u) => ({
     ...u,
-    permissions: (u.permissions as Record<string, boolean> | null) ??
-      Object.fromEntries(ALL_PERMISSION_KEYS.map((k) => [k, DEFAULT_PERMISSIONS[u.role]?.[k] ?? false])),
+    permissions: Object.fromEntries(ALL_PERMISSION_KEYS.map((k) => [
+      k,
+      (u.permissions as Record<string, boolean> | null)?.[k] ?? DEFAULT_PERMISSIONS[u.role]?.[k] ?? false,
+    ])),
   }));
 }

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
+import { getGeoPageContent } from "@/lib/geo-pages";
+import { MapPin, Clock, MessageCircle, Star, ChevronRight, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 
@@ -11,27 +12,37 @@ import ActivityVideo from "@/components/website/ActivityVideo";
 // crab), Air Terjun Batareyskiy (kini snowmobile), Jejak Film Leviathan (kini
 // kereta rusa). Ganti URL `img` di entri ACTIVITIES terkait bila foto sudah ada.
 
-export const metadata: Metadata = {
-  title: "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip",
-  description:
-    "Panduan lengkap wisata Teriberka, Rusia untuk traveler Indonesia: cara ke sana dari Murmansk, whale watching Laut Barents, aurora borealis, pantai telur naga, lokasi film Leviathan, dan estimasi budget dalam rupiah.",
-  keywords: [
-    "wisata teriberka", "teriberka rusia", "whale watching teriberka",
-    "aurora borealis teriberka", "lokasi film leviathan", "laut barents",
-    "paket tour teriberka indonesia", "wisata rusia dari jakarta", "sundaftrip rusia",
-  ],
-  openGraph: {
-    title: "Wisata Teriberka, Desa di Ujung Dunia, Sundaftrip",
-    description: "Panduan lengkap wisata Teriberka Rusia untuk traveler Indonesia. Cara ke sana, paus Laut Barents, aurora, budget IDR.",
-    type: "article",
-    images: [{ url: "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg", width: 1200, height: 630, alt: "Teriberka di tepi Laut Barents, Rusia bersama Sundaf Trip" }],
-  },
-  alternates: { canonical: "https://sundaftrip.com/destinations/teriberka" },
-};
+const ROUTE_PATH = "/destinations/teriberka";
+const DEFAULT_META_DESCRIPTION =
+  "Panduan lengkap wisata Teriberka, Rusia untuk traveler Indonesia: cara ke sana dari Murmansk, whale watching Laut Barents, aurora borealis, pantai telur naga, lokasi film Leviathan, dan estimasi budget dalam rupiah.";
+const OG_IMAGE = "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const geoContent = await getGeoPageContent(ROUTE_PATH);
+  const title = geoContent.metaTitle || "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip";
+  const description = geoContent.metaDescription || DEFAULT_META_DESCRIPTION;
+
+  return {
+    title,
+    description,
+    keywords: [
+      "wisata teriberka", "teriberka rusia", "whale watching teriberka",
+      "aurora borealis teriberka", "lokasi film leviathan", "laut barents",
+      "paket tour teriberka indonesia", "wisata rusia dari jakarta", "sundaftrip rusia",
+    ],
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Teriberka di tepi Laut Barents, Rusia bersama Sundaf Trip" }],
+    },
+    alternates: { canonical: "https://sundaftrip.com/destinations/teriberka" },
+  };
+}
 
 async function getData() {
-  const [companyRows, tours, relatedPosts] = await Promise.all([
-    prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "site_theme"] } } }),
+  const [companyRows, tours, relatedPosts, geoContent] = await Promise.all([
+    prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "site_theme"] } } }).catch(() => []),
     prisma.tour.findMany({
       where: {
         status: { in: ["ACTIVE", "FULL"] },
@@ -45,7 +56,7 @@ async function getData() {
       },
       orderBy: { tripDate: "asc" },
       take: 3,
-    }),
+    }).catch(() => []),
     prisma.blog.findMany({
       where: {
         published: true,
@@ -61,7 +72,8 @@ async function getData() {
       orderBy: { date: "desc" },
       take: 3,
       select: { id: true, slug: true, title: true, excerpt: true, cover: true, readTime: true, date: true },
-    }),
+    }).catch(() => []),
+    getGeoPageContent(ROUTE_PATH),
   ]);
   const company: Record<string, string> = {};
   companyRows.forEach((r) => { company[r.key] = r.value; });
@@ -70,6 +82,7 @@ async function getData() {
     theme: company["site_theme"] ?? "classic",
     tours,
     relatedPosts,
+    geoContent,
   };
 }
 
@@ -102,7 +115,7 @@ const FAQ = [
 ];
 
 export default async function TeriberkaPage() {
-  const { wa, theme, tours, relatedPosts } = await getData();
+  const { wa, theme, tours, relatedPosts, geoContent } = await getData();
 
   /* ── theme helpers (same pattern as tours/page.tsx) ── */
   const isKawaii   = theme === "kawaii";
@@ -148,6 +161,9 @@ export default async function TeriberkaPage() {
 
   const waMsg = encodeURIComponent("Halo Sundaftrip! Saya tertarik dengan paket wisata Teriberka (Laut Barents / aurora / whale watching). Bisa tolong info lebih lanjut?");
   const waUrl = wa ? `https://wa.me/${wa}?text=${waMsg}` : "#";
+  const geoFaq = geoContent.faqs.length > 0
+    ? geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }))
+    : FAQ;
 
   return (
     <div className={`min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
@@ -160,9 +176,9 @@ export default async function TeriberkaPage() {
           "@graph": [
             {
               "@type": "Article",
-              headline: "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents",
-              description: "Panduan lengkap wisata Teriberka, Rusia untuk traveler Indonesia: cara ke sana dari Murmansk, whale watching, aurora borealis, pantai telur naga, lokasi film Leviathan, dan estimasi budget.",
-              image: "https://res.cloudinary.com/dlmgl1grq/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg",
+              headline: geoContent.title,
+              description: geoContent.metaDescription || DEFAULT_META_DESCRIPTION,
+              image: OG_IMAGE,
               inLanguage: "id-ID",
               mainEntityOfPage: "https://sundaftrip.com/destinations/teriberka",
               author: { "@type": "Organization", name: "Sundaf Trip", url: "https://sundaftrip.com" },
@@ -184,7 +200,7 @@ export default async function TeriberkaPage() {
             },
             {
               "@type": "FAQPage",
-              mainEntity: FAQ.map((f) => ({
+              mainEntity: geoFaq.map((f) => ({
                 "@type": "Question",
                 name: f.q,
                 acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -271,7 +287,7 @@ export default async function TeriberkaPage() {
       </div>
 
       {/* ── QUICK FACTS ── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 mb-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 mb-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
             <div key={label} className={`${cardClass} p-4`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
@@ -284,6 +300,37 @@ export default async function TeriberkaPage() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ── GEO ANSWER ── */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">
+        <div className={`${cardClass} p-5 sm:p-6`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
+            {geoContent.eyebrow}
+          </span>
+          <h2 className={`text-2xl font-black mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
+            Jawaban Singkat
+          </h2>
+          <p className={`text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`} style={{ color: subClr }}>
+            {geoContent.answer}
+          </p>
+          {(geoContent.primaryCtaLabel || geoContent.secondaryCtaLabel) && (
+            <div className="flex flex-wrap gap-3 mt-5">
+              {geoContent.primaryCtaLabel && geoContent.primaryCtaHref && (
+                <Link href={geoContent.primaryCtaHref} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90" style={accentStyle}>
+                  {geoContent.primaryCtaLabel}
+                </Link>
+              )}
+              {geoContent.secondaryCtaLabel && geoContent.secondaryCtaHref && (
+                <Link href={geoContent.secondaryCtaHref} className={`inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm transition ${isOutlined ? pillClass : "rounded-full border"}`}
+                  style={isOutlined ? eyebrowStyle : { borderColor: "var(--site-accent,#2d6a4f)", color: "var(--site-accent-ink,#2d6a4f)" }}>
+                  {geoContent.secondaryCtaLabel}
+                </Link>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -501,7 +548,7 @@ export default async function TeriberkaPage() {
             Pertanyaan yang Sering Ditanya
           </h2>
           <div className="space-y-4">
-            {FAQ.map(({ q, a }) => (
+            {geoFaq.map(({ q, a }) => (
               <div key={q} className={`${isOutlined ? cardClass : "border border-gray-200 dark:border-slate-800 rounded-2xl"} p-6`}
                 style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
                 <h3 className={`font-bold mb-3 flex items-start gap-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>

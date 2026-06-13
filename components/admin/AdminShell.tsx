@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Newspaper, Info, ExternalLink, Wallet, Database, Inbox,
+  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Info, ExternalLink, Wallet, Database, Inbox, Globe2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,7 @@ const navItems = [
   { href: "/admin/inquiries", label: "Lead Masuk", icon: Inbox },
   { href: "/admin/database-visa", label: "Database Visa", icon: Database },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
+  { href: "/admin/geo", label: "GEO", icon: Globe2 },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
@@ -41,17 +42,8 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function AdminShell({ role, user, logo, children }: Props) {
-  const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-
-  // Close sidebar on route change
-  useEffect(() => { setSidebarOpen(false); }, [pathname]);
-
-  const NavLinks = ({ onClose }: { onClose?: () => void }) => (
+function NavLinks({ pathname, role, onClose }: { pathname: string; role: string; onClose?: () => void }) {
+  return (
     <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
       <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</p>
       {navItems.map((item) => {
@@ -91,6 +83,17 @@ export default function AdminShell({ role, user, logo, children }: Props) {
       )}
     </nav>
   );
+}
+
+export default function AdminShell({ role, user, logo, children }: Props) {
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
@@ -100,7 +103,7 @@ export default function AdminShell({ role, user, logo, children }: Props) {
         <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
           <Image src={logo || "/logo.png"} alt="Logo" width={120} height={36} className="h-8 w-auto object-contain dark:brightness-0 dark:invert" />
         </div>
-        <NavLinks />
+        <NavLinks pathname={pathname} role={role} />
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">
           <p className="text-xs text-center text-gray-400">Travel CMS</p>
         </div>
@@ -117,7 +120,7 @@ export default function AdminShell({ role, user, logo, children }: Props) {
                 <X size={18} />
               </button>
             </div>
-            <NavLinks onClose={() => setSidebarOpen(false)} />
+            <NavLinks pathname={pathname} role={role} onClose={() => setSidebarOpen(false)} />
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
               <p className="text-xs text-center text-gray-400">Travel CMS</p>
             </div>
