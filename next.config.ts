@@ -53,6 +53,21 @@ const nextConfig: NextConfig = {
         destination: "/tours",
         permanent: true,
       },
+      {
+        source: "/sundaftrip",
+        destination: "/sundaf-trip",
+        permanent: true,
+      },
+      {
+        source: "/sundaf",
+        destination: "/sundaf-trip",
+        permanent: true,
+      },
+      {
+        source: "/trip-sundaf",
+        destination: "/sundaf-trip",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

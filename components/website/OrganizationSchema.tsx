@@ -141,7 +141,7 @@ export default async function OrganizationSchema() {
     "@type": ["Organization", "TravelAgency"],
     "@id": `${SITE_URL}#organization`,
     name,
-    alternateName: ["Sundaf Trip", "sundaftrip", "sundaftrip.com", "Sundaf", "Sundaf Holiday Group", DEFAULT_LEGAL],
+    alternateName: ["Sundaf Trip", "Sundaftrip", "Trip Sundaf", "sundaftrip", "sundaftrip.com", "Sundaf", "Sundaf Holiday Group", DEFAULT_LEGAL],
     legalName: c["company_legal_name"] || DEFAULT_LEGAL,
     url: SITE_URL,
     logo: {
@@ -243,7 +243,7 @@ export default async function OrganizationSchema() {
     "@id": `${SITE_URL}#website`,
     url: SITE_URL,
     name,
-    alternateName: "sundaftrip",
+    alternateName: ["Sundaf Trip", "Sundaftrip", "Trip Sundaf", "Sundaf", "sundaftrip.com"],
     description,
     inLanguage: "id-ID",
     publisher: { "@id": `${SITE_URL}#organization` },
@@ -261,12 +261,10 @@ export default async function OrganizationSchema() {
     <>
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
       />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
       />
     </>

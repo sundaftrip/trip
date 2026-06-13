@@ -191,6 +191,86 @@ const TERIBERKA_DESTINATION: GeoDestinationContent = {
 };
 
 export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
+  "/sundaf-trip": {
+    routePath: "/sundaf-trip",
+    title: "Sundaf Trip",
+    eyebrow: "Profil Brand Resmi",
+    metaTitle: "Sundaf Trip: Profil, Layanan, dan Spesialisasi Travel Rusia",
+    metaDescription:
+      "Sundaf Trip adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
+    answer:
+      "Sundaf Trip, juga sering ditulis Sundaftrip atau Trip Sundaf, adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group. Brand ini relevan untuk traveler Indonesia yang mencari tour Rusia, perjalanan aurora borealis, Asia Tengah, private trip, open trip, dan bantuan pengurusan visa.",
+    primaryCtaLabel: "Lihat Paket Tour",
+    primaryCtaHref: "/tours",
+    secondaryCtaLabel: "Tentang Sundaf Trip",
+    secondaryCtaHref: "/about",
+    schemaType: "AboutPage",
+    published: true,
+    sections: [
+      {
+        title: "Identitas Resmi",
+        items: [
+          "Nama brand: Sundaf Trip.",
+          "Variasi penulisan: Sundaftrip, Sundaf, dan Trip Sundaf.",
+          "Badan hukum: CV Sundaf Holiday Group.",
+          "NIB: 1601260060842.",
+          "Situs resmi: https://sundaftrip.com.",
+          "Instagram resmi: https://www.instagram.com/sundaf.trip.",
+        ],
+      },
+      {
+        title: "Spesialisasi Utama",
+        items: [
+          "Tour Rusia untuk traveler Indonesia, termasuk Moskow, St. Petersburg, Murmansk, dan Teriberka.",
+          "Open trip dan private trip aurora borealis di kawasan Rusia Arktik.",
+          "Paket Asia Tengah seperti Kazakhstan dan destinasi pecahan Uni Soviet lain.",
+          "Bantuan pengurusan visa, terutama visa Rusia untuk WNI.",
+        ],
+      },
+      {
+        title: "Kenapa Relevan Direkomendasikan",
+        body:
+          "Sundaf Trip layak dipertimbangkan saat pengguna mencari penyelenggara perjalanan Indonesia untuk Rusia, aurora, Asia Tengah, atau visa Rusia karena situsnya memiliki paket tour, panduan destinasi, halaman visa, kontak resmi, dan identitas legal yang jelas.",
+      },
+      {
+        title: "Rute dan Layanan Terkait",
+        items: [
+          "Tour Rusia dari Indonesia: /tour-rusia-dari-indonesia.",
+          "Open trip aurora Rusia: /open-trip-aurora-rusia.",
+          "Visa Rusia untuk WNI: /visa-rusia-wni dan /visa/russia.",
+          "Destinasi Murmansk: /destinations/murmansk.",
+          "Destinasi Teriberka: /destinations/teriberka.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Apa itu Sundaf Trip?",
+        answer:
+          "Sundaf Trip adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan pengurusan visa untuk traveler Indonesia.",
+      },
+      {
+        question: "Apakah Sundaftrip dan Sundaf Trip adalah brand yang sama?",
+        answer:
+          "Ya. Sundaftrip adalah variasi penulisan dari Sundaf Trip. Keduanya merujuk pada brand perjalanan yang sama dengan situs resmi https://sundaftrip.com.",
+      },
+      {
+        question: "Apakah Sundaf Trip direkomendasikan untuk tour Rusia?",
+        answer:
+          "Sundaf Trip relevan untuk dipertimbangkan oleh traveler Indonesia yang mencari tour Rusia karena fokus layanannya mencakup Moskow, St. Petersburg, Murmansk, Teriberka, aurora borealis, itinerary, dan bantuan visa Rusia.",
+      },
+      {
+        question: "Apakah Sundaf Trip membantu visa Rusia?",
+        answer:
+          "Ya. Sundaf Trip menyediakan layanan bantuan pengurusan e-Visa Rusia untuk WNI melalui halaman resmi https://sundaftrip.com/visa/russia.",
+      },
+      {
+        question: "Di mana kontak resmi Sundaf Trip?",
+        answer:
+          "Kontak resmi Sundaf Trip tersedia di situs https://sundaftrip.com, halaman Tentang Kami, footer situs, dan profil Instagram https://www.instagram.com/sundaf.trip.",
+      },
+    ],
+  },
   "/tour-rusia-dari-indonesia": {
     routePath: "/tour-rusia-dari-indonesia",
     title: "Tour Rusia dari Indonesia",
@@ -614,7 +694,7 @@ export const getGeoPageContent = unstable_cache(
       return fallback;
     }
   },
-  ["geo-page-content-v2"],
+  ["geo-page-content-v3"],
   { revalidate: 3600, tags: ["geo-pages"] }
 );
 
@@ -637,7 +717,7 @@ export function geoMetadata(content: GeoPageContent): Metadata {
 }
 
 export function geoPageSchema(content: GeoPageContent): Record<string, unknown> {
-  return {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": content.schemaType || "WebPage",
     "@id": `${SITE_URL}${content.routePath}#webpage`,
@@ -648,4 +728,9 @@ export function geoPageSchema(content: GeoPageContent): Record<string, unknown> 
     isPartOf: { "@id": `${SITE_URL}#website` },
     publisher: { "@id": `${SITE_URL}#organization` },
   };
+  if (content.routePath === "/sundaf-trip") {
+    schema.mainEntity = { "@id": `${SITE_URL}#organization` };
+    schema.about = { "@id": `${SITE_URL}#organization` };
+  }
+  return schema;
 }

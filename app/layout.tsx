@@ -5,8 +5,6 @@ import "flag-icons/css/flag-icons.min.css";
 import Providers from "@/components/Providers";
 import Analytics from "@/components/Analytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
 
 /* Font loading strategy:
    - Jost: default body font, PRELOAD (paling sering jadi --site-font)
@@ -41,32 +39,6 @@ const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 const BRAND_NAME = "Sundaf Trip";
 const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
-// Di-cache 1 jam: nama & logo perusahaan nyaris tak pernah berubah.
-// Tanpa cache, query ini di generateMetadata memaksa SEMUA halaman jadi
-// dynamic rendering → kena DB tiap request → TTFB tinggi. Saat admin
-// mengubah company info, panggil revalidateTag("company-meta").
-const getCompanyMeta = unstable_cache(
-  async () => {
-    try {
-      const rows = await prisma.companyInfo.findMany({
-        where: { key: { in: ["company_name", "company_logo"] } },
-      });
-      const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
-      return {
-        legalName: map["company_name"] ?? "CV Sundaf Holiday Group",
-        logo: map["company_logo"] ?? null,
-      };
-    } catch {
-      return {
-        legalName: "CV Sundaf Holiday Group",
-        logo: null,
-      };
-    }
-  },
-  ["company-meta"],
-  { revalidate: 3600, tags: ["company-meta"] }
-);
-
 export async function generateMetadata(): Promise<Metadata> {
   // logo dari getCompanyMeta() tidak dipakai lagi di sini — apple icon kini
   // PNG persegi statis di /icons (logo.png 862×241 tidak persegi).
@@ -86,6 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: [
       "Sundaf Trip",
       "Sundaftrip",
+      "Trip Sundaf",
       "Sundaf",
       "paket tour Rusia",
       "trip aurora",
