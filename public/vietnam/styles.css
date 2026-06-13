@@ -501,7 +501,39 @@ a { color: inherit; }
   .footer { padding-bottom: 36px; }
 }
 @media (max-width: 759px) {
-  .strip__grid { grid-template-columns: 1fr; }
+  /* Mayoritas pengunjung mobile cenderung scroll cepat ke bawah, jadi seksi
+     berbasis kartu/poin dibuat GESER HORIZONTAL (bukan tumpukan vertikal yang
+     dalam). Lebar kartu < 100% supaya kartu berikutnya "mengintip" = sinyal
+     bisa digeser. Desktop tidak terpengaruh (aturan ini hanya di mobile). */
+  .hscroll {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 24px;
+    -webkit-overflow-scrolling: touch;
+    margin: 28px -24px 0;      /* bleed ke tepi layar */
+    padding: 4px 24px 14px;    /* kartu pertama tetap sejajar konten */
+    scrollbar-width: none;
+  }
+  .hscroll::-webkit-scrollbar { display: none; }
+  .hscroll > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+  .why__grid.hscroll > .card { width: 80%; }
+  .strip__grid.hscroll > .strip__item { width: 82%; }
+  .timeline.hscroll { gap: 12px; }
+  .timeline.hscroll > .timeline__item { width: 84%; }
+  .trust__stats.hscroll > .stat { width: 46%; }
+  .risk__grid.hscroll > .risk__item { width: 80%; }
+
+  /* Hemat kedalaman vertikal di mobile */
+  .section { padding: 56px 0; }
+  .strip { padding-bottom: 56px; }
+
   .proof__grid { grid-template-columns: 1fr 1fr; }
   .timeline__item { grid-template-columns: 1fr; gap: 6px; padding: 20px; }
   .hero__actions .btn { width: 100%; }
