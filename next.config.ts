@@ -133,6 +133,30 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      {
+        source: "/sundaftrip-company-profile.pdf",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        ],
+      },
+      {
+        source: "/sundaftrip-company-profile-billy.pdf",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        ],
+      },
+      {
+        source: "/sundaftrip-company-profile-ru.pdf",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        ],
+      },
+      {
+        source: "/partner/billy.jpg",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noimageindex, noarchive" },
+        ],
+      },
     ];
   },
 };

@@ -39,6 +39,7 @@ export const metadata: Metadata = {
   title: "Tentang Kami",
   description: "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.",
   alternates: { canonical: "https://sundaftrip.com/about" },
+  robots: { index: false, follow: false },
 };
 
 /* ── Default fallbacks (dipakai kalau admin belum mengisi CMS) ── */
