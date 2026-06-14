@@ -78,58 +78,60 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
   return (
     <section className="mb-14">
       {/* Filter, stack vertikal di mobile, sejajar di sm+ */}
-      <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap mb-4">
-        <div className="relative sm:flex-1 sm:min-w-[180px] sm:max-w-xs">
-          <Search
-            size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Cari negara..."
-            className={`w-full pl-9 ${FIELD}`}
-          />
+      <div className="sticky top-16 sm:top-20 z-40 -mx-4 sm:mx-0 mb-4 border-y border-gray-200/80 bg-gray-50/95 px-4 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-gray-50/85 dark:border-gray-800/80 dark:bg-gray-950/95 dark:supports-[backdrop-filter]:bg-gray-950/85">
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+          <div className="relative sm:flex-1 sm:min-w-[180px] sm:max-w-xs">
+            <Search
+              size={15}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Cari negara..."
+              className={`w-full pl-9 ${FIELD}`}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2.5 sm:contents">
+            <select
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              className={`${FIELD} cursor-pointer w-full sm:w-auto`}
+            >
+              <option value="">Semua Wilayah</option>
+              {REGIONS.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            <select
+              value={visa}
+              onChange={(e) => setVisa(e.target.value)}
+              className={`${FIELD} cursor-pointer w-full sm:w-auto`}
+            >
+              <option value="">Semua Jenis Visa</option>
+              {VISA_KEYS.map((v) => (
+                <option key={v} value={v}>
+                  {VISA_LABEL[v]}
+                </option>
+              ))}
+            </select>
+          </div>
+          {hasFilter && (
+            <button
+              type="button"
+              onClick={() => {
+                setQ("");
+                setRegion("");
+                setVisa("");
+              }}
+              className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              Reset filter
+            </button>
+          )}
         </div>
-        <div className="grid grid-cols-2 gap-2.5 sm:contents">
-          <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            className={`${FIELD} cursor-pointer w-full sm:w-auto`}
-          >
-            <option value="">Semua Wilayah</option>
-            {REGIONS.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-          <select
-            value={visa}
-            onChange={(e) => setVisa(e.target.value)}
-            className={`${FIELD} cursor-pointer w-full sm:w-auto`}
-          >
-            <option value="">Semua Jenis Visa</option>
-            {VISA_KEYS.map((v) => (
-              <option key={v} value={v}>
-                {VISA_LABEL[v]}
-              </option>
-            ))}
-          </select>
-        </div>
-        {hasFilter && (
-          <button
-            type="button"
-            onClick={() => {
-              setQ("");
-              setRegion("");
-              setVisa("");
-            }}
-            className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-          >
-            Reset filter
-          </button>
-        )}
       </div>
 
       {/* MOBILE: card stack, sampai md */}
