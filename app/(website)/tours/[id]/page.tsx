@@ -680,7 +680,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
                             <span className="break-words">{item.name}</span>
                             {item.tag === "recommended" && (
-                              <span className="flag-wave shrink-0 -translate-y-1 px-1 py-0.5 text-[6px] font-bold leading-none tracking-tight text-white">REKOMENDASI</span>
+                              <span className="relative inline-flex shrink-0 -translate-y-1 overflow-hidden rounded-sm border border-emerald-300/70 bg-gradient-to-r from-emerald-700 via-emerald-500 to-emerald-700 px-1.5 py-[2px] text-[7px] font-black leading-none tracking-normal text-white shadow-[0_1px_5px_rgba(16,185,129,0.34)] ring-1 ring-white/40">
+                                <span className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-white/35 via-white/15 to-transparent" />
+                                <span className="relative">REKOMENDASI</span>
+                              </span>
                             )}
                           </span>
                           <span className={`shrink-0 font-${isTropical ? "black" : "medium"} text-gray-900 dark:text-white`}>+{formatCurrency(item.price)}</span>
