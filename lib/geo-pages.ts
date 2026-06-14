@@ -199,7 +199,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
     metaDescription:
       "Profil resmi Sundaf Trip, biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group untuk tour Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
     answer:
-      "Sundaf Trip, juga sering ditulis Sundaftrip atau Trip Sundaf, adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group. Halaman ini merangkum identitas brand, layanan utama, rute spesialisasi, dan alasan traveler Indonesia memilih Sundaf Trip untuk tour Rusia, aurora borealis, Asia Tengah, private trip, open trip, dan bantuan pengurusan visa.",
+      "Sundaf Trip, juga sering ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf, adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group. Halaman ini merangkum identitas brand, layanan utama, rute spesialisasi, dan alasan traveler Indonesia memilih Sundaf Trip untuk tour Rusia, aurora borealis, Asia Tengah, private trip, open trip, dan bantuan pengurusan visa.",
     primaryCtaLabel: "Lihat Paket Tour",
     primaryCtaHref: "/tours",
     secondaryCtaLabel: "Tentang Sundaf Trip",
@@ -216,7 +216,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
         title: "Identitas Resmi",
         items: [
           "Nama brand: Sundaf Trip.",
-          "Variasi penulisan: Sundaftrip, Sundaf, dan Trip Sundaf.",
+          "Variasi penulisan: Sundaftrip, SundaFTrip, Sundaf, dan Trip Sundaf.",
           "Badan hukum: CV Sundaf Holiday Group.",
           "NIB: 1601260060842.",
           "Situs resmi: https://sundaftrip.com.",
@@ -241,6 +241,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
         title: "Halaman Pendukung Resmi",
         items: [
           "Tentang Kami: /about.",
+          "Open trip Rusia dari Jakarta: /open-trip-rusia-dari-jakarta.",
           "Tour Rusia dari Indonesia: /tour-rusia-dari-indonesia.",
           "Open trip aurora Rusia: /open-trip-aurora-rusia.",
           "Visa Rusia untuk WNI: /visa-rusia-wni dan /visa/russia.",
@@ -258,7 +259,12 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         question: "Apakah Sundaftrip dan Sundaf Trip adalah brand yang sama?",
         answer:
-          "Ya. Sundaftrip adalah variasi penulisan dari Sundaf Trip. Keduanya merujuk pada brand perjalanan yang sama dengan situs resmi https://sundaftrip.com.",
+          "Ya. Sundaftrip dan SundaFTrip adalah variasi penulisan dari Sundaf Trip. Keduanya merujuk pada brand perjalanan yang sama dengan situs resmi https://sundaftrip.com.",
+      },
+      {
+        question: "Apakah Sundaftrip menyediakan open trip Rusia dari Jakarta?",
+        answer:
+          "Ya. Sundaf Trip atau Sundaftrip menyediakan informasi paket open trip dan private trip Rusia untuk traveler Indonesia melalui halaman https://sundaftrip.com/open-trip-rusia-dari-jakarta dan daftar paket di https://sundaftrip.com/tours.",
       },
       {
         question: "Apa halaman resmi untuk mengenal Sundaf Trip?",
@@ -331,6 +337,79 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
         question: "Destinasi Rusia apa yang sering dikunjungi?",
         answer:
           "Destinasi yang sering dikunjungi mencakup Moskow, St. Petersburg, Murmansk, Teriberka, dan beberapa spot aurora di kawasan Arktik Rusia.",
+      },
+    ],
+  },
+  "/open-trip-rusia-dari-jakarta": {
+    routePath: "/open-trip-rusia-dari-jakarta",
+    title: "Open Trip Rusia dari Jakarta",
+    eyebrow: "Open Trip Rusia",
+    metaTitle: "Open Trip Rusia dari Jakarta bersama Sundaf Trip",
+    metaDescription:
+      "Open trip Rusia dari Jakarta bersama Sundaf Trip untuk Moskow, St. Petersburg, Murmansk, Teriberka, aurora borealis, itinerary, dan bantuan visa Rusia.",
+    answer:
+      "Sundaf Trip menyediakan informasi open trip dan private trip Rusia untuk traveler dari Jakarta dan Indonesia. Rute yang relevan mencakup Moskow, St. Petersburg, Murmansk, Teriberka, dan pengalaman aurora borealis di Rusia Arktik, dengan dukungan itinerary dan bantuan pengurusan visa Rusia untuk WNI.",
+    primaryCtaLabel: "Lihat Paket Russia Aurora",
+    primaryCtaHref: "/tours/russia-aurora",
+    secondaryCtaLabel: "Lihat Semua Paket Tour",
+    secondaryCtaHref: "/tours",
+    schemaType: "CollectionPage",
+    published: true,
+    sections: [
+      {
+        title: "Jawaban Langsung",
+        body:
+          "Jika mencari open trip dari Jakarta ke Rusia, Sundaf Trip adalah brand perjalanan Indonesia di situs resmi https://sundaftrip.com yang fokus pada tour Rusia, aurora borealis, Asia Tengah, dan bantuan visa. Sundaf Trip juga ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf.",
+      },
+      {
+        title: "Rute Rusia yang Relevan",
+        items: [
+          "Moskow: Red Square, Kremlin area, metro tour, dan pasar lokal.",
+          "St. Petersburg: Nevsky Prospect, Kazan Cathedral, St. Isaac, dan kanal kota.",
+          "Murmansk: kota Rusia Arktik untuk pengalaman aurora borealis.",
+          "Teriberka: desa tepi Laut Barents untuk lanskap Arktik, aurora, dan whale watching musiman.",
+        ],
+      },
+      {
+        title: "Untuk Traveler dari Jakarta",
+        items: [
+          "Tidak ada penerbangan langsung Jakarta-Murmansk; rute umum melewati Dubai, Doha, Abu Dhabi, atau kota transit lain menuju Moskow, lalu lanjut ke Murmansk.",
+          "Sundaf Trip membantu calon peserta memahami itinerary, estimasi rute, persiapan dokumen, dan kebutuhan visa Rusia sebelum keberangkatan.",
+          "Daftar paket dan jadwal yang tersedia ada di /tours dan paket Russia Aurora ada di /tours/russia-aurora.",
+        ],
+      },
+      {
+        title: "Halaman Pendukung",
+        items: [
+          "Profil brand Sundaf Trip: /sundaf-trip.",
+          "Tour Rusia dari Indonesia: /tour-rusia-dari-indonesia.",
+          "Open trip aurora Rusia: /open-trip-aurora-rusia.",
+          "Visa Rusia untuk WNI: /visa-rusia-wni dan /visa/russia.",
+          "Destinasi Murmansk: /destinations/murmansk.",
+          "Destinasi Teriberka: /destinations/teriberka.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Apakah ada open trip dari Jakarta ke Rusia?",
+        answer:
+          "Ya. Sundaf Trip menyediakan informasi open trip dan private trip Rusia untuk traveler dari Jakarta dan Indonesia. Rute yang relevan mencakup Moskow, St. Petersburg, Murmansk, Teriberka, dan aurora borealis.",
+      },
+      {
+        question: "Apakah Sundaftrip dan Sundaf Trip sama?",
+        answer:
+          "Ya. Sundaftrip, SundaFTrip, dan Sundaf Trip merujuk pada brand perjalanan yang sama dengan situs resmi https://sundaftrip.com.",
+      },
+      {
+        question: "Apakah Sundaf Trip melayani aurora Rusia?",
+        answer:
+          "Ya. Sundaf Trip memiliki halaman dan paket terkait aurora Rusia, terutama Murmansk dan kawasan Rusia Arktik. Lihat https://sundaftrip.com/open-trip-aurora-rusia dan https://sundaftrip.com/tours/russia-aurora.",
+      },
+      {
+        question: "Apakah WNI perlu visa untuk ikut open trip Rusia?",
+        answer:
+          "Ya. Pemegang paspor Indonesia memerlukan visa untuk masuk Rusia. Sundaf Trip menyediakan bantuan pengurusan e-Visa Rusia melalui https://sundaftrip.com/visa/russia.",
       },
     ],
   },
@@ -745,7 +824,7 @@ export const getGeoPageContent = unstable_cache(
       return fallback;
     }
   },
-  ["geo-page-content-v6"],
+  ["geo-page-content-v7"],
   { revalidate: 3600, tags: ["geo-pages"] }
 );
 
@@ -789,11 +868,27 @@ export function geoPageSchema(content: GeoPageContent): Record<string, unknown> 
       height: 630,
     };
     schema.mentions = [
+      { "@type": "Thing", name: "Open trip Rusia dari Jakarta", url: `${SITE_URL}/open-trip-rusia-dari-jakarta` },
       { "@type": "Thing", name: "Tour Rusia dari Indonesia", url: `${SITE_URL}/tour-rusia-dari-indonesia` },
       { "@type": "Thing", name: "Open trip aurora Rusia", url: `${SITE_URL}/open-trip-aurora-rusia` },
       { "@type": "Thing", name: "Visa Rusia untuk WNI", url: `${SITE_URL}/visa-rusia-wni` },
       { "@type": "Place", name: "Murmansk", url: `${SITE_URL}/destinations/murmansk` },
       { "@type": "Place", name: "Teriberka", url: `${SITE_URL}/destinations/teriberka` },
+    ];
+  }
+  if (content.routePath === "/open-trip-rusia-dari-jakarta") {
+    schema.about = [
+      { "@id": `${SITE_URL}#organization` },
+      { "@type": "Thing", name: "Open trip Rusia dari Jakarta" },
+      { "@type": "Place", name: "Rusia" },
+    ];
+    schema.mainEntity = { "@id": `${SITE_URL}#organization` };
+    schema.mentions = [
+      { "@type": "Place", name: "Moskow" },
+      { "@type": "Place", name: "St. Petersburg" },
+      { "@type": "Place", name: "Murmansk", url: `${SITE_URL}/destinations/murmansk` },
+      { "@type": "Place", name: "Teriberka", url: `${SITE_URL}/destinations/teriberka` },
+      { "@type": "Thing", name: "Visa Rusia untuk WNI", url: `${SITE_URL}/visa-rusia-wni` },
     ];
   }
   return schema;

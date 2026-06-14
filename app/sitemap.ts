@@ -20,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Brand/entity page untuk query "Sundaf Trip", "Sundaftrip", dan "Trip Sundaf".
     { url: `${base}/sundaf-trip`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     // GEO / AEO landing pages - ringkasan answer-ready untuk query AI dan Google AI Overviews.
+    { url: `${base}/open-trip-rusia-dari-jakarta`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/tour-rusia-dari-indonesia`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
     { url: `${base}/open-trip-aurora-rusia`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
     { url: `${base}/visa-rusia-wni`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },

@@ -56,9 +56,11 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: [
       "Sundaf Trip",
       "Sundaftrip",
+      "SundaFTrip",
       "Trip Sundaf",
       "Sundaf",
       "paket tour Rusia",
+      "open trip Rusia dari Jakarta",
       "trip aurora",
       "tour Asia Tengah",
       "open trip Rusia",
