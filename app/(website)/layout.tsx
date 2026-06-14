@@ -4,6 +4,7 @@ import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import OrganizationSchema from "@/components/website/OrganizationSchema";
 import AutoTranslate from "@/components/website/AutoTranslate";
+import ReferralCapture from "@/components/website/ReferralCapture";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -112,6 +113,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         </div>
         <StickyWhatsApp phone={whatsapp} />
         <AutoTranslate />
+        <ReferralCapture />
       </>
     );
   }
@@ -128,6 +130,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
       <Footer theme={theme} />
       <StickyWhatsApp phone={whatsapp} />
       <AutoTranslate />
+      <ReferralCapture />
     </>
   );
 }

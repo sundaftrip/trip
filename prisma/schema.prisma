@@ -21,19 +21,19 @@ enum TourStatus {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  password      String
-  role          Role      @default(EDITOR)
-  permissions   Json?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  password    String
+  role        Role     @default(EDITOR)
+  permissions Json?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  sessions      Session[]
-  accounts      Account[]
-  receipts      Receipt[]
+  sessions Session[]
+  accounts Account[]
+  receipts Receipt[]
 }
 
 model Account {
@@ -65,39 +65,39 @@ model Session {
 }
 
 model Tour {
-  id             String     @id @default(cuid())
-  title          String
-  slug           String?    @unique // URL rapi: /tours/<slug>; null → fallback ke id
-  country        String
-  cityHighlight  String?
-  price          Float
-  promoPrice     Float?
-  priceLandTour  Float?
-  seatsLeft      Int        @default(0)
-  status         TourStatus @default(DRAFT)
-  tripDate       DateTime?
-  duration       String?
-  itinerary      Json?
-  inclusions     String[]
-  exclusions     String[]
-  gallery        String[]
-  hotel          Json?
-  visaInfo       String?
-  heroImg        String?
-  badge          String?
-  notes          String?
-  description    String?
-  addOns         Json?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id            String     @id @default(cuid())
+  title         String
+  slug          String?    @unique // URL rapi: /tours/<slug>; null → fallback ke id
+  country       String
+  cityHighlight String?
+  price         Float
+  promoPrice    Float?
+  priceLandTour Float?
+  seatsLeft     Int        @default(0)
+  status        TourStatus @default(DRAFT)
+  tripDate      DateTime?
+  duration      String?
+  itinerary     Json?
+  inclusions    String[]
+  exclusions    String[]
+  gallery       String[]
+  hotel         Json?
+  visaInfo      String?
+  heroImg       String?
+  badge         String?
+  notes         String?
+  description   String?
+  addOns        Json?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  receipts       Receipt[]
-  finance        TripFinance?
-  vendorBills    VendorBill[]
-  ledgerEntries  LedgerEntry[]
-  fieldExpenses  FieldExpense[]
-  testimonials   Testimonial[]
-  expenseToken   String?    @unique  // token link pelaporan pengeluaran TL
+  receipts      Receipt[]
+  finance       TripFinance?
+  vendorBills   VendorBill[]
+  ledgerEntries LedgerEntry[]
+  fieldExpenses FieldExpense[]
+  testimonials  Testimonial[]
+  expenseToken  String?        @unique // token link pelaporan pengeluaran TL
 
   // Index untuk query publik yang sering: filter status/negara & sort tanggal trip
   @@index([status])
@@ -169,26 +169,26 @@ model SiteText {
 }
 
 model Receipt {
-  id           String   @id @default(cuid())
-  receiptNo    String   @unique
-  customerName String
+  id            String    @id @default(cuid())
+  receiptNo     String    @unique
+  customerName  String
   customerPhone String?
   customerEmail String?
-  tourId       String?
-  tourTitle    String
-  tripDate     String?
-  pax          Int      @default(1)
-  amount       Float
+  tourId        String?
+  tourTitle     String
+  tripDate      String?
+  pax           Int       @default(1)
+  amount        Float
   paymentMethod String?
-  paymentDate  DateTime?
-  notes        String?
-  status       String   @default("UNPAID")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  paymentDate   DateTime?
+  notes         String?
+  status        String    @default("UNPAID")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  tour         Tour?    @relation(fields: [tourId], references: [id])
-  createdBy    User?    @relation(fields: [createdById], references: [id])
-  createdById  String?
+  tour        Tour?   @relation(fields: [tourId], references: [id])
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+  createdById String?
 }
 
 model TermsCondition {
@@ -201,7 +201,7 @@ model TermsCondition {
 model Faq {
   id        String   @id @default(cuid())
   group     String   @default("umum") // "umum" (/faq) atau "visa" (/visa/faq)
-  section   String   // e.g. "Umum", "Visa & Dokumen"
+  section   String // e.g. "Umum", "Visa & Dokumen"
   question  String
   answer    String   @db.Text // HTML
   service   String?  @db.Text // CTA layanan per item (visa): null=default, "__NONE__"=tanpa CTA, lainnya=teks custom
@@ -253,7 +253,7 @@ model Testimonial {
   category  String   @default("trip") // "trip" | "visa" — pisahkan ulasan trip rombongan vs layanan visa
   published Boolean  @default(true)
   order     Int      @default(0)
-  tourId    String?  // ulasan ini untuk tour spesifik (opsional) — dasar aggregateRating per-tour
+  tourId    String? // ulasan ini untuk tour spesifik (opsional) — dasar aggregateRating per-tour
   tour      Tour?    @relation(fields: [tourId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -279,22 +279,22 @@ enum EntryDirection {
 
 // Asal sebuah baris jurnal — dipakai untuk klasifikasi akuntansi.
 enum EntrySource {
-  MANUAL          // entry manual non-trip
-  PESERTA         // pelunasan / DP peserta (cash in)
-  VENDOR_PAYMENT  // bayar tagihan vendor (pelunasan hutang, BUKAN beban)
-  DEPOSIT         // deposit PNR / titipan ke maskapai
-  OPERATIONAL     // biaya operasional kantor (beban P&L)
-  REFUND          // pengembalian dana
-  CAPITAL         // setoran modal pemilik (menambah ekuitas, BUKAN pendapatan)
-  PRIVE           // penarikan pemilik (mengurangi ekuitas, BUKAN beban)
-  ADVANCE         // kasbon / uang muka kerja ke TL (aset, BUKAN beban)
+  MANUAL // entry manual non-trip
+  PESERTA // pelunasan / DP peserta (cash in)
+  VENDOR_PAYMENT // bayar tagihan vendor (pelunasan hutang, BUKAN beban)
+  DEPOSIT // deposit PNR / titipan ke maskapai
+  OPERATIONAL // biaya operasional kantor (beban P&L)
+  REFUND // pengembalian dana
+  CAPITAL // setoran modal pemilik (menambah ekuitas, BUKAN pendapatan)
+  PRIVE // penarikan pemilik (mengurangi ekuitas, BUKAN beban)
+  ADVANCE // kasbon / uang muka kerja ke TL (aset, BUKAN beban)
   OTHER
 }
 
 enum FieldExpenseStatus {
-  PENDING   // diajukan TL, menunggu review
-  APPROVED  // disetujui — masuk HPP trip
-  REJECTED  // ditolak
+  PENDING // diajukan TL, menunggu review
+  APPROVED // disetujui — masuk HPP trip
+  REJECTED // ditolak
 }
 
 enum VendorCategory {
@@ -315,23 +315,23 @@ enum BillStatus {
 }
 
 enum TripFinanceStatus {
-  DRAFT      // proyeksi belum dikunci Finance
-  CONFIRMED  // proyeksi sudah dikunci → margin bisa dihitung
+  DRAFT // proyeksi belum dikunci Finance
+  CONFIRMED // proyeksi sudah dikunci → margin bisa dihitung
 }
 
 // Rekening bank / kas / e-wallet perusahaan.
 model BankAccount {
-  id             String        @id @default(cuid())
+  id             String      @id @default(cuid())
   name           String
-  kind           AccountKind   @default(BANK)
+  kind           AccountKind @default(BANK)
   accountNo      String?
-  openingBalance Float         @default(0)
+  openingBalance Float       @default(0)
   note           String?
-  archived       Boolean       @default(false)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  archived       Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
-  entries        LedgerEntry[]
+  entries LedgerEntry[]
 }
 
 // Mitra vendor: maskapai, hotel, land operator, dll.
@@ -344,30 +344,30 @@ model Vendor {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 
-  bills     VendorBill[]
+  bills VendorBill[]
 }
 
 // Tagihan vendor (hutang). amountPaid dilunasi lewat LedgerEntry OUT.
 model VendorBill {
-  id          String        @id @default(cuid())
+  id          String     @id @default(cuid())
   vendorId    String
-  vendor      Vendor        @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  vendor      Vendor     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   tourId      String?
-  tour        Tour?         @relation(fields: [tourId], references: [id])
+  tour        Tour?      @relation(fields: [tourId], references: [id])
   description String
-  amount      Float                        // SELALU dalam IDR (mata uang fungsional)
-  amountPaid  Float         @default(0)     // IDR
-  currency    String        @default("IDR") // mata uang asli tagihan: IDR/USD/RUB/EUR/SGD
-  fxRate      Float         @default(1)      // kurs ke IDR saat tagihan dibuat (amount = nominalAsing * fxRate)
-  status      BillStatus    @default(UNPAID)
-  isDeposit   Boolean       @default(false) // true = deposit PNR / titipan maskapai
+  amount      Float // SELALU dalam IDR (mata uang fungsional)
+  amountPaid  Float      @default(0) // IDR
+  currency    String     @default("IDR") // mata uang asli tagihan: IDR/USD/RUB/EUR/SGD
+  fxRate      Float      @default(1) // kurs ke IDR saat tagihan dibuat (amount = nominalAsing * fxRate)
+  status      BillStatus @default(UNPAID)
+  isDeposit   Boolean    @default(false) // true = deposit PNR / titipan maskapai
   dueDate     DateTime?
-  voided      Boolean       @default(false) // dibatalkan — tidak ikut perhitungan, tetap tersimpan
+  voided      Boolean    @default(false) // dibatalkan — tidak ikut perhitungan, tetap tersimpan
   voidedAt    DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
-  payments    LedgerEntry[]
+  payments LedgerEntry[]
 
   @@index([tourId])
   @@index([vendorId])
@@ -396,9 +396,9 @@ model FieldExpense {
   date        DateTime
   category    String
   amount      Float
-  photoUrl    String             // foto struk/nota — bukti wajib
+  photoUrl    String // foto struk/nota — bukti wajib
   note        String?
-  submittedBy String             // nama TL
+  submittedBy String // nama TL
   status      FieldExpenseStatus @default(PENDING)
   reviewNote  String?
   reviewedAt  DateTime?
@@ -454,7 +454,7 @@ model CountryVisa {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  variants    VisaVariant[]
+  variants VisaVariant[]
 
   @@index([sortOrder])
 }
@@ -462,16 +462,16 @@ model CountryVisa {
 // Varian layanan visa per-negara — mis. "Single Entry Jakarta",
 // "Multiple Entry 6 bulan", dll. Harga sudah termasuk markup Sundaf.
 model VisaVariant {
-  id              String      @id @default(cuid())
-  countryVisaId   String
-  countryVisa     CountryVisa @relation(fields: [countryVisaId], references: [id], onDelete: Cascade)
-  sortOrder       Int         @default(0)
-  name            String
-  priceIDR        Int? // null = "tanya harga"
-  processingTime  String?
-  notes           String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id             String      @id @default(cuid())
+  countryVisaId  String
+  countryVisa    CountryVisa @relation(fields: [countryVisaId], references: [id], onDelete: Cascade)
+  sortOrder      Int         @default(0)
+  name           String
+  priceIDR       Int? // null = "tanya harga"
+  processingTime String?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   @@index([countryVisaId, sortOrder])
 }
@@ -499,13 +499,218 @@ model Inquiry {
   @@index([status, createdAt])
 }
 
+// ─────────────────────────────────────────────────────────────
+//  MODUL REFERRAL — MVP tracking partner → WhatsApp → lead → komisi.
+//  Dipisah dari Inquiry supaya data partner, komisi, dan dispute tetap jelas.
+// ─────────────────────────────────────────────────────────────
+
+enum ReferralPartnerType {
+  INFLUENCER
+  TRAVEL_AGENT
+  COMMUNITY
+  TOUR_LEADER
+  VENDOR
+  CAMPUS
+  CORPORATE
+  OFFLINE_SALES
+}
+
+enum ReferralStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ReferralCampaignStatus {
+  ACTIVE
+  INACTIVE
+  ENDED
+}
+
+enum ReferralLeadStatus {
+  NEW_LEAD
+  VALID_LEAD
+  FOLLOW_UP
+  BOOKED
+  DP_PAID
+  FULLY_PAID
+  CANCELLED
+}
+
+enum ReferralBookingStatus {
+  NOT_BOOKED
+  BOOKED
+  CANCELLED
+}
+
+enum ReferralPaymentStatus {
+  UNPAID
+  DP_PAID
+  FULLY_PAID
+  REFUNDED
+}
+
+enum ReferralCommissionType {
+  FIXED
+  PERCENTAGE
+  LEAD_FEE
+}
+
+enum ReferralCommissionStatus {
+  PENDING
+  APPROVED
+  PAID
+  REJECTED
+}
+
+enum ReferralDisputeStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  REJECTED
+}
+
+model ReferralPartner {
+  id              String                 @id @default(cuid())
+  partnerName     String
+  partnerType     ReferralPartnerType
+  referralCode    String                 @unique
+  slug            String                 @unique
+  dashboardToken  String                 @unique
+  status          ReferralStatus         @default(ACTIVE)
+  commissionType  ReferralCommissionType @default(FIXED)
+  commissionValue Float                  @default(0)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  campaigns    ReferralCampaign[]
+  leads        ReferralLead[]
+  activityLogs ReferralActivityLog[]
+  commissions  ReferralCommission[]
+  disputes     ReferralDispute[]
+
+  @@index([status])
+  @@index([partnerType])
+  @@map("partners")
+}
+
+model ReferralCampaign {
+  id               String                 @id @default(cuid())
+  partnerId        String
+  partner          ReferralPartner        @relation(fields: [partnerId], references: [id], onDelete: Restrict)
+  campaignName     String
+  packageName      String
+  discountLabel    String
+  shortLink        String?
+  whatsappTemplate String                 @db.Text
+  startDate        DateTime?
+  endDate          DateTime?
+  status           ReferralCampaignStatus @default(ACTIVE)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  leads        ReferralLead[]
+  activityLogs ReferralActivityLog[]
+
+  @@index([partnerId, status])
+  @@index([status])
+  @@map("campaigns")
+}
+
+model ReferralLead {
+  id               String                   @id @default(cuid())
+  customerName     String?
+  customerAlias    String?
+  whatsappNumber   String?
+  whatsappMasked   String?
+  packageName      String
+  referralCode     String?
+  partnerId        String?
+  partner          ReferralPartner?         @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  campaignId       String?
+  campaign         ReferralCampaign?        @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  sourceUrl        String?
+  leadStatus       ReferralLeadStatus       @default(NEW_LEAD)
+  bookingStatus    ReferralBookingStatus    @default(NOT_BOOKED)
+  paymentStatus    ReferralPaymentStatus    @default(UNPAID)
+  transactionValue Float                    @default(0)
+  commissionAmount Float                    @default(0)
+  commissionStatus ReferralCommissionStatus @default(PENDING)
+  adminNotes       String?                  @db.Text
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+
+  activityLogs ReferralActivityLog[]
+  commission   ReferralCommission?
+
+  @@index([partnerId, createdAt])
+  @@index([campaignId, createdAt])
+  @@index([leadStatus, createdAt])
+  @@map("leads")
+}
+
+model ReferralActivityLog {
+  id         String            @id @default(cuid())
+  partnerId  String?
+  partner    ReferralPartner?  @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  campaignId String?
+  campaign   ReferralCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  leadId     String?
+  lead       ReferralLead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  eventType  String
+  eventLabel String?
+  metadata   Json              @default("{}")
+  createdAt  DateTime          @default(now())
+
+  @@index([partnerId, createdAt])
+  @@index([campaignId, createdAt])
+  @@index([leadId, createdAt])
+  @@index([eventType, createdAt])
+  @@map("activity_logs")
+}
+
+model ReferralCommission {
+  id                  String                   @id @default(cuid())
+  partnerId           String
+  partner             ReferralPartner          @relation(fields: [partnerId], references: [id], onDelete: Restrict)
+  leadId              String                   @unique
+  lead                ReferralLead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  commissionType      ReferralCommissionType
+  commissionAmount    Float                    @default(0)
+  commissionStatus    ReferralCommissionStatus @default(PENDING)
+  estimatedPayoutDate DateTime?
+  paidDate            DateTime?
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+
+  @@index([partnerId, commissionStatus])
+  @@map("commissions")
+}
+
+model ReferralDispute {
+  id              String                @id @default(cuid())
+  partnerId       String
+  partner         ReferralPartner       @relation(fields: [partnerId], references: [id], onDelete: Restrict)
+  customerHint    String
+  packageName     String?
+  approximateDate String?
+  note            String                @db.Text
+  screenshotUrl   String?
+  status          ReferralDisputeStatus @default(OPEN)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@index([partnerId, createdAt])
+  @@index([status, createdAt])
+  @@map("disputes")
+}
+
 // Cache terjemahan mesin (ID -> EN) untuk fitur auto-translate situs.
 // Sekali sebuah string diterjemahkan, hasilnya dipakai ulang semua pengunjung.
 model Translation {
   id        String   @id @default(cuid())
   hash      String   @unique // sha1(source + ":" + target)
   source    String   @db.Text
-  target    String   // "en"
+  target    String // "en"
   text      String   @db.Text // hasil terjemahan
   createdAt DateTime @default(now())
 

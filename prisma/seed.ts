@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import visaSeed from "./visa-seed.json";
 
 const prisma = new PrismaClient();
@@ -106,6 +107,43 @@ async function main() {
   } else {
     console.log(`ℹ️  ${visaCount} entri visa sudah ada, skip seed visa`);
   }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000").replace(/\/+$/, "");
+  const nada = await prisma.referralPartner.upsert({
+    where: { referralCode: "NADA10" },
+    update: {},
+    create: {
+      partnerName: "Nada Travel",
+      partnerType: "INFLUENCER",
+      referralCode: "NADA10",
+      slug: "nada",
+      dashboardToken: randomBytes(24).toString("hex"),
+      status: "ACTIVE",
+      commissionType: "FIXED",
+      commissionValue: 500000,
+    },
+  });
+
+  await prisma.referralCampaign.upsert({
+    where: { id: "seed-campaign-russia-nada" },
+    update: {},
+    create: {
+      id: "seed-campaign-russia-nada",
+      partnerId: nada.id,
+      campaignName: "Russia Trip",
+      packageName: "Trip Russia",
+      discountLabel: "Potongan Rp500.000",
+      shortLink: `${baseUrl}/nada`,
+      whatsappTemplate: [
+        "Halo Sundaf Trip, saya tertarik dengan {package_name}.",
+        "Saya ingin klaim {discount_label}.",
+        "Kode referral: {referral_code}.",
+        "Partner: {partner_name}.",
+      ].join("\n"),
+      status: "ACTIVE",
+    },
+  });
+  console.log("✅ Sample referral partner Nada Travel seeded");
 }
 
 main()

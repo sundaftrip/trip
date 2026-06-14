@@ -12,12 +12,14 @@ import {
   Users,
   Settings,
   FileText,
+  Handshake,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tours", label: "Tour", icon: Map },
+  { href: "/admin/partners", label: "Referral", icon: Handshake },
   { href: "/admin/visa", label: "Katalog Visa", icon: FileText },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
