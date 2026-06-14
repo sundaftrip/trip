@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Link from "next/link";
 import { WalletCards } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { COMMISSION_STATUS_LABEL, COMMISSION_TYPE_LABEL } from "@/lib/referrals";
@@ -10,11 +11,25 @@ function dateValue(value: Date | null) {
   return value ? value.toISOString().slice(0, 10) : "";
 }
 
-export default async function AdminCommissionsPage() {
-  const commissions = await prisma.referralCommission.findMany({
-    orderBy: [{ commissionStatus: "asc" }, { createdAt: "desc" }],
-    include: { partner: true, lead: true },
-  });
+export default async function AdminCommissionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ partnerId?: string }>;
+}) {
+  const sp = await searchParams;
+  const partnerId = sp.partnerId?.trim() ?? "";
+  const [commissions, partners] = await Promise.all([
+    prisma.referralCommission.findMany({
+      where: partnerId ? { partnerId } : undefined,
+      orderBy: [{ commissionStatus: "asc" }, { createdAt: "desc" }],
+      include: { partner: true, lead: true },
+    }),
+    prisma.referralPartner.findMany({
+      orderBy: { partnerName: "asc" },
+      select: { id: true, partnerName: true },
+    }),
+  ]);
+  const selectedPartner = partners.find((partner) => partner.id === partnerId);
 
   const pending = commissions.filter((c) => c.commissionStatus === "PENDING").reduce((sum, c) => sum + c.commissionAmount, 0);
   const approved = commissions.filter((c) => c.commissionStatus === "APPROVED").reduce((sum, c) => sum + c.commissionAmount, 0);
@@ -22,9 +37,36 @@ export default async function AdminCommissionsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Referral Commissions</h1>
-        <p className="text-sm text-gray-500">Review, approve, dan tandai komisi partner yang sudah dibayar.</p>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Referral Commissions</h1>
+          <p className="text-sm text-gray-500">
+            {selectedPartner
+              ? `Edit komisi untuk ${selectedPartner.partnerName}.`
+              : "Review, approve, dan tandai komisi partner yang sudah dibayar."}
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Link href="/admin/partners" className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
+            Partner
+          </Link>
+          <form action="/admin/commissions" className="flex flex-wrap items-center gap-2">
+            <select name="partnerId" defaultValue={partnerId} className="min-w-56 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+              <option value="">Semua partner</option>
+              {partners.map((partner) => (
+                <option key={partner.id} value={partner.id}>{partner.partnerName}</option>
+              ))}
+            </select>
+            <button type="submit" className="rounded-lg bg-gray-950 px-4 py-2 text-sm font-bold text-white hover:bg-gray-800 dark:bg-white dark:text-gray-950">
+              Filter
+            </button>
+            {partnerId && (
+              <Link href="/admin/commissions" className="rounded-lg px-3 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
+                Reset
+              </Link>
+            )}
+          </form>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -46,7 +88,7 @@ export default async function AdminCommissionsPage() {
         {commissions.length === 0 ? (
           <div className="rounded-xl border border-gray-200 bg-white py-16 text-center text-gray-400 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <WalletCards size={38} className="mx-auto mb-3 opacity-40" />
-            Belum ada komisi.
+            {partnerId ? "Belum ada komisi untuk partner ini." : "Belum ada komisi."}
           </div>
         ) : commissions.map((commission) => (
           <form key={commission.id} action={updateCommissionAction} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
