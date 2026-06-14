@@ -16,6 +16,7 @@ const LEAD_STATUSES = new Set(["NEW_LEAD", "VALID_LEAD", "FOLLOW_UP", "BOOKED", 
 const BOOKING_STATUSES = new Set(["NOT_BOOKED", "BOOKED", "CANCELLED"]);
 const PAYMENT_STATUSES = new Set(["UNPAID", "DP_PAID", "FULLY_PAID", "REFUNDED"]);
 const COMMISSION_STATUSES = new Set(["PENDING", "APPROVED", "PAID", "REJECTED"]);
+const COMMISSION_DUE_PAYMENT_STATUSES = new Set(["DP_PAID", "FULLY_PAID"]);
 
 function value(formData: FormData, key: string, max = 500) {
   return String(formData.get(key) ?? "").trim().slice(0, max);
@@ -39,6 +40,12 @@ function computeCommission(partner: { commissionType: string; commissionValue: n
   return partner.commissionValue;
 }
 
+function leadStatusFromPayment(paymentStatus: ReferralPaymentStatus): ReferralLeadStatus {
+  if (paymentStatus === "FULLY_PAID") return "FULLY_PAID";
+  if (paymentStatus === "DP_PAID") return "DP_PAID";
+  return "NEW_LEAD";
+}
+
 export async function createReferralLeadAction(formData: FormData) {
   await requireAdmin();
 
@@ -50,6 +57,9 @@ export async function createReferralLeadAction(formData: FormData) {
   const adminNotes = value(formData, "adminNotes", 1500) || null;
   const transactionValue = money(formData, "transactionValue");
   const manualCommission = money(formData, "commissionAmount");
+  const paymentStatusRaw = value(formData, "paymentStatus", 40);
+  const paymentStatus = (PAYMENT_STATUSES.has(paymentStatusRaw) ? paymentStatusRaw : "UNPAID") as ReferralPaymentStatus;
+  const commissionDue = COMMISSION_DUE_PAYMENT_STATUSES.has(paymentStatus);
 
   const campaign = campaignId
     ? await prisma.referralCampaign.findUnique({ where: { id: campaignId }, include: { partner: true } })
@@ -59,7 +69,7 @@ export async function createReferralLeadAction(formData: FormData) {
   const packageName = value(formData, "packageName", 160) || campaign?.packageName || "Trip Sundaf";
   const manualReferralCode = value(formData, "referralCode", 80).toUpperCase();
   const referralCode = partner?.referralCode ?? (manualReferralCode || null);
-  const commissionAmount = computeCommission(partner, transactionValue, manualCommission);
+  const commissionAmount = commissionDue ? computeCommission(partner, transactionValue, manualCommission) : 0;
 
   const lead = await prisma.referralLead.create({
     data: {
@@ -72,12 +82,12 @@ export async function createReferralLeadAction(formData: FormData) {
       partnerId: partner?.id ?? null,
       campaignId: campaign?.id ?? null,
       sourceUrl,
-      leadStatus: "NEW_LEAD",
-      bookingStatus: "NOT_BOOKED",
-      paymentStatus: "UNPAID",
+      leadStatus: leadStatusFromPayment(paymentStatus),
+      bookingStatus: commissionDue ? "BOOKED" : "NOT_BOOKED",
+      paymentStatus,
       transactionValue,
       commissionAmount,
-      commissionStatus: "PENDING",
+      commissionStatus: commissionDue ? "PENDING" : "REJECTED",
       adminNotes,
     },
   });
@@ -89,7 +99,7 @@ export async function createReferralLeadAction(formData: FormData) {
     });
   }
 
-  if (partner) {
+  if (partner && commissionDue) {
     await prisma.referralCommission.create({
       data: {
         partnerId: partner.id,
@@ -124,15 +134,29 @@ export async function updateReferralLeadAction(formData: FormData) {
   const paymentStatusRaw = value(formData, "paymentStatus", 40);
   const commissionStatusRaw = value(formData, "commissionStatus", 40);
   const transactionValue = money(formData, "transactionValue");
-  const commissionAmount = money(formData, "commissionAmount");
+  const manualCommission = money(formData, "commissionAmount");
   const adminNotes = value(formData, "adminNotes", 1500) || null;
 
   if (!id) redirect("/admin/leads?error=Lead tidak ditemukan");
 
-  const leadStatus = (LEAD_STATUSES.has(leadStatusRaw) ? leadStatusRaw : "NEW_LEAD") as ReferralLeadStatus;
-  const bookingStatus = (BOOKING_STATUSES.has(bookingStatusRaw) ? bookingStatusRaw : "NOT_BOOKED") as ReferralBookingStatus;
+  const rawLeadStatus = (LEAD_STATUSES.has(leadStatusRaw) ? leadStatusRaw : "NEW_LEAD") as ReferralLeadStatus;
+  const rawBookingStatus = (BOOKING_STATUSES.has(bookingStatusRaw) ? bookingStatusRaw : "NOT_BOOKED") as ReferralBookingStatus;
   const paymentStatus = (PAYMENT_STATUSES.has(paymentStatusRaw) ? paymentStatusRaw : "UNPAID") as ReferralPaymentStatus;
-  const commissionStatus = (COMMISSION_STATUSES.has(commissionStatusRaw) ? commissionStatusRaw : "PENDING") as ReferralCommissionStatus;
+  const commissionDue = COMMISSION_DUE_PAYMENT_STATUSES.has(paymentStatus);
+  const leadStatus = commissionDue && rawLeadStatus !== "CANCELLED" ? leadStatusFromPayment(paymentStatus) : rawLeadStatus;
+  const bookingStatus = commissionDue && rawBookingStatus !== "CANCELLED" ? "BOOKED" : rawBookingStatus;
+  const commissionStatus = (commissionDue && COMMISSION_STATUSES.has(commissionStatusRaw) ? commissionStatusRaw : commissionDue ? "PENDING" : "REJECTED") as ReferralCommissionStatus;
+
+  const existingLead = await prisma.referralLead.findUnique({
+    where: { id },
+    include: { commission: true, partner: true },
+  });
+
+  if (!existingLead) redirect("/admin/leads?error=Lead tidak ditemukan");
+
+  const commissionAmount = commissionDue
+    ? computeCommission(existingLead.partner, transactionValue, manualCommission)
+    : 0;
 
   const lead = await prisma.referralLead.update({
     where: { id },
@@ -148,7 +172,7 @@ export async function updateReferralLeadAction(formData: FormData) {
     include: { commission: true, partner: true },
   });
 
-  if (lead.partnerId) {
+  if (lead.partnerId && commissionDue) {
     await prisma.referralCommission.upsert({
       where: { leadId: lead.id },
       update: { commissionAmount, commissionStatus },
@@ -159,6 +183,11 @@ export async function updateReferralLeadAction(formData: FormData) {
         commissionAmount,
         commissionStatus,
       },
+    });
+  } else if (lead.commission) {
+    await prisma.referralCommission.update({
+      where: { leadId: lead.id },
+      data: { commissionAmount: 0, commissionStatus: "REJECTED" },
     });
   }
 

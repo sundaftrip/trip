@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { Inbox, Save } from "lucide-react";
+import Link from "next/link";
+import { Inbox } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   BOOKING_STATUS_LABEL,
@@ -10,15 +11,18 @@ import {
 } from "@/lib/referrals";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { createReferralLeadAction, updateReferralLeadAction } from "./actions";
+import ReferralLeadCard from "@/components/admin/referrals/ReferralLeadCard";
 
 export default async function AdminReferralLeadsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; partnerId?: string }>;
 }) {
   const sp = await searchParams;
+  const partnerId = sp.partnerId?.trim() ?? "";
   const [leads, partners, campaigns] = await Promise.all([
     prisma.referralLead.findMany({
+      where: partnerId ? { partnerId } : undefined,
       orderBy: { createdAt: "desc" },
       include: { partner: true, campaign: true, commission: true },
     }),
@@ -30,14 +34,47 @@ export default async function AdminReferralLeadsPage({
     }),
   ]);
 
-  const booked = leads.filter((l) => l.leadStatus === "BOOKED" || l.bookingStatus === "BOOKED").length;
-  const paid = leads.filter((l) => l.paymentStatus === "FULLY_PAID" || l.leadStatus === "FULLY_PAID").length;
+  const selectedPartner = partners.find((partner) => partner.id === partnerId);
+  const booked = leads.filter((lead) => lead.leadStatus === "BOOKED" || lead.bookingStatus === "BOOKED").length;
+  const dpPaid = leads.filter((lead) => lead.paymentStatus === "DP_PAID").length;
+  const paid = leads.filter((lead) => lead.paymentStatus === "FULLY_PAID" || lead.leadStatus === "FULLY_PAID").length;
+  const leadStatusOptions = Object.entries(LEAD_STATUS_LABEL).map(([value, label]) => ({ value, label }));
+  const bookingStatusOptions = Object.entries(BOOKING_STATUS_LABEL).map(([value, label]) => ({ value, label }));
+  const paymentStatusOptions = Object.entries(PAYMENT_STATUS_LABEL).map(([value, label]) => ({ value, label }));
+  const commissionStatusOptions = Object.entries(COMMISSION_STATUS_LABEL).map(([value, label]) => ({ value, label }));
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Referral Leads</h1>
-        <p className="text-sm text-gray-500">Catat lead dari WhatsApp, update booking, payment, dan komisi.</p>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Referral Leads</h1>
+          <p className="text-sm text-gray-500">
+            {selectedPartner
+              ? `Catat DP dan komisi untuk ${selectedPartner.partnerName}.`
+              : "Catat lead dari WhatsApp, update booking, payment, dan komisi saat DP."}
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Link href="/admin/partners" className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
+            Partner
+          </Link>
+          <form action="/admin/leads" className="flex flex-wrap items-center gap-2">
+            <select name="partnerId" defaultValue={partnerId} className="min-w-56 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+              <option value="">Semua partner</option>
+              {partners.map((partner) => (
+                <option key={partner.id} value={partner.id}>{partner.partnerName}</option>
+              ))}
+            </select>
+            <button type="submit" className="rounded-lg bg-gray-950 px-4 py-2 text-sm font-bold text-white hover:bg-gray-800 dark:bg-white dark:text-gray-950">
+              Filter
+            </button>
+            {partnerId && (
+              <Link href="/admin/leads" className="rounded-lg px-3 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
+                Reset
+              </Link>
+            )}
+          </form>
+        </div>
       </div>
 
       {sp.error && (
@@ -46,7 +83,7 @@ export default async function AdminReferralLeadsPage({
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <p className="text-sm text-gray-500">Total leads</p>
           <p className="mt-1 text-2xl font-black text-gray-900 dark:text-white">{leads.length}</p>
@@ -54,6 +91,10 @@ export default async function AdminReferralLeadsPage({
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <p className="text-sm text-gray-500">Booked</p>
           <p className="mt-1 text-2xl font-black text-gray-900 dark:text-white">{booked}</p>
+        </div>
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <p className="text-sm text-gray-500">Sudah DP</p>
+          <p className="mt-1 text-2xl font-black text-gray-900 dark:text-white">{dpPaid}</p>
         </div>
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <p className="text-sm text-gray-500">Fully paid</p>
@@ -68,18 +109,21 @@ export default async function AdminReferralLeadsPage({
           <input name="whatsappNumber" placeholder="WhatsApp number" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
           <select name="campaignId" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900">
             <option value="">Pilih campaign</option>
-            {campaigns.map((c) => (
-              <option key={c.id} value={c.id}>{c.partner.partnerName} · {c.campaignName}</option>
+            {campaigns.map((campaign) => (
+              <option key={campaign.id} value={campaign.id}>{campaign.partner.partnerName} · {campaign.campaignName}</option>
             ))}
           </select>
-          <select name="partnerId" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900">
+          <select name="partnerId" defaultValue={partnerId} className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900">
             <option value="">Partner manual</option>
-            {partners.map((p) => <option key={p.id} value={p.id}>{p.partnerName} · {p.referralCode}</option>)}
+            {partners.map((partner) => <option key={partner.id} value={partner.id}>{partner.partnerName} · {partner.referralCode}</option>)}
           </select>
           <input name="packageName" placeholder="Package name" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
           <input name="referralCode" placeholder="Referral code manual" className="rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm uppercase dark:border-gray-600 dark:bg-gray-900" />
+          <select name="paymentStatus" defaultValue="UNPAID" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900">
+            {paymentStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
           <input name="transactionValue" type="number" min="0" step="1" placeholder="Transaction value" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
-          <input name="commissionAmount" type="number" min="0" step="1" placeholder="Commission amount" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
+          <input name="commissionAmount" type="number" min="0" step="1" placeholder="Komisi jika sudah DP" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
           <input name="sourceUrl" placeholder="Source URL" className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
           <textarea name="adminNotes" placeholder="Admin notes" rows={3} className="md:col-span-3 rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
         </div>
@@ -92,68 +136,41 @@ export default async function AdminReferralLeadsPage({
         {leads.length === 0 ? (
           <div className="rounded-xl border border-gray-200 bg-white py-16 text-center text-gray-400 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <Inbox size={38} className="mx-auto mb-3 opacity-40" />
-            Belum ada referral lead.
+            {partnerId ? "Belum ada referral lead untuk partner ini." : "Belum ada referral lead."}
           </div>
-        ) : leads.map((lead) => (
-          <form key={lead.id} action={updateReferralLeadAction} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <input type="hidden" name="id" value={lead.id} />
-            <div className="grid gap-4 lg:grid-cols-[1fr_2fr_auto] lg:items-start">
-              <div>
-                <p className="font-bold text-gray-900 dark:text-white">{lead.customerName || lead.customerAlias || "Customer"}</p>
-                <p className="text-xs text-gray-500">{lead.whatsappMasked || "-"} · {formatDate(lead.createdAt)}</p>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{lead.packageName}</p>
-                <p className="text-xs text-gray-500">{lead.partner?.partnerName ?? "Tanpa partner"} · {lead.referralCode ?? "-"}</p>
-              </div>
+        ) : leads.map((lead) => {
+          const commissionAmount = lead.commission?.commissionAmount ?? lead.commissionAmount;
+          const commissionStatus = lead.commission?.commissionStatus ?? lead.commissionStatus;
 
-              <div className="grid gap-3 md:grid-cols-4">
-                <label className="space-y-1">
-                  <span className="text-xs font-bold text-gray-500">Lead</span>
-                  <select name="leadStatus" defaultValue={lead.leadStatus} className="w-full rounded-lg border border-gray-300 px-2 py-2 text-xs dark:border-gray-600 dark:bg-gray-900">
-                    {Object.entries(LEAD_STATUS_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                  </select>
-                </label>
-                <label className="space-y-1">
-                  <span className="text-xs font-bold text-gray-500">Booking</span>
-                  <select name="bookingStatus" defaultValue={lead.bookingStatus} className="w-full rounded-lg border border-gray-300 px-2 py-2 text-xs dark:border-gray-600 dark:bg-gray-900">
-                    {Object.entries(BOOKING_STATUS_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                  </select>
-                </label>
-                <label className="space-y-1">
-                  <span className="text-xs font-bold text-gray-500">Payment</span>
-                  <select name="paymentStatus" defaultValue={lead.paymentStatus} className="w-full rounded-lg border border-gray-300 px-2 py-2 text-xs dark:border-gray-600 dark:bg-gray-900">
-                    {Object.entries(PAYMENT_STATUS_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                  </select>
-                </label>
-                <label className="space-y-1">
-                  <span className="text-xs font-bold text-gray-500">Commission</span>
-                  <select name="commissionStatus" defaultValue={lead.commission?.commissionStatus ?? lead.commissionStatus} className="w-full rounded-lg border border-gray-300 px-2 py-2 text-xs dark:border-gray-600 dark:bg-gray-900">
-                    {Object.entries(COMMISSION_STATUS_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                  </select>
-                </label>
-                <label className="space-y-1 md:col-span-2">
-                  <span className="text-xs font-bold text-gray-500">Transaction value</span>
-                  <input name="transactionValue" type="number" min="0" step="1" defaultValue={lead.transactionValue} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
-                </label>
-                <label className="space-y-1 md:col-span-2">
-                  <span className="text-xs font-bold text-gray-500">Commission amount</span>
-                  <input name="commissionAmount" type="number" min="0" step="1" defaultValue={lead.commission?.commissionAmount ?? lead.commissionAmount} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
-                </label>
-                <label className="space-y-1 md:col-span-4">
-                  <span className="text-xs font-bold text-gray-500">Admin notes</span>
-                  <textarea name="adminNotes" rows={2} defaultValue={lead.adminNotes ?? ""} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900" />
-                </label>
-              </div>
-
-              <div className="text-right">
-                <p className="mb-3 text-xs text-gray-500">{formatCurrency(lead.commission?.commissionAmount ?? lead.commissionAmount)}</p>
-                <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-gray-950 px-4 py-2 text-sm font-bold text-white hover:bg-gray-800 dark:bg-white dark:text-gray-950">
-                  <Save size={15} />
-                  Update
-                </button>
-              </div>
-            </div>
-          </form>
-        ))}
+          return (
+            <ReferralLeadCard
+              key={lead.id}
+              action={updateReferralLeadAction}
+              lead={{
+                id: lead.id,
+                customerLabel: lead.customerName || lead.customerAlias || "Customer",
+                whatsappLabel: lead.whatsappMasked || "-",
+                createdAtLabel: formatDate(lead.createdAt),
+                packageName: lead.packageName,
+                partnerLabel: lead.partner?.partnerName ?? "Tanpa partner",
+                referralCode: lead.referralCode ?? "-",
+                leadStatus: lead.leadStatus,
+                bookingStatus: lead.bookingStatus,
+                paymentStatus: lead.paymentStatus,
+                transactionValue: lead.transactionValue,
+                adminNotes: lead.adminNotes ?? "",
+                commissionAmount,
+                commissionStatus,
+                commissionLabel: formatCurrency(commissionAmount),
+                hasCommission: Boolean(lead.commission),
+              }}
+              leadStatusOptions={leadStatusOptions}
+              bookingStatusOptions={bookingStatusOptions}
+              paymentStatusOptions={paymentStatusOptions}
+              commissionStatusOptions={commissionStatusOptions}
+            />
+          );
+        })}
       </div>
     </div>
   );

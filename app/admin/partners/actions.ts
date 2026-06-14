@@ -220,3 +220,44 @@ export async function archivePartnerAction(formData: FormData) {
   revalidatePath("/admin/partners");
   redirect("/admin/partners");
 }
+
+export async function deletePartnerAction(formData: FormData) {
+  await requireAdmin();
+  const id = value(formData, "id", 120);
+  if (!id) fail("Partner tidak ditemukan.");
+
+  const partner = await prisma.referralPartner.findUnique({
+    where: { id },
+    include: {
+      campaigns: { select: { id: true } },
+      _count: { select: { leads: true, commissions: true, disputes: true } },
+    },
+  });
+
+  if (!partner) fail("Partner tidak ditemukan.");
+
+  if (partner._count.leads > 0 || partner._count.commissions > 0 || partner._count.disputes > 0) {
+    fail("Partner ini sudah punya lead/komisi/dispute. Nonaktifkan saja agar histori tetap aman.");
+  }
+
+  const campaignIds = partner.campaigns.map((campaign) => campaign.id);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.referralActivityLog.updateMany({
+      where: {
+        OR: [
+          { partnerId: id },
+          ...(campaignIds.length > 0 ? [{ campaignId: { in: campaignIds } }] : []),
+        ],
+      },
+      data: { partnerId: null, campaignId: null },
+    });
+
+    await tx.referralCampaign.deleteMany({ where: { partnerId: id } });
+    await tx.referralPartner.delete({ where: { id } });
+  });
+
+  revalidatePath("/admin/partners");
+  revalidatePath(`/partner/${partner.slug}`);
+  redirect("/admin/partners");
+}

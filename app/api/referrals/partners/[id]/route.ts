@@ -22,7 +22,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
 
   if (partner._count.leads > 0 || partner._count.commissions > 0 || partner._count.disputes > 0) {
     return NextResponse.json(
-      { error: "Partner ini sudah punya lead/komisi/dispute. Nonaktifkan saja agar data historis tidak hilang." },
+      { error: "Partner ini sudah punya lead/komisi/dispute. Nonaktifkan saja agar data historis tetap aman." },
       { status: 409 },
     );
   }

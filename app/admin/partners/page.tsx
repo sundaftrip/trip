@@ -1,12 +1,11 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { Edit, ExternalLink, Inbox, Plus, PowerOff, Users, WalletCards } from "lucide-react";
+import { Edit, ExternalLink, Inbox, Plus, PowerOff, Trash2, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { buildDashboardLink, buildReferralLink, PARTNER_TYPE_LABEL } from "@/lib/referrals";
-import { archivePartnerAction } from "./actions";
+import { archivePartnerAction, deletePartnerAction } from "./actions";
 import { formatCurrency } from "@/lib/utils";
-import PartnerDeleteButton from "@/components/admin/referrals/PartnerDeleteButton";
 
 export default async function AdminPartnersPage({
   searchParams,
@@ -40,10 +39,6 @@ export default async function AdminPartnersPage({
           <Link href="/admin/leads" className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
             <Inbox size={16} />
             Lead Referral
-          </Link>
-          <Link href="/admin/commissions" className="inline-flex items-center justify-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-bold text-teal-700 transition hover:bg-teal-100 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/50">
-            <WalletCards size={16} />
-            Edit Komisi
           </Link>
           <Link href="/admin/partners/new" className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700">
             <Plus size={16} />
@@ -140,8 +135,8 @@ export default async function AdminPartnersPage({
                         <Link href={`/admin/partners/${partner.id}`} className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600" title="Edit">
                           <Edit size={15} />
                         </Link>
-                        <Link href={`/admin/commissions?partnerId=${partner.id}`} className="rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-600" title="Edit komisi partner">
-                          <WalletCards size={15} />
+                        <Link href={`/admin/leads?partnerId=${partner.id}`} className="rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-600" title="Kelola lead dan DP">
+                          <Inbox size={15} />
                         </Link>
                         {partner.status === "ACTIVE" && (
                           <form action={archivePartnerAction}>
@@ -151,10 +146,12 @@ export default async function AdminPartnersPage({
                             </button>
                           </form>
                         )}
-                        <PartnerDeleteButton
-                          id={partner.id}
-                          name={partner.partnerName}
-                        />
+                        <form action={deletePartnerAction}>
+                          <input type="hidden" name="id" value={partner.id} />
+                          <button type="submit" className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600" title="Hapus">
+                            <Trash2 size={15} />
+                          </button>
+                        </form>
                       </div>
                     </td>
                   </tr>
