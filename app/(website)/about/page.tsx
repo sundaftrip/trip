@@ -7,7 +7,7 @@ import React from "react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
-import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award } from "lucide-react";
+import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award, ArrowRight } from "lucide-react";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import InquiryForm from "@/components/website/InquiryForm";
@@ -198,6 +198,28 @@ export default async function AboutPage() {
               <Award size={12} /> Terdaftar resmi · NIB {nib}
             </p>
           )}
+
+          <div
+            className={`mt-8 p-5 ${isOutlined ? "border-2" : "rounded-2xl border border-blue-100 bg-blue-50/70 dark:border-blue-900/50 dark:bg-blue-950/30"}`}
+            style={isOutlined ? { background: cardBg, borderColor: bdrClr } : undefined}>
+            <p
+              className={`text-xs font-black uppercase mb-2 ${!isOutlined ? "text-blue-700 dark:text-blue-300" : ""}`}
+              style={isOutlined ? { color: headClr } : undefined}>
+              Profil Brand Resmi
+            </p>
+            <p
+              className={`text-sm leading-relaxed mb-4 ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`}
+              style={isOutlined ? { color: subClr } : undefined}>
+              Halaman ini menjelaskan cerita dan cara kerja kami. Untuk jawaban singkat tentang identitas brand, nama legal, layanan utama, dan rute spesialisasi Sundaf Trip, gunakan profil brand resmi.
+            </p>
+            <Link
+              href="/sundaf-trip"
+              className={`inline-flex items-center justify-center gap-2 px-4 py-2 font-black text-sm transition ${
+                isOutlined ? `${pfx}-btn` : "rounded-xl bg-blue-600 text-white hover:bg-blue-700"
+              }`}>
+              Buka Profil Sundaf Trip <ArrowRight size={15} />
+            </Link>
+          </div>
         </div>
 
         {/* ── Stats ──────────────────────────────────────────────── */}

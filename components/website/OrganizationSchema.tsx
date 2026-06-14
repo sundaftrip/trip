@@ -153,6 +153,20 @@ export default async function OrganizationSchema() {
     description,
     areaServed: { "@type": "Country", name: "Indonesia" },
     knowsLanguage: ["id", "en"],
+    mainEntityOfPage: { "@id": `${SITE_URL}/sundaf-trip#webpage` },
+    subjectOf: [
+      { "@id": `${SITE_URL}/sundaf-trip#webpage` },
+      { "@id": `${SITE_URL}/about#webpage` },
+    ],
+    knowsAbout: [
+      "Tour Rusia dari Indonesia",
+      "Open trip aurora borealis",
+      "Perjalanan ke Murmansk",
+      "Perjalanan ke Teriberka",
+      "Asia Tengah",
+      "Visa Rusia untuk WNI",
+      "Itinerary perjalanan internasional",
+    ],
   };
 
   // Service Area Business: tidak ada kantor walk-in, jadi schema TIDAK
