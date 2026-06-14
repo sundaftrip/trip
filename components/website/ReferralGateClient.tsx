@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Check, MessageCircle } from "lucide-react";
+import { Check, MessageCircle, Ticket } from "lucide-react";
 import { getOrCreateReferralVisitorId } from "@/lib/referral-visitor";
 
 const REFERRAL_KEY = "sundaf_ref";
@@ -84,23 +84,24 @@ export default function ReferralGateClient(props: Props) {
         type="button"
         onClick={() => redirect("claim")}
         disabled={!isReady}
-        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#00ADB5] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#07959c] focus:outline-none focus:ring-2 focus:ring-[#00ADB5] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#00ADB5] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#07959c] focus:outline-none focus:ring-2 focus:ring-[#00ADB5] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
       >
-        <MessageCircle size={18} />
-        Klaim Diskon
+        <Ticket size={17} />
+        Pakai Kupon via WhatsApp
       </button>
 
       <button
         type="button"
         onClick={() => redirect("without_code")}
         disabled={!isReady}
-        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
       >
-        Lanjut Tanpa Kode
+        <MessageCircle size={15} />
+        Chat tanpa kupon
       </button>
 
-      <p className="flex items-center justify-center gap-1.5 text-xs font-medium text-teal-700">
-        <Check size={14} />
+      <p className="flex items-center justify-center gap-1.5 text-[11px] font-medium text-teal-700">
+        <Check size={13} />
         Kode tersimpan untuk kunjungan berikutnya
       </p>
 

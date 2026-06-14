@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BadgePercent, Banknote, CalendarDays, MapPin, Plane, Sparkles, Ticket, UserRound } from "lucide-react";
+import { BadgePercent, Banknote, CalendarDays, MapPin, Plane, Sparkles, Ticket } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import ReferralGateClient from "@/components/website/ReferralGateClient";
 import {
@@ -11,7 +11,6 @@ import {
   claimDiscountMessage,
   generateWhatsAppUrl,
   getConfiguredWhatsAppNumber,
-  PARTNER_TYPE_LABEL,
   withoutCodeMessage,
 } from "@/lib/referrals";
 import { cldOptimize, formatCurrency, formatDate } from "@/lib/utils";
@@ -207,6 +206,7 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
   const matchedTour = pickCampaignTour(tourCandidates, campaign.packageName, campaign.campaignName);
   const tourPrice = effectivePrice(matchedTour);
   const highlights = tripHighlights(matchedTour);
+  const compactHighlights = highlights.slice(0, 2);
   const tourHref = matchedTour?.slug ? `/tours/${matchedTour.slug}` : null;
   const heroImage = matchedTour?.heroImg ? cldOptimize(matchedTour.heroImg, 960) : "";
   const tripDescription = matchedTour?.description
@@ -226,132 +226,42 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
   const withoutCodeUrl = generateWhatsAppUrl(whatsapp, withoutCodeMessage(campaign.packageName));
 
   return (
-    <section className="min-h-screen bg-[#f4f7f7] px-4 pb-6 pt-16 text-gray-950 sm:px-6 sm:py-10 lg:px-8">
-      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
-        <div className="space-y-5">
-          <header className="rounded-lg border border-teal-900/10 bg-white p-5 shadow-sm sm:p-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-teal-800">
-              <BadgePercent size={14} />
-              Referral Sundaf Trip
-            </div>
-            <h1 className="mt-4 max-w-2xl text-3xl font-black leading-tight text-gray-950 sm:text-5xl">
-              {campaign.discountLabel} untuk {campaign.packageName}
-            </h1>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
-              Pakai kode dari {partner.partnerName}. Kode akan otomatis masuk ke pesan WhatsApp supaya tim Sundaf Trip tahu promo mana yang kamu klaim.
-            </p>
+    <section className="min-h-screen bg-[#f4f7f7] px-4 pb-6 pt-14 text-gray-950 sm:px-6 sm:py-10 lg:px-8">
+      <div className="mx-auto grid max-w-5xl gap-4 lg:grid-cols-[1fr_360px] lg:items-start">
+        <header className="rounded-lg border border-teal-900/10 bg-white p-4 shadow-sm sm:p-5">
+          <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-teal-800">
+            <BadgePercent size={13} />
+            Referral Sundaf Trip
+          </div>
+          <h1 className="mt-3 max-w-xl text-xl font-black leading-tight text-gray-950 sm:text-3xl">
+            Kupon {campaign.packageName}
+          </h1>
+          <p className="mt-2 max-w-xl text-[13px] leading-5 text-gray-600 sm:text-sm">
+            Klaim {campaign.discountLabel} dari {partner.partnerName}. Kode otomatis masuk ke pesan WhatsApp.
+          </p>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-500">
-                  <UserRound size={15} />
-                  Partner
-                </div>
-                <p className="text-lg font-black text-gray-950">{partner.partnerName}</p>
-                <p className="text-sm text-gray-500">{PARTNER_TYPE_LABEL[partner.partnerType] ?? partner.partnerType}</p>
+          <div className="relative mt-4 overflow-hidden rounded-lg border border-dashed border-teal-300 bg-teal-50 p-3">
+            <span className="absolute -left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-white" />
+            <span className="absolute -right-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-white" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-700 text-white">
+                <Ticket size={19} />
               </div>
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-500">
-                  <Ticket size={15} />
-                  Kode Referral
-                </div>
-                <p className="font-mono text-2xl font-black tracking-wide text-gray-950">{partner.referralCode}</p>
-                <p className="text-sm text-gray-500">{campaign.campaignName}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-teal-800 sm:text-[11px]">Kupon partner</p>
+                <p className="text-base font-black leading-tight text-gray-950 sm:text-lg">{campaign.discountLabel}</p>
+                <p className="mt-0.5 text-xs text-gray-600">
+                  Kode <span className="font-mono font-black text-gray-950">{partner.referralCode}</span> · {partner.partnerName}
+                </p>
               </div>
             </div>
-          </header>
+          </div>
+        </header>
 
-          <article className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-            {heroImage && (
-              <div
-                role="img"
-                aria-label={`Foto ${matchedTour?.title ?? campaign.packageName}`}
-                className="min-h-48 bg-cover bg-center sm:min-h-64"
-                style={{ backgroundImage: `url(${heroImage})` }}
-              />
-            )}
-            <div className="p-5 sm:p-6">
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-teal-800">
-                  <Plane size={13} />
-                  Overview Trip
-                </span>
-                <span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">
-                  {campaign.discountLabel}
-                </span>
-              </div>
-              <h2 className="text-2xl font-black leading-tight text-gray-950">
-                {matchedTour?.title ?? campaign.packageName}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-gray-600 sm:text-base">
-                {tripDescription}
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3">
-                  <MapPin className="mt-0.5 text-teal-700" size={17} />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Destinasi</p>
-                    <p className="text-sm font-semibold text-gray-950">
-                      {matchedTour?.cityHighlight || matchedTour?.country || campaign.packageName}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3">
-                  <CalendarDays className="mt-0.5 text-teal-700" size={17} />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Jadwal</p>
-                    <p className="text-sm font-semibold text-gray-950">
-                      {matchedTour?.tripDate ? formatDate(matchedTour.tripDate) : "Konfirmasi via WhatsApp"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3">
-                  <Sparkles className="mt-0.5 text-teal-700" size={17} />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Durasi</p>
-                    <p className="text-sm font-semibold text-gray-950">{matchedTour?.duration || "Mengikuti paket"}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3">
-                  <Banknote className="mt-0.5 text-teal-700" size={17} />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Harga paket</p>
-                    <p className="text-sm font-semibold text-gray-950">
-                      {tourPrice ? `Mulai ${formatCurrency(tourPrice)}` : "Konfirmasi seat dan harga"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {highlights.length > 0 && (
-                <div className="mt-4 border-t border-gray-200 pt-4">
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Yang akan dibahas saat konsultasi</p>
-                  <ul className="mt-2 space-y-2 text-sm leading-6 text-gray-700">
-                    {highlights.map((item) => (
-                      <li key={item} className="flex gap-2">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-600" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {tourHref && (
-                <Link href={tourHref} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 px-4 text-sm font-bold text-gray-900 transition hover:bg-gray-50">
-                  Lihat detail trip
-                </Link>
-              )}
-            </div>
-          </article>
-        </div>
-
-        <aside className="rounded-lg border border-gray-200 bg-white p-5 shadow-lg shadow-gray-200/60 sm:p-6 lg:sticky lg:top-24">
-          <div className="mb-5 space-y-1">
-            <p className="text-xs font-bold uppercase tracking-wide text-teal-700">Klaim via WhatsApp</p>
-            <h2 className="text-2xl font-black text-gray-950">{partner.referralCode}</h2>
-            <p className="text-sm text-gray-500">{campaign.discountLabel} untuk {campaign.packageName}</p>
+        <aside className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg shadow-gray-200/60 lg:sticky lg:top-24 lg:row-span-2">
+          <div className="mb-3 flex items-center justify-between gap-3 text-xs">
+            <span className="font-semibold text-gray-600">Kupon siap dipakai</span>
+            <span className="rounded-full bg-teal-50 px-2.5 py-1 font-mono font-black text-teal-800">{partner.referralCode}</span>
           </div>
 
           <ReferralGateClient
@@ -364,11 +274,88 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
             withoutCodeUrl={withoutCodeUrl}
           />
 
-          <div className="mt-5 border-t border-gray-200 pt-4 text-sm text-gray-600">
-            <p className="font-semibold text-gray-900">Pesan WhatsApp otomatis membawa kode referral.</p>
-            <p className="mt-1">Tim Sundaf Trip tetap akan mengonfirmasi seat, jadwal, harga final, dan syarat promo sebelum booking.</p>
+          <div className="mt-4 border-t border-gray-200 pt-3 text-xs leading-5 text-gray-600">
+            <p>WhatsApp akan membawa kode kupon. Tim Sundaf Trip tetap cek seat, jadwal, harga final, dan syarat promo.</p>
           </div>
         </aside>
+
+        <article className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+            {heroImage && (
+              <div
+                role="img"
+                aria-label={`Foto ${matchedTour?.title ?? campaign.packageName}`}
+                className="min-h-40 bg-cover bg-center sm:min-h-56"
+                style={{ backgroundImage: `url(${heroImage})` }}
+              />
+            )}
+            <div className="p-4 sm:p-5">
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-teal-800">
+                  <Plane size={13} />
+                  Overview Trip
+                </span>
+              </div>
+              <h2 className="text-xl font-black leading-tight text-gray-950 sm:text-2xl">
+                {matchedTour?.title ?? campaign.packageName}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-gray-600">
+                {tripDescription}
+              </p>
+
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="flex items-start gap-2 rounded-lg border border-gray-200 p-2.5">
+                  <MapPin className="mt-0.5 text-teal-700" size={15} />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Destinasi</p>
+                    <p className="text-xs font-semibold leading-5 text-gray-950">
+                      {matchedTour?.cityHighlight || matchedTour?.country || campaign.packageName}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 rounded-lg border border-gray-200 p-2.5">
+                  <CalendarDays className="mt-0.5 text-teal-700" size={15} />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Jadwal</p>
+                    <p className="text-xs font-semibold leading-5 text-gray-950">
+                      {matchedTour?.tripDate ? formatDate(matchedTour.tripDate) : "Konfirmasi via WhatsApp"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 rounded-lg border border-gray-200 p-2.5">
+                  <Sparkles className="mt-0.5 text-teal-700" size={15} />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Durasi</p>
+                    <p className="text-xs font-semibold leading-5 text-gray-950">{matchedTour?.duration || "Mengikuti paket"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 rounded-lg border border-gray-200 p-2.5">
+                  <Banknote className="mt-0.5 text-teal-700" size={15} />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Harga</p>
+                    <p className="text-xs font-semibold leading-5 text-gray-950">
+                      {tourPrice ? `Mulai ${formatCurrency(tourPrice)}` : "Konfirmasi seat dan harga"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {compactHighlights.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {compactHighlights.map((item) => (
+                    <span key={item} className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {tourHref && (
+                <Link href={tourHref} className="mt-4 inline-flex min-h-10 items-center justify-center rounded-lg border border-gray-300 px-3 text-xs font-bold text-gray-900 transition hover:bg-gray-50">
+                  Lihat detail trip
+                </Link>
+              )}
+            </div>
+        </article>
       </div>
     </section>
   );
