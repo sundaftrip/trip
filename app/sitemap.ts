@@ -12,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Landing page konversi trip perdana Vietnam (Sapa & Halong). Halaman
     // statis di public/vietnam/, punya juga sitemap khusus /vietnam/sitemap.xml.
     { url: `${base}/vietnam`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/open-trip-vietnam`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa/faq`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },

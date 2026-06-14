@@ -68,6 +68,21 @@ const nextConfig: NextConfig = {
         destination: "/sundaf-trip",
         permanent: true,
       },
+      {
+        source: "/opentrip-vietnam",
+        destination: "/open-trip-vietnam",
+        permanent: true,
+      },
+      {
+        source: "/open-trip-vietnam-dari-jakarta",
+        destination: "/open-trip-vietnam",
+        permanent: true,
+      },
+      {
+        source: "/paket-open-trip-vietnam",
+        destination: "/open-trip-vietnam",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

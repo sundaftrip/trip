@@ -6,12 +6,12 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://sundaftrip.com/vietnam</loc>
-    <lastmod>2026-06-13</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
       <image:loc>https://sundaftrip.com/vietnam/assets/hero-sapa.jpg</image:loc>
-      <image:title>Terasering Sapa, Vietnam Utara</image:title>
+      <image:title>Open trip Vietnam ke terasering Sapa, Vietnam Utara</image:title>
     </image:image>
     <image:image>
       <image:loc>https://sundaftrip.com/vietnam/assets/sapa-aerial.jpg</image:loc>
@@ -19,7 +19,7 @@
     </image:image>
     <image:image>
       <image:loc>https://sundaftrip.com/vietnam/assets/halong-boat.jpg</image:loc>
-      <image:title>Kapal wisata di teluk Halong</image:title>
+      <image:title>Open trip Vietnam ke teluk Halong</image:title>
     </image:image>
     <image:image>
       <image:loc>https://sundaftrip.com/vietnam/assets/halong-sunset.jpg</image:loc>

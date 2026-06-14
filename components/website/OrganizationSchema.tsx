@@ -161,6 +161,9 @@ export default async function OrganizationSchema() {
     knowsAbout: [
       "Tour Rusia dari Indonesia",
       "Open trip Rusia dari Jakarta",
+      "Open trip Vietnam",
+      "Open trip Vietnam Utara",
+      "Perjalanan ke Sapa dan Halong Bay",
       "Open trip aurora borealis",
       "Perjalanan ke Murmansk",
       "Perjalanan ke Teriberka",
