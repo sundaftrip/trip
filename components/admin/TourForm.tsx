@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
+
+type ItineraryItem = { day: number; title: string; description: string };
+type AddOnTag = "" | "wajib" | "recommended";
+type AddOnDraft = { name: string; price: string | number; desc: string };
 
 interface TourData {
   id?: string;
@@ -24,18 +28,25 @@ interface TourData {
   notes?: string;
   description?: string;
   visaInfo?: string;
-  itinerary?: { day: number; title: string; description: string }[];
+  itinerary?: ItineraryItem[];
   addOns?: { name: string; price: number; tag?: AddOnTag; desc?: string }[];
 }
 
-type AddOnTag = "" | "wajib" | "recommended";
+interface TourFormDraft {
+  version: 1;
+  updatedAt: string;
+  form: TourData;
+  inclusionInput: string;
+  exclusionInput: string;
+  editingInclusionIdx: number | null;
+  editingExclusionIdx: number | null;
+  itineraryItem: ItineraryItem;
+  editingItineraryIdx: number | null;
+  addOnItem: AddOnDraft;
+}
 
-export default function TourForm({ tour }: { tour?: TourData }) {
-  const router = useRouter();
-  const isEdit = !!tour?.id;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [form, setForm] = useState<TourData>({
+function buildInitialForm(tour?: TourData): TourData {
+  return {
     title: tour?.title ?? "",
     country: tour?.country ?? "",
     cityHighlight: tour?.cityHighlight ?? "",
@@ -56,15 +67,253 @@ export default function TourForm({ tour }: { tour?: TourData }) {
     visaInfo: tour?.visaInfo ?? "",
     itinerary: tour?.itinerary ?? [],
     addOns: tour?.addOns ?? [],
-  });
+  };
+}
+
+function getNextItineraryDay(items?: ItineraryItem[]) {
+  return (items ?? []).reduce((max, item) => Math.max(max, Number(item.day) || 0), 0) + 1;
+}
+
+function emptyItineraryItem(items?: ItineraryItem[]): ItineraryItem {
+  return { day: getNextItineraryDay(items), title: "", description: "" };
+}
+
+function emptyAddOnItem(): AddOnDraft {
+  return { name: "", price: "", desc: "" };
+}
+
+function sortItinerary(items: ItineraryItem[]) {
+  return [...items].sort((a, b) => a.day - b.day);
+}
+
+function formatDraftTime(value: string | null) {
+  if (!value) return "";
+  return new Date(value).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+}
+
+function hasDraftWork(draft: TourFormDraft, initialForm: TourData) {
+  return (
+    JSON.stringify(draft.form) !== JSON.stringify(initialForm) ||
+    draft.inclusionInput.trim() !== "" ||
+    draft.exclusionInput.trim() !== "" ||
+    draft.itineraryItem.title.trim() !== "" ||
+    draft.itineraryItem.description.trim() !== "" ||
+    draft.addOnItem.name.trim() !== "" ||
+    draft.addOnItem.desc.trim() !== "" ||
+    String(draft.addOnItem.price).trim() !== ""
+  );
+}
+
+function readNumberOrNull(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function persistDraft(draftKey: string, draft: TourFormDraft, initialForm: TourData) {
+  try {
+    if (hasDraftWork(draft, initialForm)) {
+      window.localStorage.setItem(draftKey, JSON.stringify(draft));
+      return "saved";
+    }
+
+    window.localStorage.removeItem(draftKey);
+    return "cleared";
+  } catch {
+    return "error";
+  }
+}
+
+export default function TourForm({ tour }: { tour?: TourData }) {
+  const router = useRouter();
+  const isEdit = !!tour?.id;
+  const initialForm = useMemo(() => buildInitialForm(tour), [tour]);
+  const draftKey = `sundaf:tour-form-draft:${tour?.id ?? "new"}`;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState<TourData>(initialForm);
 
   const [inclusionInput, setInclusionInput] = useState("");
   const [exclusionInput, setExclusionInput] = useState("");
   const [editingInclusionIdx, setEditingInclusionIdx] = useState<number | null>(null);
   const [editingExclusionIdx, setEditingExclusionIdx] = useState<number | null>(null);
-  const [itineraryItem, setItineraryItem] = useState({ day: 1, title: "", description: "" });
+  const [itineraryItem, setItineraryItem] = useState<ItineraryItem>(() => emptyItineraryItem(initialForm.itinerary));
   const [editingItineraryIdx, setEditingItineraryIdx] = useState<number | null>(null);
-  const [addOnItem, setAddOnItem] = useState<{ name: string; price: string | number; desc: string }>({ name: "", price: "", desc: "" });
+  const [addOnItem, setAddOnItem] = useState<AddOnDraft>(() => emptyAddOnItem());
+  const [loadedDraftKey, setLoadedDraftKey] = useState<string | null>(null);
+  const [draftRestoredAt, setDraftRestoredAt] = useState<string | null>(null);
+  const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
+  const [draftError, setDraftError] = useState("");
+  const latestDraftRef = useRef<{ draftKey: string; draft: TourFormDraft; initialForm: TourData } | null>(null);
+  const suppressDraftPersistRef = useRef(false);
+
+  latestDraftRef.current = !suppressDraftPersistRef.current && loadedDraftKey === draftKey
+    ? {
+        draftKey,
+        initialForm,
+        draft: {
+          version: 1,
+          updatedAt: new Date().toISOString(),
+          form,
+          inclusionInput,
+          exclusionInput,
+          editingInclusionIdx,
+          editingExclusionIdx,
+          itineraryItem,
+          editingItineraryIdx,
+          addOnItem,
+        },
+      }
+    : null;
+
+  useEffect(() => {
+    suppressDraftPersistRef.current = false;
+    const timer = window.setTimeout(() => {
+      setLoadedDraftKey(null);
+      setDraftError("");
+      setDraftRestoredAt(null);
+      setDraftSavedAt(null);
+
+      try {
+        const rawDraft = window.localStorage.getItem(draftKey);
+        if (!rawDraft) {
+          setForm(initialForm);
+          setItineraryItem(emptyItineraryItem(initialForm.itinerary));
+          setLoadedDraftKey(draftKey);
+          return;
+        }
+
+        const draft = JSON.parse(rawDraft) as Partial<TourFormDraft>;
+        const restoredForm: TourData = {
+          ...initialForm,
+          ...(draft.form ?? {}),
+        };
+
+        restoredForm.inclusions = Array.isArray(restoredForm.inclusions) ? restoredForm.inclusions : [];
+        restoredForm.exclusions = Array.isArray(restoredForm.exclusions) ? restoredForm.exclusions : [];
+        restoredForm.gallery = Array.isArray(restoredForm.gallery) ? restoredForm.gallery : [];
+        restoredForm.itinerary = Array.isArray(restoredForm.itinerary) ? sortItinerary(restoredForm.itinerary) : [];
+        restoredForm.addOns = Array.isArray(restoredForm.addOns) ? restoredForm.addOns : [];
+
+        setForm(restoredForm);
+        setInclusionInput(typeof draft.inclusionInput === "string" ? draft.inclusionInput : "");
+        setExclusionInput(typeof draft.exclusionInput === "string" ? draft.exclusionInput : "");
+        setEditingInclusionIdx(readNumberOrNull(draft.editingInclusionIdx));
+        setEditingExclusionIdx(readNumberOrNull(draft.editingExclusionIdx));
+        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description
+          ? {
+              day: Number(draft.itineraryItem.day) || getNextItineraryDay(restoredForm.itinerary),
+              title: draft.itineraryItem.title ?? "",
+              description: draft.itineraryItem.description ?? "",
+            }
+          : emptyItineraryItem(restoredForm.itinerary)
+        );
+        setEditingItineraryIdx(readNumberOrNull(draft.editingItineraryIdx));
+        setAddOnItem({
+          name: draft.addOnItem?.name ?? "",
+          price: draft.addOnItem?.price ?? "",
+          desc: draft.addOnItem?.desc ?? "",
+        });
+
+        const restoredAt = typeof draft.updatedAt === "string" ? draft.updatedAt : new Date().toISOString();
+        setDraftRestoredAt(restoredAt);
+        setDraftSavedAt(restoredAt);
+        setLoadedDraftKey(draftKey);
+      } catch {
+        window.localStorage.removeItem(draftKey);
+        setForm(initialForm);
+        setItineraryItem(emptyItineraryItem(initialForm.itinerary));
+        setDraftError("Draft lokal rusak dan sudah dibersihkan.");
+        setLoadedDraftKey(draftKey);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [draftKey, initialForm]);
+
+  useEffect(() => {
+    if (loadedDraftKey !== draftKey) return;
+
+    const draft: TourFormDraft = {
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      form,
+      inclusionInput,
+      exclusionInput,
+      editingInclusionIdx,
+      editingExclusionIdx,
+      itineraryItem,
+      editingItineraryIdx,
+      addOnItem,
+    };
+
+    const timer = window.setTimeout(() => {
+      const result = persistDraft(draftKey, draft, initialForm);
+      if (result === "saved") {
+        setDraftSavedAt(draft.updatedAt);
+        setDraftError("");
+      } else if (result === "cleared") {
+        setDraftSavedAt(null);
+      } else {
+        setDraftError("Draft lokal belum bisa disimpan di browser ini.");
+      }
+    }, 500);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    loadedDraftKey,
+    draftKey,
+    initialForm,
+    form,
+    inclusionInput,
+    exclusionInput,
+    editingInclusionIdx,
+    editingExclusionIdx,
+    itineraryItem,
+    editingItineraryIdx,
+    addOnItem,
+  ]);
+
+  useEffect(() => {
+    const persistLatestDraft = () => {
+      if (suppressDraftPersistRef.current) return;
+
+      const snapshot = latestDraftRef.current;
+      if (!snapshot) return;
+
+      persistDraft(snapshot.draftKey, {
+        ...snapshot.draft,
+        updatedAt: new Date().toISOString(),
+      }, snapshot.initialForm);
+    };
+    const persistOnHidden = () => {
+      if (document.visibilityState === "hidden") persistLatestDraft();
+    };
+
+    window.addEventListener("pagehide", persistLatestDraft);
+    window.addEventListener("beforeunload", persistLatestDraft);
+    document.addEventListener("visibilitychange", persistOnHidden);
+
+    return () => {
+      persistLatestDraft();
+      window.removeEventListener("pagehide", persistLatestDraft);
+      window.removeEventListener("beforeunload", persistLatestDraft);
+      document.removeEventListener("visibilitychange", persistOnHidden);
+    };
+  }, []);
+
+  function discardLocalDraft() {
+    window.localStorage.removeItem(draftKey);
+    setForm(initialForm);
+    setInclusionInput("");
+    setExclusionInput("");
+    setEditingInclusionIdx(null);
+    setEditingExclusionIdx(null);
+    setItineraryItem(emptyItineraryItem(initialForm.itinerary));
+    setEditingItineraryIdx(null);
+    setAddOnItem(emptyAddOnItem());
+    setDraftRestoredAt(null);
+    setDraftSavedAt(null);
+    setDraftError("");
+  }
 
   // commit helpers untuk inclusions/exclusions (tambah baru ATAU simpan editan)
   function commitInclusion() {
@@ -103,6 +352,24 @@ export default function TourForm({ tour }: { tour?: TourData }) {
     setForm((p) => ({ ...p, [key]: value }));
   }
 
+  function commitItineraryItem() {
+    const item: ItineraryItem = {
+      day: Number(itineraryItem.day) || getNextItineraryDay(form.itinerary),
+      title: itineraryItem.title.trim(),
+      description: itineraryItem.description.trim(),
+    };
+    if (!item.title) return;
+
+    const updated = editingItineraryIdx !== null
+      ? (form.itinerary ?? []).map((current, i) => (i === editingItineraryIdx ? item : current))
+      : [...(form.itinerary ?? []), item];
+    const sorted = sortItinerary(updated);
+
+    set("itinerary", sorted);
+    setEditingItineraryIdx(null);
+    setItineraryItem(emptyItineraryItem(sorted));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -121,6 +388,9 @@ export default function TourForm({ tour }: { tour?: TourData }) {
     });
     setLoading(false);
     if (res.ok) {
+      suppressDraftPersistRef.current = true;
+      latestDraftRef.current = null;
+      window.localStorage.removeItem(draftKey);
       router.push("/admin/tours");
     } else {
       const data = await res.json().catch(() => ({}));
@@ -133,6 +403,25 @@ export default function TourForm({ tour }: { tour?: TourData }) {
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
           ⛔ {error}
+        </div>
+      )}
+      {(draftError || draftRestoredAt || draftSavedAt) && (
+        <div className={`p-4 border rounded-xl text-sm font-medium flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${
+          draftError
+            ? "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300"
+            : "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+        }`}>
+          <span>
+            {draftError || (draftRestoredAt
+              ? `Draft lokal dipulihkan (${formatDraftTime(draftRestoredAt)}). Autosave terakhir ${formatDraftTime(draftSavedAt)}.`
+              : `Draft lokal tersimpan otomatis ${formatDraftTime(draftSavedAt)}.`)}
+          </span>
+          {!draftError && (
+            <button type="button" onClick={discardLocalDraft}
+              className="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-white/70 dark:bg-gray-800/70 text-xs font-semibold text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-700 hover:bg-white dark:hover:bg-gray-800">
+              Buang draft lokal
+            </button>
+          )}
         </div>
       )}
       {/* Basic Info */}
@@ -314,40 +603,20 @@ export default function TourForm({ tour }: { tour?: TourData }) {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    if (!itineraryItem.title) return;
-                    if (editingItineraryIdx !== null) {
-                      const updated = [...(form.itinerary ?? [])];
-                      updated[editingItineraryIdx] = itineraryItem;
-                      set("itinerary", updated.sort((a, b) => a.day - b.day));
-                      setEditingItineraryIdx(null);
-                    } else {
-                      set("itinerary", [...(form.itinerary ?? []), itineraryItem].sort((a, b) => a.day - b.day));
-                    }
-                    setItineraryItem({ day: (form.itinerary?.length ?? 0) + 2, title: "", description: "" });
+                    commitItineraryItem();
                   }
                 }}
               />
               {editingItineraryIdx !== null && (
                 <button type="button"
-                  onClick={() => { setEditingItineraryIdx(null); setItineraryItem({ day: (form.itinerary?.length ?? 0) + 2, title: "", description: "" }); }}
+                  onClick={() => { setEditingItineraryIdx(null); setItineraryItem(emptyItineraryItem(form.itinerary)); }}
                   className="px-3 bg-gray-400 text-white rounded-lg text-sm">
                   Batal
                 </button>
               )}
               <button
                 type="button"
-                onClick={() => {
-                  if (!itineraryItem.title) return;
-                  if (editingItineraryIdx !== null) {
-                    const updated = [...(form.itinerary ?? [])];
-                    updated[editingItineraryIdx] = itineraryItem;
-                    set("itinerary", updated.sort((a, b) => a.day - b.day));
-                    setEditingItineraryIdx(null);
-                  } else {
-                    set("itinerary", [...(form.itinerary ?? []), itineraryItem].sort((a, b) => a.day - b.day));
-                  }
-                  setItineraryItem({ day: (form.itinerary?.length ?? 0) + 2, title: "", description: "" });
-                }}
+                onClick={commitItineraryItem}
                 className={`px-3 text-white rounded-lg text-sm font-semibold whitespace-nowrap ${editingItineraryIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"}`}>
                 {editingItineraryIdx !== null ? "Simpan" : "+ Tambah"}
               </button>
@@ -386,8 +655,12 @@ export default function TourForm({ tour }: { tour?: TourData }) {
                   type="button"
                   title="Hapus"
                   onClick={() => {
-                    if (editingItineraryIdx === i) { setEditingItineraryIdx(null); setItineraryItem({ day: (form.itinerary?.length ?? 0) + 1, title: "", description: "" }); }
-                    set("itinerary", form.itinerary!.filter((_, j) => j !== i));
+                    const updated = form.itinerary!.filter((_, j) => j !== i);
+                    if (editingItineraryIdx === i) {
+                      setEditingItineraryIdx(null);
+                      setItineraryItem(emptyItineraryItem(updated));
+                    }
+                    set("itinerary", updated);
                   }}
                   className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Shield, Save, ChevronDown, ChevronUp, User } from "lucide-react";
 import { ALL_PERMISSION_KEYS, DEFAULT_PERMISSIONS, PERMISSION_LABELS } from "@/lib/permission-keys";
 
@@ -156,7 +157,7 @@ export default function PermissionsPage() {
       ) : users.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <p>Belum ada pengguna selain SuperAdmin.</p>
-          <a href="/admin/users" className="text-blue-600 text-sm mt-2 block">Tambah pengguna →</a>
+          <Link href="/admin/users" className="text-blue-600 text-sm mt-2 block">Tambah pengguna →</Link>
         </div>
       ) : (
         <div className="space-y-3">

@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 async function getSiteTheme() {
@@ -96,14 +97,14 @@ export default async function TermsPage({
         {/* Language toggle, only shown when English content exists */}
         {hasEn && (
           <div className="flex gap-2 mb-8">
-            <a href="/terms" className={lang === "id" ? activePill() : inactivePill()}
+            <Link href="/terms" className={lang === "id" ? activePill() : inactivePill()}
               style={lang === "id" && isOutlined ? { background: headClr, color: cardBg ?? "#fff" } : undefined}>
               Indonesia
-            </a>
-            <a href="/terms?lang=en" className={lang === "en" ? activePill() : inactivePill()}
+            </Link>
+            <Link href="/terms?lang=en" className={lang === "en" ? activePill() : inactivePill()}
               style={lang === "en" && isOutlined ? { background: headClr, color: cardBg ?? "#fff" } : undefined}>
               English
-            </a>
+            </Link>
           </div>
         )}
 
