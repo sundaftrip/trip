@@ -65,7 +65,7 @@ export default function TourPinButton({ id, pinned, disabled = false }: Props) {
         onClick={togglePin}
         disabled={loading || disabled}
         title={disabled ? "Maksimal 5 tour dipin" : isPinned ? "Lepas pin dari Tour Pilihan" : "Pin ke Tour Pilihan"}
-        className={`inline-flex w-[5.5rem] items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`inline-flex w-16 items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-bold shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 ${
           loading
             ? "border-teal-500 bg-teal-500 text-white shadow-teal-500/20 dark:border-teal-400 dark:bg-teal-500 dark:text-white"
             : isPinned
@@ -75,7 +75,7 @@ export default function TourPinButton({ id, pinned, disabled = false }: Props) {
         aria-label={isPinned ? "Lepas pin tour" : "Pin tour"}
       >
         <Icon size={15} className={loading ? "animate-spin" : ""} />
-        <span>{loading ? "Simpan" : feedback || (isPinned ? "Pinned" : disabled ? "Max 5" : "Pin")}</span>
+        <span>{loading ? "..." : isPinned ? "On" : disabled ? "Max" : "Pin"}</span>
       </button>
       <span className="sr-only" aria-live="polite">
         {feedback || error}
