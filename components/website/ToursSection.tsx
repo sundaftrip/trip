@@ -221,9 +221,9 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 sm:gap-7">
+        <div className="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-3">
           {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80} className="h-full w-[78vw] max-w-[20rem] shrink-0 snap-start sm:w-auto sm:max-w-none">
+            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
               <TourCard tour={tour} theme="atlas" />
             </AnimateIn>
           ))}

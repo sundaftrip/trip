@@ -506,30 +506,30 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <p className="text-[10px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
         </p>
-        <h3 className="font-semibold text-[14px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
+        <h3 className="font-semibold text-[13px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
           {tour.title}
         </h3>
-        <div className="flex items-center gap-1.5 text-[10px] sm:text-[12px] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
+        <div className="flex items-center gap-1.5 text-[9px] sm:text-[12px] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
           <span className="whitespace-nowrap">{duration || "-"}</span>
           <span className="opacity-40">·</span>
           <span className="whitespace-nowrap">{dateStr}</span>
         </div>
         <div className="flex items-baseline gap-2 flex-wrap mt-auto pt-1">
-          <span className="font-bold text-[16px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
+          <span className="font-bold text-[15px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
             {priceText(tour)}
           </span>
           {strikePrice(tour) && (
-            <span className="text-[11px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--at-subtext)" }}>
+            <span className="text-[10px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--at-subtext)" }}>
               {strikePrice(tour)}
             </span>
           )}
         </div>
         <div className="flex items-center justify-between gap-2 pt-2 sm:hidden">
-          <span className="text-[10px] font-semibold" style={{ color: "var(--at-subtext)" }}>
+          <span className="text-[9px] font-semibold" style={{ color: "var(--at-subtext)" }}>
             {tour.seatsLeft > 0 ? `${tour.seatsLeft} seat tersedia` : "Tanya ketersediaan"}
           </span>
           {!isDimmed && (
-            <span className="inline-flex h-8 items-center rounded px-3 text-[11px] font-bold text-white" style={{ background: "var(--site-accent)" }}>
+            <span className="inline-flex h-7 items-center rounded px-2.5 text-[10px] font-bold text-white" style={{ background: "var(--site-accent)" }}>
               Lihat detail
             </span>
           )}
