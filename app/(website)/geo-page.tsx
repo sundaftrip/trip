@@ -1,3 +1,4 @@
+import type React from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
@@ -21,6 +22,41 @@ interface GeoPageProps {
 }
 
 const SITE_URL = "https://sundaftrip.com";
+const LINK_TOKEN_RE = /(https?:\/\/[^\s<>"']+|\/[a-z0-9][a-z0-9/_-]*(?:\?[^\s<>"']*)?)/gi;
+const TRAILING_PUNCTUATION_RE = /[.,;:)]+$/;
+
+function LinkedText({ text }: { text: string }) {
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+
+  for (const match of text.matchAll(LINK_TOKEN_RE)) {
+    const token = match[0];
+    const start = match.index ?? 0;
+    if (start > cursor) nodes.push(text.slice(cursor, start));
+
+    const trailing = token.match(TRAILING_PUNCTUATION_RE)?.[0] ?? "";
+    const href = trailing ? token.slice(0, -trailing.length) : token;
+    const isInternal = href.startsWith("/");
+    const className = "font-semibold underline decoration-[var(--site-accent)] underline-offset-4 hover:opacity-80";
+
+    nodes.push(
+      isInternal ? (
+        <Link key={`${href}-${start}`} href={href} className={className}>
+          {href}
+        </Link>
+      ) : (
+        <a key={`${href}-${start}`} href={href} target="_blank" rel="noreferrer" className={className}>
+          {href}
+        </a>
+      )
+    );
+    if (trailing) nodes.push(trailing);
+    cursor = start + token.length;
+  }
+
+  if (cursor < text.length) nodes.push(text.slice(cursor));
+  return <>{nodes}</>;
+}
 
 export default function GeoPage({
   title,
@@ -74,7 +110,7 @@ export default function GeoPage({
         </h1>
         <div className="mt-6 max-w-3xl border-l-4 pl-5" style={{ borderColor: "var(--site-accent)" }}>
           <p className="text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-            {description}
+            <LinkedText text={description} />
           </p>
         </div>
         <div className="mt-8 flex flex-col sm:flex-row gap-3">
@@ -98,7 +134,7 @@ export default function GeoPage({
               </h2>
               {section.body && (
                 <p className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  {section.body}
+                  <LinkedText text={section.body} />
                 </p>
               )}
               {section.items && (
@@ -106,7 +142,9 @@ export default function GeoPage({
                   {section.items.map((item) => (
                     <li key={item} className="flex gap-2 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
                       <CheckCircle2 size={15} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
-                      <span>{item}</span>
+                      <span>
+                        <LinkedText text={item} />
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -127,7 +165,7 @@ export default function GeoPage({
                 {faq.question}
               </summary>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                {faq.answer}
+                <LinkedText text={faq.answer} />
               </p>
             </details>
           ))}
