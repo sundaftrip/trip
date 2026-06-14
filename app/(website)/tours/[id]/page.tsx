@@ -680,8 +680,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 min-w-0">
                             <span className="break-words">{item.name}</span>
                             {item.tag === "recommended" && (
-                              <span className="relative inline-flex shrink-0 -translate-y-1 overflow-hidden rounded-sm border border-emerald-300/70 bg-gradient-to-r from-emerald-700 via-emerald-500 to-emerald-700 px-1.5 py-[2px] text-[7px] font-black leading-none tracking-normal text-white shadow-[0_1px_5px_rgba(16,185,129,0.34)] ring-1 ring-white/40">
-                                <span className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-white/35 via-white/15 to-transparent" />
+                              <span className="relative inline-flex shrink-0 -translate-y-1 overflow-hidden rounded-[2px] bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-700 px-1.5 py-[2px] text-[6px] font-black leading-none tracking-normal text-white shadow-[0_1px_4px_rgba(16,185,129,0.42),inset_0_1px_0_rgba(255,255,255,0.38),inset_0_-1px_0_rgba(4,120,87,0.28)]">
+                                <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
                                 <span className="relative">REKOMENDASI</span>
                               </span>
                             )}
