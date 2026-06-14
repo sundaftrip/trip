@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { getOrCreateReferralVisitorId } from "@/lib/referral-visitor";
 
 const REFERRAL_KEY = "sundaf_ref";
 
@@ -20,6 +21,7 @@ export default function ReferralCapture() {
     if (!ref) return;
 
     storeReferral(ref);
+    const visitorId = getOrCreateReferralVisitorId();
     fetch("/api/referrals/events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -30,6 +32,7 @@ export default function ReferralCapture() {
         metadata: {
           sourceUrl: window.location.href,
           captureMethod: "url_param",
+          visitorId,
         },
       }),
     }).catch(() => {});

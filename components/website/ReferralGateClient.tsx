@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Check, MessageCircle } from "lucide-react";
+import { getOrCreateReferralVisitorId } from "@/lib/referral-visitor";
 
 const REFERRAL_KEY = "sundaf_ref";
 
@@ -24,19 +25,24 @@ function storeReferral(code: string) {
   }
 }
 
-function sendEvent(eventType: string, props: Props, extra?: Record<string, string>) {
+type EventProps = Pick<Props, "partnerId" | "campaignId" | "partnerName" | "referralCode" | "sourceUrl">;
+
+function sendEvent(eventType: string, eventProps: EventProps, extra?: Record<string, string>) {
+  const visitorId = getOrCreateReferralVisitorId();
+
   fetch("/api/referrals/events", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     keepalive: true,
     body: JSON.stringify({
       eventType,
-      eventLabel: props.partnerName,
-      partnerId: props.partnerId,
-      campaignId: props.campaignId,
-      referralCode: props.referralCode,
+      eventLabel: eventProps.partnerName,
+      partnerId: eventProps.partnerId,
+      campaignId: eventProps.campaignId,
+      referralCode: eventProps.referralCode,
       metadata: {
-        sourceUrl: props.sourceUrl,
+        sourceUrl: eventProps.sourceUrl,
+        visitorId,
         ...extra,
       },
     }),
@@ -44,26 +50,32 @@ function sendEvent(eventType: string, props: Props, extra?: Record<string, strin
 }
 
 export default function ReferralGateClient(props: Props) {
-  const isReady = Boolean(props.claimUrl && props.withoutCodeUrl);
+  const { partnerId, campaignId, partnerName, referralCode, sourceUrl, claimUrl, withoutCodeUrl } = props;
+  const isReady = Boolean(claimUrl && withoutCodeUrl);
+  const eventProps = useMemo(
+    () => ({ partnerId, campaignId, partnerName, referralCode, sourceUrl }),
+    [campaignId, partnerId, partnerName, referralCode, sourceUrl]
+  );
 
   useEffect(() => {
-    storeReferral(props.referralCode);
-    sendEvent("referral_code_detected", props, { captureMethod: "short_slug" });
-  }, [props]);
+    storeReferral(referralCode);
+    sendEvent("referral_page_view", eventProps, { captureMethod: "short_slug" });
+    sendEvent("referral_code_detected", eventProps, { captureMethod: "short_slug" });
+  }, [eventProps, referralCode]);
 
   function redirect(kind: "claim" | "without_code") {
     if (!isReady) return;
     if (kind === "claim") {
-      storeReferral(props.referralCode);
-      sendEvent("claim_discount_clicked", props);
-      sendEvent("whatsapp_redirect_clicked", props, { mode: "claim_discount" });
-      window.location.href = props.claimUrl;
+      storeReferral(referralCode);
+      sendEvent("claim_discount_clicked", eventProps);
+      sendEvent("whatsapp_redirect_clicked", eventProps, { mode: "claim_discount" });
+      window.location.href = claimUrl;
       return;
     }
 
-    sendEvent("continue_without_code_clicked", props);
-    sendEvent("whatsapp_redirect_clicked", props, { mode: "without_code" });
-    window.location.href = props.withoutCodeUrl;
+    sendEvent("continue_without_code_clicked", eventProps);
+    sendEvent("whatsapp_redirect_clicked", eventProps, { mode: "without_code" });
+    window.location.href = withoutCodeUrl;
   }
 
   return (

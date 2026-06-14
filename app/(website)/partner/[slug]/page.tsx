@@ -80,7 +80,7 @@ async function createDispute(formData: FormData) {
   redirect(`/partner/${slug}?token=${encodeURIComponent(token)}&sent=1`);
 }
 
-function statCard(label: string, value: string | number, Icon: typeof Users) {
+function statCard(label: string, value: string | number, Icon: typeof Users, note?: string) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
@@ -88,8 +88,53 @@ function statCard(label: string, value: string | number, Icon: typeof Users) {
       </div>
       <p className="text-2xl font-black text-gray-950">{value}</p>
       <p className="text-sm text-gray-500">{label}</p>
+      {note && <p className="mt-1 text-xs text-gray-400">{note}</p>}
     </div>
   );
+}
+
+type LogItem = {
+  id: string;
+  eventType: string;
+  eventLabel: string | null;
+  metadata: unknown;
+  createdAt: Date;
+};
+
+function metadataRecord(metadata: unknown) {
+  return metadata && typeof metadata === "object" && !Array.isArray(metadata)
+    ? metadata as Record<string, unknown>
+    : {};
+}
+
+function visitorId(log: LogItem) {
+  const raw = metadataRecord(log.metadata).visitorId;
+  return typeof raw === "string" && raw.trim() ? raw : null;
+}
+
+function buildVisitorLabels(logs: LogItem[]) {
+  const labels = new Map<string, string>();
+  const chronological = [...logs].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  for (const log of chronological) {
+    const id = visitorId(log);
+    if (!id || labels.has(id)) continue;
+    labels.set(id, `Visitor #${labels.size + 1}`);
+  }
+  return labels;
+}
+
+function uniqueVisitorCount(logs: LogItem[], eventType?: string) {
+  const ids = new Set<string>();
+  for (const log of logs) {
+    if (eventType && log.eventType !== eventType) continue;
+    const id = visitorId(log);
+    if (id) ids.add(id);
+  }
+  return ids.size;
+}
+
+function eventLabel(eventType: string) {
+  return eventType.replaceAll("_", " ");
 }
 
 export default async function PartnerDashboardPage({ params, searchParams }: PageProps) {
@@ -106,7 +151,7 @@ export default async function PartnerDashboardPage({ params, searchParams }: Pag
       },
       commissions: true,
       disputes: { orderBy: { createdAt: "desc" }, take: 8 },
-      activityLogs: { orderBy: { createdAt: "desc" }, take: 30 },
+      activityLogs: { orderBy: { createdAt: "desc" }, take: 500 },
     },
   });
 
@@ -127,15 +172,20 @@ export default async function PartnerDashboardPage({ params, searchParams }: Pag
   const campaign = partner.campaigns.find((c) => c.status === "ACTIVE") ?? partner.campaigns[0];
   const referralLink = buildReferralLink(partner.slug);
   const logs = partner.activityLogs;
+  const visibleLogs = logs.slice(0, 50);
+  const visitorLabels = buildVisitorLabels(logs);
   const leads = partner.leads;
   const commissions = partner.commissions;
-  const linkClicks = logs.filter((l) => l.eventType === "referral_page_view").length;
-  const waClicks = logs.filter((l) => l.eventType === "whatsapp_redirect_clicked").length;
+  const rawPageViews = logs.filter((l) => l.eventType === "referral_page_view").length;
+  const rawWaClicks = logs.filter((l) => l.eventType === "whatsapp_redirect_clicked").length;
+  const uniqueVisitors = uniqueVisitorCount(logs);
+  const uniquePageViews = uniqueVisitorCount(logs, "referral_page_view");
+  const uniqueWaClicks = uniqueVisitorCount(logs, "whatsapp_redirect_clicked");
   const validLeads = leads.filter((l) => l.leadStatus !== "NEW_LEAD" && l.leadStatus !== "CANCELLED").length;
   const bookings = leads.filter((l) => l.leadStatus === "BOOKED" || l.bookingStatus === "BOOKED").length;
   const paidCustomers = leads.filter((l) => l.leadStatus === "FULLY_PAID" || l.paymentStatus === "FULLY_PAID").length;
   const cancelled = leads.filter((l) => l.leadStatus === "CANCELLED" || l.bookingStatus === "CANCELLED").length;
-  const conversionRate = linkClicks ? (leads.length / linkClicks) * 100 : 0;
+  const conversionRate = uniqueVisitors ? (leads.length / uniqueVisitors) * 100 : 0;
   const pendingCommission = commissions.filter((c) => c.commissionStatus === "PENDING").reduce((sum, c) => sum + c.commissionAmount, 0);
   const approvedCommission = commissions.filter((c) => c.commissionStatus === "APPROVED").reduce((sum, c) => sum + c.commissionAmount, 0);
   const paidCommission = commissions.filter((c) => c.commissionStatus === "PAID").reduce((sum, c) => sum + c.commissionAmount, 0);
@@ -180,10 +230,11 @@ export default async function PartnerDashboardPage({ params, searchParams }: Pag
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {statCard("Total link clicks", linkClicks, LinkIcon)}
-          {statCard("Total WhatsApp clicks", waClicks, MessageCircle)}
+          {statCard("Unique visitors", uniqueVisitors, LinkIcon, `${rawPageViews} raw page views`)}
+          {statCard("Unique WhatsApp clicks", uniqueWaClicks, MessageCircle, `${rawWaClicks} raw WhatsApp clicks`)}
           {statCard("Total leads", leads.length, Users)}
-          {statCard("Conversion rate", formatPercent(conversionRate), TrendingUp)}
+          {statCard("Conversion rate", formatPercent(conversionRate), TrendingUp, "leads / unique visitors")}
+          {statCard("Unique page views", uniquePageViews, LinkIcon)}
           {statCard("Valid leads", validLeads, CheckCircle2)}
           {statCard("Bookings", bookings, Ticket)}
           {statCard("Paid customers", paidCustomers, Banknote)}
@@ -291,19 +342,30 @@ export default async function PartnerDashboardPage({ params, searchParams }: Pag
             Activity Log
           </h2>
           <div className="space-y-3">
-            {logs.length === 0 ? (
+            {visibleLogs.length === 0 ? (
               <p className="text-sm text-gray-400">Belum ada aktivitas.</p>
-            ) : logs.map((log) => (
+            ) : visibleLogs.map((log) => {
+              const id = visitorId(log);
+              const label = id ? visitorLabels.get(id) ?? "Visitor baru" : "Legacy event";
+              return (
               <div key={log.id} className="flex items-start gap-3 border-b border-gray-100 pb-3 last:border-0">
                 <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500">
                   <Clock size={14} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-950">{log.eventType.replaceAll("_", " ")}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-semibold text-gray-950">{eventLabel(log.eventType)}</p>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                      id ? "bg-teal-50 text-teal-700" : "bg-gray-100 text-gray-500"
+                    }`}>
+                      {label}
+                    </span>
+                  </div>
                   <p className="text-xs text-gray-500">{formatDate(log.createdAt)}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

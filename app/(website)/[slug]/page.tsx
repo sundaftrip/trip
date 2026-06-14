@@ -10,7 +10,6 @@ import {
   claimDiscountMessage,
   generateWhatsAppUrl,
   getConfiguredWhatsAppNumber,
-  logReferralEvent,
   PARTNER_TYPE_LABEL,
   withoutCodeMessage,
 } from "@/lib/referrals";
@@ -71,18 +70,6 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
     })
   );
   const withoutCodeUrl = generateWhatsAppUrl(whatsapp, withoutCodeMessage(campaign.packageName));
-
-  await logReferralEvent({
-    eventType: "referral_page_view",
-    eventLabel: partner.partnerName,
-    partnerId: partner.id,
-    campaignId: campaign.id,
-    metadata: {
-      slug,
-      sourceUrl,
-      refParam: sp.ref ?? "",
-    },
-  });
 
   return (
     <section className="min-h-[78vh] bg-[var(--site-bg)] px-4 py-10 sm:px-6 lg:px-8">
