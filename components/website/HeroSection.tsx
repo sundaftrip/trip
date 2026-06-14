@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -417,7 +417,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-10 lg:pb-16 px-4 at-grid-bg"
+    <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-7 lg:pb-16 px-4 at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Desktop: dua kolom (judul kiri, aksi di samping). Mobile: tumpuk rapat. */}
@@ -429,10 +429,25 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
                 {eyebrow}
               </span>
             </div>
-            <h1 aria-label={heroTitle} className="text-[clamp(2.3rem,7vw,6rem)] font-bold leading-[0.95] tracking-tight max-w-4xl mb-6 lg:mb-0 hero-fade-up"
+            <h1 aria-label={heroTitle} className="text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
               style={{ color: "var(--at-text)" }}>
               {renderTitleWords(heroTitle)}
             </h1>
+            <div className="mb-5 grid gap-2 lg:hidden">
+              {[
+                ["Seat & jadwal", "Trip aktif, kuota terbatas"],
+                ["Visa & itinerary", "Dibantu dari awal"],
+                ["Konsultasi", "Chat langsung tim Sundaf"],
+              ].map(([label, value]) => (
+                <div key={label} className="flex items-center justify-between gap-3 border-b py-2 text-sm" style={{ borderColor: "var(--at-border)" }}>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>{label}</p>
+                    <p className="truncate text-[13px] font-semibold" style={{ color: "var(--at-text)" }}>{value}</p>
+                  </div>
+                  <CheckCircle2 size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Kanan — tombol aksi di samping hero + trust badge */}

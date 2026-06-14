@@ -210,19 +210,20 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="py-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex items-end justify-between mb-5 sm:mb-10">
             <div>
-              <span className="at-pill mb-4 inline-flex" style={{ color: "var(--at-subtext)" }}>Paket Tersedia</span>
-              <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Tour Pilihan</h2>
+              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Pilihan paket</span>
+              <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold" style={{ color: "var(--at-text)" }}>Tour Pilihan</h2>
+              <p className="mt-1 text-xs font-medium sm:hidden" style={{ color: "var(--at-subtext)" }}>Tanggal terdekat, seat terbatas, bisa konsultasi dulu.</p>
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 sm:gap-7">
           {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
+            <AnimateIn key={tour.id} delay={i * 80} className="h-full w-[78vw] max-w-[20rem] shrink-0 snap-start sm:w-auto sm:max-w-none">
               <TourCard tour={tour} theme="atlas" />
             </AnimateIn>
           ))}

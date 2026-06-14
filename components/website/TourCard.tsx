@@ -481,7 +481,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
   return (
     <div className={`at-card group overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      <div className="relative h-40 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
+      <div className="relative h-36 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
         {tour.heroImg
           ? <Image src={cldOptimize(tour.heroImg, 480)} alt={tour.title} fill loading="lazy" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
@@ -502,25 +502,35 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       </div>
 
       {/* === BODY COMPACT, ala boarding pass: judul / durasi · tanggal / harga === */}
-      <div className="px-5 py-4 flex-1 flex flex-col space-y-2">
-        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--at-subtext)" }}>
+      <div className="px-3 py-3 sm:px-5 sm:py-4 flex-1 flex flex-col space-y-1.5 sm:space-y-2">
+        <p className="text-[10px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
         </p>
-        <h3 className="font-semibold text-[15px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
+        <h3 className="font-semibold text-[14px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
           {tour.title}
         </h3>
-        <div className="flex items-center gap-2 text-[11px] sm:text-[12px] tracking-[0.08em] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
+        <div className="flex items-center gap-1.5 text-[10px] sm:text-[12px] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
           <span className="whitespace-nowrap">{duration || "-"}</span>
           <span className="opacity-40">·</span>
           <span className="whitespace-nowrap">{dateStr}</span>
         </div>
         <div className="flex items-baseline gap-2 flex-wrap mt-auto pt-1">
-          <span className="font-bold text-[17px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
+          <span className="font-bold text-[16px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
             {priceText(tour)}
           </span>
           {strikePrice(tour) && (
             <span className="text-[11px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--at-subtext)" }}>
               {strikePrice(tour)}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center justify-between gap-2 pt-2 sm:hidden">
+          <span className="text-[10px] font-semibold" style={{ color: "var(--at-subtext)" }}>
+            {tour.seatsLeft > 0 ? `${tour.seatsLeft} seat tersedia` : "Tanya ketersediaan"}
+          </span>
+          {!isDimmed && (
+            <span className="inline-flex h-8 items-center rounded px-3 text-[11px] font-bold text-white" style={{ background: "var(--site-accent)" }}>
+              Lihat detail
             </span>
           )}
         </div>
