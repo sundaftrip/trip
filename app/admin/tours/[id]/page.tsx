@@ -2,8 +2,29 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import TourForm from "@/components/admin/TourForm";
 
-export default async function EditTourPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+type EditTourSearchParams = {
+  returnTo?: string | string[];
+};
+
+function firstParam(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function safeReturnHref(value?: string | string[]) {
+  const returnTo = firstParam(value);
+  if (returnTo === "/admin/tours" || returnTo.startsWith("/admin/tours?")) return returnTo;
+  return "/admin/tours";
+}
+
+export default async function EditTourPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<EditTourSearchParams>;
+}) {
+  const [{ id }, sp] = await Promise.all([params, searchParams]);
+  const returnHref = safeReturnHref(sp.returnTo);
   const tour = await prisma.tour.findUnique({ where: { id } });
   if (!tour) notFound();
 
@@ -13,7 +34,7 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Tour</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">{tour.title}</p>
       </div>
-      <TourForm tour={{
+      <TourForm returnHref={returnHref} tour={{
         id: tour.id,
         title: tour.title,
         country: tour.country,

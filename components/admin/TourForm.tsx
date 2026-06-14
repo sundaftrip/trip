@@ -122,7 +122,7 @@ function persistDraft(draftKey: string, draft: TourFormDraft, initialForm: TourD
   }
 }
 
-export default function TourForm({ tour }: { tour?: TourData }) {
+export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?: TourData; returnHref?: string }) {
   const router = useRouter();
   const isEdit = !!tour?.id;
   const initialForm = useMemo(() => buildInitialForm(tour), [tour]);
@@ -391,7 +391,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
       suppressDraftPersistRef.current = true;
       latestDraftRef.current = null;
       window.localStorage.removeItem(draftKey);
-      router.push("/admin/tours");
+      router.push(returnHref);
     } else {
       const data = await res.json().catch(() => ({}));
       setError(data.error ?? "Gagal menyimpan. Coba lagi.");
@@ -766,7 +766,7 @@ export default function TourForm({ tour }: { tour?: TourData }) {
           className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition">
           {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Buat Tour"}
         </button>
-        <button type="button" onClick={() => router.push("/admin/tours")}
+        <button type="button" onClick={() => router.push(returnHref)}
           className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
           Batal
         </button>

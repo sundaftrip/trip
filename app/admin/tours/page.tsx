@@ -192,6 +192,8 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
     return hrefWith({ sort: key, dir: nextDir });
   }
 
+  const currentListHref = hrefWith({});
+
   function sortIcon(column: SortKey) {
     if (sortKey !== column) return <ArrowUpDown size={14} className="text-gray-400" />;
     return sortDir === "asc"
@@ -364,7 +366,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <Link
-                        href={`/admin/tours/${tour.id}`}
+                        href={`/admin/tours/${tour.id}?returnTo=${encodeURIComponent(currentListHref)}`}
                         className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition"
                       >
                         <Pencil size={15} />
