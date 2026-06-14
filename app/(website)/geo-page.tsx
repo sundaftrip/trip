@@ -22,7 +22,7 @@ interface GeoPageProps {
 }
 
 const SITE_URL = "https://sundaftrip.com";
-const LINK_TOKEN_RE = /(https?:\/\/[^\s<>"']+|\/[a-z0-9][a-z0-9/_-]*(?:\?[^\s<>"']*)?)/gi;
+const LINK_TOKEN_RE = /(https?:\/\/[^\s<>"']+|(?<![a-z0-9])\/[a-z0-9][a-z0-9/_-]*(?:\?[^\s<>"']*)?)/gi;
 const TRAILING_PUNCTUATION_RE = /[.,;:)]+$/;
 
 function LinkedText({ text }: { text: string }) {
