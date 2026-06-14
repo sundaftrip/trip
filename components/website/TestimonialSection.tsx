@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, X } from "lucide-react";
 import AnimateIn from "./AnimateIn";
 import ExpandableQuote from "./ExpandableQuote";
 import { cldOptimize } from "@/lib/utils";
@@ -139,16 +139,81 @@ function Carousel({ items, renderCard, darkDots = false }: {
   );
 }
 
+function testimonialDialogId(id: string) {
+  return `testimonial-dialog-${id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+}
+
+function TestimonialDialogs({ items }: { items: Testimonial[] }) {
+  return (
+    <>
+      {items.map((item) => {
+        const id = testimonialDialogId(item.id);
+        return (
+          <div key={item.id} className="contents">
+            <input id={id} type="checkbox" className="peer sr-only" aria-hidden="true" />
+            <label
+              htmlFor={id}
+              aria-label="Tutup testimoni"
+              className="fixed inset-0 z-[220] hidden bg-black/70 peer-checked:block"
+            />
+            <div className="pointer-events-none fixed inset-0 z-[221] hidden items-end justify-center px-4 py-4 peer-checked:flex sm:items-center">
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={`${id}-title`}
+                className="pointer-events-auto w-full max-w-xl max-h-[86vh] overflow-y-auto rounded-t-2xl border border-white/15 bg-white p-5 shadow-2xl dark:bg-[#242D67] sm:rounded-2xl sm:p-6"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <Stars rating={item.rating} />
+                    <h3 id={`${id}-title`} className="mt-4 text-lg font-semibold leading-tight text-gray-950 dark:text-white">
+                      {item.name}
+                    </h3>
+                    {item.role && (
+                      <p className="mt-1 text-xs text-gray-500 dark:text-white/55">{item.role}</p>
+                    )}
+                  </div>
+                  <label
+                    htmlFor={id}
+                    aria-label="Tutup testimoni"
+                    className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 dark:border-white/15 dark:text-white/70 dark:hover:bg-white/10"
+                  >
+                    <X size={16} aria-hidden="true" />
+                  </label>
+                </div>
+
+                <p className="mt-5 whitespace-pre-line text-[15px] leading-7 text-gray-700 dark:text-white/75">
+                  &ldquo;{item.content}&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 /* ─── Main section ─── */
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
   const cardShell = "h-full min-h-0 overflow-hidden";
-  const quotePreviewProps = { clampClassName: "line-clamp-5", allowExpand: false } as const;
-  const quotePreviewClass = "text-sm leading-relaxed mt-4 flex-1 min-h-0 line-clamp-5";
+  const quotePreviewProps = (item: Testimonial) => ({
+    clampClassName: "line-clamp-5",
+    allowExpand: true,
+    toggleThreshold: 130,
+    dialogControlId: testimonialDialogId(item.id),
+  });
+  const withDialogs = (section: React.ReactNode) => (
+    <>
+      {section}
+      <TestimonialDialogs items={items} />
+    </>
+  );
 
   /* ── FUMAYO ── */
-  if (theme === "fumayo") return (
+  if (theme === "fumayo") return withDialogs(
     <section className="fb-page py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
@@ -162,7 +227,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`fb-card p-6 flex flex-col ${cardShell} transition-all duration-200 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--fb-paper)" : "var(--fb-card)", fontFamily: "var(--fb-font)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--fb-subink)"} {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color={"var(--fb-subink)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3" style={{ borderTop: "2px dashed var(--fb-line)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
@@ -178,7 +243,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── GLOBE ── */
-  if (theme === "teri") return (
+  if (theme === "teri") return withDialogs(
     <section className="py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10 text-center">
@@ -189,9 +254,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
           <Carousel items={items} renderCard={(item, active) => (
             <div className={`teri-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-60"}`}>
               <Stars rating={item.rating} />
-              <p className={quotePreviewClass} style={{ color: "var(--teri-sub)" }}>
-                &ldquo;{item.content}&rdquo;
-              </p>
+              <ExpandableQuote text={item.content} color={"var(--teri-sub)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-[2.5px] border-dashed" style={{ borderColor: "var(--teri-line)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
@@ -206,7 +269,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
     </section>
   );
 
-  if (theme === "globe") return (
+  if (theme === "globe") return withDialogs(
     <section className="py-24 overflow-hidden" style={{ background: "var(--gl-bg)" }}>
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
@@ -218,7 +281,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`gl-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "#fef9c3" : "var(--gl-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={active ? "#1a2a3a" : "var(--gl-subtext)"} {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color={active ? "#1a2a3a" : "var(--gl-subtext)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t"
                 style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
@@ -235,7 +298,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── ATLAS ── */
-  if (theme === "atlas") return (
+  if (theme === "atlas") return withDialogs(
     <section className="py-14 overflow-hidden at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-7">
@@ -246,7 +309,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
           <Carousel items={items} renderCard={(item, active) => (
             <div className={`at-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-60"}`}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--at-subtext)"} {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color={"var(--at-subtext)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t"
                 style={{ borderColor: "var(--at-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
@@ -263,7 +326,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── MAP / ATLAS ── */
-  if (theme === "map") return (
+  if (theme === "map") return withDialogs(
     <section className="py-24 overflow-hidden relative"
       style={{ background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }}>
       <div className="max-w-7xl mx-auto">
@@ -276,7 +339,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`mp-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--mp-land)" : "var(--mp-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={active ? "var(--mp-text)" : "var(--mp-subtext)"} {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color={active ? "var(--mp-text)" : "var(--mp-subtext)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2"
                 style={{ borderColor: "var(--mp-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
@@ -293,7 +356,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── PIXEL ── */
-  if (theme === "pixel") return (
+  if (theme === "pixel") return withDialogs(
     <section className="py-24 overflow-hidden relative" style={{
       background: "var(--px-bg)",
       backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
@@ -309,7 +372,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`px-card p-6 flex flex-col ${cardShell} transition-all duration-100 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--px-yellow)" : "var(--px-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color="var(--px-text)" {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color="var(--px-text)" {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2"
                 style={{ borderColor: "var(--px-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
@@ -326,7 +389,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── KAWAII ── */
-  if (theme === "kawaii") return (
+  if (theme === "kawaii") return withDialogs(
     <section className="py-24 overflow-hidden" style={{ background: "var(--kw-bg)" }}>
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
@@ -338,7 +401,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`kw-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--kw-peach)" : "var(--kw-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--kw-subtext)"} {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color={"var(--kw-subtext)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-dashed"
                 style={{ borderColor: "var(--kw-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
@@ -355,7 +418,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── TROPICAL ── */
-  if (theme === "tropical") return (
+  if (theme === "tropical") return withDialogs(
     <section className="py-24 overflow-hidden" style={{ background: "var(--tr-bg)" }}>
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
@@ -367,7 +430,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`tr-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--tr-mint)" : "var(--tr-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--tr-subtext)"} {...quotePreviewProps} />
+              <ExpandableQuote text={item.content} color={"var(--tr-subtext)"} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-dashed"
                 style={{ borderColor: "var(--tr-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
@@ -384,7 +447,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   );
 
   /* ── CLASSIC ── */
-  return (
+  return withDialogs(
     <section className="py-24 overflow-hidden bg-white dark:bg-black">
       <div className="max-w-7xl mx-auto">
         <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
@@ -399,9 +462,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
               active ? "border-gray-300 dark:border-gray-700 shadow-md" : "border-gray-100 dark:border-gray-900"
             }`}>
               <Stars rating={item.rating} />
-              <p className={`${quotePreviewClass} text-gray-600 dark:text-gray-400`}>
-                &ldquo;{item.content}&rdquo;
-              </p>
+              <ExpandableQuote text={item.content} color={undefined} {...quotePreviewProps(item)} />
               <div className="flex items-center gap-2.5 mt-4 pt-3 border-t border-gray-100 dark:border-gray-900">
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
