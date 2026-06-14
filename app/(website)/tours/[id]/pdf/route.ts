@@ -1,11 +1,15 @@
 /* GET /tours/[id]/pdf, generates a branded itinerary PDF on the fly
    from the Tour record and streams it back as a one-click download. */
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
+import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ItineraryPDF, type ItineraryDay } from "@/components/pdf/ItineraryPDF";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function slugify(s: string) {
@@ -20,6 +24,46 @@ function parseStory(raw?: string): string[] {
     if (Array.isArray(v)) return v.filter((x) => typeof x === "string");
   } catch { /* not JSON, treat as single paragraph */ }
   return [raw];
+}
+
+function fallbackHeroForTour(tour: { title: string; country: string; cityHighlight?: string | null }) {
+  const text = `${tour.title} ${tour.country} ${tour.cityHighlight ?? ""}`.toLowerCase();
+  if (text.includes("vietnam") && text.includes("sapa")) return "/vietnam/assets/hero-sapa.jpg";
+  if (text.includes("vietnam") && text.includes("hanoi")) return "/vietnam/assets/hanoi-street.jpg";
+  if (text.includes("vietnam")) return "/vietnam/assets/halong-sunset.jpg";
+  return null;
+}
+
+function mimeForFile(filePath: string) {
+  const ext = path.extname(filePath).toLowerCase();
+  if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
+  if (ext === ".png") return "image/png";
+  return null;
+}
+
+async function toPdfImageSrc(src?: string | null) {
+  if (!src) return null;
+  if (/^data:image\/(?:png|jpe?g);base64,/i.test(src)) return src;
+  if (/^https?:\/\//i.test(src)) return src;
+  if (!src.startsWith("/")) return null;
+
+  const publicDir = path.resolve(process.cwd(), "public");
+  const filePath = path.resolve(publicDir, src.replace(/^\/+/, ""));
+  if (!filePath.startsWith(`${publicDir}${path.sep}`)) return null;
+
+  const mime = mimeForFile(filePath);
+  if (!mime) return null;
+
+  try {
+    const bytes = await readFile(filePath);
+    return `data:${mime};base64,${Buffer.from(bytes).toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
+function uniqueImages(images: Array<string | null | undefined>) {
+  return [...new Set(images.filter((item): item is string => Boolean(item)))];
 }
 
 export async function GET(
@@ -54,32 +98,41 @@ export async function GET(
     ? `${formatCurrency(tour.price)}  -  hemat ${formatCurrency(tour.price - tour.promoPrice)}`
     : null;
   const landTourLabel = tour.priceLandTour ? formatCurrency(tour.priceLandTour) : null;
+  const rawHero = tour.heroImg || fallbackHeroForTour(tour);
+  const rawGallery = uniqueImages([rawHero, ...tour.gallery, fallbackHeroForTour(tour)]);
+  const [heroImg, gallery, logo] = await Promise.all([
+    toPdfImageSrc(rawHero),
+    Promise.all(rawGallery.map((img) => toPdfImageSrc(img))),
+    toPdfImageSrc(ci["company_logo"]),
+  ]);
+  const pdfTour = localizePdfTour({
+    title: tour.title,
+    country: tour.country,
+    cityHighlight: tour.cityHighlight,
+    seatsLeft: tour.seatsLeft,
+    tripDateLabel: tour.tripDate ? formatDate(tour.tripDate) : null,
+    duration: tour.duration,
+    itinerary,
+    inclusions: tour.inclusions,
+    exclusions: tour.exclusions,
+    heroImg,
+    gallery: uniqueImages(gallery),
+    visaInfo: tour.visaInfo,
+    notes: tour.notes,
+  });
 
   // ItineraryPDF returns a <Document>; cast satisfies renderToBuffer's
   // strict element typing without leaking `any`.
   type PdfElement = Parameters<typeof renderToBuffer>[0];
   const buffer = await renderToBuffer(
     createElement(ItineraryPDF, {
-      tour: {
-        title: tour.title,
-        country: tour.country,
-        cityHighlight: tour.cityHighlight,
-        seatsLeft: tour.seatsLeft,
-        tripDateLabel: tour.tripDate ? formatDate(tour.tripDate) : null,
-        duration: tour.duration,
-        itinerary,
-        inclusions: tour.inclusions,
-        exclusions: tour.exclusions,
-        heroImg: tour.heroImg,
-        visaInfo: tour.visaInfo,
-        notes: tour.notes,
-      },
+      tour: pdfTour,
       priceLabel,
       priceCoretLabel,
       landTourLabel,
       company: {
         name: ci["company_name"],
-        logo: ci["company_logo"],
+        logo,
         tagline: ci["about_tagline"],
         story: parseStory(ci["about_story"]),
         address: ci["company_address"],

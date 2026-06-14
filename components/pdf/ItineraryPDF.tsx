@@ -1,19 +1,21 @@
 /* eslint-disable jsx-a11y/alt-text */
-/* Itinerary PDF document — rendered server-side via @react-pdf/renderer.
-   Clean white layout: company logo, one hero image, the rest is text,
-   plus a Sundaf company profile. All content comes from the Tour record
-   so the PDF always matches what is published on the website. */
+/* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
 import {
-  Document, Page, View, Text, Image, Link, StyleSheet,
+  Document, Page, View, Text, Image, Link, StyleSheet, Font,
 } from "@react-pdf/renderer";
 
-const CHARCOAL = "#222831"; // rebrand 2026 — gantikan navy lama
+const CHARCOAL = "#20252B";
 const INK = "#2B2B2B";
-const TEAL = "#00ADB5"; // rebrand 2026 — aksen gantikan oranye lama
+const TEAL = "#00ADB5";
+const GOLD = "#C79B45";
 const GREEN = "#2E7D4F";
 const RED = "#B23B2A";
-const SUB = "#6B6B6B";
-const HAIR = "#E4E4E4";
+const SUB = "#60666D";
+const HAIR = "#DADDE1";
+const PAPER = "#F5F2EC";
+const WHITE = "#FFFFFF";
+
+Font.registerHyphenationCallback((word) => [word]);
 
 export interface ItineraryDay {
   day: number;
@@ -32,6 +34,7 @@ export interface ItineraryPDFProps {
     itinerary: ItineraryDay[];
     inclusions: string[];
     exclusions: string[];
+    gallery?: string[];
     heroImg?: string | null;
     visaInfo?: string | null;
     notes?: string | null;
@@ -41,7 +44,7 @@ export interface ItineraryPDFProps {
   landTourLabel?: string | null;
   company: {
     name?: string;
-    logo?: string;
+    logo?: string | null;
     tagline?: string;
     story?: string[];
     address?: string;
@@ -56,94 +59,202 @@ export interface ItineraryPDFProps {
 
 const s = StyleSheet.create({
   page: {
-    backgroundColor: "#FFFFFF", color: INK, fontFamily: "Helvetica",
-    paddingTop: 38, paddingBottom: 46, paddingHorizontal: 44,
+    backgroundColor: PAPER,
+    color: INK,
+    fontFamily: "Helvetica",
+    paddingTop: 30,
+    paddingBottom: 44,
+    paddingHorizontal: 34,
   },
 
-  logo: { height: 22, width: 79, objectFit: "contain" },
-  logoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  logoFallback: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL, letterSpacing: 1 },
-  docTag: { fontFamily: "Helvetica-Bold", fontSize: 7, color: TEAL, letterSpacing: 1 },
+  cover: {
+    backgroundColor: CHARCOAL,
+    color: WHITE,
+    padding: 18,
+    minHeight: 300,
+  },
+  coverTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 18,
+  },
+  logoBadge: {
+    width: 100,
+    height: 34,
+    backgroundColor: WHITE,
+    padding: 6,
+    justifyContent: "center",
+  },
+  logo: { height: 21, width: 88, objectFit: "contain" },
+  logoFallback: { fontFamily: "Helvetica-Bold", fontSize: 11, color: WHITE, letterSpacing: 1 },
+  docTag: { fontFamily: "Helvetica-Bold", fontSize: 7.5, color: "#BCEFF2", letterSpacing: 1.2 },
+  coverMain: { flexDirection: "row", gap: 16 },
+  coverCopy: { width: "49%", paddingRight: 4 },
+  kicker: { fontFamily: "Helvetica-Bold", fontSize: 8, color: GOLD, letterSpacing: 1.1 },
+  title: { fontFamily: "Helvetica-Bold", fontSize: 22, color: WHITE, marginTop: 8, lineHeight: 1.1 },
+  routeLine: { fontSize: 9.5, color: "#E7EAED", lineHeight: 1.4, marginTop: 10 },
+  coverImageWrap: { flex: 1, height: 218, borderWidth: 1, borderColor: "#4B535C", padding: 4 },
+  hero: { width: "100%", height: "100%", objectFit: "cover" },
+  coverFallback: {
+    flex: 1,
+    height: 218,
+    borderWidth: 1,
+    borderColor: "#4B535C",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  coverFallbackText: { fontFamily: "Helvetica-Bold", fontSize: 15, color: "#E7EAED" },
+  summaryBand: {
+    backgroundColor: WHITE,
+    flexDirection: "row",
+    paddingVertical: 11,
+    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: HAIR,
+  },
+  summaryCell: { flex: 1, paddingRight: 10 },
+  summaryLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: SUB, letterSpacing: 0.6 },
+  summaryValue: { fontFamily: "Helvetica-Bold", fontSize: 10, color: CHARCOAL, marginTop: 4, lineHeight: 1.25 },
+  priceValue: { fontFamily: "Helvetica-Bold", fontSize: 15, color: CHARCOAL, marginTop: 2 },
+  priceCoret: { fontSize: 7.5, color: "#8B929A", marginTop: 2, textDecoration: "line-through" },
+  priceLand: { fontSize: 7.5, color: SUB, marginTop: 2 },
 
-  kicker: { fontFamily: "Helvetica-Bold", fontSize: 8, color: TEAL, letterSpacing: 1, marginTop: 22 },
-  title: { fontFamily: "Helvetica-Bold", fontSize: 23, color: CHARCOAL, marginTop: 5, lineHeight: 1.15 },
+  photoStrip: {
+    flexDirection: "row",
+    gap: 6,
+    backgroundColor: WHITE,
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: HAIR,
+  },
+  stripImage: { flex: 1, height: 74, objectFit: "cover" },
 
-  hero: { width: "100%", height: 188, objectFit: "cover", marginTop: 12 },
+  section: {
+    backgroundColor: WHITE,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: HAIR,
+  },
+  sectionTight: {
+    backgroundColor: WHITE,
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: HAIR,
+  },
+  secHeadRow: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
+  secAccent: { width: 4, height: 17, backgroundColor: TEAL, marginRight: 8 },
+  secHead: { fontFamily: "Helvetica-Bold", fontSize: 13, color: CHARCOAL },
 
-  metaRow: { flexDirection: "row", marginTop: 12, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 9 },
-  metaCell: { flex: 1 },
-  metaLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: SUB, letterSpacing: 0.5 },
-  metaValue: { fontFamily: "Helvetica-Bold", fontSize: 9.5, color: CHARCOAL, marginTop: 3 },
-
-  priceWrap: { marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: HAIR },
-  priceCap: { fontFamily: "Helvetica-Bold", fontSize: 7, color: TEAL, letterSpacing: 0.5 },
-  priceBig: { fontFamily: "Helvetica-Bold", fontSize: 22, color: CHARCOAL, marginTop: 3 },
-  priceCoret: { fontSize: 9, color: "#9A9A9A", marginTop: 3, textDecoration: "line-through" },
-  priceLand: { fontSize: 8.5, color: SUB, marginTop: 3 },
-
-  secHead: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL, marginTop: 22 },
-  secAccent: { width: 30, height: 2, backgroundColor: TEAL, marginTop: 4, marginBottom: 10 },
-
-  /* itinerary */
   dayRow: {
-    flexDirection: "row", paddingVertical: 8,
-    borderBottomWidth: 1, borderBottomColor: HAIR,
+    flexDirection: "row",
+    paddingVertical: 9,
+    borderTopWidth: 1,
+    borderTopColor: "#ECEEF0",
   },
-  dayNumCol: { width: 46 },
-  dayNumLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: TEAL, letterSpacing: 0.5 },
-  dayNum: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, marginTop: 1 },
+  dayNumCol: { width: 54, paddingRight: 10 },
+  dayBadge: {
+    width: 38,
+    height: 38,
+    backgroundColor: "#E9FBFC",
+    borderWidth: 1,
+    borderColor: "#BFEFF2",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dayNumLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.8, color: TEAL, letterSpacing: 0.6 },
+  dayNum: { fontFamily: "Helvetica-Bold", fontSize: 15, color: CHARCOAL, marginTop: 1 },
   dayBody: { flex: 1 },
-  dayTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.5, color: CHARCOAL },
-  dayDesc: { fontSize: 9, color: INK, lineHeight: 1.5, marginTop: 3 },
+  dayTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.4, color: CHARCOAL, lineHeight: 1.3 },
+  dayDesc: { fontSize: 8.6, color: INK, lineHeight: 1.48, marginTop: 4 },
 
-  /* lists */
-  twoCol: { flexDirection: "row", gap: 26 },
+  twoCol: { flexDirection: "row", gap: 22 },
   col: { flex: 1 },
-  colHead: { fontFamily: "Helvetica-Bold", fontSize: 9.5, marginBottom: 6 },
-  liRow: { flexDirection: "row", marginBottom: 4 },
-  liMark: { fontFamily: "Helvetica-Bold", fontSize: 9, marginRight: 6, width: 7 },
-  liText: { flex: 1, fontSize: 9, lineHeight: 1.45, color: INK },
+  colHead: { fontFamily: "Helvetica-Bold", fontSize: 10, marginBottom: 8 },
+  liRow: { flexDirection: "row", marginBottom: 4.5 },
+  liMark: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 8,
+    marginRight: 6,
+    width: 11,
+    textAlign: "center",
+  },
+  liText: { flex: 1, fontSize: 8.5, lineHeight: 1.42, color: INK },
 
-  para: { fontSize: 9, lineHeight: 1.55, color: INK, marginTop: 4 },
-
-  ctaBox: { borderWidth: 1, borderColor: CHARCOAL, padding: 12, marginTop: 22 },
+  para: { fontSize: 8.8, lineHeight: 1.55, color: INK, marginTop: 4 },
+  ctaRow: { flexDirection: "row", gap: 14 },
+  ctaBox: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: CHARCOAL,
+    padding: 12,
+  },
   ctaTitle: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL },
-  ctaBody: { fontSize: 9, color: INK, lineHeight: 1.5, marginTop: 4 },
-
-  faqLine: { fontSize: 9, color: SUB, lineHeight: 1.5, marginTop: 10 },
+  ctaBody: { fontSize: 8.8, color: INK, lineHeight: 1.5, marginTop: 5 },
+  faqBox: {
+    width: 190,
+    backgroundColor: "#F7F9FA",
+    borderLeftWidth: 3,
+    borderLeftColor: TEAL,
+    padding: 11,
+  },
+  faqLine: { fontSize: 8.5, color: SUB, lineHeight: 1.45 },
   faqLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
   waLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
 
-  /* profile */
-  profileWrap: { marginTop: 22, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 14 },
-  profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL },
-  profileTag: { fontSize: 9, color: TEAL, fontFamily: "Helvetica-Bold", marginTop: 2 },
+  profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL, marginTop: 8 },
+  profileTag: { fontSize: 8.8, color: TEAL, fontFamily: "Helvetica-Bold", marginTop: 2 },
+  contactGrid: { marginTop: 8, borderTopWidth: 1, borderTopColor: "#ECEEF0", paddingTop: 7 },
   contactRow: { flexDirection: "row", marginTop: 3 },
-  contactLabel: { width: 70, fontFamily: "Helvetica-Bold", fontSize: 8, color: SUB },
-  contactValue: { flex: 1, fontSize: 8.5, color: INK },
+  contactLabel: { width: 70, fontFamily: "Helvetica-Bold", fontSize: 7.8, color: SUB },
+  contactValue: { flex: 1, fontSize: 8.2, color: INK, lineHeight: 1.35 },
 
-  disclaimer: { fontSize: 7.5, color: "#9A9A9A", lineHeight: 1.4, marginTop: 14 },
-
+  disclaimer: { fontSize: 7.2, color: "#858B92", lineHeight: 1.4, marginTop: 10 },
   footer: {
-    position: "absolute", bottom: 22, left: 44, right: 44,
-    flexDirection: "row", justifyContent: "space-between",
-    borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 7,
+    position: "absolute",
+    bottom: 18,
+    left: 34,
+    right: 34,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderTopColor: "#D1D5DA",
+    paddingTop: 7,
   },
-  footerText: { fontSize: 7, color: "#9A9A9A" },
+  footerText: { fontSize: 7, color: "#7D838A" },
 });
 
-function isImg(u?: string | null): u is string {
-  return !!u && /^https?:\/\//.test(u);
+function isPdfImage(u?: string | null): u is string {
+  return !!u && (/^https?:\/\//.test(u) || /^data:image\/(?:png|jpe?g);base64,/i.test(u));
 }
 
 function waLink(raw: string) {
   return `https://wa.me/${raw.replace(/\D/g, "")}`;
 }
 
+function uniqueImages(images: Array<string | null | undefined>) {
+  return [...new Set(images.filter(isPdfImage))];
+}
+
+function SectionHeader({ children }: { children: string }) {
+  return (
+    <View style={s.secHeadRow}>
+      <View style={s.secAccent} />
+      <Text style={s.secHead}>{children}</Text>
+    </View>
+  );
+}
+
 export function ItineraryPDF({
   tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl,
 }: ItineraryPDFProps) {
   const faqDisplay = faqUrl ? faqUrl.replace(/^https?:\/\//, "") : "";
+  const heroImage = isPdfImage(tour.heroImg) ? tour.heroImg : null;
+  const galleryImages = uniqueImages([tour.heroImg, ...(tour.gallery ?? [])]).slice(0, 3);
   const meta = [
     tour.duration ? ["DURASI", tour.duration] : null,
     tour.tripDateLabel ? ["KEBERANGKATAN", tour.tripDateLabel] : null,
@@ -153,51 +264,69 @@ export function ItineraryPDF({
   return (
     <Document title={`Itinerary ${tour.title}`} author={company.name || "Sundaf Trip"}>
       <Page size="A4" style={s.page}>
-        {/* logo */}
-        <View style={s.logoRow}>
-          {isImg(company.logo)
-            ? <Image src={company.logo} style={s.logo} />
-            : <Text style={s.logoFallback}>{(company.name || "SUNDAF TRIP").toUpperCase()}</Text>}
-          <Text style={s.docTag}>ITINERARY PERJALANAN</Text>
+        <View style={s.cover} wrap={false}>
+          <View style={s.coverTop}>
+            {isPdfImage(company.logo) ? (
+              <View style={s.logoBadge}>
+                <Image src={company.logo} style={s.logo} />
+              </View>
+            ) : (
+              <Text style={s.logoFallback}>{(company.name || "SUNDAF TRIP").toUpperCase()}</Text>
+            )}
+            <Text style={s.docTag}>ITINERARY PERJALANAN</Text>
+          </View>
+
+          <View style={s.coverMain}>
+            <View style={s.coverCopy}>
+              <Text style={s.kicker}>PAKET WISATA {tour.country.toUpperCase()}</Text>
+              <Text style={s.title}>{tour.title}</Text>
+              <Text style={s.routeLine}>{tour.cityHighlight || tour.country}</Text>
+            </View>
+            {heroImage ? (
+              <View style={s.coverImageWrap}>
+                <Image src={heroImage} style={s.hero} />
+              </View>
+            ) : (
+              <View style={s.coverFallback}>
+                <Text style={s.coverFallbackText}>{tour.country}</Text>
+              </View>
+            )}
+          </View>
         </View>
 
-        {/* title */}
-        <Text style={s.kicker}>
-          PAKET WISATA {tour.country.toUpperCase()}
-        </Text>
-        <Text style={s.title}>{tour.title}</Text>
-
-        {/* single hero image */}
-        {isImg(tour.heroImg) && <Image src={tour.heroImg} style={s.hero} />}
-
-        {/* meta row */}
-        <View style={s.metaRow}>
+        <View style={s.summaryBand} wrap={false}>
           {meta.map(([label, value], i) => (
-            <View key={i} style={s.metaCell}>
-              <Text style={s.metaLabel}>{label}</Text>
-              <Text style={s.metaValue}>{value}</Text>
+            <View key={i} style={s.summaryCell}>
+              <Text style={s.summaryLabel}>{label}</Text>
+              <Text style={s.summaryValue}>{value}</Text>
             </View>
           ))}
+          <View style={s.summaryCell}>
+            <Text style={s.summaryLabel}>HARGA PER ORANG</Text>
+            <Text style={s.priceValue}>{priceLabel}</Text>
+            {!!priceCoretLabel && <Text style={s.priceCoret}>{priceCoretLabel}</Text>}
+            {!!landTourLabel && <Text style={s.priceLand}>Land tour: {landTourLabel}</Text>}
+          </View>
         </View>
 
-        {/* price */}
-        <View style={s.priceWrap}>
-          <Text style={s.priceCap}>HARGA PER ORANG</Text>
-          <Text style={s.priceBig}>{priceLabel}</Text>
-          {!!priceCoretLabel && <Text style={s.priceCoret}>{priceCoretLabel}</Text>}
-          {!!landTourLabel && <Text style={s.priceLand}>Land Tour: {landTourLabel}</Text>}
-        </View>
+        {galleryImages.length > 1 && (
+          <View style={s.photoStrip} wrap={false}>
+            {galleryImages.map((img, i) => (
+              <Image key={i} src={img} style={s.stripImage} />
+            ))}
+          </View>
+        )}
 
-        {/* itinerary */}
         {tour.itinerary.length > 0 && (
-          <View>
-            <Text style={s.secHead}>Rencana Perjalanan</Text>
-            <View style={s.secAccent} />
+          <View style={s.section}>
+            <SectionHeader>Rencana Perjalanan</SectionHeader>
             {tour.itinerary.map((d, i) => (
               <View key={i} style={s.dayRow} wrap={false}>
                 <View style={s.dayNumCol}>
-                  <Text style={s.dayNumLabel}>HARI</Text>
-                  <Text style={s.dayNum}>{d.day}</Text>
+                  <View style={s.dayBadge}>
+                    <Text style={s.dayNumLabel}>HARI</Text>
+                    <Text style={s.dayNum}>{d.day}</Text>
+                  </View>
                 </View>
                 <View style={s.dayBody}>
                   <Text style={s.dayTitle}>{d.title}</Text>
@@ -208,11 +337,9 @@ export function ItineraryPDF({
           </View>
         )}
 
-        {/* inclusions / exclusions */}
         {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
-          <View wrap={false}>
-            <Text style={s.secHead}>Termasuk &amp; Tidak Termasuk</Text>
-            <View style={s.secAccent} />
+          <View style={s.section} break>
+            <SectionHeader>Termasuk dan Tidak Termasuk</SectionHeader>
             <View style={s.twoCol}>
               <View style={s.col}>
                 <Text style={[s.colHead, { color: GREEN }]}>Sudah Termasuk</Text>
@@ -236,57 +363,55 @@ export function ItineraryPDF({
           </View>
         )}
 
-        {/* visa */}
         {!!tour.visaInfo && (
-          <View wrap={false}>
-            <Text style={s.secHead}>Informasi Visa</Text>
-            <View style={s.secAccent} />
+          <View style={s.sectionTight} wrap={false}>
+            <SectionHeader>Informasi Visa</SectionHeader>
             <Text style={s.para}>{tour.visaInfo}</Text>
           </View>
         )}
 
-        {/* catatan */}
         {!!tour.notes && (
-          <View wrap={false}>
-            <Text style={s.secHead}>Catatan Penting</Text>
-            <View style={s.secAccent} />
+          <View style={s.sectionTight} wrap={false}>
+            <SectionHeader>Catatan Penting</SectionHeader>
             <Text style={s.para}>{tour.notes}</Text>
           </View>
         )}
 
-        {/* cta */}
-        <View style={s.ctaBox} wrap={false}>
-          <Text style={s.ctaTitle}>Tertarik bergabung?</Text>
-          <Text style={s.ctaBody}>
-            {company.whatsapp ? (
-              <>
-                Hubungi kami via WhatsApp{" "}
-                <Link src={waLink(company.whatsapp)} style={s.waLink}>{company.whatsapp}</Link>
-                {" "}untuk ketersediaan kursi dan proses pendaftaran.
-              </>
-            ) : "Hubungi kami untuk ketersediaan kursi dan proses pendaftaran."}
-            {tour.seatsLeft > 0 ? ` Sisa ${tour.seatsLeft} kursi.` : ""}
-          </Text>
+        <View style={s.sectionTight} wrap={false}>
+          <View style={s.ctaRow}>
+            <View style={s.ctaBox}>
+              <Text style={s.ctaTitle}>Tertarik bergabung?</Text>
+              <Text style={s.ctaBody}>
+                {company.whatsapp ? (
+                  <>
+                    Hubungi kami via WhatsApp{" "}
+                    <Link src={waLink(company.whatsapp)} style={s.waLink}>{company.whatsapp}</Link>
+                    {" "}untuk ketersediaan kursi dan proses pendaftaran.
+                  </>
+                ) : "Hubungi kami untuk ketersediaan kursi dan proses pendaftaran."}
+                {tour.seatsLeft > 0 ? ` Sisa ${tour.seatsLeft} kursi.` : ""}
+              </Text>
+            </View>
+
+            {!!faqUrl && (
+              <View style={s.faqBox}>
+                <Text style={s.faqLine}>
+                  Punya pertanyaan lain? Lihat FAQ lengkap di{" "}
+                  <Link src={faqUrl} style={s.faqLink}>{faqDisplay}</Link>
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
 
-        {/* faq link */}
-        {!!faqUrl && (
-          <Text style={s.faqLine}>
-            Punya pertanyaan lain? Lihat daftar pertanyaan umum (FAQ) selengkapnya di{" "}
-            <Link src={faqUrl} style={s.faqLink}>{faqDisplay}</Link>
-          </Text>
-        )}
-
-        {/* profil sundaf */}
-        <View style={s.profileWrap} wrap={false}>
-          <Text style={s.secHead}>Tentang {company.name || "Sundaf Trip"}</Text>
-          <View style={s.secAccent} />
+        <View style={s.sectionTight} wrap={false}>
+          <SectionHeader>{`Tentang ${company.name || "Sundaf Trip"}`}</SectionHeader>
           {!!company.tagline && <Text style={s.profileTag}>{company.tagline}</Text>}
           {(company.story || []).slice(0, 2).map((p, i) => (
             <Text key={i} style={s.para}>{p}</Text>
           ))}
-          <View style={{ marginTop: 8 }}>
-            <Text style={s.profileName}>{company.name || "Sundaf Trip"}</Text>
+          <Text style={s.profileName}>{company.name || "Sundaf Trip"}</Text>
+          <View style={s.contactGrid}>
             {!!company.address && (
               <View style={s.contactRow}>
                 <Text style={s.contactLabel}>Alamat</Text>
@@ -324,14 +449,12 @@ export function ItineraryPDF({
               </View>
             )}
           </View>
+          <Text style={s.disclaimer}>
+            Harga dan jadwal dapat berubah sewaktu-waktu mengikuti ketersediaan maskapai dan kurs.
+            Itinerary bersifat indikatif dan dapat menyesuaikan kondisi cuaca serta operasional di lapangan.
+          </Text>
         </View>
 
-        <Text style={s.disclaimer}>
-          Harga dan jadwal dapat berubah sewaktu-waktu mengikuti ketersediaan maskapai dan kurs.
-          Itinerary bersifat indikatif dan dapat menyesuaikan kondisi cuaca serta operasional di lapangan.
-        </Text>
-
-        {/* footer */}
         <View style={s.footer} fixed>
           <Text style={s.footerText}>{company.website || company.name || "Sundaf Trip"}</Text>
           <Text style={s.footerText} render={({ pageNumber }) => `Halaman ${pageNumber}`} />
