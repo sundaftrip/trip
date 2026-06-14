@@ -303,7 +303,6 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                 {renderSortHeader("price", "Harga")}
                 {renderSortHeader("seats", "Seat")}
                 {renderSortHeader("status", "Status")}
-                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Pin</th>
                 {renderSortHeader("date", "Tgl Keberangkatan")}
                 <th className="text-right px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Aksi</th>
               </tr>
@@ -311,7 +310,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
             <tbody>
               {tours.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-gray-400">
+                  <td colSpan={7} className="text-center py-12 text-gray-400">
                     {hasFilter ? (
                       <>
                         Tidak ada tour yang cocok.{" "}
@@ -331,7 +330,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{tour.title}</p>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {tour.pinned && <span className="text-xs text-blue-700 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-300 px-1.5 py-0.5 rounded">PIN</span>}
+                      {tour.pinned && <span className="text-xs text-teal-700 bg-teal-50 dark:bg-teal-900/20 dark:text-teal-300 px-1.5 py-0.5 rounded">PIN</span>}
                       {tour.badge && <span className="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 rounded">{tour.badge}</span>}
                     </div>
                   </td>
@@ -359,13 +358,6 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-3">
-                    <TourPinButton
-                      id={tour.id}
-                      pinned={tour.pinned}
-                      disabled={!tour.pinned && pinnedCount >= MAX_PINNED_TOURS}
-                    />
-                  </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {displayDate(tour)}
                   </td>
@@ -377,6 +369,12 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                       >
                         <Pencil size={15} />
                       </Link>
+                      <TourPinButton
+                        key={`${tour.id}-${tour.pinned ? "pinned" : "unpinned"}`}
+                        id={tour.id}
+                        pinned={tour.pinned}
+                        disabled={!tour.pinned && pinnedCount >= MAX_PINNED_TOURS}
+                      />
                       <DeleteButton id={tour.id} endpoint="/api/tours" label="tour" />
                     </div>
                   </td>
