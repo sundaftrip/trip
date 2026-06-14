@@ -2,16 +2,17 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Loader2, MapPin, FileCheck, HelpCircle, ArrowRight } from "lucide-react";
+import { Search, X, Loader2, Compass, MapPin, FileCheck, HelpCircle, ArrowRight } from "lucide-react";
 
 type Results = {
+  destinations: { name: string; region: string; href: string; description: string }[];
   tours: { title: string; country: string; statusLabel: string; active: boolean; dateLabel?: string | null; href: string }[];
   visa: { name: string; en: string; href: string }[];
   faqs: { question: string; section: string; href: string }[];
   suggestion?: string | null;
 };
 
-const EMPTY: Results = { tours: [], visa: [], faqs: [], suggestion: null };
+const EMPTY: Results = { destinations: [], tours: [], visa: [], faqs: [], suggestion: null };
 
 export default function GlobalSearch({
   lang = "id",
@@ -95,7 +96,7 @@ export default function GlobalSearch({
     router.push(href);
   }, [router]);
 
-  const total = res.tours.length + res.visa.length + res.faqs.length;
+  const total = res.destinations.length + res.tours.length + res.visa.length + res.faqs.length;
   const showEmpty = q.trim().length >= 2 && !loading && total === 0;
 
   return (
@@ -156,6 +157,15 @@ export default function GlobalSearch({
                 <p className="px-4 py-8 text-center text-sm text-gray-400">
                   {t(`Tidak ada hasil untuk "${q}".`, `No results for "${q}".`)}
                 </p>
+              )}
+
+              {res.destinations.length > 0 && (
+                <Group label={t("Destinasi", "Destinations")}>
+                  {res.destinations.map((it) => (
+                    <Row key={it.href} icon={<Compass size={15} />} onClick={() => go(it.href)}
+                      title={it.name} sub={`${it.region} · ${it.description}`} />
+                  ))}
+                </Group>
               )}
 
               {res.tours.length > 0 && (

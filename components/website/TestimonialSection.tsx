@@ -28,9 +28,9 @@ function Stars({ rating }: { rating: number }) {
 }
 
 function Avatar({ avatar, name }: { avatar: string | null; name: string }) {
-  if (avatar) return <Image src={cldOptimize(avatar, 88)} alt={name} width={44} height={44} sizes="44px" className="w-11 h-11 rounded-full object-cover shrink-0" />;
+  if (avatar) return <Image src={cldOptimize(avatar, 72)} alt={name} width={36} height={36} sizes="36px" className="w-9 h-9 rounded-sm object-cover shrink-0" />;
   return (
-    <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0 text-white"
+    <div className="w-9 h-9 rounded-sm flex items-center justify-center font-bold text-xs shrink-0 text-white"
       style={{ background: "var(--site-accent,#2d6a4f)" }}>
       {name.charAt(0).toUpperCase()}
     </div>
@@ -45,6 +45,7 @@ function Carousel({ items, renderCard, darkDots = false }: {
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
+  const cardWidth = "min(82vw, 21rem)";
 
   function scrollToIndex(index: number) {
     const track = trackRef.current;
@@ -76,19 +77,19 @@ function Carousel({ items, renderCard, darkDots = false }: {
 
   return (
     <div>
-      {/* Track, 75% card width + 25% peek */}
+      {/* Track, square cards with a clear peek of the next testimonial. */}
       <div
         ref={trackRef}
         className="flex gap-4 overflow-x-auto pb-2"
         style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none", msOverflowStyle: "none", paddingLeft: 24, paddingRight: 24 }}
       >
         {items.map((item, i) => (
-          <div key={item.id} className="shrink-0" style={{ scrollSnapAlign: "start", width: "75%" }}>
+          <div key={item.id} className="shrink-0 aspect-square" style={{ scrollSnapAlign: "start", width: cardWidth }}>
             {renderCard(item, i === current)}
           </div>
         ))}
         {/* right spacer so last card can snap to start */}
-        <div className="shrink-0" style={{ width: "calc(25% - 40px)" }} />
+        <div className="shrink-0" style={{ width: `max(24px, calc(100% - ${cardWidth} - 24px))` }} />
       </div>
 
       {/* Controls */}
@@ -142,6 +143,10 @@ function Carousel({ items, renderCard, darkDots = false }: {
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
   if (items.length === 0) return null;
 
+  const cardShell = "h-full min-h-0 overflow-hidden";
+  const quotePreviewProps = { clampClassName: "line-clamp-5", allowExpand: false } as const;
+  const quotePreviewClass = "text-sm leading-relaxed mt-4 flex-1 min-h-0 line-clamp-5";
+
   /* ── FUMAYO ── */
   if (theme === "fumayo") return (
     <section className="fb-page py-24 overflow-hidden">
@@ -154,15 +159,15 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`fb-card p-6 flex flex-col h-full transition-all duration-200 ${active ? "" : "opacity-70"}`}
+            <div className={`fb-card p-6 flex flex-col ${cardShell} transition-all duration-200 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--fb-paper)" : "var(--fb-card)", fontFamily: "var(--fb-font)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--fb-subink)"} />
-              <div className="flex items-center gap-3 mt-5 pt-4" style={{ borderTop: "2px dashed var(--fb-line)" }}>
+              <ExpandableQuote text={item.content} color={"var(--fb-subink)"} {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3" style={{ borderTop: "2px dashed var(--fb-line)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-bold" style={{ color: "var(--fb-ink)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs" style={{ color: "var(--fb-subink)" }}>{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-bold" style={{ color: "var(--fb-ink)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5" style={{ color: "var(--fb-subink)" }}>{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -182,16 +187,16 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`teri-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-60"}`}>
+            <div className={`teri-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-60"}`}>
               <Stars rating={item.rating} />
-              <p className="text-sm leading-relaxed mt-4 flex-1" style={{ color: "var(--teri-sub)" }}>
+              <p className={quotePreviewClass} style={{ color: "var(--teri-sub)" }}>
                 &ldquo;{item.content}&rdquo;
               </p>
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t-[2.5px] border-dashed" style={{ borderColor: "var(--teri-line)" }}>
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-[2.5px] border-dashed" style={{ borderColor: "var(--teri-line)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-extrabold" style={{ color: "var(--teri-ink)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-extrabold" style={{ color: "var(--teri-ink)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5 text-gray-400">{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -210,16 +215,16 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`gl-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+            <div className={`gl-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "#fef9c3" : "var(--gl-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={active ? "#1a2a3a" : "var(--gl-subtext)"} />
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t"
+              <ExpandableQuote text={item.content} color={active ? "#1a2a3a" : "var(--gl-subtext)"} {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t"
                 style={{ borderColor: "color-mix(in srgb, var(--gl-border) 25%, transparent)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-black" style={{ color: active ? "#1a2a3a" : "var(--gl-text)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs" style={{ color: active ? "#5a7a9a" : "var(--gl-subtext)" }}>{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-black" style={{ color: active ? "#1a2a3a" : "var(--gl-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5" style={{ color: active ? "#5a7a9a" : "var(--gl-subtext)" }}>{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -239,15 +244,15 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`at-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-60"}`}>
+            <div className={`at-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-60"}`}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--at-subtext)"} />
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t"
+              <ExpandableQuote text={item.content} color={"var(--at-subtext)"} {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t"
                 style={{ borderColor: "var(--at-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: "var(--at-text)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs" style={{ color: "var(--at-subtext)" }}>{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-semibold" style={{ color: "var(--at-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5" style={{ color: "var(--at-subtext)" }}>{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -268,16 +273,16 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`mp-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+            <div className={`mp-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--mp-land)" : "var(--mp-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={active ? "var(--mp-text)" : "var(--mp-subtext)"} />
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
+              <ExpandableQuote text={item.content} color={active ? "var(--mp-text)" : "var(--mp-subtext)"} {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2"
                 style={{ borderColor: "var(--mp-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-black" style={{ color: active ? "var(--mp-text)" : "var(--mp-text)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs" style={{ color: active ? "var(--mp-text)" : "var(--mp-subtext)", opacity: 0.8 }}>{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-black" style={{ color: active ? "var(--mp-text)" : "var(--mp-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5" style={{ color: active ? "var(--mp-text)" : "var(--mp-subtext)", opacity: 0.8 }}>{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -301,16 +306,16 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`px-card p-6 flex flex-col h-full transition-all duration-100 ${active ? "" : "opacity-70"}`}
+            <div className={`px-card p-6 flex flex-col ${cardShell} transition-all duration-100 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--px-yellow)" : "var(--px-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color="var(--px-text)" />
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2"
+              <ExpandableQuote text={item.content} color="var(--px-text)" {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2"
                 style={{ borderColor: "var(--px-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-black" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>{item.name}</p>
-                  {item.role && <p className="text-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-black" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -330,16 +335,16 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`kw-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+            <div className={`kw-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--kw-peach)" : "var(--kw-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--kw-subtext)"} />
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2 border-dashed"
+              <ExpandableQuote text={item.content} color={"var(--kw-subtext)"} {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-dashed"
                 style={{ borderColor: "var(--kw-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-black" style={{ color: "var(--kw-text)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs" style={{ color: "var(--kw-subtext)" }}>{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-black" style={{ color: "var(--kw-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5" style={{ color: "var(--kw-subtext)" }}>{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -359,16 +364,16 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`tr-card p-6 flex flex-col h-full transition-all duration-300 ${active ? "" : "opacity-70"}`}
+            <div className={`tr-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--tr-mint)" : "var(--tr-card)" }}>
               <Stars rating={item.rating} />
-              <ExpandableQuote text={item.content} color={"var(--tr-subtext)"} />
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t-2 border-dashed"
+              <ExpandableQuote text={item.content} color={"var(--tr-subtext)"} {...quotePreviewProps} />
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-dashed"
                 style={{ borderColor: "var(--tr-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-black" style={{ color: "var(--tr-text)" }}>{item.name}</p>
-                  {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-black" style={{ color: "var(--tr-text)" }}>{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5 text-gray-400">{item.role}</p>}
                 </div>
               </div>
             </div>
@@ -390,18 +395,18 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`bg-gray-50 dark:bg-gray-950 rounded-2xl p-6 border transition-all duration-300 h-full flex flex-col ${
+            <div className={`bg-gray-50 dark:bg-gray-950 rounded-2xl p-6 border transition-all duration-300 flex flex-col ${cardShell} ${
               active ? "border-gray-300 dark:border-gray-700 shadow-md" : "border-gray-100 dark:border-gray-900"
             }`}>
               <Stars rating={item.rating} />
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mt-4 flex-1">
+              <p className={`${quotePreviewClass} text-gray-600 dark:text-gray-400`}>
                 &ldquo;{item.content}&rdquo;
               </p>
-              <div className="flex items-center gap-3 mt-5 pt-5 border-t border-gray-100 dark:border-gray-900">
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t border-gray-100 dark:border-gray-900">
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
-                  {item.role && <p className="text-xs text-gray-400">{item.role}</p>}
+                  <p className="text-[13px] leading-tight font-semibold text-gray-900 dark:text-white">{item.name}</p>
+                  {item.role && <p className="text-[11px] leading-tight mt-0.5 text-gray-400">{item.role}</p>}
                 </div>
               </div>
             </div>

@@ -8,19 +8,23 @@ import { useState } from "react";
 export default function ExpandableQuote({
   text,
   color,
+  clampClassName = "line-clamp-3",
+  allowExpand = true,
 }: {
   text: string;
   color?: string;
+  clampClassName?: string;
+  allowExpand?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   // Heuristik: anggap perlu tombol kalau teks > ~180 karakter (kira-kira 3 baris).
   // Lebih murah dari mengukur DOM, cukup akurat untuk testimoni.
-  const needsToggle = text.length > 180;
+  const needsToggle = allowExpand && text.length > 180;
 
   return (
     <div className="flex-1 flex flex-col">
       <p
-        className={`text-sm leading-relaxed mt-4 ${expanded ? "" : "line-clamp-3"}`}
+        className={`text-sm leading-relaxed mt-4 ${expanded ? "" : clampClassName}`}
         style={color ? { color } : undefined}
       >
         &ldquo;{text}&rdquo;

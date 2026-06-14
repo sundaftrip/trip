@@ -3,11 +3,12 @@
    yang berpotensi memunculkan sitelinks search box di SERP Google. */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Search as SearchIcon, MapPin, BookOpen, FileCheck, ArrowRight } from "lucide-react";
+import { Search as SearchIcon, Compass, MapPin, BookOpen, FileCheck, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { visaSlug } from "@/lib/visa-slug";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { findSearchDestinations } from "@/lib/search-destinations";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,12 @@ export const metadata: Metadata = {
 };
 
 type SearchResults = {
+  destinations: Array<{
+    name: string;
+    region: string;
+    href: string;
+    description: string;
+  }>;
   tours: Array<{
     id: string;
     slug: string | null;
@@ -42,7 +49,8 @@ type SearchResults = {
 
 async function doSearch(q: string): Promise<SearchResults> {
   const term = q.trim();
-  if (!term) return { tours: [], blogs: [], visas: [] };
+  if (!term) return { destinations: [], tours: [], blogs: [], visas: [] };
+  const destinations = findSearchDestinations(term);
 
   // Case-insensitive search across multiple fields per entity.
   const [tours, blogs, visas] = await Promise.all([
@@ -97,7 +105,7 @@ async function doSearch(q: string): Promise<SearchResults> {
     }),
   ]);
 
-  return { tours, blogs, visas };
+  return { destinations, tours, blogs, visas };
 }
 
 export default async function SearchPage({
@@ -107,8 +115,8 @@ export default async function SearchPage({
 }) {
   const params = await searchParams;
   const q = (params.q ?? "").slice(0, 200); // sanity cap
-  const { tours, blogs, visas } = await doSearch(q);
-  const total = tours.length + blogs.length + visas.length;
+  const { destinations, tours, blogs, visas } = await doSearch(q);
+  const total = destinations.length + tours.length + blogs.length + visas.length;
   const hasQuery = q.trim().length > 0;
 
   return (
@@ -133,7 +141,7 @@ export default async function SearchPage({
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
             {hasQuery
-              ? `${total} hasil ditemukan di paket tour, artikel blog, dan info visa.`
+              ? `${total} hasil ditemukan di destinasi, paket tour, artikel blog, dan info visa.`
               : "Cari paket tour, artikel blog, atau info visa berdasarkan negara, kota, atau topik."}
           </p>
 
@@ -171,6 +179,35 @@ export default async function SearchPage({
         {/* ── No results ── */}
         {hasQuery && total === 0 && (
           <NoResults q={q} />
+        )}
+
+        {/* ── Destinations ── */}
+        {destinations.length > 0 && (
+          <Section
+            icon={<Compass size={16} />}
+            title="Destinasi"
+            count={destinations.length}
+          >
+            <div className="grid sm:grid-cols-2 gap-3">
+              {destinations.map((d) => (
+                <Link
+                  key={d.href}
+                  href={d.href}
+                  className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+                >
+                  <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
+                    {d.region}
+                  </div>
+                  <div className="font-semibold text-gray-900 dark:text-white text-sm leading-snug mb-2">
+                    {d.name}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                    {d.description}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </Section>
         )}
 
         {/* ── Tours ── */}
@@ -293,7 +330,7 @@ function Section({
 
 function EmptyState() {
   const popular = [
-    "Rusia", "Murmansk", "Aurora", "Schengen", "Kazakhstan",
+    "Rusia", "Murmansk", "Teriberka", "Aurora", "Schengen", "Kazakhstan",
     "Uzbekistan", "Trans-Siberian", "visa", "tour Eropa",
   ];
   return (

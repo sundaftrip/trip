@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { visaSlug, similarity } from "@/lib/visa-slug";
+import { SEARCH_DESTINATIONS, destinationSearchText, findSearchDestinations } from "@/lib/search-destinations";
 
 /* Pencarian global untuk modal search di navbar.
-   Hasil terkelompok: tour, layanan visa, pertanyaan (FAQ).
+	   Hasil terkelompok: destinasi, tour, layanan visa, pertanyaan (FAQ).
    - Tour cocok via judul/negara/kota/deskripsi DAN isi itinerary
    - Kata intent ("tersedia/aktif/upcoming") -> tampilkan tour aktif
    - Toleran typo (fuzzy) + saran "mungkin maksud Anda" ala Google */
@@ -21,10 +22,10 @@ function words(s: string) {
 const dateFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" });
 
 export async function GET(req: NextRequest) {
-  const raw = (req.nextUrl.searchParams.get("q") ?? "").trim();
-  if (raw.length < 2) {
-    return NextResponse.json({ tours: [], visa: [], faqs: [], suggestion: null });
-  }
+	  const raw = (req.nextUrl.searchParams.get("q") ?? "").trim();
+	  if (raw.length < 2) {
+	    return NextResponse.json({ destinations: [], tours: [], visa: [], faqs: [], suggestion: null });
+	  }
 
   const q = norm(raw);
   const tokens = q.split(/\s+/).filter(Boolean);
@@ -91,13 +92,16 @@ export async function GET(req: NextRequest) {
       isActive: !(t.tripDate && t.tripDate < now) && t.status === "ACTIVE",
     };
   });
-  allVisa.forEach((v) => { addVocab(v.name); addVocab(v.en); });
+	  allVisa.forEach((v) => { addVocab(v.name); addVocab(v.en); });
+	  SEARCH_DESTINATIONS.forEach((d) => addVocab(destinationSearchText(d)));
+	  const destinations = findSearchDestinations(raw);
 
   // Apakah tiap token cocok (substring/fuzzy) di seluruh korpus? Untuk deteksi typo.
   let anyTypo = false;
   for (const tok of contentTokens) {
-    const exactSomewhere = toursPrepared.some((p) => p.hayStr.includes(tok)) ||
-      allVisa.some((v) => norm(v.name).includes(tok) || norm(v.en).includes(tok));
+	    const exactSomewhere = toursPrepared.some((p) => p.hayStr.includes(tok)) ||
+	      allVisa.some((v) => norm(v.name).includes(tok) || norm(v.en).includes(tok)) ||
+	      SEARCH_DESTINATIONS.some((d) => norm(destinationSearchText(d)).includes(tok));
     if (!exactSomewhere) anyTypo = true;
   }
 
@@ -157,10 +161,11 @@ export async function GET(req: NextRequest) {
     .map(({ v }) => ({ name: v.name, en: v.en, href: `/visa/${visaSlug(v.en)}` }));
 
   // Saran hanya relevan kalau hasil eksak kosong tapi typo terdeteksi
-  const totalExact = tours.length + visa.length;
-  return NextResponse.json({
-    tours,
-    visa,
+	  const totalExact = destinations.length + tours.length + visa.length;
+	  return NextResponse.json({
+	    destinations,
+	    tours,
+	    visa,
     faqs: faqs.map((f) => ({ question: f.question, section: f.section, href: `/faq` })),
     suggestion: totalExact > 0 && !anyTypo ? null : suggestion,
   }, {
