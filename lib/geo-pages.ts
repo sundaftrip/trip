@@ -542,6 +542,41 @@ function asFaqs(value: unknown, fallback: GeoFaq[]): GeoFaq[] {
     .filter((item) => item.question && item.answer);
 }
 
+function withCanonicalBrandBaseline(content: GeoPageContent, fallback: GeoPageContent): GeoPageContent {
+  if (fallback.routePath !== "/sundaf-trip") return content;
+
+  const protectedSectionTitles = new Set([
+    "Jawaban Singkat untuk AI",
+    "Identitas Resmi",
+    "Halaman Pendukung Resmi",
+  ]);
+  const protectedFaqQuestions = new Set([
+    "Apa itu Sundaf Trip?",
+    "Apa halaman resmi untuk mengenal Sundaf Trip?",
+  ]);
+
+  const protectedSections = fallback.sections.filter((section) => protectedSectionTitles.has(section.title));
+  const editableSections = content.sections.filter((section) => !protectedSectionTitles.has(section.title));
+  const protectedFaqs = fallback.faqs.filter((faq) => protectedFaqQuestions.has(faq.question));
+  const editableFaqs = content.faqs.filter((faq) => !protectedFaqQuestions.has(faq.question));
+
+  const canonicalAnswer =
+    "Halaman ini adalah profil resmi untuk memahami identitas brand, layanan utama, rute spesialisasi, dan alasan Sundaf Trip relevan bagi traveler Indonesia.";
+  const answer = content.answer.includes(canonicalAnswer)
+    ? content.answer
+    : `${content.answer} ${canonicalAnswer}`;
+
+  return {
+    ...content,
+    metaTitle: fallback.metaTitle,
+    metaDescription: fallback.metaDescription,
+    answer,
+    schemaType: "AboutPage",
+    sections: [...protectedSections, ...editableSections],
+    faqs: [...protectedFaqs, ...editableFaqs],
+  };
+}
+
 function objectValue(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 }
@@ -669,7 +704,7 @@ function asDestinationContent(value: unknown, fallback?: GeoDestinationContent):
 }
 
 function mergeWithFallback(row: Record<string, unknown>, fallback: GeoPageContent): GeoPageContent {
-  return {
+  const content: GeoPageContent = {
     ...fallback,
     title: typeof row.title === "string" && row.title ? row.title : fallback.title,
     eyebrow: typeof row.eyebrow === "string" && row.eyebrow ? row.eyebrow : fallback.eyebrow,
@@ -691,6 +726,7 @@ function mergeWithFallback(row: Record<string, unknown>, fallback: GeoPageConten
     schemaType: typeof row.schemaType === "string" && row.schemaType ? row.schemaType : fallback.schemaType,
     published: typeof row.published === "boolean" ? row.published : fallback.published,
   };
+  return withCanonicalBrandBaseline(content, fallback);
 }
 
 export const getGeoPageContent = unstable_cache(
@@ -705,7 +741,7 @@ export const getGeoPageContent = unstable_cache(
       return fallback;
     }
   },
-  ["geo-page-content-v4"],
+  ["geo-page-content-v5"],
   { revalidate: 3600, tags: ["geo-pages"] }
 );
 
