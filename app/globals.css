@@ -2124,8 +2124,8 @@ a.gl-pill:has(svg:only-child) {
   align-items: center;
   align-self: flex-start;
   flex-shrink: 0;
-  margin-inline: 0.22em 0;
-  padding-inline: 0.08em;
+  margin-inline: 0.28em 0;
+  padding-inline: 0.14em;
   color: #ffffff;
   font-size: 0.58em;
   font-weight: 900;
@@ -2141,9 +2141,9 @@ a.gl-pill:has(svg:only-child) {
   z-index: -1;
   left: 50%;
   top: 50%;
-  width: 130%;
-  height: 1.3em;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 70' preserveAspectRatio='none'%3E%3Cpath d='M6 31 C44 22 83 25 126 20 C179 14 221 25 272 18 C327 11 369 22 414 15 L411 52 C357 58 309 48 255 55 C203 62 157 50 101 56 C61 60 29 53 5 55 Z' fill='%2300adb5'/%3E%3C/svg%3E");
+  width: 155%;
+  height: 1.58em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 70' preserveAspectRatio='none'%3E%3Cpath d='M2 18 C42 9 82 14 126 9 C178 3 221 15 272 8 C326 1 369 12 418 7 L416 62 C360 68 309 57 255 64 C204 70 157 58 101 64 C60 68 26 60 3 63 Z' fill='%2300adb5'/%3E%3C/svg%3E");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
