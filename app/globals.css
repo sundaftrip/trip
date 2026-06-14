@@ -2205,3 +2205,89 @@ a.gl-pill:has(svg:only-child) {
     }
   }
 }
+
+/* Destination pages must stay readable even when the global site theme is dark. */
+.destination-light-surface {
+  --site-accent-ink: #111827;
+  --tr-bg: color-mix(in srgb, var(--site-accent, #00adb5) 4%, #ffffff);
+  --tr-card: #ffffff;
+  --tr-border: #d1d5db;
+  --tr-text: #111827;
+  --tr-subtext: #374151;
+  --kw-bg: color-mix(in srgb, var(--site-accent, #00adb5) 4%, #ffffff);
+  --kw-card: #ffffff;
+  --kw-border: #d1d5db;
+  --kw-text: #111827;
+  --kw-subtext: #374151;
+  --kw-peach: #fef3c7;
+  --px-bg: #ffffff;
+  --px-card: #ffffff;
+  --px-border: #d1d5db;
+  --px-text: #111827;
+  --px-subtext: #374151;
+  --px-grid: rgba(17, 24, 39, 0.07);
+  --gl-bg: #ffffff;
+  --gl-card: #ffffff;
+  --gl-border: #d1d5db;
+  --gl-text: #111827;
+  --gl-subtext: #374151;
+  --gl-sky: #dbeafe;
+  --gl-on-sky: #111827;
+  --mp-bg: #ffffff;
+  --mp-card: #ffffff;
+  --mp-border: #d1d5db;
+  --mp-text: #111827;
+  --mp-subtext: #374151;
+  --mp-land: #f9fafb;
+  --mp-accent: var(--site-accent, #00adb5);
+  --mp-on-accent: #111827;
+  --mp-grid: rgba(17, 24, 39, 0.07);
+  --at-bg: #ffffff;
+  --at-card: #ffffff;
+  --at-border: #d1d5db;
+  --at-text: #111827;
+  --at-subtext: #374151;
+  --at-grid: rgba(17, 24, 39, 0.07);
+  --at-shadow: rgba(17, 24, 39, 0.08);
+  --at-muted: #f3f4f6;
+  --fb-bg: #ffffff;
+  --fb-card: #ffffff;
+  --fb-border: #d1d5db;
+  --fb-text: #111827;
+  --fb-subtext: #374151;
+  --fb-grid: rgba(17, 24, 39, 0.07);
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.destination-light-surface.dark\:bg-slate-950,
+.destination-light-surface .dark\:bg-slate-950,
+.destination-light-surface .dark\:bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+.destination-light-surface .dark\:bg-slate-800 {
+  background-color: #f3f4f6 !important;
+}
+
+.destination-light-surface .dark\:border-slate-800,
+.destination-light-surface .dark\:border-slate-700 {
+  border-color: #e5e7eb !important;
+}
+
+.destination-light-surface .dark\:text-white {
+  color: #111827 !important;
+}
+
+.destination-light-surface .dark\:text-gray-100,
+.destination-light-surface .dark\:text-gray-200,
+.destination-light-surface .dark\:text-gray-300,
+.destination-light-surface .dark\:text-gray-400,
+.destination-light-surface .dark\:text-gray-500,
+.destination-light-surface .dark\:text-gray-600 {
+  color: #374151 !important;
+}
+
+.destination-light-surface .dark\:text-green-400 {
+  color: #15803d !important;
+}

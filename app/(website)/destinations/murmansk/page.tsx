@@ -112,24 +112,24 @@ export default async function MurmanskPage() {
   const wrapperStyle = pageBg ? { background: pageBg, ...pageGrid } : {};
 
   /* Accent-based helpers */
-  const accentStyle = isKawaii   ? { background: "var(--kw-border)", color: "#fff" }
-                    : isTropical ? { background: "var(--site-accent)", color: "#fff" }
+  const accentStyle = isKawaii   ? { background: "var(--kw-border)", color: "#111827" }
+                    : isTropical ? { background: "var(--site-accent)", color: "#111827" }
                     : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
-                    : isGlobe    ? { background: "var(--gl-border)", color: "#fff" }
+                    : isGlobe    ? { background: "var(--gl-border)", color: "#111827" }
                     : isMap      ? { background: "var(--mp-accent)", color: "var(--mp-on-accent)" }
-                    : { background: "var(--site-accent,#2d6a4f)", color: "#fff" };
+                    : { background: "var(--site-accent,#2d6a4f)", color: "#111827" };
 
   const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                      : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
                      : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                      : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
                      : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#fff", opacity: 0.9 };
+                     : { background: "var(--site-accent,#2d6a4f)", color: "#111827", opacity: 0.95 };
 
   const pillClass = isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isPixel ? "px-pill" : isGlobe ? "gl-pill" : isMap ? "mp-pill" : "rounded-full px-3 py-1 text-xs font-medium";
 
   const cardClass = isKawaii ? "kw-card" : isTropical ? "tr-card" : isPixel ? "px-card" : isGlobe ? "gl-card" : isMap ? "mp-card"
-    : "bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800";
+    : "bg-white rounded-2xl border border-gray-200";
 
   const waMsg = encodeURIComponent("Halo Sundaftrip! Saya tertarik dengan paket wisata Murmansk / Aurora Borealis. Bisa tolong info lebih lanjut?");
   const waUrl = wa ? `https://wa.me/${wa}?text=${waMsg}` : "#";
@@ -137,7 +137,7 @@ export default async function MurmanskPage() {
   const geoFaq = geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }));
 
   return (
-    <div className={`min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
+    <div className={`destination-light-surface min-h-screen ${!isOutlined ? "bg-white" : ""}`} style={wrapperStyle}>
 
       {/* ── SEO: structured data (Article + Breadcrumb + FAQ) ── */}
       <script
@@ -232,14 +232,14 @@ export default async function MurmanskPage() {
             {tours.length > 0 ? (
               <a href="#paket-tour"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
                 <Star size={15} />
                 {destination.hero.primaryCtaLabel}
               </a>
             ) : (
               <Link href="/tours"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
                 <Star size={15} />
                 {destination.hero.allToursCtaLabel}
               </Link>
@@ -329,11 +329,11 @@ export default async function MurmanskPage() {
         <section className={`${isOutlined ? "" : "rounded-3xl"} p-8 lg:p-12`}
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
-            : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, #0c0c0c)" }}>
-          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "rgba(255,255,255,0.15)", color: "#fff" }}>
+            : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
             {isPixel ? `► ${destination.guide.eyebrow.toUpperCase()}` : destination.guide.eyebrow}
           </span>
-          <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-white" : ""}`}
+          <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900" : ""}`}
             style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
             {destination.guide.title}
           </h2>
@@ -342,8 +342,8 @@ export default async function MurmanskPage() {
               <div key={title} className="flex gap-3">
                 <div className="w-1 rounded-full shrink-0 mt-1" style={{ background: "var(--site-accent,#2d6a4f)" }} />
                 <div>
-                  <p className={`font-bold mb-1 ${!isOutlined ? "text-white" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>{title}</p>
-                  <p className={`text-sm leading-relaxed ${!isOutlined ? "text-white/70" : ""}`} style={{ color: isOutlined ? subClr : undefined }}>{content}</p>
+                  <p className={`font-bold mb-1 ${!isOutlined ? "text-gray-900" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>{title}</p>
+                  <p className={`text-sm leading-relaxed ${!isOutlined ? "text-gray-700" : ""}`} style={{ color: isOutlined ? subClr : undefined }}>{content}</p>
                 </div>
               </div>
             ))}
@@ -487,7 +487,7 @@ export default async function MurmanskPage() {
               </p>
               <Link href={destination.emptyTours.ctaHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
                 {destination.emptyTours.ctaLabel} <ChevronRight size={14} />
               </Link>
             </div>
@@ -554,17 +554,17 @@ export default async function MurmanskPage() {
           <section className={`${isOutlined ? "" : "rounded-3xl"} p-10 text-center`}
             style={isOutlined
               ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `6px 6px 0 0 ${bdrClr}` : undefined }
-              : { background: "var(--site-accent,#2d6a4f)" }}>
-            <h2 className={`text-3xl font-black mb-3 ${!isOutlined ? "text-white" : ""}`}
+              : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
+            <h2 className={`text-3xl font-black mb-3 ${!isOutlined ? "text-gray-900" : ""}`}
               style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
               {isPixel ? `> ${destination.finalCta.title.toUpperCase()}` : destination.finalCta.title}
             </h2>
-            <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-white/80" : ""}`} style={{ color: subClr }}>
+            <p className={`mb-8 max-w-lg mx-auto text-sm sm:text-base ${!isOutlined ? "text-gray-700" : ""}`} style={{ color: isOutlined ? subClr : undefined }}>
               {destination.finalCta.description}
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
-              className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full bg-white hover:bg-gray-50"}`}
-              style={isOutlined ? accentStyle : { color: "var(--site-accent-ink,#2d6a4f)" }}>
+              className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full hover:opacity-90"}`}
+              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
               <MessageCircle size={18} />
               {isPixel ? `[ ${destination.finalCta.buttonLabel.toUpperCase()} ]` : destination.finalCta.buttonLabel}
             </a>

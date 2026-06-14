@@ -115,13 +115,13 @@ export default async function DestinationsPage() {
                      : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
                      : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
                      : isAtlas    ? { color: "var(--at-subtext)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#fff", opacity: 0.9 };
+                     : { background: "var(--site-accent,#2d6a4f)", color: "#111827", opacity: 0.95 };
 
   const cardClass = isKawaii ? "kw-card" : isTropical ? "tr-card" : isPixel ? "px-card" : isGlobe ? "gl-card" : isMap ? "mp-card" : isAtlas ? "at-card"
-    : "bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-gray-300";
+    : "bg-white rounded-2xl border border-gray-200 hover:border-gray-300";
 
   return (
-    <div className={`min-h-screen pt-24 ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`} style={wrapperStyle}>
+    <div className={`destination-light-surface min-h-screen pt-24 ${!isOutlined ? "bg-white" : ""}`} style={wrapperStyle}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -187,7 +187,7 @@ export default async function DestinationsPage() {
             className={`group flex items-start gap-4 p-6 transition-all duration-300 hover:-translate-y-0.5 ${cardClass}`}
             style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
             <span className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+              style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
               <Compass size={18} />
             </span>
             <span>
@@ -203,7 +203,7 @@ export default async function DestinationsPage() {
             className={`group flex items-start gap-4 p-6 transition-all duration-300 hover:-translate-y-0.5 ${cardClass}`}
             style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
             <span className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ background: "var(--site-accent,#2d6a4f)", color: "#fff" }}>
+              style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
               <FileText size={18} />
             </span>
             <span>
