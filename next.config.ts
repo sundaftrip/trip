@@ -83,6 +83,86 @@ const nextConfig: NextConfig = {
         destination: "/open-trip-vietnam",
         permanent: true,
       },
+      {
+        source: "/jasa-membuat-visa-eropa",
+        destination: "/jasa-urus-visa-eropa",
+        permanent: true,
+      },
+      {
+        source: "/cara-membuat-visa-eropa",
+        destination: "/jasa-urus-visa-eropa",
+        permanent: true,
+      },
+      {
+        source: "/cara-mengurus-visa-eropa",
+        destination: "/jasa-urus-visa-eropa",
+        permanent: true,
+      },
+      {
+        source: "/jasa-buat-visa-eropa",
+        destination: "/jasa-urus-visa-eropa",
+        permanent: true,
+      },
+      {
+        source: "/cara-mengurus-visa-canada",
+        destination: "/jasa-urus-visa-amerika-canada",
+        permanent: true,
+      },
+      {
+        source: "/cara-mengurus-visa-kanada",
+        destination: "/jasa-urus-visa-amerika-canada",
+        permanent: true,
+      },
+      {
+        source: "/cara-mengurus-visa-amerika",
+        destination: "/jasa-urus-visa-amerika-canada",
+        permanent: true,
+      },
+      {
+        source: "/jasa-urus-visa-canada",
+        destination: "/jasa-urus-visa-amerika-canada",
+        permanent: true,
+      },
+      {
+        source: "/jasa-urus-visa-kanada",
+        destination: "/jasa-urus-visa-amerika-canada",
+        permanent: true,
+      },
+      {
+        source: "/jasa-urus-visa-amerika",
+        destination: "/jasa-urus-visa-amerika-canada",
+        permanent: true,
+      },
+      {
+        source: "/jasa-urus-visa-murah",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
+        source: "/jasa-urus-visa-terbaik",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
+        source: "/rekomendasi-urus-visa-murah-terpercaya",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
+        source: "/rekomendasi-pembuatan-visa-lolos",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
+        source: "/rekomendasi-urus-visa-lolos",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
+        source: "/pembuatan-visa-lolos",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

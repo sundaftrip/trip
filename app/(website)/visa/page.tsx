@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { HelpCircle, ArrowRight } from "lucide-react";
+import { HelpCircle, ArrowRight, BadgeCheck, Globe2, ShieldCheck } from "lucide-react";
 import VisaDatabase from "./VisaDatabase";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
@@ -9,11 +9,32 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Info Visa Paspor Indonesia",
+  title: "Info Visa Paspor Indonesia dan Jasa Urus Visa",
   description:
-    "Database persyaratan visa 88 negara untuk pemegang paspor Indonesia, dikurasi dari sumber resmi oleh Sundaf Trip.",
+    "Database persyaratan visa 88 negara dan layanan jasa urus visa untuk pemegang paspor Indonesia, dikurasi dari sumber resmi oleh Sundaf Trip.",
   alternates: { canonical: "https://sundaftrip.com/visa" },
 };
+
+const SERVICE_LINKS = [
+  {
+    href: "/jasa-urus-visa-eropa",
+    title: "Jasa Urus Visa Eropa",
+    description: "Schengen dan Eropa non-Schengen: dokumen, itinerary, formulir, dan appointment.",
+    icon: Globe2,
+  },
+  {
+    href: "/jasa-urus-visa-amerika-canada",
+    title: "Visa Amerika & Canada",
+    description: "DS-160, visitor visa/eTA Canada, biometrik, interview brief, dan review profil perjalanan.",
+    icon: BadgeCheck,
+  },
+  {
+    href: "/jasa-urus-visa-terpercaya",
+    title: "Jasa Visa Terpercaya",
+    description: "Pendampingan transparan tanpa janji approval palsu atau klaim pasti lolos.",
+    icon: ShieldCheck,
+  },
+] as const;
 
 export default async function VisaPage() {
   // Hanya ambil 9 field yang dirender VisaDatabase (index). Field kaya
@@ -47,6 +68,38 @@ export default async function VisaPage() {
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8">
           Visa Paspor Indonesia
         </h1>
+
+        <div className="grid gap-3 md:grid-cols-3 mb-4">
+          {SERVICE_LINKS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-start gap-3 rounded-xl px-4 py-4 transition-all hover:-translate-y-0.5 hover:shadow-lg cursor-pointer bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+              >
+                <span
+                  className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={{
+                    background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)",
+                    color: "var(--site-accent-ink,#2d6a4f)",
+                  }}
+                >
+                  <Icon size={18} />
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="block text-sm font-bold text-gray-900 dark:text-white">
+                    {item.title}
+                  </span>
+                  <span className="block text-xs leading-relaxed text-gray-500 dark:text-gray-400 mt-1">
+                    {item.description}
+                  </span>
+                </span>
+                <ArrowRight size={15} className="shrink-0 mt-1 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            );
+          })}
+        </div>
 
         <Link
           href="/visa/faq"

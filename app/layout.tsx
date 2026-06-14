@@ -68,6 +68,12 @@ export async function generateMetadata(): Promise<Metadata> {
       "tour Asia Tengah",
       "open trip Rusia",
       "visa Rusia Indonesia",
+      "jasa urus visa",
+      "jasa urus visa Eropa",
+      "cara mengurus visa Eropa",
+      "jasa urus visa Amerika",
+      "jasa urus visa Canada",
+      "jasa urus visa terpercaya",
     ],
     openGraph: {
       title: `${BRAND_NAME}, ${BRAND_TAGLINE}`,

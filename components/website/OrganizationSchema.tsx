@@ -169,6 +169,12 @@ export default async function OrganizationSchema() {
       "Perjalanan ke Teriberka",
       "Asia Tengah",
       "Visa Rusia untuk WNI",
+      "Jasa urus visa Eropa",
+      "Visa Schengen untuk WNI",
+      "Jasa urus visa Amerika",
+      "Jasa urus visa Canada",
+      "Jasa urus visa terpercaya",
+      "Review dokumen visa",
       "Itinerary perjalanan internasional",
     ],
   };
