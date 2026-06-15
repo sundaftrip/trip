@@ -4,12 +4,11 @@ import {
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 
-const PAPER = "#F5F5F5";
-const TEAL = "#76ABAE";
-const CHARCOAL = "#303841";
-const ORANGE = "#FF5722";
+const PAPER = "#EEEEEE";
+const TEAL = "#00ADB5";
+const CHARCOAL = "#222831";
 const INK = CHARCOAL;
-const GOLD = ORANGE;
+const GOLD = TEAL;
 const SUB = CHARCOAL;
 const HAIR = TEAL;
 const DASH = TEAL;
@@ -445,11 +444,17 @@ const s = StyleSheet.create({
   },
   proposalBrand: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2 },
   proposalBrandName: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, lineHeight: 1 },
-  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: ORANGE, marginLeft: 2, marginTop: 1 },
+  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: TEAL, marginLeft: 2, marginTop: 1 },
   proposalTitle: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 13,
-    color: TEAL,
+    fontSize: 12,
+    color: WHITE,
+    backgroundColor: CHARCOAL,
+    borderBottomWidth: 2,
+    borderBottomColor: TEAL,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    alignSelf: "stretch",
     letterSpacing: 0.4,
     textAlign: "center",
     textTransform: "uppercase",
@@ -461,7 +466,7 @@ const s = StyleSheet.create({
   proposalSectionGap: { marginTop: 8 },
   proposalTable: {
     borderTopWidth: 0.7,
-    borderTopColor: ORANGE,
+    borderTopColor: TEAL,
     borderBottomWidth: 0.7,
     borderBottomColor: TEAL,
   },
@@ -488,11 +493,11 @@ const s = StyleSheet.create({
   proposalDateText: { fontSize: 5.65, color: CHARCOAL, lineHeight: 1.15 },
   proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: CHARCOAL, lineHeight: 1.14 },
   proposalEventDesc: { fontSize: 5.25, color: INK, lineHeight: 1.15, marginTop: 1 },
-  proposalInsightLine: { fontSize: 5.05, color: ORANGE, lineHeight: 1.18, marginTop: 2 },
+  proposalInsightLine: { fontFamily: "Helvetica-Bold", fontSize: 5.05, color: CHARCOAL, lineHeight: 1.18, marginTop: 2 },
   proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 5.9, color: CHARCOAL, lineHeight: 1.15 },
   proposalMiniTable: {
     borderTopWidth: 0.7,
-    borderTopColor: ORANGE,
+    borderTopColor: TEAL,
     borderBottomWidth: 0.7,
     borderBottomColor: TEAL,
   },
@@ -502,16 +507,16 @@ const s = StyleSheet.create({
     borderBottomColor: TEAL,
   },
   proposalMiniCell: { flex: 1, paddingVertical: 3.4, paddingHorizontal: 5 },
-  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: ORANGE, letterSpacing: 0.3 },
+  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: CHARCOAL, letterSpacing: 0.3 },
   proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: CHARCOAL, lineHeight: 1.12, marginTop: 1.5 },
-  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: ORANGE, lineHeight: 1.1, marginTop: 1.5 },
+  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
   proposalSectionTitle: {
     fontFamily: "Helvetica-Bold",
     fontSize: 8,
     color: WHITE,
     backgroundColor: CHARCOAL,
     borderLeftWidth: 5,
-    borderLeftColor: ORANGE,
+    borderLeftColor: TEAL,
     paddingVertical: 3.5,
     paddingHorizontal: 6,
     width: "100%",
@@ -555,8 +560,14 @@ const s = StyleSheet.create({
   portraitHeader: { marginBottom: 10, alignItems: "center" },
   portraitPageTitle: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 11,
-    color: ORANGE,
+    fontSize: 10,
+    color: WHITE,
+    backgroundColor: CHARCOAL,
+    borderBottomWidth: 2,
+    borderBottomColor: TEAL,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    alignSelf: "stretch",
     textAlign: "center",
     textTransform: "uppercase",
   },
@@ -874,10 +885,10 @@ export function ItineraryPDF({
                   ))}
                 </View>
                 <View style={s.proposalListCol}>
-                  <Text style={[s.proposalListHead, { color: ORANGE }]}>Belum Termasuk</Text>
+                  <Text style={[s.proposalListHead, { color: CHARCOAL }]}>Belum Termasuk</Text>
                   {tour.exclusions.map((item, i) => (
                     <View key={i} style={s.proposalListItem}>
-                      <View style={[s.proposalBullet, { backgroundColor: ORANGE }]} />
+                      <View style={[s.proposalBullet, { backgroundColor: CHARCOAL }]} />
                       <ProposalLinkedText text={item} />
                     </View>
                   ))}
