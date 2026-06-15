@@ -221,6 +221,20 @@ export async function archivePartnerAction(formData: FormData) {
   redirect("/admin/partners");
 }
 
+export async function activatePartnerAction(formData: FormData) {
+  await requireAdmin();
+  const id = value(formData, "id", 120);
+  if (!id) fail("Partner tidak ditemukan.");
+
+  await prisma.referralPartner.update({
+    where: { id },
+    data: { status: "ACTIVE" },
+  });
+
+  revalidatePath("/admin/partners");
+  redirect("/admin/partners");
+}
+
 export async function deletePartnerAction(formData: FormData) {
   await requireAdmin();
   const id = value(formData, "id", 120);

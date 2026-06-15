@@ -1,10 +1,11 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { Edit, ExternalLink, Inbox, Plus, PowerOff, Trash2, Users } from "lucide-react";
+import { Edit, ExternalLink, Inbox, Plus, Power, PowerOff, Users, WalletCards } from "lucide-react";
+import PartnerDeleteButton from "@/components/admin/referrals/PartnerDeleteButton";
 import { prisma } from "@/lib/prisma";
 import { buildDashboardLink, buildReferralLink, PARTNER_TYPE_LABEL } from "@/lib/referrals";
-import { archivePartnerAction, deletePartnerAction } from "./actions";
+import { activatePartnerAction, archivePartnerAction } from "./actions";
 import { formatCurrency } from "@/lib/utils";
 
 export default async function AdminPartnersPage({
@@ -17,7 +18,7 @@ export default async function AdminPartnersPage({
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],
     include: {
       campaigns: { orderBy: { createdAt: "desc" }, take: 1 },
-      _count: { select: { leads: true, activityLogs: true, disputes: true } },
+      _count: { select: { leads: true, activityLogs: true, commissions: true, disputes: true } },
       commissions: true,
     },
   });
@@ -91,6 +92,13 @@ export default async function AdminPartnersPage({
                 </tr>
               ) : partners.map((partner) => {
                 const campaign = partner.campaigns[0];
+                const hasHistory =
+                  partner._count.leads > 0 ||
+                  partner._count.commissions > 0 ||
+                  partner._count.disputes > 0;
+                const blockedDeleteReason = hasHistory
+                  ? "Partner ini sudah punya lead, komisi, atau dispute. Nonaktifkan saja agar histori tetap aman."
+                  : "";
                 return (
                   <tr key={partner.id} className="align-top hover:bg-gray-50 dark:hover:bg-gray-900/50">
                     <td className="px-4 py-4">
@@ -110,6 +118,7 @@ export default async function AdminPartnersPage({
                     <td className="px-4 py-4 text-xs text-gray-600 dark:text-gray-300">
                       <p>{partner._count.activityLogs} events</p>
                       <p>{partner._count.leads} leads</p>
+                      <p>{partner._count.commissions} komisi</p>
                       <p>{partner._count.disputes} disputes</p>
                     </td>
                     <td className="px-4 py-4">
@@ -123,35 +132,55 @@ export default async function AdminPartnersPage({
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center justify-end gap-2">
-                        <a
-                          href={buildDashboardLink(partner.slug, partner.dashboardToken)}
-                          target="_blank"
-                          rel="noreferrer"
-                          title="Buka dashboard partner"
-                          className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600"
-                        >
-                          <ExternalLink size={15} />
-                        </a>
+                        {partner.status === "ACTIVE" ? (
+                          <a
+                            href={buildDashboardLink(partner.slug, partner.dashboardToken)}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="Buka dashboard partner"
+                            className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600"
+                          >
+                            <ExternalLink size={15} />
+                          </a>
+                        ) : (
+                          <span
+                            aria-disabled="true"
+                            title="Dashboard hanya bisa dibuka saat partner ACTIVE"
+                            className="cursor-not-allowed rounded-lg p-2 text-gray-300 dark:text-gray-600"
+                          >
+                            <ExternalLink size={15} />
+                          </span>
+                        )}
                         <Link href={`/admin/partners/${partner.id}`} className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600" title="Edit">
                           <Edit size={15} />
+                        </Link>
+                        <Link href={`/admin/commissions?partnerId=${partner.id}`} className="rounded-lg p-2 text-gray-500 transition hover:bg-amber-50 hover:text-amber-600" title="Edit komisi">
+                          <WalletCards size={15} />
                         </Link>
                         <Link href={`/admin/leads?partnerId=${partner.id}`} className="rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-600" title="Kelola lead dan DP">
                           <Inbox size={15} />
                         </Link>
-                        {partner.status === "ACTIVE" && (
-                          <form action={archivePartnerAction}>
-                            <input type="hidden" name="id" value={partner.id} />
-                            <button type="submit" className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600" title="Nonaktifkan">
-                              <PowerOff size={15} />
-                            </button>
-                          </form>
-                        )}
-                        <form action={deletePartnerAction}>
+                        <form action={partner.status === "ACTIVE" ? archivePartnerAction : activatePartnerAction}>
                           <input type="hidden" name="id" value={partner.id} />
-                          <button type="submit" className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600" title="Hapus">
-                            <Trash2 size={15} />
+                          <button
+                            type="submit"
+                            className={
+                              partner.status === "ACTIVE"
+                                ? "rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+                                : "rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-600"
+                            }
+                            title={partner.status === "ACTIVE" ? "Nonaktifkan" : "Aktifkan kembali"}
+                            aria-label={partner.status === "ACTIVE" ? `Nonaktifkan ${partner.partnerName}` : `Aktifkan ${partner.partnerName}`}
+                          >
+                            {partner.status === "ACTIVE" ? <PowerOff size={15} /> : <Power size={15} />}
                           </button>
                         </form>
+                        <PartnerDeleteButton
+                          id={partner.id}
+                          name={partner.partnerName}
+                          canDelete={!hasHistory}
+                          blockedReason={blockedDeleteReason}
+                        />
                       </div>
                     </td>
                   </tr>
