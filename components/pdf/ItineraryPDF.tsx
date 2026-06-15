@@ -4,15 +4,16 @@ import {
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 
-const CHARCOAL = "#222831";
-const INK = "#393E46";
-const TEAL = "#00ADB5";
-const GOLD = "#00ADB5";
-const SUB = "#393E46";
-const HAIR = "#393E46";
-const DASH = "#393E46";
-const PAPER = "#EEEEEE";
-const WHITE = "#EEEEEE";
+const PAPER = "#F5F5F5";
+const TEAL = "#76ABAE";
+const CHARCOAL = "#303841";
+const ORANGE = "#FF5722";
+const INK = CHARCOAL;
+const GOLD = ORANGE;
+const SUB = CHARCOAL;
+const HAIR = TEAL;
+const DASH = TEAL;
+const WHITE = PAPER;
 const VISA_URL = "https://sundaftrip.com/visa";
 
 Font.registerHyphenationCallback((word) => [word]);
@@ -444,7 +445,7 @@ const s = StyleSheet.create({
   },
   proposalBrand: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2 },
   proposalBrandName: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, lineHeight: 1 },
-  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: TEAL, marginLeft: 2, marginTop: 1 },
+  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: ORANGE, marginLeft: 2, marginTop: 1 },
   proposalTitle: {
     fontFamily: "Helvetica-Bold",
     fontSize: 13,
@@ -460,11 +461,11 @@ const s = StyleSheet.create({
   proposalSectionGap: { marginTop: 8 },
   proposalTable: {
     borderTopWidth: 0.7,
-    borderTopColor: TEAL,
+    borderTopColor: ORANGE,
     borderBottomWidth: 0.7,
     borderBottomColor: TEAL,
   },
-  proposalHeadRow: { flexDirection: "row", backgroundColor: TEAL },
+  proposalHeadRow: { flexDirection: "row", backgroundColor: CHARCOAL },
   proposalHeadCell: {
     fontFamily: "Helvetica-Bold",
     fontSize: 7.2,
@@ -475,7 +476,7 @@ const s = StyleSheet.create({
   proposalRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: INK,
+    borderBottomColor: TEAL,
     minHeight: 34,
   },
   proposalCell: { paddingVertical: 3.6, paddingHorizontal: 5, justifyContent: "center" },
@@ -487,28 +488,30 @@ const s = StyleSheet.create({
   proposalDateText: { fontSize: 5.65, color: CHARCOAL, lineHeight: 1.15 },
   proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: CHARCOAL, lineHeight: 1.14 },
   proposalEventDesc: { fontSize: 5.25, color: INK, lineHeight: 1.15, marginTop: 1 },
-  proposalInsightLine: { fontSize: 5.05, color: TEAL, lineHeight: 1.18, marginTop: 2 },
+  proposalInsightLine: { fontSize: 5.05, color: ORANGE, lineHeight: 1.18, marginTop: 2 },
   proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 5.9, color: CHARCOAL, lineHeight: 1.15 },
   proposalMiniTable: {
     borderTopWidth: 0.7,
-    borderTopColor: TEAL,
+    borderTopColor: ORANGE,
     borderBottomWidth: 0.7,
     borderBottomColor: TEAL,
   },
   proposalMiniRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: INK,
+    borderBottomColor: TEAL,
   },
   proposalMiniCell: { flex: 1, paddingVertical: 3.4, paddingHorizontal: 5 },
-  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: TEAL, letterSpacing: 0.3 },
+  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: ORANGE, letterSpacing: 0.3 },
   proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: CHARCOAL, lineHeight: 1.12, marginTop: 1.5 },
-  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
+  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: ORANGE, lineHeight: 1.1, marginTop: 1.5 },
   proposalSectionTitle: {
     fontFamily: "Helvetica-Bold",
     fontSize: 8,
     color: WHITE,
-    backgroundColor: TEAL,
+    backgroundColor: CHARCOAL,
+    borderLeftWidth: 5,
+    borderLeftColor: ORANGE,
     paddingVertical: 3.5,
     paddingHorizontal: 6,
     width: "100%",
@@ -526,7 +529,7 @@ const s = StyleSheet.create({
     marginTop: 0.9,
   },
   proposalListText: { flex: 1, fontSize: 5.65, color: CHARCOAL, lineHeight: 1.16 },
-  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: INK },
+  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: TEAL },
   proposalAddOnName: { flex: 1.35, fontSize: 5.65, color: CHARCOAL, paddingVertical: 2.6, paddingHorizontal: 5 },
   proposalAddOnPrice: {
     flex: 0.8,
@@ -553,14 +556,14 @@ const s = StyleSheet.create({
   portraitPageTitle: {
     fontFamily: "Helvetica-Bold",
     fontSize: 11,
-    color: TEAL,
+    color: ORANGE,
     textAlign: "center",
     textTransform: "uppercase",
   },
   portraitTableRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: INK,
+    borderBottomColor: TEAL,
     minHeight: 41,
   },
   portraitSectionGap: { marginTop: 10 },
@@ -862,7 +865,7 @@ export function ItineraryPDF({
               <Text style={s.proposalSectionTitle}>Harga Sudah / Belum Termasuk</Text>
               <View style={s.proposalListGrid}>
                 <View style={s.proposalListCol}>
-                  <Text style={[s.proposalListHead, { color: CHARCOAL }]}>Sudah Termasuk</Text>
+                  <Text style={[s.proposalListHead, { color: TEAL }]}>Sudah Termasuk</Text>
                   {tour.inclusions.map((item, i) => (
                     <View key={i} style={s.proposalListItem}>
                       <View style={[s.proposalBullet, { backgroundColor: TEAL }]} />
@@ -871,10 +874,10 @@ export function ItineraryPDF({
                   ))}
                 </View>
                 <View style={s.proposalListCol}>
-                  <Text style={[s.proposalListHead, { color: CHARCOAL }]}>Belum Termasuk</Text>
+                  <Text style={[s.proposalListHead, { color: ORANGE }]}>Belum Termasuk</Text>
                   {tour.exclusions.map((item, i) => (
                     <View key={i} style={s.proposalListItem}>
-                      <View style={[s.proposalBullet, { backgroundColor: CHARCOAL }]} />
+                      <View style={[s.proposalBullet, { backgroundColor: ORANGE }]} />
                       <ProposalLinkedText text={item} />
                     </View>
                   ))}
