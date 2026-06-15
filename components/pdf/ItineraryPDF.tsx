@@ -1,20 +1,18 @@
-/* eslint-disable jsx-a11y/alt-text */
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
 import {
-  Document, Page, View, Text, Image, Link, StyleSheet, Font,
+  Document, Page, View, Text, Link, StyleSheet, Font,
 } from "@react-pdf/renderer";
+import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 
-const CHARCOAL = "#20252B";
-const INK = "#2B2B2B";
+const CHARCOAL = "#222831";
+const INK = "#393E46";
 const TEAL = "#00ADB5";
-const GOLD = "#C79B45";
-const GREEN = "#2E7D4F";
-const RED = "#B23B2A";
-const SUB = "#60666D";
-const HAIR = "#DADDE1";
-const DASH = "#C9D1D8";
-const PAPER = "#F5F2EC";
-const WHITE = "#FFFFFF";
+const GOLD = "#00ADB5";
+const SUB = "#393E46";
+const HAIR = "#393E46";
+const DASH = "#393E46";
+const PAPER = "#EEEEEE";
+const WHITE = "#EEEEEE";
 const VISA_URL = "https://sundaftrip.com/visa";
 
 Font.registerHyphenationCallback((word) => [word]);
@@ -109,7 +107,7 @@ const s = StyleSheet.create({
     borderWidth: 0.8,
     borderColor: TEAL,
     padding: 5,
-    backgroundColor: "#F7FBFB",
+    backgroundColor: PAPER,
   },
   hero: { width: "100%", height: "100%", objectFit: "cover" },
   coverFallback: {
@@ -119,7 +117,7 @@ const s = StyleSheet.create({
     borderColor: TEAL,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8FAFA",
+    backgroundColor: PAPER,
   },
   coverFallbackText: { fontFamily: "Helvetica-Bold", fontSize: 15, color: SUB },
   summaryBand: {
@@ -134,7 +132,7 @@ const s = StyleSheet.create({
   summaryLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: SUB, letterSpacing: 0.6 },
   summaryValue: { fontFamily: "Helvetica-Bold", fontSize: 10, color: CHARCOAL, marginTop: 4, lineHeight: 1.25 },
   priceValue: { fontFamily: "Helvetica-Bold", fontSize: 15, color: CHARCOAL, marginTop: 2 },
-  priceCoret: { fontSize: 7.5, color: "#8B929A", marginTop: 2, textDecoration: "line-through" },
+  priceCoret: { fontSize: 7.5, color: SUB, marginTop: 2, textDecoration: "line-through" },
   priceLand: { fontSize: 7.5, color: SUB, marginTop: 2 },
 
   photoStrip: {
@@ -171,15 +169,15 @@ const s = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 9,
     borderTopWidth: 1,
-    borderTopColor: "#ECEEF0",
+    borderTopColor: HAIR,
   },
   dayNumCol: { width: 54, paddingRight: 10 },
   dayBadge: {
     width: 38,
     height: 38,
-    backgroundColor: "#E9FBFC",
+    backgroundColor: PAPER,
     borderWidth: 1,
-    borderColor: "#BFEFF2",
+    borderColor: TEAL,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -189,11 +187,11 @@ const s = StyleSheet.create({
   dayTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.4, color: CHARCOAL, lineHeight: 1.3 },
   dayDesc: { fontSize: 8.6, color: INK, lineHeight: 1.48, marginTop: 4 },
   itineraryTable: {
-    backgroundColor: "#FBFCFD",
+    backgroundColor: PAPER,
   },
   itineraryHeadRow: {
     flexDirection: "row",
-    backgroundColor: "#E9FBFC",
+    backgroundColor: PAPER,
     borderWidth: 0.7,
     borderColor: DASH,
     borderStyle: "dashed",
@@ -250,7 +248,7 @@ const s = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: DASH,
     borderStyle: "dashed",
-    backgroundColor: "#FBFCFD",
+    backgroundColor: PAPER,
     padding: 10,
   },
   colHeadRow: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
@@ -271,7 +269,7 @@ const s = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: DASH,
     borderStyle: "dashed",
-    backgroundColor: "#FBFCFD",
+    backgroundColor: PAPER,
     padding: 10,
   },
   addonRow: {
@@ -290,8 +288,8 @@ const s = StyleSheet.create({
   addonTag: {
     alignSelf: "flex-start",
     marginTop: 3,
-    backgroundColor: "#FFF3D6",
-    color: "#8A6119",
+    backgroundColor: PAPER,
+    color: CHARCOAL,
     fontFamily: "Helvetica-Bold",
     fontSize: 6,
     paddingHorizontal: 5,
@@ -310,7 +308,7 @@ const s = StyleSheet.create({
   ctaBody: { fontSize: 8.8, color: INK, lineHeight: 1.5, marginTop: 5 },
   faqBox: {
     width: 190,
-    backgroundColor: "#F7F9FA",
+    backgroundColor: PAPER,
     borderLeftWidth: 3,
     borderLeftColor: TEAL,
     padding: 11,
@@ -322,12 +320,12 @@ const s = StyleSheet.create({
 
   profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL, marginTop: 8 },
   profileTag: { fontSize: 8.8, color: TEAL, fontFamily: "Helvetica-Bold", marginTop: 2 },
-  contactGrid: { marginTop: 8, borderTopWidth: 1, borderTopColor: "#ECEEF0", paddingTop: 7 },
+  contactGrid: { marginTop: 8, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 7 },
   contactRow: { flexDirection: "row", marginTop: 3 },
   contactLabel: { width: 70, fontFamily: "Helvetica-Bold", fontSize: 7.8, color: SUB },
   contactValue: { flex: 1, fontSize: 8.2, color: INK, lineHeight: 1.35 },
 
-  disclaimer: { fontSize: 7.2, color: "#858B92", lineHeight: 1.4, marginTop: 10 },
+  disclaimer: { fontSize: 7.2, color: SUB, lineHeight: 1.4, marginTop: 10 },
   footer: {
     position: "absolute",
     bottom: 18,
@@ -336,10 +334,10 @@ const s = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderTopWidth: 1,
-    borderTopColor: "#D1D5DA",
+    borderTopColor: HAIR,
     paddingTop: 7,
   },
-  footerText: { fontSize: 7, color: "#7D838A" },
+  footerText: { fontSize: 7, color: SUB },
 
   compactPage: {
     backgroundColor: PAPER,
@@ -444,7 +442,9 @@ const s = StyleSheet.create({
     marginBottom: 8,
     alignItems: "center",
   },
-  proposalLogo: { width: 92, height: 25, objectFit: "contain", marginBottom: 3 },
+  proposalBrand: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2 },
+  proposalBrandName: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, lineHeight: 1 },
+  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: TEAL, marginLeft: 2, marginTop: 1 },
   proposalTitle: {
     fontFamily: "Helvetica-Bold",
     fontSize: 13,
@@ -453,7 +453,7 @@ const s = StyleSheet.create({
     textAlign: "center",
     textTransform: "uppercase",
   },
-  proposalSubtitle: { fontSize: 6.8, color: "#173E5D", textAlign: "center", marginTop: 2 },
+  proposalSubtitle: { fontSize: 6.8, color: CHARCOAL, textAlign: "center", marginTop: 2 },
   proposalGrid: { flexDirection: "row", gap: 16 },
   proposalLeft: { width: "58%" },
   proposalRight: { flex: 1 },
@@ -475,7 +475,7 @@ const s = StyleSheet.create({
   proposalRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: "#C9DDE0",
+    borderBottomColor: INK,
     minHeight: 34,
   },
   proposalCell: { paddingVertical: 3.6, paddingHorizontal: 5, justifyContent: "center" },
@@ -483,11 +483,12 @@ const s = StyleSheet.create({
   proposalDateCell: { width: 66 },
   proposalEventCell: { flex: 1 },
   proposalPlaceCell: { width: 58 },
-  proposalDayText: { fontFamily: "Helvetica-Bold", fontSize: 8.6, color: "#173E5D" },
-  proposalDateText: { fontSize: 5.65, color: "#173E5D", lineHeight: 1.15 },
-  proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: "#173E5D", lineHeight: 1.14 },
+  proposalDayText: { fontFamily: "Helvetica-Bold", fontSize: 8.6, color: CHARCOAL },
+  proposalDateText: { fontSize: 5.65, color: CHARCOAL, lineHeight: 1.15 },
+  proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: CHARCOAL, lineHeight: 1.14 },
   proposalEventDesc: { fontSize: 5.25, color: INK, lineHeight: 1.15, marginTop: 1 },
-  proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 5.9, color: "#173E5D", lineHeight: 1.15 },
+  proposalInsightLine: { fontSize: 5.05, color: TEAL, lineHeight: 1.18, marginTop: 2 },
+  proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 5.9, color: CHARCOAL, lineHeight: 1.15 },
   proposalMiniTable: {
     borderTopWidth: 0.7,
     borderTopColor: TEAL,
@@ -497,11 +498,11 @@ const s = StyleSheet.create({
   proposalMiniRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: "#C9DDE0",
+    borderBottomColor: INK,
   },
   proposalMiniCell: { flex: 1, paddingVertical: 3.4, paddingHorizontal: 5 },
   proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: TEAL, letterSpacing: 0.3 },
-  proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: "#173E5D", lineHeight: 1.12, marginTop: 1.5 },
+  proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: CHARCOAL, lineHeight: 1.12, marginTop: 1.5 },
   proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
   proposalSectionTitle: {
     fontFamily: "Helvetica-Bold",
@@ -524,9 +525,9 @@ const s = StyleSheet.create({
     marginRight: 4.5,
     marginTop: 0.9,
   },
-  proposalListText: { flex: 1, fontSize: 5.65, color: "#173E5D", lineHeight: 1.16 },
-  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: "#C9DDE0" },
-  proposalAddOnName: { flex: 1.35, fontSize: 5.65, color: "#173E5D", paddingVertical: 2.6, paddingHorizontal: 5 },
+  proposalListText: { flex: 1, fontSize: 5.65, color: CHARCOAL, lineHeight: 1.16 },
+  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: INK },
+  proposalAddOnName: { flex: 1.35, fontSize: 5.65, color: CHARCOAL, paddingVertical: 2.6, paddingHorizontal: 5 },
   proposalAddOnPrice: {
     flex: 0.8,
     fontFamily: "Helvetica-Bold",
@@ -540,6 +541,30 @@ const s = StyleSheet.create({
   proposalLeftNoteGrid: { flexDirection: "row", gap: 10, marginTop: 7 },
   proposalLeftNoteCol: { flex: 1 },
   proposalSmallText: { fontSize: 5.4, color: INK, lineHeight: 1.18 },
+  portraitPage: {
+    backgroundColor: PAPER,
+    color: CHARCOAL,
+    fontFamily: "Helvetica",
+    paddingVertical: 20,
+    paddingHorizontal: 22,
+  },
+  portraitSheet: { backgroundColor: PAPER },
+  portraitHeader: { marginBottom: 10, alignItems: "center" },
+  portraitPageTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 11,
+    color: TEAL,
+    textAlign: "center",
+    textTransform: "uppercase",
+  },
+  portraitTableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.45,
+    borderBottomColor: INK,
+    minHeight: 41,
+  },
+  portraitSectionGap: { marginTop: 10 },
+  portraitFooterGrid: { flexDirection: "row", gap: 12, marginTop: 9 },
   denseSpread: { flexDirection: "row", gap: 14 },
   densePanel: { flex: 1 },
   denseLeftPanel: {
@@ -635,15 +660,11 @@ const s = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderTopWidth: 0.7,
-    borderTopColor: "#D1D5DA",
+    borderTopColor: HAIR,
     paddingTop: 5,
   },
-  denseFooterText: { fontSize: 6.2, color: "#7D838A" },
+  denseFooterText: { fontSize: 6.2, color: SUB },
 });
-
-function isPdfImage(u?: string | null): u is string {
-  return !!u && (/^https?:\/\//.test(u) || /^data:image\/(?:png|jpe?g);base64,/i.test(u));
-}
 
 function waLink(raw: string) {
   return `https://wa.me/${raw.replace(/\D/g, "")}`;
@@ -679,6 +700,15 @@ function ProposalLinkedText({ text }: { text: string }) {
   );
 }
 
+function BrandMark() {
+  return (
+    <View style={s.proposalBrand}>
+      <Text style={s.proposalBrandName}>Sundaf</Text>
+      <Text style={s.proposalBrandTrip}>Trip</Text>
+    </View>
+  );
+}
+
 function placeForDay(day: ItineraryDay) {
   const text = `${day.title} ${day.description}`.toLowerCase();
   if (/ninh binh|hoa lu|tam coc|trang an/.test(text)) return "Ninh Binh";
@@ -698,6 +728,12 @@ function placeForDay(day: ItineraryDay) {
   return "Sesuai rute";
 }
 
+function compactInsightSummary(insights: ItineraryInsight[]) {
+  return insights
+    .map((insight) => `${insight.label}: ${insight.value}`)
+    .join(" | ");
+}
+
 export function ItineraryPDF({
   tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl,
 }: ItineraryPDFProps) {
@@ -709,6 +745,7 @@ export function ItineraryPDF({
   ].filter(Boolean) as [string, string][];
   const addOns = tour.addOns ?? [];
   const dateLabel = tour.tripDateLabel || "Tanggal mengikuti jadwal";
+  const displayItinerary = tour.itinerary.map(buildItineraryDisplay);
   const subtitleParts = [
     `Disiapkan oleh ${company.name || "Sundaf Trip"}`,
     tour.duration,
@@ -717,159 +754,177 @@ export function ItineraryPDF({
 
   return (
     <Document title={`Rencana Perjalanan ${tour.title}`} author={company.name || "Sundaf Trip"}>
-      <Page size="A4" orientation="landscape" style={s.densePage}>
-        <View style={s.denseSheet}>
-          <View style={s.proposalHeader}>
-            {isPdfImage(company.logo) && <Image src={company.logo} style={s.proposalLogo} />}
+      <Page size="A4" style={s.portraitPage}>
+        <View style={s.portraitSheet}>
+          <View style={s.portraitHeader}>
+            <BrandMark />
             <Text style={s.proposalTitle}>{`Rencana Perjalanan ${tour.title}`}</Text>
             <Text style={s.proposalSubtitle}>{subtitleParts.join(" • ")}</Text>
           </View>
 
-          <View style={s.proposalGrid}>
-            <View style={s.proposalLeft}>
-              <View style={s.proposalTable}>
-                <View style={s.proposalHeadRow}>
-                  <Text style={[s.proposalHeadCell, s.proposalDayCell]}>Hari</Text>
-                  <Text style={[s.proposalHeadCell, s.proposalDateCell]}>Tanggal</Text>
-                  <Text style={[s.proposalHeadCell, s.proposalEventCell]}>Agenda</Text>
-                  <Text style={[s.proposalHeadCell, s.proposalPlaceCell]}>Lokasi</Text>
+          <View style={s.proposalMiniTable}>
+            <View style={s.proposalHeadRow}>
+              <Text style={[s.proposalHeadCell, { flex: 1 }]}>Info</Text>
+              <Text style={[s.proposalHeadCell, { flex: 1 }]}>Detail</Text>
+            </View>
+            {meta.map(([label, value]) => (
+              <View key={label} style={s.proposalMiniRow}>
+                <View style={s.proposalMiniCell}>
+                  <Text style={s.proposalMiniLabel}>{label}</Text>
                 </View>
-                {tour.itinerary.map((day) => (
-                  <View key={day.day} style={s.proposalRow}>
-                    <View style={[s.proposalCell, s.proposalDayCell]}>
-                      <Text style={s.proposalDayText}>{day.day}</Text>
-                    </View>
-                    <View style={[s.proposalCell, s.proposalDateCell]}>
-                      <Text style={s.proposalDateText}>{dateLabel}</Text>
-                    </View>
-                    <View style={[s.proposalCell, s.proposalEventCell]}>
-                      <Text style={s.proposalEventTitle}>{day.title}</Text>
-                      {!!day.description && (
-                        <Text style={s.proposalEventDesc}>{compactText(day.description, 110)}</Text>
-                      )}
-                    </View>
-                    <View style={[s.proposalCell, s.proposalPlaceCell]}>
-                      <Text style={s.proposalPlaceText}>{placeForDay(day)}</Text>
-                    </View>
-                  </View>
-                ))}
+                <View style={s.proposalMiniCell}>
+                  <Text style={s.proposalMiniValue}>{value}</Text>
+                </View>
               </View>
-              <Text style={[s.proposalSmallText, { marginTop: 3 }]}>
-                *Rencana perjalanan dapat berubah mengikuti kondisi cuaca dan operasional di lapangan.
-              </Text>
-              <View style={s.proposalLeftNoteGrid}>
-                <View style={s.proposalLeftNoteCol}>
-                  <Text style={s.proposalSectionTitle}>Catatan</Text>
-                  <Text style={s.proposalSmallText}>
-                    {compactText(tour.notes, 170) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan."}
-                  </Text>
+            ))}
+            <View style={s.proposalMiniRow}>
+              <View style={s.proposalMiniCell}>
+                <Text style={s.proposalMiniLabel}>HARGA PER ORANG</Text>
+              </View>
+              <View style={s.proposalMiniCell}>
+                <Text style={s.proposalPrice}>{priceLabel}</Text>
+                {!!priceCoretLabel && <Text style={s.denseSmallText}>{priceCoretLabel}</Text>}
+                {!!landTourLabel && <Text style={s.denseSmallText}>Land tour: {landTourLabel}</Text>}
+              </View>
+            </View>
+          </View>
+
+          <View style={s.portraitSectionGap}>
+            <Text style={s.proposalSectionTitle}>Rencana Perjalanan</Text>
+          </View>
+
+          <View style={s.proposalTable}>
+            <View style={s.proposalHeadRow}>
+              <Text style={[s.proposalHeadCell, s.proposalDayCell]}>Hari</Text>
+              <Text style={[s.proposalHeadCell, s.proposalDateCell]}>Tanggal</Text>
+              <Text style={[s.proposalHeadCell, s.proposalEventCell]}>Agenda</Text>
+              <Text style={[s.proposalHeadCell, s.proposalPlaceCell]}>Lokasi</Text>
+            </View>
+            {displayItinerary.map((day, idx) => {
+              const insightSummary = compactInsightSummary(day.insights);
+
+              return (
+                <View key={`${day.day}-${idx}`} style={s.portraitTableRow}>
+                  <View style={[s.proposalCell, s.proposalDayCell]}>
+                    <Text style={s.proposalDayText}>{day.day}</Text>
+                  </View>
+                  <View style={[s.proposalCell, s.proposalDateCell]}>
+                    <Text style={s.proposalDateText}>{dateLabel}</Text>
+                  </View>
+                  <View style={[s.proposalCell, s.proposalEventCell]}>
+                    <Text style={s.proposalEventTitle}>{day.title}</Text>
+                    {!!day.description && (
+                      <Text style={s.proposalEventDesc}>{compactText(day.description, 150)}</Text>
+                    )}
+                    {!!insightSummary && (
+                      <Text style={s.proposalInsightLine}>{compactText(insightSummary, 135)}</Text>
+                    )}
+                  </View>
+                  <View style={[s.proposalCell, s.proposalPlaceCell]}>
+                    <Text style={s.proposalPlaceText}>{placeForDay(day)}</Text>
+                  </View>
                 </View>
-                <View style={s.proposalLeftNoteCol}>
-                  <Text style={s.proposalSectionTitle}>Visa & Pendaftaran</Text>
-                  <Text style={s.proposalSmallText}>
-                    Visa dapat dibantu melalui{" "}
-                    <Link src={VISA_URL} style={s.denseLink}>sundaftrip.com/visa</Link>
-                    . Hubungi WhatsApp untuk ketersediaan kursi dan proses pendaftaran.
-                  </Text>
+              );
+            })}
+          </View>
+          <Text style={[s.proposalSmallText, { marginTop: 4 }]}>
+            *Rencana perjalanan dapat berubah mengikuti kondisi cuaca dan operasional di lapangan.
+          </Text>
+
+          <View style={s.proposalLeftNoteGrid}>
+            <View style={s.proposalLeftNoteCol}>
+              <Text style={s.proposalSectionTitle}>Catatan</Text>
+              <Text style={s.proposalSmallText}>
+                {compactText(tour.notes, 210) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan."}
+              </Text>
+            </View>
+            <View style={s.proposalLeftNoteCol}>
+              <Text style={s.proposalSectionTitle}>Visa & Pendaftaran</Text>
+              <Text style={s.proposalSmallText}>
+                Visa dapat dibantu melalui{" "}
+                <Link src={VISA_URL} style={s.denseLink}>sundaftrip.com/visa</Link>
+                . Hubungi WhatsApp untuk ketersediaan kursi dan proses pendaftaran.
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Page>
+
+      <Page size="A4" style={s.portraitPage}>
+        <View style={s.portraitSheet}>
+          <View style={s.portraitHeader}>
+            <BrandMark />
+            <Text style={s.portraitPageTitle}>Rincian Paket {tour.title}</Text>
+          </View>
+
+          {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
+            <View style={s.portraitSectionGap}>
+              <Text style={s.proposalSectionTitle}>Harga Sudah / Belum Termasuk</Text>
+              <View style={s.proposalListGrid}>
+                <View style={s.proposalListCol}>
+                  <Text style={[s.proposalListHead, { color: CHARCOAL }]}>Sudah Termasuk</Text>
+                  {tour.inclusions.map((item, i) => (
+                    <View key={i} style={s.proposalListItem}>
+                      <View style={[s.proposalBullet, { backgroundColor: TEAL }]} />
+                      <ProposalLinkedText text={item} />
+                    </View>
+                  ))}
+                </View>
+                <View style={s.proposalListCol}>
+                  <Text style={[s.proposalListHead, { color: CHARCOAL }]}>Belum Termasuk</Text>
+                  {tour.exclusions.map((item, i) => (
+                    <View key={i} style={s.proposalListItem}>
+                      <View style={[s.proposalBullet, { backgroundColor: CHARCOAL }]} />
+                      <ProposalLinkedText text={item} />
+                    </View>
+                  ))}
                 </View>
               </View>
             </View>
+          )}
 
-            <View style={s.proposalRight}>
+          {!!addOns.length && (
+            <View style={s.portraitSectionGap}>
+              <Text style={s.proposalSectionTitle}>Add-on Opsional</Text>
               <View style={s.proposalMiniTable}>
                 <View style={s.proposalHeadRow}>
-                  <Text style={[s.proposalHeadCell, { flex: 1 }]}>Info</Text>
-                  <Text style={[s.proposalHeadCell, { flex: 1 }]}>Detail</Text>
+                  <Text style={[s.proposalHeadCell, { flex: 1.35 }]}>Layanan</Text>
+                  <Text style={[s.proposalHeadCell, { flex: 0.8 }]}>Harga/orang</Text>
                 </View>
-                {meta.map(([label, value]) => (
-                  <View key={label} style={s.proposalMiniRow}>
-                    <View style={s.proposalMiniCell}>
-                      <Text style={s.proposalMiniLabel}>{label}</Text>
-                    </View>
-                    <View style={s.proposalMiniCell}>
-                      <Text style={s.proposalMiniValue}>{value}</Text>
-                    </View>
+                {addOns.map((item, i) => (
+                  <View key={i} style={s.proposalAddOnRow}>
+                    <Text style={s.proposalAddOnName}>
+                      {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
+                    </Text>
+                    <Text style={s.proposalAddOnPrice}>{item.priceLabel}</Text>
                   </View>
                 ))}
-                <View style={s.proposalMiniRow}>
-                  <View style={s.proposalMiniCell}>
-                    <Text style={s.proposalMiniLabel}>HARGA PER ORANG</Text>
-                  </View>
-                  <View style={s.proposalMiniCell}>
-                    <Text style={s.proposalPrice}>{priceLabel}</Text>
-                    {!!priceCoretLabel && <Text style={s.denseSmallText}>{priceCoretLabel}</Text>}
-                    {!!landTourLabel && <Text style={s.denseSmallText}>Land tour: {landTourLabel}</Text>}
-                  </View>
-                </View>
               </View>
+            </View>
+          )}
 
-              {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
-                <View style={s.proposalSectionGap}>
-                  <Text style={s.proposalSectionTitle}>Harga Sudah / Belum Termasuk</Text>
-                  <View style={s.proposalListGrid}>
-                    <View style={s.proposalListCol}>
-                      <Text style={[s.proposalListHead, { color: GREEN }]}>Sudah Termasuk</Text>
-                      {tour.inclusions.map((item, i) => (
-                        <View key={i} style={s.proposalListItem}>
-                          <View style={[s.proposalBullet, { backgroundColor: GREEN }]} />
-                          <ProposalLinkedText text={item} />
-                        </View>
-                      ))}
-                    </View>
-                    <View style={s.proposalListCol}>
-                      <Text style={[s.proposalListHead, { color: RED }]}>Belum Termasuk</Text>
-                      {tour.exclusions.map((item, i) => (
-                        <View key={i} style={s.proposalListItem}>
-                          <View style={[s.proposalBullet, { backgroundColor: RED }]} />
-                          <ProposalLinkedText text={item} />
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                </View>
+          <View style={s.portraitFooterGrid}>
+            <View style={s.proposalFooterCol}>
+              <Text style={s.proposalSectionTitle}>Kontak</Text>
+              {company.whatsapp && (
+                <Text style={s.proposalSmallText}>
+                  WhatsApp: <Link src={waLink(company.whatsapp)} style={s.denseLink}>{company.whatsapp}</Link>
+                </Text>
               )}
-
-              {!!addOns.length && (
-                <View style={s.proposalSectionGap}>
-                  <Text style={s.proposalSectionTitle}>Add-on Opsional</Text>
-                  <View style={s.proposalMiniTable}>
-                    <View style={s.proposalHeadRow}>
-                      <Text style={[s.proposalHeadCell, { flex: 1.35 }]}>Layanan</Text>
-                      <Text style={[s.proposalHeadCell, { flex: 0.8 }]}>Harga/orang</Text>
-                    </View>
-                    {addOns.map((item, i) => (
-                      <View key={i} style={s.proposalAddOnRow}>
-                        <Text style={s.proposalAddOnName}>
-                          {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
-                        </Text>
-                        <Text style={s.proposalAddOnPrice}>{item.priceLabel}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
+              {company.phone && <Text style={s.proposalSmallText}>Telepon: {company.phone}</Text>}
+              {company.email && <Text style={s.proposalSmallText}>Email: {company.email}</Text>}
+              {company.website && <Text style={s.proposalSmallText}>Website: {company.website}</Text>}
+              {!!faqUrl && (
+                <Text style={s.proposalSmallText}>
+                  FAQ: <Link src={faqUrl} style={s.denseLink}>{faqDisplay}</Link>
+                </Text>
               )}
-
-              <View style={s.proposalFooterGrid}>
-                <View style={s.proposalFooterCol}>
-                  <Text style={s.proposalSectionTitle}>Kontak</Text>
-                  {company.whatsapp && (
-                    <Text style={s.proposalSmallText}>
-                      WhatsApp: <Link src={waLink(company.whatsapp)} style={s.denseLink}>{company.whatsapp}</Link>
-                    </Text>
-                  )}
-                  {company.phone && <Text style={s.proposalSmallText}>Telepon: {company.phone}</Text>}
-                  {company.email && <Text style={s.proposalSmallText}>Email: {company.email}</Text>}
-                  {company.website && <Text style={s.proposalSmallText}>Website: {company.website}</Text>}
-                  {!!faqUrl && (
-                    <Text style={s.proposalSmallText}>
-                      FAQ: <Link src={faqUrl} style={s.denseLink}>{faqDisplay}</Link>
-                    </Text>
-                  )}
-                  <Text style={s.proposalSmallText}>
-                    Harga dan jadwal dapat berubah mengikuti ketersediaan maskapai, kurs, cuaca, dan operasional.
-                  </Text>
-                </View>
-              </View>
+            </View>
+            <View style={s.proposalFooterCol}>
+              <Text style={s.proposalSectionTitle}>Ketentuan</Text>
+              <Text style={s.proposalSmallText}>
+                Harga dan jadwal dapat berubah mengikuti ketersediaan maskapai, kurs, cuaca, dan operasional.
+              </Text>
             </View>
           </View>
         </View>
