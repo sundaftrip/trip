@@ -9,6 +9,7 @@ import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
   ArrowLeft, Camera, Building2, FileText,
   ClipboardList, Plane, Package, Ban, Route, Download, Star, ArrowRight,
+  Utensils, Hotel, TrainFront, Ship, Bus, Car,
 } from "lucide-react";
 import { formatCurrency, formatDate, toWaNumber } from "@/lib/utils";
 import { visaSlug, matchCountryFuzzy } from "@/lib/visa-slug";
@@ -19,10 +20,72 @@ import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
+import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
 const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+
+function itineraryInsightIcon(insight: ItineraryInsight) {
+  if (insight.kind === "meals") return <Utensils size={16} />;
+  if (insight.kind === "stay") return <Hotel size={16} />;
+  if (insight.kind === "time") return <Clock size={16} />;
+  if (insight.kind === "distance" || insight.kind === "ascent") return <Route size={16} />;
+
+  if (insight.value.includes("Penerbangan")) return <Plane size={16} />;
+  if (insight.value.includes("Kereta")) return <TrainFront size={16} />;
+  if (insight.value.includes("Bus")) return <Bus size={16} />;
+  if (insight.value.includes("Kapal")) return <Ship size={16} />;
+  return <Car size={16} />;
+}
+
+function ItineraryInsightGrid({
+  insights,
+  isOutlined,
+  tBdr,
+  tSub,
+  tText,
+}: {
+  insights: ItineraryInsight[];
+  isOutlined: boolean;
+  tBdr?: string;
+  tSub?: string;
+  tText?: string;
+}) {
+  if (insights.length === 0) return null;
+
+  return (
+    <div
+      className={`mt-4 grid grid-cols-1 gap-x-5 gap-y-3 border-t pt-4 sm:grid-cols-2 ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+      style={isOutlined ? { borderColor: tBdr } : undefined}
+    >
+      {insights.map((insight) => (
+        <div key={`${insight.kind}-${insight.value}`} className="flex min-w-0 items-start gap-2.5">
+          <span
+            className={`mt-0.5 shrink-0 ${isOutlined ? "" : "text-blue-600 dark:text-blue-400"}`}
+            style={isOutlined ? { color: "var(--site-accent)" } : undefined}
+          >
+            {itineraryInsightIcon(insight)}
+          </span>
+          <span className="min-w-0">
+            <span
+              className="block text-[11px] font-semibold leading-none text-gray-400"
+              style={isOutlined ? { color: tSub } : undefined}
+            >
+              {insight.label}
+            </span>
+            <span
+              className="mt-1 block break-words text-sm font-semibold leading-snug text-gray-900 dark:text-white"
+              style={isOutlined ? { color: tText } : undefined}
+            >
+              {insight.value}
+            </span>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /* ── generateMetadata, og:image dari heroImg tour ───────────────── */
 export async function generateMetadata({
@@ -165,7 +228,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ...item,
     title: localizePdfText(item.title) ?? item.title,
     description: localizePdfText(item.description) ?? item.description,
-  }));
+  })).map(buildItineraryDisplay);
   const addOns = rawAddOns.map((item) => ({
     ...item,
     name: localizePdfText(item.name) ?? item.name,
@@ -412,7 +475,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <ItineraryFold count={itinerary.length} accent="var(--at-text)">
                     <div className="space-y-0">
                       {itinerary.map((item, idx) => (
-                        <div key={item.day} className="flex gap-5">
+                        <div key={`${item.day}-${idx}`} className="flex gap-5">
                           <div className="flex flex-col items-center">
                             <div
                               className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-xs font-bold flex items-center justify-center shrink-0"
@@ -429,6 +492,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             {item.description && (
                               <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.description}</p>
                             )}
+                            <ItineraryInsightGrid
+                              insights={item.insights}
+                              isOutlined={isOutlined}
+                              tBdr={tBdr}
+                              tSub={tSub}
+                              tText={tText}
+                            />
                           </div>
                         </div>
                       ))}
@@ -438,12 +508,19 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   /* Other outlined themes: card + pill badge */
                   <ItineraryFold count={itinerary.length} accent="var(--site-accent)">
                     <div className="space-y-3">
-                      {itinerary.map((item) => (
-                        <div key={item.day} className={`flex gap-4 ${pfx}-card p-4`}>
+                      {itinerary.map((item, idx) => (
+                        <div key={`${item.day}-${idx}`} className={`flex gap-4 ${pfx}-card p-4`}>
                           <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
-                          <div>
+                          <div className="min-w-0 flex-1">
                             <h3 className="font-black" style={{ color: tText }}>{item.title}</h3>
                             {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                            <ItineraryInsightGrid
+                              insights={item.insights}
+                              isOutlined={isOutlined}
+                              tBdr={tBdr}
+                              tSub={tSub}
+                              tText={tText}
+                            />
                           </div>
                         </div>
                       ))}
@@ -453,17 +530,24 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   /* Classic: blue circle + vertical line */
                   <ItineraryFold count={itinerary.length}>
                     <div className="space-y-3">
-                      {itinerary.map((item) => (
-                        <div key={item.day} className="flex gap-4">
+                      {itinerary.map((item, idx) => (
+                        <div key={`${item.day}-${idx}`} className="flex gap-4">
                           <div className="flex flex-col items-center">
                             <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0">
                               {item.day}
                             </span>
                             <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
                           </div>
-                          <div className="pb-6">
+                          <div className="min-w-0 flex-1 pb-6">
                             <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
                             {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                            <ItineraryInsightGrid
+                              insights={item.insights}
+                              isOutlined={isOutlined}
+                              tBdr={tBdr}
+                              tSub={tSub}
+                              tText={tText}
+                            />
                           </div>
                         </div>
                       ))}
