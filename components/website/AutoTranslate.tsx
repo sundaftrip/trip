@@ -11,6 +11,7 @@ import { useEffect } from "react";
 
 const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "CODE", "PRE", "TEXTAREA", "SVG", "PATH"]);
 const STOP = new Set(["SUNDAF", "Sundaf", "Sundaf Trip", "KOL.ID", "WhatsApp", "EN", "ID", "IN"]);
+const TRANSLATE_BATCH_SIZE = 45;
 const hasLetters = (s: string) => /[A-Za-zÀ-ÿ]/.test(s);
 
 const memCache = new Map<string, string>();
@@ -90,14 +91,17 @@ async function translatePage() {
 
   const texts = Array.from(need);
   try {
-    const res = await fetch("/api/translate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ texts, target: "en" }),
-    });
-    const data = (await res.json()) as { translations?: Record<string, string> };
-    const map = data.translations ?? {};
-    for (const k of texts) if (map[k] != null) memCache.set(k, map[k]);
+    for (let i = 0; i < texts.length; i += TRANSLATE_BATCH_SIZE) {
+      const batch = texts.slice(i, i + TRANSLATE_BATCH_SIZE);
+      const res = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ texts: batch, target: "en" }),
+      });
+      const data = (await res.json()) as { translations?: Record<string, string> };
+      const map = data.translations ?? {};
+      for (const k of batch) if (map[k] != null) memCache.set(k, map[k]);
+    }
     saveLS();
     for (const { node, key } of pending) {
       const tr = memCache.get(key);

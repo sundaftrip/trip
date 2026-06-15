@@ -1,6 +1,7 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import fs from "node:fs";
 import path from "node:path";
+import { localizePdfText } from "../lib/itinerary-pdf-localization";
 
 type ImportFile = {
   created_at?: string;
@@ -72,6 +73,10 @@ type InternalFlight = {
 const USD_IDR = 17_900;
 const ADD_ON_MARKUP = 1.25;
 const ROUNDING_IDR = 100_000;
+
+function idText(value?: string | null) {
+  return localizePdfText(value) ?? "";
+}
 
 function loadEnvFile(filePath: string) {
   if (!fs.existsSync(filePath)) return;
@@ -161,16 +166,16 @@ function uniqueFlightRoutes(flights?: InternalFlight[]) {
 function buildNotes(tour: SourceTour) {
   const routes = uniqueFlightRoutes(tour.internal_flights);
   const domesticFlightLine = routes.length
-    ? `Domestic flights quote separately: ${routes.join("; ")}.`
-    : "Domestic flights, jika ada, quote separately.";
+    ? `Penerbangan domestik dihitung terpisah: ${routes.join("; ")}.`
+    : "Penerbangan domestik, jika ada, dihitung terpisah.";
 
   return [
-    "Private Land Tour Only.",
-    "Land tour only.",
-    "All airfares excluded.",
+    "Paket land tour privat saja.",
+    "Hanya land tour.",
+    "Tiket pesawat belum termasuk.",
     domesticFlightLine,
-    "Harga subject to availability dan kurs.",
-    "Hotel atau setara/or similar.",
+    "Harga mengikuti ketersediaan dan kurs saat konfirmasi.",
+    "Hotel dapat diganti dengan hotel setara.",
   ].join("\n");
 }
 
@@ -181,23 +186,23 @@ function buildItinerary(tour: SourceTour) {
     return detailed.map((day, index) => {
       const brief = briefByDay.get(day.day);
       const meta = [
-        brief?.meals ? `Meals: ${brief.meals}` : null,
-        brief?.overnight ? `Overnight: ${brief.overnight}` : null,
+        brief?.meals ? idText(`Meals: ${brief.meals}`) : null,
+        brief?.overnight ? idText(`Overnight: ${brief.overnight}`) : null,
       ].filter(Boolean);
       return {
         day: dayNumber(day.day, index + 1),
-        title: day.heading || brief?.route || day.day,
-        description: [...meta, ...(day.details ?? [])].join("\n"),
+        title: idText(day.heading || brief?.route || day.day),
+        description: idText([...meta, ...(day.details ?? [])].join("\n")),
       };
     });
   }
 
   return (tour.brief_itinerary ?? []).map((day, index) => ({
     day: dayNumber(day.day, index + 1),
-    title: day.route || day.day,
+    title: idText(day.route || day.day),
     description: [
-      day.meals ? `Meals: ${day.meals}` : null,
-      day.overnight ? `Overnight: ${day.overnight}` : null,
+      day.meals ? idText(`Meals: ${day.meals}`) : null,
+      day.overnight ? idText(`Overnight: ${day.overnight}`) : null,
     ].filter(Boolean).join("\n"),
   }));
 }
@@ -205,9 +210,9 @@ function buildItinerary(tour: SourceTour) {
 function buildAddOns(tour: SourceTour) {
   return (tour.optional_services ?? [])
     .map((item) => ({
-      name: item.service?.trim() ?? "",
+      name: idText(item.service?.trim() ?? ""),
       price: addOnSellPrice(item.price),
-      desc: "Opsional, subject to availability.",
+      desc: "Opsional, mengikuti ketersediaan.",
     }))
     .filter((item) => item.name && item.price > 0);
 }
@@ -240,10 +245,10 @@ function galleryForTour(tour: SourceTour) {
 function toTourInput(tour: SourceTour): Prisma.TourUncheckedCreateInput {
   const duration = `${tour.duration.days} Hari ${tour.duration.nights} Malam`;
   return {
-    title: tour.title,
+    title: idText(tour.title),
     slug: tour.slug,
     country: "Vietnam",
-    cityHighlight: tour.route_summary ?? null,
+    cityHighlight: idText(tour.route_summary) || null,
     price: tour.starting_price.sell_idr_rounded,
     promoPrice: null,
     priceLandTour: null,
@@ -252,15 +257,15 @@ function toTourInput(tour: SourceTour): Prisma.TourUncheckedCreateInput {
     tripDate: null,
     duration,
     itinerary: buildItinerary(tour),
-    inclusions: tour.inclusions ?? [],
-    exclusions: tour.exclusions ?? [],
+    inclusions: (tour.inclusions ?? []).map(idText),
+    exclusions: (tour.exclusions ?? []).map(idText),
     gallery: galleryForTour(tour),
     hotel: buildHotelRecord(tour.hotels),
     visaInfo: null,
     heroImg: heroForTour(tour),
-    badge: "Private Land Tour",
+    badge: "Land Tour Privat",
     notes: buildNotes(tour),
-    description: buildDescription(tour),
+    description: idText(buildDescription(tour)),
     addOns: buildAddOns(tour),
   };
 }

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
 import {
-  Document, Page, View, Text, Image, Link, StyleSheet, Font, Svg, Path,
+  Document, Page, View, Text, Image, Link, StyleSheet, Font,
 } from "@react-pdf/renderer";
 
 const CHARCOAL = "#20252B";
@@ -103,9 +103,6 @@ const s = StyleSheet.create({
   coverCopy: { width: 270, paddingRight: 8 },
   title: { fontFamily: "Helvetica-Bold", fontSize: 39, color: CHARCOAL, lineHeight: 1.02 },
   routeLine: { fontFamily: "Helvetica-Bold", fontSize: 14, color: SUB, lineHeight: 1.35, marginTop: 15 },
-  titleAccentRow: { flexDirection: "row", marginTop: 18 },
-  titleAccentTeal: { width: 82, height: 5, backgroundColor: TEAL },
-  titleAccentGold: { width: 34, height: 5, backgroundColor: GOLD, marginLeft: 5 },
   coverImageWrap: {
     flex: 1,
     height: 248,
@@ -366,9 +363,6 @@ const s = StyleSheet.create({
   compactTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   compactTitle: { fontFamily: "Helvetica-Bold", fontSize: 28, color: CHARCOAL, lineHeight: 1, marginTop: 42 },
   compactRoute: { fontFamily: "Helvetica-Bold", fontSize: 10, color: SUB, lineHeight: 1.3, marginTop: 9 },
-  compactAccent: { flexDirection: "row", marginTop: 12, marginBottom: 16 },
-  compactAccentTeal: { width: 62, height: 4, backgroundColor: TEAL },
-  compactAccentGold: { width: 26, height: 4, backgroundColor: GOLD, marginLeft: 5 },
   compactHero: { width: "100%", height: 148, objectFit: "cover", borderWidth: 0.7, borderColor: TEAL, padding: 3 },
   compactMetaGrid: { marginTop: 12, borderTopWidth: 0.7, borderTopColor: DASH, borderTopStyle: "dashed" },
   compactMetaRow: {
@@ -437,15 +431,115 @@ const s = StyleSheet.create({
     backgroundColor: PAPER,
     color: INK,
     fontFamily: "Helvetica",
-    paddingTop: 16,
-    paddingBottom: 30,
+    paddingTop: 12,
+    paddingBottom: 22,
     paddingHorizontal: 18,
   },
   denseSheet: {
     backgroundColor: WHITE,
-    padding: 14,
-    minHeight: 532,
+    padding: 12,
+    minHeight: 516,
   },
+  proposalHeader: {
+    marginBottom: 8,
+    alignItems: "center",
+  },
+  proposalLogo: { width: 92, height: 25, objectFit: "contain", marginBottom: 3 },
+  proposalTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 13,
+    color: TEAL,
+    letterSpacing: 0.4,
+    textAlign: "center",
+    textTransform: "uppercase",
+  },
+  proposalSubtitle: { fontSize: 6.8, color: "#173E5D", textAlign: "center", marginTop: 2 },
+  proposalGrid: { flexDirection: "row", gap: 16 },
+  proposalLeft: { width: "58%" },
+  proposalRight: { flex: 1 },
+  proposalSectionGap: { marginTop: 8 },
+  proposalTable: {
+    borderTopWidth: 0.7,
+    borderTopColor: TEAL,
+    borderBottomWidth: 0.7,
+    borderBottomColor: TEAL,
+  },
+  proposalHeadRow: { flexDirection: "row", backgroundColor: TEAL },
+  proposalHeadCell: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 7.2,
+    color: WHITE,
+    paddingVertical: 4,
+    paddingHorizontal: 5,
+  },
+  proposalRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.45,
+    borderBottomColor: "#C9DDE0",
+    minHeight: 34,
+  },
+  proposalCell: { paddingVertical: 3.6, paddingHorizontal: 5, justifyContent: "center" },
+  proposalDayCell: { width: 31, alignItems: "center" },
+  proposalDateCell: { width: 66 },
+  proposalEventCell: { flex: 1 },
+  proposalPlaceCell: { width: 58 },
+  proposalDayText: { fontFamily: "Helvetica-Bold", fontSize: 8.6, color: "#173E5D" },
+  proposalDateText: { fontSize: 5.65, color: "#173E5D", lineHeight: 1.15 },
+  proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: "#173E5D", lineHeight: 1.14 },
+  proposalEventDesc: { fontSize: 5.25, color: INK, lineHeight: 1.15, marginTop: 1 },
+  proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 5.9, color: "#173E5D", lineHeight: 1.15 },
+  proposalMiniTable: {
+    borderTopWidth: 0.7,
+    borderTopColor: TEAL,
+    borderBottomWidth: 0.7,
+    borderBottomColor: TEAL,
+  },
+  proposalMiniRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.45,
+    borderBottomColor: "#C9DDE0",
+  },
+  proposalMiniCell: { flex: 1, paddingVertical: 3.4, paddingHorizontal: 5 },
+  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: TEAL, letterSpacing: 0.3 },
+  proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: "#173E5D", lineHeight: 1.12, marginTop: 1.5 },
+  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
+  proposalSectionTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 8,
+    color: WHITE,
+    backgroundColor: TEAL,
+    paddingVertical: 3.5,
+    paddingHorizontal: 6,
+    width: "100%",
+    marginBottom: 4,
+  },
+  proposalListGrid: { flexDirection: "row", gap: 10 },
+  proposalListCol: { flex: 1 },
+  proposalListHead: { fontFamily: "Helvetica-Bold", fontSize: 6.7, marginBottom: 3 },
+  proposalListItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2.5 },
+  proposalBullet: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 4.5,
+    marginTop: 0.9,
+  },
+  proposalListText: { flex: 1, fontSize: 5.65, color: "#173E5D", lineHeight: 1.16 },
+  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: "#C9DDE0" },
+  proposalAddOnName: { flex: 1.35, fontSize: 5.65, color: "#173E5D", paddingVertical: 2.6, paddingHorizontal: 5 },
+  proposalAddOnPrice: {
+    flex: 0.8,
+    fontFamily: "Helvetica-Bold",
+    fontSize: 5.6,
+    color: GOLD,
+    paddingVertical: 2.6,
+    paddingHorizontal: 5,
+  },
+  proposalFooterGrid: { flexDirection: "row", gap: 12, marginTop: 7 },
+  proposalFooterCol: { flex: 1 },
+  proposalLeftNoteGrid: { flexDirection: "row", gap: 10, marginTop: 7 },
+  proposalLeftNoteCol: { flex: 1 },
+  proposalSmallText: { fontSize: 5.4, color: INK, lineHeight: 1.18 },
   denseSpread: { flexDirection: "row", gap: 14 },
   densePanel: { flex: 1 },
   denseLeftPanel: {
@@ -459,26 +553,17 @@ const s = StyleSheet.create({
   denseDocTag: { fontFamily: "Helvetica-Bold", fontSize: 6.8, color: TEAL, letterSpacing: 0.9 },
   denseCoverRow: { flexDirection: "row", gap: 12, marginTop: 10, marginBottom: 8 },
   denseCoverCopy: { flex: 1 },
-  denseTitle: { fontFamily: "Helvetica-Bold", fontSize: 31, color: CHARCOAL, lineHeight: 0.98, marginTop: 7 },
+  denseTitle: { fontFamily: "Helvetica-Bold", fontSize: 33, color: CHARCOAL, lineHeight: 0.98, marginTop: 7 },
   denseRoute: { fontFamily: "Helvetica-Bold", fontSize: 10, color: SUB, lineHeight: 1.2, marginTop: 6 },
-  denseAccent: { flexDirection: "row", marginTop: 8 },
-  denseAccentTeal: { width: 58, height: 3.5, backgroundColor: TEAL },
-  denseAccentGold: { width: 24, height: 3.5, backgroundColor: GOLD, marginLeft: 5 },
-  denseHero: { width: 186, height: 142, objectFit: "cover", borderWidth: 0.7, borderColor: TEAL, padding: 2 },
+  denseHero: { width: 198, height: 150, objectFit: "cover", borderWidth: 0.7, borderColor: TEAL, padding: 2 },
   denseMetaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    borderTopWidth: 0.6,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
     marginBottom: 8,
   },
   denseMetaItem: {
     width: "50%",
-    borderBottomWidth: 0.6,
-    borderBottomColor: DASH,
-    borderBottomStyle: "dashed",
-    paddingVertical: 3.6,
+    paddingVertical: 3.2,
     paddingRight: 8,
   },
   denseMetaLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: TEAL, letterSpacing: 0.35 },
@@ -487,12 +572,13 @@ const s = StyleSheet.create({
   denseSmallText: { fontSize: 4.9, color: SUB, lineHeight: 1.16, marginTop: 1.4 },
   denseSecHead: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 8.8,
-    color: CHARCOAL,
-    borderLeftWidth: 3.5,
-    borderLeftColor: TEAL,
-    paddingLeft: 6,
-    marginBottom: 5,
+    fontSize: 8.4,
+    color: WHITE,
+    backgroundColor: TEAL,
+    paddingVertical: 3.2,
+    paddingHorizontal: 7,
+    marginBottom: 5.2,
+    width: "100%",
   },
   denseDayRow: {
     flexDirection: "row",
@@ -506,7 +592,7 @@ const s = StyleSheet.create({
   denseDayNum: { fontFamily: "Helvetica-Bold", fontSize: 10.5, color: CHARCOAL, marginTop: 0.5 },
   denseDayBody: { flex: 1 },
   denseDayTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.8, color: CHARCOAL, lineHeight: 1.16 },
-  denseDayDesc: { fontSize: 5.45, color: INK, lineHeight: 1.18, marginTop: 1.3 },
+  denseDayDesc: { fontSize: 5.65, color: INK, lineHeight: 1.22, marginTop: 1.3 },
   denseTwoCol: { flexDirection: "row", gap: 8 },
   denseCol: { flex: 1 },
   denseColHead: { fontFamily: "Helvetica-Bold", fontSize: 6.7, marginBottom: 3 },
@@ -528,9 +614,6 @@ const s = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 6,
-    borderTopWidth: 0.55,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
     paddingVertical: 2.5,
   },
   denseAddonName: { flex: 1, fontSize: 5.7, color: INK, lineHeight: 1.16 },
@@ -539,9 +622,6 @@ const s = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginTop: 7,
-    borderTopWidth: 0.6,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
     paddingTop: 6,
   },
   denseBottomCol: { flex: 1 },
@@ -549,7 +629,7 @@ const s = StyleSheet.create({
   denseLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
   denseFooter: {
     position: "absolute",
-    bottom: 12,
+    bottom: 8,
     left: 20,
     right: 20,
     flexDirection: "row",
@@ -575,27 +655,6 @@ function compactText(value?: string | null, max = 150) {
   return normalized.length > max ? `${normalized.slice(0, max - 3).trim()}...` : normalized;
 }
 
-function PdfIcon({ kind, small = false }: { kind: "include" | "exclude" | "optional"; small?: boolean }) {
-  const color = kind === "include" ? GREEN : kind === "exclude" ? RED : GOLD;
-  const backgroundColor = kind === "include" ? "#E8F5EE" : kind === "exclude" ? "#FBEDEA" : "#FFF5DD";
-  const path = kind === "include" ? "M20 6 9 17l-5-5" : kind === "exclude" ? "M18 6 6 18M6 6l12 12" : "M12 5v14M5 12h14";
-
-  return (
-    <View style={[small ? s.denseListIcon : s.liIcon, { backgroundColor }]}>
-      <Svg width={small ? 6 : 8} height={small ? 6 : 8} viewBox="0 0 24 24">
-        <Path
-          d={path}
-          fill="none"
-          stroke={color}
-          strokeWidth={3}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </Svg>
-    </View>
-  );
-}
-
 function linkedTextParts(text: string) {
   const match = /visa/i.exec(text);
   if (!match) return null;
@@ -607,25 +666,12 @@ function linkedTextParts(text: string) {
   };
 }
 
-function CompactLinkedText({ text }: { text: string }) {
+function ProposalLinkedText({ text }: { text: string }) {
   const parts = linkedTextParts(text);
-  if (!parts) return <Text style={s.compactListText}>{text}</Text>;
+  if (!parts) return <Text style={s.proposalListText}>{text}</Text>;
 
   return (
-    <Text style={s.compactListText}>
-      {parts.before}
-      <Link src={VISA_URL} style={s.compactLink}>{parts.linked}</Link>
-      {parts.after}
-    </Text>
-  );
-}
-
-function DenseLinkedText({ text }: { text: string }) {
-  const parts = linkedTextParts(text);
-  if (!parts) return <Text style={s.denseListText}>{text}</Text>;
-
-  return (
-    <Text style={s.denseListText}>
+    <Text style={s.proposalListText}>
       {parts.before}
       <Link src={VISA_URL} style={s.denseLink}>{parts.linked}</Link>
       {parts.after}
@@ -633,130 +679,149 @@ function DenseLinkedText({ text }: { text: string }) {
   );
 }
 
-function CompactSectionHeader({ children }: { children: string }) {
-  return <Text style={s.compactSecHead}>{children}</Text>;
-}
-
-function DenseSectionHeader({ children }: { children: string }) {
-  return <Text style={s.denseSecHead}>{children}</Text>;
+function placeForDay(day: ItineraryDay) {
+  const text = `${day.title} ${day.description}`.toLowerCase();
+  if (/ninh binh|hoa lu|tam coc|trang an/.test(text)) return "Ninh Binh";
+  if (/halong|ha long|teluk halong|tuan chau|bo hon|sung sot|titop|luon/.test(text)) return "Teluk Halong";
+  if (/sapa|sa pa|fansipan|cat cat|lao cai/.test(text)) return "Sapa";
+  if (/da nang|danang|ba na|golden bridge/.test(text)) return "Da Nang";
+  if (/hue|imperial city|perfume river/.test(text)) return "Hue";
+  if (/hoi an|hoian|ancient town/.test(text)) return "Hoi An";
+  if (/ho chi minh|saigon|cu chi/.test(text)) return "Ho Chi Minh";
+  if (/mekong|my tho|can tho|ben tre/.test(text)) return "Mekong";
+  if (/phu quoc/.test(text)) return "Phu Quoc";
+  if (/hanoi|hoan kiem|old quarter|train street|noi bai/.test(text)) return "Hanoi";
+  if (/ismailovo|izmailovo|moscow|moskow|red square|arbat|metro/.test(text)) return "Moscow";
+  if (/murmansk|aurora|sami|husky|reindeer|snow/.test(text)) return "Murmansk";
+  if (/petersburg|nevski|nevsky|kazan|isaac|hermitage|spilled|mosque/.test(text)) return "St Petersburg";
+  if (/jakarta|indonesia/.test(text)) return "Indonesia";
+  return "Sesuai rute";
 }
 
 export function ItineraryPDF({
   tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl,
 }: ItineraryPDFProps) {
   const faqDisplay = faqUrl ? faqUrl.replace(/^https?:\/\//, "") : "";
-  const heroImage = isPdfImage(tour.heroImg) ? tour.heroImg : null;
   const meta = [
     tour.duration ? ["DURASI", tour.duration] : null,
     tour.tripDateLabel ? ["KEBERANGKATAN", tour.tripDateLabel] : null,
     ["DESTINASI", tour.cityHighlight || tour.country],
   ].filter(Boolean) as [string, string][];
-  const splitAt = Math.ceil(tour.itinerary.length / 2);
-  const firstDays = tour.itinerary.slice(0, splitAt);
-  const secondDays = tour.itinerary.slice(splitAt);
-  const websiteLabel = company.website || company.name || "Sundaf Trip";
   const addOns = tour.addOns ?? [];
-  const addOnSplitAt = Math.ceil(addOns.length / 2);
-  const addOnColumns = [addOns.slice(0, addOnSplitAt), addOns.slice(addOnSplitAt)].filter((items) => items.length > 0);
-
-  const denseFooter = (
-    <View style={s.denseFooter} fixed>
-      <Text style={s.denseFooterText}>{websiteLabel}</Text>
-      <Text style={s.denseFooterText}>Halaman 1</Text>
-    </View>
-  );
+  const dateLabel = tour.tripDateLabel || "Tanggal mengikuti jadwal";
+  const subtitleParts = [
+    `Disiapkan oleh ${company.name || "Sundaf Trip"}`,
+    tour.duration,
+    dateLabel,
+  ].filter(Boolean);
 
   return (
-    <Document title={`Itinerary ${tour.title}`} author={company.name || "Sundaf Trip"}>
+    <Document title={`Rencana Perjalanan ${tour.title}`} author={company.name || "Sundaf Trip"}>
       <Page size="A4" orientation="landscape" style={s.densePage}>
         <View style={s.denseSheet}>
-          <View style={s.denseSpread}>
-            <View style={[s.densePanel, s.denseLeftPanel]}>
-              <View style={s.denseTop}>
-                {isPdfImage(company.logo) ? (
-                  <Image src={company.logo} style={s.denseLogo} />
-                ) : (
-                  <Text style={s.logoFallback}>{(company.name || "SUNDAF TRIP").toUpperCase()}</Text>
-                )}
-                <Text style={s.denseDocTag}>ITINERARY</Text>
-              </View>
+          <View style={s.proposalHeader}>
+            {isPdfImage(company.logo) && <Image src={company.logo} style={s.proposalLogo} />}
+            <Text style={s.proposalTitle}>{`Rencana Perjalanan ${tour.title}`}</Text>
+            <Text style={s.proposalSubtitle}>{subtitleParts.join(" • ")}</Text>
+          </View>
 
-              <View style={s.denseCoverRow}>
-                <View style={s.denseCoverCopy}>
-                  <Text style={s.denseTitle}>{tour.title}</Text>
-                  <Text style={s.denseRoute}>{tour.cityHighlight || tour.country}</Text>
-                  <View style={s.denseAccent}>
-                    <View style={s.denseAccentTeal} />
-                    <View style={s.denseAccentGold} />
-                  </View>
+          <View style={s.proposalGrid}>
+            <View style={s.proposalLeft}>
+              <View style={s.proposalTable}>
+                <View style={s.proposalHeadRow}>
+                  <Text style={[s.proposalHeadCell, s.proposalDayCell]}>Hari</Text>
+                  <Text style={[s.proposalHeadCell, s.proposalDateCell]}>Tanggal</Text>
+                  <Text style={[s.proposalHeadCell, s.proposalEventCell]}>Agenda</Text>
+                  <Text style={[s.proposalHeadCell, s.proposalPlaceCell]}>Lokasi</Text>
                 </View>
-                {heroImage && <Image src={heroImage} style={s.denseHero} />}
-              </View>
-
-              <View style={s.denseMetaGrid}>
-                {meta.map(([label, value]) => (
-                  <View key={label} style={s.denseMetaItem}>
-                    <Text style={s.denseMetaLabel}>{label}</Text>
-                    <Text style={s.denseMetaValue}>{value}</Text>
+                {tour.itinerary.map((day) => (
+                  <View key={day.day} style={s.proposalRow}>
+                    <View style={[s.proposalCell, s.proposalDayCell]}>
+                      <Text style={s.proposalDayText}>{day.day}</Text>
+                    </View>
+                    <View style={[s.proposalCell, s.proposalDateCell]}>
+                      <Text style={s.proposalDateText}>{dateLabel}</Text>
+                    </View>
+                    <View style={[s.proposalCell, s.proposalEventCell]}>
+                      <Text style={s.proposalEventTitle}>{day.title}</Text>
+                      {!!day.description && (
+                        <Text style={s.proposalEventDesc}>{compactText(day.description, 110)}</Text>
+                      )}
+                    </View>
+                    <View style={[s.proposalCell, s.proposalPlaceCell]}>
+                      <Text style={s.proposalPlaceText}>{placeForDay(day)}</Text>
+                    </View>
                   </View>
                 ))}
-                <View style={s.denseMetaItem}>
-                  <Text style={s.denseMetaLabel}>HARGA</Text>
-                  <Text style={s.densePrice}>{priceLabel}</Text>
-                  {!!priceCoretLabel && <Text style={s.denseSmallText}>{priceCoretLabel}</Text>}
-                  {!!landTourLabel && <Text style={s.denseSmallText}>Land tour: {landTourLabel}</Text>}
+              </View>
+              <Text style={[s.proposalSmallText, { marginTop: 3 }]}>
+                *Rencana perjalanan dapat berubah mengikuti kondisi cuaca dan operasional di lapangan.
+              </Text>
+              <View style={s.proposalLeftNoteGrid}>
+                <View style={s.proposalLeftNoteCol}>
+                  <Text style={s.proposalSectionTitle}>Catatan</Text>
+                  <Text style={s.proposalSmallText}>
+                    {compactText(tour.notes, 170) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan."}
+                  </Text>
+                </View>
+                <View style={s.proposalLeftNoteCol}>
+                  <Text style={s.proposalSectionTitle}>Visa & Pendaftaran</Text>
+                  <Text style={s.proposalSmallText}>
+                    Visa dapat dibantu melalui{" "}
+                    <Link src={VISA_URL} style={s.denseLink}>sundaftrip.com/visa</Link>
+                    . Hubungi WhatsApp untuk ketersediaan kursi dan proses pendaftaran.
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={s.proposalRight}>
+              <View style={s.proposalMiniTable}>
+                <View style={s.proposalHeadRow}>
+                  <Text style={[s.proposalHeadCell, { flex: 1 }]}>Info</Text>
+                  <Text style={[s.proposalHeadCell, { flex: 1 }]}>Detail</Text>
+                </View>
+                {meta.map(([label, value]) => (
+                  <View key={label} style={s.proposalMiniRow}>
+                    <View style={s.proposalMiniCell}>
+                      <Text style={s.proposalMiniLabel}>{label}</Text>
+                    </View>
+                    <View style={s.proposalMiniCell}>
+                      <Text style={s.proposalMiniValue}>{value}</Text>
+                    </View>
+                  </View>
+                ))}
+                <View style={s.proposalMiniRow}>
+                  <View style={s.proposalMiniCell}>
+                    <Text style={s.proposalMiniLabel}>HARGA PER ORANG</Text>
+                  </View>
+                  <View style={s.proposalMiniCell}>
+                    <Text style={s.proposalPrice}>{priceLabel}</Text>
+                    {!!priceCoretLabel && <Text style={s.denseSmallText}>{priceCoretLabel}</Text>}
+                    {!!landTourLabel && <Text style={s.denseSmallText}>Land tour: {landTourLabel}</Text>}
+                  </View>
                 </View>
               </View>
 
-              <DenseSectionHeader>Rencana Perjalanan</DenseSectionHeader>
-              {firstDays.map((day) => (
-                <View key={day.day} style={s.denseDayRow}>
-                  <View style={s.denseDayBox}>
-                    <Text style={s.denseDayLabel}>HARI</Text>
-                    <Text style={s.denseDayNum}>{day.day}</Text>
-                  </View>
-                  <View style={s.denseDayBody}>
-                    <Text style={s.denseDayTitle}>{day.title}</Text>
-                    {!!day.description && <Text style={s.denseDayDesc}>{compactText(day.description, 130)}</Text>}
-                  </View>
-                </View>
-              ))}
-            </View>
-
-            <View style={s.densePanel}>
-              <DenseSectionHeader>Rencana Perjalanan</DenseSectionHeader>
-              {secondDays.map((day) => (
-                <View key={day.day} style={s.denseDayRow}>
-                  <View style={s.denseDayBox}>
-                    <Text style={s.denseDayLabel}>HARI</Text>
-                    <Text style={s.denseDayNum}>{day.day}</Text>
-                  </View>
-                  <View style={s.denseDayBody}>
-                    <Text style={s.denseDayTitle}>{day.title}</Text>
-                    {!!day.description && <Text style={s.denseDayDesc}>{compactText(day.description, 120)}</Text>}
-                  </View>
-                </View>
-              ))}
-
               {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
-                <View style={s.denseBlock}>
-                  <DenseSectionHeader>Termasuk dan Tidak Termasuk</DenseSectionHeader>
-                  <View style={s.denseTwoCol}>
-                    <View style={s.denseCol}>
-                      <Text style={[s.denseColHead, { color: GREEN }]}>Sudah Termasuk</Text>
+                <View style={s.proposalSectionGap}>
+                  <Text style={s.proposalSectionTitle}>Harga Sudah / Belum Termasuk</Text>
+                  <View style={s.proposalListGrid}>
+                    <View style={s.proposalListCol}>
+                      <Text style={[s.proposalListHead, { color: GREEN }]}>Sudah Termasuk</Text>
                       {tour.inclusions.map((item, i) => (
-                        <View key={i} style={s.denseListRow}>
-                          <PdfIcon kind="include" small />
-                          <DenseLinkedText text={item} />
+                        <View key={i} style={s.proposalListItem}>
+                          <View style={[s.proposalBullet, { backgroundColor: GREEN }]} />
+                          <ProposalLinkedText text={item} />
                         </View>
                       ))}
                     </View>
-                    <View style={s.denseCol}>
-                      <Text style={[s.denseColHead, { color: RED }]}>Tidak Termasuk</Text>
+                    <View style={s.proposalListCol}>
+                      <Text style={[s.proposalListHead, { color: RED }]}>Belum Termasuk</Text>
                       {tour.exclusions.map((item, i) => (
-                        <View key={i} style={s.denseListRow}>
-                          <PdfIcon kind="exclude" small />
-                          <DenseLinkedText text={item} />
+                        <View key={i} style={s.proposalListItem}>
+                          <View style={[s.proposalBullet, { backgroundColor: RED }]} />
+                          <ProposalLinkedText text={item} />
                         </View>
                       ))}
                     </View>
@@ -764,56 +829,43 @@ export function ItineraryPDF({
                 </View>
               )}
 
-              {!!addOnColumns.length && (
-                <View style={s.denseBlock}>
-                  <DenseSectionHeader>Add Ons Opsional</DenseSectionHeader>
-                  <View style={s.denseAddonGrid}>
-                    {addOnColumns.map((items, colIndex) => (
-                      <View key={colIndex} style={s.denseAddonCol}>
-                        {items.map((item, i) => (
-                          <View key={i} style={s.denseAddonRow}>
-                            <Text style={s.denseAddonName}>
-                              {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
-                            </Text>
-                            <Text style={s.denseAddonPrice}>+{item.priceLabel}</Text>
-                          </View>
-                        ))}
+              {!!addOns.length && (
+                <View style={s.proposalSectionGap}>
+                  <Text style={s.proposalSectionTitle}>Add-on Opsional</Text>
+                  <View style={s.proposalMiniTable}>
+                    <View style={s.proposalHeadRow}>
+                      <Text style={[s.proposalHeadCell, { flex: 1.35 }]}>Layanan</Text>
+                      <Text style={[s.proposalHeadCell, { flex: 0.8 }]}>Harga/orang</Text>
+                    </View>
+                    {addOns.map((item, i) => (
+                      <View key={i} style={s.proposalAddOnRow}>
+                        <Text style={s.proposalAddOnName}>
+                          {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
+                        </Text>
+                        <Text style={s.proposalAddOnPrice}>{item.priceLabel}</Text>
                       </View>
                     ))}
                   </View>
                 </View>
               )}
 
-              <View style={s.denseBottomGrid}>
-                <View style={s.denseBottomCol}>
-                  {!!tour.notes && (
-                    <>
-                      <DenseSectionHeader>Catatan</DenseSectionHeader>
-                      <Text style={s.denseNote}>{compactText(tour.notes, 150)}</Text>
-                    </>
-                  )}
-                  {!!tour.visaInfo && (
-                    <Text style={s.denseNote}>
-                      Visa: <Link src={VISA_URL} style={s.denseLink}>sundaftrip.com/visa</Link>
-                    </Text>
-                  )}
-                </View>
-                <View style={s.denseBottomCol}>
-                  <DenseSectionHeader>Kontak</DenseSectionHeader>
+              <View style={s.proposalFooterGrid}>
+                <View style={s.proposalFooterCol}>
+                  <Text style={s.proposalSectionTitle}>Kontak</Text>
                   {company.whatsapp && (
-                    <Text style={s.denseNote}>
+                    <Text style={s.proposalSmallText}>
                       WhatsApp: <Link src={waLink(company.whatsapp)} style={s.denseLink}>{company.whatsapp}</Link>
                     </Text>
                   )}
-                  {company.phone && <Text style={s.denseNote}>Telepon: {company.phone}</Text>}
-                  {company.email && <Text style={s.denseNote}>Email: {company.email}</Text>}
-                  {company.website && <Text style={s.denseNote}>Website: {company.website}</Text>}
+                  {company.phone && <Text style={s.proposalSmallText}>Telepon: {company.phone}</Text>}
+                  {company.email && <Text style={s.proposalSmallText}>Email: {company.email}</Text>}
+                  {company.website && <Text style={s.proposalSmallText}>Website: {company.website}</Text>}
                   {!!faqUrl && (
-                    <Text style={s.denseNote}>
+                    <Text style={s.proposalSmallText}>
                       FAQ: <Link src={faqUrl} style={s.denseLink}>{faqDisplay}</Link>
                     </Text>
                   )}
-                  <Text style={s.denseSmallText}>
+                  <Text style={s.proposalSmallText}>
                     Harga dan jadwal dapat berubah mengikuti ketersediaan maskapai, kurs, cuaca, dan operasional.
                   </Text>
                 </View>
@@ -821,7 +873,6 @@ export function ItineraryPDF({
             </View>
           </View>
         </View>
-        {denseFooter}
       </Page>
     </Document>
   );

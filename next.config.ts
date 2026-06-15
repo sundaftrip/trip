@@ -11,6 +11,14 @@ const withSerwist = withSerwistInit({
   reloadOnOnline: true,
 });
 
+const scriptSrc = [
+  "'self'",
+  "'unsafe-inline'",
+  ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
+  "https://va.vercel-scripts.com",
+  "https://vercel.live",
+].join(" ");
+
 const nextConfig: NextConfig = {
   // Tree-shake lucide-react & icon libraries — cut JS bundle signifikan.
   // Tanpa ini, import { Foo } dari "lucide-react" akan bawa seluruh barrel.
@@ -191,7 +199,7 @@ const nextConfig: NextConfig = {
               // Next.js tidak pakai eval(). unsafe-inline masih perlu karena
               // Next.js emit bootstrap script inline (untuk hilangkan butuh
               // nonce-CSP yang membatalkan edge cache — trade-off tidak worth).
-              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live",
+              `script-src ${scriptSrc}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https:",
               // media-src untuk <video>/<audio>. Tanpa ini, video dari CDN

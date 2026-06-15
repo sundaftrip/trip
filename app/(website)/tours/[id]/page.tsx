@@ -18,6 +18,7 @@ import TourShareButtons from "@/components/website/TourShareButtons";
 import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { localizePdfText } from "@/lib/itinerary-pdf-localization";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -40,24 +41,30 @@ export async function generateMetadata({
   if (!tour) return {};
 
   const companyName = companyRow?.value ?? "Sundaftrip";
-  const description = tour.description ?? tour.notes ?? tour.visaInfo ?? `Paket tour ${tour.country} bersama ${companyName}`;
+  const title = localizePdfText(tour.title) ?? tour.title;
+  const country = localizePdfText(tour.country) ?? tour.country;
+  const description =
+    localizePdfText(tour.description) ??
+    localizePdfText(tour.notes) ??
+    localizePdfText(tour.visaInfo) ??
+    `Paket tour ${country} bersama ${companyName}`;
 
   const canonicalPath = `/tours/${tour.slug ?? tour.id}`;
   return {
-    title: tour.title,
+    title,
     description,
     alternates: { canonical: `${siteUrl}${canonicalPath}` },
     openGraph: {
-      title: tour.title,
+      title,
       description,
       url: `${siteUrl}${canonicalPath}`,
       type: "website",
       siteName: companyName,
-      ...(tour.heroImg ? { images: [{ url: tour.heroImg, width: 1200, height: 630, alt: tour.title }] } : {}),
+      ...(tour.heroImg ? { images: [{ url: tour.heroImg, width: 1200, height: 630, alt: title }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: tour.title,
+      title,
       description,
       ...(tour.heroImg ? { images: [tour.heroImg] } : {}),
     },
@@ -114,10 +121,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const isFlexibleDate = !tour.tripDate && tour.status === "ACTIVE";
   const departureLabel = tour.tripDate ? formatDate(tour.tripDate) : isFlexibleDate ? "Tanggal fleksibel" : null;
   const capacityLabel = isFlexibleDate
-    ? "Private / By Request"
+    ? "Privat / sesuai permintaan"
     : tour.seatsLeft > 0
       ? `${tour.seatsLeft} seat tersisa`
-      : "By Request";
+      : "Sesuai permintaan";
 
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
@@ -141,9 +148,39 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const tSub  = isFumayo ? "var(--fb-subtext)" : isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
   const tBdr  = isFumayo ? "var(--fb-border)" : isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : isAtlas ? "var(--at-border)" : undefined;
 
-  const itinerary = (tour.itinerary as { day: number; title: string; description: string }[]) ?? [];
-  const addOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[]) ?? [];
+  const rawItinerary = (tour.itinerary as { day: number; title: string; description: string }[] | null) ?? [];
+  const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
   const hotelInfo = tour.hotel as Record<string, string> | null;
+  const displayTitle = localizePdfText(tour.title) ?? tour.title;
+  const displayCountry = localizePdfText(tour.country) ?? tour.country;
+  const displayCityHighlight = localizePdfText(tour.cityHighlight);
+  const displayDuration = localizePdfText(tour.duration);
+  const displayDescription = localizePdfText(tour.description);
+  const displayVisaInfo = localizePdfText(tour.visaInfo);
+  const displayNotes = localizePdfText(tour.notes);
+  const displayBadge = localizePdfText(tour.badge);
+  const displayInclusions = tour.inclusions.map((item) => localizePdfText(item) ?? item);
+  const displayExclusions = tour.exclusions.map((item) => localizePdfText(item) ?? item);
+  const itinerary = rawItinerary.map((item) => ({
+    ...item,
+    title: localizePdfText(item.title) ?? item.title,
+    description: localizePdfText(item.description) ?? item.description,
+  }));
+  const addOns = rawAddOns.map((item) => ({
+    ...item,
+    name: localizePdfText(item.name) ?? item.name,
+    desc: localizePdfText(item.desc) ?? item.desc,
+  }));
+  const displayRelatedTours = relatedTours.map((item) => ({
+    ...item,
+    title: localizePdfText(item.title) ?? item.title,
+    country: localizePdfText(item.country) ?? item.country,
+    cityHighlight: localizePdfText(item.cityHighlight),
+    duration: localizePdfText(item.duration),
+    notes: localizePdfText(item.notes),
+    description: localizePdfText(item.description),
+    badge: localizePdfText(item.badge),
+  }));
 
   // Untuk add-on visa: deteksi & arahkan otomatis ke halaman visa negara terkait.
   // Pencocokan toleran typo (fuzzy): "Visa Kirgyztan" tetap nyambung ke "Kyrgyzstan".
@@ -165,7 +202,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // (hanya untuk trip yang belum lewat — tanggal lampau tak relevan).
   const departureInfo = departureLabel && !isExpired ? ` (keberangkatan ${departureLabel})` : "";
   const waMessage = encodeURIComponent(
-    `${greeting}, saya tertarik dengan paket *${tour.title}*${departureInfo}. Mohon informasi lebih lanjut.` +
+    `${greeting}, saya tertarik dengan paket *${displayTitle}*${departureInfo}. Mohon informasi lebih lanjut.` +
       (mandatoryTotal > 0
         ? `\n\nRincian harga:\n• Paket: ${formatCurrency(basePrice)}` +
           mandatoryAddOns.map((a) => `\n• ${a.name} (wajib): ${formatCurrency(a.price)}`).join("") +
@@ -203,13 +240,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // schema.org Duration wajib ISO 8601: "9 hari 7 malam" → "P9D".
   // Konversi HANYA untuk JSON-LD, teks UI tetap pakai string asli.
   // Kalau angka sebelum "hari" tak ketemu, duration di-skip (string bebas invalid).
-  const durationDays = tour.duration?.match(/(\d+)\s*hari/i)?.[1];
+  const durationDays = displayDuration?.match(/(\d+)\s*hari/i)?.[1];
   const isoDuration = durationDays ? `P${durationDays}D` : null;
   const tourJsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
-    name: tour.title,
-    description: tour.description ?? tour.notes ?? tour.visaInfo ?? undefined,
+    name: displayTitle,
+    description: displayDescription ?? displayNotes ?? displayVisaInfo ?? undefined,
     image: tour.heroImg ? [tour.heroImg] : undefined,
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(isoDuration ? { duration: isoDuration } : {}),
@@ -236,8 +273,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const productJsonLd = reviewCount > 0 ? {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: tour.title,
-    description: (tour.description || tour.notes || tour.visaInfo || `Paket tour ${tour.country}`).trim(),
+    name: displayTitle,
+    description: (displayDescription || displayNotes || displayVisaInfo || `Paket tour ${displayCountry}`).trim(),
     ...(tour.heroImg ? { image: [tour.heroImg] } : {}),
     brand: { "@type": "Brand", name: companyName || "Sundaf Trip" },
     // offers hanya disertakan kalau harga valid (>0). Harga 0 (trip lama) bikin
@@ -274,7 +311,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         crumbs={[
           { name: "Beranda", url: "/" },
           { name: "Paket Tour", url: "/tours" },
-          { name: tour.title, url: `/tours/${tour.slug ?? tour.id}` },
+          { name: displayTitle, url: `/tours/${tour.slug ?? tour.id}` },
         ]}
       />
       <script
@@ -291,7 +328,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
       <div className={`relative h-80 lg:h-[480px] ${!tour.heroImg && !isOutlined ? "bg-gray-900 dark:bg-gray-950" : ""} ${isOutlined && !tour.heroImg ? "border-b-2" : ""}`}
         style={isOutlined && !tour.heroImg ? { borderColor: tBdr } : undefined}>
         {tour.heroImg && (
-          <Image src={tour.heroImg} alt={tour.title} fill className="object-cover" priority />
+          <Image src={tour.heroImg} alt={displayTitle} fill className="object-cover" priority />
         )}
         {/* Cinematic overlay: dark vignette top + strong bottom ramp */}
         <div className="absolute inset-0"
@@ -301,23 +338,23 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           style={{ background: "linear-gradient(to right, rgba(0,0,0,0.30) 0%, transparent 50%, rgba(0,0,0,0.18) 100%)" }} />
 
         <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-12 max-w-7xl mx-auto">
-          {tour.badge && (
+          {displayBadge && (
             <span className="inline-block px-3 py-1 text-xs font-bold rounded-full mb-4 border border-white/20 text-white/90"
               style={{ background: "rgba(255,255,255,0.10)", backdropFilter: "blur(8px)" }}>
-              {tour.badge}
+              {displayBadge}
             </span>
           )}
 
           {/* Hero title with Sundaf yellow highlighter and teal anchor */}
           <h1 className="text-4xl lg:text-6xl font-black leading-tight mb-4 tracking-tight text-white drop-shadow-lg">
-            <span className="sundaf-title-stabilo">{tour.title}</span>
+            <span className="sundaf-title-stabilo">{displayTitle}</span>
           </h1>
 
           {/* Info pills, frosted glass style, consistent across all themes */}
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
             {[
-              { icon: <MapPin size={11} />, text: `${tour.country}${tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}` },
-              tour.duration  ? { icon: <Clock    size={11} />, text: tour.duration } : null,
+              { icon: <MapPin size={11} />, text: `${displayCountry}${displayCityHighlight ? ` · ${displayCityHighlight}` : ""}` },
+              displayDuration  ? { icon: <Clock    size={11} />, text: displayDuration } : null,
               departureLabel ? { icon: <Calendar size={11} />, text: departureLabel } : null,
               { icon: <Users size={11} />, text: capacityLabel },
             ].filter(Boolean).map((pill, i) => (
@@ -344,11 +381,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           <div className="lg:col-span-2 space-y-8">
 
             {/* Deskripsi Tour, evocative copy, paragraf + bonus/optional */}
-            {tour.description && (
+            {displayDescription && (
               <div>
                 <div className={`text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line ${isOutlined ? "" : "text-gray-700 dark:text-gray-300"}`}
                   style={isOutlined ? { color: tSub } : undefined}>
-                  {tour.description}
+                  {displayDescription}
                 </div>
               </div>
             )}
@@ -367,7 +404,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {itinerary.length > 0 && (
               <div>
                 <h2 className={`${secTitle} mb-6`} style={isOutlined ? { color: tText } : undefined}>
-                  {isOutlined && <Route size={18} />} Itinerary
+                  {isOutlined && <Route size={18} />} Rencana Perjalanan
                 </h2>
 
                 {isAtlas ? (
@@ -437,9 +474,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Inclusions & Exclusions */}
-            {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
+            {(displayInclusions.length > 0 || displayExclusions.length > 0) && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-                {tour.inclusions.length > 0 && (
+                {displayInclusions.length > 0 && (
                   <div className={isOutlined ? `${pfx}-card p-4 sm:p-5` : "rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5"}>
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <h2
@@ -455,11 +492,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         className="shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold leading-5 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"
                         style={isOutlined ? { backgroundColor: tCard, borderColor: tBdr, color: tSub } : undefined}
                       >
-                        {tour.inclusions.length} item
+                        {displayInclusions.length} item
                       </span>
                     </div>
                     <ul className="space-y-2">
-                      {tour.inclusions.map((item, i) => (
+                      {displayInclusions.map((item, i) => (
                         <li
                           key={i}
                           className="flex items-start gap-2.5 text-[13px] leading-snug text-gray-600 dark:text-gray-400 sm:text-sm"
@@ -472,7 +509,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     </ul>
                   </div>
                 )}
-                {tour.exclusions.length > 0 && (
+                {displayExclusions.length > 0 && (
                   <div className={isOutlined ? `${pfx}-card p-4 sm:p-5` : "rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5"}>
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <h2
@@ -488,11 +525,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         className="shrink-0 rounded-full border border-rose-100 bg-rose-50 px-2 py-0.5 text-[10px] font-bold leading-5 text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
                         style={isOutlined ? { backgroundColor: tCard, borderColor: tBdr, color: tSub } : undefined}
                       >
-                        {tour.exclusions.length} item
+                        {displayExclusions.length} item
                       </span>
                     </div>
                     <ul className="space-y-2">
-                      {tour.exclusions.map((item, i) => (
+                      {displayExclusions.map((item, i) => (
                         <li
                           key={i}
                           className="flex items-start gap-2.5 text-[13px] leading-snug text-gray-600 dark:text-gray-400 sm:text-sm"
@@ -527,27 +564,27 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Visa Info */}
-            {tour.visaInfo && (
+            {displayVisaInfo && (
               <div>
                 <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
                   {isOutlined && <FileText size={18} />} Informasi Visa
                 </h2>
                 <p className={`text-sm leading-relaxed p-4 ${isOutlined ? `${pfx}-card` : "text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl"}`}
                   style={isOutlined ? { color: tSub } : undefined}>
-                  {tour.visaInfo}
+                  {displayVisaInfo}
                 </p>
               </div>
             )}
 
             {/* Notes */}
-            {tour.notes && (
+            {displayNotes && (
               <div>
                 <h2 className={`${secTitle} mb-3`} style={isOutlined ? { color: tText } : undefined}>
                   {isOutlined && <ClipboardList size={18} />} Catatan Penting
                 </h2>
                 <p className={`text-sm leading-relaxed p-4 ${isOutlined ? `${pfx}-card` : "text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl"}`}
                   style={isOutlined ? { background: tSun, color: tSub } : undefined}>
-                  {tour.notes}
+                  {displayNotes}
                 </p>
               </div>
             )}
@@ -619,12 +656,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               ) : tour.status === "FULL" ? (
                 <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-red-100 text-red-700 rounded-xl"}`}
                   style={isOutlined ? { background: "#fee2e2", color: "#991b1b" } : undefined}>
-                  <Ban size={16} /> FULLY BOOKED
+                  <Ban size={16} /> Penuh
                 </div>
               ) : (
                 <TourBookingCTA
                   waHref={`https://wa.me/${waNumber}?text=${waMessage}`}
-                  destination={tour.title}
+                  destination={displayTitle}
                   summary={waSummary}
                   buttonClassName={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition disabled:opacity-60 ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
                   buttonStyle={isOutlined ? { background: "var(--site-accent)", color: "#fff", justifyContent: "center" } : undefined}
@@ -635,7 +672,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               <a href={`/tours/${tour.id}/pdf`}
                 className={`w-full flex items-center justify-center gap-2 py-3 font-bold mb-3 transition ${isOutlined ? `${pfx}-card` : "border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"}`}
                 style={isOutlined ? { background: tCard, color: tText } : undefined}>
-                <Download size={16} /> Unduh Itinerary PDF
+                <Download size={16} /> Unduh Rencana Perjalanan PDF
               </a>
 
               <div className="text-xs text-center mb-5 font-black text-gray-400">
@@ -654,13 +691,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                       style={isOutlined ? { color: tText } : undefined}>{departureLabel}</span>
                   </div>
                 )}
-                {tour.duration && (
+                {displayDuration && (
                   <div className="flex justify-between">
                     <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
                       {sidebarLabel(<Clock size={12} />, "Durasi")}
                     </span>
                     <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
-                      style={isOutlined ? { color: tText } : undefined}>{tour.duration}</span>
+                      style={isOutlined ? { color: tText } : undefined}>{displayDuration}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
@@ -678,7 +715,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   style={isOutlined ? { borderColor: tBdr } : undefined}>
                   <p className={`text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 ${isOutlined ? "font-black" : "font-semibold text-gray-500"}`}
                     style={isOutlined ? { color: tSub } : undefined}>
-                    {isOutlined && <Package size={12} />} Add Ons <span className="font-normal normal-case tracking-normal text-gray-400">(opsional)</span>
+                    {isOutlined && <Package size={12} />} Add-on <span className="font-normal normal-case tracking-normal text-gray-400">(opsional)</span>
                   </p>
                   <div className="space-y-2">
                     {optionalAddOns.map((item) => (
@@ -715,7 +752,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
               {/* Share buttons */}
               <TourShareButtons
-                tourTitle={tour.title}
+                tourTitle={displayTitle}
                 isOutlined={isOutlined}
                 isAtlas={isAtlas}
                 pfx={pfx}
@@ -765,13 +802,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         )}
 
         {/* P1.3: Tour Lainnya — internal linking ke paket upcoming yang masih bisa dipesan */}
-        {relatedTours.length > 0 && (
+        {displayRelatedTours.length > 0 && (
           <div className="mt-12">
             <h2 className={`${secTitle} mb-5`} style={isOutlined ? { color: tText } : undefined}>
               {isOutlined && <MapPin size={18} />} {isExpired ? "Tour yang Masih Bisa Dipesan" : "Tour Lainnya"}
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {relatedTours.map((t) => (
+              {displayRelatedTours.map((t) => (
                 <TourCard key={t.id} tour={t} theme={siteTheme} />
               ))}
             </div>

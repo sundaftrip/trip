@@ -30,12 +30,12 @@ function departureText(tour: Pick<Tour, "tripDate" | "status">): string | null {
   return tour.status === "ACTIVE" ? "Tanggal fleksibel" : null;
 }
 function departureCode(tour: Pick<Tour, "tripDate" | "status">): string {
-  if (!tour.tripDate) return tour.status === "ACTIVE" ? "BY REQUEST" : "OPEN";
+  if (!tour.tripDate) return tour.status === "ACTIVE" ? "FLEKSIBEL" : "OPEN";
   return new Date(tour.tripDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
 }
 function capacityText(tour: Pick<Tour, "seatsLeft" | "tripDate" | "status">): string {
-  if (!tour.tripDate && tour.status === "ACTIVE") return "Private";
-  return tour.seatsLeft > 0 ? `${tour.seatsLeft} seat` : "By Request";
+  if (!tour.tripDate && tour.status === "ACTIVE") return "Privat";
+  return tour.seatsLeft > 0 ? `${tour.seatsLeft} seat` : "Sesuai permintaan";
 }
 function capacityAvailableText(tour: Pick<Tour, "seatsLeft" | "tripDate" | "status">): string {
   if (!tour.tripDate && tour.status === "ACTIVE") return "Tanggal fleksibel";
@@ -45,7 +45,7 @@ function capacityAvailableText(tour: Pick<Tour, "seatsLeft" | "tripDate" | "stat
 function StatusOverlay({ isFull, isExpired }: { isFull: boolean; isExpired: boolean }) {
   if (isFull) return (
     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-      <span className="px-4 py-1.5 border border-white text-white text-xs font-semibold rounded-full tracking-widest uppercase">Sold Out</span>
+      <span className="px-4 py-1.5 border border-white text-white text-xs font-semibold rounded-full tracking-widest uppercase">Penuh</span>
     </div>
   );
   if (isExpired) return (
@@ -129,7 +129,7 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[18px]">
             <span className="tr-pill" style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
-              {isFull ? "✋ Sold Out" : "✅ Trip Selesai"}
+              {isFull ? "✋ Penuh" : "✅ Trip Selesai"}
             </span>
           </div>
         )}
@@ -189,7 +189,7 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-t-[22px]">
             <span className="kw-pill" style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
-              {isFull ? "✋ Sold Out" : "✅ Trip Selesai"}
+              {isFull ? "✋ Penuh" : "✅ Trip Selesai"}
             </span>
           </div>
         )}
@@ -389,7 +389,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/65 flex items-center justify-center">
             <span className="gl-pill" style={{ background: "var(--gl-card)", color: "var(--gl-text)" }}>
-              {isFull ? "✕ Sold Out" : "✓ Trip Selesai"}
+              {isFull ? "✕ Penuh" : "✓ Trip Selesai"}
             </span>
           </div>
         )}
@@ -451,7 +451,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="mp-pill" style={{ background: "var(--mp-card)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
-              {isFull ? "Sold Out" : "Trip Selesai"}
+              {isFull ? "Penuh" : "Trip Selesai"}
             </span>
           </div>
         )}
@@ -509,7 +509,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="at-pill" style={{ background: "var(--at-card)", color: "var(--at-text)" }}>
-              {isFull ? "Sold Out" : "Trip Selesai"}
+              {isFull ? "Penuh" : "Trip Selesai"}
             </span>
           </div>
         )}
@@ -576,7 +576,7 @@ function FumayoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="fb-pill" style={{ background: "var(--fb-card)" }}>
-              {isFull ? "Sold Out" : "Trip Selesai"}
+              {isFull ? "Penuh" : "Trip Selesai"}
             </span>
           </div>
         )}
@@ -623,7 +623,7 @@ function AtticCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           : <div className="w-full h-full flex items-center justify-center" style={{ background: "var(--atc-pink-soft)" }}><MapPin size={24} style={{ color: "var(--atc-pink-deep)" }} /></div>}
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
-            <span className="atc-pill">{isFull ? "Sold Out" : "Trip Selesai"}</span>
+            <span className="atc-pill">{isFull ? "Penuh" : "Trip Selesai"}</span>
           </div>
         )}
       </div>
@@ -662,7 +662,7 @@ function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
         {(isFull || isExpired) && (
           <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
-            <span className="teri-pill">{isFull ? "Sold Out" : "Trip Selesai"}</span>
+            <span className="teri-pill">{isFull ? "Penuh" : "Trip Selesai"}</span>
           </div>
         )}
       </div>
