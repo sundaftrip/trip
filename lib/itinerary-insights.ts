@@ -92,10 +92,6 @@ function inferTransport(source: string): string | null {
   if (/\b(cruise|kapal|boat|ferry|speed\s*boat|speedboat|perahu|sampan)\b/i.test(source)) {
     pushUnique(transports, "Kapal/cruise");
   }
-  if (/\b(transfer|drive|driving|dijemput|diantar|jemput|antar|driver|pengemudi|kendaraan)\b/i.test(source)) {
-    pushUnique(transports, "Transfer darat");
-  }
-
   return transports.length > 0 ? transports.join(", ") : null;
 }
 
