@@ -13,7 +13,7 @@ interface Tour {
   id: string; title: string; country: string; cityHighlight: string | null;
   price: number; promoPrice: number | null; seatsLeft: number;
   tripDate: Date | null; duration: string | null; heroImg: string | null;
-  badge: string | null; status: string;
+  badge: string | null; status: string; pinned?: boolean | null;
 }
 
 /* Wrapper client component: state filter + paginasi dilakukan di browser.
@@ -81,8 +81,8 @@ export default function ToursCatalog({
           eyebrow="Bisa Dipesan"
           sub={
             bookable.length > 0
-              ? "Tanggal keberangkatan terbuka, kursi masih tersedia."
-              : "Belum ada keberangkatan terbuka untuk filter ini — hubungi kami untuk private trip."
+              ? "Tanggal tetap atau fleksibel sesuai permintaan, tergantung paket."
+              : "Belum ada paket terbuka untuk filter ini. Hubungi kami untuk private trip."
           }
         />
         {bookable.length > 0 && <ToursSection tours={bookable} theme={theme} />}
@@ -106,12 +106,14 @@ export default function ToursCatalog({
   }
 
   /* ── Mode default (homepage): satu grid, paginasi seluruh hasil ── */
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const pinnedTours = showAllLink ? filtered.filter((t) => t.pinned) : [];
+  const regularTours = showAllLink ? filtered.filter((t) => !t.pinned) : filtered;
+  const totalPages = Math.max(1, Math.ceil(regularTours.length / PER_PAGE));
   const current = Math.min(totalPages, Math.max(1, page));
-  const paged = filtered.slice((current - 1) * PER_PAGE, current * PER_PAGE);
+  const paged = regularTours.slice((current - 1) * PER_PAGE, current * PER_PAGE);
 
   return (
-    <ToursSection tours={paged} theme={theme}>
+    <ToursSection tours={paged} pinnedTours={pinnedTours} theme={theme}>
       {showFilter && <FilterChips active={region} onChange={changeRegion} theme={theme} />}
       <PaginationBar current={current} total={totalPages} onChange={changePage} />
       {showAllLink && (

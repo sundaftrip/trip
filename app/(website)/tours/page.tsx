@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { comparePublicTourCatalogOrder } from "@/lib/tour-order";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
@@ -43,20 +44,13 @@ const getData = unstable_cache(
           id: true, slug: true, title: true, country: true, cityHighlight: true,
           price: true, promoPrice: true, seatsLeft: true,
           tripDate: true, duration: true, heroImg: true, badge: true,
-          status: true,
+          status: true, pinned: true,
         },
       }),
       prisma.companyInfo.findMany({ where: { key: "site_theme" } }),
     ]);
     const now = new Date();
-    const tours = [...toursRaw].sort((a, b) => {
-      const aDone = a.status === "FULL" || (!!a.tripDate && a.tripDate < now);
-      const bDone = b.status === "FULL" || (!!b.tripDate && b.tripDate < now);
-      if (aDone !== bDone) return aDone ? 1 : -1;
-      const at = a.tripDate?.getTime() ?? Infinity;
-      const bt = b.tripDate?.getTime() ?? Infinity;
-      return aDone ? bt - at : at - bt;
-    });
+    const tours = [...toursRaw].sort((a, b) => comparePublicTourCatalogOrder(a, b, now));
     const themeRow = companyRows.find((r) => r.key === "site_theme");
     return { tours, theme: themeRow?.value || "classic" };
   },

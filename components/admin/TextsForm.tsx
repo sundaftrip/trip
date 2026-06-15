@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import StickyFormActions from "./StickyFormActions";
 
 interface Section {
   section: string;
@@ -50,6 +51,11 @@ export default function TextsForm({ sections, initialValues }: Props) {
 
   return (
     <div className="space-y-6">
+      <StickyFormActions
+        loading={saving}
+        primaryLabel={saved ? "Tersimpan!" : "Simpan Semua"}
+        onSave={handleSave}
+      />
       <div className="flex items-center gap-2">
         <span className="text-sm text-gray-600 dark:text-gray-400">Bahasa:</span>
         <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -78,13 +84,6 @@ export default function TextsForm({ sections, initialValues }: Props) {
         </div>
       ))}
 
-      <div className="flex items-center gap-4">
-        <button onClick={handleSave} disabled={saving}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition">
-          {saving ? "Menyimpan..." : "Simpan Semua"}
-        </button>
-        {saved && <span className="text-green-600 dark:text-green-400 text-sm">✓ Tersimpan!</span>}
-      </div>
     </div>
   );
 }

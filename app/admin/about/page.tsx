@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Plus, Trash2, GripVertical, Save, ExternalLink } from "lucide-react";
+import { Plus, Trash2, GripVertical, ExternalLink } from "lucide-react";
+import StickyFormActions from "@/components/admin/StickyFormActions";
 
 /* ── Defaults (fallback kalau DB kosong) ── */
 const DEFAULT_STORY = [
@@ -41,13 +42,6 @@ async function saveKeys(data: Record<string, string>) {
   });
 }
 
-/* ── Reusable save-badge ── */
-function SaveBadge({ saving, ok }: { saving: boolean; ok: boolean }) {
-  if (saving) return <span className="text-xs text-gray-400 animate-pulse">Menyimpan…</span>;
-  if (ok)     return <span className="flex items-center gap-1 text-xs text-green-600"><Check size={12} /> Tersimpan</span>;
-  return null;
-}
-
 /* ══════════════════════════════════════ */
 export default function AdminAboutPage() {
   const [loaded, setLoaded]       = useState(false);
@@ -84,35 +78,37 @@ export default function AdminAboutPage() {
   }, []);
 
   /* ── Save helpers ── */
-  async function saveTagline() {
+  async function saveAll() {
     setSavingTag(true);
-    await saveKeys({ [saved("tagline")]: tagline });
-    setSavingTag(false); setSavedTag(true);
-    setTimeout(() => setSavedTag(false), 2500);
-  }
-
-  async function saveStory() {
     setSavingS(true);
-    await saveKeys({ [saved("story")]: JSON.stringify(story) });
-    setSavingS(false); setSavedS(true);
-    setTimeout(() => setSavedS(false), 2500);
-  }
-
-  async function saveValues() {
     setSavingV(true);
-    await saveKeys({ [saved("values")]: JSON.stringify(values) });
-    setSavingV(false); setSavedV(true);
-    setTimeout(() => setSavedV(false), 2500);
-  }
-
-  async function saveDests() {
     setSavingD(true);
-    await saveKeys({ [saved("destinations")]: JSON.stringify(dests) });
-    setSavingD(false); setSavedD(true);
-    setTimeout(() => setSavedD(false), 2500);
+    await saveKeys({
+      [saved("tagline")]: tagline,
+      [saved("story")]: JSON.stringify(story),
+      [saved("values")]: JSON.stringify(values),
+      [saved("destinations")]: JSON.stringify(dests),
+    });
+    setSavingTag(false);
+    setSavingS(false);
+    setSavingV(false);
+    setSavingD(false);
+    setSavedTag(true);
+    setSavedS(true);
+    setSavedV(true);
+    setSavedD(true);
+    setTimeout(() => {
+      setSavedTag(false);
+      setSavedS(false);
+      setSavedV(false);
+      setSavedD(false);
+    }, 2500);
   }
 
   if (!loaded) return <div className="flex items-center justify-center h-64 text-sm text-gray-400">Memuat…</div>;
+
+  const savingAll = savingTag || savingStory || savingValues || savingDests;
+  const savedAll = savedTag && savedStory && savedValues && savedDests;
 
   return (
     <div className="space-y-8 max-w-3xl">
@@ -129,6 +125,12 @@ export default function AdminAboutPage() {
           </p>
         </div>
       </div>
+      <StickyFormActions
+        loading={savingAll}
+        disabled={!tagline.trim()}
+        primaryLabel={savedAll ? "Tersimpan!" : "Simpan Semua"}
+        onSave={saveAll}
+      />
 
       {/* ── 1. Tagline Hero ── */}
       <Section title="Tagline / Sub-judul Hero" hint="Kalimat pendek di bawah judul 'Tentang Kami'">
@@ -139,7 +141,6 @@ export default function AdminAboutPage() {
           placeholder="Contoh: Spesialis perjalanan ke Rusia, Asia Tengah & Aurora untuk traveler Indonesia."
           className={fieldCls}
         />
-        <SectionFooter saving={savingTag} saved={savedTag} onSave={saveTagline} disabled={!tagline.trim()} />
       </Section>
 
       {/* ── 2. Cerita Kami ── */}
@@ -159,7 +160,6 @@ export default function AdminAboutPage() {
             />
           </div>
         ))}
-        <SectionFooter saving={savingStory} saved={savedStory} onSave={saveStory} />
       </Section>
 
       {/* ── 3. Nilai-nilai Kami ── */}
@@ -194,7 +194,6 @@ export default function AdminAboutPage() {
             </div>
           </div>
         ))}
-        <SectionFooter saving={savingValues} saved={savedValues} onSave={saveValues} />
       </Section>
 
       {/* ── 4. Destinasi ── */}
@@ -241,7 +240,6 @@ export default function AdminAboutPage() {
           className="flex items-center gap-1.5 text-xs text-blue-500 hover:text-blue-700 mt-2 font-medium">
           <Plus size={13} /> Tambah destinasi
         </button>
-        <SectionFooter saving={savingDests} saved={savedDests} onSave={saveDests} />
       </Section>
 
     </div>
@@ -259,22 +257,6 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
         {hint && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{hint}</p>}
       </div>
       {children}
-    </div>
-  );
-}
-
-function SectionFooter({
-  saving, saved, onSave, disabled = false,
-}: { saving: boolean; saved: boolean; onSave: () => void; disabled?: boolean }) {
-  return (
-    <div className="flex items-center gap-3 pt-1">
-      <button
-        onClick={onSave}
-        disabled={saving || disabled}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition">
-        <Save size={13} /> {saving ? "Menyimpan…" : "Simpan"}
-      </button>
-      <SaveBadge saving={false} ok={saved} />
     </div>
   );
 }

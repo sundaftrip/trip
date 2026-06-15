@@ -6,6 +6,7 @@ import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { pickInput, badNumber, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
 import { apiError } from "@/lib/api-error";
+import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
 import slugify from "slugify";
 
@@ -16,6 +17,11 @@ async function uniqueTourSlug(title: string): Promise<string> {
   let i = 2;
   while (await prisma.tour.findUnique({ where: { slug: s } })) s = `${base}-${i++}`;
   return s;
+}
+
+async function pinnedLimitReached() {
+  const count = await prisma.tour.count({ where: { pinned: true } });
+  return count >= MAX_PINNED_TOURS;
 }
 
 export async function GET(req: NextRequest) {
@@ -54,6 +60,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Harga/kursi harus berupa angka dan tidak boleh negatif." }, { status: 422 });
   if (data.status !== undefined && !VALID_TOUR_STATUSES.includes(data.status as (typeof VALID_TOUR_STATUSES)[number]))
     return NextResponse.json({ error: "Status tour tidak valid." }, { status: 422 });
+  if (data.pinned !== undefined && typeof data.pinned !== "boolean")
+    return NextResponse.json({ error: "Pin tour harus bernilai benar/salah." }, { status: 422 });
+  if (data.pinned === true && await pinnedLimitReached())
+    return NextResponse.json({ error: `Maksimal ${MAX_PINNED_TOURS} tour bisa dipin. Unpin salah satu tour dulu.` }, { status: 422 });
 
   if (!data.slug) data.slug = await uniqueTourSlug(data.title);
 

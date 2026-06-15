@@ -4,6 +4,13 @@ export interface LocalizableItineraryDay {
   description: string;
 }
 
+export interface LocalizablePdfAddOn {
+  name: string;
+  priceLabel: string;
+  tag?: "" | "wajib" | "recommended";
+  desc?: string | null;
+}
+
 export interface LocalizablePdfTour {
   title: string;
   country: string;
@@ -14,6 +21,7 @@ export interface LocalizablePdfTour {
   exclusions: string[];
   visaInfo?: string | null;
   notes?: string | null;
+  addOns?: LocalizablePdfAddOn[];
 }
 
 const EXACT_LINES = new Map<string, string>([
@@ -82,6 +90,13 @@ const REPLACEMENTS: Array<[RegExp, string]> = [
   [/Meals: Breakfast, Lunch/gi, "Makan: sarapan dan makan siang"],
   [/Meals: Breakfast/gi, "Makan: sarapan"],
   [/Meals: No meal/gi, "Makan: belum termasuk"],
+  [/\bpeasawat\b/gi, "pesawat"],
+  [/\bproffesional\b/gi, "profesional"],
+  [/\bcheck layanan\b/gi, "cek layanan"],
+  [/\bcheck in\b/gi, "check-in"],
+  [/\bcheck-in\s+hotel\s+free\s+time\b/gi, "check-in hotel, free time"],
+  [/\bcheck-in Free time\b/gi, "check-in, free time"],
+  [/\bcheck-in Hotel\b/gi, "check-in hotel"],
   [/Overnight: ([^\n.]+)/gi, "Bermalam: $1"],
   [/No meal included/gi, "Makan belum termasuk"],
   [/No meals included/gi, "Makan belum termasuk"],
@@ -175,5 +190,10 @@ export function localizePdfTour<T extends LocalizablePdfTour>(tour: T): T {
     exclusions: tour.exclusions.map((item) => localizePdfText(item) ?? item),
     visaInfo: localizePdfText(tour.visaInfo),
     notes: localizePdfText(tour.notes),
+    addOns: tour.addOns?.map((item) => ({
+      ...item,
+      name: localizePdfText(item.name) ?? item.name,
+      desc: localizePdfText(item.desc),
+    })),
   };
 }

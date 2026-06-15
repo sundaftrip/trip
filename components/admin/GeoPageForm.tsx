@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
+import StickyFormActions from "./StickyFormActions";
 
 import type {
   GeoDestinationActivity,
@@ -286,6 +287,11 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
           {error}
         </div>
       )}
+      <StickyFormActions
+        loading={loading}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Halaman GEO"}
+        cancelHref="/admin/geo"
+      />
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -723,16 +729,6 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
         )}
       </div>
 
-      <div className="flex gap-3">
-        <button type="submit" disabled={loading}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition">
-          {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Buat Halaman GEO"}
-        </button>
-        <button type="button" onClick={() => router.push("/admin/geo")}
-          className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 transition">
-          Batal
-        </button>
-      </div>
     </form>
   );
 }

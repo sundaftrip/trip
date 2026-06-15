@@ -7,7 +7,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { ItineraryPDF, type ItineraryDay } from "@/components/pdf/ItineraryPDF";
+import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -66,6 +66,38 @@ function uniqueImages(images: Array<string | null | undefined>) {
   return [...new Set(images.filter((item): item is string => Boolean(item)))];
 }
 
+type RawAddOn = {
+  name?: unknown;
+  price?: unknown;
+  tag?: unknown;
+  desc?: unknown;
+};
+
+function normalizePdfAddOns(raw: unknown): PdfAddOn[] {
+  if (!Array.isArray(raw)) return [];
+
+  return raw.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+
+    const addOn = item as RawAddOn;
+    const name = typeof addOn.name === "string" ? addOn.name.trim() : "";
+    if (!name) return [];
+
+    const price = Number(addOn.price);
+    const tag = addOn.tag === "wajib" || addOn.tag === "recommended" ? addOn.tag : "";
+    const desc = typeof addOn.desc === "string" && addOn.desc.trim()
+      ? addOn.desc.trim()
+      : null;
+
+    return [{
+      name,
+      priceLabel: formatCurrency(Number.isFinite(price) ? price : 0),
+      tag,
+      desc,
+    }];
+  });
+}
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -98,6 +130,7 @@ export async function GET(
     ? `${formatCurrency(tour.price)}  -  hemat ${formatCurrency(tour.price - tour.promoPrice)}`
     : null;
   const landTourLabel = tour.priceLandTour ? formatCurrency(tour.priceLandTour) : null;
+  const addOns = normalizePdfAddOns(tour.addOns).filter((item) => item.tag !== "wajib");
   const rawHero = tour.heroImg || fallbackHeroForTour(tour);
   const rawGallery = uniqueImages([rawHero, ...tour.gallery, fallbackHeroForTour(tour)]);
   const [heroImg, gallery, logo] = await Promise.all([
@@ -119,6 +152,7 @@ export async function GET(
     gallery: uniqueImages(gallery),
     visaInfo: tour.visaInfo,
     notes: tour.notes,
+    addOns,
   });
 
   // ItineraryPDF returns a <Document>; cast satisfies renderToBuffer's

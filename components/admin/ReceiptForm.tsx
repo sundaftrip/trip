@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import StickyFormActions from "./StickyFormActions";
 
 interface Tour { id: string; title: string; price: number; promoPrice: number | null; tripDate: string | null }
 interface ReceiptData {
@@ -72,6 +73,11 @@ export default function ReceiptForm({ receipt, tours }: { receipt?: ReceiptData;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+      <StickyFormActions
+        loading={loading}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Receipt"}
+        cancelHref="/admin/receipts"
+      />
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 dark:text-white">Data Pelanggan</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -124,16 +130,6 @@ export default function ReceiptForm({ receipt, tours }: { receipt?: ReceiptData;
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <button type="submit" disabled={loading}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition">
-          {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Buat Receipt"}
-        </button>
-        <button type="button" onClick={() => router.push("/admin/receipts")}
-          className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 transition">
-          Batal
-        </button>
-      </div>
     </form>
   );
 }

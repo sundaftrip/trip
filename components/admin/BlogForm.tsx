@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
 import RichTextEditor from "./RichTextEditor";
+import StickyFormActions from "./StickyFormActions";
 import slugify from "slugify";
 
 interface BlogData {
@@ -60,6 +61,11 @@ export default function BlogForm({ post }: { post?: BlogData }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+      <StickyFormActions
+        loading={loading}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Artikel"}
+        cancelHref="/admin/blog"
+      />
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
@@ -104,16 +110,6 @@ export default function BlogForm({ post }: { post?: BlogData }) {
         <RichTextEditor value={form.body ?? ""} onChange={(val) => set("body", val)} />
       </div>
 
-      <div className="flex gap-3">
-        <button type="submit" disabled={loading}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition">
-          {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Buat Artikel"}
-        </button>
-        <button type="button" onClick={() => router.push("/admin/blog")}
-          className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 transition">
-          Batal
-        </button>
-      </div>
     </form>
   );
 }

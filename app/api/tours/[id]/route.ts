@@ -6,7 +6,13 @@ import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { pickInput, badNumber, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
 import { apiError } from "@/lib/api-error";
+import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
+
+async function pinnedLimitReached(excludeId: string) {
+  const count = await prisma.tour.count({ where: { pinned: true, id: { not: excludeId } } });
+  return count >= MAX_PINNED_TOURS;
+}
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -37,6 +43,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Harga/kursi harus berupa angka dan tidak boleh negatif." }, { status: 422 });
   if (data.status !== undefined && !VALID_TOUR_STATUSES.includes(data.status as (typeof VALID_TOUR_STATUSES)[number]))
     return NextResponse.json({ error: "Status tour tidak valid." }, { status: 422 });
+  if (data.pinned !== undefined && typeof data.pinned !== "boolean")
+    return NextResponse.json({ error: "Pin tour harus bernilai benar/salah." }, { status: 422 });
+  if (data.pinned === true && await pinnedLimitReached(id))
+    return NextResponse.json({ error: `Maksimal ${MAX_PINNED_TOURS} tour bisa dipin. Unpin salah satu tour dulu.` }, { status: 422 });
 
   try {
     const tour = await prisma.tour.update({

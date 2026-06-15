@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
+import StickyFormActions from "./StickyFormActions";
 
 type ItineraryItem = { day: number; title: string; description: string };
 type AddOnTag = "" | "wajib" | "recommended";
@@ -18,6 +19,7 @@ interface TourData {
   priceLandTour?: number | null;
   seatsLeft?: number;
   status?: string;
+  pinned?: boolean;
   tripDate?: string;
   duration?: string;
   inclusions?: string[];
@@ -55,6 +57,7 @@ function buildInitialForm(tour?: TourData): TourData {
     priceLandTour: tour?.priceLandTour ?? null,
     seatsLeft: tour?.seatsLeft ?? 0,
     status: tour?.status ?? "DRAFT",
+    pinned: tour?.pinned ?? false,
     tripDate: tour?.tripDate ? new Date(tour.tripDate).toISOString().slice(0, 10) : "",
     duration: tour?.duration ?? "",
     inclusions: tour?.inclusions ?? [],
@@ -405,6 +408,11 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
           ⛔ {error}
         </div>
       )}
+      <StickyFormActions
+        loading={loading}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Tour"}
+        cancelHref={returnHref}
+      />
       {(draftError || draftRestoredAt || draftSavedAt) && (
         <div className={`p-4 border rounded-xl text-sm font-medium flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${
           draftError
@@ -442,9 +450,11 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
           </Field>
           <Field label="Tanggal Keberangkatan">
             <input type="date" className="input" value={form.tripDate} onChange={(e) => set("tripDate", e.target.value)} />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Kosongkan untuk By Request / Tanggal fleksibel.</p>
           </Field>
-          <Field label="Sisa Seat">
+          <Field label="Sisa Seat / Kapasitas">
             <input type="number" min={0} className="input" value={form.seatsLeft} onChange={(e) => set("seatsLeft", e.target.value)} />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Untuk private by request, 0 akan tampil sebagai Private / By Request.</p>
           </Field>
           <Field label="Status">
             <select className="input" value={form.status} onChange={(e) => set("status", e.target.value)}>
@@ -456,6 +466,18 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
           </Field>
           <Field label="Badge (opsional)">
             <input className="input" placeholder="cth: Best Seller, New" value={form.badge} onChange={(e) => set("badge", e.target.value)} />
+          </Field>
+          <Field label="Tour Pilihan">
+            <label className="flex min-h-10 items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+              <input
+                type="checkbox"
+                checked={!!form.pinned}
+                onChange={(e) => set("pinned", e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span>Pin ke Tour Pilihan</span>
+            </label>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Maksimal 5 tour dipin. Urutan tetap tanggal terdekat.</p>
           </Field>
         </div>
       </div>
@@ -761,16 +783,6 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <button type="submit" disabled={loading}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition">
-          {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Buat Tour"}
-        </button>
-        <button type="button" onClick={() => router.push(returnHref)}
-          className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-          Batal
-        </button>
-      </div>
     </form>
   );
 }

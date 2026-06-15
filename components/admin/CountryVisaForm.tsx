@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Plus, Trash2, GripVertical } from "lucide-react";
+import StickyFormActions from "./StickyFormActions";
 
 interface VisaVariantEntry {
   id?: string;
@@ -185,6 +185,11 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
           {error}
         </div>
       )}
+      <StickyFormActions
+        loading={loading}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Tambah Negara"}
+        cancelHref="/admin/database-visa"
+      />
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-2">Identitas Negara</h2>
@@ -585,21 +590,6 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition"
-        >
-          {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Tambah Negara"}
-        </button>
-        <Link
-          href="/admin/database-visa"
-          className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-        >
-          Batal
-        </Link>
-      </div>
     </form>
   );
 }

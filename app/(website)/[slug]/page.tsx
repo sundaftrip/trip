@@ -233,8 +233,8 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
             <BadgePercent size={13} />
             Referral Sundaf Trip
           </div>
-          <h1 className="mt-3 max-w-xl text-xl font-black leading-tight text-gray-950 sm:text-3xl">
-            Kupon {campaign.packageName}
+          <h1 className="mt-3 max-w-xl text-xl font-black leading-tight sm:text-3xl">
+            <span className="sundaf-title-stabilo">Kupon {campaign.packageName}</span>
           </h1>
           <p className="mt-2 max-w-xl text-[13px] leading-5 text-gray-600 sm:text-sm">
             Klaim {campaign.discountLabel} dari {partner.partnerName}. Kode otomatis masuk ke pesan WhatsApp.

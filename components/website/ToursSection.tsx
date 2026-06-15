@@ -6,17 +6,83 @@ interface Tour {
   id: string; title: string; country: string; cityHighlight: string | null;
   price: number; promoPrice: number | null; seatsLeft: number;
   tripDate: Date | null; duration: string | null; heroImg: string | null;
-  badge: string | null; status: string;
+  badge: string | null; status: string; pinned?: boolean | null;
 }
 
 interface Props {
   tours: Tour[];
+  pinnedTours?: Tour[];
   theme?: string;
   children?: React.ReactNode;
 }
 
-export default function ToursSection({ tours, theme = "classic", children }: Props) {
+function CardsGrid({ tours, theme, className }: { tours: Tour[]; theme: string; className: string }) {
   if (tours.length === 0) return null;
+
+  return (
+    <div className={className}>
+      {tours.map((tour, i) => (
+        <AnimateIn key={tour.id} delay={i * 80} className="h-full">
+          <TourCard tour={tour} theme={theme} />
+        </AnimateIn>
+      ))}
+    </div>
+  );
+}
+
+function PinnedRail({ tours, theme }: { tours: Tour[]; theme: string }) {
+  if (tours.length === 0) return null;
+
+  return (
+    <aside className="order-first self-start border-b pb-5 lg:sticky lg:top-24 lg:order-none lg:border-b-0 lg:border-l lg:pl-5 lg:pb-0" style={{ borderColor: "color-mix(in srgb, var(--site-accent,#00ADB5) 35%, transparent)" }}>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--site-accent,#00ADB5)" }}>
+          Pilihan Utama
+        </span>
+        <span className="text-[10px] font-semibold tabular-nums opacity-60">
+          {String(tours.length).padStart(2, "0")}
+        </span>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        {tours.map((tour, i) => (
+          <AnimateIn key={tour.id} delay={i * 70} className="h-full">
+            <TourCard tour={tour} theme={theme} />
+          </AnimateIn>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
+function PinnedLayout({
+  tours,
+  pinnedTours,
+  theme,
+  gridClassName,
+}: {
+  tours: Tour[];
+  pinnedTours: Tour[];
+  theme: string;
+  gridClassName: string;
+}) {
+  if (pinnedTours.length === 0) {
+    return <CardsGrid tours={tours} theme={theme} className={gridClassName} />;
+  }
+
+  const hasRegularTours = tours.length > 0;
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
+      {hasRegularTours && <CardsGrid tours={tours} theme={theme} className={gridClassName} />}
+      <div className={hasRegularTours ? "" : "lg:col-start-2"}>
+        <PinnedRail tours={pinnedTours} theme={theme} />
+      </div>
+    </div>
+  );
+}
+
+export default function ToursSection({ tours, pinnedTours = [], theme = "classic", children }: Props) {
+  if (tours.length === 0 && pinnedTours.length === 0) return null;
 
   /* ── NUSANTARA ── */
   if (theme === "nusantara") {
@@ -121,13 +187,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="pixel" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="pixel" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -145,13 +205,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </h2>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
-              <TourCard tour={tour} theme="fumayo" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="fumayo" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -169,13 +223,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="kawaii" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="kawaii" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -196,13 +244,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="globe" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="globe" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -221,13 +263,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-3">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80} className="h-full">
-              <TourCard tour={tour} theme="atlas" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -249,13 +285,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="map" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="map" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -273,13 +303,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
             </div>
           </div>
         </AnimateIn>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7">
-          {tours.map((tour, i) => (
-            <AnimateIn key={tour.id} delay={i * 80}>
-              <TourCard tour={tour} theme="tropical" />
-            </AnimateIn>
-          ))}
-        </div>
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="tropical" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -306,13 +330,7 @@ export default function ToursSection({ tours, theme = "classic", children }: Pro
 
         {/* Classic / Daun: equal 3-column grid (clean default) */}
         {(theme === "classic" || theme === "daun") && (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            {tours.map((tour, i) => (
-              <AnimateIn key={tour.id} delay={i * 80}>
-                <TourCard tour={tour} theme={theme === "daun" ? "classic" : "classic"} />
-              </AnimateIn>
-            ))}
-          </div>
+          <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme={theme === "daun" ? "classic" : "classic"} gridClassName="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3" />
         )}
 
         {children}

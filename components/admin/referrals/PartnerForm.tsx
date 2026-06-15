@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { RotateCcw, Save } from "lucide-react";
+import { RotateCcw } from "lucide-react";
+import StickyFormActions from "@/components/admin/StickyFormActions";
 import {
   createPartnerAction,
   rotatePartnerTokenAction,
@@ -63,6 +64,12 @@ export default function PartnerForm({ partner }: { partner?: Partner }) {
       <form action={action} className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <input type="hidden" name="id" value={partner?.id ?? ""} />
         <input type="hidden" name="campaignId" value={campaign?.id ?? ""} />
+        <div className="lg:col-span-2">
+          <StickyFormActions
+            primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Partner"}
+            cancelHref="/admin/partners"
+          />
+        </div>
 
         <div className="space-y-6">
           <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -166,10 +173,6 @@ export default function PartnerForm({ partner }: { partner?: Partner }) {
             </div>
           </section>
 
-          <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-700">
-            <Save size={16} />
-            {isEdit ? "Simpan Perubahan" : "Buat Partner"}
-          </button>
         </aside>
       </form>
 

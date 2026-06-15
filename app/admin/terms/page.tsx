@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import StickyFormActions from "@/components/admin/StickyFormActions";
 
 export default function TermsPage() {
   const [bodyId, setBodyId] = useState("");
@@ -33,19 +34,17 @@ export default function TermsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Syarat & Ketentuan</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">Konten halaman syarat dan ketentuan</p>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60"
-        >
-          {saved ? "Tersimpan!" : saving ? "Menyimpan..." : "Simpan"}
-        </button>
       </div>
+      <StickyFormActions
+        loading={saving}
+        primaryLabel={saved ? "Tersimpan!" : "Simpan"}
+        onSave={handleSave}
+      />
 
       <div className="flex gap-2">
         <button

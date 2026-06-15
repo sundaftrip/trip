@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "import:vietnam-tours": "tsx scripts/import-vietnam-tours.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },

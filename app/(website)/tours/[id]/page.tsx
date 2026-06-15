@@ -111,6 +111,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // Trip yang tanggalnya sudah lewat TIDAK lagi dialihkan, tetap dibuka dalam
   // mode "Trip Selesai" (read-only) supaya ulasan + rating tetap tampil & terindeks.
   const isExpired = !!tour.tripDate && tour.tripDate < now;
+  const isFlexibleDate = !tour.tripDate && tour.status === "ACTIVE";
+  const departureLabel = tour.tripDate ? formatDate(tour.tripDate) : isFlexibleDate ? "Tanggal fleksibel" : null;
+  const capacityLabel = isFlexibleDate
+    ? "Private / By Request"
+    : tour.seatsLeft > 0
+      ? `${tour.seatsLeft} seat tersisa`
+      : "By Request";
 
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
@@ -156,7 +163,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const greeting = companyName ? `Halo ${companyName}` : "Halo";
   // P2.2: sisipkan tanggal keberangkatan ke prefill biar lead lebih kualified
   // (hanya untuk trip yang belum lewat — tanggal lampau tak relevan).
-  const departureInfo = tour.tripDate && !isExpired ? ` (keberangkatan ${formatDate(tour.tripDate)})` : "";
+  const departureInfo = departureLabel && !isExpired ? ` (keberangkatan ${departureLabel})` : "";
   const waMessage = encodeURIComponent(
     `${greeting}, saya tertarik dengan paket *${tour.title}*${departureInfo}. Mohon informasi lebih lanjut.` +
       (mandatoryTotal > 0
@@ -301,9 +308,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             </span>
           )}
 
-          {/* Hero title, plain white, readable on any tour photo */}
+          {/* Hero title with Sundaf yellow highlighter and teal anchor */}
           <h1 className="text-4xl lg:text-6xl font-black leading-tight mb-4 tracking-tight text-white drop-shadow-lg">
-            {tour.title}
+            <span className="sundaf-title-stabilo">{tour.title}</span>
           </h1>
 
           {/* Info pills, frosted glass style, consistent across all themes */}
@@ -311,8 +318,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {[
               { icon: <MapPin size={11} />, text: `${tour.country}${tour.cityHighlight ? ` · ${tour.cityHighlight}` : ""}` },
               tour.duration  ? { icon: <Clock    size={11} />, text: tour.duration } : null,
-              tour.tripDate  ? { icon: <Calendar size={11} />, text: formatDate(tour.tripDate) } : null,
-              { icon: <Users size={11} />, text: `${tour.seatsLeft} seat tersisa` },
+              departureLabel ? { icon: <Calendar size={11} />, text: departureLabel } : null,
+              { icon: <Users size={11} />, text: capacityLabel },
             ].filter(Boolean).map((pill, i) => (
               <span key={i}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/90 border border-white/20"
@@ -638,13 +645,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {/* Tour details grid */}
               <div className={`space-y-2 text-sm pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
                 style={isOutlined ? { borderColor: tBdr } : undefined}>
-                {tour.tripDate && (
+                {departureLabel && (
                   <div className="flex justify-between">
                     <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
                       {sidebarLabel(<Plane size={12} />, "Keberangkatan")}
                     </span>
                     <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
-                      style={isOutlined ? { color: tText } : undefined}>{formatDate(tour.tripDate)}</span>
+                      style={isOutlined ? { color: tText } : undefined}>{departureLabel}</span>
                   </div>
                 )}
                 {tour.duration && (
@@ -658,10 +665,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 )}
                 <div className="flex justify-between">
                   <span style={{ color: tSub ?? "" }} className={tSub ? "" : "text-gray-500"}>
-                    {sidebarLabel(<Users size={12} />, "Sisa Seat")}
+                    {sidebarLabel(<Users size={12} />, isFlexibleDate ? "Kapasitas" : "Sisa Seat")}
                   </span>
                   <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
-                    style={isOutlined ? { color: tText } : undefined}>{tour.seatsLeft}</span>
+                    style={isOutlined ? { color: tText } : undefined}>{capacityLabel}</span>
                 </div>
               </div>
 

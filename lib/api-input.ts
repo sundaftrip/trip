@@ -29,7 +29,7 @@ export const VALID_TOUR_STATUSES = ["ACTIVE", "DRAFT", "FULL", "CANCELLED"] as c
 export const TOUR_INPUT_FIELDS = [
   "title", "slug", "country", "cityHighlight",
   "price", "promoPrice", "priceLandTour", "seatsLeft",
-  "status", "tripDate", "duration", "itinerary",
+  "status", "pinned", "tripDate", "duration", "itinerary",
   "inclusions", "exclusions", "gallery", "hotel",
   "visaInfo", "heroImg", "badge", "notes", "description", "addOns",
 ] as const;

@@ -36,3 +36,6 @@ next-env.d.ts
 # company profile — versi internal (memuat co-founder, jangan masuk repo publik)
 company-profile/cofounder.local.txt
 company-profile/sundaftrip-company-profile-internal.pdf
+
+# internal catalog pricing, not public site content
+data/internal/*.local.json

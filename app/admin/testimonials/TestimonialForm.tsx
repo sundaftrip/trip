@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
 import ImageUpload from "@/components/admin/ImageUpload";
+import StickyFormActions from "@/components/admin/StickyFormActions";
 
 interface FormData {
   name: string; role: string; content: string;
@@ -60,6 +61,11 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
           {error}
         </div>
       )}
+      <StickyFormActions
+        loading={saving}
+        primaryLabel={id ? "Simpan Perubahan" : "Tambah Testimoni"}
+        cancelHref="/admin/testimonials"
+      />
 
       {/* Avatar */}
       <div>
@@ -162,16 +168,6 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
         </div>
       </div>
 
-      <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={saving}
-          className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-          {saving ? "Menyimpan..." : id ? "Simpan Perubahan" : "Tambah Testimoni"}
-        </button>
-        <button type="button" onClick={() => router.push("/admin/testimonials")}
-          className="px-5 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition">
-          Batal
-        </button>
-      </div>
     </form>
   );
 }

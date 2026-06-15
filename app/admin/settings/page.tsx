@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { isFeatureEnabledFor, type Plan } from "@/lib/plan";
 import { COLOR_SCHEMES } from "@/lib/color-schemes";
 import { Lock } from "lucide-react";
+import StickyFormActions from "@/components/admin/StickyFormActions";
 
 const INFO_FIELDS = [
   { key: "company_name", label: "Nama Perusahaan" },
@@ -126,16 +127,17 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center justify-between">
+      <div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pengaturan</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">Informasi perusahaan dan tampilan website</p>
         </div>
-        <button onClick={handleSave} disabled={saving}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-          {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Semua"}
-        </button>
       </div>
+      <StickyFormActions
+        loading={saving}
+        primaryLabel={saved ? "Tersimpan!" : "Simpan Semua"}
+        onSave={handleSave}
+      />
 
       {/* Company Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
@@ -264,12 +266,6 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end">
-          <button onClick={handleSave} disabled={saving}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Skema"}
-          </button>
-        </div>
       </div>
 
       {/* Theme Selector */}
@@ -507,12 +503,6 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <div className="mt-4 flex justify-end">
-          <button onClick={handleSave} disabled={saving}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Tema"}
-          </button>
-        </div>
       </div>
 
       {/* Font Selector */}
@@ -557,12 +547,6 @@ export default function SettingsPage() {
           })}
         </div>
 
-        <div className="mt-4 flex justify-end">
-          <button onClick={handleSave} disabled={saving}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-60">
-            {saved ? "✓ Tersimpan!" : saving ? "Menyimpan..." : "Simpan Font"}
-          </button>
-        </div>
       </div>
     </div>
   );

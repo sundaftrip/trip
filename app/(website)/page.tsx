@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
+import { compareFeaturedTourOrder } from "@/lib/tour-order";
 import HeroSection from "@/components/website/HeroSection";
 import WhyGallery from "@/components/website/WhyGallery";
 import ToursCatalog from "@/components/website/ToursCatalog";
@@ -29,12 +30,11 @@ const getData = unstable_cache(async () => {
         OR: [{ tripDate: null }, { tripDate: { gte: new Date() } }],
       },
       orderBy: { tripDate: "asc" },
-      take: 9,
       select: {
         id: true, slug: true, title: true, country: true, cityHighlight: true,
         price: true, promoPrice: true, seatsLeft: true,
         tripDate: true, duration: true, heroImg: true, badge: true,
-        status: true,
+        status: true, pinned: true,
       },
     }),
     prisma.blog.findMany({ where: { published: true }, take: 3, orderBy: { date: "desc" } }),
@@ -43,11 +43,7 @@ const getData = unstable_cache(async () => {
   ]);
   // Sudah difilter di query, tinggal urut: tanggal terdekat dulu, open-trip
   // (tripDate null) di paling belakang.
-  const tours = [...toursRaw].sort((a, b) => {
-    const at = a.tripDate?.getTime() ?? Infinity;
-    const bt = b.tripDate?.getTime() ?? Infinity;
-    return at - bt;
-  });
+  const tours = [...toursRaw].sort(compareFeaturedTourOrder).slice(0, 9);
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};

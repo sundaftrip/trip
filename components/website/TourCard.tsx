@@ -25,6 +25,22 @@ function strikePrice(tour: Pick<Tour, "price" | "promoPrice">): string | null {
   if (tour.price <= 0 || tour.price <= tour.promoPrice) return null;
   return formatCurrency(tour.price);
 }
+function departureText(tour: Pick<Tour, "tripDate" | "status">): string | null {
+  if (tour.tripDate) return formatDate(tour.tripDate, "id-ID");
+  return tour.status === "ACTIVE" ? "Tanggal fleksibel" : null;
+}
+function departureCode(tour: Pick<Tour, "tripDate" | "status">): string {
+  if (!tour.tripDate) return tour.status === "ACTIVE" ? "BY REQUEST" : "OPEN";
+  return new Date(tour.tripDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+}
+function capacityText(tour: Pick<Tour, "seatsLeft" | "tripDate" | "status">): string {
+  if (!tour.tripDate && tour.status === "ACTIVE") return "Private";
+  return tour.seatsLeft > 0 ? `${tour.seatsLeft} seat` : "By Request";
+}
+function capacityAvailableText(tour: Pick<Tour, "seatsLeft" | "tripDate" | "status">): string {
+  if (!tour.tripDate && tour.status === "ACTIVE") return "Tanggal fleksibel";
+  return tour.seatsLeft > 0 ? `${tour.seatsLeft} seat tersedia` : "Tanya ketersediaan";
+}
 
 function StatusOverlay({ isFull, isExpired }: { isFull: boolean; isExpired: boolean }) {
   if (isFull) return (
@@ -59,8 +75,8 @@ function ClassicCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <h3 className="font-semibold mb-3 line-clamp-2 leading-snug text-[15px]" style={{ color: "var(--site-tour-title,#111827)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-3 text-[11px] text-gray-400 mb-4">
           {tour.duration && <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="flex items-center gap-1"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="flex items-center gap-1"><Users size={10} /> {tour.seatsLeft} seat</span>
+          {departureText(tour) && <span className="flex items-center gap-1"><Calendar size={10} /> {departureText(tour)}</span>}
+          <span className="flex items-center gap-1"><Users size={10} /> {capacityText(tour)}</span>
         </div>
         <div className="flex items-end justify-between pt-4 border-t border-gray-100 dark:border-gray-900">
           <div>
@@ -130,10 +146,10 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.duration && (
             <span className="tr-pill" style={{ background: "var(--tr-mint)", color: "var(--tr-text)" }}>⏱ {tour.duration}</span>
           )}
-          {tour.tripDate && (
-            <span className="tr-pill" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          {departureText(tour) && (
+            <span className="tr-pill" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>📅 {departureText(tour)}</span>
           )}
-          <span className="tr-pill" style={{ background: "var(--tr-pink)", color: "var(--tr-text)" }}>👤 {tour.seatsLeft} seat</span>
+          <span className="tr-pill" style={{ background: "var(--tr-pink)", color: "var(--tr-text)" }}>👤 {capacityText(tour)}</span>
         </div>
         {strikePrice(tour) && (
           <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
@@ -190,10 +206,10 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.duration && (
             <span className="kw-pill" style={{ background: "var(--kw-mint)", color: "var(--kw-text)" }}>⏱ {tour.duration}</span>
           )}
-          {tour.tripDate && (
-            <span className="kw-pill" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          {departureText(tour) && (
+            <span className="kw-pill" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>📅 {departureText(tour)}</span>
           )}
-          <span className="kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>👤 {tour.seatsLeft} seat</span>
+          <span className="kw-pill" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>👤 {capacityText(tour)}</span>
         </div>
         {strikePrice(tour) && (
           <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
@@ -271,10 +287,10 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.duration && (
             <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>⏱ {tour.duration}</span>
           )}
-          {tour.tripDate && (
-            <span className="px-pill" style={{ background: "var(--px-yellow)", color: "#111827" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          {departureText(tour) && (
+            <span className="px-pill" style={{ background: "var(--px-yellow)", color: "#111827" }}>📅 {departureText(tour)}</span>
           )}
-          <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>👤 {tour.seatsLeft} SEAT</span>
+          <span className="px-pill" style={{ background: "var(--px-purple)", color: "#ffffff" }}>👤 {capacityText(tour).toUpperCase()}</span>
         </div>
         {strikePrice(tour) && (
           <p className="text-[11px] text-gray-400 line-through mb-1" style={{ fontFamily: "monospace" }}>{strikePrice(tour)}</p>
@@ -299,6 +315,10 @@ const IATA_MAP: Record<string, string> = {
   bali: "DPS", yogyakarta: "JOG", yogya: "JOG", bromo: "JOG", komodo: "LBJ",
   "raja ampat": "SOQ", "labuan bajo": "LBJ", jakarta: "CGK", surabaya: "SUB",
   bandung: "BDO", medan: "KNO", lombok: "LOP",
+  // Vietnam
+  hanoi: "HAN", halong: "HPH", "ha long": "HPH", sapa: "HAN", "ninh binh": "HAN",
+  danang: "DAD", "da nang": "DAD", "ho chi minh": "SGN", saigon: "SGN",
+  "phu quoc": "PQC", vietnam: "VNM",
 };
 function getIata(title: string, city?: string | null): string {
   const haystack = `${title} ${city ?? ""}`.toLowerCase();
@@ -341,10 +361,7 @@ function GlobeCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
   const iata = getIata(tour.title, tour.cityHighlight);
-  const _tripDate = tour.tripDate ? new Date(tour.tripDate) : null;
-  const dateStr = _tripDate
-    ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
-    : "OPEN";
+  const dateStr = departureCode(tour);
   const duration = shortenDuration(tour.duration);
 
   return (
@@ -451,10 +468,10 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.duration && (
             <span className="mp-pill" style={{ background: "var(--mp-ink)", color: "var(--mp-on-ink)", borderColor: "var(--mp-border)" }}>{tour.duration}</span>
           )}
-          {tour.tripDate && (
-            <span className="mp-pill" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>{formatDate(tour.tripDate, "id-ID")}</span>
+          {departureText(tour) && (
+            <span className="mp-pill" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>{departureText(tour)}</span>
           )}
-          <span className="mp-pill" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>{tour.seatsLeft} seat</span>
+          <span className="mp-pill" style={{ background: "var(--mp-accent)", color: "var(--mp-on-accent)", borderColor: "var(--mp-border)" }}>{capacityText(tour)}</span>
         </div>
         {strikePrice(tour) && (
           <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
@@ -473,10 +490,7 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
-  const _tripDate = tour.tripDate ? new Date(tour.tripDate) : null;
-  const dateStr = _tripDate
-    ? _tripDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
-    : "OPEN";
+  const dateStr = departureCode(tour);
   const duration = shortenDuration(tour.duration);
 
   return (
@@ -526,7 +540,7 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         </div>
         <div className="flex items-center justify-between gap-2 pt-2 sm:hidden">
           <span className="text-[9px] font-semibold" style={{ color: "var(--at-subtext)" }}>
-            {tour.seatsLeft > 0 ? `${tour.seatsLeft} seat tersedia` : "Tanya ketersediaan"}
+            {capacityAvailableText(tour)}
           </span>
           {!isDimmed && (
             <span className="inline-flex h-7 items-center rounded px-2.5 text-[10px] font-bold text-white" style={{ background: "var(--site-accent)" }}>
@@ -579,10 +593,10 @@ function FumayoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           {tour.duration && (
             <span className="fb-pill" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>⏱ {tour.duration}</span>
           )}
-          {tour.tripDate && (
-            <span className="fb-pill" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>📅 {formatDate(tour.tripDate, "id-ID")}</span>
+          {departureText(tour) && (
+            <span className="fb-pill" style={{ background: "var(--fb-pink)", color: "#1a1a1a" }}>📅 {departureText(tour)}</span>
           )}
-          <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>👤 {tour.seatsLeft} seat</span>
+          <span className="fb-pill" style={{ background: "var(--fb-yellow)", color: "#1a1a1a" }}>👤 {capacityText(tour)}</span>
         </div>
         {strikePrice(tour) && (
           <p className="text-[11px] line-through mb-1 mt-auto" style={{ color: "var(--fb-subink)" }}>{strikePrice(tour)}</p>
@@ -618,7 +632,8 @@ function AtticCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <h3 className="font-extrabold text-sm leading-snug line-clamp-2 mb-2" style={{ color: "var(--atc-ink)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-1.5 mb-2">
           {tour.duration && <span className="atc-pill"><Clock size={10} /> {tour.duration}</span>}
-          <span className="atc-pill"><Users size={10} /> {tour.seatsLeft} seat</span>
+          {departureText(tour) && <span className="atc-pill"><Calendar size={10} /> {departureText(tour)}</span>}
+          <span className="atc-pill"><Users size={10} /> {capacityText(tour)}</span>
         </div>
         <p className="text-[10px] mt-auto" style={{ color: "var(--atc-ink-soft)" }}>mulai dari</p>
         <p className="font-extrabold text-base" style={{ color: "var(--atc-pink-deep)" }}>{priceText(tour)}</p>
@@ -656,8 +671,8 @@ function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <h3 className="font-extrabold text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--teri-ink)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tour.duration && <span className="teri-pill !shadow-none"><Clock size={11} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="teri-pill !shadow-none"><Calendar size={11} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="teri-pill !shadow-none"><Users size={11} /> {tour.seatsLeft} seat</span>
+          {departureText(tour) && <span className="teri-pill !shadow-none"><Calendar size={11} /> {departureText(tour)}</span>}
+          <span className="teri-pill !shadow-none"><Users size={11} /> {capacityText(tour)}</span>
         </div>
         {strikePrice(tour) && <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{strikePrice(tour)}</p>}
         {!isDimmed && (
@@ -689,8 +704,8 @@ function CoreiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         <h3 className="font-semibold mb-4 line-clamp-2 leading-snug text-[16px]" style={{ color: "var(--corei-ink)" }}>{tour.title}</h3>
         <div className="flex flex-wrap gap-2 mb-5">
           {tour.duration && <span className="corei-pill"><Clock size={10} /> {tour.duration}</span>}
-          {tour.tripDate && <span className="corei-pill"><Calendar size={10} /> {formatDate(tour.tripDate, "id-ID")}</span>}
-          <span className="corei-pill"><Users size={10} /> {tour.seatsLeft} seat</span>
+          {departureText(tour) && <span className="corei-pill"><Calendar size={10} /> {departureText(tour)}</span>}
+          <span className="corei-pill"><Users size={10} /> {capacityText(tour)}</span>
         </div>
         <div className="flex items-end justify-between pt-4" style={{ borderTop: "1px solid var(--corei-glass-line)" }}>
           <div>
