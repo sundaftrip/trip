@@ -24,11 +24,12 @@ export default function FooterTagline({
     return (
       <p className="text-sm leading-relaxed max-w-md" style={style}>
         <span className="font-semibold">Untuk travel agent &amp; mitra B2B —</span>{" "}
-        khusus Rusia{" "}
-        <span className="stabilo">kami tangani langsung sebagai operator lokal (tangan pertama)</span>.{" "}
-        <span className="stabilo">Sejumlah travel agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami</span>; atas permintaan
-        mitra, identitas dan rincian kerja sama kami jaga kerahasiaannya dan hanya dibuka untuk agent
-        terverifikasi.
+        Untuk produk Rusia, Sundaf{" "}
+        <span className="stabilo">menangani operasional langsung sebagai operator lokal</span>, sehingga
+        mitra mendapatkan jalur kerja yang lebih ringkas, respons cepat, dan kontrol layanan yang lebih
+        jelas. Sejumlah travel agent di Indonesia telah mempercayakan operasional Rusia mereka kepada kami.{" "}
+        <span className="stabilo">Detail kerja sama, referensi mitra, dan skema harga</span> hanya kami
+        bagikan kepada agent terverifikasi demi menjaga kerahasiaan masing-masing pihak.
         {waB2B ? (
           <>
             {" "}
