@@ -254,7 +254,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
 
           <div>
             <span className="at-pill mb-5 inline-flex" style={{ color: "var(--at-subtext)" }}>Navigasi</span>
-            <ul className="space-y-3 mt-3">
+            <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 md:block md:space-y-3">
               {navLinks.map(([label, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-subtext)" }}>{label}</Link>
