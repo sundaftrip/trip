@@ -21,6 +21,7 @@ import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
+import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -82,6 +83,109 @@ function ItineraryInsightGrid({
             </span>
           </span>
         </div>
+      ))}
+    </div>
+  );
+}
+
+function renderItineraryInline(
+  text: string,
+  {
+    strongStyle,
+    markStyle,
+  }: {
+    strongStyle?: React.CSSProperties;
+    markStyle?: React.CSSProperties;
+  },
+) {
+  const markerPattern = /(^|[\s([{])(\*{1,3})\s*([^*\n][^*\n]*?)\s*\2(?=$|[\s.,;:!?)}\]])/g;
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+  let index = 0;
+
+  const renderMarked = (marker: string, content: string, key: string) => {
+    if (marker.length === 1) {
+      return (
+        <mark key={key} className="px-0.5 font-medium" style={markStyle}>
+          {content}
+        </mark>
+      );
+    }
+
+    if (marker.length === 2) {
+      return (
+        <strong key={key} className="font-semibold" style={strongStyle}>
+          {content}
+        </strong>
+      );
+    }
+
+    return (
+      <mark key={key} className="px-0.5 font-semibold" style={markStyle}>
+        {content}
+      </mark>
+    );
+  };
+
+  const pushPlain = (value: string) => {
+    const cleaned = stripLooseItineraryMarkup(value);
+    if (cleaned) nodes.push(cleaned);
+  };
+
+  const looseOpening = text.match(/^\s*(\*{2,3})\s+(.+)$/);
+  if (looseOpening) {
+    const content = stripLooseItineraryMarkup(looseOpening[2] ?? "").trim();
+    return content ? [renderMarked(looseOpening[1] ?? "", content, "loose-opening")] : [];
+  }
+
+  for (const match of text.matchAll(markerPattern)) {
+    const matchIndex = match.index ?? 0;
+    const prefix = match[1] ?? "";
+    const marker = match[2] ?? "";
+    const content = stripLooseItineraryMarkup(match[3] ?? "").trim();
+    const markerStart = matchIndex + prefix.length;
+
+    pushPlain(text.slice(cursor, markerStart));
+
+    if (content) {
+      nodes.push(renderMarked(marker, content, `marker-${index}`));
+    }
+
+    cursor = matchIndex + match[0].length;
+    index += 1;
+  }
+
+  pushPlain(text.slice(cursor));
+  return nodes;
+}
+
+function ItineraryRichText({
+  text,
+  className,
+  style,
+  strongStyle,
+  markStyle,
+}: {
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
+  strongStyle?: React.CSSProperties;
+  markStyle?: React.CSSProperties;
+}) {
+  const paragraphs = text
+    .replace(/\r\n?/g, "\n")
+    .split(/\n+/)
+    .map((paragraph) => paragraph.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+
+  if (paragraphs.length === 0) return null;
+
+  return (
+    <div className={className} style={style}>
+      {paragraphs.map((paragraph, index) => (
+        <p key={`${paragraph.slice(0, 32)}-${index}`}>
+          {renderItineraryInline(paragraph, { strongStyle, markStyle })}
+        </p>
       ))}
     </div>
   );
@@ -210,6 +314,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const tSun  = isFumayo ? "var(--fb-sun)"   : isTropical ? "var(--tr-sun)"   : isKawaii ? "var(--kw-sun)"  : isPixel ? "var(--px-yellow)" : isAtlas ? "var(--at-muted)" : undefined;
   const tSub  = isFumayo ? "var(--fb-subtext)" : isTropical ? "var(--tr-subtext)" : isKawaii ? "var(--kw-subtext)" : isPixel ? "var(--px-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
   const tBdr  = isFumayo ? "var(--fb-border)" : isTropical ? "var(--tr-border)" : isKawaii ? "var(--kw-border)" : isPixel ? "var(--px-border)" : isAtlas ? "var(--at-border)" : undefined;
+  const itineraryStrongStyle: React.CSSProperties | undefined = isOutlined && tText ? { color: tText } : undefined;
+  const itineraryMarkStyle: React.CSSProperties = {
+    backgroundColor: "#fde68a",
+    color: "#1f2937",
+    boxDecorationBreak: "clone",
+    WebkitBoxDecorationBreak: "clone",
+  };
 
   const rawItinerary = (tour.itinerary as { day: number; title: string; description: string }[] | null) ?? [];
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
@@ -490,7 +601,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           <div className="pb-8 pt-1.5 flex-1">
                             <h3 className="font-semibold text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
                             {item.description && (
-                              <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.description}</p>
+                              <ItineraryRichText
+                                text={item.description}
+                                className="mt-2 space-y-3 text-sm leading-relaxed"
+                                style={{ color: "var(--at-subtext)" }}
+                                strongStyle={{ color: "var(--at-text)" }}
+                                markStyle={itineraryMarkStyle}
+                              />
                             )}
                             <ItineraryInsightGrid
                               insights={item.insights}
@@ -513,7 +630,15 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
                           <div className="min-w-0 flex-1">
                             <h3 className="font-black" style={{ color: tText }}>{item.title}</h3>
-                            {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                            {item.description && (
+                              <ItineraryRichText
+                                text={item.description}
+                                className="mt-2 space-y-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                                style={isOutlined ? { color: tSub } : undefined}
+                                strongStyle={itineraryStrongStyle}
+                                markStyle={itineraryMarkStyle}
+                              />
+                            )}
                             <ItineraryInsightGrid
                               insights={item.insights}
                               isOutlined={isOutlined}
@@ -540,7 +665,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                           </div>
                           <div className="min-w-0 flex-1 pb-6">
                             <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
-                            {item.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>}
+                            {item.description && (
+                              <ItineraryRichText
+                                text={item.description}
+                                className="mt-2 space-y-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                                markStyle={itineraryMarkStyle}
+                              />
+                            )}
                             <ItineraryInsightGrid
                               insights={item.insights}
                               isOutlined={isOutlined}

@@ -3,6 +3,7 @@ import {
   Document, Page, View, Text, Link, StyleSheet, Font,
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
+import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 
 const PAPER = "#EEEEEE";
 const TEAL = "#00ADB5";
@@ -686,7 +687,7 @@ function waLink(raw: string) {
 
 function compactText(value?: string | null, max = 150) {
   if (!value) return "";
-  const normalized = value.replace(/\s+/g, " ").trim();
+  const normalized = stripItineraryMarkup(value).replace(/\s+/g, " ").trim();
   return normalized.length > max ? `${normalized.slice(0, max - 3).trim()}...` : normalized;
 }
 

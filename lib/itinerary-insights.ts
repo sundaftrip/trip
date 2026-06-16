@@ -41,6 +41,14 @@ function normalizeSpaces(value: string) {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function normalizeItineraryLines(value: string) {
+  return value
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((line) => normalizeSpaces(line))
+    .filter(Boolean);
+}
+
 function removeMealCodeSuffix(title: string) {
   return normalizeSpaces(
     title
@@ -137,8 +145,21 @@ function inferExplicitMetric(source: string, label: string, kind: ItineraryInsig
   };
 }
 
-function stripLeadingItineraryMeta(description: string) {
-  let out = normalizeSpaces(description);
+function isLeadingMetaLine(line: string) {
+  const isShortStayLine = /^(?:bermalam|overnight)\s*(?::|di|in|on)\s+/i.test(line) && line.length <= 90;
+
+  return (
+    /^akhir perjalanan\s*:/i.test(line) ||
+    /^(?:makan|meals)\s*:/i.test(line) ||
+    /^(?:makan\s+belum\s+termasuk|no meals?\s+included?)$/i.test(line) ||
+    /^(?:sarapan|breakfast)(?:\s*(?:,|dan|&)\s*(?:makan siang|lunch|brunch|makan malam|dinner))*\s+(?:termasuk|included)\.?$/i.test(line) ||
+    /^(?:termasuk|included)\s+(?:sarapan|breakfast)(?:\s*(?:,|dan|&)\s*(?:makan siang|lunch|brunch|makan malam|dinner))*\.?$/i.test(line) ||
+    isShortStayLine
+  );
+}
+
+function stripLeadingMetaFromLine(line: string) {
+  let out = normalizeSpaces(line);
   let changed = true;
   let guard = 0;
 
@@ -156,6 +177,21 @@ function stripLeadingItineraryMeta(description: string) {
   }
 
   return out;
+}
+
+function stripLeadingItineraryMeta(description: string) {
+  const lines = normalizeItineraryLines(description);
+
+  while (lines.length > 0 && isLeadingMetaLine(lines[0])) {
+    lines.shift();
+  }
+
+  if (lines.length === 0) return "";
+
+  const [firstLine, ...restLines] = lines;
+  return [stripLeadingMetaFromLine(firstLine), ...restLines]
+    .filter(Boolean)
+    .join("\n");
 }
 
 export function buildItineraryDisplay(day: SourceItineraryDay): ItineraryDisplayDay {
