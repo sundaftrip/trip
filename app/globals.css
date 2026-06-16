@@ -2208,15 +2208,12 @@ a.gl-pill:has(svg:only-child) {
 
 .sundaf-title-stabilo {
   --stabilo-title-yellow: rgba(251, 211, 36, 0.92);
-  --stabilo-title-teal: #00adb5;
   display: inline;
   color: #071f22;
-  background-image:
-    linear-gradient(100deg, transparent 0.08em, var(--stabilo-title-yellow) 0.08em, var(--stabilo-title-yellow) calc(100% - 0.1em), transparent calc(100% - 0.1em)),
-    linear-gradient(90deg, var(--stabilo-title-teal), var(--stabilo-title-teal));
+  background-image: linear-gradient(100deg, transparent 0.08em, var(--stabilo-title-yellow) 0.08em, var(--stabilo-title-yellow) calc(100% - 0.1em), transparent calc(100% - 0.1em));
   background-repeat: no-repeat;
-  background-size: 100% 0.78em, calc(100% - 0.08em) 0.12em;
-  background-position: 0 62%, 0.04em 96%;
+  background-size: 100% 0.78em;
+  background-position: 0 62%;
   border-radius: 0.08em;
   padding: 0 0.12em 0.04em;
   text-shadow: none;
