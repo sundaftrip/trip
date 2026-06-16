@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/vietnam`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/open-trip-vietnam`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/custom-trip`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.88 },
     { url: `${base}/jasa-urus-visa-eropa`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.86 },
     { url: `${base}/jasa-urus-visa-amerika-canada`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.86 },
     { url: `${base}/jasa-urus-visa-terpercaya`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.86 },

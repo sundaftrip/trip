@@ -59,6 +59,11 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName}, ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
   const heroTitle = t("hero_title", "Wujudkan Perjalanan Impian Anda");
+  const atlasActions = [
+    { href: "/tours", label: "Paket tour", value: "Open trip & private siap pilih" },
+    { href: "/visa", label: "Servis visa", value: "Dokumen & itinerary dibantu" },
+    { href: "/custom-trip", label: "Custom trip", value: "Rute sesuai tanggal & budget" },
+  ];
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") {
@@ -434,18 +439,20 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               {renderTitleWords(heroTitle)}
             </h1>
             <div className="mb-5 grid gap-2 lg:hidden">
-              {[
-                ["Seat & jadwal", "Trip aktif, kuota terbatas"],
-                ["Visa & itinerary", "Dibantu dari awal"],
-                ["Konsultasi", "Chat langsung tim Sundaf"],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between gap-3 border-b py-2 text-sm" style={{ borderColor: "var(--at-border)" }}>
+              {atlasActions.map(({ href, label, value }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="group flex items-center justify-between gap-3 border-b py-2 text-sm transition-colors"
+                  style={{ borderColor: "var(--at-border)" }}
+                  aria-label={`${label}: ${value}`}
+                >
                   <div className="min-w-0">
                     <p className="text-[11px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>{label}</p>
                     <p className="truncate text-[13px] font-semibold" style={{ color: "var(--at-text)" }}>{value}</p>
                   </div>
-                  <CheckCircle2 size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
-                </div>
+                  <CheckCircle2 size={16} className="shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: "var(--site-accent)" }} />
+                </Link>
               ))}
             </div>
           </div>
@@ -460,12 +467,10 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               className="at-btn-solid w-full px-6 py-3.5 text-sm">
               Servis Visa <ArrowRight size={15} />
             </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-                className="at-btn w-full px-6 py-3.5 text-sm">
-                WhatsApp
-              </a>
-            )}
+            <Link href="/custom-trip"
+              className="at-btn w-full px-6 py-3.5 text-sm">
+              Custom Trip <ArrowRight size={15} />
+            </Link>
             <p className="text-[12px] leading-relaxed mt-1 opacity-80"
               style={{ color: "var(--at-subtext)" }}>
               {t("hero_subtitle", "Destinasi pilihan, paket lengkap & terpercaya.")}
