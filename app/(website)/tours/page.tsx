@@ -9,12 +9,12 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 export const revalidate = 60;
 
-const TOURS_TITLE = "Semua Paket Tour · Sundaf Trip";
+const TOURS_TITLE = "Jadwal Tour & Dokumentasi · Sundaf Trip";
 const TOURS_DESC =
-  "Daftar lengkap paket tour Sundaf Trip, upcoming bookable & dokumentasi trip yang sudah berlangsung.";
+  "Paket tour Sundaf Trip yang masih bisa dipesan tampil dulu, dengan dokumentasi perjalanan selesai sebagai bukti operasional.";
 
 export const metadata: Metadata = {
-  title: "Semua Paket Tour",
+  title: "Jadwal Tour & Dokumentasi",
   description: TOURS_DESC,
   alternates: { canonical: "https://sundaftrip.com/tours" },
   // Override OG/Twitter agar share ke WhatsApp/IG menampilkan judul halaman ini,
@@ -82,14 +82,14 @@ export default async function ToursPage() {
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
-          { name: "Semua Paket Tour", url: "/tours" },
+          { name: "Jadwal Tour & Dokumentasi", url: "/tours" },
         ]}
       />
       <div id="tours" className="pt-2">
         {/* h1 satu-satunya di halaman ini (SEO/a11y). Header visual sengaja
            dihapus (commit 9ecf179), jadi judul dipasang sr-only agar desain
            tidak berubah tapi hierarki heading tetap benar (h1 → h2). */}
-        <h1 className="sr-only">Semua Paket Tour Sundaf Trip</h1>
+        <h1 className="sr-only">Jadwal Tour dan Dokumentasi Sundaf Trip</h1>
         <ToursCatalog tours={tours} theme={theme} showFilter split />
       </div>
     </main>

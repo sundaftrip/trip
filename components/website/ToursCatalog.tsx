@@ -78,10 +78,10 @@ export default function ToursCatalog({
 
         <SectionHead
           theme={theme}
-          eyebrow="Bisa Dipesan"
+          eyebrow="Jadwal yang Bisa Dipesan"
           sub={
             bookable.length > 0
-              ? "Tanggal tetap atau fleksibel sesuai permintaan, tergantung paket."
+              ? "Produk aktif tampil dulu. Rusia, Asia Tengah, dan aurora diprioritaskan; rute lain tetap tersedia sesuai jadwal dan permintaan."
               : "Belum ada paket terbuka untuk filter ini. Hubungi kami untuk private trip."
           }
         />
@@ -94,7 +94,7 @@ export default function ToursCatalog({
               highlight
               theme={theme}
               eyebrow="Dokumentasi Perjalanan"
-              sub={`${done.length} trip yang sudah kami pandu, bukti rekam jejak, bukan katalog kosong.`}
+              sub={`${done.length} trip selesai disimpan sebagai bukti operasional, bukan daftar utama untuk dibeli.`}
             />
             <ToursSection tours={pagedDone} theme={theme}>
               <PaginationBar current={current} total={totalPages} onChange={changePage} />
@@ -121,11 +121,11 @@ export default function ToursCatalog({
           <Link
             href="/tours"
             prefetch
-            aria-label="Lihat semua tour dan dokumentasi trip"
+            aria-label="Lihat semua jadwal tour dan dokumentasi trip"
             className="tours-cta group inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-semibold tracking-wide"
             style={{ color: "var(--site-accent,#2d6a4f)" }}
           >
-            <span>Lihat semua tour &amp; dokumentasi trip</span>
+            <span>Lihat semua jadwal &amp; dokumentasi</span>
             <ArrowRight size={16} aria-hidden="true" className="tours-cta-arrow" />
           </Link>
         </div>

@@ -257,9 +257,9 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
         <AnimateIn>
           <div className="flex items-end justify-between mb-5 sm:mb-10">
             <div>
-              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Pilihan paket</span>
-              <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold" style={{ color: "var(--at-text)" }}>Tour Pilihan</h2>
-              <p className="mt-1 text-xs font-medium sm:hidden" style={{ color: "var(--at-subtext)" }}>Tanggal terdekat, seat terbatas, bisa konsultasi dulu.</p>
+              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Jadwal & private trip</span>
+              <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold" style={{ color: "var(--at-text)" }}>Paket yang Siap Dibooking</h2>
+              <p className="mt-1 text-xs font-medium sm:hidden" style={{ color: "var(--at-subtext)" }}>Rusia, Asia Tengah, dan aurora tampil lebih dulu.</p>
             </div>
           </div>
         </AnimateIn>

@@ -33,12 +33,12 @@ async function main() {
     console.log(`ℹ️  ${userCount} user(s) sudah ada, skip seed admin`);
   }
 
-  // Seed default site texts (generic, client customizes via CMS)
+  // Seed default site texts. Existing CMS values are never overwritten.
   const defaultTexts = [
-    { key: "hero_eyebrow", valueId: "Perjalanan Terpercaya", valueEn: "Trusted Travel Partner" },
-    { key: "hero_title", valueId: "Wujudkan Perjalanan Impian Anda", valueEn: "Make Your Dream Journey Come True" },
-    { key: "hero_subtitle", valueId: "Paket wisata pilihan dengan pelayanan terbaik.", valueEn: "Curated tour packages with the best service." },
-    { key: "hero_btn", valueId: "Lihat Paket Tour", valueEn: "See Tour Packages" },
+    { key: "hero_eyebrow", valueId: "Spesialis Rusia, Asia Tengah & Aurora", valueEn: "Russia, Central Asia & Aurora Specialist" },
+    { key: "hero_title", valueId: "Tour Rusia, Asia Tengah & Aurora", valueEn: "Russia, Central Asia & Aurora Tours" },
+    { key: "hero_subtitle", valueId: "Paket open trip dan private trip untuk traveler Indonesia, dengan visa, itinerary, dan koordinasi lapangan dibantu end-to-end.", valueEn: "Open trip and private trip packages for Indonesian travelers, with visa, itinerary, and on-ground coordination handled end-to-end." },
+    { key: "hero_btn", valueId: "Cek Jadwal Tour", valueEn: "Check Tour Schedule" },
     { key: "why_1_title", valueId: "Terpercaya & Berpengalaman", valueEn: "Trusted & Experienced" },
     { key: "why_1_desc", valueId: "Lebih dari 10 tahun melayani pelanggan dengan standar terbaik.", valueEn: "Over 10 years serving customers with the highest standards." },
     { key: "why_2_title", valueId: "Pelayanan Penuh Kasih", valueEn: "Caring Service" },
@@ -52,6 +52,7 @@ async function main() {
     { key: "about_desc_2", valueId: "Kami berkomitmen memberikan pelayanan terbaik dengan harga yang terjangkau.", valueEn: "We are committed to providing the best service at affordable prices." },
     { key: "contact_title", valueId: "Hubungi Kami", valueEn: "Contact Us" },
     { key: "contact_desc", valueId: "Konsultasikan perjalanan impian Anda bersama kami.", valueEn: "Consult your dream journey with us." },
+    { key: "footer_tagline", valueId: "Spesialis perjalanan Rusia, Asia Tengah, aurora, dan bantuan visa untuk traveler Indonesia. Rute lain seperti Vietnam kami tampilkan sebagai produk tambahan sesuai ketersediaan.", valueEn: "Specialist in Russia, Central Asia, aurora trips, and visa support for Indonesian travelers. Other routes such as Vietnam are shown as additional products based on availability." },
     { key: "payment_bank_name", valueId: "BCA", valueEn: "BCA" },
     { key: "payment_bank_acc", valueId: "0000000000", valueEn: "0000000000" },
     { key: "payment_bank_holder", valueId: "NAMA PERUSAHAAN", valueEn: "COMPANY NAME" },

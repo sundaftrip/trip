@@ -34,6 +34,17 @@ const navLinks: [string, string][] = footerNav.map((n) => [n.label.id, n.href]);
 
 type IconProps = { size?: number; className?: string; style?: CSSProperties };
 
+const STRATEGIC_FOOTER_TAGLINE =
+  "Spesialis perjalanan Rusia, Asia Tengah, aurora, dan bantuan visa untuk traveler Indonesia. Rute lain seperti Vietnam kami tampilkan sebagai produk tambahan sesuai ketersediaan.";
+
+function normalizeFooterTagline(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed || /dari asia hingga eropa/i.test(trimmed) || /semuabisa/i.test(trimmed.replace(/\s+/g, ""))) {
+    return STRATEGIC_FOOTER_TAGLINE;
+  }
+  return trimmed;
+}
+
 // lucide-react menghapus ikon brand, pakai SVG Instagram inline (currentColor)
 function InstagramIcon({ size = 16, className, style }: IconProps) {
   return (
@@ -49,7 +60,7 @@ function InstagramIcon({ size = 16, className, style }: IconProps) {
 export default async function Footer({ theme = "classic" }: { theme?: string }) {
   const { t, c } = await getFooterData();
 
-  const tagline  = t["footer_tagline"] || "";
+  const tagline  = normalizeFooterTagline(t["footer_tagline"] || "");
   const name     = c["company_name"] || "";
   const logo     = c["company_logo"] || "";
   const nib      = c["company_nib"] || "";

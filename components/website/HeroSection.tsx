@@ -17,6 +17,35 @@ const FALL_PHYSICS = [
   { dx: "88px",   rot: "868deg"  },
 ];
 
+const STRATEGIC_HERO = {
+  eyebrow: "Sundaf Trip, Spesialis Rusia, Asia Tengah & Aurora",
+  title: "Tour Rusia, Asia Tengah & Aurora",
+  subtitle:
+    "Paket open trip dan private trip untuk traveler Indonesia, dengan visa, itinerary, dan koordinasi lapangan dibantu end-to-end.",
+};
+
+const GENERIC_HERO_TITLE = [
+  /wujudkan perjalanan/i,
+  /perjalanan impian/i,
+  /saatnya.*nikmati/i,
+  /destinasi alam favorit/i,
+];
+
+const GENERIC_HERO_SUBTITLE = [
+  /dari asia hingga eropa/i,
+  /destinasi pilihan/i,
+  /paket wisata/i,
+  /sou?lful/i,
+  /pelayanan terbaik/i,
+];
+
+function strategicText(value: string, fallback: string, genericPatterns: RegExp[]) {
+  const trimmed = value.trim();
+  const normalized = trimmed.replace(/\s+/g, " ");
+  if (!trimmed) return fallback;
+  return genericPatterns.some((pattern) => pattern.test(normalized)) ? fallback : trimmed;
+}
+
 function renderTitleWords(heroTitle: string, extra?: React.ReactNode) {
   let g = 0; // indeks huruf global, stagger tiap huruf rontok
   const words = heroTitle.split(/\s+/).filter(Boolean);
@@ -59,10 +88,29 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     ? `${companyName}, ${t("hero_eyebrow", "Perjalanan Terpercaya")}`
     : t("hero_eyebrow", "Perjalanan Terpercaya");
   const heroTitle = t("hero_title", "Wujudkan Perjalanan Impian Anda");
+  const atlasEyebrow = strategicText(
+    eyebrow,
+    STRATEGIC_HERO.eyebrow,
+    [/perjalanan terpercaya/i, /trusted travel/i],
+  );
+  const atlasHeroTitle = strategicText(heroTitle, STRATEGIC_HERO.title, GENERIC_HERO_TITLE);
+  const atlasHeroSubtitle = strategicText(
+    t("hero_subtitle", STRATEGIC_HERO.subtitle),
+    STRATEGIC_HERO.subtitle,
+    GENERIC_HERO_SUBTITLE,
+  );
+  const consultationHref = waNumber
+    ? `https://wa.me/${waNumber}?text=${encodeURIComponent("Halo Sundaf, saya ingin konsultasi tour Rusia / Asia Tengah / Aurora.")}`
+    : "/#contact";
   const atlasActions = [
-    { href: "/tours", label: "Paket tour", value: "Open trip & private siap pilih" },
-    { href: "/visa", label: "Servis visa", value: "Dokumen & itinerary dibantu" },
-    { href: "/custom-trip", label: "Custom trip", value: "Rute sesuai tanggal & budget" },
+    { href: "/tours", label: "Jadwal tour", value: "Rusia, Asia Tengah, aurora", external: false },
+    { href: consultationHref, label: "Konsultasi", value: "Rute, tanggal, dan budget via WhatsApp", external: Boolean(waNumber) },
+  ];
+  const atlasProofs = [
+    { value: "1500+", label: "traveler Indonesia" },
+    { value: "20 grup", label: "dioperasikan sepanjang 2025" },
+    { value: "700+", label: "peserta travel agent 2025" },
+    { value: "NIB", label: "1601260060842" },
   ];
 
   /* ── FUMAYO ── */
@@ -422,7 +470,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="lg:min-h-screen flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-7 lg:pb-16 px-4 at-grid-bg"
+    <section className="lg:min-h-[82vh] flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-7 lg:pb-12 px-4 at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Desktop: dua kolom (judul kiri, aksi di samping). Mobile: tumpuk rapat. */}
@@ -431,29 +479,36 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           <div className="flex-1 min-w-0">
             <div className="mb-3 hero-fade-up">
               <span className="at-pill" style={{ color: "var(--at-text)" }}>
-                {eyebrow}
+                {atlasEyebrow}
               </span>
             </div>
-            <h1 aria-label={heroTitle} className="text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
+            <h1 aria-label={atlasHeroTitle} className="text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
               style={{ color: "var(--at-text)" }}>
-              {renderTitleWords(heroTitle)}
+              {renderTitleWords(atlasHeroTitle)}
             </h1>
             <div className="mb-5 grid gap-2 lg:hidden">
-              {atlasActions.map(({ href, label, value }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="group flex items-center justify-between gap-3 border-b py-2 text-sm transition-colors"
-                  style={{ borderColor: "var(--at-border)" }}
-                  aria-label={`${label}: ${value}`}
-                >
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>{label}</p>
-                    <p className="truncate text-[13px] font-semibold" style={{ color: "var(--at-text)" }}>{value}</p>
-                  </div>
-                  <CheckCircle2 size={16} className="shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: "var(--site-accent)" }} />
-                </Link>
-              ))}
+              {atlasActions.map(({ href, label, value, external }) => {
+                const content = (
+                  <>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>{label}</p>
+                      <p className="truncate text-[13px] font-semibold" style={{ color: "var(--at-text)" }}>{value}</p>
+                    </div>
+                    <CheckCircle2 size={16} className="shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: "var(--site-accent)" }} />
+                  </>
+                );
+                const className = "group flex items-center justify-between gap-3 border-b py-2 text-sm transition-colors";
+                const style = { borderColor: "var(--at-border)" };
+                return external ? (
+                  <a key={href} href={href} target="_blank" rel="noreferrer" className={className} style={style} aria-label={`${label}: ${value}`}>
+                    {content}
+                  </a>
+                ) : (
+                  <Link key={href} href={href} className={className} style={style} aria-label={`${label}: ${value}`}>
+                    {content}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
@@ -461,29 +516,33 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           <div className="lg:w-[300px] shrink-0 flex flex-col gap-2.5 hero-fade-up">
             <Link href="/tours"
               className="at-btn-solid w-full px-6 py-3.5 text-sm">
-              {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
+              Cek Jadwal Tour <ArrowRight size={15} />
             </Link>
-            <Link href="/visa"
-              className="at-btn-solid w-full px-6 py-3.5 text-sm">
-              Servis Visa <ArrowRight size={15} />
-            </Link>
-            <Link href="/custom-trip"
+            <a href={consultationHref} target={waNumber ? "_blank" : undefined} rel={waNumber ? "noreferrer" : undefined}
               className="at-btn w-full px-6 py-3.5 text-sm">
-              Custom Trip <ArrowRight size={15} />
-            </Link>
+              Konsultasi WhatsApp <ArrowRight size={15} />
+            </a>
             <p className="text-[12px] leading-relaxed mt-1 opacity-80"
               style={{ color: "var(--at-subtext)" }}>
-              {t("hero_subtitle", "Destinasi pilihan, paket lengkap & terpercaya.")}
+              {atlasHeroSubtitle}
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-                Paket Lengkap
+                Visa dibantu
               </span>
               <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
-                Terpercaya
+                Itinerary realistis
               </span>
             </div>
           </div>
+        </div>
+        <div className="mt-6 grid grid-cols-2 border border-b-0 border-r-0 sm:grid-cols-4 lg:mt-10" style={{ borderColor: "var(--at-border)" }}>
+          {atlasProofs.map((proof) => (
+            <div key={proof.label} className="border-b border-r px-3 py-3 sm:px-4" style={{ borderColor: "var(--at-border)" }}>
+              <p className="text-lg font-bold leading-none sm:text-2xl" style={{ color: "var(--at-text)" }}>{proof.value}</p>
+              <p className="mt-1 text-[11px] leading-snug sm:text-xs" style={{ color: "var(--at-subtext)" }}>{proof.label}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

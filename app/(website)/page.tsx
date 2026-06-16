@@ -41,8 +41,8 @@ const getData = unstable_cache(async () => {
     prisma.companyInfo.findMany(),
     prisma.testimonial.findMany({ where: { published: true, category: "trip" }, orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
-  // Sudah difilter di query, tinggal urut: tanggal terdekat dulu, open-trip
-  // (tripDate null) di paling belakang.
+  // Sudah difilter di query, tinggal urut: pinned + niche utama
+  // (Rusia/Asia Tengah/Aurora) dulu, lalu tanggal terdekat.
   const tours = [...toursRaw].sort(compareFeaturedTourOrder).slice(0, 9);
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
