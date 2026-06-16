@@ -564,13 +564,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <div className={isOutlined ? `${pfx}-card p-4 sm:p-5` : "rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5"}>
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <h2
-                        className="flex min-w-0 items-center gap-2 text-[15px] font-black leading-tight text-gray-900 dark:text-white sm:text-lg"
+                        className="min-w-0 text-[15px] font-black leading-tight text-gray-900 dark:text-white sm:text-lg"
                         style={isOutlined ? { color: tText } : undefined}
                       >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300">
-                          <CheckCircle size={15} />
-                        </span>
-                        <span>Sudah Termasuk</span>
+                        Sudah Termasuk
                       </h2>
                       <span
                         className="shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold leading-5 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"
@@ -597,13 +594,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <div className={isOutlined ? `${pfx}-card p-4 sm:p-5` : "rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5"}>
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <h2
-                        className="flex min-w-0 items-center gap-2 text-[15px] font-black leading-tight text-gray-900 dark:text-white sm:text-lg"
+                        className="min-w-0 text-[15px] font-black leading-tight text-gray-900 dark:text-white sm:text-lg"
                         style={isOutlined ? { color: tText } : undefined}
                       >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500 dark:bg-rose-500/10 dark:text-rose-300">
-                          <XCircle size={15} />
-                        </span>
-                        <span>Tidak Termasuk</span>
+                        Tidak Termasuk
                       </h2>
                       <span
                         className="shrink-0 rounded-full border border-rose-100 bg-rose-50 px-2 py-0.5 text-[10px] font-bold leading-5 text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
