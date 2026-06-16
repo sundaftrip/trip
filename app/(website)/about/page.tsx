@@ -37,33 +37,34 @@ function getGalleryImages(): string[] {
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
-  description: "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.",
+  description: "Cerita Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora untuk traveler Indonesia yang ingin berangkat tanpa drama yang tidak perlu.",
   alternates: { canonical: "https://sundaftrip.com/about" },
 };
 
 /* ── Default fallbacks (dipakai kalau admin belum mengisi CMS) ── */
 const DEFAULT_DESTINATIONS = [
-  { label: "Rusia", sub: "Moskow · St. Petersburg · Trans-Siberian" },
-  { label: "Kazakhstan", sub: "Almaty · Astana · Danau Kaindy" },
-  { label: "Kyrgyzstan", sub: "Bishkek · Issyk-Kul · Song Kol" },
+  { label: "Rusia", sub: "Moskow · St. Petersburg · Murmansk · Teriberka" },
+  { label: "Aurora Borealis", sub: "Berburu cahaya utara tanpa harus nebak semua sendiri" },
+  { label: "Kazakhstan", sub: "Almaty · Astana · Danau Kaindy · Charyn Canyon" },
   { label: "Uzbekistan", sub: "Tashkent · Samarkand · Bukhara" },
+  { label: "Kyrgyzstan", sub: "Bishkek · Issyk-Kul · Song Kol" },
   { label: "Tajikistan", sub: "Dushanbe · Pamir Highway" },
-  { label: "Aurora Borealis", sub: "Tromsø · Murmansk · Lapland" },
 ];
 
 const VALUE_ICONS = [Users, ShieldCheck, Heart, Sparkles];
 
 const DEFAULT_VALUES = [
-  { title: "Grup Kecil, Pengalaman Besar", desc: "Maksimal 10–12 orang per keberangkatan. Bukan rombongan bus, perjalanan yang terasa personal." },
-  { title: "Pendampingan Penuh",           desc: "Dari proses visa, tiket, akomodasi, hingga kepulangan, semuanya kami handle dengan transparan." },
-  { title: "Itinerary Manusiawi",          desc: "Tidak terburu-buru, tidak terlalu padat. Kami beri ruang untuk menikmati, bukan sekadar centang daftar." },
-  { title: "Informasi Terkini",            desc: "Kami update kondisi visa, situasi lapangan, dan tips lokal sebelum setiap keberangkatan." },
+  { title: "Grup kecil, cerita besar", desc: "Bukan rombongan bus yang buru-buru turun foto lalu naik lagi. Ritmenya kami jaga supaya tetap enak dinikmati." },
+  { title: "Visa dibantu dari awal",    desc: "Kami bantu cek dokumen, alur pengajuan, dan risiko yang perlu kamu tahu sebelum berangkat." },
+  { title: "Itinerary tetap manusiawi", desc: "Ada waktu explore, ada waktu istirahat, ada ruang buat benar-benar merasa sedang jalan-jalan." },
+  { title: "Update kondisi lapangan",   desc: "Sebelum berangkat, kami cek lagi cuaca, visa, rute, dan situasi destinasi." },
 ];
 
 const DEFAULT_STORY = [
-  "Kami mulai dengan satu paket ke Moskow dan St. Petersburg, di saat kebanyakan agen wisata Indonesia masih fokus di Eropa Barat dan Asia Tenggara. Hasilnya? Peserta kami pulang dengan cerita yang tidak bisa mereka temukan di majalah travel mana pun.",
-  "Dari sana kami meluas. Kazakhstan dengan danau-danau terpencilnya. Uzbekistan dengan Samarkand yang biru. Kyrgyzstan yang masih sangat jarang disentuh traveler Indonesia. Tajikistan dengan jalan Pamir yang legendaris. Dan aurora borealis di Tromsø yang membuat kamera gemetar.",
-  "Lebih dari 1500 traveler telah kami tangani langsung di lapangan, lintas tahun, lintas musim, dari Rusia hingga Asia Tengah. Pengalaman operasional itulah yang kini menjadi fondasi cara kami merancang setiap perjalanan.",
+  "Sundaftrip berawal dari rasa penasaran sama tempat-tempat yang jarang masuk daftar liburan orang Indonesia. Bukan cuma Paris, Tokyo, atau Korea, tapi Rusia saat musim dingin, kota tua di Asia Tengah, dan negeri-negeri bekas Uni Soviet yang ceritanya panjang banget.",
+  "Dari perjalanan kecil, kami belajar satu hal: destinasi terbaik sering bukan yang paling ramai di timeline, tapi yang bikin kamu pulang bawa cerita berbeda.",
+  "Lama-lama rutenya makin serius. Moskow dan St. Petersburg. Murmansk buat berburu aurora. Kazakhstan dengan danau birunya. Uzbekistan dengan Samarkand yang megah. Kyrgyzstan yang alamnya masih liar. Tajikistan dengan jalan Pamir yang legend banget.",
+  "Sekarang 1500+ traveler Indonesia sudah kami bantu berangkat. Ada yang pertama kali ke Rusia, ada yang deg-degan urus visa, ada juga yang pulang-pulang malah ngajak keluarga dan teman buat ikut batch berikutnya.",
 ];
 
 async function getData() {
@@ -148,10 +149,10 @@ export default async function AboutPage() {
     : "border-t border-gray-200 dark:border-gray-800 my-12";
 
   const STATS = [
-    { value: "1500+", label: "Traveler yang kami tangani di lapangan" },
-    { value: "1000+", label: "Pemohon visa yang kami bantu" },
+    { value: "1500+", label: "Traveler Indonesia sudah kami dampingi" },
+    { value: "1000+", label: "Pemohon visa kami bantu" },
     { value: "99%", label: "Approval rate pengurusan visa" },
-    { value: `${blogCount || "10"}+`, label: "Artikel perjalanan ditulis tim kami" },
+    { value: `${blogCount || "10"}+`, label: "Artikel perjalanan dari tim kami" },
   ];
 
   return (
@@ -183,13 +184,13 @@ export default async function AboutPage() {
           <h1
             className={`text-4xl lg:text-5xl font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Spesialis perjalanan ke Rusia &amp; negeri pecahan Uni Soviet
+            Jalan ke Rusia, Asia Tengah, sampai aurora, tanpa drama yang gak perlu
           </h1>
 
           <p
             className={`text-lg leading-relaxed max-w-2xl ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
-            {tagline || `Bukan sekadar menyusun itinerary — kami juga berpengalaman mengurus visa dan dokumen perjalanannya, dari persiapan sampai pengajuan, termasuk untuk negara yang visanya kerap dianggap rumit.`}
+            {tagline || `Visa, bahasa, cuaca, rute, sampai pertanyaan "ini aman gak sih?" sering bikin maju-mundur duluan. Sundaf bantu beresin bagian ribetnya, supaya kamu bisa fokus berangkat dan menikmati perjalanannya.`}
           </p>
 
           {nib && (
@@ -205,19 +206,19 @@ export default async function AboutPage() {
             <p
               className={`text-xs font-black uppercase mb-2 ${!isOutlined ? "text-blue-700 dark:text-blue-300" : ""}`}
               style={isOutlined ? { color: headClr } : undefined}>
-              Profil Brand Resmi
+              Profil brand formal
             </p>
             <p
               className={`text-sm leading-relaxed mb-4 ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`}
               style={isOutlined ? { color: subClr } : undefined}>
-              Halaman ini menjelaskan cerita dan cara kerja kami. Untuk jawaban singkat tentang identitas brand, nama legal, layanan utama, dan rute spesialisasi Sundaf Trip, gunakan profil brand resmi.
+              Halaman ini dibuat lebih santai untuk traveler. Untuk versi formal tentang identitas brand, nama legal, layanan utama, dan rute spesialisasi Sundaf Trip, buka profil resmi kami.
             </p>
             <Link
               href="/sundaf-trip"
               className={`inline-flex items-center justify-center gap-2 px-4 py-2 font-black text-sm transition ${
                 isOutlined ? `${pfx}-btn` : "rounded-xl bg-blue-600 text-white hover:bg-blue-700"
               }`}>
-              Buka Profil Sundaf Trip <ArrowRight size={15} />
+              Buka profil resmi <ArrowRight size={15} />
             </Link>
           </div>
         </div>
@@ -249,7 +250,7 @@ export default async function AboutPage() {
           <h2
             className={`text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Cerita Kami
+            Awalnya dari rasa penasaran
           </h2>
           <div className={`space-y-4 text-base leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
@@ -267,11 +268,11 @@ export default async function AboutPage() {
               <h2
                 className={`text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
                 style={isOutlined ? { color: headClr } : undefined}>
-                Momen Perjalanan
+                Bukti jalan, bukan cuma cerita
               </h2>
               <p className="text-sm mb-6"
                 style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
-                Cuplikan dari perjalanan peserta kami. Klik untuk melihat lebih dekat.
+                Cuplikan perjalanan peserta kami di Rusia, Asia Tengah, dan rute aurora. Klik untuk lihat lebih dekat.
               </p>
               <GalleryZoom images={gallery} />
             </div>
@@ -286,7 +287,7 @@ export default async function AboutPage() {
           <h2
             className={`text-2xl font-black mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Destinasi yang Kami Spesialisasi
+            Rute yang sering bikin traveler penasaran
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {destinations.map(({ label, sub }: { label: string; sub: string }) => (
@@ -319,7 +320,7 @@ export default async function AboutPage() {
           <h2
             className={`text-2xl font-black mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Cara Kami Bekerja
+            Cara kami bikin trip tetap waras
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {values.map(({ Icon, title, desc }: { Icon: React.ElementType; title: string; desc: string }) => (
@@ -353,11 +354,11 @@ export default async function AboutPage() {
           <h2
             className={`text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Konsultasi Gratis
+            Cerita dulu rencana kamu
           </h2>
           <p className="text-sm mb-6"
             style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
-            Isi formulir ini, ceritakan tujuan dan rencana Anda, tim kami akan menghubungi via WhatsApp.
+            Tulis tujuan, tanggal, jumlah peserta, dan budget kasar. Tim Sundaf akan follow up via WhatsApp.
           </p>
           <InquiryForm />
         </div>
@@ -370,11 +371,11 @@ export default async function AboutPage() {
           <h2
             className={`text-2xl font-black mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Siap Merencanakan Perjalanan?
+            Mau coba rute yang beda dari orang-orang?
           </h2>
           <p className="text-sm mb-6"
             style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
-            Konsultasi gratis, ceritakan tujuan dan budget Anda, kami bantu rancang itinerary terbaik.
+            Ceritakan rencana, budget, dan tanggal kamu. Kami bantu lihat rute yang paling masuk akal.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
