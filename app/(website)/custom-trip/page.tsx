@@ -8,7 +8,6 @@ import {
   CreditCard,
   MapPinned,
   Plane,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -178,7 +177,7 @@ export default async function CustomTripPage() {
               className={`max-w-3xl text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.02] ${!isAtlas ? "text-gray-950 dark:text-white" : ""}`}
               style={textStyle}
             >
-              Rute custom yang jelas dari brief sampai berangkat
+              Custom Trip Sesuai Tanggal, Rute, dan Budget Anda
             </h1>
             <p
               className={`mt-5 max-w-2xl text-base sm:text-lg leading-relaxed ${!isAtlas ? "text-gray-600 dark:text-gray-400" : ""}`}
@@ -231,7 +230,6 @@ export default async function CustomTripPage() {
                 Brief singkat, keputusan lebih cepat
               </h2>
             </div>
-            <Sparkles className="hidden sm:block" size={24} style={isAtlas ? { color: "var(--site-accent)" } : undefined} />
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
