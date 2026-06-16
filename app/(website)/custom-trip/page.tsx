@@ -177,7 +177,9 @@ export default async function CustomTripPage() {
               className={`max-w-3xl text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.02] ${!isAtlas ? "text-gray-950 dark:text-white" : ""}`}
               style={textStyle}
             >
-              Custom Trip Sesuai Tanggal, Rute, dan Budget Anda
+              <span className="sundaf-title-stabilo">
+                Custom Trip Sesuai Tanggal, Rute, dan Budget Anda
+              </span>
             </h1>
             <p
               className={`mt-5 max-w-2xl text-base sm:text-lg leading-relaxed ${!isAtlas ? "text-gray-600 dark:text-gray-400" : ""}`}
