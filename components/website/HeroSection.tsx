@@ -99,12 +99,10 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     STRATEGIC_HERO.subtitle,
     GENERIC_HERO_SUBTITLE,
   );
-  const consultationHref = waNumber
-    ? `https://wa.me/${waNumber}?text=${encodeURIComponent("Halo Sundaf, saya ingin konsultasi tour Rusia / Asia Tengah / Aurora.")}`
-    : "/#contact";
   const atlasActions = [
-    { href: "/tours", label: "Jadwal tour", value: "Rusia, Asia Tengah, aurora", external: false },
-    { href: consultationHref, label: "Konsultasi", value: "Rute, tanggal, dan budget via WhatsApp", external: Boolean(waNumber) },
+    { href: "/tours", label: "Tour", value: "Jadwal & paket siap dibooking", external: false },
+    { href: "/visa", label: "Layanan visa", value: "Dokumen & itinerary dibantu", external: false },
+    { href: "/custom-trip", label: "Custom trip", value: "Rute sesuai tanggal & budget", external: false },
   ];
   const atlasProofs = [
     { value: "1500+", label: "traveler Indonesia" },
@@ -516,12 +514,16 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           <div className="lg:w-[300px] shrink-0 flex flex-col gap-2.5 hero-fade-up">
             <Link href="/tours"
               className="at-btn-solid w-full px-6 py-3.5 text-sm">
-              Cek Jadwal Tour <ArrowRight size={15} />
+              Tour <ArrowRight size={15} />
             </Link>
-            <a href={consultationHref} target={waNumber ? "_blank" : undefined} rel={waNumber ? "noreferrer" : undefined}
+            <Link href="/visa"
+              className="at-btn-solid w-full px-6 py-3.5 text-sm">
+              Layanan Visa <ArrowRight size={15} />
+            </Link>
+            <Link href="/custom-trip"
               className="at-btn w-full px-6 py-3.5 text-sm">
-              Konsultasi WhatsApp <ArrowRight size={15} />
-            </a>
+              Custom Trip <ArrowRight size={15} />
+            </Link>
             <p className="text-[12px] leading-relaxed mt-1 opacity-80"
               style={{ color: "var(--at-subtext)" }}>
               {atlasHeroSubtitle}
