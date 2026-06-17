@@ -491,7 +491,9 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
                   <>
                     <div className="min-w-0">
                       <p className="text-[11px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>{label}</p>
-                      <p className="truncate text-[13px] font-semibold" style={{ color: "var(--at-text)" }}>{value}</p>
+                      <p className="text-[13px] font-semibold leading-snug" style={{ color: "var(--at-text)" }}>
+                        <span className="atlas-action-stabilo">{value}</span>
+                      </p>
                     </div>
                     <CheckCircle2 size={16} className="shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: "var(--site-accent)" }} />
                   </>

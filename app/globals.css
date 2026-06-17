@@ -2261,6 +2261,46 @@ a.gl-pill:has(svg:only-child) {
   box-decoration-break: clone;
 }
 
+.atlas-action-stabilo {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+  color: #111827;
+  text-shadow: none;
+}
+.atlas-action-stabilo::before,
+.atlas-action-stabilo::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  z-index: -1;
+  width: 120%;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.atlas-action-stabilo::before {
+  top: 0.16em;
+  height: 1.12em;
+  background-image:
+    linear-gradient(100deg, transparent 0%, rgba(251, 211, 36, 0.9) 8%, rgba(251, 211, 36, 0.82) 92%, transparent 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 70' preserveAspectRatio='none'%3E%3Cpath d='M6 24 C58 12 113 20 174 13 C238 5 300 19 365 12 C423 6 475 14 514 10 L511 58 C451 65 389 54 324 61 C261 67 200 55 135 62 C78 67 34 58 7 61 Z' fill='%23fbd324' fill-opacity='0.78'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transform: translateX(-50%) rotate(-1.4deg) skewX(-4deg);
+  border-radius: 0.18em 0.32em 0.2em 0.26em;
+}
+.atlas-action-stabilo::after {
+  bottom: -0.22em;
+  height: 0.32em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 28' preserveAspectRatio='none'%3E%3Cpath d='M5 15 C60 6 112 22 170 12 C233 2 292 20 356 10 C420 1 468 17 515 8' fill='none' stroke='%23f59e0b' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 21 C84 12 128 25 190 18 C248 12 307 24 369 15 C430 7 474 21 504 14' fill='none' stroke='%23f59e0b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.86'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transform: translateX(-50%) rotate(1.1deg);
+  opacity: 0.9;
+}
+
 /* ── WhyGallery: marquee foto homepage (arah kanan-kiri-kanan) ── */
 /* ===== Galeri marquee gaya portfolio (lattice editorial) =====
    2 baris berlawanan arah, foto rasio natural (tinggi tetap, lebar ikut foto),
