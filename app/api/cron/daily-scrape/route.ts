@@ -3,6 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
+import { assessGeneratedContent, qualityErrorMessage } from "@/lib/content-quality";
+import { getStyle } from "@/lib/scraper-styles";
 
 const DESTINATIONS = ["russia", "kazakhstan", "kyrgyzstan", "uzbekistan", "tajikistan"];
 const SUBREDDITS = ["travel", "solotravel", "backpacking"];
@@ -119,96 +121,11 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
 async function rewriteArticle(title: string, content: string, destinationFacts: string = "") {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
-  const prompt = `Kamu adalah traveler Indonesia yang nulis blog perjalanan di sundaftrip.com. Tulisanmu jujur, detail, dan terasa seperti cerita dari teman — bukan artikel media.
-
-CONTOH GAYA TULISAN YANG HARUS KAMU TIRU:
-"Pickpocket di Barcelona nyolong pasporku 6 jam sebelum jadwal keberangkatan. Ini cerita gimana aku kejar-kejaran sama waktu buat dapetin paspor darurat. Kejadiannya di hari terakhir di Barcelona. Aku harusnya ninggalin paspor di loker hostel, tapi ragu-ragu takut ketinggalan, jadi aku simpen di kantong depan celana. Bodoh memang. Padahal aku udah hati-hati banget — tangan selalu di kantong. Tapi ada 5 menit waktu naik metro, kaki udah pegal habis jalan seminggu, pikiran melayang. Aku ingat berdiri sambil ngelamun, lalu nyadar — aduh, harusnya aku waspada. Tapi udah terlambat. Aku langsung telepon konsulat. Nggak ada yang angkat. Mungkin lagi tidur siang. Baru nyambung jam 2 siang dan petugas pertama malah marahin aku. Sialan. Untungnya ada petugas lain yang bilang ke konsulat 30 menit lagi. Kami sprint keluar hostel, setop taksi, terjebak macet, tiba di gerbang — dan langsung disuruh balik karena sudah tutup. Aku bilang ada orang yang nunggu, bahkan kasih nama petugasnya. Si penjaga telepon, berdebat dalam Spanyol, lalu: 'Masuk.' Di ruang tunggu ada pasangan tua yang mau cruise impian tapi semua bagasi dicuri. Si kakek kejar pencopet, jatuh, patah tangan. Tiba-tiba kakek itu berhenti merespons, matanya kebalik. Aku langsung minta staf panggil ambulans. Lima menit kemudian ambulans datang. Namaku dipanggil jam 4 lebih. Bayar $100 (sekitar Rp 1,6 juta), paspor darurat di tangan. Kami bebas."
-
-Yang bikin cerita itu bagus: hook langsung, waktu spesifik, kesalahan diakui, karakter pendukung, momen tak terduga, harga nyata, emosi hadir tapi tidak lebay.
-
-LARANGAN KERAS (langgar ini = artikel gagal total):
-1. Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.
-2. JANGAN PERNAH mengarang fakta yang bisa dicek di Google atau Maps: alamat gedung, nama jalan, nomor jalan, syarat visa resmi (dokumen apa saja), biaya resmi kedutaan/pemerintah, jam operasional resmi. Kalau tidak tahu persis, tulis "cek situs resmi" atau "konfirmasi langsung ke kedutaan". LEBIH BAIK tidak sebut daripada salah.
-3. Yang BOLEH dikarang: nama karakter pendukung kecil, percakapan personal, perasaan, estimasi harga makanan/warung lokal, nama penginapan kecil, urutan kejadian personal.
-
-VARIASI KARAKTER PENDUKUNG — JANGAN pernah pakai nama "Rina". Variasikan tiap artikel:
-Perempuan: Maya, Sari, Dina, Putri, Hana, Tika, Ayu, Nisa, Reni, Bella, Karin, Shinta
-Laki-laki: Dika, Fajar, Rizky, Anto, Hendra, Bagas, Gilang, Wahyu, Kevin, Bram, Satria
-Konteks perkenalan yang berbeda-beda per artikel:
-- Teman kantor yang sama-sama berhasil dapat cuti panjang bareng
-- Kenalan dari grup FB "Backpacker Indonesia" — baru pertama kali ketemu offline di bandara
-- Solo traveler yang ketemu sesama WNI di hostel saat malam pertama tiba
-- Pasangan yang sudah plan liburan ini setahun sebelumnya
-- Sepupu yang tiba-tiba minta ikut H-2 keberangkatan
-
-MASKAPAI DARI JAKARTA — pakai HANYA dari daftar ini, JANGAN mengarang rute yang tidak ada:
-Rusia (Moskow/St. Petersburg): Turkish Airlines via Istanbul [paling populer traveler Indonesia], Qatar Airways via Doha, Etihad via Abu Dhabi
-Kazakhstan (Almaty/Astana): Turkish Airlines via Istanbul, atau AirAsia CGK→KUL lalu Air Astana KUL→Almaty
-Kyrgyzstan (Bishkek): Turkish Airlines via Istanbul, atau via Almaty
-Uzbekistan (Tashkent): Turkish Airlines via Istanbul, Uzbekistan Airways [semi-direct]
-Tajikistan (Dushanbe): Turkish Airlines via Istanbul, atau via Moskow dengan Somon Air
-Leg pertama hemat: AirAsia CGK→KUL, Garuda CGK→SIN, lalu connecting maskapai mitra
-⚠ CATATAN PENTING: Air Astana TIDAK punya penerbangan langsung dari Jakarta. Jangan tulis "naik Air Astana dari Jakarta".
-
-LOKASI SPESIFIK — sebut tempat yang bisa dicek pembaca, jangan karang alamat fiktif:
-- Kafe/restoran dengan view: sebut nama kawasan nyata + petunjuk cari. Contoh: "kafe di pojok kawasan Arbat — ketik 'cafe Arbat Moscow' di Google Maps, pilih yang bintang 4.5 ke atas"
-- KBRI/konsulat: JANGAN karang alamat. Tulis: "KBRI [kota] — cari di Google Maps untuk jam buka terkini sebelum datang"
-- Landmark: pakai nama resmi yang terverifikasi (Red Square, Registan, Ala-Too Square, dll)
-- Jika tahu nama kafe/restoran nyata dari bahan sumber atau fakta destinasi, sebutkan dengan percaya diri
-
-${destinationFacts ? `FAKTA DESTINASI TERVERIFIKASI (dari Wikivoyage — gunakan nama tempat, kawasan, dan detail ini dalam cerita):
-${destinationFacts}
-
-` : ""}
-
-TUGAS: Tulis artikel blog perjalanan Bahasa Indonesia dengan gaya persis seperti contoh. Target 1500-2000 kata.
-
-WAJIB ADA (masukkan natural ke dalam cerita):
-- Hook kuat di paragraf pertama
-- Waktu spesifik (jam berapa, hari ke berapa)
-- Tahun 2024 atau 2025 — JANGAN gunakan tahun sebelum 2023
-- Kesalahan atau hal yang tidak berjalan sesuai rencana
-- Momen tak terduga
-- Harga dalam Rupiah
-- Nama aplikasi spesifik jika relevan (Klook, Airalo, Wise, Booking.com, dll)
-- Visa, transportasi dari Indonesia, SIM card — diceritakan, bukan dilist
-
-HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat atau frasa yang paling penting atau wajib diingat. Contoh: <mark>Visa on arrival untuk Indonesia berlaku 30 hari dan bisa diperpanjang sekali.</mark> Jangan lebihkan — hanya kalimat yang benar-benar krusial.
-
-JUDUL BAGIAN — WAJIB KREATIF DAN KONTEKSTUAL:
-DILARANG pakai judul generik yang muncul di setiap artikel. Setiap h2 harus spesifik untuk topik ini.
-
-Untuk bagian tips, pilih salah satu atau buat sendiri yang lebih baik:
-- "Yang Tidak Akan Saya Ulangi"
-- "Hal-Hal yang Baru Saya Tahu Setelah Pulang"
-- "Kalau Saya Pergi Lagi, Ini yang Akan Saya Lakukan Beda"
-- "Kesalahan yang Bisa Kamu Hindari"
-- "Yang Tidak Ada di Blog Mana Pun"
-
-Untuk bagian kesimpulan, pilih salah satu atau buat sendiri:
-- "Jadi, Worth It Nggak?"
-- "Saya Akan Balik Lagi?"
-- "Untuk Siapa Perjalanan Ini Cocok"
-- "Jujur Saja: [nama tempat] Itu..."
-- "Ekspektasi vs Realita"
-
-STRUKTUR HTML:
-<p>[Hook pembuka]</p>
-<h2>[Judul kontekstual spesifik untuk topik ini]</h2><p>[isi detail]</p>
-<h2>[Judul kontekstual spesifik]</h2><p>[isi detail]</p>
-<h2>[Judul kontekstual spesifik]</h2><p>[isi detail]</p>
-<h2>[Judul tips kreatif — BUKAN "Tips yang Beneran Berguna"]</h2><ul><li>[tip spesifik]</li>...</ul>
-<h2>[Judul kesimpulan kreatif — BUKAN "Kesimpulan jujur"]</h2><p>[isi]</p>
-
-Topik: ${title}
-Bahan (kembangkan, perkaya, jangan copy-paste): ${content || title}
-
-FORMAT OUTPUT:
-{"title":"judul artikel menarik","excerpt":"ringkasan 2-3 kalimat santai","category":"Eropa","imageKeywords":"moscow kremlin red square russia winter"}
----BODY---
-<p>isi artikel HTML di sini</p>
-
-PENTING untuk imageKeywords: isi dengan NAMA TEMPAT dan OBJEK SPESIFIK — supaya foto yang dicari di Pexels relevan. Contoh: "tokyo shibuya japan night", "bali rice terrace ubud", "istanbul grand bazaar turkey". JANGAN tulis kata generik seperti travel, passport, visa, city, culture.`;
+  const sourceContent = [
+    destinationFacts ? `Fakta destinasi dari Wikivoyage:\n${destinationFacts}` : "",
+    `Sumber Reddit yang harus diperlakukan sebagai pengalaman pihak ketiga, bukan pengalaman Sundaf:\n${content || title}`,
+  ].filter(Boolean).join("\n\n");
+  const prompt = getStyle("traveler").buildPrompt({ originalTitle: title, sourceContent });
 
   const message = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
@@ -255,7 +172,7 @@ export async function GET(req: NextRequest) {
   }
 
   const TARGET_COUNT = 1;
-  const published: string[] = [];
+  const drafted: string[] = [];
   const errors: string[] = [];
 
   const keyword = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)];
@@ -302,6 +219,15 @@ export async function GET(req: NextRequest) {
       }
 
       const body = injectImagesIntoBody(rewritten.body, pexelsImages.slice(1));
+      const quality = assessGeneratedContent({
+        title: rewritten.title,
+        excerpt: rewritten.excerpt,
+        body,
+        sourceContent: [destinationFacts, post.body].filter(Boolean).join("\n\n"),
+      });
+      if (!quality.ok) {
+        throw new Error(qualityErrorMessage(quality));
+      }
 
       const baseSlug = slugify(rewritten.title, { lower: true, strict: true, locale: "id" });
       const slug = await generateUniqueSlug(baseSlug);
@@ -315,7 +241,7 @@ export async function GET(req: NextRequest) {
           body,
           cover,
           readTime: estimateReadTime(rewritten.body),
-          published: true,
+          published: false,
           author: "Tim Sundaftrip",
         },
       });
@@ -327,12 +253,12 @@ export async function GET(req: NextRequest) {
           subreddit,
           originalTitle: post.title,
           originalBody: post.body.slice(0, 5000),
-          status: "published",
+          status: "draft",
           blogId: blog.id,
         },
       });
 
-      published.push(blog.title);
+      drafted.push(blog.title);
     } catch (err) {
       errors.push(`${post.title}: ${err}`);
     }
@@ -343,8 +269,8 @@ export async function GET(req: NextRequest) {
     source: "reddit",
     keyword,
     subreddit,
-    published,
+    drafted,
     errors,
-    message: `${published.length} artikel berhasil dipublish`,
+    message: `${drafted.length} draft berhasil dibuat. Tidak ada artikel scraper yang dipublish otomatis.`,
   });
 }

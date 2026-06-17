@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
@@ -42,28 +41,6 @@ async function fetchExtracts(pageids: number[]): Promise<Map<number, string>> {
   return map;
 }
 
-async function generateAiTopics(keyword: string): Promise<WVPage[]> {
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{
-      role: "user",
-      content: `Buat 50 ide judul artikel blog travel tentang "${keyword || "destinasi wisata populer dunia"}".
-Setiap judul harus unik, spesifik, dan menarik — nama kota/negara/aktivitas konkret.
-Contoh: "Tokyo", "Santorini", "Backpacking Vietnam 2 Minggu", "Safari di Kenya", "Malam Pertama di Istanbul"
-
-Kembalikan HANYA array JSON: ["judul1","judul2",...]`,
-    }],
-    temperature: 0.9,
-    max_tokens: 2000,
-  });
-  const text = completion.choices[0]?.message?.content ?? "";
-  const match = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").match(/\[[\s\S]*\]/);
-  if (!match) return [];
-  const titles = JSON.parse(match[0]) as string[];
-  return titles.slice(0, 50).map((title, i) => ({ pageid: -(i + 1), title, snippet: "" }));
-}
-
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -74,8 +51,7 @@ export async function POST(req: NextRequest) {
   const { keyword = "" } = body;
   const kw = keyword.trim();
 
-  let pages: WVPage[] = [];
-  let source: "wikivoyage" | "ai" = "wikivoyage";
+  const pages: WVPage[] = [];
   let wvError = "";
 
   // Try Wikivoyage
@@ -105,24 +81,15 @@ export async function POST(req: NextRequest) {
     wvError = err instanceof Error ? err.message : String(err);
   }
 
-  // Fall back to AI if Wikivoyage failed or returned nothing
   if (pages.length === 0) {
-    if (!process.env.GROQ_API_KEY) {
-      return NextResponse.json({
-        error: `Wikivoyage gagal (${wvError || "tidak ada hasil"}) dan GROQ_API_KEY belum diset. Set GROQ_API_KEY di Vercel environment variables.`,
-      }, { status: 500 });
-    }
-    try {
-      pages = await generateAiTopics(kw);
-      source = "ai";
-    } catch (aiErr) {
-      return NextResponse.json({
-        error: `Wikivoyage: ${wvError || "kosong"}. AI fallback: ${aiErr instanceof Error ? aiErr.message : String(aiErr)}`,
-      }, { status: 500 });
-    }
+    return NextResponse.json({
+      results: [],
+      total: 0,
+      source: "wikivoyage",
+      warning: `Wikivoyage tidak menemukan sumber untuk "${kw || "semua destinasi"}"${wvError ? ` (${wvError})` : ""}. Coba keyword destinasi yang lebih spesifik.`,
+    });
   }
 
-  // Fetch extracts for Wikivoyage pages (skip AI pages with negative ids)
   const realPages = pages.filter((p) => p.pageid > 0);
   const extractMap = new Map<number, string>();
   if (realPages.length > 0) {
@@ -147,29 +114,24 @@ export async function POST(req: NextRequest) {
   const existingMap = new Map(existingUrls.map((e) => [e.sourceUrl, e]));
 
   const results = pages.map((p) => {
-    const isAi = p.pageid < 0;
-    const url = isAi ? `ai://generated/${Date.now()}${p.pageid}` : toUrl(p.title);
+    const url = toUrl(p.title);
     const preview = extractMap.get(p.pageid) || p.snippet?.replace(/<[^>]+>/g, " ").trim() || p.title;
     return {
       sourceUrl: url,
-      sourcePlatform: isAi ? "ai-generated" : "wikivoyage",
-      subreddit: isAi ? "AI Generated" : "Wikivoyage",
+      sourcePlatform: "wikivoyage",
+      subreddit: "Wikivoyage",
       originalTitle: p.title,
       originalBody: preview,
       coverImage: "",
-      author: isAi ? "AI Generated" : "Wikivoyage",
+      author: "Wikivoyage",
       score: null,
       numComments: null,
       alreadyImported: existingMap.has(url),
       importStatus: existingMap.get(url)?.status ?? null,
       blogId: existingMap.get(url)?.blogId ?? null,
-      isAiGenerated: isAi,
+      isAiGenerated: false,
     };
   });
 
-  const warning = source === "ai"
-    ? `Wikivoyage tidak tersedia (${wvError || "kosong"}). Menampilkan ${results.length} topik AI — klik Rewrite untuk buat artikel.`
-    : undefined;
-
-  return NextResponse.json({ results, total: results.length, source, warning });
+  return NextResponse.json({ results, total: results.length, source: "wikivoyage" });
 }

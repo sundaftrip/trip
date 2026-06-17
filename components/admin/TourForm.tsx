@@ -1075,14 +1075,14 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Deskripsi Tour</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-          Tampil di kartu tour beranda (excerpt 140 char) dan halaman detail (lengkap). Tulis dengan gaya menggairahkan — ajak pembaca membayangkan perjalanannya. Tambahkan bonus &amp; opsional di baris bawah dengan prefix <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">+</code> atau <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">&amp;</code>.
+          Tampil di kartu tour beranda (excerpt 140 char) dan halaman detail (lengkap). Tulis konkret: rute utama, tempo perjalanan, musim, tipe peserta, dan hal yang benar-benar termasuk. Hindari klaim generik seperti &quot;menakjubkan&quot;, &quot;perjalanan impian&quot;, atau &quot;tak terlupakan&quot; tanpa detail pendukung. Tambahkan bonus &amp; opsional di baris bawah dengan prefix <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">+</code> atau <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">&amp;</code>.
         </p>
         <Field label="Cerita Trip">
           <textarea
             className="input min-h-[220px]"
             value={form.description ?? ""}
             onChange={(e) => set("description", e.target.value)}
-            placeholder={`Contoh:\n\nNungguin ya? Kali ini Sundaf mengajak ke Canada yang terkenal dengan formasi pegunungan yang megah bertabur destinasi wisata alam yang membuat siapapun takjub. Hutan-hutan hijau lebat, sungai dan danau sebening kristal, gletser abadi, hingga bangunan historical yang menanti kunjunganmu menyapa langsung, "HELLO...CANADA"\n\n+ San Francisco & Seattle\n& Tokyo (free time saat kepulangan)\nOPTIONAL: ALASKA`}
+            placeholder={`Contoh:\n\nRute ini fokus ke Banff dan Jasper dengan ritme santai untuk peserta yang ingin banyak waktu di alam, bukan pindah kota setiap hari. Cocok untuk keluarga atau small group yang ingin pegunungan, danau, dan scenic drive tanpa itinerary terlalu padat. Catatan penting: beberapa spot bergantung cuaca dan musim, jadi urutan kunjungan bisa disesuaikan di lapangan.\n\n+ San Francisco & Seattle\n& Tokyo (free time saat kepulangan)\nOPTIONAL: ALASKA`}
           />
         </Field>
       </div>

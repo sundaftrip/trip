@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, RefreshCw, CheckCircle, Clock, Sparkles } from "lucide-react";
+import { ExternalLink, RefreshCw, CheckCircle, Clock } from "lucide-react";
 
 export interface ScrapedPost {
   sourceUrl: string;
@@ -30,6 +30,7 @@ interface Props {
 export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Props) {
   const isDone = post.rewriteStatus === "done" || post.alreadyImported;
   const isLoading = post.rewriteStatus === "loading";
+  const hasPublicSource = post.sourceUrl && !post.sourceUrl.startsWith("ai://");
 
   return (
     <div
@@ -57,11 +58,7 @@ export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Pro
             <h3 className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-2 leading-snug">
               {post.originalTitle}
             </h3>
-            {post.isAiGenerated ? (
-              <span className="shrink-0 inline-flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-1.5 py-0.5 rounded font-medium">
-                <Sparkles size={11} /> AI
-              </span>
-            ) : (
+            {hasPublicSource && (
               <a
                 href={post.sourceUrl}
                 target="_blank"
@@ -77,11 +74,11 @@ export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Pro
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
             <span className="capitalize bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded font-medium">
-              {post.isAiGenerated ? "AI Idea" : post.sourcePlatform}
+              {hasPublicSource ? post.sourcePlatform : "Tanpa sumber"}
             </span>
-            {!post.isAiGenerated && post.subreddit && <span>r/{post.subreddit}</span>}
-            {!post.isAiGenerated && post.score != null && <span>↑ {post.score.toLocaleString()}</span>}
-            {!post.isAiGenerated && post.numComments != null && <span>{post.numComments} komentar</span>}
+            {hasPublicSource && post.subreddit && <span>r/{post.subreddit}</span>}
+            {hasPublicSource && post.score != null && <span>↑ {post.score.toLocaleString()}</span>}
+            {hasPublicSource && post.numComments != null && <span>{post.numComments} komentar</span>}
           </div>
 
           {/* Preview */}
@@ -96,7 +93,7 @@ export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Pro
                 <CheckCircle size={13} />
                 {post.blogId ? (
                   <a href={`/admin/blog/${post.blogId}`} className="underline hover:no-underline">
-                    Sudah diimport — Edit draft
+                    Draft sudah dibuat
                   </a>
                 ) : (
                   "Sudah diimport"
@@ -105,7 +102,7 @@ export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Pro
             ) : isLoading ? (
               <span className="inline-flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400">
                 <RefreshCw size={13} className="animate-spin" />
-                Sedang ditulis ulang…
+                Menyusun draft…
               </span>
             ) : (
               <button
@@ -113,7 +110,7 @@ export default function ScrapedCard({ post, selected, onToggle, onRewrite }: Pro
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
               >
                 <RefreshCw size={12} />
-                Rewrite dengan AI
+                Buat draft berbasis sumber
               </button>
             )}
 

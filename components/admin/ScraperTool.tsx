@@ -181,7 +181,7 @@ export default function ScraperTool() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Scraper Konten</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Ambil artikel destinasi dari <strong>Wikivoyage</strong> (ribuan destinasi dunia), lalu rewrite dengan AI menjadi artikel blog bergaya pengalaman pribadi.
+          Ambil artikel destinasi dari <strong>Wikivoyage</strong>, lalu susun draft berbasis sumber untuk direview sebelum publish.
         </p>
       </div>
 
@@ -257,15 +257,15 @@ export default function ScraperTool() {
             </button>
           </div>
 
-          {/* Style picker — gaya penulisan AI (berlaku saat klik Rewrite) */}
+          {/* Style picker — mode draft (berlaku saat klik buat draft) */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles size={16} className="text-violet-500" />
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Gaya Penulisan AI
+                Mode Draft
               </h3>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                berlaku saat Rewrite
+                berlaku saat buat draft
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -333,7 +333,7 @@ export default function ScraperTool() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition"
                 >
                   <RefreshCw size={14} />
-                  Rewrite {selectedCount} Terpilih
+                  Buat {selectedCount} Draft
                 </button>
               )}
             </div>
@@ -399,7 +399,7 @@ export default function ScraperTool() {
                 <div className="flex items-center gap-2 shrink-0 ml-3">
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      item.status === "rewritten" || item.status === "published"
+                      item.status === "draft" || item.status === "rewritten" || item.status === "published"
                         ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                         : item.status === "rejected"
                         ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"

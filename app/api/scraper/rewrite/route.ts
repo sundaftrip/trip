@@ -6,6 +6,7 @@ import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
 import { getStyle } from "@/lib/scraper-styles";
+import { assessGeneratedContent, hasUsableSource, qualityErrorMessage } from "@/lib/content-quality";
 
 export const maxDuration = 120;
 
@@ -157,6 +158,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "originalTitle dan originalBody diperlukan" }, { status: 400 });
   }
 
+  if (typeof sourceUrl !== "string" || !/^https?:\/\//i.test(sourceUrl.trim())) {
+    return NextResponse.json({ error: "sourceUrl publik wajib ada supaya draft bisa dilacak ke sumber nyata." }, { status: 422 });
+  }
+
+  if (sourcePlatform === "ai-generated" || String(sourceUrl ?? "").startsWith("ai://")) {
+    return NextResponse.json({ error: "Topik tanpa sumber nyata ditolak. Ambil konten dari Wikivoyage atau sumber publik yang bisa dicek." }, { status: 422 });
+  }
+
   const cleanBody = originalBody
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
@@ -169,6 +178,10 @@ export async function POST(req: NextRequest) {
     fetchPexelsImages(originalTitle, 5),
   ]);
   const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;
+
+  if (!hasUsableSource(sourceContent)) {
+    return NextResponse.json({ error: "Sumber terlalu tipis untuk dibuat jadi artikel. Cari sumber yang lebih lengkap dulu." }, { status: 422 });
+  }
 
   const prompt = styleDef.buildPrompt({ originalTitle, sourceContent });
 
@@ -231,6 +244,16 @@ export async function POST(req: NextRequest) {
     ? await fetchPexelsImages(keywords, 5)
     : preFetchedImages;
 
+  const quality = assessGeneratedContent({
+    title: parsed.title,
+    excerpt: parsed.excerpt,
+    body: parsed.body,
+    sourceContent,
+  });
+  if (!quality.ok) {
+    return NextResponse.json({ error: qualityErrorMessage(quality), issues: quality.issues }, { status: 422 });
+  }
+
   // Use Pexels URL directly as cover (stable CDN, no need to mirror)
   let cover = (coverImage as string | undefined) ?? "";
   if (!cover && pexelsImages.length > 0) {
@@ -256,7 +279,7 @@ export async function POST(req: NextRequest) {
       body: parsed.body,
       cover: cover || null,
       readTime: estimateReadTime(parsed.body),
-      published: true,
+      published: false,
       author: "Tim Sundaftrip",
     },
   });
@@ -269,10 +292,10 @@ export async function POST(req: NextRequest) {
       subreddit: subreddit ?? null,
       originalTitle,
       originalBody: originalBody.slice(0, 5000),
-      status: "rewritten",
+      status: "draft",
       blogId: blog.id,
     },
-    update: { status: "rewritten", blogId: blog.id },
+    update: { status: "draft", blogId: blog.id },
   });
 
   await logActivity({
@@ -283,7 +306,7 @@ export async function POST(req: NextRequest) {
     resource: "SCRAPER",
     resourceId: blog.id,
     resourceName: blog.title,
-    detail: `Rewrite dari ${sourcePlatform}: ${originalTitle}`,
+    detail: `Draft berbasis sumber dari ${sourcePlatform}: ${originalTitle}`,
   });
 
   return NextResponse.json({ blog });

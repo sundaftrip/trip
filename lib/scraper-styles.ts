@@ -18,7 +18,7 @@ export interface ScraperStyle {
 }
 
 const OUTPUT_FORMAT_BLOCK = `FORMAT OUTPUT (ikuti persis, jangan tambah teks lain di luar ini):
-{"title":"judul artikel","excerpt":"2-3 kalimat yang bikin orang penasaran","category":"Eropa","imageKeywords":"keyword spesifik nama tempat & objek"}
+{"title":"judul artikel","excerpt":"2-3 kalimat ringkas berbasis fakta sumber","category":"Eropa","imageKeywords":"keyword spesifik nama tempat & objek"}
 ---BODY---
 <p>isi artikel HTML di sini</p>
 
@@ -28,98 +28,54 @@ const HIGHLIGHT_RULE = `HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat
 
 const NO_EMDASH = `Jangan gunakan tanda "—" (em dash). Ganti dengan koma, titik, atau kalimat baru.`;
 
+const SOURCE_GROUNDING_RULES = `ATURAN DASAR SUNDAF:
+1. Jangan pura-pura menjadi traveler yang sudah mengalami perjalanan ini. Tidak boleh memakai "saya pergi", "aku menginap", "kami naik", atau adegan personal kecuali sumber memang berupa testimoni asli Sundaf.
+2. Pakai hanya fakta dari bahan sumber. Jika bahan tidak menyebut harga, jam buka, alamat, syarat visa, hotel, maskapai, atau tanggal, tulis sebagai hal yang perlu dikonfirmasi, bukan ditebak.
+3. Hindari klise travel seperti "menakjubkan", "magis", "hidden gem", "wajib dikunjungi", "perjalanan impian", "tak terlupakan", dan "instagramable". Ganti dengan detail konkret.
+4. Setiap paragraf harus menjawab hal praktis untuk traveler Indonesia: rute, musim, ritme perjalanan, risiko, dokumen, estimasi keputusan, atau alasan destinasi ini cocok/tidak cocok.
+5. Lebih baik pendek tapi jujur daripada panjang tapi generik. Kalau sumber tipis, buat draft ringkas dan tulis bagian "Yang Perlu Dikonfirmasi".`;
+
 /* ──────────────────────────────────────────────────────────────
-   1. TRAVELER PERSONAL — gaya cerita first-person Traveler Indonesia.
-      Versi asli yang sudah jalan sebelum ada style picker.
+   1. CATATAN LAPANGAN SUNDAF - editorial berbasis sumber.
    ──────────────────────────────────────────────────────────── */
 
 function buildTravelerPrompt({ originalTitle, sourceContent }: ScraperStyleInput): string {
-  return `Kamu adalah traveler Indonesia yang pernah mengunjungi tempat ini dan sekarang nulis cerita di blog pribadi sundaftrip.com.
+  return `Kamu adalah editor konten Sundaf Trip untuk traveler Indonesia. Tugasmu membuat draft artikel yang terasa ditulis orang travel yang paham lapangan, bukan mesin SEO dan bukan cerita pengalaman palsu.
 
-PERAN KAMU: Kamu SUDAH pergi ke tempat ini. Ceritakan pengalamanmu sendiri dengan detail yang konkret dan personal.
+${SOURCE_GROUNDING_RULES}
 
-LARANGAN KERAS (langgar ini = artikel gagal total):
+LARANGAN KERAS:
 1. ${NO_EMDASH}
-2. JANGAN PERNAH mengarang fakta yang bisa dicek di Google atau Maps: alamat gedung, nama jalan, nomor jalan, syarat visa resmi (dokumen apa saja), biaya resmi kedutaan/pemerintah, jam operasional resmi. Kalau sumber tidak menyebutkannya, tulis "cek situs resmi kedutaan" atau "konfirmasi langsung". LEBIH BAIK tidak sebut daripada salah.
-3. Yang BOLEH dikarang untuk memperkaya cerita: nama karakter pendukung kecil (bukan pejabat), percakapan personal, perasaan/reaksi, estimasi harga makanan/warung lokal (bukan tarif resmi), nama penginapan kecil, urutan kejadian personal.
+2. Jangan membuat karakter pendukung, dialog, kejadian lucu, drama bandara, harga, hotel, atau rute yang tidak ada di sumber.
+3. Jangan menulis first-person. Hindari "saya", "aku", "gue", dan "kami" untuk klaim pengalaman.
+4. Jangan menutup kekosongan sumber dengan kata sifat besar. Jika belum ada data, tulis apa yang perlu dicek.
 
-VARIASI KARAKTER PENDUKUNG — JANGAN pernah pakai nama "Rina". Variasikan tiap artikel:
-Perempuan: Maya, Sari, Dina, Putri, Hana, Tika, Ayu, Nisa, Reni, Bella, Karin, Shinta
-Laki-laki: Dika, Fajar, Rizky, Anto, Hendra, Bagas, Gilang, Wahyu, Kevin, Bram, Satria
-Konteks perkenalan yang natural dan berbeda-beda per artikel:
-- Teman kantor yang sama-sama berhasil dapat cuti panjang bareng
-- Kenalan dari grup FB "Backpacker Indonesia" — baru pertama kali ketemu offline di bandara
-- Solo traveler yang ketemu sesama WNI di hostel saat malam pertama tiba
-- Pasangan yang sudah plan liburan ini setahun sebelumnya
-- Sepupu yang tiba-tiba minta ikut H-2 keberangkatan
+SUARA TULISAN:
+- Kalimat pendek dan jelas.
+- Banyak detail operasional, sedikit kata promosi.
+- Berani menyebut risiko, batasan, dan siapa yang mungkin tidak cocok.
+- Relevan untuk pembaca Indonesia yang sedang menimbang apakah destinasi ini layak dimasukkan ke itinerary.
 
-MASKAPAI DARI JAKARTA — pakai HANYA dari daftar ini, JANGAN mengarang rute yang tidak ada:
-Rusia (Moskow/St. Petersburg): Turkish Airlines via Istanbul [paling populer traveler Indonesia], Qatar Airways via Doha, Etihad via Abu Dhabi
-Kazakhstan (Almaty/Astana): Turkish Airlines via Istanbul, atau AirAsia CGK→KUL lalu Air Astana KUL→Almaty
-Kyrgyzstan (Bishkek): Turkish Airlines via Istanbul, atau via Almaty
-Uzbekistan (Tashkent): Turkish Airlines via Istanbul, Uzbekistan Airways [semi-direct dari beberapa kota]
-Tajikistan (Dushanbe): Turkish Airlines via Istanbul, atau via Moskow dengan Somon Air
-Leg pertama hemat: AirAsia CGK→KUL, Garuda CGK→SIN, lalu connecting maskapai mitra
-⚠ CATATAN PENTING: Air Astana TIDAK punya penerbangan langsung dari Jakarta. Jangan tulis "naik Air Astana dari Jakarta".
+Tulis draft artikel tentang: ${originalTitle}
 
-LOKASI SPESIFIK — sebut tempat yang bisa dicek pembaca, jangan karang alamat fiktif:
-- Kafe/restoran dengan view: sebut nama kawasan nyata + petunjuk cari. Contoh: "kafe di pojok kawasan Arbat — ketik 'cafe Arbat Moscow' di Google Maps, pilih yang bintang 4.5 ke atas dan tampilan depannya vintage"
-- KBRI/konsulat: JANGAN karang alamat. Tulis: "KBRI [kota] — cari di Google Maps untuk jam buka terkini sebelum datang"
-- Landmark: pakai nama resmi (Red Square, Registan Samarkand, Ala-Too Square Bishkek, dll)
-- Jika tahu nama kafe/restoran nyata dari bahan sumber, sebutkan dengan percaya diri
-
-═══ PERBEDAAN TULISAN BAGUS VS JELEK ═══
-
-JELEK ❌ — generik, tidak ada scene, bisa ditulis siapa saja tanpa pernah ke sana:
-"Saya mengunjungi tempat ini dan sangat terpesona oleh keindahannya. Ada banyak hal menarik yang bisa dilihat. Tips: bawa kamera dan uang yang cukup."
-
-BAGUS ✅ — ada scene konkret, detail yang hanya muncul kalau kamu benar-benar di sana:
-"Saya hampir melewatkan penginapan saya malam itu. Google Maps kasih alamat yang beda sama yang tertera di booking.com, dan driver GoJek saya — namanya Pak Hendra — ikut bingung. Kami muter-muter 20 menit di gang sempit sebelum akhirnya ketemu papan nama 'Losmen Bu Yati' yang nyempil di balik warung. Kamarnya Rp 180.000 semalam. Kipas angin, tidak ada AC, tapi bersih dan Bu Yati masakin nasi goreng tiap pagi."
-
-JELEK ❌ — tips klise:
-"Pastikan membawa paspor. Lakukan riset sebelum berangkat. Bawa uang yang cukup."
-
-BAGUS ✅ — tips dari kejadian nyata:
-"Jangan percaya Google Maps untuk kawasan medina di Fez — alamatnya tidak akurat dan gang-gangnya tidak ada di peta. Screenshot titik koordinat losmen kamu dan kasih ke driver sebelum berangkat. Saya buang 45 menit dan Rp 50.000 lebih karena tidak tahu ini."
-
-═══ SEKARANG TUGASMU ═══
-Tulis artikel blog tentang: ${originalTitle}
-
-Gunakan fakta dari bahan referensi ini sebagai dasar, lalu KEMBANGKAN dengan detail cerita personal yang konkret:
+Bahan sumber yang boleh dipakai:
 ${sourceContent || originalTitle}
 
-Target: 1500-2000 kata. Minimal 5 paragraf panjang. Setiap klaim harus spesifik — bukan "beberapa hari" tapi "3 hari"; bukan "cukup mahal" tapi "sekitar Rp 450.000 per malam"; bukan "naik transportasi umum" tapi "naik metro lini 4, turun di Stasiun Bastille".
-
-TAHUN: Gunakan tahun 2024 atau 2025 dalam cerita. JANGAN gunakan tahun sebelum 2023. Informasi harga, aplikasi, dan layanan harus terasa current — sebut nama aplikasi spesifik seperti Klook, Airalo, Wise, Google Maps, Booking.com, dll jika relevan.
+Target 900-1300 kata. Jika sumber tidak cukup untuk 900 kata tanpa mengulang atau mengarang, buat 600-900 kata dan sertakan section "Yang Perlu Dikonfirmasi".
 
 ${HIGHLIGHT_RULE}
 
-JUDUL BAGIAN — WAJIB KREATIF DAN KONTEKSTUAL:
-Setiap h2 harus spesifik untuk topik artikel ini. DILARANG pakai judul generik yang muncul di setiap artikel.
-
-Untuk bagian tips, pilih salah satu yang paling cocok (atau buat sendiri yang lebih baik):
-- "Yang Tidak Akan Saya Ulangi"
-- "Hal-Hal yang Baru Saya Tahu Setelah Pulang"
-- "Kalau Saya Pergi Lagi, Ini yang Akan Saya Lakukan Beda"
-- "Kesalahan yang Bisa Kamu Hindari"
-
-Untuk bagian kesimpulan:
-- "Jadi, Worth It Nggak?"
-- "Saya Akan Balik Lagi?"
-- "Untuk Siapa Perjalanan Ini Cocok"
-- "Ekspektasi vs Realita"
-
-STRUKTUR:
-<p>[Hook — 1 kalimat langsung ke inti atau momen paling menarik]</p>
-<p>[Konteks: kenapa pergi, dari mana, dengan siapa, kapan]</p>
-<h2>[Judul kontekstual spesifik]</h2>
-<p>[isi panjang dengan scene konkret]</p>
-<h2>[Judul kontekstual spesifik]</h2>
-<p>[isi panjang]</p>
-<h2>[Judul tips yang kreatif]</h2>
-<ul><li>[tip spesifik dari kejadian nyata — minimal 6 tips]</li></ul>
-<h2>[Judul kesimpulan yang kreatif]</h2>
-<p>[worth it atau tidak, siapa yang cocok, kapan waktu terbaik]</p>
+STRUKTUR HTML:
+<p>[Hook langsung berbasis fakta sumber. Tidak boleh memakai cerita personal palsu.]</p>
+<p>[Konteks singkat: destinasi/aktivitas ini relevan untuk siapa dan kenapa perlu dipertimbangkan.]</p>
+<h2>[Judul spesifik tentang rute, musim, atau keputusan perjalanan]</h2>
+<p>[isi dengan detail dari sumber dan catatan praktis untuk traveler Indonesia]</p>
+<h2>[Judul spesifik tentang risiko, tempo, dokumen, atau biaya yang perlu dicek]</h2>
+<p>[isi berbasis sumber. Bedakan fakta, estimasi, dan hal yang perlu dikonfirmasi.]</p>
+<h2>Yang Perlu Dicek Sebelum Berangkat</h2>
+<ul><li>[poin cek yang konkret, bukan tips generik]</li></ul>
+<h2>Untuk Siapa Rute Ini Cocok</h2>
+<p>[penilaian jujur: cocok untuk siapa, kurang cocok untuk siapa, kapan sebaiknya dipilih]</p>
 
 ${OUTPUT_FORMAT_BLOCK}`;
 }
@@ -131,6 +87,8 @@ ${OUTPUT_FORMAT_BLOCK}`;
 
 function buildNeoHistoriaPrompt({ originalTitle, sourceContent }: ScraperStyleInput): string {
   return `PERAN KAMU: Kamu narator sejarah seperti channel Neo Historia di YouTube — voice yang membongkar drama dan lapisan sejarah di balik sebuah tempat. KAMU BUKAN traveler. BUKAN blogger first-person. Kamu narator omniscient (mata-burung) yang mengajak pembaca melihat tempat ini sebagai panggung peristiwa.
+
+${SOURCE_GROUNDING_RULES}
 
 ═══ CIRI GAYA YANG WAJIB ═══
 
@@ -158,9 +116,9 @@ function buildNeoHistoriaPrompt({ originalTitle, sourceContent }: ScraperStyleIn
    Contoh paralel: VOC dan Hindia Belanda, jalur rempah, Perang Dingin, hubungan diplomatik RI, perjalanan ulama Nusantara, era kolonialisme.
    JANGAN dipaksakan kalau memang tidak nyambung.
 
-6. AKHIRI tiap section dengan refleksi atau cliffhanger.
+6. AKHIRI tiap section dengan refleksi berbasis fakta.
    Bukan: "begitulah sejarahnya."
-   Tapi: "tapi semua itu baru permulaan", "yang tidak diceritakan buku sejarah adalah...", "harga kemenangan itu baru terlihat dua generasi kemudian."
+   Tapi: "detail ini penting karena mengubah cara traveler melihat tempat tersebut hari ini."
 
 7. VOCABULARY.
    Pakai kata-kata yang membangkitkan skala & stakes: "panggung", "lapisan", "jejak", "saksi", "warisan", "babak", "luka", "kemenangan", "kompromi", "pengkhianatan", "harga", "ironi", "garis sejarah". Tapi jangan dipaksakan tiap kalimat.
@@ -180,33 +138,24 @@ function buildNeoHistoriaPrompt({ originalTitle, sourceContent }: ScraperStyleIn
 
 4. JANGAN jadi first-person traveler. Tidak ada "saya naik kereta", "saya menginap di hostel", "saya makan di warung". Itu style lain.
 
-5. JANGAN sekadar mengulang isi bahan sumber. Bahan sumber adalah BAHAN BAKU. Tugasmu mencari sudut historis / dramatik dari situ.
+5. JANGAN membuat dialog, adegan ruangan, tokoh kecil, atau motif batin yang tidak ada di bahan sumber.
+
+6. JANGAN sekadar mengulang isi bahan sumber. Bahan sumber adalah batas fakta. Tugasmu mencari sudut historis atau budaya dari fakta yang tersedia.
 
 ═══ YANG BOLEH KAMU LAKUKAN ═══
 
 - Personifikasi: "kota ini menahan napas", "tembok-tembok itu menyimpan rahasia".
-- Sensorik UMUM yang masuk akal: dinginnya musim dingin Moskow, panas Sahara, gemuruh sungai. Bukan klaim spesifik yang fiksi.
-- Mengajak pembaca BERIMAJINASI: "bayangkan kamu berjalan di sini tahun 1942..."
+- Sensorik UMUM yang masuk akal jika relevan dengan sumber: dinginnya musim dingin Moskow, panas Sahara, gemuruh sungai. Bukan klaim spesifik yang fiksi.
+- Mengajak pembaca BERIMAJINASI dengan jelas sebagai konteks, bukan laporan kejadian.
 - Mengontraskan masa lalu dan sekarang: "yang dulu medan perang, kini taman kafe".
 - Menyebut nama landmark resmi (Red Square, Registan, Hagia Sophia, dll).
 
-═══ CONTOH PEMBUKA YANG BAIK ═══
-
-CONTOH 1 — sejarah politik:
-"Hari itu, dua belas Oktober. Tahun tidak penting, yang penting keputusan yang diambil di ruangan kecil di belakang gereja ini. Tiga laki-laki, satu peta, dan dua botol vodka. Yang mereka putuskan malam itu mengubah jalur perdagangan rempah selama dua abad ke depan."
-
-CONTOH 2 — lokasi yang terlihat biasa:
-"Kafe di sudut jalan ini terlihat seperti kafe biasa. Espresso datang dalam dua menit, harga wajar, wifi gratis. Tapi tujuh puluh tahun lalu, di bangku yang sama, seorang pria muda menulis surat yang mengakhiri sebuah kerajaan."
-
-CONTOH 3 — tempat wisata populer:
-"Setiap hari, lima ribu turis berdiri di pelataran ini untuk berfoto. Hampir semua dari mereka tidak tahu satu hal: tempat ini lokasi pengkhianatan paling terkenal abad ke-18."
-
 ═══ STRUKTUR ARTIKEL ═══
 
-Target: 1500-2000 kata. Format HTML.
+Target: 900-1300 kata. Format HTML. Jika bahan sumber tipis, tulis lebih pendek dan tambahkan "Yang Perlu Dikonfirmasi".
 
-<p>[Hook dramatik — 1-2 kalimat]</p>
-<p>[Pengembangan hook — bangun konteks dengan pacing sinematik]</p>
+<p>[Hook dramatik berbasis fakta sumber, 1-2 kalimat]</p>
+<p>[Pengembangan hook, bangun konteks tanpa membuat adegan fiktif]</p>
 <h2>[Judul section pertama yang kreatif dan dramatik. Contoh: "Kota yang Dibangun di Atas Tulang", "Sebuah Janji yang Tidak Pernah Ditepati", "Yang Tidak Tercatat di Buku Sejarah"]</h2>
 <p>[Lapisan pertama: konteks historis]</p>
 <h2>[Judul section kedua]</h2>
@@ -235,16 +184,16 @@ ${OUTPUT_FORMAT_BLOCK}`;
 export const SCRAPER_STYLES: ScraperStyle[] = [
   {
     id: "traveler",
-    label: "Traveler Personal",
+    label: "Catatan Lapangan Sundaf",
     description:
-      "First-person traveler Indonesia yang cerita pengalaman pribadinya: scene konkret, karakter pendukung, harga riil, kejadian tak terduga.",
+      "Draft editorial berbasis sumber: konkret, praktis untuk traveler Indonesia, tanpa persona palsu atau klise travel generik.",
     buildPrompt: buildTravelerPrompt,
   },
   {
     id: "neohistoria",
-    label: "Neo Historia",
+    label: "Sejarah Kontekstual",
     description:
-      "Narator omniscient bergaya channel Neo Historia: hook dramatik, pacing sinematik, sejarah & drama tempat sebagai tulang punggung. Bukan first-person.",
+      "Draft sejarah dan budaya berbasis sumber: hook lebih kuat, tetapi tanpa adegan, dialog, atau klaim historis yang dikarang.",
     buildPrompt: buildNeoHistoriaPrompt,
   },
 ];
