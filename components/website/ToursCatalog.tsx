@@ -76,15 +76,6 @@ export default function ToursCatalog({
       <>
         {showFilter && <FilterChips active={region} onChange={changeRegion} theme={theme} />}
 
-        <SectionHead
-          theme={theme}
-          eyebrow="Jadwal yang Bisa Dipesan"
-          sub={
-            bookable.length > 0
-              ? "Produk aktif tampil dulu. Rusia, Asia Tengah, dan aurora diprioritaskan; rute lain tetap tersedia sesuai jadwal dan permintaan."
-              : "Belum ada paket terbuka untuk filter ini. Hubungi kami untuk private trip."
-          }
-        />
         {bookable.length > 0 && <ToursSection tours={bookable} theme={theme} />}
 
         {done.length > 0 && (
