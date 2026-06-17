@@ -130,11 +130,11 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
         </div>
 
         {documents.length === 0 ? (
-          <div className="rounded-lg border border-gray-200 bg-white/80 px-5 py-10 text-center text-sm text-gray-500">
+          <div className="rounded-lg border-2 border-blue-300/80 bg-white/90 px-5 py-10 text-center text-sm text-gray-500 shadow-sm">
             Belum ada PDF.
           </div>
         ) : (
-          <div className="divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 bg-white/85">
+          <div className="divide-y-2 divide-blue-200/80 overflow-hidden rounded-lg border-2 border-blue-300/80 bg-white/90 shadow-sm">
             {documents.map((document) => (
               <a
                 key={document.id}
