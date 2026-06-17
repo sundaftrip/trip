@@ -502,6 +502,37 @@ model Inquiry {
   @@index([status, createdAt])
 }
 
+// Katalog PDF B2B khusus agen. File asli disimpan di storage,
+// halaman publik hanya membuka download setelah password agen valid.
+model B2bCatalogDocument {
+  id        String   @id @default(cuid())
+  title     String
+  fileUrl   String   @db.Text
+  fileName  String
+  mimeType  String   @default("application/pdf")
+  fileSize  Int      @default(0)
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, sortOrder])
+}
+
+// Banyak password untuk satu halaman katalog: tiap travel agent bisa diberi
+// password berbeda, tetapi konten yang dibuka tetap katalog yang sama.
+model B2bCatalogPassword {
+  id           String    @id @default(cuid())
+  label        String
+  passwordHash String    @db.Text
+  active       Boolean   @default(true)
+  lastUsedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([active])
+}
+
 // ─────────────────────────────────────────────────────────────
 //  MODUL REFERRAL — MVP tracking partner → WhatsApp → lead → komisi.
 //  Dipisah dari Inquiry supaya data partner, komisi, dan dispute tetap jelas.

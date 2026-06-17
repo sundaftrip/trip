@@ -15,6 +15,17 @@ export async function uploadImage(file: string, folder?: string) {
   return result.secure_url;
 }
 
+export async function uploadRawFile(file: string, folder?: string, fileName?: string) {
+  const result = await cloudinary.uploader.upload(file, {
+    folder: folder ?? CLOUDINARY_FOLDER,
+    resource_type: "raw",
+    filename_override: fileName,
+    use_filename: Boolean(fileName),
+    unique_filename: true,
+  });
+  return result.secure_url;
+}
+
 export async function deleteImage(publicId: string) {
   await cloudinary.uploader.destroy(publicId);
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Shield, Save, ChevronDown, ChevronUp, User } from "lucide-react";
 import { ALL_PERMISSION_KEYS, DEFAULT_PERMISSIONS, PERMISSION_LABELS } from "@/lib/permission-keys";
 
-const SECTIONS = ["Tour", "Receipt", "Blog", "Konten"];
+const SECTIONS = ["Tour", "Receipt", "Blog", "Konten", "B2B", "GEO", "Scraper"];
 
 interface UserPerm {
   id: string;

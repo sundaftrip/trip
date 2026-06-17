@@ -18,6 +18,7 @@ export const PERMISSION_LABELS: Record<string, { label: string; section: string 
   text_edit:      { label: "Edit Teks Website",      section: "Konten" },
   color_edit:     { label: "Edit Warna & Tema",      section: "Konten" },
   company_edit:   { label: "Edit Info Perusahaan",   section: "Konten" },
+  b2b_catalog_edit: { label: "Kelola Katalog B2B",    section: "B2B" },
   scraper_view:   { label: "Lihat Scraper",          section: "Scraper" },
   scraper_run:    { label: "Jalankan Scraper",       section: "Scraper" },
   scraper_rewrite:{ label: "AI Rewrite Konten",      section: "Scraper" },
@@ -32,6 +33,7 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     blog_create: true,  blog_edit: true,  blog_delete: true,  blog_publish: true,
     geo_create: true,   geo_edit: true,   geo_delete: true,   geo_publish: true,
     text_edit: true,    color_edit: true, company_edit: true,
+    b2b_catalog_edit: true,
     scraper_view: true, scraper_run: true, scraper_rewrite: true,
   },
   EDITOR: {
@@ -40,6 +42,7 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     blog_create: true,  blog_edit: true,  blog_delete: false, blog_publish: false,
     geo_create: true,   geo_edit: true,   geo_delete: false,  geo_publish: false,
     text_edit: true,    color_edit: false, company_edit: false,
+    b2b_catalog_edit: false,
     scraper_view: true, scraper_run: false, scraper_rewrite: false,
   },
 };
