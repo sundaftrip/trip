@@ -703,19 +703,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
                 {displayInclusions.length > 0 && (
                   <div className={isOutlined ? `${pfx}-card p-4 sm:p-5` : "rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5"}>
-                    <div className="mb-3 flex items-start justify-between gap-3">
+                    <div className="mb-3">
                       <h2
                         className="min-w-0 text-[15px] font-black leading-tight text-gray-900 dark:text-white sm:text-lg"
                         style={isOutlined ? { color: tText } : undefined}
                       >
                         Sudah Termasuk
                       </h2>
-                      <span
-                        className="shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold leading-5 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"
-                        style={isOutlined ? { backgroundColor: tCard, borderColor: tBdr, color: tSub } : undefined}
-                      >
-                        {displayInclusions.length} item
-                      </span>
                     </div>
                     <ul className="space-y-2">
                       {displayInclusions.map((item, i) => (
@@ -733,19 +727,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 )}
                 {displayExclusions.length > 0 && (
                   <div className={isOutlined ? `${pfx}-card p-4 sm:p-5` : "rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5"}>
-                    <div className="mb-3 flex items-start justify-between gap-3">
+                    <div className="mb-3">
                       <h2
                         className="min-w-0 text-[15px] font-black leading-tight text-gray-900 dark:text-white sm:text-lg"
                         style={isOutlined ? { color: tText } : undefined}
                       >
                         Tidak Termasuk
                       </h2>
-                      <span
-                        className="shrink-0 rounded-full border border-rose-100 bg-rose-50 px-2 py-0.5 text-[10px] font-bold leading-5 text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
-                        style={isOutlined ? { backgroundColor: tCard, borderColor: tBdr, color: tSub } : undefined}
-                      >
-                        {displayExclusions.length} item
-                      </span>
                     </div>
                     <ul className="space-y-2">
                       {displayExclusions.map((item, i) => (
@@ -1047,32 +1035,34 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     Total: {paymentPlan.totalLabel} / orang
                   </p>
                 </div>
-                <div className={`overflow-x-auto border ${isOutlined ? "border-dashed" : "rounded-xl border-gray-200 dark:border-gray-800"}`} style={isOutlined ? { borderColor: tBdr } : undefined}>
-                  <table className="w-full min-w-[620px] text-left text-sm">
+                <div className={`overflow-hidden border ${isOutlined ? "border-dashed" : "rounded-xl border-gray-200 dark:border-gray-800"}`} style={isOutlined ? { borderColor: tBdr } : undefined}>
+                  <table className="w-full table-fixed text-left text-[11px] sm:text-sm">
                     <thead className={isOutlined ? "" : "bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-200"}>
                       <tr>
-                        <th className="border-b px-4 py-3 text-xs font-black uppercase tracking-wide" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Tahap</th>
-                        <th className="border-b px-4 py-3 text-xs font-black uppercase tracking-wide" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Jatuh Tempo</th>
-                        <th className="border-b px-4 py-3 text-right text-xs font-black uppercase tracking-wide" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Nominal</th>
+                        <th className="w-[24%] border-b px-2 py-2 text-[10px] font-black uppercase tracking-wide sm:px-4 sm:py-3 sm:text-xs" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Tahap</th>
+                        <th className="w-[36%] border-b px-2 py-2 text-[10px] font-black uppercase tracking-wide sm:px-4 sm:py-3 sm:text-xs" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Jatuh Tempo</th>
+                        <th className="w-[40%] border-b px-2 py-2 text-right text-[10px] font-black uppercase tracking-wide sm:px-4 sm:py-3 sm:text-xs" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Nominal</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paymentPlan.steps.map((step) => (
                         <tr key={step.label}>
-                          <td className="border-b px-4 py-3 font-semibold" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>{step.label}</td>
-                          <td className="border-b px-4 py-3" style={isOutlined ? { borderColor: tBdr, color: tSub } : undefined}>{step.dueDateLabel}</td>
-                          <td className="border-b px-4 py-3 text-right font-bold" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>{step.amountLabel}</td>
+                          <td className="break-words border-b px-2 py-2 font-semibold sm:px-4 sm:py-3" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>{step.label}</td>
+                          <td className="break-words border-b px-2 py-2 sm:px-4 sm:py-3" style={isOutlined ? { borderColor: tBdr, color: tSub } : undefined}>{step.dueDateLabel}</td>
+                          <td className="break-words border-b px-2 py-2 text-right font-bold sm:px-4 sm:py-3" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>{step.amountLabel}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <p
-                  className={`mt-3 text-xs leading-relaxed ${isOutlined ? "" : "text-gray-500 dark:text-gray-400"}`}
-                  style={isOutlined ? { color: tSub } : undefined}
-                >
-                  {paymentPlan.finePrint}
-                </p>
+                {paymentPlan.finePrint && (
+                  <p
+                    className={`mt-3 text-xs leading-relaxed ${isOutlined ? "" : "text-gray-500 dark:text-gray-400"}`}
+                    style={isOutlined ? { color: tSub } : undefined}
+                  >
+                    {paymentPlan.finePrint}
+                  </p>
+                )}
               </div>
             </div>
           </section>

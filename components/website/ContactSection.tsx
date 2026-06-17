@@ -386,15 +386,15 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
 
   /* ── PIXEL ── */
   if (theme === "pixel") return (
-    <section id="contact" className="py-24 relative" style={{
+    <section id="contact" className="py-14 sm:py-20 lg:py-24 relative" style={{
       background: "var(--px-bg)",
       backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
       backgroundSize: "24px 24px",
     }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 max-w-xl">
+        <div className="mb-8 sm:mb-16 max-w-xl">
           <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► {headLabel.toUpperCase()}</span>
-          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black mt-2 sm:mt-3 leading-tight" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
             {t("contact_title", "Siap Membantu Perjalanan Anda")}
           </h2>
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
@@ -408,22 +408,22 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
               const bgs = ["var(--px-cyan)", "var(--px-yellow)", "var(--px-purple)", "var(--px-green)"];
               const fgs = ["var(--px-text)", "var(--px-text)", "#ffffff", "var(--px-text)"];
               return (
-                <div key={label} className="px-card p-5 flex items-start gap-4" style={{ background: bgs[i % bgs.length] }}>
+                <div key={label} className="px-card p-4 sm:p-5 flex items-start gap-3 sm:gap-4" style={{ background: bgs[i % bgs.length] }}>
                   <div className="w-9 h-9 border-2 flex items-center justify-center shrink-0"
                     style={{ background: "var(--px-card)", borderColor: "var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)" }}>
                     <Icon size={14} style={{ color: "var(--px-border)" }} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: fgs[i % fgs.length], fontFamily: "monospace", opacity: 0.7 }}>{label}</p>
                     {href
-                      ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: fgs[i % fgs.length], fontFamily: "monospace" }}>{value}</a>
-                      : <p className="text-sm font-black leading-relaxed" style={{ color: fgs[i % fgs.length], fontFamily: "monospace" }}>{value}</p>}
+                      ? <a href={href} className="break-words text-sm font-black hover:opacity-70 transition-opacity" style={{ color: fgs[i % fgs.length], fontFamily: "monospace" }}>{value}</a>
+                      : <p className="break-words text-sm font-black leading-relaxed" style={{ color: fgs[i % fgs.length], fontFamily: "monospace" }}>{value}</p>}
                   </div>
                 </div>
               );
             })}
             {bankAcc && (
-              <div className="px-card p-5" style={{ background: "var(--px-card)" }}>
+              <div className="px-card p-4 sm:p-5" style={{ background: "var(--px-card)" }}>
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankLabel.toUpperCase()}</p>
                 {bankName && <p className="text-xs mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankName}</p>}
                 <p className="text-xl font-black font-mono" style={{ color: "var(--px-text)" }}>{bankAcc}</p>

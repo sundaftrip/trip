@@ -43,7 +43,7 @@ function PinnedRail({ tours, theme }: { tours: Tour[]; theme: string }) {
           {String(tours.length).padStart(2, "0")}
         </span>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
         {tours.map((tour, i) => (
           <AnimateIn key={tour.id} delay={i * 70} className="h-full">
             <TourCard tour={tour} theme={theme} />
@@ -173,17 +173,17 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
 
   /* ── PIXEL layout ── */
   if (theme === "pixel") return (
-    <section className="py-24 relative" style={{
+    <section className="py-14 sm:py-20 lg:py-24 relative" style={{
       background: "var(--px-bg)",
       backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
       backgroundSize: "24px 24px",
     }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateIn>
-          <div className="flex items-end justify-between mb-14">
+          <div className="flex items-end justify-between mb-7 sm:mb-14">
             <div>
-              <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>► PAKET TERSEDIA</span>
-              <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>TOUR PILIHAN</h2>
+              <span className="px-pill mb-3 sm:mb-4 inline-flex" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>► PAKET TERSEDIA</span>
+              <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black mt-2 sm:mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>TOUR PILIHAN</h2>
             </div>
           </div>
         </AnimateIn>

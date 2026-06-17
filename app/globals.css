@@ -1008,6 +1008,7 @@ body {
 }
 
 .px-card {
+  min-width: 0;
   border: 2px solid var(--px-border);
   border-radius: 0;
   box-shadow: 4px 4px 0 0 var(--px-shadow);
@@ -1019,6 +1020,8 @@ body {
   box-shadow: 6px 6px 0 0 var(--px-shadow);
 }
 .px-pill {
+  max-width: 100%;
+  min-width: 0;
   border: 2px solid var(--px-border);
   border-radius: 0;
   font-weight: 800;
@@ -1032,10 +1035,16 @@ body {
   font-family: monospace;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 .px-btn {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  max-width: 100%;
+  min-width: 0;
   border: 2px solid var(--px-border);
   border-radius: 0;
   font-weight: 900;
@@ -1046,6 +1055,8 @@ body {
   font-family: monospace;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 .px-btn:hover {
   transform: translate(-2px, -2px);
@@ -1067,6 +1078,32 @@ body {
 .px-float-4 { animation: px-float 3.2s steps(4, end) 0.3s infinite; }
 @media (prefers-reduced-motion: reduce) {
   .px-float-1, .px-float-2, .px-float-3, .px-float-4 { animation: none; }
+}
+@media (max-width: 640px) {
+  .px-card {
+    box-shadow: 3px 3px 0 0 var(--px-shadow);
+  }
+  .px-card:hover {
+    transform: none;
+    box-shadow: 3px 3px 0 0 var(--px-shadow);
+  }
+  .px-pill {
+    padding: 2px 7px;
+    font-size: 9px;
+    line-height: 1.45;
+    letter-spacing: 0.04em;
+    box-shadow: 1.5px 1.5px 0 0 var(--px-shadow);
+  }
+  .px-btn {
+    padding: 10px 14px;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    box-shadow: 3px 3px 0 0 var(--px-shadow);
+  }
+  .px-btn:hover {
+    transform: none;
+    box-shadow: 3px 3px 0 0 var(--px-shadow);
+  }
 }
 
 /* ─── GLOBE / WORLD LANDMARKS THEME ─── */
@@ -2287,6 +2324,9 @@ a.gl-pill:has(svg:only-child) {
 }
 @media (min-width: 640px) {
   .wg-row { height: 208px; }
+}
+@media (max-width: 639px) {
+  .wg-row { height: 116px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .wg-track { animation: none; }

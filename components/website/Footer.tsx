@@ -390,8 +390,8 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
         borderColor: "var(--px-border)",
         boxShadow: "0 -4px 0 0 var(--px-shadow)",
       }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 pb-8 sm:pb-12 border-b-2" style={{ borderColor: "var(--px-border)" }}>
           <div className="md:col-span-2">
             <Image src={logo || "/logo.png"} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             <FooterTagline tagline={tagline} waB2B={waB2B} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }} />
@@ -420,20 +420,20 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
             <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-yellow)", color: "#111827" }}>KONTAK</span>
             <ul className="space-y-3 mt-3">
               {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
+                <li key={label} className="flex min-w-0 items-start gap-2">
                   <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--px-border)" }} />
                   {href
-                    ? <a href={href} className="text-sm font-black hover:opacity-70 transition-opacity" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</a>
-                    : <span className="text-sm leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</span>}
+                    ? <a href={href} className="break-words text-sm font-black hover:opacity-70 transition-opacity" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</a>
+                    : <span className="break-words text-sm leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</span>}
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
-          <p>© {new Date().getFullYear()} {name} [ALL RIGHTS RESERVED]</p>
-          {c["company_website"] && <p>{c["company_website"]}</p>}
+        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-xs" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
+          <p className="break-words">© {new Date().getFullYear()} {name} [ALL RIGHTS RESERVED]</p>
+          {c["company_website"] && <p className="break-words">{c["company_website"]}</p>}
         </div>
       </div>
     </footer>

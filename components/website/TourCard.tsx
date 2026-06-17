@@ -246,7 +246,7 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         backgroundSize: "16px 16px",
       }}>
       {/* Image */}
-      <div className="relative h-52 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
+      <div className="relative h-44 sm:h-52 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
         {tour.heroImg
           ? <Image src={cldOptimize(tour.heroImg, 480)} alt={tour.title} fill loading="lazy" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover" style={{ imageRendering: "auto", transition: "none" }} />
           : <div className="flex items-center justify-center h-full text-gray-300"
@@ -256,7 +256,7 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
 
         {/* Pixel price tag */}
         {!isDimmed && (
-          <div className="absolute bottom-3 right-3 px-pill font-black"
+          <div className="absolute bottom-3 right-3 max-w-[calc(100%-1.5rem)] px-pill font-black"
             style={{ background: accentColor, color: "#111827", transform: "none" }}>
             {priceText(tour)}
           </div>
@@ -276,11 +276,11 @@ function PixelCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
       </div>
 
-      <div className="p-5" style={{ background: "var(--px-card)" }}>
+      <div className="p-4 sm:p-5" style={{ background: "var(--px-card)" }}>
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>
           {tour.country}
         </p>
-        <h3 className="font-black text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--px-text)" }}>
+        <h3 className="font-black text-[14px] sm:text-[15px] leading-snug line-clamp-2 mb-3" style={{ color: "var(--px-text)" }}>
           {tour.title}
         </h3>
         <div className="flex flex-wrap gap-1.5 mb-4">

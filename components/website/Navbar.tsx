@@ -500,11 +500,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
         borderColor: "var(--px-border)",
         boxShadow: "0 4px 0 0 var(--px-shadow)",
       }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-3">
+          <Link href="/" className="flex items-center min-w-0 shrink">
             <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
-              className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
+              className={`h-7 sm:h-11 w-auto max-w-[126px] sm:max-w-none${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-2">
@@ -517,30 +517,38 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <GlobalSearch lang={lang} triggerClassName="px-pill" triggerStyle={{ background: "var(--px-yellow)", color: "#111827" }} />
             <button onClick={toggleLang} className="px-pill"
               style={{ background: "var(--px-yellow)", color: "#111827" }}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
-              <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
-                {isDark ? <Sun size={13} /> : <Moon size={13} />}
-              </button>
+              <div className="hidden min-[380px]:block">
+                <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
+                  className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
+                  {isDark ? <Sun size={13} /> : <Moon size={13} />}
+                </button>
+              </div>
             )}
-            <Link href="/visa" className="hidden lg:inline-flex px-pill px-4 py-2 text-xs"
-              style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
-              {lang === "id" ? "LAYANAN VISA" : "VISA SERVICE"}
-            </Link>
-            <Link href="/tours" className="hidden lg:inline-flex px-btn px-4 py-2 text-xs"
-              style={{ background: "var(--site-accent)", color: "#ffffff" }}>
-              {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
-            </Link>
-            <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden px-pill"
-              style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
-              {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
-            </button>
+            <div className="hidden lg:block">
+              <Link href="/visa" className="px-pill px-4 py-2 text-xs"
+                style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+                {lang === "id" ? "LAYANAN VISA" : "VISA SERVICE"}
+              </Link>
+            </div>
+            <div className="hidden lg:block">
+              <Link href="/tours" className="px-btn px-4 py-2 text-xs"
+                style={{ background: "var(--site-accent)", color: "#ffffff" }}>
+                {lang === "id" ? "LIHAT TOUR ►" : "SEE TOURS ►"}
+              </Link>
+            </div>
+            <div className="lg:hidden">
+              <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="px-pill"
+                style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
+                {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
+              </button>
+            </div>
           </div>
         </div>
 

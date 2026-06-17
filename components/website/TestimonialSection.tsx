@@ -402,19 +402,19 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
 
   /* ── PIXEL ── */
   if (theme === "pixel") return withDialogs(
-    <section className="py-24 overflow-hidden relative" style={{
+    <section className="py-14 sm:py-20 lg:py-24 overflow-hidden relative" style={{
       background: "var(--px-bg)",
       backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
       backgroundSize: "24px 24px",
     }}>
       <div className="max-w-7xl mx-auto">
-        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-10">
+        <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-7 sm:mb-10">
           <span className="px-pill mb-3 inline-flex" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>► TESTIMONI</span>
-          <h2 className="text-3xl lg:text-5xl font-black mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>KATA MEREKA</h2>
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black mt-2 sm:mt-3" style={{ color: "var(--px-text)", fontFamily: "monospace" }}>KATA MEREKA</h2>
         </AnimateIn>
         <AnimateIn delay={100}>
           <Carousel items={items} renderCard={(item, active) => (
-            <div className={`px-card p-6 flex flex-col ${cardShell} transition-all duration-100 ${active ? "" : "opacity-70"}`}
+            <div className={`px-card p-4 sm:p-6 flex flex-col ${cardShell} transition-all duration-100 ${active ? "" : "opacity-70"}`}
               style={{ background: active ? "var(--px-yellow)" : "var(--px-card)" }}>
               <Stars rating={item.rating} />
               <ExpandableQuote text={item.content} color="var(--px-text)" {...quotePreviewProps(item)} />

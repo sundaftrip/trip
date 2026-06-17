@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import AnimatedStatValue from "./AnimatedStatValue";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -404,39 +405,39 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── PIXEL ART ── */
   if (theme === "pixel") return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-28 pb-20 px-4"
+    <section className="min-h-0 sm:min-h-screen flex flex-col justify-center relative overflow-hidden pt-20 sm:pt-28 pb-8 sm:pb-20 px-4 sm:px-6"
       style={{
         background: "var(--px-bg)",
         backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
         backgroundSize: "24px 24px",
       }}>
       {/* Floating pixel blocks */}
-      <div className="absolute top-32 right-16 lg:right-36 w-8 h-8 px-float-1 pointer-events-none"
+      <div className="hidden sm:block absolute top-32 right-16 lg:right-36 w-8 h-8 px-float-1 pointer-events-none"
         style={{ background: "var(--px-red)", border: "2px solid var(--px-border)", boxShadow: "3px 3px 0 0 var(--px-shadow)", opacity: 0.7 }} />
-      <div className="absolute top-56 right-[30%] w-5 h-5 px-float-2 pointer-events-none"
+      <div className="hidden sm:block absolute top-56 right-[30%] w-5 h-5 px-float-2 pointer-events-none"
         style={{ background: "var(--px-yellow)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.65 }} />
-      <div className="absolute bottom-24 left-16 lg:left-32 w-6 h-6 px-float-3 pointer-events-none"
+      <div className="hidden sm:block absolute bottom-24 left-16 lg:left-32 w-6 h-6 px-float-3 pointer-events-none"
         style={{ background: "var(--px-cyan)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.6 }} />
-      <div className="absolute top-44 left-[42%] w-4 h-4 px-float-4 pointer-events-none"
+      <div className="hidden sm:block absolute top-44 left-[42%] w-4 h-4 px-float-4 pointer-events-none"
         style={{ background: "var(--px-purple)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.55 }} />
-      <div className="absolute bottom-40 right-[20%] w-7 h-7 px-float-2 pointer-events-none"
+      <div className="hidden sm:block absolute bottom-40 right-[20%] w-7 h-7 px-float-2 pointer-events-none"
         style={{ background: "var(--px-green)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.6, animationDelay: "1s" }} />
-      <div className="absolute top-28 left-8 w-4 h-4 px-float-3 pointer-events-none"
+      <div className="hidden sm:block absolute top-28 left-8 w-4 h-4 px-float-3 pointer-events-none"
         style={{ background: "var(--px-red)", border: "2px solid var(--px-border)", boxShadow: "2px 2px 0 0 var(--px-shadow)", opacity: 0.45, animationDelay: "0.8s" }} />
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="mb-8 hero-fade-up">
+        <div className="mb-5 sm:mb-8 hero-fade-up">
           <span className="px-pill" style={{ background: "var(--px-yellow)", color: "var(--px-on-yellow)" }}>
             ► {eyebrow}
           </span>
         </div>
 
-        <h1 aria-label={heroTitle} className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-tight max-w-4xl mb-10 hero-fade-up"
+        <h1 aria-label={heroTitle} className="text-[clamp(2.15rem,10.5vw,7rem)] sm:text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.98] sm:leading-[0.92] tracking-tight max-w-4xl mb-6 sm:mb-10 hero-fade-up"
           style={{ color: "var(--px-text)", fontFamily: "monospace" }}>
           {renderTitleWords(heroTitle)}
         </h1>
 
-        <div className="flex flex-wrap gap-3 mb-12 hero-fade-up">
+        <div className="flex flex-wrap items-start gap-2 sm:gap-3 mb-6 sm:mb-12 hero-fade-up">
           <span className="px-pill" style={{ background: "var(--px-cyan)", color: "var(--px-on-cyan)" }}>
             [MAP] {t("hero_subtitle", "Destinasi Pilihan")}
           </span>
@@ -448,15 +449,15 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
           <Link href="/tours"
-            className="px-btn px-8 py-4 text-sm"
+            className="px-btn px-5 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm"
             style={{ background: "var(--site-accent)", color: "#ffffff" }}>
             {t("hero_btn", "LIHAT TOUR")} ►
           </Link>
           {waNumber && (
             <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
-              className="px-btn px-8 py-4 text-sm"
+              className="px-btn px-5 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm"
               style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
               [WA] CHAT KAMI
             </a>
@@ -541,7 +542,9 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
         <div className="mt-6 grid grid-cols-2 border border-b-0 border-r-0 sm:grid-cols-4 lg:mt-10" style={{ borderColor: "var(--at-border)" }}>
           {atlasProofs.map((proof) => (
             <div key={proof.label} className="border-b border-r px-3 py-3 sm:px-4" style={{ borderColor: "var(--at-border)" }}>
-              <p className="text-lg font-bold leading-none sm:text-2xl" style={{ color: "var(--at-text)" }}>{proof.value}</p>
+              <p className="text-lg font-bold leading-none sm:text-2xl" style={{ color: "var(--at-text)" }}>
+                <AnimatedStatValue value={proof.value} />
+              </p>
               <p className="mt-1 text-[11px] leading-snug sm:text-xs" style={{ color: "var(--at-subtext)" }}>{proof.label}</p>
             </div>
           ))}

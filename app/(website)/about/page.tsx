@@ -7,7 +7,7 @@ import React from "react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import Link from "next/link";
-import { Users, ShieldCheck, Heart, Sparkles, MapPin, MessageCircle, Award, ArrowRight } from "lucide-react";
+import { Users, ShieldCheck, Heart, CloudSun, MapPin, MessageCircle, Award, ArrowRight } from "lucide-react";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import InquiryForm from "@/components/website/InquiryForm";
@@ -51,7 +51,7 @@ const DEFAULT_DESTINATIONS = [
   { label: "Tajikistan", sub: "Dushanbe · Pamir Highway" },
 ];
 
-const VALUE_ICONS = [Users, ShieldCheck, Heart, Sparkles];
+const VALUE_ICONS = [Users, ShieldCheck, Heart, CloudSun];
 
 const DEFAULT_VALUES = [
   { title: "Grup kecil, cerita besar", desc: "Bukan rombongan bus yang buru-buru turun foto lalu naik lagi. Ritmenya kami jaga supaya tetap enak dinikmati." },

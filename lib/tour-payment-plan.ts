@@ -250,7 +250,7 @@ export function buildTourPaymentPlan(input: BuildTourPaymentPlanInput): TourPaym
     urgencyLabel: urgencyLabel(input.seatsLeft),
     totalAmount,
     totalLabel: formatCurrency(totalAmount),
-    finePrint: "Nominal dan tanggal otomatis mengikuti harga paket, tanggal booking, dan tanggal keberangkatan.",
+    finePrint: "",
     steps: [
       makeStep("DP1", bookingDate, dpAmount),
       makeStep("Cicilan 2", secondDueDate, secondAmount),

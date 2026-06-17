@@ -972,7 +972,7 @@ export function ItineraryPDF({
                   </View>
                 ))}
               </View>
-              <Text style={s.paymentFinePrint}>{paymentPlan.finePrint}</Text>
+              {paymentPlan.finePrint ? <Text style={s.paymentFinePrint}>{paymentPlan.finePrint}</Text> : null}
             </View>
           )}
 
