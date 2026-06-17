@@ -28,6 +28,63 @@ import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
 const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 
+function cleanMetadataText(value?: string | null) {
+  const localized = localizePdfText(value);
+  const text = typeof localized === "string" ? localized : value ?? "";
+  return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function firstMetadataText(...values: Array<string | null | undefined>) {
+  for (const value of values) {
+    const text = cleanMetadataText(value);
+    if (text) return text;
+  }
+  return "";
+}
+
+function truncateMetadataText(text: string, maxLength = 165) {
+  if (text.length <= maxLength) return text;
+  const shortened = text.slice(0, maxLength - 1).replace(/\s+\S*$/, "").replace(/[,.:\s]+$/, "");
+  return `${shortened}.`;
+}
+
+function buildTourMetadataDescription(tour: {
+  title: string;
+  country: string;
+  cityHighlight?: string | null;
+  duration?: string | null;
+  description?: string | null;
+  notes?: string | null;
+  visaInfo?: string | null;
+  price: number;
+  promoPrice?: number | null;
+  tripDate?: Date | null;
+  status?: string;
+}, companyName: string) {
+  const explicitDescription = firstMetadataText(tour.description, tour.notes, tour.visaInfo);
+  if (explicitDescription) return truncateMetadataText(explicitDescription);
+
+  const title = cleanMetadataText(tour.title) || tour.title;
+  const country = cleanMetadataText(tour.country) || tour.country;
+  const city = cleanMetadataText(tour.cityHighlight);
+  const duration = cleanMetadataText(tour.duration);
+  const route = [country, city].filter(Boolean).join(" - ");
+  const price = Number(tour.promoPrice ?? tour.price);
+  const isPastTrip = !!tour.tripDate && tour.tripDate.getTime() < Date.now();
+  const pricePart = price > 0 ? `mulai ${formatCurrency(price)}/orang` : "";
+  const datePart = tour.tripDate
+    ? `${isPastTrip ? "arsip keberangkatan" : "berangkat"} ${formatDate(tour.tripDate)}`
+    : tour.status === "ACTIVE"
+      ? "tanggal fleksibel"
+      : "";
+  const facts = [duration, datePart, isPastTrip ? "" : pricePart].filter(Boolean).join(", ");
+  const pageKind = isPastTrip ? "dokumentasi paket tour" : "paket tour";
+
+  return truncateMetadataText(
+    `${title}: ${pageKind} ${route || country} bersama ${companyName || "Sundaf Trip"}${facts ? ` (${facts})` : ""}.`
+  );
+}
+
 function itineraryInsightIcon(insight: ItineraryInsight) {
   if (insight.kind === "meals") return <Utensils size={16} />;
   if (insight.kind === "stay") return <Hotel size={16} />;
@@ -202,7 +259,22 @@ export async function generateMetadata({
   const [tour, companyRow] = await Promise.all([
     prisma.tour.findFirst({
       where: { OR: [{ slug: id }, { id }] },
-      select: { id: true, slug: true, title: true, heroImg: true, description: true, notes: true, visaInfo: true, country: true },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        heroImg: true,
+        description: true,
+        notes: true,
+        visaInfo: true,
+        country: true,
+        cityHighlight: true,
+        duration: true,
+        price: true,
+        promoPrice: true,
+        tripDate: true,
+        status: true,
+      },
     }),
     prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
   ]);
@@ -210,12 +282,7 @@ export async function generateMetadata({
 
   const companyName = companyRow?.value ?? "Sundaftrip";
   const title = localizePdfText(tour.title) ?? tour.title;
-  const country = localizePdfText(tour.country) ?? tour.country;
-  const description =
-    localizePdfText(tour.description) ??
-    localizePdfText(tour.notes) ??
-    localizePdfText(tour.visaInfo) ??
-    `Paket tour ${country} bersama ${companyName}`;
+  const description = buildTourMetadataDescription(tour, companyName);
 
   const canonicalPath = `/tours/${tour.slug ?? tour.id}`;
   return {

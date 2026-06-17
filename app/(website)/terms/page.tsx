@@ -1,6 +1,31 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
+const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+
+export const metadata: Metadata = {
+  title: "Syarat & Ketentuan",
+  description:
+    "Syarat dan ketentuan layanan Sundaf Trip untuk pemesanan tour, pembayaran, pembatalan, perubahan jadwal, visa, dan tanggung jawab perjalanan.",
+  alternates: { canonical: `${siteUrl}/terms` },
+  openGraph: {
+    title: "Syarat & Ketentuan Sundaf Trip",
+    description:
+      "Syarat dan ketentuan layanan Sundaf Trip untuk pemesanan tour, pembayaran, pembatalan, perubahan jadwal, visa, dan tanggung jawab perjalanan.",
+    url: `${siteUrl}/terms`,
+    type: "website",
+    siteName: "Sundaf Trip",
+    locale: "id_ID",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Syarat & Ketentuan Sundaf Trip",
+    description:
+      "Syarat dan ketentuan layanan Sundaf Trip untuk pemesanan tour, pembayaran, pembatalan, perubahan jadwal, visa, dan tanggung jawab perjalanan.",
+  },
+};
 
 async function getSiteTheme() {
   try {
