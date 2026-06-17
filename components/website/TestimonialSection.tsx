@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Star, ChevronLeft, ChevronRight, X } from "lucide-react";
 import AnimateIn from "./AnimateIn";
 import ExpandableQuote from "./ExpandableQuote";
@@ -143,58 +144,66 @@ function testimonialDialogId(id: string) {
   return `testimonial-dialog-${id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 }
 
-function TestimonialDialogs({ items }: { items: Testimonial[] }) {
-  return (
-    <>
-      {items.map((item) => {
-        const id = testimonialDialogId(item.id);
-        return (
-          <div key={item.id} className="contents">
-            <input id={id} type="checkbox" className="peer sr-only" aria-hidden="true" />
-            <label
-              htmlFor={id}
-              aria-label="Tutup testimoni"
-              className="fixed inset-0 z-[220] hidden bg-black/70 peer-checked:block"
-            />
-            <div className="pointer-events-none fixed inset-0 z-[221] hidden items-end justify-center px-4 py-4 peer-checked:flex sm:items-center">
-              <div
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby={`${id}-title`}
-                className="pointer-events-auto w-full max-w-xl max-h-[86vh] overflow-y-auto rounded-t-2xl border border-white/15 bg-white p-5 shadow-2xl dark:bg-[#242D67] sm:rounded-2xl sm:p-6"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <Stars rating={item.rating} />
-                    <h3 id={`${id}-title`} className="mt-4 text-lg font-semibold leading-tight text-gray-950 dark:text-white">
-                      {item.name}
-                    </h3>
-                    {item.role && (
-                      <p className="mt-1 text-xs text-gray-500 dark:text-white/55">{item.role}</p>
-                    )}
-                  </div>
-                  <label
-                    htmlFor={id}
-                    aria-label="Tutup testimoni"
-                    className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 dark:border-white/15 dark:text-white/70 dark:hover:bg-white/10"
-                  >
-                    <X size={16} aria-hidden="true" />
-                  </label>
-                </div>
+function TestimonialDialog({
+  item,
+  open,
+  onOpenChange,
+}: {
+  item: Testimonial | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  if (!item) return null;
+  const id = testimonialDialogId(item.id);
 
-                <p className="mt-5 whitespace-pre-line text-[15px] leading-7 text-gray-700 dark:text-white/75">
-                  &ldquo;{item.content}&rdquo;
-                </p>
-              </div>
+  return (
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[220] bg-black/70" />
+        <Dialog.Content
+          aria-describedby={`${id}-content`}
+          className="fixed inset-x-4 bottom-4 z-[221] max-h-[86vh] overflow-y-auto rounded-t-2xl border border-white/15 bg-white p-5 shadow-2xl dark:bg-[#242D67] sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:w-full sm:max-w-xl sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:p-6"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <Stars rating={item.rating} />
+              <Dialog.Title
+                id={`${id}-title`}
+                className="mt-4 text-lg font-semibold leading-tight text-gray-950 dark:text-white"
+              >
+                {item.name}
+              </Dialog.Title>
+              {item.role && (
+                <p className="mt-1 text-xs text-gray-500 dark:text-white/55">{item.role}</p>
+              )}
             </div>
+            <Dialog.Close asChild>
+              <button
+                type="button"
+                aria-label="Tutup testimoni"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 dark:border-white/15 dark:text-white/70 dark:hover:bg-white/10"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </Dialog.Close>
           </div>
-        );
-      })}
-    </>
+
+          <p id={`${id}-content`} className="mt-5 whitespace-pre-line text-[15px] leading-7 text-gray-700 dark:text-white/75">
+            &ldquo;{item.content}&rdquo;
+          </p>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
-function MobileDenseTestimonials({ items }: { items: Testimonial[] }) {
+function MobileDenseTestimonials({
+  items,
+  onOpen,
+}: {
+  items: Testimonial[];
+  onOpen: (item: Testimonial) => void;
+}) {
   return (
     <section className="sm:hidden overflow-hidden at-grid-bg py-8" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="px-4">
@@ -202,7 +211,6 @@ function MobileDenseTestimonials({ items }: { items: Testimonial[] }) {
         <h2 className="text-xl font-bold leading-tight" style={{ color: "var(--at-text)" }}>Kata traveler Sundaf</h2>
         <div className="mt-4 space-y-2">
           {items.slice(0, 8).map((item) => {
-            const dialogId = testimonialDialogId(item.id);
             return (
               <article key={item.id} className="at-card p-3">
                 <div className="flex items-start justify-between gap-3">
@@ -219,13 +227,14 @@ function MobileDenseTestimonials({ items }: { items: Testimonial[] }) {
                   &ldquo;{item.content}&rdquo;
                 </p>
                 {item.content.length > 150 && (
-                  <label
-                    htmlFor={dialogId}
+                  <button
+                    type="button"
+                    onClick={() => onOpen(item)}
                     className="mt-2 inline-flex cursor-pointer text-[10px] font-semibold uppercase"
                     style={{ color: "var(--site-accent)" }}
                   >
                     Baca penuh
-                  </label>
+                  </button>
                 )}
               </article>
             );
@@ -238,19 +247,27 @@ function MobileDenseTestimonials({ items }: { items: Testimonial[] }) {
 
 /* ─── Main section ─── */
 export default function TestimonialSection({ items, theme = "classic" }: Props) {
+  const [activeTestimonial, setActiveTestimonial] = useState<Testimonial | null>(null);
   if (items.length === 0) return null;
 
+  const openTestimonial = (item: Testimonial) => setActiveTestimonial(item);
   const cardShell = "h-full min-h-0 overflow-hidden";
   const quotePreviewProps = (item: Testimonial) => ({
     clampClassName: "line-clamp-5",
     allowExpand: true,
     toggleThreshold: 130,
-    dialogControlId: testimonialDialogId(item.id),
+    onExpand: () => openTestimonial(item),
   });
   const withDialogs = (section: React.ReactNode) => (
     <>
       {section}
-      <TestimonialDialogs items={items} />
+      <TestimonialDialog
+        item={activeTestimonial}
+        open={!!activeTestimonial}
+        onOpenChange={(open) => {
+          if (!open) setActiveTestimonial(null);
+        }}
+      />
     </>
   );
 
@@ -342,7 +359,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   /* ── ATLAS ── */
   if (theme === "atlas") return withDialogs(
     <>
-      <MobileDenseTestimonials items={items} />
+      <MobileDenseTestimonials items={items} onOpen={openTestimonial} />
       <section className="hidden sm:block py-14 overflow-hidden at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
         <div className="max-w-7xl mx-auto">
           <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-7">

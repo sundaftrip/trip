@@ -12,7 +12,6 @@ export default function ExpandableQuote({
   allowExpand = true,
   onExpand,
   toggleThreshold = 180,
-  dialogControlId,
 }: {
   text: string;
   color?: string;
@@ -20,7 +19,6 @@ export default function ExpandableQuote({
   allowExpand?: boolean;
   onExpand?: () => void;
   toggleThreshold?: number;
-  dialogControlId?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
   // Heuristik: anggap perlu tombol kalau teks > ~180 karakter (kira-kira 3 baris).
@@ -36,15 +34,7 @@ export default function ExpandableQuote({
       >
         &ldquo;{text}&rdquo;
       </p>
-      {needsToggle && dialogControlId ? (
-        <label
-          htmlFor={dialogControlId}
-          className="text-[10px] tracking-[0.16em] uppercase font-semibold mt-3 opacity-60 hover:opacity-100 transition-opacity self-start cursor-pointer"
-          style={color ? { color } : undefined}
-        >
-          Selengkapnya
-        </label>
-      ) : needsToggle ? (
+      {needsToggle ? (
         <button
           type="button"
           onClick={() => onExpand ? onExpand() : setExpanded(!expanded)}
