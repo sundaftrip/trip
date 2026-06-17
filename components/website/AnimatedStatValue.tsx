@@ -89,7 +89,8 @@ export default function AnimatedStatValue({ value }: AnimatedStatValueProps) {
     : String(current ?? 0);
 
   return (
-    <span ref={ref} aria-label={value}>
+    <span ref={ref}>
+      <span className="sr-only">{value}</span>
       <span aria-hidden="true">
         {parsed.prefix}
         {number}
