@@ -27,10 +27,7 @@ function hasError(value?: string | string[]) {
   return Array.isArray(value) ? Boolean(value[0]) : Boolean(value);
 }
 
-const catalogBackgroundSrc = "/b2b-russia-catalog-background.png?v=84402c40";
-const catalogSectionStyle = {
-  minHeight: "max(100vh, calc(100vw * 1821 / 864))",
-};
+const catalogBackgroundSrc = "/b2b-russia-catalog-background.png?v=2a6be203";
 
 function CatalogSketchBackground() {
   return (
@@ -64,10 +61,7 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
 
   if (!access) {
     return (
-      <section
-        className="relative isolate overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8"
-        style={catalogSectionStyle}
-      >
+      <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8">
         <CatalogSketchBackground />
         <div className="relative mx-auto w-full max-w-sm">
           <div className="mb-6 flex justify-center">
@@ -109,10 +103,7 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
   });
 
   return (
-    <section
-      className="relative isolate overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8"
-      style={catalogSectionStyle}
-    >
+    <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8">
       <CatalogSketchBackground />
       <div className="relative mx-auto w-full max-w-2xl">
         <div className="mb-8 flex items-center justify-between gap-4">
