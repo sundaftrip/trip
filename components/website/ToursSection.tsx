@@ -254,15 +254,6 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
   if (theme === "atlas") return (
     <section className="py-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimateIn>
-          <div className="flex items-end justify-between mb-5 sm:mb-10">
-            <div>
-              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Jadwal & private trip</span>
-              <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold" style={{ color: "var(--at-text)" }}>Paket yang Siap Dibooking</h2>
-              <p className="mt-1 text-xs font-medium sm:hidden" style={{ color: "var(--at-subtext)" }}>Rusia, Asia Tengah, dan aurora tampil lebih dulu.</p>
-            </div>
-          </div>
-        </AnimateIn>
         <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
