@@ -511,7 +511,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           </div>
 
           {/* Kanan — tombol aksi di samping hero + trust badge */}
-          <div className="lg:w-[300px] shrink-0 flex flex-col gap-2.5 hero-fade-up">
+          <div className="hidden lg:flex lg:w-[300px] shrink-0 flex-col gap-2.5 hero-fade-up">
             <Link href="/tours"
               className="at-btn-solid w-full px-6 py-3.5 text-sm">
               Tour <ArrowRight size={15} />
