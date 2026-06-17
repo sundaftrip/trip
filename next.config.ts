@@ -1,5 +1,36 @@
 import type { NextConfig } from "next";
 import withSerwistInit from "@serwist/next";
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+
+function publicPrecacheEntries(publicDir = path.join(process.cwd(), "public")) {
+  if (!fs.existsSync(publicDir)) return [];
+
+  const entries: Array<{ url: string; revision: string }> = [];
+  const exclude = [/^sw\.js(\.map)?$/, /^swe-worker-.*\.js(\.map)?$/, /^vietnam\/catalog\//];
+
+  const walk = (dir: string) => {
+    for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+      const absolutePath = path.join(dir, item.name);
+      const relativePath = path.relative(publicDir, absolutePath).split(path.sep).join("/");
+      if (exclude.some((pattern) => pattern.test(item.isDirectory() ? `${relativePath}/` : relativePath))) continue;
+
+      if (item.isDirectory()) {
+        walk(absolutePath);
+        continue;
+      }
+
+      entries.push({
+        url: `/${relativePath}`,
+        revision: crypto.createHash("md5").update(fs.readFileSync(absolutePath)).digest("hex"),
+      });
+    }
+  };
+
+  walk(publicDir);
+  return entries;
+}
 
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
@@ -9,6 +40,7 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV !== "production",
   cacheOnNavigation: true,
   reloadOnOnline: true,
+  additionalPrecacheEntries: publicPrecacheEntries(),
 });
 
 const scriptSrc = [

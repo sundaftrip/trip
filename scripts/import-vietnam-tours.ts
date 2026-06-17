@@ -2,6 +2,12 @@ import { PrismaClient, type Prisma } from "@prisma/client";
 import fs from "node:fs";
 import path from "node:path";
 import { localizePdfText } from "../lib/itinerary-pdf-localization";
+import {
+  localizeCatalogRecord,
+  localizeCatalogStringArray,
+  localizeCatalogText,
+} from "../lib/tour-catalog-localization";
+import { galleryForVietnamTour, heroForVietnamTour } from "../lib/vietnam-tour-images";
 
 type ImportFile = {
   created_at?: string;
@@ -181,16 +187,20 @@ function buildNotes(tour: SourceTour) {
 
 function buildItinerary(tour: SourceTour) {
   const briefByDay = new Map((tour.brief_itinerary ?? []).map((day) => [day.day, day]));
+  const briefByNumber = new Map(
+    (tour.brief_itinerary ?? []).map((day, index) => [dayNumber(day.day, index + 1), day])
+  );
   const detailed = tour.detailed_itinerary ?? [];
   if (detailed.length > 0) {
     return detailed.map((day, index) => {
-      const brief = briefByDay.get(day.day);
+      const sequentialDay = index + 1;
+      const brief = briefByNumber.get(sequentialDay) ?? briefByDay.get(day.day);
       const meta = [
         brief?.meals ? idText(`Meals: ${brief.meals}`) : null,
         brief?.overnight ? idText(`Overnight: ${brief.overnight}`) : null,
       ].filter(Boolean);
       return {
-        day: dayNumber(day.day, index + 1),
+        day: sequentialDay,
         title: idText(day.heading || brief?.route || day.day),
         description: idText([...meta, ...(day.details ?? [])].join("\n")),
       };
@@ -217,34 +227,51 @@ function buildAddOns(tour: SourceTour) {
     .filter((item) => item.name && item.price > 0);
 }
 
-function heroForTour(tour: SourceTour) {
-  const text = `${tour.title} ${tour.route_summary ?? ""} ${(tour.highlights ?? []).join(" ")}`.toLowerCase();
-  if (text.includes("sapa")) return "/vietnam/assets/hero-sapa.jpg";
-  if (text.includes("halong")) return "/vietnam/assets/halong-sunset.jpg";
-  if (text.includes("hanoi") || text.includes("northern")) return "/vietnam/assets/hanoi-street.jpg";
-  if (text.includes("phu quoc")) return "/vietnam/assets/og.jpg";
-  return "/vietnam/assets/halong-boat.jpg";
-}
+async function localizeTourInput(data: Prisma.TourUncheckedCreateInput): Promise<Prisma.TourUncheckedCreateInput> {
+  const itinerary = Array.isArray(data.itinerary)
+    ? (data.itinerary as { day: number; title: string; description: string }[])
+    : [];
+  const addOns = Array.isArray(data.addOns)
+    ? (data.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[])
+    : [];
+  const hotel =
+    data.hotel && !Array.isArray(data.hotel) && typeof data.hotel === "object"
+      ? (data.hotel as Record<string, string>)
+      : null;
+  const inclusions = Array.isArray(data.inclusions) ? data.inclusions : [];
+  const exclusions = Array.isArray(data.exclusions) ? data.exclusions : [];
 
-function galleryForTour(tour: SourceTour) {
-  const images = new Set<string>([heroForTour(tour)]);
-  const text = `${tour.title} ${tour.route_summary ?? ""} ${(tour.highlights ?? []).join(" ")}`.toLowerCase();
-  if (text.includes("sapa")) {
-    images.add("/vietnam/assets/sapa-aerial.jpg");
-    images.add("/vietnam/assets/hero-sapa-mobile.jpg");
-  }
-  if (text.includes("halong")) {
-    images.add("/vietnam/assets/halong-boat.jpg");
-    images.add("/vietnam/assets/halong-sunset.jpg");
-  }
-  if (text.includes("hanoi")) images.add("/vietnam/assets/hanoi-street.jpg");
-  if (images.size < 3) images.add("/vietnam/assets/og.jpg");
-  return [...images].slice(0, 4);
-}
-
-function toTourInput(tour: SourceTour): Prisma.TourUncheckedCreateInput {
-  const duration = `${tour.duration.days} Hari ${tour.duration.nights} Malam`;
   return {
+    ...data,
+    title: (await localizeCatalogText(data.title)) ?? data.title,
+    cityHighlight: (await localizeCatalogText(data.cityHighlight)) ?? null,
+    duration: (await localizeCatalogText(data.duration)) ?? null,
+    description: (await localizeCatalogText(data.description)) ?? null,
+    notes: (await localizeCatalogText(data.notes)) ?? null,
+    badge: (await localizeCatalogText(data.badge)) ?? null,
+    inclusions: await localizeCatalogStringArray(inclusions),
+    exclusions: await localizeCatalogStringArray(exclusions),
+    itinerary: await Promise.all(
+      itinerary.map(async (item) => ({
+        ...item,
+        title: (await localizeCatalogText(item.title)) ?? item.title,
+        description: (await localizeCatalogText(item.description)) ?? item.description,
+      }))
+    ),
+    hotel: (await localizeCatalogRecord(hotel)) ?? undefined,
+    addOns: await Promise.all(
+      addOns.map(async (item) => ({
+        ...item,
+        name: (await localizeCatalogText(item.name)) ?? item.name,
+        desc: (await localizeCatalogText(item.desc)) ?? item.desc,
+      }))
+    ),
+  };
+}
+
+async function toTourInput(tour: SourceTour): Promise<Prisma.TourUncheckedCreateInput> {
+  const duration = `${tour.duration.days} Hari ${tour.duration.nights} Malam`;
+  return localizeTourInput({
     title: idText(tour.title),
     slug: tour.slug,
     country: "Vietnam",
@@ -259,15 +286,15 @@ function toTourInput(tour: SourceTour): Prisma.TourUncheckedCreateInput {
     itinerary: buildItinerary(tour),
     inclusions: (tour.inclusions ?? []).map(idText),
     exclusions: (tour.exclusions ?? []).map(idText),
-    gallery: galleryForTour(tour),
+    gallery: galleryForVietnamTour(tour),
     hotel: buildHotelRecord(tour.hotels),
     visaInfo: null,
-    heroImg: heroForTour(tour),
+    heroImg: heroForVietnamTour(tour),
     badge: "Land Tour Privat",
     notes: buildNotes(tour),
     description: idText(buildDescription(tour)),
     addOns: buildAddOns(tour),
-  };
+  });
 }
 
 function internalPricingRecord(source: ImportFile) {
@@ -323,7 +350,7 @@ async function main() {
   let updated = 0;
   try {
     for (const sourceTour of source.tours) {
-      const data = toTourInput(sourceTour);
+      const data = await toTourInput(sourceTour);
       const existing = await prisma.tour.findUnique({ where: { slug: sourceTour.slug }, select: { id: true } });
       await prisma.tour.upsert({
         where: { slug: sourceTour.slug },

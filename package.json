@@ -10,6 +10,9 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "import:vietnam-tours": "tsx scripts/import-vietnam-tours.ts",
+    "localize:tour-catalog": "tsx scripts/localize-tour-catalog.ts",
+    "update:vietnam-tour-photos": "tsx scripts/update-vietnam-tour-photos.ts",
+    "upload:vietnam-catalog-images": "tsx scripts/upload-vietnam-catalog-images.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },

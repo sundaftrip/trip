@@ -39,3 +39,6 @@ company-profile/sundaftrip-company-profile-internal.pdf
 
 # internal catalog pricing, not public site content
 data/internal/*.local.json
+
+# local upload sources for Vietnam catalog images; runtime uses Cloudinary URLs
+public/vietnam/catalog/
