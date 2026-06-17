@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Download, LockKeyhole, LogOut } from "lucide-react";
+import { Download, LogOut } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCatalogAccessPasswordId } from "@/lib/b2b-catalog";
+import B2BCatalogLoginForm from "@/components/website/B2BCatalogLoginForm";
 
 export const dynamic = "force-dynamic";
 
@@ -71,38 +72,9 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
 
   if (!access) {
     return (
-      <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 sm:px-6 lg:px-8">
+      <section className="relative isolate min-h-[100svh] overflow-hidden bg-white px-5 pt-14 pb-10 sm:min-h-screen sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
         <CatalogSketchBackground />
-        <div className="relative mx-auto w-full max-w-sm">
-          <div className="mb-6 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-gray-700 shadow-sm ring-1 ring-gray-200/70">
-              <LockKeyhole size={22} />
-            </div>
-          </div>
-          <h1 className="text-center text-2xl font-semibold text-gray-950">
-            B2B Russia Tour Catalog
-          </h1>
-
-          <form action="/api/b2b-catalog/login" method="post" className="mt-8 space-y-3">
-            <input
-              type="password"
-              name="password"
-              autoComplete="current-password"
-              placeholder="Password"
-              className="w-full rounded-lg border border-gray-300 bg-white/90 px-4 py-3 text-center text-base text-gray-950 outline-none transition focus:border-gray-900"
-            />
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-gray-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
-            >
-              Masuk
-            </button>
-          </form>
-
-          {hasError(sp.error) && (
-            <p className="mt-4 text-center text-sm text-red-600">Password tidak valid.</p>
-          )}
-        </div>
+        <B2BCatalogLoginForm showError={hasError(sp.error)} />
       </section>
     );
   }
@@ -113,16 +85,16 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
   });
 
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 sm:px-6 lg:px-8">
+    <section className="relative isolate min-h-[100svh] overflow-hidden bg-white px-5 pt-14 pb-10 sm:min-h-screen sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
       <CatalogSketchBackground />
       <div className="relative mx-auto w-full max-w-2xl">
-        <div className="mb-8 flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-semibold text-gray-950">B2B Russia Tour Catalog</h1>
+        <div className="mb-6 flex items-start justify-between gap-4 sm:mb-8 sm:items-center">
+          <h1 className="text-xl font-semibold leading-tight text-gray-950 sm:text-2xl">B2B Russia Tour Catalog</h1>
           <form action="/api/b2b-catalog/logout" method="post">
             <button
               type="submit"
               aria-label="Keluar"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-white/80 text-gray-500 transition hover:bg-white hover:text-gray-900"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-gray-300 bg-white/85 text-gray-500 transition hover:bg-white hover:text-gray-900"
             >
               <LogOut size={17} />
             </button>
@@ -139,7 +111,7 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
               <a
                 key={document.id}
                 href={`/api/b2b-catalog/documents/${document.id}/download`}
-                className="flex items-center justify-between gap-4 px-4 py-4 text-gray-950 transition hover:bg-white sm:px-5"
+                className="flex min-h-16 items-center justify-between gap-4 px-4 py-4 text-gray-950 transition hover:bg-white sm:px-5"
               >
                 <span className="min-w-0 truncate text-sm font-medium sm:text-base">{document.title}</span>
                 <Download size={18} className="shrink-0 text-gray-400" />
