@@ -22,6 +22,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
+import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -370,6 +371,14 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const optionalAddOns = addOns.filter((a) => a.tag !== "wajib");
   const mandatoryTotal = mandatoryAddOns.reduce((sum, a) => sum + (Number(a.price) || 0), 0);
   const startingTotal = basePrice + mandatoryTotal;
+  const paymentPlan = tour.status === "ACTIVE" && !isExpired
+    ? buildTourPaymentPlan({
+        totalAmount: startingTotal,
+        departureDate: tour.tripDate,
+        seatsLeft: tour.seatsLeft,
+        paymentPlanConfig: tour.paymentPlan,
+      })
+    : null;
 
   const greeting = companyName ? `Halo ${companyName}` : "Halo";
   // P2.2: sisipkan tanggal keberangkatan ke prefill biar lead lebih kualified
@@ -383,6 +392,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           `\n• Estimasi total: ${formatCurrency(startingTotal)} / orang`
         : "")
   );
+  const bookingWaHref = `https://wa.me/${waNumber}?text=${waMessage}`;
 
   // Ringkasan plain-text untuk catatan lead (Lead Masuk di CMS)
   const waSummary =
@@ -869,7 +879,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               ) : (
                 <TourBookingCTA
-                  waHref={`https://wa.me/${waNumber}?text=${waMessage}`}
+                  waHref={bookingWaHref}
                   destination={displayTitle}
                   summary={waSummary}
                   buttonClassName={`w-full flex items-center justify-center gap-2 py-3 font-black mb-3 transition disabled:opacity-60 ${isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"}`}
@@ -973,6 +983,100 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             </div>
           </div>
         </div>
+
+        {paymentPlan && (
+          <section
+            id="skema-pembayaran"
+            className={`mt-10 overflow-hidden ${isOutlined ? `${pfx}-card p-5 sm:p-7` : "rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-7"}`}
+            style={isOutlined ? { background: tCard, color: tText } : undefined}
+          >
+            <div className="max-w-5xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2
+                  className={`text-2xl font-black tracking-tight ${isOutlined ? "" : "text-gray-900 dark:text-white"}`}
+                  style={isOutlined ? { color: tText } : undefined}
+                >
+                  {paymentPlan.title}
+                </h2>
+                <CheckCircle size={20} className={isOutlined ? "" : "text-emerald-400"} style={isOutlined ? { color: "var(--site-accent)" } : undefined} />
+              </div>
+
+              <p
+                className={`mt-4 max-w-4xl text-sm leading-relaxed sm:text-base ${isOutlined ? "" : "text-gray-600 dark:text-gray-300"}`}
+                style={isOutlined ? { color: tSub } : undefined}
+              >
+                {paymentPlan.intro}
+              </p>
+              <p
+                className={`mt-2 text-sm font-bold italic ${isOutlined ? "" : "text-gray-700 dark:text-gray-200"}`}
+                style={isOutlined ? { color: tText } : undefined}
+              >
+                ({paymentPlan.paymentMethodsLabel})
+              </p>
+
+              <div className="mt-5 flex justify-center">
+                <span
+                  className={`inline-flex items-center gap-1.5 border px-3 py-1 text-[11px] font-black uppercase tracking-wide ${isOutlined ? `${pfx}-pill` : "rounded-full border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"}`}
+                  style={isOutlined ? { background: tMint, color: tText, borderColor: tBdr } : undefined}
+                >
+                  <CheckCircle size={13} />
+                  {paymentPlan.urgencyLabel}
+                </span>
+              </div>
+
+              <a
+                href={bookingWaHref}
+                className={`mt-4 flex w-full items-center justify-center px-5 py-3 text-sm font-black uppercase tracking-wide transition ${isOutlined ? `${pfx}-btn` : "rounded-full bg-yellow-300 text-gray-950 hover:bg-yellow-200"}`}
+                style={isOutlined ? { background: "#FFD966", color: "#1f2937", borderColor: tBdr } : undefined}
+              >
+                Booking Sekarang
+              </a>
+
+              <div className="mt-8">
+                <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+                  <p
+                    className={`text-xs font-black uppercase tracking-[0.18em] ${isOutlined ? "" : "text-gray-500 dark:text-gray-400"}`}
+                    style={isOutlined ? { color: tSub } : undefined}
+                  >
+                    Skema Pembayaran
+                  </p>
+                  <p
+                    className={`text-xs font-semibold ${isOutlined ? "" : "text-gray-500 dark:text-gray-400"}`}
+                    style={isOutlined ? { color: tSub } : undefined}
+                  >
+                    Total: {paymentPlan.totalLabel} / orang
+                  </p>
+                </div>
+                <div className={`overflow-x-auto border ${isOutlined ? "border-dashed" : "rounded-xl border-gray-200 dark:border-gray-800"}`} style={isOutlined ? { borderColor: tBdr } : undefined}>
+                  <table className="w-full min-w-[620px] text-left text-sm">
+                    <thead className={isOutlined ? "" : "bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-200"}>
+                      <tr>
+                        <th className="border-b px-4 py-3 text-xs font-black uppercase tracking-wide" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Tahap</th>
+                        <th className="border-b px-4 py-3 text-xs font-black uppercase tracking-wide" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Jatuh Tempo</th>
+                        <th className="border-b px-4 py-3 text-right text-xs font-black uppercase tracking-wide" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>Nominal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paymentPlan.steps.map((step) => (
+                        <tr key={step.label}>
+                          <td className="border-b px-4 py-3 font-semibold" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>{step.label}</td>
+                          <td className="border-b px-4 py-3" style={isOutlined ? { borderColor: tBdr, color: tSub } : undefined}>{step.dueDateLabel}</td>
+                          <td className="border-b px-4 py-3 text-right font-bold" style={isOutlined ? { borderColor: tBdr, color: tText } : undefined}>{step.amountLabel}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p
+                  className={`mt-3 text-xs leading-relaxed ${isOutlined ? "" : "text-gray-500 dark:text-gray-400"}`}
+                  style={isOutlined ? { color: tSub } : undefined}
+                >
+                  {paymentPlan.finePrint}
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Ulasan Peserta — full-width, paling bawah (setelah card harga) */}
         {reviewCount > 0 && (

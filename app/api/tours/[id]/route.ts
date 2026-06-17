@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
-import { pickInput, badNumber, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
+import { pickInput, badNumber, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
 import { apiError } from "@/lib/api-error";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
@@ -47,6 +47,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Pin tour harus bernilai benar/salah." }, { status: 422 });
   if (data.pinned === true && await pinnedLimitReached(id))
     return NextResponse.json({ error: `Maksimal ${MAX_PINNED_TOURS} tour bisa dipin. Unpin salah satu tour dulu.` }, { status: 422 });
+  if ("paymentPlan" in data) {
+    const paymentPlan = normalizeTourPaymentPlanInput(data.paymentPlan);
+    if (!paymentPlan.ok) return NextResponse.json({ error: paymentPlan.error }, { status: 422 });
+    data.paymentPlan = paymentPlan.value;
+  }
 
   try {
     const tour = await prisma.tour.update({

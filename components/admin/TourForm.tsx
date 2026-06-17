@@ -8,8 +8,19 @@ import StickyFormActions from "./StickyFormActions";
 type ItineraryItem = { day: number; title: string; description: string };
 type AddOnTag = "" | "wajib" | "recommended";
 type AddOnDraft = { name: string; price: string | number; desc: string };
+type PaymentPlanMode = "auto" | "manual" | "hidden";
+type PaymentPlanStepDraft = { label: string; dueDate: string; amount: string | number };
+export type PaymentPlanFormConfig = {
+  mode: PaymentPlanMode;
+  title?: string;
+  intro?: string;
+  paymentMethodsLabel?: string;
+  urgencyLabel?: string;
+  finePrint?: string;
+  steps: PaymentPlanStepDraft[];
+};
 
-interface TourData {
+export interface TourData {
   id?: string;
   title?: string;
   country?: string;
@@ -32,6 +43,7 @@ interface TourData {
   visaInfo?: string;
   itinerary?: ItineraryItem[];
   addOns?: { name: string; price: number; tag?: AddOnTag; desc?: string }[];
+  paymentPlan?: PaymentPlanFormConfig;
 }
 
 interface TourFormDraft {
@@ -70,6 +82,7 @@ function buildInitialForm(tour?: TourData): TourData {
     visaInfo: tour?.visaInfo ?? "",
     itinerary: tour?.itinerary ?? [],
     addOns: tour?.addOns ?? [],
+    paymentPlan: normalizePaymentPlanConfig(tour?.paymentPlan),
   };
 }
 
@@ -83,6 +96,125 @@ function emptyItineraryItem(items?: ItineraryItem[]): ItineraryItem {
 
 function emptyAddOnItem(): AddOnDraft {
   return { name: "", price: "", desc: "" };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function dateInputValue(value: unknown) {
+  if (typeof value !== "string" || !value.trim()) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+}
+
+function optionalString(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function normalizePaymentPlanConfig(value: unknown): PaymentPlanFormConfig {
+  if (!isRecord(value)) return { mode: "auto", steps: [] };
+
+  const mode: PaymentPlanMode =
+    value.mode === "manual" ? "manual" :
+    value.mode === "hidden" ? "hidden" :
+    "auto";
+
+  return {
+    mode,
+    title: optionalString(value.title),
+    intro: optionalString(value.intro),
+    paymentMethodsLabel: optionalString(value.paymentMethodsLabel),
+    urgencyLabel: optionalString(value.urgencyLabel),
+    finePrint: optionalString(value.finePrint),
+    steps: Array.isArray(value.steps)
+      ? value.steps.flatMap((step) => {
+          if (!isRecord(step)) return [];
+          return [{
+            label: optionalString(step.label),
+            dueDate: dateInputValue(step.dueDate),
+            amount: typeof step.amount === "number" || typeof step.amount === "string" ? step.amount : "",
+          }];
+        })
+      : [],
+  };
+}
+
+function dateInputFromDate(date: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+function addDaysToInputDate(value: string, days: number) {
+  const date = value ? new Date(`${value}T12:00:00+07:00`) : new Date();
+  date.setUTCDate(date.getUTCDate() + days);
+  return dateInputFromDate(date);
+}
+
+function roundToThousand(amount: number) {
+  return Math.round(amount / 1000) * 1000;
+}
+
+function paymentPlanTotal(form: TourData) {
+  const basePrice = Number(form.promoPrice ?? form.price ?? 0) || 0;
+  const mandatoryTotal = (form.addOns ?? [])
+    .filter((item) => item.tag === "wajib")
+    .reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+
+  return basePrice + mandatoryTotal;
+}
+
+function paymentPlanTemplate(form: TourData): PaymentPlanStepDraft[] {
+  const total = roundToThousand(paymentPlanTotal(form));
+  const dpAmount = total < 3_000_000
+    ? roundToThousand(total * 0.35)
+    : Math.min(1_500_000, roundToThousand(total * 0.45));
+  const remaining = Math.max(0, total - dpAmount);
+  const secondAmount = roundToThousand(remaining / 2);
+  const bookingDate = dateInputFromDate(new Date());
+  const finalDate = form.tripDate ? addDaysToInputDate(form.tripDate, -21) : "";
+
+  return [
+    { label: "DP1", dueDate: bookingDate, amount: dpAmount },
+    { label: "Cicilan 2", dueDate: addDaysToInputDate(bookingDate, 7), amount: secondAmount },
+    { label: "Cicilan Terakhir", dueDate: finalDate, amount: remaining - secondAmount },
+  ];
+}
+
+function normalizePaymentPlanForSubmit(value: unknown): { ok: true; value: Record<string, unknown> | null } | { ok: false; error: string } {
+  const paymentPlan = normalizePaymentPlanConfig(value);
+  if (paymentPlan.mode === "auto") return { ok: true, value: null };
+  if (paymentPlan.mode === "hidden") return { ok: true, value: { mode: "hidden" } };
+
+  const steps = paymentPlan.steps.flatMap((step) => {
+    const label = step.label.trim();
+    const dueDate = step.dueDate.trim();
+    const amount = Number(step.amount);
+    if (!label || !dueDate || !Number.isFinite(amount) || amount < 0) return [];
+    return [{ label, dueDate, amount }];
+  });
+
+  if (steps.length === 0) {
+    return { ok: false, error: "Minimal satu tahap pembayaran manual wajib diisi lengkap." };
+  }
+
+  return {
+    ok: true,
+    value: {
+      mode: "manual",
+      title: paymentPlan.title?.trim() || undefined,
+      intro: paymentPlan.intro?.trim() || undefined,
+      paymentMethodsLabel: paymentPlan.paymentMethodsLabel?.trim() || undefined,
+      urgencyLabel: paymentPlan.urgencyLabel?.trim() || undefined,
+      finePrint: paymentPlan.finePrint?.trim() || undefined,
+      steps,
+    },
+  };
 }
 
 function sortItinerary(items: ItineraryItem[]) {
@@ -195,6 +327,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         restoredForm.gallery = Array.isArray(restoredForm.gallery) ? restoredForm.gallery : [];
         restoredForm.itinerary = Array.isArray(restoredForm.itinerary) ? sortItinerary(restoredForm.itinerary) : [];
         restoredForm.addOns = Array.isArray(restoredForm.addOns) ? restoredForm.addOns : [];
+        restoredForm.paymentPlan = normalizePaymentPlanConfig(restoredForm.paymentPlan);
 
         setForm(restoredForm);
         setInclusionInput(typeof draft.inclusionInput === "string" ? draft.inclusionInput : "");
@@ -355,6 +488,31 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
     setForm((p) => ({ ...p, [key]: value }));
   }
 
+  const paymentPlan = normalizePaymentPlanConfig(form.paymentPlan);
+
+  function setPaymentPlan(partial: Partial<PaymentPlanFormConfig>) {
+    set("paymentPlan", { ...paymentPlan, ...partial });
+  }
+
+  function setPaymentPlanStep(i: number, partial: Partial<PaymentPlanStepDraft>) {
+    const steps = paymentPlan.steps.map((step, j) => (i === j ? { ...step, ...partial } : step));
+    setPaymentPlan({ steps });
+  }
+
+  function addPaymentPlanStep() {
+    setPaymentPlan({
+      mode: "manual",
+      steps: [
+        ...paymentPlan.steps,
+        { label: "", dueDate: "", amount: "" },
+      ],
+    });
+  }
+
+  function removePaymentPlanStep(i: number) {
+    setPaymentPlan({ steps: paymentPlan.steps.filter((_, j) => i !== j) });
+  }
+
   function commitItineraryItem() {
     const item: ItineraryItem = {
       day: Number(itineraryItem.day) || getNextItineraryDay(form.itinerary),
@@ -376,6 +534,13 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    const paymentPlanForSubmit = normalizePaymentPlanForSubmit(form.paymentPlan);
+    if (!paymentPlanForSubmit.ok) {
+      setLoading(false);
+      setError(paymentPlanForSubmit.error);
+      return;
+    }
     const payload = {
       ...form,
       price: Number(form.price),
@@ -383,6 +548,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       priceLandTour: form.priceLandTour ? Number(form.priceLandTour) : null,
       seatsLeft: Number(form.seatsLeft),
       tripDate: form.tripDate ? new Date(form.tripDate).toISOString() : null,
+      paymentPlan: paymentPlanForSubmit.value,
     };
     const res = await fetch(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
       method: isEdit ? "PUT" : "POST",
@@ -496,6 +662,157 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
             <input type="number" min={0} className="input" value={form.priceLandTour ?? ""} onChange={(e) => set("priceLandTour", e.target.value || null)} />
           </Field>
         </div>
+      </div>
+
+      {/* Payment Plan */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="font-semibold text-gray-900 dark:text-white">Skema Pembayaran</h2>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Default otomatis mengikuti harga, add-on wajib, tanggal booking, dan tanggal keberangkatan.
+            </p>
+          </div>
+          <span className="rounded-lg bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+            Total acuan: Rp {paymentPlanTotal(form).toLocaleString("id-ID")}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field label="Mode">
+            <select
+              className="input"
+              value={paymentPlan.mode}
+              onChange={(e) => setPaymentPlan({ mode: e.target.value as PaymentPlanMode })}
+            >
+              <option value="auto">Otomatis</option>
+              <option value="manual">Manual dari CMS</option>
+              <option value="hidden">Sembunyikan</option>
+            </select>
+          </Field>
+        </div>
+
+        {paymentPlan.mode === "auto" && (
+          <p className="mt-3 rounded-lg bg-blue-50 p-3 text-xs leading-relaxed text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+            Otomatis: DP default Rp 1.500.000, cicilan kedua H+7 dari booking, dan cicilan terakhir mengikuti jarak keberangkatan.
+            Jika tanggal keberangkatan kosong, skema tidak tampil di halaman publik.
+          </p>
+        )}
+
+        {paymentPlan.mode === "hidden" && (
+          <p className="mt-3 rounded-lg bg-amber-50 p-3 text-xs leading-relaxed text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+            Skema pembayaran tidak akan tampil di halaman tour dan PDF, walaupun tour punya tanggal keberangkatan.
+          </p>
+        )}
+
+        {paymentPlan.mode === "manual" && (
+          <div className="mt-5 space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Judul Section">
+                <input
+                  className="input"
+                  placeholder="Booking Seat DP 1 Juta-an"
+                  value={paymentPlan.title ?? ""}
+                  onChange={(e) => setPaymentPlan({ title: e.target.value })}
+                />
+              </Field>
+              <Field label="Badge Urgensi">
+                <input
+                  className="input"
+                  placeholder="Sisa 5 traveler lagi - gas sebelum habis"
+                  value={paymentPlan.urgencyLabel ?? ""}
+                  onChange={(e) => setPaymentPlan({ urgencyLabel: e.target.value })}
+                />
+              </Field>
+              <Field label="Kalimat Pembuka">
+                <textarea
+                  className="input min-h-[80px]"
+                  placeholder="Pembayaran aman dan fleksibel..."
+                  value={paymentPlan.intro ?? ""}
+                  onChange={(e) => setPaymentPlan({ intro: e.target.value })}
+                />
+              </Field>
+              <Field label="Metode Pembayaran">
+                <textarea
+                  className="input min-h-[80px]"
+                  placeholder="Tersedia bank transfer, QRIS, e-wallet..."
+                  value={paymentPlan.paymentMethodsLabel ?? ""}
+                  onChange={(e) => setPaymentPlan({ paymentMethodsLabel: e.target.value })}
+                />
+              </Field>
+            </div>
+
+            <div>
+              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <label className="label">Tahapan Pembayaran</label>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentPlan({ mode: "manual", steps: paymentPlanTemplate(form) })}
+                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                  >
+                    Pakai template 3 tahap
+                  </button>
+                  <button
+                    type="button"
+                    onClick={addPaymentPlanStep}
+                    className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+                  >
+                    Tambah tahap
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {paymentPlan.steps.map((step, i) => (
+                  <div key={i} className="grid grid-cols-1 gap-2 rounded-lg bg-gray-50 p-3 dark:bg-gray-700 md:grid-cols-[1fr_10rem_11rem_auto]">
+                    <input
+                      className="input"
+                      placeholder="DP1"
+                      value={step.label}
+                      onChange={(e) => setPaymentPlanStep(i, { label: e.target.value })}
+                    />
+                    <input
+                      type="date"
+                      className="input"
+                      value={step.dueDate}
+                      onChange={(e) => setPaymentPlanStep(i, { dueDate: e.target.value })}
+                    />
+                    <input
+                      type="number"
+                      min={0}
+                      className="input"
+                      placeholder="Nominal"
+                      value={step.amount}
+                      onChange={(e) => setPaymentPlanStep(i, { amount: e.target.value })}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removePaymentPlanStep(i)}
+                      className="rounded-lg px-3 py-2 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ))}
+                {paymentPlan.steps.length === 0 && (
+                  <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+                    Belum ada tahap manual. Klik &quot;Pakai template 3 tahap&quot; atau &quot;Tambah tahap&quot;.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <Field label="Catatan Kecil">
+              <input
+                className="input"
+                placeholder="Jadwal pembayaran disesuaikan oleh tim Sundaf di CMS."
+                value={paymentPlan.finePrint ?? ""}
+                onChange={(e) => setPaymentPlan({ finePrint: e.target.value })}
+              />
+            </Field>
+          </div>
+        )}
       </div>
 
       {/* Hero Image */}

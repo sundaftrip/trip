@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import TourForm from "@/components/admin/TourForm";
+import TourForm, { type TourData } from "@/components/admin/TourForm";
 
 type EditTourSearchParams = {
   returnTo?: string | string[];
@@ -57,6 +57,7 @@ export default async function EditTourPage({
         visaInfo: tour.visaInfo ?? undefined,
         itinerary: (tour.itinerary as { day: number; title: string; description: string }[]) ?? [],
         addOns: (tour.addOns as { name: string; price: number }[]) ?? [],
+        paymentPlan: tour.paymentPlan as TourData["paymentPlan"],
       }} />
     </div>
   );

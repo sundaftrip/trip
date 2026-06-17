@@ -7,6 +7,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
 
 export const runtime = "nodejs";
@@ -91,6 +92,7 @@ function normalizePdfAddOns(raw: unknown): PdfAddOn[] {
 
     return [{
       name,
+      price: Number.isFinite(price) ? price : 0,
       priceLabel: formatCurrency(Number.isFinite(price) ? price : 0),
       tag,
       desc,
@@ -130,7 +132,19 @@ export async function GET(
     ? `${formatCurrency(tour.price)}  -  hemat ${formatCurrency(tour.price - tour.promoPrice)}`
     : null;
   const landTourLabel = tour.priceLandTour ? formatCurrency(tour.priceLandTour) : null;
-  const addOns = normalizePdfAddOns(tour.addOns).filter((item) => item.tag !== "wajib");
+  const normalizedAddOns = normalizePdfAddOns(tour.addOns);
+  const mandatoryAddOnTotal = normalizedAddOns
+    .filter((item) => item.tag === "wajib")
+    .reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+  const addOns = normalizedAddOns.filter((item) => item.tag !== "wajib");
+  const paymentPlan = tour.status === "ACTIVE"
+    ? buildTourPaymentPlan({
+        totalAmount: finalPrice + mandatoryAddOnTotal,
+        departureDate: tour.tripDate,
+        seatsLeft: tour.seatsLeft,
+        paymentPlanConfig: tour.paymentPlan,
+      })
+    : null;
   const rawHero = tour.heroImg || fallbackHeroForTour(tour);
   const rawGallery = uniqueImages([rawHero, ...tour.gallery, fallbackHeroForTour(tour)]);
   const [heroImg, gallery, logo] = await Promise.all([
@@ -164,6 +178,7 @@ export async function GET(
       priceLabel,
       priceCoretLabel,
       landTourLabel,
+      paymentPlan,
       company: {
         name: ci["company_name"],
         logo,

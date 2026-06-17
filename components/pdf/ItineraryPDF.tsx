@@ -4,6 +4,7 @@ import {
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
+import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 
 const PAPER = "#EEEEEE";
 const TEAL = "#00ADB5";
@@ -26,6 +27,7 @@ export interface ItineraryDay {
 
 export interface PdfAddOn {
   name: string;
+  price?: number;
   priceLabel: string;
   tag?: "" | "wajib" | "recommended";
   desc?: string | null;
@@ -64,6 +66,7 @@ export interface ItineraryPDFProps {
     nib?: string;
   };
   faqUrl?: string;
+  paymentPlan?: TourPaymentPlan | null;
 }
 
 const s = StyleSheet.create({
@@ -550,6 +553,36 @@ const s = StyleSheet.create({
   proposalLeftNoteGrid: { flexDirection: "row", gap: 10, marginTop: 7 },
   proposalLeftNoteCol: { flex: 1 },
   proposalSmallText: { fontSize: 5.4, color: INK, lineHeight: 1.18 },
+  paymentIntro: { fontSize: 5.75, color: INK, lineHeight: 1.22 },
+  paymentMethods: { fontFamily: "Helvetica-Bold", fontSize: 5.65, color: CHARCOAL, lineHeight: 1.2, marginTop: 2 },
+  paymentBadge: {
+    alignSelf: "flex-start",
+    fontFamily: "Helvetica-Bold",
+    fontSize: 5.2,
+    color: CHARCOAL,
+    backgroundColor: PAPER,
+    borderWidth: 0.45,
+    borderColor: TEAL,
+    paddingVertical: 2.5,
+    paddingHorizontal: 5,
+    marginTop: 4,
+  },
+  paymentTotal: { fontFamily: "Helvetica-Bold", fontSize: 5.8, color: CHARCOAL, marginTop: 4 },
+  paymentTable: {
+    marginTop: 5,
+    borderTopWidth: 0.7,
+    borderTopColor: TEAL,
+    borderBottomWidth: 0.7,
+    borderBottomColor: TEAL,
+  },
+  paymentRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: TEAL },
+  paymentHeadRow: { flexDirection: "row", backgroundColor: CHARCOAL },
+  paymentHeadCell: { fontFamily: "Helvetica-Bold", fontSize: 5.5, color: WHITE, paddingVertical: 3.3, paddingHorizontal: 4 },
+  paymentCell: { fontSize: 5.7, color: CHARCOAL, paddingVertical: 3.2, paddingHorizontal: 4 },
+  paymentStageCell: { width: 62, fontFamily: "Helvetica-Bold" },
+  paymentDueCell: { flex: 1 },
+  paymentAmountCell: { width: 76, textAlign: "right", fontFamily: "Helvetica-Bold" },
+  paymentFinePrint: { fontSize: 5.25, color: SUB, lineHeight: 1.18, marginTop: 3 },
   portraitPage: {
     backgroundColor: PAPER,
     color: CHARCOAL,
@@ -750,7 +783,7 @@ function compactInsightSummary(insights: ItineraryInsight[]) {
 }
 
 export function ItineraryPDF({
-  tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl,
+  tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl, paymentPlan,
 }: ItineraryPDFProps) {
   const faqDisplay = faqUrl ? faqUrl.replace(/^https?:\/\//, "") : "";
   const meta = [
@@ -915,6 +948,31 @@ export function ItineraryPDF({
                   </View>
                 ))}
               </View>
+            </View>
+          )}
+
+          {!!paymentPlan && paymentPlan.steps.length > 0 && (
+            <View style={s.portraitSectionGap}>
+              <Text style={s.proposalSectionTitle}>{paymentPlan.title}</Text>
+              <Text style={s.paymentIntro}>{paymentPlan.intro}</Text>
+              <Text style={s.paymentMethods}>({paymentPlan.paymentMethodsLabel})</Text>
+              <Text style={s.paymentBadge}>{paymentPlan.urgencyLabel}</Text>
+              <Text style={s.paymentTotal}>Total skema: {paymentPlan.totalLabel} / orang</Text>
+              <View style={s.paymentTable}>
+                <View style={s.paymentHeadRow}>
+                  <Text style={[s.paymentHeadCell, s.paymentStageCell]}>TAHAP</Text>
+                  <Text style={[s.paymentHeadCell, s.paymentDueCell]}>JATUH TEMPO</Text>
+                  <Text style={[s.paymentHeadCell, s.paymentAmountCell]}>NOMINAL</Text>
+                </View>
+                {paymentPlan.steps.map((step) => (
+                  <View key={step.label} style={s.paymentRow}>
+                    <Text style={[s.paymentCell, s.paymentStageCell]}>{step.label}</Text>
+                    <Text style={[s.paymentCell, s.paymentDueCell]}>{step.dueDateLabel}</Text>
+                    <Text style={[s.paymentCell, s.paymentAmountCell]}>{step.amountLabel}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={s.paymentFinePrint}>{paymentPlan.finePrint}</Text>
             </View>
           )}
 

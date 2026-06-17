@@ -89,6 +89,7 @@ model Tour {
   notes         String?
   description   String?
   addOns        Json?
+  paymentPlan   Json?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
