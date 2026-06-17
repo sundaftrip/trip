@@ -31,7 +31,7 @@ function CatalogSketchBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
       <Image
-        src="/b2b-russia-catalog-background.png"
+        src="/b2b-russia-catalog-background.png?v=a4033974"
         alt=""
         fill
         priority
