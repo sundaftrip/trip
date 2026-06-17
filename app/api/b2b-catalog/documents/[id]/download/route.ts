@@ -1,11 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import cloudinary from "@/lib/cloudinary";
 import {
   B2B_CATALOG_ACCESS_COOKIE,
   B2B_CATALOG_ROUTE,
   sanitizeDownloadFileName,
   verifyCatalogAccessToken,
 } from "@/lib/b2b-catalog";
+
+function cloudinaryRawPublicId(fileUrl: string) {
+  const url = new URL(fileUrl);
+  if (url.hostname !== "res.cloudinary.com") return null;
+
+  const match = url.pathname.match(/^\/[^/]+\/raw\/upload\/(?:v\d+\/)?(.+)$/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function signedCloudinaryDownloadUrl(fileUrl: string) {
+  const publicId = cloudinaryRawPublicId(fileUrl);
+  if (!publicId) return fileUrl;
+
+  return cloudinary.utils.private_download_url(publicId, "", {
+    resource_type: "raw",
+    type: "upload",
+    expires_at: Math.floor(Date.now() / 1000) + 120,
+  });
+}
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const accessId = verifyCatalogAccessToken(req.cookies.get(B2B_CATALOG_ACCESS_COOKIE)?.value);
@@ -29,7 +49,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "PDF tidak ditemukan." }, { status: 404 });
   }
 
-  const upstream = await fetch(document.fileUrl, { cache: "no-store" });
+  const sourceUrl = signedCloudinaryDownloadUrl(document.fileUrl);
+  const upstream = await fetch(sourceUrl, { cache: "no-store" });
   if (!upstream.ok || !upstream.body) {
     return NextResponse.json({ error: "PDF belum bisa diunduh." }, { status: 502 });
   }
