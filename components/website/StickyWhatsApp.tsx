@@ -1,12 +1,17 @@
+"use client";
+
 /* Tombol WhatsApp mengambang, selalu terlihat saat scroll halaman panjang.
    Karena halaman publik bisa sangat panjang, CTA persistent ini penting buat
-   konversi mobile. Server component (link biasa, tidak butuh state). */
+   konversi mobile. */
+import { usePathname } from "next/navigation";
 import { toWaNumber } from "@/lib/utils";
 
 const WA_MESSAGE = "Halo, saya ingin konsultasi paket tour Sundaf Trip.";
+const BILLY_WHATSAPP = "+7 916 889-64-71";
 
 export default function StickyWhatsApp({ phone }: { phone: string }) {
-  const wa = toWaNumber(phone);
+  const pathname = usePathname();
+  const wa = toWaNumber(pathname === "/partner" ? BILLY_WHATSAPP : phone);
   if (!wa) return null;
   const href = `https://wa.me/${wa}?text=${encodeURIComponent(WA_MESSAGE)}`;
   return (

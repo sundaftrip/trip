@@ -47,6 +47,8 @@ const FERDIANSAH = {
   name: "Ferdiansah",
   role: "Founder",
   photo: "",
+  email: "info@sundaftrip.com",
+  whatsappUrl: "https://wa.me/6281775202759",
   desc: "Memimpin operasional Sundaf Trip, pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
 };
 
@@ -55,6 +57,8 @@ const BILLY = {
   name: "Billy",
   role: "Co-Founder",
   photo: "/partner/billy.jpg",
+  email: "sebastianbilly31@gmail.com",
+  whatsappUrl: "https://wa.me/79168896471",
   desc: "Berpengalaman di industri travel dan memimpin perjalanan grup internasional. Memegang pengembangan kemitraan dan hubungan dengan travel agent.",
 };
 
@@ -216,7 +220,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href="https://wa.me/6281775202759"
+              href={person.whatsappUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition"
@@ -233,7 +237,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
           </div>
           <div className="mt-5 flex flex-col sm:flex-row gap-x-6 gap-y-1 justify-center text-xs text-gray-400">
             <span className="inline-flex items-center gap-1.5">
-              <Mail size={12} /> info@sundaftrip.com
+              <Mail size={12} /> {person.email}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Compass size={12} /> CV Sundaf Holiday Group · NIB 1601260060842

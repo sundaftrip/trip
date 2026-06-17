@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { CSSProperties, ComponentType } from "react";
-import { Phone, Mail, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
+import FooterContactList, { type FooterContact } from "./FooterContactList";
 import FooterTagline from "./FooterTagline";
 import { footerNav } from "@/lib/nav";
 import { unstable_cache } from "next/cache";
@@ -32,8 +31,6 @@ const getFooterData = unstable_cache(
 // Bentuk tuple dipertahankan supaya blok render tiap tema tidak perlu diubah.
 const navLinks: [string, string][] = footerNav.map((n) => [n.label.id, n.href]);
 
-type IconProps = { size?: number; className?: string; style?: CSSProperties };
-
 const STRATEGIC_FOOTER_TAGLINE =
   "Spesialis perjalanan Rusia, Asia Tengah, aurora, dan bantuan visa untuk traveler Indonesia. Rute lain seperti Vietnam kami tampilkan sebagai produk tambahan sesuai ketersediaan.";
 
@@ -43,18 +40,6 @@ function normalizeFooterTagline(value: string) {
     return STRATEGIC_FOOTER_TAGLINE;
   }
   return trimmed;
-}
-
-// lucide-react menghapus ikon brand, pakai SVG Instagram inline (currentColor)
-function InstagramIcon({ size = 16, className, style }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
-  );
 }
 
 export default async function Footer({ theme = "classic" }: { theme?: string }) {
@@ -82,12 +67,12 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     .trim();
 
   const contacts = [
-    address  && { Icon: MapPin, label: "Alamat", value: address, href: null },
-    phone    && { Icon: Phone,  label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
-    whatsapp && { Icon: Phone,  label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
-    email    && { Icon: Mail,   label: "Email", value: email, href: `mailto:${email}` },
-    igUser   && { Icon: InstagramIcon, label: "Instagram", value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
-  ].filter(Boolean) as { Icon: ComponentType<IconProps>; label: string; value: string; href: string | null }[];
+    address  && { kind: "address", label: "Alamat", value: address, href: null },
+    phone    && { kind: "phone", label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
+    whatsapp && { kind: "whatsapp", label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
+    email    && { kind: "email", label: "Email", value: email, href: `mailto:${email}` },
+    igUser   && { kind: "instagram", label: "Instagram", value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
+  ].filter(Boolean) as FooterContact[];
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") return (
@@ -121,14 +106,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
             <div>
               <span className="fb-pill mb-4 inline-flex" style={{ background: "var(--fb-blue)", color: "#1a1a1a" }}>✦ Kontak</span>
               <ul className="space-y-3 mt-4">
-                {contacts.map(({ Icon, label, value, href }) => (
-                  <li key={label} className="flex items-start gap-2">
-                    <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--fb-accent)" }} />
-                    {href
-                      ? <a href={href} className="text-sm hover:opacity-60 transition-opacity" style={{ color: "var(--fb-subink)" }}>{value}</a>
-                      : <span className="text-sm leading-relaxed" style={{ color: "var(--fb-subink)" }}>{value}</span>}
-                  </li>
-                ))}
+                <FooterContactList
+                  contacts={contacts}
+                  iconClassName="mt-0.5 shrink-0"
+                  iconStyle={{ color: "var(--fb-accent)" }}
+                  linkClassName="text-sm hover:opacity-60 transition-opacity"
+                  linkStyle={{ color: "var(--fb-subink)" }}
+                  textClassName="text-sm leading-relaxed"
+                  textStyle={{ color: "var(--fb-subink)" }}
+                />
               </ul>
             </div>
           </div>
@@ -173,14 +159,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <span className="kw-pill mb-5 inline-flex" style={{ background: "var(--kw-sky)", color: "var(--kw-text)" }}>♡ Kontak</span>
             <ul className="space-y-3 mt-3">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--kw-border)" }} />
-                  {href
-                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--kw-subtext)" }}>{value}</a>
-                    : <span className="text-sm leading-relaxed" style={{ color: "var(--kw-subtext)" }}>{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                iconClassName="mt-0.5 shrink-0"
+                iconStyle={{ color: "var(--kw-border)" }}
+                linkClassName="text-sm hover:opacity-70 transition-opacity"
+                linkStyle={{ color: "var(--kw-subtext)" }}
+                textClassName="text-sm leading-relaxed"
+                textStyle={{ color: "var(--kw-subtext)" }}
+              />
             </ul>
           </div>
         </div>
@@ -220,14 +207,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <span className="gl-pill mb-5 inline-flex" style={{ background: "var(--gl-amber)", color: "var(--gl-on-amber)", borderColor: "transparent" }}>✈ Kontak</span>
             <ul className="space-y-3 mt-3">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--gl-border)" }} />
-                  {href
-                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--gl-subtext)" }}>{value}</a>
-                    : <span className="text-sm leading-relaxed" style={{ color: "var(--gl-subtext)" }}>{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                iconClassName="mt-0.5 shrink-0"
+                iconStyle={{ color: "var(--gl-border)" }}
+                linkClassName="text-sm hover:opacity-70 transition-opacity"
+                linkStyle={{ color: "var(--gl-subtext)" }}
+                textClassName="text-sm leading-relaxed"
+                textStyle={{ color: "var(--gl-subtext)" }}
+              />
             </ul>
           </div>
         </div>
@@ -266,14 +254,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <span className="at-pill mb-5 inline-flex" style={{ color: "var(--at-subtext)" }}>Kontak</span>
             <ul className="space-y-3 mt-3">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--at-border)" }} />
-                  {href
-                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--at-subtext)" }}>{value}</a>
-                    : <span className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                iconClassName="mt-0.5 shrink-0"
+                iconStyle={{ color: "var(--at-border)" }}
+                linkClassName="text-sm hover:opacity-70 transition-opacity"
+                linkStyle={{ color: "var(--at-subtext)" }}
+                textClassName="text-sm leading-relaxed"
+                textStyle={{ color: "var(--at-subtext)" }}
+              />
             </ul>
           </div>
         </div>
@@ -314,14 +303,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <span className="mp-pill mb-5 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Kontak</span>
             <ul className="space-y-3 mt-3">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--mp-border)" }} />
-                  {href
-                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--mp-subtext)" }}>{value}</a>
-                    : <span className="text-sm leading-relaxed" style={{ color: "var(--mp-subtext)" }}>{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                iconClassName="mt-0.5 shrink-0"
+                iconStyle={{ color: "var(--mp-border)" }}
+                linkClassName="text-sm hover:opacity-70 transition-opacity"
+                linkStyle={{ color: "var(--mp-subtext)" }}
+                textClassName="text-sm leading-relaxed"
+                textStyle={{ color: "var(--mp-subtext)" }}
+              />
             </ul>
           </div>
         </div>
@@ -360,14 +350,15 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <span className="tr-pill mb-5 inline-flex" style={{ background: "var(--tr-sky)", color: "var(--tr-text)" }}>🌏 Kontak</span>
             <ul className="space-y-3 mt-3">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--tr-text)" }} />
-                  {href
-                    ? <a href={href} className="text-sm hover:opacity-70 transition-opacity" style={{ color: "var(--tr-subtext)" }}>{value}</a>
-                    : <span className="text-sm leading-relaxed" style={{ color: "var(--tr-subtext)" }}>{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                iconClassName="mt-0.5 shrink-0"
+                iconStyle={{ color: "var(--tr-text)" }}
+                linkClassName="text-sm hover:opacity-70 transition-opacity"
+                linkStyle={{ color: "var(--tr-subtext)" }}
+                textClassName="text-sm leading-relaxed"
+                textStyle={{ color: "var(--tr-subtext)" }}
+              />
             </ul>
           </div>
         </div>
@@ -419,14 +410,16 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <span className="px-pill mb-5 inline-flex" style={{ background: "var(--px-yellow)", color: "#111827" }}>KONTAK</span>
             <ul className="space-y-3 mt-3">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex min-w-0 items-start gap-2">
-                  <Icon size={13} className="mt-0.5 shrink-0" style={{ color: "var(--px-border)" }} />
-                  {href
-                    ? <a href={href} className="break-words text-sm font-black hover:opacity-70 transition-opacity" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</a>
-                    : <span className="break-words text-sm leading-relaxed" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                itemClassName="flex min-w-0 items-start gap-2"
+                iconClassName="mt-0.5 shrink-0"
+                iconStyle={{ color: "var(--px-border)" }}
+                linkClassName="break-words text-sm font-black hover:opacity-70 transition-opacity"
+                linkStyle={{ color: "var(--px-subtext)", fontFamily: "monospace" }}
+                textClassName="break-words text-sm leading-relaxed"
+                textStyle={{ color: "var(--px-subtext)", fontFamily: "monospace" }}
+              />
             </ul>
           </div>
         </div>
@@ -464,14 +457,13 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
           <div>
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5">Kontak</h3>
             <ul className="space-y-3 text-sm">
-              {contacts.map(({ Icon, label, value, href }) => (
-                <li key={label} className="flex items-start gap-2.5">
-                  <Icon size={13} className="mt-0.5 shrink-0 text-gray-700" />
-                  {href
-                    ? <a href={href} className="text-gray-600 hover:text-white transition-colors leading-relaxed">{value}</a>
-                    : <span className="text-gray-600 leading-relaxed">{value}</span>}
-                </li>
-              ))}
+              <FooterContactList
+                contacts={contacts}
+                itemClassName="flex items-start gap-2.5"
+                iconClassName="mt-0.5 shrink-0 text-gray-700"
+                linkClassName="text-gray-600 hover:text-white transition-colors leading-relaxed"
+                textClassName="text-gray-600 leading-relaxed"
+              />
             </ul>
           </div>
         </div>

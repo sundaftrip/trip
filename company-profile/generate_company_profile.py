@@ -36,6 +36,18 @@ WEBSITE      = "sundaftrip.com"
 WEBSITE_URL  = "https://sundaftrip.com"
 WA_DISPLAY   = "+62 817-7520-2759"
 WA_URL       = "https://wa.me/6281775202759"
+CONTACTS = {
+    "ferdiansah": {
+        "email": EMAIL,
+        "wa_display": WA_DISPLAY,
+        "wa_url": WA_URL,
+    },
+    "billy": {
+        "email": "sebastianbilly31@gmail.com",
+        "wa_display": "+7 916 889-64-71",
+        "wa_url": "https://wa.me/79168896471",
+    },
+}
 LEGAL_ENTITY = "CV Sundaf Holiday Group"
 NIB          = "1601260060842"
 
@@ -177,7 +189,7 @@ def draw_footer(c, T, page_no):
     set_fill(c, ORANGE)
     c.rect(0, 46, W, 2.5, stroke=0, fill=1)
     y, x = 33, LM
-    x += text_chunk(c, x, y, EMAIL, mailto=True)
+    x += text_chunk(c, x, y, T["email"], mailto=True)
     x += sep(c, x, y)
     x += text_chunk(c, x, y, WEBSITE, url=WEBSITE_URL)
     x += sep(c, x, y)
@@ -274,10 +286,10 @@ def page_two(c, T):
     text(c, ix, line_y, T["leaders"], "Helvetica", 9.5, light)
     line_y -= LH
     lx = ix + text_label(c, ix, line_y, T["lbl_email"], light)
-    link(c, lx, line_y, EMAIL, f"mailto:{EMAIL}", "Helvetica", 9.5, blue)
+    link(c, lx, line_y, T["email"], f'mailto:{T["email"]}', "Helvetica", 9.5, blue)
     line_y -= LH
     lx = ix + text_label(c, ix, line_y, T["lbl_wa"], light)
-    link(c, lx, line_y, WA_DISPLAY, WA_URL, "Helvetica", 9.5, blue)
+    link(c, lx, line_y, T["wa_display"], T["wa_url"], "Helvetica", 9.5, blue)
     line_y -= LH
     lx = ix + text_label(c, ix, line_y, T["lbl_web"], light)
     link(c, lx, line_y, WEBSITE, WEBSITE_URL, "Helvetica", 9.5, blue)
@@ -616,6 +628,10 @@ def content(lang, person):
     """Resolve a content dict for (lang, person)."""
     base = EN if lang == "en" else RU
     T = dict(base)
+    contact = CONTACTS[person]
+    T["email"] = contact["email"]
+    T["wa_display"] = contact["wa_display"]
+    T["wa_url"] = contact["wa_url"]
     T["about2"] = base[f"about2_{person}"]
     name = base[f"name_{person}"]
     role = base[f"role_{person}"]
