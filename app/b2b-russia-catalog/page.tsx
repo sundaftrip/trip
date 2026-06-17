@@ -27,18 +27,23 @@ function hasError(value?: string | string[]) {
   return Array.isArray(value) ? Boolean(value[0]) : Boolean(value);
 }
 
+const catalogBackgroundSrc = "/b2b-russia-catalog-background.png?v=84402c40";
+const catalogSectionStyle = {
+  minHeight: "max(100vh, calc(100vw * 1821 / 864))",
+};
+
 function CatalogSketchBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
       <Image
-        src="/b2b-russia-catalog-background.png?v=a4033974"
+        src={catalogBackgroundSrc}
         alt=""
         fill
         priority
         sizes="100vw"
-        className="object-cover opacity-[0.34] saturate-[1.08] dark:opacity-[0.22] dark:brightness-75"
+        className="object-cover object-top opacity-[0.82] saturate-[1.05] dark:opacity-[0.48] dark:brightness-90"
       />
-      <div className="absolute inset-0 bg-white/35 dark:bg-gray-950/45" />
+      <div className="absolute inset-0 bg-white/10 dark:bg-gray-950/30" />
     </div>
   );
 }
@@ -59,7 +64,10 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
 
   if (!access) {
     return (
-      <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8">
+      <section
+        className="relative isolate overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8"
+        style={catalogSectionStyle}
+      >
         <CatalogSketchBackground />
         <div className="relative mx-auto w-full max-w-sm">
           <div className="mb-6 flex justify-center">
@@ -101,7 +109,10 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
   });
 
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8">
+    <section
+      className="relative isolate overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8"
+      style={catalogSectionStyle}
+    >
       <CatalogSketchBackground />
       <div className="relative mx-auto w-full max-w-2xl">
         <div className="mb-8 flex items-center justify-between gap-4">
