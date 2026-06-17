@@ -28,6 +28,12 @@ function hasError(value?: string | string[]) {
 }
 
 const catalogBackgroundSrc = "/b2b-russia-catalog-background.png?v=2a6be203";
+const mathPaperGridStyle = {
+  backgroundImage:
+    "linear-gradient(rgba(37, 99, 235, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.12) 1px, transparent 1px), linear-gradient(rgba(37, 99, 235, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.07) 1px, transparent 1px)",
+  backgroundSize: "96px 96px, 96px 96px, 24px 24px, 24px 24px",
+  backgroundPosition: "-1px -1px",
+};
 
 function CatalogSketchBackground() {
   return (
@@ -38,9 +44,13 @@ function CatalogSketchBackground() {
         fill
         priority
         sizes="100vw"
-        className="object-cover object-top opacity-[0.82] saturate-[1.05] dark:opacity-[0.48] dark:brightness-90"
+        className="object-cover object-top opacity-[0.46] saturate-[0.92]"
       />
-      <div className="absolute inset-0 bg-white/10 dark:bg-gray-950/30" />
+      <div className="absolute inset-0 bg-white/30" />
+      <div
+        className="absolute inset-0 opacity-70 mix-blend-multiply"
+        style={mathPaperGridStyle}
+      />
     </div>
   );
 }
@@ -61,15 +71,15 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
 
   if (!access) {
     return (
-      <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8">
+      <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 sm:px-6 lg:px-8">
         <CatalogSketchBackground />
         <div className="relative mx-auto w-full max-w-sm">
           <div className="mb-6 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-gray-700 shadow-sm ring-1 ring-gray-200/70">
               <LockKeyhole size={22} />
             </div>
           </div>
-          <h1 className="text-center text-2xl font-semibold text-gray-950 dark:text-white">
+          <h1 className="text-center text-2xl font-semibold text-gray-950">
             B2B Russia Tour Catalog
           </h1>
 
@@ -79,18 +89,18 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
               name="password"
               autoComplete="current-password"
               placeholder="Password"
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-center text-base text-gray-950 outline-none transition focus:border-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-white"
+              className="w-full rounded-lg border border-gray-300 bg-white/90 px-4 py-3 text-center text-base text-gray-950 outline-none transition focus:border-gray-900"
             />
             <button
               type="submit"
-              className="w-full rounded-lg bg-gray-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 dark:bg-white dark:text-gray-950 dark:hover:bg-gray-200"
+              className="w-full rounded-lg bg-gray-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
             >
               Masuk
             </button>
           </form>
 
           {hasError(sp.error) && (
-            <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">Password tidak valid.</p>
+            <p className="mt-4 text-center text-sm text-red-600">Password tidak valid.</p>
           )}
         </div>
       </section>
@@ -103,16 +113,16 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
   });
 
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 dark:bg-gray-950 sm:px-6 lg:px-8">
+    <section className="relative isolate min-h-screen overflow-hidden bg-white px-4 pt-28 pb-16 sm:px-6 lg:px-8">
       <CatalogSketchBackground />
       <div className="relative mx-auto w-full max-w-2xl">
         <div className="mb-8 flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-semibold text-gray-950 dark:text-white">B2B Russia Tour Catalog</h1>
+          <h1 className="text-2xl font-semibold text-gray-950">B2B Russia Tour Catalog</h1>
           <form action="/api/b2b-catalog/logout" method="post">
             <button
               type="submit"
               aria-label="Keluar"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-white/80 text-gray-500 transition hover:bg-white hover:text-gray-900"
             >
               <LogOut size={17} />
             </button>
@@ -120,16 +130,16 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
         </div>
 
         {documents.length === 0 ? (
-          <div className="rounded-lg border border-gray-200 px-5 py-10 text-center text-sm text-gray-500 dark:border-gray-800 dark:text-gray-400">
+          <div className="rounded-lg border border-gray-200 bg-white/80 px-5 py-10 text-center text-sm text-gray-500">
             Belum ada PDF.
           </div>
         ) : (
-          <div className="divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+          <div className="divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 bg-white/85">
             {documents.map((document) => (
               <a
                 key={document.id}
                 href={`/api/b2b-catalog/documents/${document.id}/download`}
-                className="flex items-center justify-between gap-4 bg-white px-4 py-4 text-gray-950 transition hover:bg-gray-50 dark:bg-gray-950 dark:text-white dark:hover:bg-gray-900 sm:px-5"
+                className="flex items-center justify-between gap-4 px-4 py-4 text-gray-950 transition hover:bg-white sm:px-5"
               >
                 <span className="min-w-0 truncate text-sm font-medium sm:text-base">{document.title}</span>
                 <Download size={18} className="shrink-0 text-gray-400" />
