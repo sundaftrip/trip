@@ -1069,14 +1069,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 ({paymentPlan.paymentMethodsLabel})
               </p>
 
-              <div className="mt-5 flex justify-center">
-                <span
-                  className={`inline-flex items-center gap-1.5 border px-3 py-1 text-[11px] font-black uppercase tracking-wide ${isOutlined ? `${pfx}-pill` : "rounded-full border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"}`}
-                  style={isOutlined ? { background: tMint, color: tText, borderColor: tBdr } : undefined}
+              <div className="mt-5 text-center">
+                <p
+                  className={`text-sm font-semibold leading-relaxed ${isOutlined ? "" : "text-emerald-700 dark:text-emerald-300"}`}
+                  style={isOutlined ? { color: tText } : undefined}
                 >
-                  <CheckCircle size={13} />
                   {paymentPlan.urgencyLabel}
-                </span>
+                </p>
               </div>
 
               <a

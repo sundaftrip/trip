@@ -716,10 +716,10 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                   onChange={(e) => setPaymentPlan({ title: e.target.value })}
                 />
               </Field>
-              <Field label="Badge Urgensi">
+              <Field label="Teks Urgensi">
                 <input
                   className="input"
-                  placeholder="Sisa 5 traveler lagi - gas sebelum habis"
+                  placeholder="Sisa 5 traveler lagi - gas sebelum habis 🙂"
                   value={paymentPlan.urgencyLabel ?? ""}
                   onChange={(e) => setPaymentPlan({ urgencyLabel: e.target.value })}
                 />

@@ -184,7 +184,7 @@ function splitRemainingInHalf(totalAmount: number, dpAmount: number) {
 
 function urgencyLabel(seatsLeft?: number | null) {
   if (typeof seatsLeft === "number" && seatsLeft > 0) {
-    return `Sisa ${seatsLeft} traveler lagi - gas sebelum habis`;
+    return `Sisa ${seatsLeft} traveler lagi - gas sebelum habis 🙂`;
   }
 
   return "Booking sekarang - tim Sundaf bantu cek seat";
