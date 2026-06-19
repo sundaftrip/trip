@@ -77,15 +77,30 @@ function instagramUrl(value: string | undefined) {
   return raw ? `https://www.instagram.com/${raw}` : "https://www.instagram.com/sundaf.trip";
 }
 
+function publicPhone(value: string | undefined) {
+  if (!value) return "";
+  const digits = value.replace(/\D/g, "");
+  const local = digits.startsWith("62")
+    ? `0${digits.slice(2)}`
+    : digits.startsWith("8")
+      ? `0${digits}`
+      : digits;
+  if (/^08\d{10}$/.test(local)) {
+    return `${local.slice(0, 3)}-${local.slice(3, 6)}-${local.slice(6, 10)}-${local.slice(10)}`;
+  }
+  return value.trim();
+}
+
 export default async function LegalitasKeamananPage() {
   const company = await getCompany();
   const brandName = company.company_name || "Sundaf Trip";
   const legalName = company.company_legal_name || "CV Sundaf Holiday Group";
   const nib = company.company_nib || "1601260060842";
   const email = company.company_email || "info@sundaftrip.com";
-  const phone = company.company_whatsapp || company.company_phone || "081-775-2027-59";
+  const phoneRaw = company.company_whatsapp || company.company_phone || "081-775-2027-59";
+  const phone = publicPhone(phoneRaw);
   const address = company.company_address || "Jakarta, DKI Jakarta, Indonesia";
-  const waHref = whatsappUrl(phone);
+  const waHref = whatsappUrl(phoneRaw);
   const igUrl = instagramUrl(company.company_instagram);
 
   const legalSchema = {
