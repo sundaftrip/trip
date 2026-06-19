@@ -20,6 +20,8 @@ const footerExtras: NavItem[] = [
   { href: "/sundaf-trip", label: { id: "Profil Sundaf Trip", en: "Sundaf Trip Profile" } },
   { href: "/reviews", label: { id: "Review", en: "Reviews" } },
   { href: "/media-kit", label: { id: "Media Kit", en: "Media Kit" } },
+  { href: "/legalitas-dan-keamanan", label: { id: "Legalitas & Keamanan", en: "Legality & Safety" } },
+  { href: "/privacy", label: { id: "Kebijakan Privasi", en: "Privacy Policy" } },
   { href: "/faq", label: { id: "FAQ", en: "FAQ" } },
   { href: "/terms", label: { id: "Syarat & Ketentuan", en: "Terms" } },
 ];

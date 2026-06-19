@@ -116,6 +116,8 @@ export default async function MediaKitPage() {
     { label: "Tour Rusia dari Indonesia", href: "/tour-rusia-dari-indonesia", desc: "Panduan rute Rusia, visa WNI, biaya, dan aurora." },
     { label: "Open trip aurora Rusia", href: "/open-trip-aurora-rusia", desc: "Halaman rute Murmansk, Teriberka, dan aurora borealis." },
     { label: "Visa Rusia untuk WNI", href: "/visa-rusia-wni", desc: "Ringkasan kebutuhan visa Rusia untuk pemegang paspor Indonesia." },
+    { label: "Legalitas & Keamanan", href: "/legalitas-dan-keamanan", desc: "Cara memverifikasi identitas, kontak resmi, dan keamanan pemesanan." },
+    { label: "Kebijakan privasi", href: "/privacy", desc: "Cara Sundaf Trip mengelola dan melindungi data pengguna." },
     { label: "Semua paket tour", href: "/tours", desc: "Daftar paket aktif dan portfolio perjalanan." },
   ];
 
@@ -168,6 +170,8 @@ export default async function MediaKitPage() {
       { "@id": `${SITE_URL}/tour-rusia-dari-indonesia#webpage` },
       { "@id": `${SITE_URL}/open-trip-aurora-rusia#webpage` },
       { "@id": `${SITE_URL}/visa-rusia-wni#webpage` },
+      { "@id": `${SITE_URL}/legalitas-dan-keamanan#webpage` },
+      { "@id": `${SITE_URL}/privacy#webpage` },
     ],
   };
 

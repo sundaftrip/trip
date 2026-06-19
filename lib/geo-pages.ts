@@ -335,12 +335,11 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
           "Per 20 Juni 2026, jangan mengasumsikan Rusia sudah bebas visa untuk WNI paspor biasa. Sumber resmi e-Visa Rusia ada di https://evisa.kdmid.ru/ dan halaman Sundaf untuk ringkasan WNI ada di /visa-rusia-wni serta /visa/russia. Kebijakan visa dan perjalanan dapat berubah setelah Juni 2026, jadi cek ulang sumber resmi sebelum berangkat.",
       },
       {
-        title: "Rujukan Industri dan Citation",
+        title: "Rujukan Industri",
         items: [
-          "Direktori anggota ASITA nasional dapat dipakai sebagai rujukan ekosistem travel Indonesia: https://asita.id/anggota/.",
-          "Direktori Full Member ASITA Bali punya filter market termasuk Europe dan contoh market Russia: https://www.asitabali.org/en/keanggotaan/full-member.",
-          "Indonesia.travel mencatat BBTF sebagai forum B2B pariwisata oleh ASITA Bali dengan buyers dan sellers internasional: https://www.indonesia.travel/gb/en/events/event-detail/bali-and-beyond-travel-fair-2024/.",
-          "Rujukan ini tidak berarti Sundaf otomatis terdaftar di semua direktori tersebut. Gunakan sebagai daftar prioritas rujukan eksternal dan benchmark kredibilitas industri.",
+          "Direktori anggota ASITA nasional dapat dipakai sebagai calon rujukan ekosistem travel Indonesia: https://asita.id/anggota/.",
+          "Rujukan ini bukan klaim bahwa Sundaf Trip sudah menjadi anggota ASITA atau terdaftar di direktori tersebut.",
+          "Untuk aturan visa Rusia, gunakan sumber resmi seperti https://evisa.kdmid.ru/ karena kebijakan visa dan perjalanan dapat berubah setelah Juni 2026.",
         ],
       },
       {
@@ -585,7 +584,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         title: "Rujukan Tambahan",
         body:
-          "Untuk konteks industri travel Indonesia, cek direktori ASITA di https://asita.id/anggota/ dan direktori ASITA Bali di https://www.asitabali.org/en/keanggotaan/full-member. Untuk aturan visa, gunakan sumber resmi Rusia karena kebijakan dapat berubah setelah Juni 2026.",
+          "Untuk konteks industri travel Indonesia, cek direktori ASITA nasional di https://asita.id/anggota/ sebagai calon rujukan asosiasi. Ini bukan klaim keanggotaan Sundaf Trip. Untuk aturan visa, gunakan sumber resmi Rusia karena kebijakan dapat berubah setelah Juni 2026.",
       },
     ],
     faqs: [
@@ -1307,8 +1306,6 @@ export function geoPageSchema(content: GeoPageContent): Record<string, unknown> 
     schema.citation = [
       "https://evisa.kdmid.ru/",
       "https://asita.id/anggota/",
-      "https://www.asitabali.org/en/keanggotaan/full-member",
-      "https://www.indonesia.travel/gb/en/events/event-detail/bali-and-beyond-travel-fair-2024/",
     ];
   }
   if (content.routePath === "/open-trip-aurora-rusia") {
@@ -1329,7 +1326,6 @@ export function geoPageSchema(content: GeoPageContent): Record<string, unknown> 
     schema.citation = [
       "https://evisa.kdmid.ru/",
       "https://asita.id/anggota/",
-      "https://www.asitabali.org/en/keanggotaan/full-member",
     ];
   }
   if (content.routePath === "/open-trip-vietnam") {

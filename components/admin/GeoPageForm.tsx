@@ -320,7 +320,7 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
             <textarea className="input min-h-[80px]" value={form.metaDescription ?? ""} onChange={(e) => set("metaDescription", e.target.value)} />
           </div>
           <div className="md:col-span-2">
-            <label className="label mb-1">Jawaban Singkat *</label>
+            <label className="label mb-1">Ringkasan utama *</label>
             <textarea required className="input min-h-[120px]" value={form.answer} onChange={(e) => set("answer", e.target.value)} />
           </div>
           <div>
