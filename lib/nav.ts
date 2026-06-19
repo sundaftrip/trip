@@ -18,6 +18,8 @@ export const primaryNav: NavItem[] = [
 // Link tambahan yang hanya muncul di footer (boleh lebih panjang dari nav atas).
 const footerExtras: NavItem[] = [
   { href: "/sundaf-trip", label: { id: "Profil Sundaf Trip", en: "Sundaf Trip Profile" } },
+  { href: "/reviews", label: { id: "Review", en: "Reviews" } },
+  { href: "/media-kit", label: { id: "Media Kit", en: "Media Kit" } },
   { href: "/faq", label: { id: "FAQ", en: "FAQ" } },
   { href: "/terms", label: { id: "Syarat & Ketentuan", en: "Terms" } },
 ];

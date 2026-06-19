@@ -157,6 +157,11 @@ export default async function OrganizationSchema() {
     subjectOf: [
       { "@id": `${SITE_URL}/sundaf-trip#webpage` },
       { "@id": `${SITE_URL}/about#webpage` },
+      { "@id": `${SITE_URL}/reviews#webpage` },
+      { "@id": `${SITE_URL}/media-kit#webpage` },
+      { "@id": `${SITE_URL}/tour-rusia-dari-indonesia#webpage` },
+      { "@id": `${SITE_URL}/open-trip-aurora-rusia#webpage` },
+      { "@id": `${SITE_URL}/visa-rusia-wni#webpage` },
     ],
     knowsAbout: [
       "Tour Rusia dari Indonesia",

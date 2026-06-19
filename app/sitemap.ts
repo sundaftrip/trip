@@ -24,6 +24,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     // Brand/entity page untuk query "Sundaf Trip", "Sundaftrip", dan "Trip Sundaf".
     { url: `${base}/sundaf-trip`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    // Halaman bukti sosial dan citation resmi untuk memperkuat entity Sundaf Trip.
+    { url: `${base}/reviews`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.78 },
+    { url: `${base}/media-kit`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.76 },
     // GEO / AEO landing pages - ringkasan answer-ready untuk query AI dan Google AI Overviews.
     { url: `${base}/open-trip-rusia-dari-jakarta`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/tour-rusia-dari-indonesia`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },

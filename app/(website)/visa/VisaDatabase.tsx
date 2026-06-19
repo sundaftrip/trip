@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, ChevronRight } from "lucide-react";
 import { visaSlug } from "@/lib/visa-slug";
 import { FlagIcon } from "@/lib/flag-icon";
@@ -51,6 +52,7 @@ function costInfo(raw: string) {
 }
 
 export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
+  const router = useRouter();
   const COUNTRIES = entries;
   const REGIONS = useMemo(
     () => Array.from(new Set(COUNTRIES.map((c) => c.region))),
@@ -234,14 +236,20 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
               return (
                 <tr
                   key={c.id}
-                  className="group align-top transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40"
+                  role="link"
+                  tabIndex={0}
+                  aria-label={`Detail visa ${c.name}`}
+                  onClick={() => router.push(href)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      router.push(href);
+                    }
+                  }}
+                  className="group cursor-pointer align-top transition-colors hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-gray-400 dark:hover:bg-gray-900/40 dark:focus-visible:bg-gray-900/40 dark:focus-visible:outline-gray-600"
                 >
                   <td className="px-4 py-3">
-                    <Link
-                      href={href}
-                      className="flex items-center gap-2.5"
-                      aria-label={`Detail visa ${c.name}`}
-                    >
+                    <div className="flex items-center gap-2.5">
                       <FlagIcon flag={c.flag} rounded label={c.name} width={28} />
                       <div>
                         <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
@@ -263,7 +271,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                         </div>
                         <div className="text-xs text-gray-400">{c.en}</div>
                       </div>
-                    </Link>
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
                     {c.region}

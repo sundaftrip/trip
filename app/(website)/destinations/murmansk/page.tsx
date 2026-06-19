@@ -276,7 +276,7 @@ export default async function MurmanskPage() {
         </div>
       </div>
 
-      {/* ── GEO ANSWER ── */}
+      {/* ── TRAVEL SUMMARY ── */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">
         <div className={`${cardClass} p-5 sm:p-6`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
           <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
@@ -284,7 +284,7 @@ export default async function MurmanskPage() {
           </span>
           <h2 className={`text-2xl font-black mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Jawaban Singkat
+            Ringkasan Perjalanan
           </h2>
           <p className={`text-sm sm:text-base leading-relaxed ${!isOutlined ? "text-gray-700 dark:text-gray-300" : ""}`} style={{ color: subClr }}>
             {geoContent.answer}
