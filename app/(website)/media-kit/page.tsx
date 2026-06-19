@@ -107,24 +107,22 @@ export default async function MediaKitPage() {
 
   const externalReferences = [
     {
+      category: "Sumber resmi visa",
       label: "Kementerian Luar Negeri Rusia - e-Visa",
       href: "https://evisa.kdmid.ru/",
-      desc: "Sumber resmi untuk status, syarat, dan proses e-Visa Rusia.",
+      desc: "Rujukan aturan e-Visa Rusia untuk traveler Indonesia, bukan direktori bisnis Sundaf Trip.",
     },
     {
+      category: "Direktori asosiasi",
       label: "ASITA - Anggota",
       href: "https://asita.id/anggota/",
-      desc: "Direktori asosiasi travel Indonesia untuk benchmark dan rujukan industri.",
+      desc: "Direktori asosiasi travel Indonesia untuk rujukan industri dan pengecekan profil anggota.",
     },
     {
+      category: "Direktori asosiasi",
       label: "ASITA Bali - Full Member",
       href: "https://www.asitabali.org/en/keanggotaan/full-member",
-      desc: "Contoh direktori anggota dengan filter market perjalanan internasional.",
-    },
-    {
-      label: "Indonesia.travel - BBTF",
-      href: "https://www.indonesia.travel/gb/en/events/event-detail/bali-and-beyond-travel-fair-2024/",
-      desc: "Rujukan event B2B pariwisata Indonesia yang diselenggarakan ASITA Bali.",
+      desc: "Contoh direktori anggota asosiasi regional dengan informasi market perjalanan internasional.",
     },
   ];
 
@@ -235,11 +233,14 @@ export default async function MediaKitPage() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="mb-5 flex items-center gap-3">
           <ExternalLink size={22} style={{ color: "var(--site-accent)" }} />
-          <h2 className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Rujukan industri dan direktori resmi</h2>
+          <h2 className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Sumber verifikasi dan rujukan industri</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {externalReferences.map((item) => (
             <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="at-card p-5 transition hover:opacity-80">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>
+                {item.category}
+              </p>
               <div className="flex items-start justify-between gap-4">
                 <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
                 <ExternalLink size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
@@ -249,7 +250,7 @@ export default async function MediaKitPage() {
           ))}
         </div>
         <p className="mt-5 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-          Catatan: rujukan eksternal di atas dipakai sebagai konteks industri dan daftar prioritas direktori. Halaman ini tidak mengklaim Sundaf Trip sudah terdaftar di semua direktori tersebut.
+          Catatan: rujukan eksternal di atas dipakai sebagai sumber verifikasi dan konteks industri. Halaman ini tidak mengklaim Sundaf Trip sudah terdaftar di semua direktori tersebut.
         </p>
       </section>
     </div>
