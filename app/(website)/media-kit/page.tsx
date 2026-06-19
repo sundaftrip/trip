@@ -72,12 +72,26 @@ function publicPhone(value: string | undefined) {
   return value.trim();
 }
 
+function whatsappUrl(value: string | undefined) {
+  const digits = (value || "").replace(/\D/g, "");
+  if (!digits) return "";
+  const normalized = digits.startsWith("0")
+    ? `62${digits.slice(1)}`
+    : digits.startsWith("62")
+      ? digits
+      : digits.startsWith("8")
+        ? `62${digits}`
+        : digits;
+  return normalized ? `https://wa.me/${normalized}` : "";
+}
+
 export default async function MediaKitPage() {
   const company = await getData();
   const brandName = company.company_name || "Sundaf Trip";
   const legalName = company.company_legal_name || "CV Sundaf Holiday Group";
   const nib = company.company_nib || "1601260060842";
   const phone = publicPhone(company.company_phone || company.company_whatsapp);
+  const phoneHref = whatsappUrl(company.company_whatsapp || company.company_phone || "081-775-2027-59");
   const email = company.company_email || "info@sundaftrip.com";
   const address = company.company_address || "Jakarta, DKI Jakarta, Indonesia";
   const igUrl = instagramUrl(company.company_instagram);
@@ -92,7 +106,7 @@ export default async function MediaKitPage() {
     { icon: Globe2, label: "Website resmi", value: SITE_URL, href: SITE_URL },
     { icon: MapPin, label: "Basis layanan", value: address },
     { icon: Mail, label: "Email", value: email, href: `mailto:${email}` },
-    { icon: Phone, label: "Telepon/WhatsApp", value: phone || "Kontak via situs resmi" },
+    { icon: Phone, label: "Telepon/WhatsApp", value: phone || "081-775-2027-59", href: phoneHref },
     { icon: AtSign, label: "Instagram", value: "@sundaf.trip", href: igUrl },
   ];
 
