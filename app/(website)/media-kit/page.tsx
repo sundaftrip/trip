@@ -144,6 +144,18 @@ export default async function MediaKitPage() {
       href: "https://asita.id/anggota/",
       desc: "Kandidat rujukan asosiasi travel Indonesia. Ini bukan klaim bahwa Sundaf Trip sudah menjadi anggota ASITA.",
     },
+    {
+      category: "Rujukan hukum data pribadi",
+      label: "UU No. 27 Tahun 2022 - BPK RI",
+      href: "https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022",
+      desc: "Rujukan resmi Undang-Undang Pelindungan Data Pribadi dari database peraturan BPK.",
+    },
+    {
+      category: "Rujukan hukum data pribadi",
+      label: "UU No. 27 Tahun 2022 - JDIH Komdigi",
+      href: "https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B202",
+      desc: "Rujukan JDIH Komdigi untuk dokumen hukum Pelindungan Data Pribadi.",
+    },
   ];
 
   const mediaSchema = {

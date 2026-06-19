@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Building2,
   CheckCircle2,
+  ExternalLink,
   FileText,
   Globe2,
   Mail,
@@ -140,6 +141,33 @@ export default async function LegalitasKeamananPage() {
     { label: "Syarat & Ketentuan", href: "/terms", desc: "Ketentuan pemesanan, pembayaran, pembatalan, dan layanan." },
   ];
 
+  const references = [
+    {
+      category: "Rujukan hukum data pribadi",
+      label: "UU No. 27 Tahun 2022 - BPK RI",
+      href: "https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022",
+      desc: "Database peraturan BPK untuk Undang-Undang Pelindungan Data Pribadi.",
+    },
+    {
+      category: "Rujukan hukum data pribadi",
+      label: "UU No. 27 Tahun 2022 - JDIH Komdigi",
+      href: "https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B202",
+      desc: "Dokumen hukum Pelindungan Data Pribadi di JDIH Komdigi.",
+    },
+    {
+      category: "Sumber resmi visa",
+      label: "Kementerian Luar Negeri Rusia - e-Visa",
+      href: "https://evisa.kdmid.ru/",
+      desc: "Rujukan resmi untuk status dan syarat e-Visa Rusia.",
+    },
+    {
+      category: "Calon rujukan industri",
+      label: "ASITA - Direktori anggota travel Indonesia",
+      href: "https://asita.id/anggota/",
+      desc: "Kandidat rujukan asosiasi travel Indonesia, bukan klaim keanggotaan Sundaf Trip.",
+    },
+  ];
+
   return (
     <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <BreadcrumbSchema
@@ -220,6 +248,27 @@ export default async function LegalitasKeamananPage() {
               </div>
             </a>
           </div>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="mb-5 flex items-center gap-3">
+          <ExternalLink size={22} style={{ color: "var(--site-accent)" }} />
+          <h2 className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Rujukan resmi yang dicatat</h2>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {references.map((item) => (
+            <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="at-card p-5 transition hover:opacity-80">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>
+                {item.category}
+              </p>
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
+                <ExternalLink size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+              </div>
+              <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>
+            </a>
+          ))}
         </div>
       </section>
 
