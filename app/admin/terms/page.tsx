@@ -33,10 +33,10 @@ export default function TermsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Syarat & Ketentuan</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">Syarat & Ketentuan</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">Konten halaman syarat dan ketentuan</p>
         </div>
       </div>
@@ -46,22 +46,22 @@ export default function TermsPage() {
         onSave={handleSave}
       />
 
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1 dark:bg-gray-800 sm:inline-grid">
         <button
           onClick={() => setLang("id")}
-          className={`px-3 py-1.5 text-sm rounded-md font-medium transition ${lang === "id" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}
+          className={`rounded-lg px-3 py-2 text-sm font-medium transition ${lang === "id" ? "bg-blue-600 text-white shadow-sm" : "text-gray-700 dark:text-gray-300"}`}
         >
           Indonesia
         </button>
         <button
           onClick={() => setLang("en")}
-          className={`px-3 py-1.5 text-sm rounded-md font-medium transition ${lang === "en" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}
+          className={`rounded-lg px-3 py-2 text-sm font-medium transition ${lang === "en" ? "bg-blue-600 text-white shadow-sm" : "text-gray-700 dark:text-gray-300"}`}
         >
           English
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className="rounded-xl border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
         {!ready ? (
           <div className="min-h-[300px] flex items-center justify-center text-gray-400 text-sm">Memuat konten...</div>
         ) : lang === "id" ? (

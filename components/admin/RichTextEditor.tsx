@@ -202,7 +202,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
   return (
     <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 p-2 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+      <div className="flex flex-nowrap items-center gap-0.5 overflow-x-auto border-b border-gray-200 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 sm:flex-wrap">
         {tools.map((tool) => {
           const divider = tool.group !== lastGroup && lastGroup !== 0;
           lastGroup = tool.group;
@@ -213,7 +213,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
                 type="button"
                 title={tool.title}
                 onMouseDown={(e) => { e.preventDefault(); tool.cmd(); }}
-                className={`p-1.5 rounded transition ${
+                className={`rounded p-2 transition sm:p-1.5 ${
                   tool.active
                     ? tool.title === "Highlight"
                       ? "bg-yellow-200 dark:bg-yellow-500/30 text-yellow-700 dark:text-yellow-300"
@@ -234,7 +234,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
             type="button"
             title="Insert table"
             onMouseDown={(e) => { e.preventDefault(); setShowTablePicker((v) => !v); }}
-            className={`p-1.5 rounded transition ${
+            className={`rounded p-2 transition sm:p-1.5 ${
               inTable
                 ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
@@ -257,7 +257,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
                 type="button"
                 title={t.title}
                 onMouseDown={(e) => { e.preventDefault(); t.cmd(); }}
-                className={`p-1.5 rounded transition text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 ${
+                className={`rounded p-2 text-gray-600 transition hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 sm:p-1.5 ${
                   t.title === "Hapus tabel" ? "hover:!bg-red-100 hover:!text-red-600 dark:hover:!bg-red-900/30 dark:hover:!text-red-400" : ""
                 }`}
               >
@@ -310,7 +310,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
 
       <EditorContent
         editor={editor}
-        className="prose prose-sm dark:prose-invert max-w-none p-4 min-h-[300px] [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[280px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0"
+        className="prose prose-sm dark:prose-invert max-w-none min-h-[360px] p-3 sm:min-h-[300px] sm:p-4 [&_.ProseMirror]:min-h-[340px] [&_.ProseMirror]:outline-none sm:[&_.ProseMirror]:min-h-[280px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0"
       />
     </div>
   );

@@ -93,6 +93,9 @@ export default function AdminShell({ role, user, logo, children }: Props) {
   const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const currentItem = [...navItems, ...adminItems]
+    .filter((item) => pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href)))
+    .sort((a, b) => b.href.length - a.href.length)[0];
   useEffect(() => {
     const id = window.setTimeout(() => setMounted(true), 0);
     return () => window.clearTimeout(id);
@@ -134,17 +137,22 @@ export default function AdminShell({ role, user, logo, children }: Props) {
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Header */}
-        <header className="h-16 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between px-4 sm:px-6 shrink-0">
-          <div className="flex items-center gap-3">
+        <header className="h-14 sm:h-16 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between px-3 sm:px-6 shrink-0">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             {/* Hamburger — mobile only */}
             <button onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
               <Menu size={20} />
             </button>
-            <h2 className="text-sm text-gray-500 dark:text-gray-400 font-medium">Admin CMS</h2>
+            <div className="min-w-0">
+              <h2 className="truncate text-sm font-semibold text-gray-900 dark:text-white sm:text-base">
+                {currentItem?.label ?? "Admin CMS"}
+              </h2>
+              <p className="hidden text-xs text-gray-500 dark:text-gray-400 sm:block">Admin CMS</p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-4">
             <a href="/" target="_blank" rel="noopener noreferrer"
               title="Buka website di tab baru"
               className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition">
@@ -175,7 +183,7 @@ export default function AdminShell({ role, user, logo, children }: Props) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-3 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:p-6">{children}</main>
       </div>
     </div>
   );

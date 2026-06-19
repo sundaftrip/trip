@@ -109,28 +109,32 @@ function DocumentRow({
   }
 
   return (
-    <div className="grid gap-3 border-b border-gray-100 px-4 py-4 last:border-0 dark:border-gray-700 lg:grid-cols-[minmax(220px,1fr)_100px_110px_190px] lg:items-center">
+    <div className="grid gap-3 border-b border-gray-100 px-3 py-4 last:border-0 dark:border-gray-700 sm:px-4 lg:grid-cols-[minmax(220px,1fr)_100px_110px_190px] lg:items-center">
       <div className="min-w-0">
+        <label className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">Judul PDF</label>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
         <p className="mt-1 truncate text-xs text-gray-400">{document.fileName} · {formatBytes(document.fileSize)}</p>
         {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
       </div>
 
-      <input
-        type="number"
-        value={sortOrder}
-        onChange={(e) => setSortOrder(e.target.value)}
-        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-      />
+      <div>
+        <label className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">Urutan</label>
+        <input
+          type="number"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
+        />
+      </div>
 
       <button
         type="button"
         onClick={() => setActive((value) => !value)}
-        className={`inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
+        className={`inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition sm:py-2 ${
           active
             ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
             : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-300"
@@ -140,12 +144,12 @@ function DocumentRow({
         {active ? "Aktif" : "Nonaktif"}
       </button>
 
-      <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+      <div className="grid grid-cols-[1fr_1fr_auto] items-center gap-2 sm:flex sm:flex-wrap lg:justify-end">
         <a
           href={document.fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 sm:py-2"
         >
           <Download size={15} />
           Buka
@@ -154,7 +158,7 @@ function DocumentRow({
           type="button"
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
         >
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
           Simpan
@@ -163,7 +167,8 @@ function DocumentRow({
           type="button"
           onClick={remove}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300"
+          aria-label={`Hapus ${document.title}`}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300 sm:py-2"
         >
           <Trash2 size={15} />
         </button>
@@ -221,28 +226,30 @@ function PasswordRow({
   }
 
   return (
-    <div className="grid gap-3 border-b border-gray-100 px-4 py-4 last:border-0 dark:border-gray-700 lg:grid-cols-[minmax(180px,1fr)_180px_110px_150px_190px] lg:items-center">
+    <div className="grid gap-3 border-b border-gray-100 px-3 py-4 last:border-0 dark:border-gray-700 sm:px-4 lg:grid-cols-[minmax(180px,1fr)_180px_110px_150px_190px] lg:items-center">
       <div>
+        <label className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">Nama akses</label>
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
         {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
       </div>
       <div className="relative">
+        <label className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">Password baru</label>
         <input
           type={showNewPassword ? "text" : "password"}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           placeholder="Password baru"
-          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 pr-10 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
         <button
           type="button"
           onClick={() => setShowNewPassword((value) => !value)}
           aria-label={showNewPassword ? "Sembunyikan password baru" : "Lihat password baru"}
-          className="absolute right-2 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+          className="absolute right-2 top-[calc(50%+0.5rem)] inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200 lg:top-1/2"
         >
           {showNewPassword ? <EyeOff size={15} /> : <Eye size={15} />}
         </button>
@@ -250,7 +257,7 @@ function PasswordRow({
       <button
         type="button"
         onClick={() => setActive((value) => !value)}
-        className={`inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
+        className={`inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition sm:py-2 ${
           active
             ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
             : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-300"
@@ -259,12 +266,12 @@ function PasswordRow({
         {active ? "Aktif" : "Nonaktif"}
       </button>
       <p className="text-xs text-gray-500 dark:text-gray-400">Terakhir: {formatDate(password.lastUsedAt)}</p>
-      <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-2 sm:flex sm:flex-wrap lg:justify-end">
         <button
           type="button"
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
         >
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
           Simpan
@@ -273,7 +280,8 @@ function PasswordRow({
           type="button"
           onClick={remove}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300"
+          aria-label={`Hapus ${password.label}`}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300 sm:py-2"
         >
           <Trash2 size={15} />
         </button>
@@ -389,42 +397,51 @@ export default function B2BCatalogManager({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
-        <section className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
+        <section className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:p-5">
+          <div className="mb-4 flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 sm:h-10 sm:w-10">
               <Upload size={19} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-semibold text-gray-900 dark:text-white">Upload PDF</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">File dikirim langsung ke Cloudinary, lalu judulnya tampil di katalog agen.</p>
             </div>
           </div>
 
           <form onSubmit={uploadDocument} className="grid gap-3 lg:grid-cols-[minmax(220px,1fr)_90px_minmax(220px,1fr)_auto]">
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Judul PDF di katalog"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-            />
-            <input
-              type="number"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-            />
-            <input
-              ref={fileRef}
-              type="file"
-              accept="application/pdf,.pdf"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-sm file:font-medium dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:file:bg-gray-700 dark:file:text-gray-200"
-            />
+            <label className="grid gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">Judul PDF</span>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Judul PDF di katalog"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
+              />
+            </label>
+            <label className="grid gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">Urutan</span>
+              <input
+                type="number"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
+              />
+            </label>
+            <label className="grid gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-400 lg:hidden">File PDF</span>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="application/pdf,.pdf"
+                className="min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-sm file:font-medium dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:file:bg-gray-700 dark:file:text-gray-200 sm:py-2"
+              />
+            </label>
             <button
               type="submit"
               disabled={uploading}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
             >
               {uploading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
               {uploading ? "Upload..." : "Tambah"}
@@ -433,37 +450,41 @@ export default function B2BCatalogManager({
           {uploadError && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{uploadError}</p>}
         </section>
 
-        <section className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+        <section className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:p-5">
+          <div className="mb-4 flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 sm:h-10 sm:w-10">
               <FileText size={19} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-semibold text-gray-900 dark:text-white">Password Agen</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">Satu halaman yang sama, password berbeda per travel agent.</p>
             </div>
           </div>
 
           <form onSubmit={createPassword} className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_160px_auto]">
-            <input
-              value={agentLabel}
-              onChange={(e) => setAgentLabel(e.target.value)}
-              placeholder="Nama agent"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-            />
-            <div className="relative">
+            <label className="grid gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-400 sm:hidden">Nama agent</span>
+              <input
+                value={agentLabel}
+                onChange={(e) => setAgentLabel(e.target.value)}
+                placeholder="Nama agent"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
+              />
+            </label>
+            <div className="relative grid gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-400 sm:hidden">Password</span>
               <input
                 type={showAgentPassword ? "text" : "password"}
                 value={agentPassword}
                 onChange={(e) => setAgentPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 pr-10 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
               />
               <button
                 type="button"
                 onClick={() => setShowAgentPassword((value) => !value)}
                 aria-label={showAgentPassword ? "Sembunyikan password" : "Lihat password"}
-                className="absolute right-2 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                className="absolute right-2 top-[calc(50%+0.5rem)] inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200 sm:top-1/2"
               >
                 {showAgentPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
@@ -471,7 +492,7 @@ export default function B2BCatalogManager({
             <button
               type="submit"
               disabled={passwordSaving}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
             >
               {passwordSaving ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
               Buat
@@ -482,7 +503,7 @@ export default function B2BCatalogManager({
       </div>
 
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-700">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-4 dark:border-gray-700 sm:px-5">
           <div>
             <h2 className="font-semibold text-gray-900 dark:text-white">PDF Katalog</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">{documents.length} dokumen tersimpan</p>
@@ -491,7 +512,7 @@ export default function B2BCatalogManager({
             href="/b2b-russia-catalog"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 sm:py-2"
           >
             <Eye size={15} />
             Preview
@@ -512,7 +533,7 @@ export default function B2BCatalogManager({
       </section>
 
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-        <div className="border-b border-gray-100 px-5 py-4 dark:border-gray-700">
+        <div className="border-b border-gray-100 px-4 py-4 dark:border-gray-700 sm:px-5">
           <h2 className="font-semibold text-gray-900 dark:text-white">Daftar Password</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">Password tersimpan sebagai hash dan tidak ditampilkan ulang.</p>
         </div>
