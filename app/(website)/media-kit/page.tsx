@@ -127,16 +127,10 @@ export default async function MediaKitPage() {
       desc: "Rujukan aturan e-Visa Rusia untuk traveler Indonesia, bukan direktori bisnis Sundaf Trip.",
     },
     {
-      category: "Direktori asosiasi",
-      label: "ASITA - Anggota",
+      category: "Calon rujukan industri",
+      label: "ASITA - Direktori anggota travel Indonesia",
       href: "https://asita.id/anggota/",
-      desc: "Direktori asosiasi travel Indonesia untuk rujukan industri dan pengecekan profil anggota.",
-    },
-    {
-      category: "Direktori asosiasi",
-      label: "ASITA Bali - Full Member",
-      href: "https://www.asitabali.org/en/keanggotaan/full-member",
-      desc: "Contoh direktori anggota asosiasi regional dengan informasi market perjalanan internasional.",
+      desc: "Kandidat rujukan asosiasi travel Indonesia. Ini bukan klaim bahwa Sundaf Trip sudah menjadi anggota ASITA.",
     },
   ];
 
@@ -264,7 +258,7 @@ export default async function MediaKitPage() {
           ))}
         </div>
         <p className="mt-5 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-          Catatan: rujukan eksternal di atas dipakai sebagai sumber verifikasi dan konteks industri. Halaman ini tidak mengklaim Sundaf Trip sudah terdaftar di semua direktori tersebut.
+          Catatan: rujukan eksternal di atas dipakai sebagai sumber verifikasi dan konteks industri. Rujukan asosiasi adalah kandidat direktori, bukan bukti keanggotaan Sundaf Trip.
         </p>
       </section>
     </div>
