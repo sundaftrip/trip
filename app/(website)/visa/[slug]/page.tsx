@@ -39,6 +39,16 @@ function isVisaKey(s: string): s is VisaKey {
   return s === "bebas" || s === "voa" || s === "evisa" || s === "wajib";
 }
 
+function isAssistedDocument(doc: VisaDocument) {
+  const text = `${doc.name} ${doc.hint ?? ""}`.toLowerCase();
+  return (
+    text.includes("kami bantu") ||
+    text.includes("booking akomodasi") ||
+    text.includes("booking hotel") ||
+    text.includes("bukti akomodasi")
+  );
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -333,11 +343,11 @@ export default async function VisaDetailPage({ params }: PageProps) {
                 className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
                 style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
               ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
-             , seperti formulir & itinerary, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
+             , seperti formulir, itinerary, dan booking akomodasi, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
               {documents.map((doc, i) => {
-                const assisted = (doc.hint ?? "").toLowerCase().includes("kami bantu");
+                const assisted = isAssistedDocument(doc);
                 return (
                   <div
                     key={i}
