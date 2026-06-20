@@ -7,7 +7,8 @@
 
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
+import { NetworkOnly, Serwist } from "serwist";
+import type { RuntimeCaching } from "serwist";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -17,17 +18,25 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+const adminNetworkOnly: RuntimeCaching = {
+  matcher: ({ sameOrigin, url: { pathname } }) => sameOrigin && pathname.startsWith("/admin"),
+  handler: new NetworkOnly(),
+};
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [adminNetworkOnly, ...defaultCache],
   fallbacks: {
     entries: [
       {
         url: "/~offline",
-        matcher: ({ request }) => request.destination === "document",
+        matcher: ({ request }) => {
+          const { pathname } = new URL(request.url);
+          return request.destination === "document" && !pathname.startsWith("/admin");
+        },
       },
     ],
   },
