@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
 
@@ -917,97 +918,87 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Itinerary</h2>
 
-        {/* Input form */}
-        <div className={`rounded-lg p-3 mb-3 ${editingItineraryIdx !== null ? "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700" : "bg-gray-50 dark:bg-gray-700/40"}`}>
-          {editingItineraryIdx !== null && (
-            <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">✏️ Mode Edit — Hari {itineraryItem.day}</p>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-[5rem_1fr_2fr] gap-3">
-            <input
-              type="number" min={1} placeholder="Hari" className="input text-center"
-              value={itineraryItem.day}
-              onChange={(e) => setItineraryItem((p) => ({ ...p, day: Number(e.target.value) }))}
+        {editingItineraryIdx === null && (
+          <div className="mb-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/40">
+            <ItineraryItemFields
+              item={itineraryItem}
+              onChange={setItineraryItem}
+              onSubmit={commitItineraryItem}
+              submitLabel="Tambah"
+              submitTone="add"
             />
-            <input
-              placeholder="Judul" className="input"
-              value={itineraryItem.title}
-              onChange={(e) => setItineraryItem((p) => ({ ...p, title: e.target.value }))}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.currentTarget.parentElement?.nextElementSibling?.querySelector("input") as HTMLInputElement | null)?.focus(); }}}
-            />
-            <div className="flex gap-2">
-              <input
-                placeholder="Deskripsi" className="input flex-1"
-                value={itineraryItem.description}
-                onChange={(e) => setItineraryItem((p) => ({ ...p, description: e.target.value }))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    commitItineraryItem();
-                  }
-                }}
-              />
-              {editingItineraryIdx !== null && (
-                <button type="button"
-                  onClick={() => { setEditingItineraryIdx(null); setItineraryItem(emptyItineraryItem(form.itinerary)); }}
-                  className="px-3 bg-gray-400 text-white rounded-lg text-sm">
-                  Batal
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={commitItineraryItem}
-                className={`px-3 text-white rounded-lg text-sm font-semibold whitespace-nowrap ${editingItineraryIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"}`}>
-                {editingItineraryIdx !== null ? "Simpan" : "+ Tambah"}
-              </button>
-            </div>
           </div>
-        </div>
+        )}
 
         {/* List */}
         <div className="space-y-2">
           {(form.itinerary ?? []).map((item, i) => (
-            <div key={i}
-              className={`flex items-start gap-3 px-4 py-3 rounded-lg border transition-colors ${editingItineraryIdx === i ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20" : "border-transparent bg-gray-50 dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
-              <span className="text-xs font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded shrink-0 min-w-[3.2rem] text-center">
-                {item.day}
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm text-gray-900 dark:text-white">{item.title}</p>
-                {item.description && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{item.description}</p>}
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                {/* Edit button */}
-                <button
-                  type="button"
-                  title="Edit"
-                  onClick={() => {
-                    setItineraryItem({ day: item.day, title: item.title, description: item.description });
-                    setEditingItineraryIdx(i);
+            editingItineraryIdx === i ? (
+              <div
+                key={i}
+                className="rounded-lg border border-blue-400 bg-blue-50 p-3 transition-colors dark:bg-blue-900/20"
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="shrink-0 rounded bg-blue-100 px-2 py-1 text-center text-xs font-bold text-blue-600 dark:bg-blue-900/30">
+                    {item.day}
+                  </span>
+                  <p className="min-w-0 truncate text-sm font-semibold text-gray-900 dark:text-white">
+                    {item.title || `Hari ${item.day}`}
+                  </p>
+                </div>
+                <ItineraryItemFields
+                  item={itineraryItem}
+                  onChange={setItineraryItem}
+                  onSubmit={commitItineraryItem}
+                  onCancel={() => {
+                    setEditingItineraryIdx(null);
+                    setItineraryItem(emptyItineraryItem(form.itinerary));
                   }}
-                  className="p-1.5 text-blue-500 hover:text-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </button>
-                {/* Delete button */}
-                <button
-                  type="button"
-                  title="Hapus"
-                  onClick={() => {
-                    const updated = form.itinerary!.filter((_, j) => j !== i);
-                    if (editingItineraryIdx === i) {
-                      setEditingItineraryIdx(null);
-                      setItineraryItem(emptyItineraryItem(updated));
-                    }
-                    set("itinerary", updated);
-                  }}
-                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
+                  submitLabel="Simpan"
+                  submitTone="save"
+                />
               </div>
-            </div>
+            ) : (
+              <div
+                key={i}
+                className="flex items-start gap-3 rounded-lg border border-transparent bg-gray-50 px-4 py-3 transition-colors hover:border-gray-300 dark:bg-gray-700 dark:hover:border-gray-600">
+                <span className="shrink-0 rounded bg-blue-100 px-2 py-1 text-center text-xs font-bold text-blue-600 dark:bg-blue-900/30">
+                  {item.day}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.title}</p>
+                  {item.description && <p className="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{item.description}</p>}
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    title="Edit"
+                    onClick={() => {
+                      setItineraryItem({ day: item.day, title: item.title, description: item.description });
+                      setEditingItineraryIdx(i);
+                    }}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded text-blue-500 transition-colors hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30">
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Hapus"
+                    onClick={() => {
+                      const updated = form.itinerary!.filter((_, j) => j !== i);
+                      if (editingItineraryIdx === i) {
+                        setEditingItineraryIdx(null);
+                        setItineraryItem(emptyItineraryItem(updated));
+                      } else if (editingItineraryIdx !== null && editingItineraryIdx > i) {
+                        setEditingItineraryIdx(editingItineraryIdx - 1);
+                      }
+                      set("itinerary", updated);
+                    }}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded text-red-400 transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30">
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            )
           ))}
           {(form.itinerary ?? []).length === 0 && (
             <p className="text-xs text-gray-400 text-center py-4">Belum ada itinerary. Tambahkan hari pertama di atas.</p>
@@ -1109,6 +1100,87 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <label className="label mb-1">{label}</label>
       {children}
+    </div>
+  );
+}
+
+function ItineraryItemFields({
+  item,
+  onChange,
+  onSubmit,
+  onCancel,
+  submitLabel,
+  submitTone,
+}: {
+  item: ItineraryItem;
+  onChange: (item: ItineraryItem) => void;
+  onSubmit: () => void;
+  onCancel?: () => void;
+  submitLabel: string;
+  submitTone: "add" | "save";
+}) {
+  const SubmitIcon = submitTone === "add" ? Plus : Check;
+
+  return (
+    <div data-itinerary-fields className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
+      <input
+        type="number"
+        min={1}
+        placeholder="Hari"
+        className="input text-center"
+        value={item.day}
+        onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
+      />
+      <input
+        placeholder="Judul"
+        className="input"
+        value={item.title}
+        onChange={(e) => onChange({ ...item, title: e.target.value })}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const descriptionInput = e.currentTarget
+              .closest("[data-itinerary-fields]")
+              ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
+            descriptionInput?.focus();
+          }
+        }}
+      />
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <input
+          data-itinerary-description
+          placeholder="Deskripsi"
+          className="input min-w-0 flex-1"
+          value={item.description}
+          onChange={(e) => onChange({ ...item, description: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              onSubmit();
+            }
+          }}
+        />
+        <div className="flex gap-2 sm:shrink-0">
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 sm:flex-none">
+              <X size={15} />
+              {submitTone === "save" ? "Batal" : "Reset"}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onSubmit}
+            className={`inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition-colors sm:flex-none ${
+              submitTone === "add" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+            }`}>
+            <SubmitIcon size={15} />
+            {submitLabel}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
