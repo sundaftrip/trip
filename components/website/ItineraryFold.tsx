@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 /**
@@ -22,15 +22,24 @@ export default function ItineraryFold({
   collapsedHeight?: number;
   accent?: string;
 }) {
+  const contentId = useId();
   const [open, setOpen] = useState(false);
   const foldable = count > threshold;
   const collapsed = foldable && !open;
+  const buttonStyle = accent
+    ? {
+        color: accent,
+        borderColor: accent,
+        backgroundColor: `color-mix(in srgb, ${accent} 7%, transparent)`,
+      }
+    : undefined;
 
   if (!foldable) return <>{children}</>;
 
   return (
     <div>
       <div
+        id={contentId}
         className="relative overflow-hidden transition-[max-height] duration-500 ease-in-out"
         style={{ maxHeight: collapsed ? collapsedHeight : 6000 }}
       >
@@ -41,17 +50,20 @@ export default function ItineraryFold({
       </div>
       <button
         type="button"
+        aria-expanded={open}
+        aria-controls={contentId}
         onClick={() => setOpen((v) => !v)}
-        className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-80"
-        style={accent ? { color: accent } : undefined}
+        className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded border border-blue-600 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-100 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:border-blue-400 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/50 sm:w-auto"
+        style={buttonStyle}
       >
-        <span className={accent ? "" : "text-blue-600 dark:text-blue-400"}>
-          {open ? "Tutup itinerary" : `Lihat itinerary lengkap (${count} hari)`}
+        <span>
+          {open ? "Sembunyikan itinerary" : `Buka itinerary lengkap (${count} hari)`}
         </span>
         <ChevronDown
           size={16}
-          className={`transition-transform duration-300 ${open ? "rotate-180" : ""} ${accent ? "" : "text-blue-600 dark:text-blue-400"}`}
+          className={`shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
           style={accent ? { color: accent } : undefined}
+          aria-hidden="true"
         />
       </button>
     </div>
