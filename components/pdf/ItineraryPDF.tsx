@@ -1,21 +1,35 @@
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
 import {
-  Document, Page, View, Text, Link, StyleSheet, Font,
+  Document, Page, View, Text, Link, Image, Svg, Path, Rect, Circle, StyleSheet, Font,
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 
-const PAPER = "#EEEEEE";
-const TEAL = "#00ADB5";
-const CHARCOAL = "#222831";
+const PAPER = "#FFFFFF";
+const TEAL = "#FBD324";
+const CHARCOAL = "#050505";
 const INK = CHARCOAL;
-const GOLD = TEAL;
+const GOLD = CHARCOAL;
 const SUB = CHARCOAL;
-const HAIR = TEAL;
-const DASH = TEAL;
-const WHITE = PAPER;
+const HAIR = "#D9D9D9";
+const DASH = "#EEEEEE";
+const WHITE = "#FFFFFF";
 const VISA_URL = "https://sundaftrip.com/visa";
+const ICON_BLUE = "#2563EB";
+const BODY_FONT_SIZE = 11;
+const BODY_LINE_HEIGHT = 1.36;
+const MAIN_TITLE_SIZE = 29;
+const SECTION_TITLE_SIZE = 15;
+const SUBTITLE_SIZE = 13;
+const PAYMENT_TERMS = [
+  "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
+  "DP mengunci seat dan nominalnya mengikuti invoice awal.",
+  "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
+  "Add-on opsional, visa, dan layanan tambahan dibayar terpisah setelah dikonfirmasi.",
+  "Bukti transfer wajib dikirim untuk verifikasi administrasi.",
+  "Keterlambatan pembayaran dapat memengaruhi ketersediaan tiket, hotel, dan layanan.",
+];
 
 Font.registerHyphenationCallback((word) => [word]);
 
@@ -78,6 +92,205 @@ const s = StyleSheet.create({
     paddingBottom: 44,
     paddingHorizontal: 34,
   },
+  flowPage: {
+    backgroundColor: PAPER,
+    color: INK,
+    fontFamily: "Helvetica",
+    paddingTop: 84,
+    paddingBottom: 72,
+    paddingHorizontal: 38,
+  },
+  flowHeader: {
+    position: "absolute",
+    top: 26,
+    left: 38,
+    right: 38,
+    height: 34,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 0.7,
+    borderBottomColor: HAIR,
+    paddingBottom: 9,
+  },
+  flowLogo: { width: 92, height: 28, objectFit: "contain" },
+  flowHeaderTitle: { fontSize: 9, color: SUB, textAlign: "right" },
+  flowFooter: {
+    position: "absolute",
+    left: 38,
+    right: 38,
+    top: 806,
+    height: 22,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTopWidth: 0.7,
+    borderTopColor: HAIR,
+    paddingTop: 7,
+  },
+  flowFooterText: { fontSize: 8, color: SUB, lineHeight: 1.2 },
+  flowPageNumber: {
+    position: "absolute",
+    top: 813,
+    right: 38,
+    width: 38,
+    fontSize: 8,
+    color: SUB,
+    textAlign: "right",
+  },
+  flowTitleBlock: { marginBottom: 18 },
+  flowTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: MAIN_TITLE_SIZE,
+    color: CHARCOAL,
+    backgroundColor: TEAL,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: "flex-start",
+    lineHeight: 1.12,
+  },
+  flowSubtitle: {
+    fontSize: SUBTITLE_SIZE,
+    color: CHARCOAL,
+    lineHeight: 1.28,
+    marginTop: 9,
+  },
+  flowSection: { marginTop: 16 },
+  flowSectionTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: SECTION_TITLE_SIZE,
+    color: CHARCOAL,
+    backgroundColor: TEAL,
+    paddingVertical: 3.5,
+    paddingHorizontal: 7,
+    alignSelf: "flex-start",
+    marginBottom: 9,
+  },
+  flowBodyText: {
+    fontSize: BODY_FONT_SIZE,
+    color: INK,
+    lineHeight: BODY_LINE_HEIGHT,
+    textAlign: "justify",
+  },
+  flowTable: {
+    borderTopWidth: 0.7,
+    borderTopColor: HAIR,
+    borderBottomWidth: 0.7,
+    borderBottomColor: HAIR,
+  },
+  flowTableHead: {
+    flexDirection: "row",
+    borderBottomWidth: 0.7,
+    borderBottomColor: HAIR,
+  },
+  flowTableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.45,
+    borderBottomColor: DASH,
+  },
+  flowCell: {
+    fontSize: BODY_FONT_SIZE,
+    color: INK,
+    lineHeight: BODY_LINE_HEIGHT,
+    paddingVertical: 7,
+    paddingHorizontal: 6,
+  },
+  flowCellBold: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: BODY_FONT_SIZE,
+    color: CHARCOAL,
+    lineHeight: BODY_LINE_HEIGHT,
+    paddingVertical: 7,
+    paddingHorizontal: 6,
+  },
+  flowInfoLabel: { width: 150 },
+  flowDayCell: { width: 46, textAlign: "center" },
+  flowLocationCell: { width: 100 },
+  flowAgendaCell: { flex: 1 },
+  flowItineraryTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: BODY_FONT_SIZE,
+    color: CHARCOAL,
+    lineHeight: BODY_LINE_HEIGHT,
+  },
+  flowInsight: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: BODY_FONT_SIZE,
+    color: CHARCOAL,
+    lineHeight: BODY_LINE_HEIGHT,
+    marginTop: 3,
+  },
+  flowInsightGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    borderTopWidth: 0.55,
+    borderTopColor: DASH,
+    marginTop: 8,
+    paddingTop: 7,
+  },
+  flowInsightItem: {
+    width: "50%",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingRight: 10,
+    marginBottom: 7,
+  },
+  flowInsightIconBox: {
+    width: 18,
+    height: 18,
+    marginRight: 7,
+    marginTop: 1,
+  },
+  flowInsightText: { flex: 1 },
+  flowInsightLabel: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: BODY_FONT_SIZE,
+    color: ICON_BLUE,
+    lineHeight: 1.18,
+  },
+  flowInsightValue: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: BODY_FONT_SIZE,
+    color: CHARCOAL,
+    lineHeight: 1.25,
+  },
+  flowTwoCol: { flexDirection: "row", gap: 18 },
+  flowCol: { flex: 1 },
+  flowListHead: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: SUBTITLE_SIZE,
+    color: CHARCOAL,
+    marginBottom: 7,
+  },
+  flowListItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 5,
+  },
+  flowBullet: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: BODY_FONT_SIZE,
+    color: CHARCOAL,
+    width: 13,
+    lineHeight: BODY_LINE_HEIGHT,
+  },
+  flowListText: {
+    flex: 1,
+    fontSize: BODY_FONT_SIZE,
+    color: INK,
+    lineHeight: BODY_LINE_HEIGHT,
+    textAlign: "justify",
+  },
+  flowLink: {
+    color: CHARCOAL,
+    fontFamily: "Helvetica-Bold",
+    textDecoration: "underline",
+  },
+  flowAddOnName: { flex: 1.35 },
+  flowAddOnPrice: { width: 130, textAlign: "right" },
+  flowPaymentStage: { width: 92 },
+  flowPaymentDue: { flex: 1 },
+  flowPaymentAmount: { width: 112, textAlign: "right" },
 
   cover: {
     backgroundColor: WHITE,
@@ -268,7 +481,7 @@ const s = StyleSheet.create({
     marginTop: 1,
   },
   liText: { flex: 1, fontSize: 8.5, lineHeight: 1.42, color: INK },
-  inlineLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
+  inlineLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
   optionalList: {
     borderWidth: 0.7,
     borderColor: DASH,
@@ -318,8 +531,8 @@ const s = StyleSheet.create({
     padding: 11,
   },
   faqLine: { fontSize: 8.5, color: SUB, lineHeight: 1.45 },
-  faqLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
-  waLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
+  faqLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
+  waLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
   visaHelp: { fontSize: 8.2, color: SUB, lineHeight: 1.45, marginTop: 6 },
 
   profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL, marginTop: 8 },
@@ -448,44 +661,41 @@ const s = StyleSheet.create({
   },
   proposalBrand: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2 },
   proposalBrandName: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, lineHeight: 1 },
-  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: TEAL, marginLeft: 2, marginTop: 1 },
+  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: CHARCOAL, marginLeft: 2, marginTop: 1 },
   proposalTitle: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 12,
-    color: WHITE,
-    backgroundColor: CHARCOAL,
-    borderBottomWidth: 2,
-    borderBottomColor: TEAL,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    alignSelf: "stretch",
-    letterSpacing: 0.4,
+    fontSize: 18,
+    color: CHARCOAL,
+    backgroundColor: TEAL,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignSelf: "center",
+    lineHeight: 1.12,
     textAlign: "center",
-    textTransform: "uppercase",
   },
-  proposalSubtitle: { fontSize: 6.8, color: CHARCOAL, textAlign: "center", marginTop: 2 },
+  proposalSubtitle: { fontSize: 7.4, color: CHARCOAL, textAlign: "center", marginTop: 6 },
   proposalGrid: { flexDirection: "row", gap: 16 },
   proposalLeft: { width: "58%" },
   proposalRight: { flex: 1 },
   proposalSectionGap: { marginTop: 8 },
   proposalTable: {
     borderTopWidth: 0.7,
-    borderTopColor: TEAL,
+    borderTopColor: HAIR,
     borderBottomWidth: 0.7,
-    borderBottomColor: TEAL,
+    borderBottomColor: HAIR,
   },
-  proposalHeadRow: { flexDirection: "row", backgroundColor: CHARCOAL },
+  proposalHeadRow: { flexDirection: "row", backgroundColor: WHITE },
   proposalHeadCell: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 7.2,
-    color: WHITE,
+    fontSize: 7.8,
+    color: CHARCOAL,
     paddingVertical: 4,
     paddingHorizontal: 5,
   },
   proposalRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: TEAL,
+    borderBottomColor: HAIR,
     minHeight: 34,
   },
   proposalCell: { paddingVertical: 3.6, paddingHorizontal: 5, justifyContent: "center" },
@@ -493,67 +703,66 @@ const s = StyleSheet.create({
   proposalDateCell: { width: 66 },
   proposalEventCell: { flex: 1 },
   proposalPlaceCell: { width: 58 },
-  proposalDayText: { fontFamily: "Helvetica-Bold", fontSize: 8.6, color: CHARCOAL },
-  proposalDateText: { fontSize: 5.65, color: CHARCOAL, lineHeight: 1.15 },
-  proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: CHARCOAL, lineHeight: 1.14 },
-  proposalEventDesc: { fontSize: 5.25, color: INK, lineHeight: 1.15, marginTop: 1 },
-  proposalInsightLine: { fontFamily: "Helvetica-Bold", fontSize: 5.05, color: CHARCOAL, lineHeight: 1.18, marginTop: 2 },
-  proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 5.9, color: CHARCOAL, lineHeight: 1.15 },
+  proposalDayText: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL },
+  proposalDateText: { fontSize: 6.2, color: CHARCOAL, lineHeight: 1.18 },
+  proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 7.1, color: CHARCOAL, lineHeight: 1.18 },
+  proposalEventDesc: { fontSize: 5.9, color: INK, lineHeight: 1.22, marginTop: 1.2, textAlign: "justify" },
+  proposalInsightLine: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: CHARCOAL, lineHeight: 1.2, marginTop: 2 },
+  proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: CHARCOAL, lineHeight: 1.16 },
   proposalMiniTable: {
     borderTopWidth: 0.7,
-    borderTopColor: TEAL,
+    borderTopColor: HAIR,
     borderBottomWidth: 0.7,
-    borderBottomColor: TEAL,
+    borderBottomColor: HAIR,
   },
   proposalMiniRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: TEAL,
+    borderBottomColor: HAIR,
   },
   proposalMiniCell: { flex: 1, paddingVertical: 3.4, paddingHorizontal: 5 },
-  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: CHARCOAL, letterSpacing: 0.3 },
-  proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: CHARCOAL, lineHeight: 1.12, marginTop: 1.5 },
-  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 7.4, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
+  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.8, color: CHARCOAL, letterSpacing: 0.3 },
+  proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 7.1, color: CHARCOAL, lineHeight: 1.14, marginTop: 1.5 },
+  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 8.5, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
   proposalSectionTitle: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 8,
-    color: WHITE,
-    backgroundColor: CHARCOAL,
-    borderLeftWidth: 5,
-    borderLeftColor: TEAL,
-    paddingVertical: 3.5,
+    fontSize: 12,
+    color: CHARCOAL,
+    backgroundColor: TEAL,
+    paddingVertical: 3,
     paddingHorizontal: 6,
-    width: "100%",
-    marginBottom: 4,
+    alignSelf: "flex-start",
+    marginBottom: 7,
   },
   proposalListGrid: { flexDirection: "row", gap: 10 },
   proposalListCol: { flex: 1 },
-  proposalListHead: { fontFamily: "Helvetica-Bold", fontSize: 6.7, marginBottom: 3 },
+  proposalListHead: { fontFamily: "Helvetica-Bold", fontSize: 8.5, marginBottom: 5, color: CHARCOAL },
   proposalListItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2.5 },
   proposalBullet: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     marginRight: 4.5,
-    marginTop: 0.9,
+    marginTop: 2.6,
   },
-  proposalListText: { flex: 1, fontSize: 5.65, color: CHARCOAL, lineHeight: 1.16 },
-  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: TEAL },
-  proposalAddOnName: { flex: 1.35, fontSize: 5.65, color: CHARCOAL, paddingVertical: 2.6, paddingHorizontal: 5 },
+  proposalListText: { flex: 1, fontSize: 6.3, color: CHARCOAL, lineHeight: 1.25, textAlign: "justify" },
+  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: HAIR },
+  proposalAddOnName: { flex: 1.35, fontSize: 6.4, color: CHARCOAL, paddingVertical: 3.2, paddingHorizontal: 5 },
   proposalAddOnPrice: {
     flex: 0.8,
     fontFamily: "Helvetica-Bold",
-    fontSize: 5.6,
+    fontSize: 6.4,
     color: GOLD,
-    paddingVertical: 2.6,
+    paddingVertical: 3.2,
     paddingHorizontal: 5,
+    textAlign: "right",
   },
   proposalFooterGrid: { flexDirection: "row", gap: 12, marginTop: 7 },
   proposalFooterCol: { flex: 1 },
   proposalLeftNoteGrid: { flexDirection: "row", gap: 10, marginTop: 7 },
   proposalLeftNoteCol: { flex: 1 },
-  proposalSmallText: { fontSize: 5.4, color: INK, lineHeight: 1.18 },
-  paymentIntro: { fontSize: 5.75, color: INK, lineHeight: 1.22 },
+  proposalSmallText: { fontSize: 6.25, color: INK, lineHeight: 1.24, textAlign: "justify" },
+  paymentIntro: { fontSize: 6.4, color: INK, lineHeight: 1.24, textAlign: "justify" },
   paymentMethods: { fontFamily: "Helvetica-Bold", fontSize: 5.65, color: CHARCOAL, lineHeight: 1.2, marginTop: 2 },
   paymentBadge: {
     alignSelf: "flex-start",
@@ -566,14 +775,14 @@ const s = StyleSheet.create({
   paymentTable: {
     marginTop: 5,
     borderTopWidth: 0.7,
-    borderTopColor: TEAL,
+    borderTopColor: HAIR,
     borderBottomWidth: 0.7,
-    borderBottomColor: TEAL,
+    borderBottomColor: HAIR,
   },
-  paymentRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: TEAL },
-  paymentHeadRow: { flexDirection: "row", backgroundColor: CHARCOAL },
-  paymentHeadCell: { fontFamily: "Helvetica-Bold", fontSize: 5.5, color: WHITE, paddingVertical: 3.3, paddingHorizontal: 4 },
-  paymentCell: { fontSize: 5.7, color: CHARCOAL, paddingVertical: 3.2, paddingHorizontal: 4 },
+  paymentRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: HAIR },
+  paymentHeadRow: { flexDirection: "row", backgroundColor: WHITE },
+  paymentHeadCell: { fontFamily: "Helvetica-Bold", fontSize: 6.1, color: CHARCOAL, paddingVertical: 3.3, paddingHorizontal: 4 },
+  paymentCell: { fontSize: 6.2, color: CHARCOAL, paddingVertical: 3.2, paddingHorizontal: 4 },
   paymentStageCell: { width: 62, fontFamily: "Helvetica-Bold" },
   paymentDueCell: { flex: 1 },
   paymentAmountCell: { width: 76, textAlign: "right", fontFamily: "Helvetica-Bold" },
@@ -582,29 +791,33 @@ const s = StyleSheet.create({
     backgroundColor: PAPER,
     color: CHARCOAL,
     fontFamily: "Helvetica",
-    paddingVertical: 20,
-    paddingHorizontal: 22,
+    paddingTop: 25,
+    paddingBottom: 36,
+    paddingHorizontal: 38,
   },
   portraitSheet: { backgroundColor: PAPER },
-  portraitHeader: { marginBottom: 10, alignItems: "center" },
+  portraitHeader: {
+    marginBottom: 16,
+    alignItems: "center",
+    borderBottomWidth: 0.7,
+    borderBottomColor: HAIR,
+    paddingBottom: 10,
+  },
   portraitPageTitle: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 10,
-    color: WHITE,
-    backgroundColor: CHARCOAL,
-    borderBottomWidth: 2,
-    borderBottomColor: TEAL,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    alignSelf: "stretch",
+    fontSize: 17,
+    color: CHARCOAL,
+    backgroundColor: TEAL,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignSelf: "center",
     textAlign: "center",
-    textTransform: "uppercase",
   },
   portraitTableRow: {
     flexDirection: "row",
     borderBottomWidth: 0.45,
-    borderBottomColor: TEAL,
-    minHeight: 41,
+    borderBottomColor: HAIR,
+    minHeight: 45,
   },
   portraitSectionGap: { marginTop: 10 },
   portraitFooterGrid: { flexDirection: "row", gap: 12, marginTop: 9 },
@@ -694,7 +907,7 @@ const s = StyleSheet.create({
   },
   denseBottomCol: { flex: 1 },
   denseNote: { fontSize: 5.65, color: INK, lineHeight: 1.22 },
-  denseLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
+  denseLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
   denseFooter: {
     position: "absolute",
     bottom: 8,
@@ -713,10 +926,16 @@ function waLink(raw: string) {
   return `https://wa.me/${raw.replace(/\D/g, "")}`;
 }
 
-function compactText(value?: string | null, max = 150) {
-  if (!value) return "";
-  const normalized = stripItineraryMarkup(value).replace(/\s+/g, " ").trim();
-  return normalized.length > max ? `${normalized.slice(0, max - 3).trim()}...` : normalized;
+function cleanText(value?: string | null) {
+  return value ? stripItineraryMarkup(value).replace(/\s+/g, " ").trim() : "";
+}
+
+function profileText(company: ItineraryPDFProps["company"]) {
+  const name = company.name || "Sundaf Trip";
+  const story = company.story?.map(cleanText).find(Boolean);
+  const nib = company.nib ? ` NIB ${company.nib}.` : "";
+
+  return story || `${name} adalah brand perjalanan Indonesia untuk paket tour, private/open trip, aurora borealis, Asia Tengah, dan bantuan visa bagi traveler Indonesia.${nib}`;
 }
 
 function linkedTextParts(text: string) {
@@ -730,16 +949,176 @@ function linkedTextParts(text: string) {
   };
 }
 
-function ProposalLinkedText({ text }: { text: string }) {
-  const parts = linkedTextParts(text);
-  if (!parts) return <Text style={s.proposalListText}>{text}</Text>;
+function FixedChrome({
+  company,
+  runningTitle,
+}: {
+  company: ItineraryPDFProps["company"];
+  runningTitle: string;
+}) {
+  const contactParts = [
+    company.name || "Sundaf Trip",
+    company.address,
+    company.email,
+    company.website,
+  ].filter(Boolean);
 
   return (
-    <Text style={s.proposalListText}>
+    <>
+      <View fixed style={s.flowHeader}>
+        {company.logo ? (
+          <Image src={company.logo} style={s.flowLogo} alt="Sundaf Trip" />
+        ) : (
+          <BrandMark />
+        )}
+        <Text style={s.flowHeaderTitle}>{runningTitle}</Text>
+      </View>
+      <View fixed style={s.flowFooter}>
+        <Text style={[s.flowFooterText, { flex: 1, paddingRight: 10 }]}>{contactParts.join(" - ")}</Text>
+      </View>
+      <Text
+        fixed
+        style={s.flowPageNumber}
+        render={({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) => (
+          `${pageNumber}/${totalPages}`
+        )}
+      />
+    </>
+  );
+}
+
+function SectionTitle({ children }: { children: string }) {
+  return (
+    <View wrap={false}>
+      <Text style={s.flowSectionTitle}>{children}</Text>
+    </View>
+  );
+}
+
+function FlowLinkedText({ text }: { text: string }) {
+  const parts = linkedTextParts(text);
+  if (!parts) return <Text style={s.flowListText}>{cleanText(text)}</Text>;
+
+  return (
+    <Text style={s.flowListText}>
       {parts.before}
-      <Link src={VISA_URL} style={s.denseLink}>{parts.linked}</Link>
+      <Link src={VISA_URL} style={s.flowLink}>{parts.linked}</Link>
       {parts.after}
     </Text>
+  );
+}
+
+function FlowBullet({ text }: { text: string }) {
+  return (
+    <View style={s.flowListItem}>
+      <Text style={s.flowBullet}>-</Text>
+      <FlowLinkedText text={text} />
+    </View>
+  );
+}
+
+type PdfInsightIcon = "utensils" | "hotel" | "clock" | "route" | "plane" | "train" | "bus" | "ship" | "car";
+
+function pdfInsightIcon(insight: ItineraryInsight): PdfInsightIcon {
+  if (insight.kind === "meals") return "utensils";
+  if (insight.kind === "stay") return "hotel";
+  if (insight.kind === "time") return "clock";
+  if (insight.kind === "distance" || insight.kind === "ascent") return "route";
+  if (insight.value.includes("Penerbangan")) return "plane";
+  if (insight.value.includes("Kereta")) return "train";
+  if (insight.value.includes("Bus")) return "bus";
+  if (insight.value.includes("Kapal")) return "ship";
+  return "car";
+}
+
+function FlowInsightIcon({ icon }: { icon: PdfInsightIcon }) {
+  const common = { stroke: ICON_BLUE, strokeWidth: 1.8, fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+
+  return (
+    <Svg viewBox="0 0 24 24" style={s.flowInsightIconBox}>
+      {icon === "utensils" && (
+        <>
+          <Path {...common} d="M6 3v8" />
+          <Path {...common} d="M4 3v4" />
+          <Path {...common} d="M8 3v4" />
+          <Path {...common} d="M6 11v10" />
+          <Path {...common} d="M16 3v18" />
+          <Path {...common} d="M14 3c-1.5 2.5-1.5 5 0 7h2" />
+        </>
+      )}
+      {icon === "hotel" && (
+        <>
+          <Rect {...common} x="4" y="5" width="16" height="16" rx="1.5" />
+          <Path {...common} d="M8 21v-4h8v4" />
+          <Path {...common} d="M8 9h.01M12 9h.01M16 9h.01M8 13h.01M12 13h.01M16 13h.01" />
+        </>
+      )}
+      {icon === "clock" && (
+        <>
+          <Circle {...common} cx="12" cy="12" r="8" />
+          <Path {...common} d="M12 8v5l3 2" />
+        </>
+      )}
+      {icon === "route" && (
+        <>
+          <Circle {...common} cx="6" cy="6" r="2" />
+          <Circle {...common} cx="18" cy="18" r="2" />
+          <Path {...common} d="M8 6h5a3 3 0 0 1 0 6h-2a3 3 0 0 0 0 6h5" />
+        </>
+      )}
+      {icon === "plane" && (
+        <Path {...common} d="M3 12l18-7-6 14-4-6-6-1zM11 13l4-8" />
+      )}
+      {icon === "train" && (
+        <>
+          <Rect {...common} x="6" y="3" width="12" height="13" rx="2" />
+          <Path {...common} d="M8 8h8M9 16l-2 3M15 16l2 3" />
+          <Circle {...common} cx="9" cy="13" r="1" />
+          <Circle {...common} cx="15" cy="13" r="1" />
+        </>
+      )}
+      {icon === "bus" && (
+        <>
+          <Rect {...common} x="4" y="6" width="16" height="11" rx="2" />
+          <Path {...common} d="M7 17v2M17 17v2M4 11h16" />
+          <Circle {...common} cx="8" cy="15" r="1.2" />
+          <Circle {...common} cx="16" cy="15" r="1.2" />
+        </>
+      )}
+      {icon === "ship" && (
+        <>
+          <Path {...common} d="M4 15l2-7h12l2 7" />
+          <Path {...common} d="M3 15h18l-2 4H5l-2-4z" />
+          <Path {...common} d="M8 8V4h8v4" />
+        </>
+      )}
+      {icon === "car" && (
+        <>
+          <Path {...common} d="M5 14l2-5h10l2 5" />
+          <Rect {...common} x="4" y="12" width="16" height="6" rx="2" />
+          <Circle {...common} cx="8" cy="18" r="1.5" />
+          <Circle {...common} cx="16" cy="18" r="1.5" />
+        </>
+      )}
+    </Svg>
+  );
+}
+
+function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
+  if (insights.length === 0) return null;
+
+  return (
+    <View style={s.flowInsightGrid}>
+      {insights.map((insight) => (
+        <View key={`${insight.kind}-${insight.value}`} style={s.flowInsightItem}>
+          <FlowInsightIcon icon={pdfInsightIcon(insight)} />
+          <View style={s.flowInsightText}>
+            <Text style={s.flowInsightLabel}>{insight.label}</Text>
+            <Text style={s.flowInsightValue}>{insight.value}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
   );
 }
 
@@ -771,12 +1150,6 @@ function placeForDay(day: ItineraryDay) {
   return "Sesuai rute";
 }
 
-function compactInsightSummary(insights: ItineraryInsight[]) {
-  return insights
-    .map((insight) => `${insight.label}: ${insight.value}`)
-    .join(" | ");
-}
-
 export function ItineraryPDF({
   tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl, paymentPlan,
 }: ItineraryPDFProps) {
@@ -789,212 +1162,185 @@ export function ItineraryPDF({
   const addOns = tour.addOns ?? [];
   const dateLabel = tour.tripDateLabel || "Tanggal mengikuti jadwal";
   const displayItinerary = tour.itinerary.map(buildItineraryDisplay);
+  const runningTitle = `Rencana Perjalanan ${tour.title}`;
+  const infoRows = [
+    ...meta,
+    ["HARGA PER ORANG", priceLabel],
+    priceCoretLabel ? ["HARGA NORMAL", priceCoretLabel] : null,
+    landTourLabel ? ["LAND TOUR", landTourLabel] : null,
+  ].filter(Boolean) as [string, string][];
   const subtitleParts = [
     `Disiapkan oleh ${company.name || "Sundaf Trip"}`,
     tour.duration,
     dateLabel,
   ].filter(Boolean);
+  const notesCopy = cleanText(tour.notes) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan.";
+  const visaCopy = cleanText(tour.visaInfo)
+    || "Visa dapat dibantu melalui sundaftrip.com/visa. Hubungi WhatsApp untuk ketersediaan kursi dan proses pendaftaran.";
+  const paymentTermColumns = [
+    PAYMENT_TERMS.filter((_, index) => index % 2 === 0),
+    PAYMENT_TERMS.filter((_, index) => index % 2 === 1),
+  ];
 
   return (
     <Document title={`Rencana Perjalanan ${tour.title}`} author={company.name || "Sundaf Trip"}>
-      <Page size="A4" style={s.portraitPage}>
-        <View style={s.portraitSheet}>
-          <View style={s.portraitHeader}>
-            <BrandMark />
-            <Text style={s.proposalTitle}>{`Rencana Perjalanan ${tour.title}`}</Text>
-            <Text style={s.proposalSubtitle}>{subtitleParts.join(" • ")}</Text>
-          </View>
+      <Page size="A4" style={s.flowPage} wrap>
+        <FixedChrome company={company} runningTitle={runningTitle} />
 
-          <View style={s.proposalMiniTable}>
-            <View style={s.proposalHeadRow}>
-              <Text style={[s.proposalHeadCell, { flex: 1 }]}>Info</Text>
-              <Text style={[s.proposalHeadCell, { flex: 1 }]}>Detail</Text>
-            </View>
-            {meta.map(([label, value]) => (
-              <View key={label} style={s.proposalMiniRow}>
-                <View style={s.proposalMiniCell}>
-                  <Text style={s.proposalMiniLabel}>{label}</Text>
-                </View>
-                <View style={s.proposalMiniCell}>
-                  <Text style={s.proposalMiniValue}>{value}</Text>
-                </View>
+        <View style={s.flowTitleBlock}>
+          <Text style={s.flowTitle}>{runningTitle}</Text>
+          <Text style={s.flowSubtitle}>{subtitleParts.join(" - ")}</Text>
+        </View>
+
+        <View style={s.flowSection}>
+          <SectionTitle>Ringkasan Perjalanan</SectionTitle>
+          <View style={s.flowTable}>
+            {infoRows.map(([label, value]) => (
+              <View key={label} style={s.flowTableRow}>
+                <Text style={[s.flowCellBold, s.flowInfoLabel]}>{label}</Text>
+                <Text style={[s.flowCell, { flex: 1 }]}>{value}</Text>
               </View>
             ))}
-            <View style={s.proposalMiniRow}>
-              <View style={s.proposalMiniCell}>
-                <Text style={s.proposalMiniLabel}>HARGA PER ORANG</Text>
-              </View>
-              <View style={s.proposalMiniCell}>
-                <Text style={s.proposalPrice}>{priceLabel}</Text>
-                {!!priceCoretLabel && <Text style={s.denseSmallText}>{priceCoretLabel}</Text>}
-                {!!landTourLabel && <Text style={s.denseSmallText}>Land tour: {landTourLabel}</Text>}
-              </View>
-            </View>
           </View>
+        </View>
 
-          <View style={s.portraitSectionGap}>
-            <Text style={s.proposalSectionTitle}>Rencana Perjalanan</Text>
-          </View>
-
-          <View style={s.proposalTable}>
-            <View style={s.proposalHeadRow}>
-              <Text style={[s.proposalHeadCell, s.proposalDayCell]}>Hari</Text>
-              <Text style={[s.proposalHeadCell, s.proposalDateCell]}>Tanggal</Text>
-              <Text style={[s.proposalHeadCell, s.proposalEventCell]}>Agenda</Text>
-              <Text style={[s.proposalHeadCell, s.proposalPlaceCell]}>Lokasi</Text>
+        <View style={s.flowSection}>
+          <SectionTitle>Rencana Perjalanan</SectionTitle>
+          <View style={s.flowTable}>
+            <View style={s.flowTableHead}>
+              <Text style={[s.flowCellBold, s.flowDayCell]}>Hari</Text>
+              <Text style={[s.flowCellBold, s.flowAgendaCell]}>Agenda</Text>
+              <Text style={[s.flowCellBold, s.flowLocationCell]}>Lokasi</Text>
             </View>
             {displayItinerary.map((day, idx) => {
-              const insightSummary = compactInsightSummary(day.insights);
+              const description = cleanText(day.description);
 
               return (
-                <View key={`${day.day}-${idx}`} style={s.portraitTableRow}>
-                  <View style={[s.proposalCell, s.proposalDayCell]}>
-                    <Text style={s.proposalDayText}>{day.day}</Text>
+                <View key={`${day.day}-${idx}`} style={s.flowTableRow} wrap={false}>
+                  <Text style={[s.flowCellBold, s.flowDayCell]}>{day.day}</Text>
+                  <View style={[s.flowCell, s.flowAgendaCell]}>
+                    <Text style={s.flowItineraryTitle}>{cleanText(day.title)}</Text>
+                    {!!description && <Text style={s.flowBodyText}>{description}</Text>}
+                    <FlowInsightGrid insights={day.insights} />
                   </View>
-                  <View style={[s.proposalCell, s.proposalDateCell]}>
-                    <Text style={s.proposalDateText}>{dateLabel}</Text>
-                  </View>
-                  <View style={[s.proposalCell, s.proposalEventCell]}>
-                    <Text style={s.proposalEventTitle}>{day.title}</Text>
-                    {!!day.description && (
-                      <Text style={s.proposalEventDesc}>{compactText(day.description, 150)}</Text>
-                    )}
-                    {!!insightSummary && (
-                      <Text style={s.proposalInsightLine}>{compactText(insightSummary, 135)}</Text>
-                    )}
-                  </View>
-                  <View style={[s.proposalCell, s.proposalPlaceCell]}>
-                    <Text style={s.proposalPlaceText}>{placeForDay(day)}</Text>
-                  </View>
+                  <Text style={[s.flowCellBold, s.flowLocationCell]}>{placeForDay(day)}</Text>
                 </View>
               );
             })}
           </View>
-          <Text style={[s.proposalSmallText, { marginTop: 4 }]}>
+          <Text style={[s.flowBodyText, { marginTop: 7 }]}>
             *Rencana perjalanan dapat berubah mengikuti kondisi cuaca dan operasional di lapangan.
           </Text>
-
-          <View style={s.proposalLeftNoteGrid}>
-            <View style={s.proposalLeftNoteCol}>
-              <Text style={s.proposalSectionTitle}>Catatan</Text>
-              <Text style={s.proposalSmallText}>
-                {compactText(tour.notes, 210) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan."}
-              </Text>
-            </View>
-            <View style={s.proposalLeftNoteCol}>
-              <Text style={s.proposalSectionTitle}>Visa & Pendaftaran</Text>
-              <Text style={s.proposalSmallText}>
-                Visa dapat dibantu melalui{" "}
-                <Link src={VISA_URL} style={s.denseLink}>sundaftrip.com/visa</Link>
-                . Hubungi WhatsApp untuk ketersediaan kursi dan proses pendaftaran.
-              </Text>
-            </View>
-          </View>
         </View>
-      </Page>
 
-      <Page size="A4" style={s.portraitPage}>
-        <View style={s.portraitSheet}>
-          <View style={s.portraitHeader}>
-            <BrandMark />
-            <Text style={s.portraitPageTitle}>Rincian Paket {tour.title}</Text>
+        {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
+          <View style={s.flowSection}>
+            <SectionTitle>Harga Sudah / Belum Termasuk</SectionTitle>
+            <View style={s.flowTwoCol}>
+              <View style={s.flowCol}>
+                <Text style={s.flowListHead}>Sudah Termasuk</Text>
+                {tour.inclusions.map((item, i) => <FlowBullet key={i} text={item} />)}
+              </View>
+              <View style={s.flowCol}>
+                <Text style={s.flowListHead}>Belum Termasuk</Text>
+                {tour.exclusions.map((item, i) => <FlowBullet key={i} text={item} />)}
+              </View>
+            </View>
           </View>
+        )}
 
-          {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
-            <View style={s.portraitSectionGap}>
-              <Text style={s.proposalSectionTitle}>Harga Sudah / Belum Termasuk</Text>
-              <View style={s.proposalListGrid}>
-                <View style={s.proposalListCol}>
-                  <Text style={[s.proposalListHead, { color: TEAL }]}>Sudah Termasuk</Text>
-                  {tour.inclusions.map((item, i) => (
-                    <View key={i} style={s.proposalListItem}>
-                      <View style={[s.proposalBullet, { backgroundColor: TEAL }]} />
-                      <ProposalLinkedText text={item} />
-                    </View>
-                  ))}
-                </View>
-                <View style={s.proposalListCol}>
-                  <Text style={[s.proposalListHead, { color: CHARCOAL }]}>Belum Termasuk</Text>
-                  {tour.exclusions.map((item, i) => (
-                    <View key={i} style={s.proposalListItem}>
-                      <View style={[s.proposalBullet, { backgroundColor: CHARCOAL }]} />
-                      <ProposalLinkedText text={item} />
-                    </View>
-                  ))}
-                </View>
+        {!!addOns.length && (
+          <View style={s.flowSection}>
+            <SectionTitle>Add-on Opsional</SectionTitle>
+            <View style={s.flowTable}>
+              <View style={s.flowTableHead}>
+                <Text style={[s.flowCellBold, s.flowAddOnName]}>Layanan</Text>
+                <Text style={[s.flowCellBold, s.flowAddOnPrice]}>Harga/orang</Text>
               </View>
-            </View>
-          )}
-
-          {!!addOns.length && (
-            <View style={s.portraitSectionGap}>
-              <Text style={s.proposalSectionTitle}>Add-on Opsional</Text>
-              <View style={s.proposalMiniTable}>
-                <View style={s.proposalHeadRow}>
-                  <Text style={[s.proposalHeadCell, { flex: 1.35 }]}>Layanan</Text>
-                  <Text style={[s.proposalHeadCell, { flex: 0.8 }]}>Harga/orang</Text>
+              {addOns.map((item, i) => (
+                <View key={i} style={s.flowTableRow}>
+                  <Text style={[s.flowCell, s.flowAddOnName]}>
+                    {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
+                  </Text>
+                  <Text style={[s.flowCellBold, s.flowAddOnPrice]}>{item.priceLabel}</Text>
                 </View>
-                {addOns.map((item, i) => (
-                  <View key={i} style={s.proposalAddOnRow}>
-                    <Text style={s.proposalAddOnName}>
-                      {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
-                    </Text>
-                    <Text style={s.proposalAddOnPrice}>{item.priceLabel}</Text>
-                  </View>
-                ))}
-              </View>
+              ))}
             </View>
-          )}
+          </View>
+        )}
 
-          {!!paymentPlan && paymentPlan.steps.length > 0 && (
-            <View style={s.portraitSectionGap}>
-              <Text style={s.proposalSectionTitle}>{paymentPlan.title}</Text>
-              <Text style={s.paymentIntro}>{paymentPlan.intro}</Text>
-              <Text style={s.paymentMethods}>({paymentPlan.paymentMethodsLabel})</Text>
-              <Text style={s.paymentBadge}>{paymentPlan.urgencyLabel}</Text>
-              <Text style={s.paymentTotal}>Total skema: {paymentPlan.totalLabel} / orang</Text>
-              <View style={s.paymentTable}>
-                <View style={s.paymentHeadRow}>
-                  <Text style={[s.paymentHeadCell, s.paymentStageCell]}>TAHAP</Text>
-                  <Text style={[s.paymentHeadCell, s.paymentDueCell]}>JATUH TEMPO</Text>
-                  <Text style={[s.paymentHeadCell, s.paymentAmountCell]}>NOMINAL</Text>
+        <View style={s.flowSection}>
+          <SectionTitle>Settlement & Pembayaran</SectionTitle>
+          {!!paymentPlan && paymentPlan.steps.length > 0 ? (
+            <>
+              <Text style={s.flowBodyText}>{paymentPlan.intro}</Text>
+              <Text style={[s.flowBodyText, { marginTop: 4 }]}>({paymentPlan.paymentMethodsLabel})</Text>
+              <Text style={[s.flowItineraryTitle, { marginTop: 4 }]}>{paymentPlan.urgencyLabel}</Text>
+              <Text style={[s.flowItineraryTitle, { marginTop: 4 }]}>Total skema: {paymentPlan.totalLabel} / orang</Text>
+              <View style={[s.flowTable, { marginTop: 8 }]}>
+                <View style={s.flowTableHead}>
+                  <Text style={[s.flowCellBold, s.flowPaymentStage]}>Tahap</Text>
+                  <Text style={[s.flowCellBold, s.flowPaymentDue]}>Jatuh Tempo</Text>
+                  <Text style={[s.flowCellBold, s.flowPaymentAmount]}>Nominal</Text>
                 </View>
                 {paymentPlan.steps.map((step) => (
-                  <View key={step.label} style={s.paymentRow}>
-                    <Text style={[s.paymentCell, s.paymentStageCell]}>{step.label}</Text>
-                    <Text style={[s.paymentCell, s.paymentDueCell]}>{step.dueDateLabel}</Text>
-                    <Text style={[s.paymentCell, s.paymentAmountCell]}>{step.amountLabel}</Text>
+                  <View key={step.label} style={s.flowTableRow}>
+                    <Text style={[s.flowCellBold, s.flowPaymentStage]}>{step.label}</Text>
+                    <Text style={[s.flowCell, s.flowPaymentDue]}>{step.dueDateLabel}</Text>
+                    <Text style={[s.flowCellBold, s.flowPaymentAmount]}>{step.amountLabel}</Text>
                   </View>
                 ))}
               </View>
-              {paymentPlan.finePrint ? <Text style={s.paymentFinePrint}>{paymentPlan.finePrint}</Text> : null}
-            </View>
+              {paymentPlan.finePrint ? <Text style={[s.flowBodyText, { marginTop: 6 }]}>{paymentPlan.finePrint}</Text> : null}
+            </>
+          ) : (
+            <Text style={s.flowBodyText}>
+              Jadwal pembayaran mengikuti invoice resmi Sundaf Trip dan konfirmasi administrasi terbaru.
+            </Text>
           )}
 
-          <View style={s.portraitFooterGrid}>
-            <View style={s.proposalFooterCol}>
-              <Text style={s.proposalSectionTitle}>Kontak</Text>
-              {company.whatsapp && (
-                <Text style={s.proposalSmallText}>
-                  WhatsApp: <Link src={waLink(company.whatsapp)} style={s.denseLink}>{company.whatsapp}</Link>
-                </Text>
-              )}
-              {company.phone && <Text style={s.proposalSmallText}>Telepon: {company.phone}</Text>}
-              {company.email && <Text style={s.proposalSmallText}>Email: {company.email}</Text>}
-              {company.website && <Text style={s.proposalSmallText}>Website: {company.website}</Text>}
-              {!!faqUrl && (
-                <Text style={s.proposalSmallText}>
-                  FAQ: <Link src={faqUrl} style={s.denseLink}>{faqDisplay}</Link>
-                </Text>
-              )}
-            </View>
-            <View style={s.proposalFooterCol}>
-              <Text style={s.proposalSectionTitle}>Ketentuan</Text>
-              <Text style={s.proposalSmallText}>
-                Harga dan jadwal dapat berubah mengikuti ketersediaan maskapai, kurs, cuaca, dan operasional.
-              </Text>
-            </View>
+          <Text style={[s.flowListHead, { marginTop: 12 }]}>Term Pembayaran</Text>
+          <View style={s.flowTwoCol}>
+            {paymentTermColumns.map((column, colIndex) => (
+              <View key={colIndex} style={s.flowCol}>
+                {column.map((item, i) => <FlowBullet key={i} text={item} />)}
+              </View>
+            ))}
           </View>
+        </View>
+
+        <View style={s.flowSection}>
+          <SectionTitle>Catatan Penting</SectionTitle>
+          <Text style={s.flowBodyText}>{notesCopy}</Text>
+        </View>
+
+        <View style={s.flowSection}>
+          <SectionTitle>Visa & Pendaftaran</SectionTitle>
+          <Text style={s.flowBodyText}>
+            {visaCopy} <Link src={VISA_URL} style={s.flowLink}>sundaftrip.com/visa</Link>
+          </Text>
+        </View>
+
+        <View style={s.flowSection}>
+          <SectionTitle>Kontak</SectionTitle>
+          {company.whatsapp && (
+            <Text style={s.flowBodyText}>
+              WhatsApp: <Link src={waLink(company.whatsapp)} style={s.flowLink}>{company.whatsapp}</Link>
+            </Text>
+          )}
+          {company.phone && <Text style={s.flowBodyText}>Telepon: {company.phone}</Text>}
+          {company.email && <Text style={s.flowBodyText}>Email: {company.email}</Text>}
+          {company.website && <Text style={s.flowBodyText}>Website: {company.website}</Text>}
+          {!!faqUrl && (
+            <Text style={s.flowBodyText}>
+              FAQ: <Link src={faqUrl} style={s.flowLink}>{faqDisplay}</Link>
+            </Text>
+          )}
+        </View>
+
+        <View style={s.flowSection}>
+          <SectionTitle>Profil Sundaf Trip</SectionTitle>
+          <Text style={s.flowBodyText}>{profileText(company)}</Text>
         </View>
       </Page>
     </Document>
