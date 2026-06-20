@@ -29,12 +29,22 @@ function hasError(value?: string | string[]) {
 }
 
 const catalogBackgroundSrc = "/b2b-russia-catalog-background.png?v=2a6be203";
+const catalogDateFormatter = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Asia/Jakarta",
+});
 const mathPaperGridStyle = {
   backgroundImage:
     "linear-gradient(rgba(37, 99, 235, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.12) 1px, transparent 1px), linear-gradient(rgba(37, 99, 235, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.07) 1px, transparent 1px)",
   backgroundSize: "96px 96px, 96px 96px, 24px 24px, 24px 24px",
   backgroundPosition: "-1px -1px",
 };
+
+function formatCatalogUpdatedAt(date: Date) {
+  return catalogDateFormatter.format(date);
+}
 
 function CatalogSketchBackground() {
   return (
@@ -113,7 +123,12 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
                 href={`/api/b2b-catalog/documents/${document.id}/download`}
                 className="flex min-h-16 items-center justify-between gap-4 px-4 py-4 text-gray-950 transition hover:bg-white sm:px-5"
               >
-                <span className="min-w-0 truncate text-sm font-medium sm:text-base">{document.title}</span>
+                <span className="min-w-0 space-y-1">
+                  <span className="block truncate text-sm font-medium sm:text-base">{document.title}</span>
+                  <span className="block text-[10px] font-normal leading-snug text-gray-500 sm:text-xs">
+                    Dokumen diperbarui tanggal {formatCatalogUpdatedAt(document.updatedAt)}
+                  </span>
+                </span>
                 <Download size={18} className="shrink-0 text-gray-400" />
               </a>
             ))}
