@@ -96,6 +96,48 @@ body {
   font-family: var(--site-font-family, var(--font-jost, ui-sans-serif, sans-serif));
 }
 
+/* Public website reading text: justify only long-form content.
+   UI controls, cards with numeric labels, nav, forms, tables, and explicit
+   alignment utilities keep their intended alignment. */
+main[data-theme]:not(.cns-main) :where(p, li, blockquote, dd, .whitespace-pre-line) {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+main[data-theme]:not(.cns-main) :where(
+  nav,
+  header,
+  footer,
+  form,
+  table,
+  summary,
+  button,
+  [role="button"],
+  [role="dialog"],
+  [class*="text-center"],
+  [class*="text-right"],
+  [class*="text-left"],
+  [class*="justify-center"],
+  [class*="justify-between"],
+  .not-prose
+) :where(p, li, blockquote, dd, .whitespace-pre-line),
+main[data-theme]:not(.cns-main) :where(
+  p,
+  li,
+  blockquote,
+  dd,
+  .whitespace-pre-line
+):is(
+  [class*="text-center"],
+  [class*="text-right"],
+  [class*="text-left"],
+  [class*="justify-center"],
+  [class*="justify-between"]
+) {
+  text-align: inherit;
+  hyphens: manual;
+}
+
 /* Admin input utilities */
 .input {
   width: 100%;
