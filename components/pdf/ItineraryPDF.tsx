@@ -213,15 +213,11 @@ const s = StyleSheet.create({
     color: CHARCOAL,
     lineHeight: BODY_LINE_HEIGHT,
   },
-  flowHighlightText: {
+  flowBriefText: {
     fontSize: BODY_FONT_SIZE,
     color: INK,
-    lineHeight: BODY_LINE_HEIGHT,
+    lineHeight: 1.28,
     marginTop: 3,
-  },
-  flowHighlightLabel: {
-    fontFamily: "Helvetica-Bold",
-    color: CHARCOAL,
   },
   flowInsight: {
     fontFamily: "Helvetica-Bold",
@@ -233,36 +229,33 @@ const s = StyleSheet.create({
   flowInsightGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    borderTopWidth: 0.55,
-    borderTopColor: DASH,
-    marginTop: 8,
-    paddingTop: 7,
+    marginTop: 4,
+    paddingTop: 2,
   },
   flowInsightItem: {
-    width: "50%",
+    width: "33.333%",
     flexDirection: "row",
     alignItems: "flex-start",
-    paddingRight: 10,
-    marginBottom: 7,
+    paddingRight: 6,
+    marginBottom: 3,
   },
   flowInsightIconBox: {
-    width: 18,
-    height: 18,
-    marginRight: 7,
-    marginTop: 1,
+    width: 8,
+    height: 8,
+    marginRight: 3,
+    marginTop: 0.8,
   },
   flowInsightText: { flex: 1 },
   flowInsightLabel: {
     fontFamily: "Helvetica-Bold",
-    fontSize: BODY_FONT_SIZE,
+    fontSize: 7,
     color: ICON_BLUE,
-    lineHeight: 1.18,
+    lineHeight: 1.12,
   },
   flowInsightValue: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: BODY_FONT_SIZE,
+    fontSize: 7,
     color: CHARCOAL,
-    lineHeight: 1.25,
+    lineHeight: 1.12,
   },
   flowTwoCol: { flexDirection: "row", gap: 18 },
   flowCol: { flex: 1 },
@@ -1123,10 +1116,10 @@ function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
       {insights.map((insight) => (
         <View key={`${insight.kind}-${insight.value}`} style={s.flowInsightItem}>
           <FlowInsightIcon icon={pdfInsightIcon(insight)} />
-          <View style={s.flowInsightText}>
-            <Text style={s.flowInsightLabel}>{insight.label}</Text>
-            <Text style={s.flowInsightValue}>{insight.value}</Text>
-          </View>
+          <Text style={s.flowInsightValue}>
+            <Text style={s.flowInsightLabel}>{insight.label}: </Text>
+            {insight.value}
+          </Text>
         </View>
       ))}
     </View>
@@ -1247,6 +1240,56 @@ function destinationHighlightsForDay(day: Pick<ItineraryDay, "title" | "descript
   return (compacted.length > 0 ? compacted : highlights).slice(0, 6);
 }
 
+function cleanBriefSegment(value: string) {
+  return cleanText(value)
+    .replace(/^["']+|["']+$/g, "")
+    .replace(/\s*[•|]\s*/g, ", ")
+    .replace(/\s+(?:-|--|\u2013|\u2014)\s+/g, " - ")
+    .replace(/\((opsional|optional)\)/gi, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function finishSentence(value: string) {
+  if (!value) return "";
+  return /[.!?]$/.test(value) ? value : `${value}.`;
+}
+
+function shortenAtWord(value: string, maxLength: number) {
+  const text = cleanBriefSegment(value);
+  if (text.length <= maxLength) return text;
+
+  const clipped = text.slice(0, maxLength).replace(/\s+\S*$/, "").replace(/[,\s]+$/g, "");
+  return clipped ? `${clipped}...` : `${text.slice(0, maxLength).trim()}...`;
+}
+
+function firstBriefSentence(value: string) {
+  const cleaned = cleanBriefSegment(value);
+  const sentences = cleaned.match(/[^.!?]+[.!?]?/g) ?? [];
+
+  return cleanBriefSegment(
+    sentences
+      .map((sentence) => sentence.trim())
+      .find((sentence) => sentence.length >= 18 && !/^makan\b|^bermalam\b/i.test(sentence))
+      ?? "",
+  );
+}
+
+function itineraryBriefForDay(
+  day: Pick<ItineraryDay, "title" | "description">,
+  highlights: string[],
+) {
+  const title = cleanBriefSegment(day.title);
+  const sentence = firstBriefSentence(day.description);
+  const compactSentence = sentence && !title.toLowerCase().includes(sentence.slice(0, 24).toLowerCase())
+    ? shortenAtWord(sentence, 145)
+    : "";
+
+  if (compactSentence) return finishSentence(compactSentence);
+  if (highlights.length > 0) return finishSentence(`Rute utama: ${highlights.join(", ")}`);
+  return "";
+}
+
 function BrandMark() {
   return (
     <View style={s.proposalBrand}>
@@ -1339,18 +1382,14 @@ export function ItineraryPDF({
             </View>
             {displayItinerary.map((day, idx) => {
               const highlights = destinationHighlightsForDay(day);
+              const brief = itineraryBriefForDay(day, highlights);
 
               return (
                 <View key={`${day.day}-${idx}`} style={s.flowTableRow} wrap={false}>
                   <Text style={[s.flowCellBold, s.flowDayCell]}>{day.day}</Text>
                   <View style={[s.flowCell, s.flowAgendaCell]}>
                     <Text style={s.flowItineraryTitle}>{cleanText(day.title)}</Text>
-                    {highlights.length > 0 && (
-                      <Text style={s.flowHighlightText}>
-                        <Text style={s.flowHighlightLabel}>Tujuan utama: </Text>
-                        {highlights.join(" - ")}
-                      </Text>
-                    )}
+                    {!!brief && <Text style={s.flowBriefText}>{brief}</Text>}
                     <FlowInsightGrid insights={day.insights} />
                   </View>
                   <Text style={[s.flowCellBold, s.flowLocationCell]}>{placeForDay(day)}</Text>
