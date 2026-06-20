@@ -29,6 +29,7 @@ export default async function EditReceiptPage({ params }: { params: Promise<{ id
           amount: receipt.amount,
           paymentMethod: receipt.paymentMethod ?? undefined,
           paymentDate: receipt.paymentDate?.toISOString().slice(0, 10) ?? undefined,
+          pricingBreakdown: receipt.pricingBreakdown ?? undefined,
           notes: receipt.notes ?? undefined,
           status: receipt.status,
         }}

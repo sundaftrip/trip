@@ -30,6 +30,7 @@ export default async function PrintReceiptPage({ params }: { params: Promise<{ i
       ...receipt,
       tripDate: receipt.tripDate ?? undefined,
       paymentDate: receipt.paymentDate ?? undefined,
+      pricingBreakdown: receipt.pricingBreakdown ?? undefined,
       notes: receipt.notes ?? undefined,
       customerPhone: receipt.customerPhone ?? undefined,
       customerEmail: receipt.customerEmail ?? undefined,

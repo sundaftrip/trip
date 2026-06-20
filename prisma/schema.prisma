@@ -184,6 +184,7 @@ model Receipt {
   amount        Float
   paymentMethod String?
   paymentDate   DateTime?
+  pricingBreakdown Json?
   notes         String?
   status        String    @default("UNPAID")
   createdAt     DateTime  @default(now())

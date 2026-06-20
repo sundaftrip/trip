@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
-import { pickInput, badNumber, RECEIPT_INPUT_FIELDS } from "@/lib/api-input";
+import { pickInput, badNumber, RECEIPT_INPUT_FIELDS, normalizeReceiptPricingBreakdownInput } from "@/lib/api-input";
 import { apiError } from "@/lib/api-error";
 import type { Prisma } from "@prisma/client";
 
@@ -33,6 +33,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   // Whitelist field — receiptNo & createdById tidak bisa diubah dari klien
   const data = pickInput(body, RECEIPT_INPUT_FIELDS);
+  const pricingBreakdown = normalizeReceiptPricingBreakdownInput(data.pricingBreakdown);
+  if (!pricingBreakdown.ok) {
+    return NextResponse.json({ error: pricingBreakdown.error }, { status: 422 });
+  }
+  data.pricingBreakdown = pricingBreakdown.value;
+  if (pricingBreakdown.total !== null) data.amount = pricingBreakdown.total;
 
   if (badNumber(data.amount))
     return NextResponse.json({ error: "Nominal harus berupa angka dan tidak boleh negatif." }, { status: 422 });

@@ -14,6 +14,7 @@ interface ReceiptData {
   amount: number;
   paymentMethod?: string;
   paymentDate?: string | Date;
+  pricingBreakdown?: unknown;
   notes?: string;
   status: string;
   createdAt: Date;
@@ -35,10 +36,51 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   UNPAID: { label: "BELUM BAYAR", color: "#b91c1c" },
 };
 
+type ReceiptPricingItem = { name: string; quantity: number; unitPrice: number; discount: number };
+type ReceiptPricingBreakdown = { items: ReceiptPricingItem[]; subtotal: number; globalDiscount: number; total: number };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function readNumber(value: unknown) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : 0;
+}
+
+function parsePricingBreakdown(value: unknown): ReceiptPricingBreakdown {
+  if (!isRecord(value) || !Array.isArray(value.items)) {
+    return { items: [], subtotal: 0, globalDiscount: 0, total: 0 };
+  }
+
+  const items = value.items.flatMap((item) => {
+    if (!isRecord(item)) return [];
+    const name = typeof item.name === "string" ? item.name.trim() : "";
+    const quantity = readNumber(item.quantity);
+    const unitPrice = readNumber(item.unitPrice);
+    const discount = readNumber(item.discount);
+    if (!name || quantity <= 0) return [];
+    return [{ name, quantity, unitPrice, discount }];
+  });
+  const subtotal = items.reduce(
+    (sum, item) => sum + Math.max(0, item.quantity * item.unitPrice - item.discount),
+    0
+  );
+  const globalDiscount = readNumber(value.globalDiscount);
+  const total = Math.max(0, subtotal - globalDiscount);
+
+  return { items, subtotal, globalDiscount, total };
+}
+
+function formatQuantity(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toLocaleString("id-ID");
+}
+
 export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptData; company: CompanyInfo }) {
   useEffect(() => { window.print(); }, []);
 
   const status = STATUS_LABEL[receipt.status] ?? { label: receipt.status, color: "#374151" };
+  const pricing = parsePricingBreakdown(receipt.pricingBreakdown);
   const noteItems = (receipt.notes ?? "")
     .split(/\r?\n/)
     .map((item) => item.trim())
@@ -56,24 +98,38 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
     <>
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, Helvetica, sans-serif; background: #f3f4f6; }
+        html, body { margin: 0; min-height: 100%; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f3f4f6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         @media print {
-          @page { size: A4; margin: 12mm 16mm; }
+          @page { size: A4; margin: 0; }
+          html, body {
+            width: 210mm !important;
+            min-height: 297mm !important;
+            background: white !important;
+          }
           .no-print { display: none !important; }
-          body { background: white !important; }
           body * { visibility: hidden !important; }
           #receipt-print, #receipt-print * { visibility: visible !important; }
           #receipt-print {
             position: fixed !important;
-            top: 0 !important; left: 0 !important;
-            width: 100% !important;
-            min-height: auto !important;
+            inset: 0 !important;
+            display: block !important;
+            width: 210mm !important;
+            min-height: 297mm !important;
             padding: 0 !important;
             background: white !important;
           }
           .receipt-card {
+            width: 210mm !important;
+            min-height: 297mm !important;
             max-width: 100% !important;
             box-shadow: none !important;
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+          .receipt-footer {
+            margin-top: auto !important;
           }
         }
       `}</style>
@@ -89,8 +145,8 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
         </button>
       </div>
 
-      <div id="receipt-print" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "32px 16px", background: "#f3f4f6" }}>
-        <div className="receipt-card" style={{ width: "100%", maxWidth: 640, background: "white", boxShadow: "0 4px 24px rgba(0,0,0,0.10)" }}>
+      <div id="receipt-print" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "24px 12px", background: "#f3f4f6" }}>
+        <div className="receipt-card" style={{ width: "100%", maxWidth: 760, background: "white", boxShadow: "0 4px 24px rgba(0,0,0,0.10)" }}>
 
           {/* Header */}
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 24, padding: "22px 34px 18px", borderBottom: "3px solid #2563eb" }}>
@@ -149,6 +205,55 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
             </div>
           </div>
 
+          {pricing.items.length > 0 && (
+            <div style={{ margin: "0 34px 18px" }}>
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, overflow: "hidden" }}>
+                <div style={{ background: "#f9fafb", padding: "9px 14px", borderBottom: "1px solid #e5e7eb" }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>Rincian Pembayaran</span>
+                </div>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
+                  <thead>
+                    <tr style={{ background: "#ffffff", borderBottom: "1px solid #e5e7eb" }}>
+                      <th style={{ padding: "8px 10px", color: "#6b7280", textAlign: "left", fontWeight: 700 }}>Item</th>
+                      <th style={{ padding: "8px 8px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 42 }}>Qty</th>
+                      <th style={{ padding: "8px 8px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 86 }}>Harga</th>
+                      <th style={{ padding: "8px 8px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 78 }}>Diskon</th>
+                      <th style={{ padding: "8px 10px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 90 }}>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pricing.items.map((item, index) => {
+                      const lineTotal = Math.max(0, item.quantity * item.unitPrice - item.discount);
+                      return (
+                        <tr key={`${item.name}-${index}`} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                          <td style={{ padding: "8px 10px", color: "#111827", fontWeight: 600, lineHeight: 1.35 }}>{item.name}</td>
+                          <td style={{ padding: "8px 8px", color: "#374151", textAlign: "right" }}>{formatQuantity(item.quantity)}</td>
+                          <td style={{ padding: "8px 8px", color: "#374151", textAlign: "right", whiteSpace: "nowrap" }}>{formatCurrency(item.unitPrice)}</td>
+                          <td style={{ padding: "8px 8px", color: item.discount > 0 ? "#b91c1c" : "#9ca3af", textAlign: "right", whiteSpace: "nowrap" }}>
+                            {item.discount > 0 ? `- ${formatCurrency(item.discount)}` : "-"}
+                          </td>
+                          <td style={{ padding: "8px 10px", color: "#111827", textAlign: "right", fontWeight: 700, whiteSpace: "nowrap" }}>{formatCurrency(lineTotal)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan={4} style={{ padding: "8px 10px", color: "#6b7280", textAlign: "right", fontWeight: 700 }}>Subtotal</td>
+                      <td style={{ padding: "8px 10px", color: "#111827", textAlign: "right", fontWeight: 800, whiteSpace: "nowrap" }}>{formatCurrency(pricing.subtotal)}</td>
+                    </tr>
+                    {pricing.globalDiscount > 0 && (
+                      <tr>
+                        <td colSpan={4} style={{ padding: "8px 10px", color: "#b91c1c", textAlign: "right", fontWeight: 700 }}>Diskon Tambahan</td>
+                        <td style={{ padding: "8px 10px", color: "#b91c1c", textAlign: "right", fontWeight: 800, whiteSpace: "nowrap" }}>- {formatCurrency(pricing.globalDiscount)}</td>
+                      </tr>
+                    )}
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* Total */}
           <div style={{ margin: "0 34px 20px" }}>
             <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderLeft: "4px solid #2563eb", borderRadius: 8, padding: "12px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
@@ -181,7 +286,7 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
           )}
 
           {/* Footer */}
-          <div style={{ borderTop: "1px solid #e5e7eb", padding: "12px 34px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+          <div className="receipt-footer" style={{ borderTop: "1px solid #e5e7eb", padding: "12px 34px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
             <span style={{ fontSize: 10, color: "#9ca3af" }}>Dokumen ini diterbitkan secara elektronik oleh {company.name ?? "-"}</span>
             <span style={{ fontSize: 10, color: "#9ca3af" }}>{company.website ?? ""}</span>
           </div>

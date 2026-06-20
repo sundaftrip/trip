@@ -74,6 +74,74 @@ export function normalizeTourPaymentPlanInput(value: unknown): { ok: true; value
   };
 }
 
+type ReceiptPricingItemInput = {
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  discount: number;
+};
+
+function nonNegativeNumber(value: unknown) {
+  if (value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
+function roundCurrency(value: number) {
+  return Math.round(value);
+}
+
+export function normalizeReceiptPricingBreakdownInput(
+  value: unknown
+): { ok: true; value: Record<string, unknown> | null; total: number | null } | { ok: false; error: string } {
+  if (value === undefined || value === null) return { ok: true, value: null, total: null };
+  if (!isRecord(value)) return { ok: false, error: "Rincian nominal receipt tidak valid." };
+  if (!Array.isArray(value.items)) return { ok: false, error: "Minimal satu baris rincian nominal wajib tersedia." };
+
+  const items: ReceiptPricingItemInput[] = [];
+  for (const item of value.items.slice(0, 40)) {
+    if (!isRecord(item)) continue;
+
+    const name = optionalText(item.name);
+    const quantity = nonNegativeNumber(item.quantity);
+    const unitPrice = nonNegativeNumber(item.unitPrice);
+    const discount = nonNegativeNumber(item.discount) ?? 0;
+
+    if (!name && quantity === null && unitPrice === null && discount === 0) continue;
+    if (!name || quantity === null || quantity <= 0 || unitPrice === null) {
+      return { ok: false, error: "Setiap baris rincian wajib punya nama, qty, dan harga satuan yang valid." };
+    }
+
+    items.push({
+      name,
+      quantity,
+      unitPrice: roundCurrency(unitPrice),
+      discount: roundCurrency(discount),
+    });
+  }
+
+  if (items.length === 0) return { ok: true, value: null, total: null };
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + Math.max(0, item.quantity * item.unitPrice - item.discount),
+    0
+  );
+  const globalDiscount = roundCurrency(nonNegativeNumber(value.globalDiscount) ?? 0);
+  const total = roundCurrency(Math.max(0, subtotal - globalDiscount));
+
+  return {
+    ok: true,
+    total,
+    value: {
+      version: 1,
+      items,
+      subtotal: roundCurrency(subtotal),
+      globalDiscount,
+      total,
+    },
+  };
+}
+
 // Nilai sah enum TourStatus di prisma/schema.prisma
 export const VALID_TOUR_STATUSES = ["ACTIVE", "DRAFT", "FULL", "CANCELLED"] as const;
 
@@ -99,5 +167,5 @@ export const BLOG_INPUT_FIELDS = [
 export const RECEIPT_INPUT_FIELDS = [
   "customerName", "customerPhone", "customerEmail",
   "tourId", "tourTitle", "tripDate", "pax", "amount",
-  "paymentMethod", "paymentDate", "notes", "status",
+  "paymentMethod", "paymentDate", "pricingBreakdown", "notes", "status",
 ] as const;
