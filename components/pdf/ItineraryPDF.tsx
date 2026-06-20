@@ -213,6 +213,16 @@ const s = StyleSheet.create({
     color: CHARCOAL,
     lineHeight: BODY_LINE_HEIGHT,
   },
+  flowHighlightText: {
+    fontSize: BODY_FONT_SIZE,
+    color: INK,
+    lineHeight: BODY_LINE_HEIGHT,
+    marginTop: 3,
+  },
+  flowHighlightLabel: {
+    fontFamily: "Helvetica-Bold",
+    color: CHARCOAL,
+  },
   flowInsight: {
     fontFamily: "Helvetica-Bold",
     fontSize: BODY_FONT_SIZE,
@@ -1123,6 +1133,120 @@ function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
   );
 }
 
+const DESTINATION_HIGHLIGHT_PATTERNS: Array<{ label: string; pattern: RegExp }> = [
+  { label: "Jakarta", pattern: /\b(?:jakarta|soekarno|indonesia)\b/i },
+  { label: "Metro Moscow", pattern: /\b(?:metro\s+moscow|metro\s+moskow)\b/i },
+  { label: "Red Square", pattern: /\b(?:red square|lapangan merah)\b/i },
+  { label: "Arbat", pattern: /\barbat\b/i },
+  { label: "Izmailovo", pattern: /\b(?:izmailovo|ismailovo)\b/i },
+  { label: "Moscow", pattern: /\b(?:moscow|moskow)\b/i },
+  { label: "Murmansk", pattern: /\bmurmansk\b/i },
+  { label: "Teriberka", pattern: /\bteriberka\b/i },
+  { label: "Icebreaker Lenin", pattern: /\b(?:icebreaker lenin|pemecah es lenin)\b/i },
+  { label: "Aurora Hunting", pattern: /\b(?:aurora hunting|aurora hunt|perburuan aurora|berburu aurora)\b/i },
+  { label: "Sami Village", pattern: /\b(?:sami village|desa sami)\b/i },
+  { label: "Husky & Reindeer", pattern: /\b(?:husky|reindeer|rusa kutub)\b/i },
+  { label: "Hermitage", pattern: /\bhermitage\b/i },
+  { label: "Nevsky Prospect", pattern: /\b(?:nevsky|nevski)\b/i },
+  { label: "Kazan Cathedral", pattern: /\bkazan\b/i },
+  { label: "St Isaac", pattern: /\b(?:st\.?\s*isaac|isaac)\b/i },
+  { label: "Church of Savior", pattern: /\b(?:savior|saviour|spilled blood)\b/i },
+  { label: "Masjid St Petersburg", pattern: /\b(?:mosque|masjid)\b/i },
+  { label: "Sapsan", pattern: /\bsapsan\b/i },
+  { label: "St Petersburg", pattern: /\b(?:st\.?\s*petersburg|saint petersburg|petersburg)\b/i },
+  { label: "Mausoleum Ho Chi Minh", pattern: /\b(?:mausoleum ho chi minh|ho chi minh mausoleum)\b/i },
+  { label: "Pagoda Satu Pilar", pattern: /\b(?:pagoda satu pilar|one pillar pagoda)\b/i },
+  { label: "Pagoda Tran Quoc", pattern: /\btran quoc\b/i },
+  { label: "Train Street", pattern: /\b(?:train street|jalan kereta)\b/i },
+  { label: "Old Quarter", pattern: /\b(?:old quarter|kawasan tua|36 jalan)\b/i },
+  { label: "Danau Hoan Kiem", pattern: /\bhoan kiem\b/i },
+  { label: "Pasar Dong Xuan", pattern: /\bdong xuan\b/i },
+  { label: "Hanoi", pattern: /\b(?:hanoi|ha noi)\b/i },
+  { label: "Sung Sot Cave", pattern: /\bsung sot\b/i },
+  { label: "Titop Island", pattern: /\b(?:titop|ti top)\b/i },
+  { label: "Luon Cave", pattern: /\bluon\b/i },
+  { label: "Teluk Halong", pattern: /\b(?:halong|ha long|teluk halong)\b/i },
+  { label: "Ninh Binh", pattern: /\bninh binh\b/i },
+  { label: "Hoa Lu", pattern: /\bhoa lu\b/i },
+  { label: "Tam Coc", pattern: /\btam coc\b/i },
+  { label: "Trang An", pattern: /\btrang an\b/i },
+  { label: "Sapa", pattern: /\b(?:sapa|sa pa)\b/i },
+  { label: "Fansipan", pattern: /\bfansipan\b/i },
+  { label: "Cat Cat Village", pattern: /\bcat cat\b/i },
+  { label: "Da Nang", pattern: /\b(?:da nang|danang)\b/i },
+  { label: "Ba Na Hills", pattern: /\bba na\b/i },
+  { label: "Golden Bridge", pattern: /\bgolden bridge\b/i },
+  { label: "Hoi An", pattern: /\b(?:hoi an|hoian)\b/i },
+  { label: "Cam Thanh Coconut Jungle", pattern: /\bcam thanh\b/i },
+  { label: "Hue", pattern: /\bhue\b/i },
+  { label: "Ho Chi Minh City", pattern: /\b(?:ho chi minh city|hcmc|saigon|sai gon|kota ho chi minh)\b/i },
+  { label: "Cu Chi Tunnels", pattern: /\bcu chi\b/i },
+  { label: "Mekong", pattern: /\bmekong\b/i },
+  { label: "Phu Quoc", pattern: /\bphu quoc\b/i },
+  { label: "Grand World", pattern: /\bgrand world\b/i },
+];
+
+const BROAD_DESTINATION_GROUPS: Array<{ city: string; details: string[] }> = [
+  { city: "Moscow", details: ["Metro Moscow", "Red Square", "Arbat", "Izmailovo"] },
+  { city: "St Petersburg", details: ["Hermitage", "Nevsky Prospect", "Kazan Cathedral", "St Isaac", "Church of Savior", "Masjid St Petersburg"] },
+  { city: "Hanoi", details: ["Mausoleum Ho Chi Minh", "Pagoda Satu Pilar", "Pagoda Tran Quoc", "Train Street", "Old Quarter", "Danau Hoan Kiem", "Pasar Dong Xuan"] },
+  { city: "Teluk Halong", details: ["Sung Sot Cave", "Titop Island", "Luon Cave"] },
+  { city: "Da Nang", details: ["Ba Na Hills", "Golden Bridge"] },
+  { city: "Hoi An", details: ["Cam Thanh Coconut Jungle"] },
+];
+
+function pushUniqueHighlight(items: string[], value: string) {
+  const cleaned = cleanText(value)
+    .replace(/\([^)]*(?:sarapan|makan|breakfast|lunch|dinner|brunch|b|l|d)[^)]*\)/gi, "")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/^(?:tur kota|city tour|tur privat|private tour|tur sore|tur pagi|full day|sehari penuh)\s+/i, "")
+    .replace(/^(?:bus shuttle|shuttle|transfer(?: privat)?|penerbangan|flight|kereta cepat|train|tiba|arrive)\s+(?:ke|to|di|in)?\s*/i, "")
+    .replace(/^(?:bermalam|overnight)\s+(?:di|in)?\s*/i, "")
+    .replace(/\s+(?:transfer|check-?in|check\s*out|hotel|bandara|airport|tanpa|with|dengan)\b.*$/i, "")
+    .replace(/^(?:ke|to|di|in)\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^moskow$/i, "Moscow")
+    .replace(/^ha noi$/i, "Hanoi")
+    .replace(/^danang$/i, "Da Nang")
+    .replace(/^hoian$/i, "Hoi An");
+
+  if (!cleaned || cleaned.length < 3 || cleaned.length > 42) return;
+  if (/^(?:makan|sarapan|breakfast|lunch|dinner|brunch|check|hotel|waktu bebas|free time)$/i.test(cleaned)) return;
+  if (!items.some((item) => item.toLowerCase() === cleaned.toLowerCase())) items.push(cleaned);
+}
+
+function destinationHighlightsForDay(day: Pick<ItineraryDay, "title" | "description">) {
+  const source = cleanText(`${day.title} ${day.description}`);
+  const highlights: string[] = [];
+
+  DESTINATION_HIGHLIGHT_PATTERNS
+    .map(({ label, pattern }) => {
+      const match = source.match(pattern);
+      return match?.index === undefined ? null : { label, index: match.index };
+    })
+    .filter((item): item is { label: string; index: number } => Boolean(item))
+    .sort((a, b) => a.index - b.index)
+    .forEach(({ label }) => pushUniqueHighlight(highlights, label));
+
+  if (highlights.length === 0) {
+    cleanText(day.title)
+      .replace(/\([^)]*\)/g, "")
+      .split(/\s+(?:-|\u2013|\u2014)\s+|\/|\||,|\u2022/g)
+      .forEach((part) => pushUniqueHighlight(highlights, part));
+  }
+
+  if (highlights.length === 0) pushUniqueHighlight(highlights, cleanText(day.title));
+  if (highlights.length === 0) pushUniqueHighlight(highlights, placeForDay(day));
+
+  const compacted = highlights.filter((item) => {
+    const group = BROAD_DESTINATION_GROUPS.find((entry) => entry.city === item);
+    return !group || !group.details.some((detail) => highlights.includes(detail));
+  });
+
+  return (compacted.length > 0 ? compacted : highlights).slice(0, 6);
+}
+
 function BrandMark() {
   return (
     <View style={s.proposalBrand}>
@@ -1132,7 +1256,7 @@ function BrandMark() {
   );
 }
 
-function placeForDay(day: ItineraryDay) {
+function placeForDay(day: Pick<ItineraryDay, "title" | "description">) {
   const text = `${day.title} ${day.description}`.toLowerCase();
   if (/ninh binh|hoa lu|tam coc|trang an/.test(text)) return "Ninh Binh";
   if (/halong|ha long|teluk halong|tuan chau|bo hon|sung sot|titop|luon/.test(text)) return "Teluk Halong";
@@ -1214,14 +1338,19 @@ export function ItineraryPDF({
               <Text style={[s.flowCellBold, s.flowLocationCell]}>Lokasi</Text>
             </View>
             {displayItinerary.map((day, idx) => {
-              const description = cleanText(day.description);
+              const highlights = destinationHighlightsForDay(day);
 
               return (
                 <View key={`${day.day}-${idx}`} style={s.flowTableRow} wrap={false}>
                   <Text style={[s.flowCellBold, s.flowDayCell]}>{day.day}</Text>
                   <View style={[s.flowCell, s.flowAgendaCell]}>
                     <Text style={s.flowItineraryTitle}>{cleanText(day.title)}</Text>
-                    {!!description && <Text style={s.flowBodyText}>{description}</Text>}
+                    {highlights.length > 0 && (
+                      <Text style={s.flowHighlightText}>
+                        <Text style={s.flowHighlightLabel}>Tujuan utama: </Text>
+                        {highlights.join(" - ")}
+                      </Text>
+                    )}
                     <FlowInsightGrid insights={day.insights} />
                   </View>
                   <Text style={[s.flowCellBold, s.flowLocationCell]}>{placeForDay(day)}</Text>
@@ -1230,7 +1359,7 @@ export function ItineraryPDF({
             })}
           </View>
           <Text style={[s.flowBodyText, { marginTop: 7 }]}>
-            *Rencana perjalanan dapat berubah mengikuti kondisi cuaca dan operasional di lapangan.
+            *Detail aktivitas mengikuti itinerary website dan dapat berubah sesuai kondisi cuaca serta operasional di lapangan.
           </Text>
         </View>
 
