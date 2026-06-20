@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,7 +30,7 @@ export default function LoginPage() {
       setError("Email atau password salah");
       setLoading(false);
     } else {
-      router.push("/admin");
+      window.location.assign("/admin");
     }
   }
 
