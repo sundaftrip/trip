@@ -967,7 +967,8 @@ function FixedChrome({
     <>
       <View fixed style={s.flowHeader}>
         {company.logo ? (
-          <Image src={company.logo} style={s.flowLogo} alt="Sundaf Trip" />
+          // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image does not support alt; the surrounding PDF header carries the brand text.
+          <Image src={company.logo} style={s.flowLogo} />
         ) : (
           <BrandMark />
         )}
