@@ -128,13 +128,13 @@ function ItineraryInsightGrid({
           </span>
           <span className="min-w-0">
             <span
-              className="block text-[11px] font-semibold leading-none text-gray-400"
+              className="block text-[9px] font-semibold leading-none text-gray-400 sm:text-[11px]"
               style={isOutlined ? { color: tSub } : undefined}
             >
               {insight.label}
             </span>
             <span
-              className="mt-1 block break-words text-sm font-semibold leading-snug text-gray-900 dark:text-white"
+              className="mt-1 block break-words text-[11px] font-semibold leading-snug text-gray-900 dark:text-white sm:text-sm"
               style={isOutlined ? { color: tText } : undefined}
             >
               {insight.value}
@@ -669,7 +669,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         <div key={`${item.day}-${idx}`} className="flex gap-5">
                           <div className="flex flex-col items-center">
                             <div
-                              className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-xs font-bold flex items-center justify-center shrink-0"
+                              className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-[10px] font-bold flex items-center justify-center shrink-0 sm:text-xs"
                               style={{ borderColor: "var(--at-border)", color: "var(--at-text)" }}
                             >
                               {String(item.day).padStart(2, "0")}
@@ -679,11 +679,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             )}
                           </div>
                           <div className="pb-8 pt-1.5 flex-1">
-                            <h3 className="font-semibold text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
+                            <h3 className="text-[11px] font-semibold sm:text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
                             {item.description && (
                               <ItineraryRichText
                                 text={item.description}
-                                className="mt-2 space-y-3 text-sm leading-relaxed"
+                                className="mt-2 space-y-3 text-[11px] leading-relaxed sm:text-sm"
                                 style={{ color: "var(--at-subtext)" }}
                                 strongStyle={{ color: "var(--at-text)" }}
                                 markStyle={itineraryMarkStyle}
@@ -707,13 +707,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     <div className="space-y-3">
                       {itinerary.map((item, idx) => (
                         <div key={`${item.day}-${idx}`} className={`flex gap-4 ${pfx}-card p-4`}>
-                          <span className={`${pfx}-pill shrink-0`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
+                          <span className={`${pfx}-pill shrink-0 text-[10px] sm:text-xs`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-black" style={{ color: tText }}>{item.title}</h3>
+                            <h3 className="text-[13px] font-black sm:text-base" style={{ color: tText }}>{item.title}</h3>
                             {item.description && (
                               <ItineraryRichText
                                 text={item.description}
-                                className="mt-2 space-y-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                                className="mt-2 space-y-3 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400 sm:text-sm"
                                 style={isOutlined ? { color: tSub } : undefined}
                                 strongStyle={itineraryStrongStyle}
                                 markStyle={itineraryMarkStyle}
@@ -738,17 +738,17 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                       {itinerary.map((item, idx) => (
                         <div key={`${item.day}-${idx}`} className="flex gap-4">
                           <div className="flex flex-col items-center">
-                            <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center shrink-0">
+                            <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-[10px] font-bold flex items-center justify-center shrink-0 sm:text-xs">
                               {item.day}
                             </span>
                             <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
                           </div>
                           <div className="min-w-0 flex-1 pb-6">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+                            <h3 className="text-[13px] font-semibold text-gray-900 dark:text-white sm:text-base">{item.title}</h3>
                             {item.description && (
                               <ItineraryRichText
                                 text={item.description}
-                                className="mt-2 space-y-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                                className="mt-2 space-y-3 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400 sm:text-sm"
                                 markStyle={itineraryMarkStyle}
                               />
                             )}
