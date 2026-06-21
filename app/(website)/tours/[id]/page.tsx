@@ -146,7 +146,7 @@ function ItineraryInsightGrid({
   return (
     <>
       <div
-        className={`mt-3 flex items-center justify-end gap-2 overflow-x-auto whitespace-nowrap border-t pt-3 sm:hidden ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+        className={`mt-3 flex min-w-0 max-w-full items-center justify-end gap-2 overflow-x-auto whitespace-nowrap border-t pt-3 sm:hidden ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}
       >
         {insights.map((insight) => (
@@ -294,7 +294,7 @@ function ItineraryRichText({
   return (
     <div className={className} style={style}>
       {paragraphs.map((paragraph, index) => (
-        <p key={`${paragraph.slice(0, 32)}-${index}`}>
+        <p key={`${paragraph.slice(0, 32)}-${index}`} className="break-words [overflow-wrap:anywhere]">
           {renderItineraryInline(paragraph, { strongStyle, markStyle })}
         </p>
       ))}
@@ -725,8 +725,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <ItineraryFold count={itinerary.length} accent="var(--at-text)">
                     <div className="space-y-0">
                       {itinerary.map((item, idx) => (
-                        <div key={`${item.day}-${idx}`} className="flex gap-5">
-                          <div className="flex flex-col items-center">
+                        <div key={`${item.day}-${idx}`} className="flex min-w-0 gap-4 sm:gap-5">
+                          <div className="flex shrink-0 flex-col items-center">
                             <div
                               className="w-9 h-9 rounded-full border bg-white dark:bg-[#111] text-[10px] font-bold flex items-center justify-center shrink-0 sm:text-xs"
                               style={{ borderColor: "var(--at-border)", color: "var(--at-text)" }}
@@ -737,8 +737,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                               <div className="w-px flex-1 bg-black/10 dark:bg-white/10 my-1 min-h-8" />
                             )}
                           </div>
-                          <div className="pb-8 pt-1.5 flex-1">
-                            <h3 className="text-[11px] font-semibold sm:text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
+                          <div className="min-w-0 flex-1 pb-8 pt-1.5">
+                            <h3 className="break-words text-[12px] font-semibold leading-snug [overflow-wrap:anywhere] sm:text-sm" style={{ color: "var(--at-text)" }}>{item.title}</h3>
                             {item.description && (
                               <ItineraryRichText
                                 text={item.description}
@@ -765,10 +765,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <ItineraryFold count={itinerary.length} accent="var(--site-accent)">
                     <div className="space-y-3">
                       {itinerary.map((item, idx) => (
-                        <div key={`${item.day}-${idx}`} className={`flex gap-4 ${pfx}-card p-4`}>
+                        <div key={`${item.day}-${idx}`} className={`flex min-w-0 gap-3 ${pfx}-card p-4 sm:gap-4`}>
                           <span className={`${pfx}-pill shrink-0 text-[10px] sm:text-xs`} style={{ background: tMint, color: tText }}>Hari {item.day}</span>
                           <div className="min-w-0 flex-1">
-                            <h3 className="text-[13px] font-black sm:text-base" style={{ color: tText }}>{item.title}</h3>
+                            <h3 className="break-words text-[14px] font-black leading-snug [overflow-wrap:anywhere] sm:text-base" style={{ color: tText }}>{item.title}</h3>
                             {item.description && (
                               <ItineraryRichText
                                 text={item.description}
@@ -795,15 +795,15 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <ItineraryFold count={itinerary.length}>
                     <div className="space-y-3">
                       {itinerary.map((item, idx) => (
-                        <div key={`${item.day}-${idx}`} className="flex gap-4">
-                          <div className="flex flex-col items-center">
+                        <div key={`${item.day}-${idx}`} className="flex min-w-0 gap-4">
+                          <div className="flex shrink-0 flex-col items-center">
                             <span className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-[10px] font-bold flex items-center justify-center shrink-0 sm:text-xs">
                               {item.day}
                             </span>
                             <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2" />
                           </div>
                           <div className="min-w-0 flex-1 pb-6">
-                            <h3 className="text-[13px] font-semibold text-gray-900 dark:text-white sm:text-base">{item.title}</h3>
+                            <h3 className="break-words text-[14px] font-semibold leading-snug text-gray-900 dark:text-white [overflow-wrap:anywhere] sm:text-base">{item.title}</h3>
                             {item.description && (
                               <ItineraryRichText
                                 text={item.description}
