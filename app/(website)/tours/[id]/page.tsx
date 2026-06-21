@@ -20,7 +20,7 @@ import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
-import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
+import { buildItineraryDisplay, type ItineraryDisplayDay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 
@@ -85,17 +85,47 @@ function buildTourMetadataDescription(tour: {
   );
 }
 
-function itineraryInsightIcon(insight: ItineraryInsight) {
-  if (insight.kind === "meals") return <Utensils size={16} />;
-  if (insight.kind === "stay") return <Hotel size={16} />;
-  if (insight.kind === "time") return <Clock size={16} />;
-  if (insight.kind === "distance" || insight.kind === "ascent") return <Route size={16} />;
+function itineraryInsightIcon(insight: ItineraryInsight, size = 16) {
+  if (insight.kind === "meals") return <Utensils size={size} />;
+  if (insight.kind === "stay") return <Hotel size={size} />;
+  if (insight.kind === "time") return <Clock size={size} />;
+  if (insight.kind === "distance" || insight.kind === "ascent") return <Route size={size} />;
 
-  if (insight.value.includes("Penerbangan")) return <Plane size={16} />;
-  if (insight.value.includes("Kereta")) return <TrainFront size={16} />;
-  if (insight.value.includes("Bus")) return <Bus size={16} />;
-  if (insight.value.includes("Kapal")) return <Ship size={16} />;
-  return <Car size={16} />;
+  if (insight.value.includes("Penerbangan")) return <Plane size={size} />;
+  if (insight.value.includes("Kereta")) return <TrainFront size={size} />;
+  if (insight.value.includes("Bus")) return <Bus size={size} />;
+  if (insight.value.includes("Kapal")) return <Ship size={size} />;
+  return <Car size={size} />;
+}
+
+function inferImpliedStayValue(source: string) {
+  const hasYurtStay = /\b(?:yurt|yurta|camp|tenda)\b/i.test(source)
+    && /\b(?:check[-\s]?in|menginap|bermalam|overnight)\b/i.test(source);
+  if (hasYurtStay) return "Yurt Camp";
+
+  const hasHotelCheckIn = (
+    /\b(?:check[-\s]?in|menginap|bermalam|overnight)\b[^.\n]{0,90}\b(?:hotel|penginapan|akomodasi)\b/i.test(source)
+    || /\b(?:hotel|penginapan|akomodasi)\b[^.\n]{0,90}\b(?:check[-\s]?in|menginap|bermalam|overnight)\b/i.test(source)
+  );
+  if (hasHotelCheckIn) return "Hotel";
+
+  const hasHotelReturn = /\b(?:kembali|diantar|transfer|menuju)\s+(?:ke\s+|menuju\s+)?(?:hotel|penginapan)\b[^.\n]{0,90}\b(?:istirahat|rest|free time)\b/i.test(source);
+  if (hasHotelReturn) return "Hotel";
+
+  if (/\b(?:menginap|bermalam|overnight)\b/i.test(source)) return "Menginap";
+  return null;
+}
+
+function addImpliedStayInsight(day: ItineraryDisplayDay, source: string): ItineraryDisplayDay {
+  if (day.insights.some((insight) => insight.kind === "stay")) return day;
+
+  const stayValue = inferImpliedStayValue(source);
+  if (!stayValue) return day;
+
+  return {
+    ...day,
+    insights: [...day.insights, { kind: "stay", label: "Bermalam", value: stayValue }],
+  };
 }
 
 function ItineraryInsightGrid({
@@ -114,35 +144,58 @@ function ItineraryInsightGrid({
   if (insights.length === 0) return null;
 
   return (
-    <div
-      className={`mt-4 grid grid-cols-1 gap-x-5 gap-y-3 border-t pt-4 sm:grid-cols-2 ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
-      style={isOutlined ? { borderColor: tBdr } : undefined}
-    >
-      {insights.map((insight) => (
-        <div key={`${insight.kind}-${insight.value}`} className="flex min-w-0 items-start gap-2.5">
+    <>
+      <div
+        className={`mt-3 flex items-center justify-end gap-2 overflow-x-auto whitespace-nowrap border-t pt-3 sm:hidden ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+        style={isOutlined ? { borderColor: tBdr } : undefined}
+      >
+        {insights.map((insight) => (
           <span
-            className={`mt-0.5 shrink-0 ${isOutlined ? "" : "text-blue-600 dark:text-blue-400"}`}
-            style={isOutlined ? { color: "var(--site-accent)" } : undefined}
+            key={`${insight.kind}-${insight.value}-mobile`}
+            className={`inline-flex shrink-0 items-center gap-1.5 text-[10px] font-semibold leading-none ${isOutlined ? "" : "text-gray-700 dark:text-gray-200"}`}
+            style={isOutlined ? { color: tText } : undefined}
           >
-            {itineraryInsightIcon(insight)}
-          </span>
-          <span className="min-w-0">
             <span
-              className="block text-[9px] font-semibold leading-none text-gray-400 sm:text-[11px]"
-              style={isOutlined ? { color: tSub } : undefined}
+              className={`shrink-0 ${isOutlined ? "" : "text-blue-600 dark:text-blue-400"}`}
+              style={isOutlined ? { color: "var(--site-accent)" } : undefined}
             >
-              {insight.label}
+              {itineraryInsightIcon(insight, 12)}
             </span>
-            <span
-              className="mt-1 block break-words text-[11px] font-semibold leading-snug text-gray-900 dark:text-white sm:text-sm"
-              style={isOutlined ? { color: tText } : undefined}
-            >
-              {insight.value}
-            </span>
+            {insight.value}
           </span>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+
+      <div
+        className={`mt-4 hidden grid-cols-1 gap-x-5 gap-y-3 border-t pt-4 sm:grid sm:grid-cols-2 ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+        style={isOutlined ? { borderColor: tBdr } : undefined}
+      >
+        {insights.map((insight) => (
+          <div key={`${insight.kind}-${insight.value}`} className="flex min-w-0 items-start gap-2.5">
+            <span
+              className={`mt-0.5 shrink-0 ${isOutlined ? "" : "text-blue-600 dark:text-blue-400"}`}
+              style={isOutlined ? { color: "var(--site-accent)" } : undefined}
+            >
+              {itineraryInsightIcon(insight)}
+            </span>
+            <span className="min-w-0">
+              <span
+                className="block text-[11px] font-semibold leading-none text-gray-400"
+                style={isOutlined ? { color: tSub } : undefined}
+              >
+                {insight.label}
+              </span>
+              <span
+                className="mt-1 block break-words text-sm font-semibold leading-snug text-gray-900 dark:text-white"
+                style={isOutlined ? { color: tText } : undefined}
+              >
+                {insight.value}
+              </span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -403,11 +456,17 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const displayBadge = localizePdfText(tour.badge);
   const displayInclusions = tour.inclusions.map((item) => localizePdfText(item) ?? item);
   const displayExclusions = tour.exclusions.map((item) => localizePdfText(item) ?? item);
-  const itinerary = rawItinerary.map((item) => ({
-    ...item,
-    title: localizePdfText(item.title) ?? item.title,
-    description: localizePdfText(item.description) ?? item.description,
-  })).map(buildItineraryDisplay);
+  const itinerary = rawItinerary.map((item) => {
+    const localizedItem = {
+      ...item,
+      title: localizePdfText(item.title) ?? item.title,
+      description: localizePdfText(item.description) ?? item.description,
+    };
+    return addImpliedStayInsight(
+      buildItineraryDisplay(localizedItem),
+      `${localizedItem.title}\n${localizedItem.description}`,
+    );
+  });
   const addOns = rawAddOns.map((item) => ({
     ...item,
     name: localizePdfText(item.name) ?? item.name,
