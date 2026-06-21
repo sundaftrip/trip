@@ -86,6 +86,7 @@ function inferMeals(source: string): string | null {
 
 function inferTransport(source: string): string | null {
   const textForTrain = source.replace(/\btrain\s+street\b/gi, "");
+  const textForWaterTransport = source.replace(/\bbanana\s+boat(?:\s+aurora)?\b/gi, "");
   const transports: string[] = [];
 
   if (/\b(penerbangan|flight|flights|fly|airport|bandara|pesawat)\b/i.test(source)) {
@@ -97,7 +98,7 @@ function inferTransport(source: string): string | null {
   if (/\b(bus|shuttle|coach)\b/i.test(source)) {
     pushUnique(transports, "Bus");
   }
-  if (/\b(cruise|kapal|boat|ferry|speed\s*boat|speedboat|perahu|sampan)\b/i.test(source)) {
+  if (/\b(cruise|kapal|boat|ferry|speed\s*boat|speedboat|perahu|sampan)\b/i.test(textForWaterTransport)) {
     pushUnique(transports, "Kapal/cruise");
   }
   return transports.length > 0 ? transports.join(", ") : null;
