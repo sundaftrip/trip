@@ -146,13 +146,13 @@ function ItineraryInsightGrid({
   return (
     <>
       <div
-        className={`mt-3 flex min-w-0 max-w-full items-center justify-end gap-2 overflow-x-auto whitespace-nowrap border-t pt-3 sm:hidden ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+        className={`mt-3 flex min-w-0 max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-1.5 border-t pt-3 sm:hidden ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}
       >
         {insights.map((insight) => (
           <span
             key={`${insight.kind}-${insight.value}-mobile`}
-            className={`inline-flex shrink-0 items-center gap-1.5 text-[10px] font-semibold leading-none ${isOutlined ? "" : "text-gray-700 dark:text-gray-200"}`}
+            className={`inline-flex min-w-0 max-w-full items-center justify-end gap-1.5 text-right text-[10px] font-semibold leading-tight ${isOutlined ? "" : "text-gray-700 dark:text-gray-200"}`}
             style={isOutlined ? { color: tText } : undefined}
           >
             <span
@@ -161,7 +161,7 @@ function ItineraryInsightGrid({
             >
               {itineraryInsightIcon(insight, 12)}
             </span>
-            {insight.value}
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{insight.value}</span>
           </span>
         ))}
       </div>
