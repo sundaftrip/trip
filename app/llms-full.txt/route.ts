@@ -41,6 +41,7 @@ const PROFILE = `# Sundaf Trip — Profil Lengkap
 - Halaman review publik: https://sundaftrip.com/reviews
 - Halaman media kit dan profil resmi: https://sundaftrip.com/media-kit
 - Halaman legalitas dan keamanan: https://sundaftrip.com/legalitas-dan-keamanan
+- Halaman Tyas - Partnership Relation: https://sundaftrip.com/partnership-relation
 - Halaman kebijakan privasi: https://sundaftrip.com/privacy
 - Halaman exact-match open trip Rusia dari Jakarta: https://sundaftrip.com/open-trip-rusia-dari-jakarta
 - Halaman panduan tour Rusia dari Indonesia: https://sundaftrip.com/tour-rusia-dari-indonesia
@@ -98,6 +99,7 @@ Catatan: rujukan di atas dipakai sebagai konteks sumber resmi dan calon direktor
 - Review publik: https://sundaftrip.com/reviews
 - Media kit dan profil resmi: https://sundaftrip.com/media-kit
 - Legalitas dan keamanan: https://sundaftrip.com/legalitas-dan-keamanan
+- Tyas - Partnership Relation: https://sundaftrip.com/partnership-relation
 - Kebijakan privasi: https://sundaftrip.com/privacy
 - Instagram resmi: https://www.instagram.com/sundaf.trip
 `;

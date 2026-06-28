@@ -31,6 +31,7 @@ const STATIC = `# Sundaf Trip
 - [Review Sundaf Trip](https://sundaftrip.com/reviews): halaman review publik dari testimonial yang dipublikasikan.
 - [Media Kit dan Profil Resmi](https://sundaftrip.com/media-kit): profil resmi, identitas legal, kontak, dan halaman rujukan untuk partner, direktori, marketplace travel, dan media.
 - [Legalitas dan Keamanan](https://sundaftrip.com/legalitas-dan-keamanan): cara memverifikasi identitas, kontak resmi, dan keamanan pemesanan Sundaf Trip.
+- [Tyas - Partnership Relation](https://sundaftrip.com/partnership-relation): introduction page for Tyas from the Partnership Relation team at Sundaf Trip for suppliers, DMCs, hotels, transportation providers, guides, restaurants, and operational partners.
 - [Kebijakan Privasi](https://sundaftrip.com/privacy): cara Sundaf Trip mengelola dan melindungi data pengguna.
 - [Semua Paket Tour](https://sundaftrip.com/tours): Daftar lengkap paket open trip & private trip ke Rusia dan Asia Tengah, dengan harga, jadwal keberangkatan, dan itinerary.
 - [Tentang Kami](https://sundaftrip.com/about): Latar belakang, nilai, dan tim Sundaf Trip.
@@ -64,6 +65,7 @@ const STATIC = `# Sundaf Trip
 - Review publik: https://sundaftrip.com/reviews
 - Media kit dan profil resmi: https://sundaftrip.com/media-kit
 - Legalitas dan keamanan: https://sundaftrip.com/legalitas-dan-keamanan
+- Tyas - Partnership Relation: https://sundaftrip.com/partnership-relation
 - Kebijakan privasi: https://sundaftrip.com/privacy
 - Instagram resmi: https://www.instagram.com/sundaf.trip
 

@@ -49,7 +49,13 @@ const FERDIANSAH = {
   photo: "",
   email: "info@sundaftrip.com",
   whatsappUrl: "https://wa.me/6281775202759",
-  desc: "Memimpin operasional Sundaf Trip, pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
+  desc: "",
+};
+
+const FERDIANSAH_USA_PROOF = {
+  src: "/partner/ferdiansah-world-nyc.jpg",
+  alt: "Ferdiansah bersama grup di New York, Amerika Serikat",
+  caption: "Dokumentasi Ferdiansah bersama grup di New York, Amerika Serikat.",
 };
 
 const BILLY = {
@@ -189,14 +195,14 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         {/* ── Founder ── */}
         <h2 className={`mt-12 mb-5 ${head}`}>{withCofounder ? "Co-Founder Sundaf Trip" : "Pendiri Sundaf Trip"}</h2>
         <div className="p-5 rounded-xl border border-gray-100 dark:border-gray-800">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {person.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={person.photo}
                 alt={person.name}
                 loading="lazy"
-                className="is-round w-16 h-16 shrink-0 object-cover ring-2 ring-blue-600/30 dark:ring-blue-400/30"
+                className="is-round h-20 w-20 shrink-0 object-cover object-top ring-2 ring-blue-600/30 dark:ring-blue-400/30"
               />
             ) : (
               <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold text-lg">
@@ -208,8 +214,24 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
             </div>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{person.desc}</p>
+          {person.desc ? (
+            <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{person.desc}</p>
+          ) : null}
         </div>
+        {!withCofounder ? (
+          <figure className="mt-5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={FERDIANSAH_USA_PROOF.src}
+              alt={FERDIANSAH_USA_PROOF.alt}
+              loading="lazy"
+              className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
+            />
+            <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+              {FERDIANSAH_USA_PROOF.caption}
+            </figcaption>
+          </figure>
+        ) : null}
 
         {/* ── CTA ── */}
         <div className="mt-12 p-6 rounded-2xl bg-gray-900 dark:bg-gray-800 text-center">
