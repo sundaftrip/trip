@@ -22,7 +22,7 @@ const OUTPUT_FORMAT_BLOCK = `FORMAT OUTPUT (ikuti persis, jangan tambah teks lai
 ---BODY---
 <p>isi artikel HTML di sini</p>
 
-PENTING untuk imageKeywords: isi dengan NAMA TEMPAT dan OBJEK SPESIFIK yang ada di artikel. Contoh bagus: "moscow kremlin russia winter", "tokyo shibuya japan night street", "bali rice terrace ubud indonesia". JANGAN tulis kata generik seperti travel, passport, visa, city, culture, adventure, food.`;
+PENTING untuk imageKeywords: isi dengan NAMA TEMPAT dan OBJEK SPESIFIK yang memang muncul di bahan sumber atau judul sumber. Contoh bagus: "moscow kremlin russia winter", "tokyo shibuya japan night street", "bali rice terrace ubud indonesia". JANGAN tulis kata generik seperti travel, passport, visa, city, culture, adventure, food. Jika sumber tidak punya tempat/objek visual spesifik, isi imageKeywords dengan string kosong.`;
 
 const HIGHLIGHT_RULE = `HIGHLIGHT: Gunakan tag <mark> untuk menandai 4-6 kalimat atau frasa yang paling penting, mengejutkan, atau wajib diingat pembaca. Jangan lebihkan — hanya kalimat yang benar-benar krusial.`;
 

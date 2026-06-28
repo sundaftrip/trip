@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
 import { assessGeneratedContent, qualityErrorMessage } from "@/lib/content-quality";
 import { getStyle } from "@/lib/scraper-styles";
+import { chooseSourceGroundedImageKeywords, injectImagesIntoBody } from "@/lib/scraper-images";
 
 const DESTINATIONS = ["russia", "kazakhstan", "kyrgyzstan", "uzbekistan", "tajikistan"];
 const SUBREDDITS = ["travel", "solotravel", "backpacking"];
@@ -86,24 +87,6 @@ async function fetchPexelsImages(keywords: string, count = 5): Promise<{ url: st
   } catch {
     return [];
   }
-}
-
-function injectImagesIntoBody(body: string, images: { url: string; photographer: string; photographerUrl: string }[]): string {
-  if (images.length === 0) return body;
-  const sections = body.split(/(<\/h2>)/i);
-  let imgIdx = 0;
-  let result = "";
-  for (let i = 0; i < sections.length; i++) {
-    result += sections[i];
-    if (/^<\/h2>$/i.test(sections[i]) && imgIdx < images.length) {
-      const img = images[imgIdx];
-      result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
-        `<img src="${img.url}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" />` +
-        `</figure>\n`;
-      imgIdx++;
-    }
-  }
-  return result;
 }
 
 function estimateReadTime(html: string): string {
@@ -206,24 +189,27 @@ export async function GET(req: NextRequest) {
     try {
       const rewritten = await rewriteArticle(post.title, post.body, destinationFacts);
 
-      const keywords = (rewritten as { imageKeywords?: string }).imageKeywords || rewritten.title;
-      const pexelsImages = await fetchPexelsImages(keywords, 5);
+      const sourceContent = [destinationFacts, post.body].filter(Boolean).join("\n\n");
+      const imageKeywords = chooseSourceGroundedImageKeywords({
+        generatedKeywords: rewritten.imageKeywords,
+        originalTitle: post.title,
+        sourceContent,
+      });
+      const pexelsImages = imageKeywords ? await fetchPexelsImages(imageKeywords, 5) : [];
 
       let cover = "";
       if (pexelsImages.length > 0) {
         cover = await mirrorToCloudinary(pexelsImages[0].url);
       }
-      if (!cover) {
-        const seed = rewritten.title.length + rewritten.title.charCodeAt(0);
-        cover = `https://picsum.photos/seed/${seed}/1200/630`;
-      }
 
-      const body = injectImagesIntoBody(rewritten.body, pexelsImages.slice(1));
+      const body = imageKeywords
+        ? injectImagesIntoBody(rewritten.body, pexelsImages.slice(1), imageKeywords)
+        : rewritten.body;
       const quality = assessGeneratedContent({
         title: rewritten.title,
         excerpt: rewritten.excerpt,
         body,
-        sourceContent: [destinationFacts, post.body].filter(Boolean).join("\n\n"),
+        sourceContent,
       });
       if (!quality.ok) {
         throw new Error(qualityErrorMessage(quality));

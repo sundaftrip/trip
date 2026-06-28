@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
 import { getStyle } from "@/lib/scraper-styles";
 import { assessGeneratedContent, hasUsableSource, qualityErrorMessage } from "@/lib/content-quality";
+import { chooseSourceGroundedImageKeywords, injectImagesIntoBody } from "@/lib/scraper-images";
 
 export const maxDuration = 120;
 
@@ -117,30 +118,6 @@ async function fetchPexelsImages(keywords: string, count = 5): Promise<{ url: st
   }
 }
 
-function injectImagesIntoBody(
-  body: string,
-  images: { url: string; photographer: string; photographerUrl: string }[]
-): string {
-  if (images.length === 0) return body;
-
-  const sections = body.split(/(<\/h2>)/i);
-  let imgIdx = 0;
-  let result = "";
-
-  for (let i = 0; i < sections.length; i++) {
-    result += sections[i];
-    if (/^<\/h2>$/i.test(sections[i]) && imgIdx < images.length) {
-      const img = images[imgIdx];
-      result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
-        `<img src="${img.url}" alt="" style="width:100%;height:auto;display:block;" loading="lazy" />` +
-        `</figure>\n`;
-      imgIdx++;
-    }
-  }
-
-  return result;
-}
-
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -238,11 +215,16 @@ export async function POST(req: NextRequest) {
     parsed = { title, excerpt, category, body };
   }
 
-  // Use Claude's imageKeywords for a better search; if different from title, re-fetch
-  const keywords = parsed.imageKeywords || parsed.title;
-  const pexelsImages = keywords.toLowerCase() !== originalTitle.toLowerCase()
-    ? await fetchPexelsImages(keywords, 5)
-    : preFetchedImages;
+  const imageKeywords = chooseSourceGroundedImageKeywords({
+    generatedKeywords: parsed.imageKeywords,
+    originalTitle,
+    sourceContent,
+  });
+  const pexelsImages = imageKeywords
+    ? imageKeywords.toLowerCase() === originalTitle.toLowerCase()
+      ? preFetchedImages
+      : await fetchPexelsImages(imageKeywords, 5)
+    : [];
 
   const quality = assessGeneratedContent({
     title: parsed.title,
@@ -254,18 +236,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: qualityErrorMessage(quality), issues: quality.issues }, { status: 422 });
   }
 
-  // Use Pexels URL directly as cover (stable CDN, no need to mirror)
-  let cover = (coverImage as string | undefined) ?? "";
+  // Use only source-provided or source-grounded images. No random image fallback.
+  let cover = typeof coverImage === "string" && /^https?:\/\//i.test(coverImage.trim()) ? coverImage.trim() : "";
   if (!cover && pexelsImages.length > 0) {
     cover = pexelsImages[0].url;
   }
-  if (!cover) {
-    const seed = parsed.title.length + parsed.title.charCodeAt(0);
-    cover = `https://picsum.photos/seed/${seed}/1200/630`;
-  }
 
-  // Inject foto ke dalam body artikel (setelah setiap h2)
-  parsed.body = injectImagesIntoBody(parsed.body, pexelsImages.slice(1));
+  if (imageKeywords) {
+    parsed.body = injectImagesIntoBody(parsed.body, pexelsImages.slice(1), imageKeywords);
+  }
 
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });
   const slug = await generateUniqueSlug(baseSlug);
