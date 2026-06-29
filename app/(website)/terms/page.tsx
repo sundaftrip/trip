@@ -4,6 +4,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+const LEGAL_ENTITY_STATEMENT =
+  "This website is owned and operated by CV Sundaf Holiday Group, operating under the Sundaf Trip brand.";
 
 export const metadata: Metadata = {
   title: "Syarat & Ketentuan",
@@ -118,6 +120,12 @@ export default async function TermsPage({
             <p className="text-gray-500 dark:text-gray-400 mb-6">CV Sundaf Holiday Group</p>
           </>
         )}
+
+        <div
+          className={`mb-8 ${isOutlined ? "border-2 p-4" : "rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/60"}`}
+          style={isOutlined ? { background: cardBg, borderColor: bdrClr, color: subClr } : undefined}>
+          <p className="text-sm leading-relaxed">{LEGAL_ENTITY_STATEMENT}</p>
+        </div>
 
         {/* Language toggle, only shown when English content exists */}
         {hasEn && (

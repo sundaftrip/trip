@@ -346,6 +346,23 @@ export default async function AboutPage() {
           </div>
         </div>
 
+        {/* ── Company information ───────────────────────────────── */}
+        <div className="mb-12">
+          <h2
+            className={`text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            style={isOutlined ? { color: headClr } : undefined}>
+            Company Information
+          </h2>
+          <div
+            className={`max-w-2xl space-y-3 text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
+            style={isOutlined ? { color: subClr } : undefined}>
+            <p>
+              Sundaf Trip is an Indonesia-based travel and tour operations brand focused on curated group tours, corporate travel arrangements, and destination coordination.
+            </p>
+            <p>Sundaf Trip is operated by CV Sundaf Holiday Group.</p>
+          </div>
+        </div>
+
         {/* ── Divider ────────────────────────────────────────────── */}
         <div className={divCls} style={divStyle} />
 

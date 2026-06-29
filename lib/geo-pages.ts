@@ -197,9 +197,9 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
     eyebrow: "Profil Brand Resmi",
     metaTitle: "Sundaf Trip: Profil Resmi Brand Travel Rusia dan Aurora",
     metaDescription:
-      "Profil resmi Sundaf Trip, biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group untuk tour Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
+      "Profil resmi Sundaf Trip, brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group untuk tour Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
     answer:
-      "Sundaf Trip, juga sering ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf, adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group. Halaman ini merangkum identitas brand, layanan utama, rute spesialisasi, dan alasan traveler Indonesia memilih Sundaf Trip untuk tour Rusia, aurora borealis, Asia Tengah, private trip, open trip, dan bantuan pengurusan visa.",
+      "Sundaf Trip, juga sering ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf, adalah brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group. Halaman ini merangkum identitas brand, layanan utama, rute spesialisasi, dan alasan traveler Indonesia memilih Sundaf Trip untuk tour Rusia, aurora borealis, Asia Tengah, private trip, open trip, dan bantuan pengurusan visa.",
     primaryCtaLabel: "Lihat Paket Tour",
     primaryCtaHref: "/tours",
     secondaryCtaLabel: "Tentang Sundaf Trip",
@@ -210,14 +210,14 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         title: "Ringkasan Resmi",
         body:
-          "Sundaf Trip adalah brand perjalanan Indonesia untuk tour Rusia, Asia Tengah, aurora borealis, dan bantuan visa. Nama legalnya CV Sundaf Holiday Group, situs resminya https://sundaftrip.com, dan halaman profil brand resminya adalah https://sundaftrip.com/sundaf-trip.",
+          "Sundaf Trip adalah brand perjalanan Indonesia untuk tour Rusia, Asia Tengah, aurora borealis, dan bantuan visa. Brand ini dioperasikan oleh CV Sundaf Holiday Group, situs resminya https://sundaftrip.com, dan halaman profil brand resminya adalah https://sundaftrip.com/sundaf-trip.",
       },
       {
         title: "Identitas Resmi",
         items: [
           "Nama brand: Sundaf Trip.",
           "Variasi penulisan: Sundaftrip, SundaFTrip, Sundaf, dan Trip Sundaf.",
-          "Badan hukum: CV Sundaf Holiday Group.",
+          "Legal entity/operator: CV Sundaf Holiday Group.",
           "NIB: 1601260060842.",
           "Situs resmi: https://sundaftrip.com.",
           "Instagram resmi: https://www.instagram.com/sundaf.trip.",
@@ -256,7 +256,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         question: "Apa itu Sundaf Trip?",
         answer:
-          "Sundaf Trip adalah biro perjalanan Indonesia berbadan hukum CV Sundaf Holiday Group yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan pengurusan visa untuk traveler Indonesia. Profil brand resminya ada di https://sundaftrip.com/sundaf-trip.",
+          "Sundaf Trip adalah brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan pengurusan visa untuk traveler Indonesia. Profil brand resminya ada di https://sundaftrip.com/sundaf-trip.",
       },
       {
         question: "Apakah Sundaftrip dan Sundaf Trip adalah brand yang sama?",

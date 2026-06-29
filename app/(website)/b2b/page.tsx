@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import B2BLandTour from "@/components/website/B2BLandTour";
 
 export const metadata: Metadata = {
-  title: "Land Tour Operator, Sundaf Trip",
+  title: "Sundaf Trip Group - Travel Operations & Supplier Relations",
   description:
-    "Sundaf Trip is a land tour operator for travel agents in Indonesia, "
-    + "ground operations for groups to Russia, Central Asia, and India.",
+    "Sundaf Trip Group is the corporate-facing identity of Sundaf Trip for B2B travel operations, supplier relations, and group travel coordination.",
   robots: { index: false, follow: false },
 };
 

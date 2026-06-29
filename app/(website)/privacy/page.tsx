@@ -16,6 +16,8 @@ import { prisma } from "@/lib/prisma";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 const SITE_URL = "https://sundaftrip.com";
+const LEGAL_ENTITY_STATEMENT =
+  "This website is owned and operated by CV Sundaf Holiday Group, operating under the Sundaf Trip brand.";
 
 export const metadata: Metadata = {
   title: "Kebijakan Privasi Sundaf Trip",
@@ -142,6 +144,9 @@ export default async function PrivacyPage() {
         </h1>
         <p className="mt-6 max-w-3xl text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
           Halaman ini menjelaskan bagaimana Sundaf Trip mengumpulkan, menggunakan, menyimpan, dan melindungi data pribadi calon traveler, peserta trip, partner, dan pengguna situs.
+        </p>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+          {LEGAL_ENTITY_STATEMENT}
         </p>
       </section>
 

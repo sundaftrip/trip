@@ -7,7 +7,7 @@ export default async function PrintReceiptPage({ params }: { params: Promise<{ i
   const [receipt, companyRows] = await Promise.all([
     prisma.receipt.findUnique({ where: { id } }),
     prisma.companyInfo.findMany({
-      where: { key: { in: ["company_name", "company_nib", "company_address", "company_phone", "company_email", "company_website", "company_logo"] } },
+      where: { key: { in: ["company_name", "company_legal_name", "company_nib", "company_address", "company_phone", "company_email", "company_website", "company_logo"] } },
     }),
   ]);
   if (!receipt) notFound();
@@ -17,6 +17,7 @@ export default async function PrintReceiptPage({ params }: { params: Promise<{ i
 
   const company = {
     name: companyMap["company_name"],
+    legalName: companyMap["company_legal_name"],
     nib: companyMap["company_nib"],
     address: companyMap["company_address"],
     phone: companyMap["company_phone"],

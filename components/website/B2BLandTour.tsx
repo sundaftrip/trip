@@ -49,7 +49,13 @@ const FERDIANSAH = {
   photo: "",
   email: "info@sundaftrip.com",
   whatsappUrl: "https://wa.me/6281775202759",
-  desc: "Memimpin operasional Sundaf Trip, pengelolaan vendor, negosiasi, perancangan itinerary, hingga eksekusi perjalanan di lapangan.",
+  desc: "Memimpin relasi B2B, kurasi land operator, negosiasi vendor, dan quality control itinerary agar partner mendapat produk yang siap dijual.",
+};
+
+const FERDIANSAH_USA_PROOF = {
+  src: "/partner/ferdiansah-world-nyc.jpg",
+  alt: "Ferdiansah bersama grup di New York, Amerika Serikat",
+  caption: "Dokumentasi Ferdiansah bersama grup di New York, Amerika Serikat.",
 };
 
 const BILLY = {
@@ -76,16 +82,16 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
 
         {/* ── Hero ── */}
         <span className="inline-block text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">
-          Operator Land Tour · B2B
+          Sundaf Trip Group
         </span>
         <h1 className={`text-4xl lg:text-5xl font-bold leading-tight mb-5 text-gray-900 dark:text-white ${lora.className}`}>
-          Land Operator Anda untuk Rusia, Asia Tengah &amp; India
+          Travel Operations &amp; Supplier Relations
         </h1>
         <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-          Sundaf Trip adalah land tour operator. Travel agent mengirimkan
-          grupnya, dan kami yang menangani seluruh operasional di destinasi,
-          hotel, transportasi, makan, tiket atraksi, hingga tour leader. Anda
-          fokus menjual; kami memastikan perjalanannya berjalan mulus.
+          Sundaf Trip Group is the corporate-facing identity of Sundaf Trip, a travel and tour operations brand operated by CV Sundaf Holiday Group, an Indonesian limited partnership.
+        </p>
+        <p className="mt-4 text-base leading-relaxed text-gray-600 dark:text-gray-400">
+          Untuk travel agent, supplier, DMC, hotel, transport provider, restoran, guide, dan partner operasional, tim kami menangani koordinasi itinerary, quotation, vendor, dan eksekusi perjalanan di destinasi.
         </p>
 
         {/* ── Highlighted positioning (stabilo) ── */}
@@ -100,9 +106,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
           <div className="text-sm">
             <p className="font-bold text-gray-900 dark:text-white">Anda jual, kami yang operasikan</p>
             <p className="mt-1 text-gray-500 dark:text-gray-400">
-              Sundaf Trip, CV Sundaf Holiday Group, adalah pemasok (supplier)
-              land tour spesialis Rusia, Asia Tengah, dan India untuk travel
-              agent di Indonesia.
+              Tim operasional Sundaf Trip menyiapkan land tour spesialis Rusia, Asia Tengah, dan India untuk travel agent di Indonesia.
             </p>
           </div>
         </div>
@@ -189,14 +193,14 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         {/* ── Founder ── */}
         <h2 className={`mt-12 mb-5 ${head}`}>{withCofounder ? "Co-Founder Sundaf Trip" : "Pendiri Sundaf Trip"}</h2>
         <div className="p-5 rounded-xl border border-gray-100 dark:border-gray-800">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {person.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={person.photo}
                 alt={person.name}
                 loading="lazy"
-                className="is-round w-16 h-16 shrink-0 object-cover ring-2 ring-blue-600/30 dark:ring-blue-400/30"
+                className="is-round h-20 w-20 shrink-0 object-cover object-top ring-2 ring-blue-600/30 dark:ring-blue-400/30"
               />
             ) : (
               <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold text-lg">
@@ -208,8 +212,24 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
             </div>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{person.desc}</p>
+          {person.desc ? (
+            <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{person.desc}</p>
+          ) : null}
         </div>
+        {!withCofounder ? (
+          <figure className="mt-5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={FERDIANSAH_USA_PROOF.src}
+              alt={FERDIANSAH_USA_PROOF.alt}
+              loading="lazy"
+              className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
+            />
+            <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+              {FERDIANSAH_USA_PROOF.caption}
+            </figcaption>
+          </figure>
+        ) : null}
 
         {/* ── CTA ── */}
         <div className="mt-12 p-6 rounded-2xl bg-gray-900 dark:bg-gray-800 text-center">

@@ -29,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/media-kit`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.76 },
     { url: `${base}/legalitas-dan-keamanan`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.62 },
     { url: `${base}/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.35 },
+    { url: `${base}/partnership-relation`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.62 },
     // GEO / AEO landing pages - ringkasan answer-ready untuk query AI dan Google AI Overviews.
     { url: `${base}/open-trip-rusia-dari-jakarta`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/tour-rusia-dari-indonesia`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },

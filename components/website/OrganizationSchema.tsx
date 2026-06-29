@@ -111,7 +111,7 @@ function toE164(raw: string | undefined): string | undefined {
 export default async function OrganizationSchema() {
   const c = await getOrgData();
 
-  const name = c["company_name"] || DEFAULT_NAME;
+  const name = DEFAULT_NAME;
   const logoAbs = toAbsolute(c["company_logo"]) || `${SITE_URL}/favicon.svg`;
   const phoneE164 = toE164(c["company_phone"]);
   const waE164 = toE164(c["company_whatsapp"]);

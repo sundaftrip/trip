@@ -22,6 +22,7 @@ interface ReceiptData {
 
 interface CompanyInfo {
   name?: string;
+  legalName?: string;
   nib?: string;
   address?: string;
   phone?: string;
@@ -85,6 +86,8 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
     .split(/\r?\n/)
     .map((item) => item.trim())
     .filter(Boolean);
+  const legalEntityName = company.legalName || "CV Sundaf Holiday Group";
+  const brandName = company.name || "Sundaf Trip";
 
   const rows = [
     ["Paket Tour", receipt.tourTitle],
@@ -152,8 +155,10 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 24, padding: "22px 34px 18px", borderBottom: "3px solid #2563eb" }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={company.logo || "/logo.png"} alt={company.name ?? "Logo"} style={{ height: 34, width: "auto", marginBottom: 8 }} />
+              <img src={company.logo || "/logo.png"} alt={brandName} style={{ height: 34, width: "auto", marginBottom: 8 }} />
               <div style={{ fontSize: 10, color: "#6b7280", lineHeight: 1.45, maxWidth: 360 }}>
+                <div style={{ fontWeight: 700, color: "#111827" }}>{legalEntityName}</div>
+                <div>Trading as {brandName}</div>
                 {company.address && <div>{company.address}</div>}
                 {company.phone && <div style={{ marginTop: 2 }}>{company.phone}</div>}
                 {company.email && <div>{company.email}</div>}
@@ -175,7 +180,8 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, padding: "18px 34px" }}>
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Perusahaan</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{company.name ?? "-"}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{legalEntityName}</div>
+              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>Trading as {brandName}</div>
               {company.nib && <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>NIB {company.nib}</div>}
             </div>
             <div>
@@ -217,7 +223,7 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
                       <th style={{ padding: "8px 10px", color: "#6b7280", textAlign: "left", fontWeight: 700 }}>Item</th>
                       <th style={{ padding: "8px 8px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 42 }}>Qty</th>
                       <th style={{ padding: "8px 8px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 86 }}>Harga</th>
-                      <th style={{ padding: "8px 8px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 78 }}>Diskon</th>
+                      <th style={{ padding: "8px 6px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 54 }}>Diskon</th>
                       <th style={{ padding: "8px 10px", color: "#6b7280", textAlign: "right", fontWeight: 700, width: 90 }}>Subtotal</th>
                     </tr>
                   </thead>
@@ -229,7 +235,7 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
                           <td style={{ padding: "8px 10px", color: "#111827", fontWeight: 600, lineHeight: 1.35 }}>{item.name}</td>
                           <td style={{ padding: "8px 8px", color: "#374151", textAlign: "right" }}>{formatQuantity(item.quantity)}</td>
                           <td style={{ padding: "8px 8px", color: "#374151", textAlign: "right", whiteSpace: "nowrap" }}>{formatCurrency(item.unitPrice)}</td>
-                          <td style={{ padding: "8px 8px", color: item.discount > 0 ? "#b91c1c" : "#9ca3af", textAlign: "right", whiteSpace: "nowrap" }}>
+                          <td style={{ padding: "8px 6px", color: item.discount > 0 ? "#b91c1c" : "#9ca3af", textAlign: "right", whiteSpace: "nowrap" }}>
                             {item.discount > 0 ? `- ${formatCurrency(item.discount)}` : "-"}
                           </td>
                           <td style={{ padding: "8px 10px", color: "#111827", textAlign: "right", fontWeight: 700, whiteSpace: "nowrap" }}>{formatCurrency(lineTotal)}</td>
@@ -287,7 +293,7 @@ export default function ReceiptPrint({ receipt, company }: { receipt: ReceiptDat
 
           {/* Footer */}
           <div className="receipt-footer" style={{ borderTop: "1px solid #e5e7eb", padding: "12px 34px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-            <span style={{ fontSize: 10, color: "#9ca3af" }}>Dokumen ini diterbitkan secara elektronik oleh {company.name ?? "-"}</span>
+            <span style={{ fontSize: 10, color: "#9ca3af" }}>Dokumen ini diterbitkan secara elektronik oleh {legalEntityName}, Trading as {brandName}</span>
             <span style={{ fontSize: 10, color: "#9ca3af" }}>{company.website ?? ""}</span>
           </div>
 
