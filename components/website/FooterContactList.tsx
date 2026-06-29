@@ -2,10 +2,10 @@
 
 import type { CSSProperties, ComponentType } from "react";
 import { usePathname } from "next/navigation";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 export type FooterContact = {
-  kind: "address" | "phone" | "whatsapp" | "email" | "instagram";
+  kind: "address" | "phone" | "whatsapp" | "email" | "instagram" | "hours";
   label: string;
   value: string;
   href: string | null;
@@ -44,6 +44,7 @@ const ICONS: Record<FooterContact["kind"], ComponentType<IconProps>> = {
   whatsapp: Phone,
   email: Mail,
   instagram: InstagramIcon,
+  hours: Clock,
 };
 
 function partnerContact(contact: FooterContact): FooterContact {

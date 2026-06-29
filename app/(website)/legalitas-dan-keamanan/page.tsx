@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Building2,
   CheckCircle2,
+  Clock,
   ExternalLink,
   FileText,
   Globe2,
@@ -103,6 +104,7 @@ export default async function LegalitasKeamananPage() {
   const phoneRaw = company.company_whatsapp || company.company_phone || "081-775-2027-59";
   const phone = publicPhone(phoneRaw);
   const address = company.company_address || "Jakarta, DKI Jakarta, Indonesia";
+  const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const waHref = whatsappUrl(phoneRaw);
   const igUrl = instagramUrl(company.company_instagram);
 
@@ -126,6 +128,7 @@ export default async function LegalitasKeamananPage() {
     { icon: Globe2, label: "Website resmi", value: SITE_URL, href: SITE_URL },
     { icon: Phone, label: "WhatsApp resmi", value: phone, href: waHref },
     { icon: Mail, label: "Email resmi", value: email, href: `mailto:${email}` },
+    { icon: Clock, label: "Jam layanan", value: openingHours },
   ];
 
   const safeSteps = [

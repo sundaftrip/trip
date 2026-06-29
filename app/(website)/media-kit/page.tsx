@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Building2,
   CheckCircle2,
+  Clock,
   ExternalLink,
   FileText,
   Globe2,
@@ -104,6 +105,7 @@ export default async function MediaKitPage() {
   const phoneHref = whatsappUrl(phoneRaw);
   const email = company.company_email || "info@sundaftrip.com";
   const address = company.company_address || "Jakarta, DKI Jakarta, Indonesia";
+  const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const igUrl = instagramUrl(company.company_instagram);
   const description =
     company.company_description ||
@@ -117,6 +119,7 @@ export default async function MediaKitPage() {
     { icon: MapPin, label: "Basis layanan", value: address },
     { icon: Mail, label: "Email", value: email, href: `mailto:${email}` },
     { icon: Phone, label: "Telepon/WhatsApp", value: phone || "081-775-2027-59", href: phoneHref },
+    { icon: Clock, label: "Jam layanan", value: openingHours },
     { icon: AtSign, label: "Instagram", value: "@sundaf.trip", href: igUrl },
   ];
 

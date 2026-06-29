@@ -57,6 +57,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const phone    = c["company_phone"] || "";
   const whatsapp = toWaNumber(c["company_whatsapp"]);
   const email    = c["company_email"] || "";
+  const hours    = "Senin-Jumat 09:00-17:00 WIB";
   const igUser   = (c["company_instagram"] || "")
     .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
     .replace(/^@/, "")
@@ -68,6 +69,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     phone    && { kind: "phone", label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
     whatsapp && { kind: "whatsapp", label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
     email    && { kind: "email", label: "Email", value: email, href: `mailto:${email}` },
+    hours    && { kind: "hours", label: "Jam layanan", value: hours, href: null },
     igUser   && { kind: "instagram", label: "Instagram", value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
   ].filter(Boolean) as FooterContact[];
 
