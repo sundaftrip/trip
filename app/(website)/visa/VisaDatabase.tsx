@@ -7,7 +7,7 @@ import { Search, ChevronRight } from "lucide-react";
 import { visaSlug } from "@/lib/visa-slug";
 import { FlagIcon } from "@/lib/flag-icon";
 
-type Visa = "bebas" | "voa" | "evisa" | "wajib";
+type Visa = "bebas" | "voa" | "evisa" | "wajib" | "conditional";
 
 export interface VisaCountry {
   id: string;
@@ -18,7 +18,12 @@ export interface VisaCountry {
   visa: string;
   stay: string;
   cost: string;
+  officialFee: string | null;
+  servicePrice: string | null;
   notes: string;
+  conditions: string[];
+  sourceUrl: string | null;
+  lastVerifiedAt: Date | string | null;
 }
 
 const VISA_LABEL: Record<Visa, string> = {
@@ -26,6 +31,7 @@ const VISA_LABEL: Record<Visa, string> = {
   voa: "Visa on Arrival",
   evisa: "E-Visa",
   wajib: "Visa Wajib",
+  conditional: "Bersyarat",
 };
 
 const VISA_BADGE: Record<Visa, string> = {
@@ -33,6 +39,7 @@ const VISA_BADGE: Record<Visa, string> = {
   voa: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
   evisa: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
   wajib: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
+  conditional: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
 };
 
 const VISA_KEYS = Object.keys(VISA_LABEL) as Visa[];
@@ -43,12 +50,27 @@ const FIELD =
   "outline-none focus:border-gray-400 dark:focus:border-gray-600";
 
 function isVisa(v: string): v is Visa {
-  return v === "bebas" || v === "voa" || v === "evisa" || v === "wajib";
+  return v === "bebas" || v === "voa" || v === "evisa" || v === "wajib" || v === "conditional";
 }
 
-function costInfo(raw: string) {
-  const text = raw.trim() || "Gratis";
-  return { text, isFree: text === "Gratis" };
+function feeInfo(country: VisaCountry) {
+  const service = country.servicePrice?.trim();
+  const official = country.officialFee?.trim();
+  const legacy = country.cost?.trim();
+  const text = service || official || legacy || "Gratis";
+  const subtext = service && official ? `Resmi: ${official}` : null;
+  return { text, subtext, isFree: text === "Gratis" };
+}
+
+function formatVerified(value: VisaCountry["lastVerifiedAt"]) {
+  if (!value) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
 }
 
 export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
@@ -76,6 +98,14 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
   }, [q, region, visa, COUNTRIES]);
 
   const hasFilter = Boolean(q || region || visa);
+  const newestVerification = useMemo(() => {
+    const stamps = COUNTRIES.map((c) => {
+      const date = c.lastVerifiedAt ? new Date(c.lastVerifiedAt) : null;
+      return date && !Number.isNaN(date.getTime()) ? date.getTime() : 0;
+    }).filter(Boolean);
+    if (stamps.length === 0) return null;
+    return formatVerified(new Date(Math.max(...stamps)));
+  }, [COUNTRIES]);
 
   return (
     <section className="mb-14">
@@ -139,7 +169,8 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
       {/* MOBILE: card stack, sampai md */}
       <div className="md:hidden space-y-3">
         {filtered.map((c) => {
-          const cost = costInfo(c.cost);
+          const fee = feeInfo(c);
+          const verified = formatVerified(c.lastVerifiedAt);
           return (
             <Link
               key={c.id}
@@ -184,15 +215,34 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                   <dt className="text-gray-400 uppercase tracking-wide">Biaya</dt>
                   <dd
                     className={`mt-0.5 font-semibold ${
-                      cost.isFree
+                      fee.isFree
                         ? "text-emerald-600 dark:text-emerald-400"
                         : "text-gray-700 dark:text-gray-300"
                     }`}
                   >
-                    {cost.text}
+                    {fee.text}
                   </dd>
+                  {fee.subtext && <dd className="mt-0.5 text-[10px] text-gray-400">{fee.subtext}</dd>}
                 </div>
               </dl>
+
+              {(c.conditions?.length > 0 || verified) && (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {c.conditions?.slice(0, 2).map((condition) => (
+                    <span
+                      key={condition}
+                      className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                    >
+                      {condition}
+                    </span>
+                  ))}
+                  {verified && (
+                    <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                      Dicek {verified}
+                    </span>
+                  )}
+                </div>
+              )}
 
               {c.notes && (
                 <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 line-clamp-3">
@@ -231,7 +281,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
           </thead>
           <tbody>
             {filtered.map((c) => {
-              const cost = costInfo(c.cost);
+              const fee = feeInfo(c);
               const href = `/visa/${visaSlug(c.en)}`;
               return (
                 <tr
@@ -292,12 +342,17 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                   </td>
                   <td
                     className={`px-4 py-3 whitespace-nowrap ${
-                      cost.isFree
+                      fee.isFree
                         ? "text-emerald-600 dark:text-emerald-400 font-semibold"
                         : "text-gray-700 dark:text-gray-300"
                     }`}
                   >
-                    {cost.text}
+                    <span>{fee.text}</span>
+                    {fee.subtext && (
+                      <span className="block text-[11px] font-normal text-gray-400 dark:text-gray-500">
+                        {fee.subtext}
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[260px]">
                     {c.notes}
@@ -317,7 +372,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
       </div>
 
       <p className="text-xs text-gray-400 mt-3 leading-relaxed">
-        {filtered.length} negara ditampilkan · Data per Mei 2026, dikompilasi dari
+        {filtered.length} negara ditampilkan · {newestVerification ? `Pembaruan terverifikasi hingga ${newestVerification} berdasarkan` : "Data dikompilasi dari"}
         sumber resmi. Persyaratan visa dapat berubah sewaktu-waktu.
       </p>
     </section>

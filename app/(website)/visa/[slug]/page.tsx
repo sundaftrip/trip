@@ -19,13 +19,14 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
 export const revalidate = 300;
 
-type VisaKey = "bebas" | "voa" | "evisa" | "wajib";
+type VisaKey = "bebas" | "voa" | "evisa" | "wajib" | "conditional";
 
 const VISA_LABEL: Record<VisaKey, string> = {
   bebas: "Bebas Visa",
   voa: "Visa on Arrival",
   evisa: "E-Visa",
   wajib: "Visa Wajib",
+  conditional: "Bersyarat",
 };
 
 const VISA_BADGE: Record<VisaKey, string> = {
@@ -33,10 +34,11 @@ const VISA_BADGE: Record<VisaKey, string> = {
   voa: "bg-blue-100 text-blue-700",
   evisa: "bg-amber-100 text-amber-700",
   wajib: "bg-rose-100 text-rose-700",
+  conditional: "bg-slate-100 text-slate-700",
 };
 
 function isVisaKey(s: string): s is VisaKey {
-  return s === "bebas" || s === "voa" || s === "evisa" || s === "wajib";
+  return s === "bebas" || s === "voa" || s === "evisa" || s === "wajib" || s === "conditional";
 }
 
 function isAssistedDocument(doc: VisaDocument) {
@@ -129,9 +131,14 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const visaLabel = VISA_LABEL[visaKey];
   const visaBadge = VISA_BADGE[visaKey];
 
-  const costRaw = country.cost?.trim() || "Gratis";
+  const costRaw =
+    country.servicePrice?.trim() || country.officialFee?.trim() || country.cost?.trim() || "Gratis";
   const isFree = costRaw === "Gratis";
   const costMain = costRaw.replace(/^mulai\s+/i, "");
+  const officialFee = country.officialFee?.trim() || null;
+  const servicePrice = country.servicePrice?.trim() || null;
+  const conditions = Array.isArray(country.conditions) ? country.conditions : [];
+  const verifiedLabel = formatVerified(country.lastVerifiedAt);
 
   // "Layanan kami: …" → buang prefiks, sisanya jadi paragraf layanan.
   const layananText = country.notes.replace(/^Layanan kami:\s*/i, "").trim();
@@ -293,6 +300,43 @@ export default async function VisaDetailPage({ params }: PageProps) {
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               {overviewText(visaKey, country.name, country.stay)}
             </p>
+            {(conditions.length > 0 || country.sourceUrl || verifiedLabel) && (
+              <div className="mt-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                {conditions.length > 0 && (
+                  <>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+                      Kondisi penting
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {conditions.map((condition) => (
+                        <li
+                          key={condition}
+                          className="flex items-start gap-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                        >
+                          <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-amber-500" />
+                          <span>{condition}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {(country.sourceUrl || verifiedLabel) && (
+                  <p className="mt-3 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                    {verifiedLabel && <>Diverifikasi {verifiedLabel}. </>}
+                    {country.sourceUrl && (
+                      <a
+                        href={country.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-semibold underline underline-offset-4"
+                      >
+                        Sumber resmi
+                      </a>
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
             {isRussia && (
               <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/30">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
@@ -424,6 +468,30 @@ export default async function VisaDetailPage({ params }: PageProps) {
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
               Layanan &amp; Harga
             </h2>
+            {(officialFee || servicePrice) && (
+              <dl className="mb-4 grid gap-3 sm:grid-cols-2">
+                {officialFee && (
+                  <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
+                      Biaya resmi
+                    </dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+                      {officialFee}
+                    </dd>
+                  </div>
+                )}
+                {servicePrice && (
+                  <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
+                      Harga layanan Sundaf
+                    </dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+                      {servicePrice}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            )}
             {country.variants.length > 0 ? (
               <>
                 <div className="space-y-3">
@@ -587,7 +655,20 @@ function overviewText(visa: VisaKey, name: string, stay: string): string {
       return `Visa ${name} diurus secara elektronik (e-Visa), diajukan online sebelum keberangkatan. Masa tinggal maksimal ${stay}. Tim kami yang uruskan pengajuan e-Visa-nya, kamu cukup kirim dokumen via WhatsApp dan tunggu visa elektronik terbit di email.`;
     case "wajib":
       return `Visa ${name} wajib diajukan terlebih dahulu sebelum berangkat, biasanya via kedutaan atau VFS Global. Masa tinggal sesuai visa yang diberikan. Tim kami dampingi seluruh proses: dari pengisian formulir, jadwal interview, sampai pengantaran paspor.`;
+    case "conditional":
+      return `Aturan masuk ${name} bersyarat untuk pemegang paspor Indonesia. Sebagian traveler bisa memakai jalur bebas visa, waiver, e-Visa, atau ETA jika memenuhi kondisi tertentu; di luar kondisi itu, visa reguler tetap perlu disiapkan. Masa tinggal yang ditampilkan: ${stay}.`;
   }
+}
+
+function formatVerified(value: Date | string | null): string | null {
+  if (!value) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
 }
 
 function russiaVisaFaqs(costLabel: string, processTime: string | null, stay: string): VisaFaq[] {

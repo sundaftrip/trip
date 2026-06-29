@@ -92,6 +92,8 @@ async function main() {
       data: (visaSeed as Array<{
         id: number; flag: string; name: string; en: string;
         region: string; visa: string; stay: string; cost: string; notes: string;
+        officialFee?: string | null; servicePrice?: string | null;
+        conditions?: string[]; sourceUrl?: string | null; lastVerifiedAt?: string | null;
       }>).map((c) => ({
         sortOrder: c.id,
         flag: c.flag,
@@ -101,7 +103,12 @@ async function main() {
         visa: c.visa,
         stay: c.stay,
         cost: c.cost,
+        officialFee: c.officialFee ?? null,
+        servicePrice: c.servicePrice ?? null,
         notes: c.notes,
+        conditions: c.conditions ?? [],
+        sourceUrl: c.sourceUrl ?? null,
+        lastVerifiedAt: c.lastVerifiedAt ? new Date(c.lastVerifiedAt) : null,
       })),
     });
     console.log(`✅ ${visaSeed.length} entri visa di-seed`);

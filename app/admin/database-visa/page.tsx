@@ -12,6 +12,7 @@ const VISA_LABEL: Record<string, string> = {
   voa: "Visa on Arrival",
   evisa: "E-Visa",
   wajib: "Visa Wajib",
+  conditional: "Bersyarat",
 };
 
 const VISA_BADGE: Record<string, string> = {
@@ -19,6 +20,7 @@ const VISA_BADGE: Record<string, string> = {
   voa: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
   evisa: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
   wajib: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
+  conditional: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
 };
 
 export default async function VisaDatabasePage() {

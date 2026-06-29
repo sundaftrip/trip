@@ -34,6 +34,7 @@ const VISA_LABEL: Record<string, string> = {
   voa: "Visa on Arrival",
   evisa: "E-Visa",
   wajib: "Visa Wajib",
+  conditional: "Bersyarat",
 };
 
 const FIELD_LABEL: Record<DiffChange["field"], string> = {

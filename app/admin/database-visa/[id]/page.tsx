@@ -37,7 +37,14 @@ export default async function EditCountryVisaPage({
           visa: entry.visa,
           stay: entry.stay,
           cost: entry.cost,
+          officialFee: entry.officialFee ?? "",
+          servicePrice: entry.servicePrice ?? "",
           notes: entry.notes,
+          conditions: Array.isArray(entry.conditions) ? entry.conditions : [],
+          sourceUrl: entry.sourceUrl ?? "",
+          lastVerifiedAt: entry.lastVerifiedAt
+            ? entry.lastVerifiedAt.toISOString().slice(0, 10)
+            : "",
           variants: entry.variants.map((v) => ({
             id: v.id,
             name: v.name,

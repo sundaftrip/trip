@@ -1,3 +1,4 @@
+import "flag-icons/css/flag-icons.min.css";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";

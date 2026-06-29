@@ -33,7 +33,12 @@ interface CountryVisaEntry {
   visa: string;
   stay: string;
   cost: string;
+  officialFee: string;
+  servicePrice: string;
   notes: string;
+  conditions?: string[];
+  sourceUrl: string;
+  lastVerifiedAt: string;
   variants?: VisaVariantEntry[];
   eligibility?: string[];
   documents?: VisaDocEntry[];
@@ -58,6 +63,7 @@ const VISA_OPTIONS = [
   { value: "voa", label: "Visa on Arrival" },
   { value: "evisa", label: "E-Visa" },
   { value: "wajib", label: "Visa Wajib" },
+  { value: "conditional", label: "Bersyarat" },
 ];
 
 const empty: CountryVisaEntry = {
@@ -69,7 +75,12 @@ const empty: CountryVisaEntry = {
   visa: "wajib",
   stay: "",
   cost: "",
+  officialFee: "",
+  servicePrice: "",
   notes: "",
+  conditions: [],
+  sourceUrl: "",
+  lastVerifiedAt: "",
   variants: [],
   eligibility: [],
   documents: [],
@@ -85,6 +96,11 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
   const isEdit = Boolean(entry?.id);
   const [form, setForm] = useState<CountryVisaEntry>(() => ({
     ...(entry ?? empty),
+    officialFee: entry?.officialFee ?? "",
+    servicePrice: entry?.servicePrice ?? "",
+    conditions: entry?.conditions ?? [],
+    sourceUrl: entry?.sourceUrl ?? "",
+    lastVerifiedAt: entry?.lastVerifiedAt ?? "",
     variants: entry?.variants ?? [],
     eligibility: entry?.eligibility ?? [],
     documents: entry?.documents ?? [],
@@ -140,7 +156,12 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       visa: form.visa,
       stay: form.stay.trim(),
       cost: form.cost.trim(),
+      officialFee: form.officialFee.trim(),
+      servicePrice: form.servicePrice.trim(),
       notes: form.notes.trim(),
+      conditions: (form.conditions ?? []).map((c) => c.trim()).filter(Boolean),
+      sourceUrl: form.sourceUrl.trim(),
+      lastVerifiedAt: form.lastVerifiedAt,
       variants: (form.variants ?? []).map((v, i) => ({
         sortOrder: i,
         name: v.name.trim(),
@@ -278,7 +299,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
 
         <Field
           label="Biaya headline (di tabel /visa)"
-          hint='Kosongkan = "Gratis" hijau. Isi "Mulai Rp 300.000" kalau ada banyak varian, atau "Rp 950.000" untuk satu produk.'
+          hint='Legacy. Pakai Official Fee + Harga Layanan untuk data baru. Kosongkan = fallback otomatis.'
         >
           <input
             className="input"
@@ -287,6 +308,45 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
             placeholder="Mulai Rp 300.000"
           />
         </Field>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Official fee" hint="Biaya pemerintah/kedutaan. Contoh: Gratis, USD 50, CAD 7.">
+            <input
+              className="input"
+              value={form.officialFee}
+              onChange={(e) => set("officialFee", e.target.value)}
+              placeholder="Gratis"
+            />
+          </Field>
+          <Field label="Harga layanan Sundaf" hint="Harga jasa Sundaf. Contoh: Mulai Rp 300.000.">
+            <input
+              className="input"
+              value={form.servicePrice}
+              onChange={(e) => set("servicePrice", e.target.value)}
+              placeholder="Mulai Rp 300.000"
+            />
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="URL sumber resmi">
+            <input
+              className="input"
+              type="url"
+              value={form.sourceUrl}
+              onChange={(e) => set("sourceUrl", e.target.value)}
+              placeholder="https://..."
+            />
+          </Field>
+          <Field label="Tanggal verifikasi">
+            <input
+              className="input"
+              type="date"
+              value={form.lastVerifiedAt}
+              onChange={(e) => set("lastVerifiedAt", e.target.value)}
+            />
+          </Field>
+        </div>
 
         <Field label="Catatan singkat (untuk tabel /visa)">
           <textarea
@@ -297,6 +357,26 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
           />
         </Field>
       </div>
+
+      <ArraySection
+        title="Kondisi / Syarat Khusus"
+        hint="Dipakai untuk kasus bersyarat: e-paspor terdaftar, pernah punya visa, masuk via udara, izin khusus, dll."
+        items={form.conditions ?? []}
+        onAdd={() => set("conditions", [...(form.conditions ?? []), ""])}
+        onRemove={(i) =>
+          set(
+            "conditions",
+            (form.conditions ?? []).filter((_, j) => j !== i),
+          )
+        }
+        onChange={(i, val) =>
+          set(
+            "conditions",
+            (form.conditions ?? []).map((x, j) => (j === i ? val : x)),
+          )
+        }
+        placeholder="mis. Hanya untuk e-paspor Indonesia yang sudah registrasi waiver"
+      />
 
       {/* ─── VARIANTS ─── */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">

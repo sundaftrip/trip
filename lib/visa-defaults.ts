@@ -5,7 +5,7 @@
    Tujuan: setiap halaman detail visa selalu punya konten kaya, tanpa harus
    menulis dari nol untuk 88 negara. */
 
-export type VisaCategory = "bebas" | "voa" | "evisa" | "wajib";
+export type VisaCategory = "bebas" | "voa" | "evisa" | "wajib" | "conditional";
 
 export interface VisaDocument {
   name: string;
@@ -129,7 +129,7 @@ const EVISA: VisaDefaults = {
     {
       question: "Kalau visa ditolak, biaya kembali?",
       answer:
-        "Biaya kedutaan TIDAK refundable, biaya layanan kami juga tidak (kerjaan sudah dilakukan). Tapi konsultasi awal gratis, kami review dokumen dulu sebelum submit untuk minimalisir penolakan.",
+        "Biaya kedutaan TIDAK refundable, biaya layanan kami juga tidak (kerjaan sudah dilakukan). Tapi konsultasi awal gratis, kami review dokumen dulu sebelum submit untuk minimalisir penolakan. Kami juga sarankan mempertimbangkan asuransi visa. Pelajari dulu benefitnya; bisa kami siapkan juga bila cocok. Biaya asuransi terpisah.",
     },
   ],
 };
@@ -168,7 +168,7 @@ const WAJIB: VisaDefaults = {
     {
       question: "Kalau visa ditolak, biaya kembali?",
       answer:
-        "Biaya kedutaan TIDAK refundable. Biaya layanan kami juga tidak, kerjaan sudah dilakukan. Tapi kami review dokumen dulu sebelum submit dan kasih estimasi peluang lolos secara jujur. Kalau dokumenmu kurang kuat, kami sarankan jangan submit dulu.",
+        "Biaya kedutaan TIDAK refundable. Biaya layanan kami juga tidak, kerjaan sudah dilakukan. Tapi kami review dokumen dulu sebelum submit dan kasih estimasi peluang lolos secara jujur. Kalau dokumenmu kurang kuat, kami sarankan jangan submit dulu. Kami juga sarankan mempertimbangkan asuransi visa. Pelajari dulu benefitnya; bisa kami siapkan juga bila cocok. Biaya asuransi terpisah.",
     },
     {
       question: "Saya pernah ditolak negara X, bisa apply ke negara Y?",
@@ -178,15 +178,56 @@ const WAJIB: VisaDefaults = {
   ],
 };
 
+const CONDITIONAL: VisaDefaults = {
+  eligibility: [
+    "Pemegang paspor Indonesia",
+    "Memenuhi kondisi khusus yang tertulis di halaman negara",
+    "Paspor berlaku min. 6 bulan dari tanggal masuk",
+    "Tiket pulang terkonfirmasi",
+    "Bukti akomodasi dan dana cukup selama tinggal",
+  ],
+  documents: [
+    COMMON_PASSPORT,
+    { name: "Bukti kondisi khusus", hint: "Misalnya e-paspor, visa negara tertentu, atau bukti registrasi waiver." },
+    { name: "Tiket pulang", hint: "Dicetak atau softcopy." },
+    { name: "Booking akomodasi", hint: "Hotel, Airbnb, atau alamat tempat menginap." },
+    { name: "Dokumen pendukung", hint: "Disesuaikan dengan jalur yang dipakai: waiver, e-Visa, ETA, atau visa reguler." },
+  ],
+  faqs: [
+    {
+      question: "Apa arti visa bersyarat?",
+      answer:
+        "Artinya tidak semua WNI memakai jalur yang sama. Sebagian bisa bebas visa, waiver, e-Visa, atau ETA jika memenuhi kondisi tertentu. Jika tidak memenuhi kondisi itu, visa reguler tetap perlu diajukan.",
+    },
+    {
+      question: "Bagaimana cara tahu saya memenuhi syarat?",
+      answer:
+        "Kirim foto paspor dan riwayat visa/perjalanan yang relevan. Tim kami cek jalur yang paling aman sebelum menyarankan pengajuan.",
+    },
+    {
+      question: "Apakah bisa langsung berangkat tanpa pengajuan?",
+      answer:
+        "Jangan berangkat sebelum kondisi khususnya jelas. Untuk negara bersyarat, salah memilih jalur bisa membuat boarding ditolak atau ditahan di imigrasi.",
+    },
+  ],
+};
+
 const BY_CATEGORY: Record<VisaCategory, VisaDefaults> = {
   bebas: BEBAS,
   voa: VOA,
   evisa: EVISA,
   wajib: WAJIB,
+  conditional: CONDITIONAL,
 };
 
 export function visaDefaults(category: string): VisaDefaults {
-  if (category === "bebas" || category === "voa" || category === "evisa" || category === "wajib") {
+  if (
+    category === "bebas" ||
+    category === "voa" ||
+    category === "evisa" ||
+    category === "wajib" ||
+    category === "conditional"
+  ) {
     return BY_CATEGORY[category];
   }
   return WAJIB; // fallback paling aman

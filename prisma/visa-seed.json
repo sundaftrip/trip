@@ -1,90 +1,1691 @@
 [
-  {"id": 1, "flag": "🇸🇬", "name": "Singapura", "en": "Singapore", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Paspor berlaku min. 6 bulan. Bisa masuk berulang kali."},
-  {"id": 2, "flag": "🇲🇾", "name": "Malaysia", "en": "Malaysia", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Perpanjangan bisa diajukan di imigrasi Malaysia."},
-  {"id": 3, "flag": "🇹🇭", "name": "Thailand", "en": "Thailand", "region": "Asia Tenggara", "visa": "bebas", "stay": "60 hari", "cost": "Gratis", "notes": "Masuk via darat maks. 2×/tahun. Via udara tidak dibatasi."},
-  {"id": 4, "flag": "🇻🇳", "name": "Vietnam", "en": "Vietnam", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "WNI sebagai warga ASEAN dapat bebas visa 30 hari."},
-  {"id": 5, "flag": "🇵🇭", "name": "Filipina", "en": "Philippines", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Dapat diperpanjang di BI Office setempat."},
-  {"id": 6, "flag": "🇧🇳", "name": "Brunei Darussalam", "en": "Brunei", "region": "Asia Tenggara", "visa": "bebas", "stay": "14 hari", "cost": "Gratis", "notes": "Perpanjangan bisa diajukan ke Imigrasi Brunei."},
-  {"id": 7, "flag": "🇰🇭", "name": "Kamboja", "en": "Cambodia", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Sesama ASEAN — WNI bebas visa. Paspor berlaku min. 6 bulan."},
-  {"id": 8, "flag": "🇱🇦", "name": "Laos", "en": "Laos", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Sesama ASEAN — WNI bebas visa."},
-  {"id": 9, "flag": "🇲🇲", "name": "Myanmar", "en": "Myanmar", "region": "Asia Tenggara", "visa": "bebas", "stay": "14 hari", "cost": "Gratis", "notes": "Sesama ASEAN — WNI bebas visa. Situasi politik perlu dimonitor."},
-  {"id": 10, "flag": "🇹🇱", "name": "Timor-Leste", "en": "Timor-Leste", "region": "Asia Tenggara", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Bebas visa lewat perjanjian RI–Timor-Leste. Tersedia di Bandara Dili & border darat Batugade."},
-  {"id": 11, "flag": "🇯🇵", "name": "Jepang", "en": "Japan", "region": "Asia Timur", "visa": "wajib", "stay": "Sesuai visa", "cost": "~Rp 450rb", "notes": "Visa turis via JVAC/Kedutaan. Pemegang e-paspor bisa bebas visa 15 hari dengan registrasi pra-keberangkatan."},
-  {"id": 12, "flag": "🇰🇷", "name": "Korea Selatan", "en": "South Korea", "region": "Asia Timur", "visa": "wajib", "stay": "Sesuai visa", "cost": "~USD 45", "notes": "Visa turis C-3. Ajukan via Kedutaan Korsel Jakarta atau KVAC."},
-  {"id": 13, "flag": "🇨🇳", "name": "China", "en": "China", "region": "Asia Timur", "visa": "wajib", "stay": "Sesuai visa", "cost": "~USD 60–140", "notes": "Visa turis L. Transit <24 jam di beberapa kota bebas visa. Cek kebijakan terbaru."},
-  {"id": 14, "flag": "🇭🇰", "name": "Hong Kong", "en": "Hong Kong", "region": "Asia Timur", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Hong Kong memiliki kebijakan visa independen dari China."},
-  {"id": 15, "flag": "🇲🇴", "name": "Makau", "en": "Macao SAR", "region": "Asia Timur", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Masuk langsung tanpa perlu visa."},
-  {"id": 16, "flag": "🇹🇼", "name": "Taiwan", "en": "Taiwan", "region": "Asia Timur", "visa": "wajib", "stay": "Sesuai visa", "cost": "~USD 60", "notes": "Visa turis bisa diajukan via TETO Jakarta. Proses 5–7 hari kerja."},
-  {"id": 17, "flag": "🇲🇳", "name": "Mongolia", "en": "Mongolia", "region": "Asia Timur", "visa": "evisa", "stay": "30 hari", "cost": "~USD 50", "notes": "e-Visa turis via evisa.mn. Proses online. Verifikasi tarif terbaru."},
-  {"id": 18, "flag": "🇮🇳", "name": "India", "en": "India", "region": "Asia Selatan", "visa": "evisa", "stay": "30 / 90 / 365 hari", "cost": "USD 25–80", "notes": "E-Tourist Visa via indianvisaonline.gov.in. Proses 3–5 hari. Tersedia 3 pilihan durasi."},
-  {"id": 19, "flag": "🇳🇵", "name": "Nepal", "en": "Nepal", "region": "Asia Selatan", "visa": "voa", "stay": "15/30/90 hari", "cost": "USD 30/50", "notes": "Tersedia di Tribhuvan Airport & border utama. Foto wajib dibawa."},
-  {"id": 20, "flag": "🇱🇰", "name": "Sri Lanka", "en": "Sri Lanka", "region": "Asia Selatan", "visa": "evisa", "stay": "30 hari", "cost": "USD 35", "notes": "ETA wajib sebelum berangkat via eta.gov.lk. Proses otomatis."},
-  {"id": 21, "flag": "🇲🇻", "name": "Maladewa", "en": "Maldives", "region": "Asia Selatan", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Sticker visa diberikan gratis saat tiba. Tiket pulang & akomodasi wajib."},
-  {"id": 22, "flag": "🇧🇩", "name": "Bangladesh", "en": "Bangladesh", "region": "Asia Selatan", "visa": "voa", "stay": "30 hari", "cost": "~USD 51", "notes": "VOA bersyarat: tiket pulang, bukti dana, & booking hotel wajib. Diberikan atas diskresi petugas."},
-  {"id": 23, "flag": "🇵🇰", "name": "Pakistan", "en": "Pakistan", "region": "Asia Selatan", "visa": "evisa", "stay": "90 hari", "cost": "~USD 20", "notes": "Program e-visa gratis berakhir 1 Jan 2026 — kini berbayar. Via visa.nadra.gov.pk. Verifikasi tarif terbaru."},
-  {"id": 24, "flag": "🇺🇿", "name": "Uzbekistan", "en": "Uzbekistan", "region": "Asia Tengah", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "WNI ada di daftar bebas visa Uzbekistan. Daftarkan diri di kantor polisi jika menginap."},
-  {"id": 25, "flag": "🇰🇿", "name": "Kazakhstan", "en": "Kazakhstan", "region": "Asia Tengah", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Bebas visa 30 hari sejak 2023. Daftarkan diri di kantor polisi jika menginap."},
-  {"id": 26, "flag": "🇬🇪", "name": "Georgia", "en": "Georgia", "region": "Asia Tengah", "visa": "evisa", "stay": "30 hari", "cost": "USD 20", "notes": "WNI tidak termasuk daftar bebas-visa 1 tahun Georgia — gunakan e-visa via evisa.gov.ge. Ada biaya verifikasi identitas terpisah."},
-  {"id": 27, "flag": "🇦🇿", "name": "Azerbaijan", "en": "Azerbaijan", "region": "Asia Tengah", "visa": "evisa", "stay": "30 hari", "cost": "USD 26", "notes": "E-Visa via evisa.gov.az. Proses 3 hari kerja. ASAN Visa tersedia di bandara."},
-  {"id": 28, "flag": "🇦🇲", "name": "Armenia", "en": "Armenia", "region": "Asia Tengah", "visa": "evisa", "stay": "120 hari", "cost": "~USD 8–38", "notes": "e-Visa via evisa.mfa.am: ~USD 8 (21 hari) atau ~USD 38 (120 hari). VOA juga tersedia."},
-  {"id": 29, "flag": "🇰🇬", "name": "Kyrgyzstan", "en": "Kyrgyzstan", "region": "Asia Tengah", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Bebas visa 30 hari dalam periode 60 hari (berlaku sejak 1 Jan 2026)."},
-  {"id": 30, "flag": "🇹🇯", "name": "Tajikistan", "en": "Tajikistan", "region": "Asia Tengah", "visa": "evisa", "stay": "45 hari", "cost": "USD 30", "notes": "E-Visa via evisa.tj. Izin khusus GBAO jika ke Pamir Highway."},
-  {"id": 31, "flag": "🇦🇪", "name": "Uni Emirat Arab", "en": "UAE", "region": "Timur Tengah", "visa": "wajib", "stay": "30 hari", "cost": "~USD 70–110", "notes": "WNI butuh visa diatur sebelumnya (e-visa disponsori maskapai/hotel) — bukan VOA gratis. Biaya tergantung sponsor & durasi."},
-  {"id": 32, "flag": "🇸🇦", "name": "Arab Saudi", "en": "Saudi Arabia", "region": "Timur Tengah", "visa": "evisa", "stay": "90 hari (maks. 180/tahun)", "cost": "SAR 535 (~USD 140)", "notes": "e-Visa turis via visa.visitsaudi.com, sudah termasuk asuransi perjalanan wajib."},
-  {"id": 33, "flag": "🇹🇷", "name": "Türkiye", "en": "Turkey", "region": "Timur Tengah", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Bebas visa lewat perjanjian RI–Turki. Paspor berlaku min. 6 bulan."},
-  {"id": 34, "flag": "🇶🇦", "name": "Qatar", "en": "Qatar", "region": "Timur Tengah", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Visa waiver gratis diberikan saat tiba di Hamad International Airport. Bisa diperpanjang 30 hari."},
-  {"id": 35, "flag": "🇴🇲", "name": "Oman", "en": "Oman", "region": "Timur Tengah", "visa": "evisa", "stay": "30 hari", "cost": "OMR 20 (~USD 52)", "notes": "Bebas visa 14 hari, atau e-visa 30 hari via evisa.rop.gov.om."},
-  {"id": 36, "flag": "🇧🇭", "name": "Bahrain", "en": "Bahrain", "region": "Timur Tengah", "visa": "evisa", "stay": "14 hari", "cost": "BD 9 (~USD 24)", "notes": "Visa on arrival & e-visa tersedia. Via evisa.npra.gov.bh."},
-  {"id": 37, "flag": "🇰🇼", "name": "Kuwait", "en": "Kuwait", "region": "Timur Tengah", "visa": "wajib", "stay": "Sesuai visa", "cost": "~USD 50", "notes": "Ajukan di Kedutaan Kuwait Jakarta. Proses bisa memakan waktu."},
-  {"id": 38, "flag": "🇯🇴", "name": "Yordania", "en": "Jordan", "region": "Timur Tengah", "visa": "voa", "stay": "30 hari", "cost": "JD 40 (~USD 56)", "notes": "Gratis jika paket wisata Jordan Pass. Tersedia di semua entry point utama."},
-  {"id": 39, "flag": "🇪🇬", "name": "Mesir", "en": "Egypt", "region": "Timur Tengah", "visa": "evisa", "stay": "30 hari", "cost": "USD 30", "notes": "e-Visa via visa2egypt.gov.eg, atau visa kedutaan. VOA hanya jika pegang visa US/Schengen berlaku."},
-  {"id": 40, "flag": "🇮🇷", "name": "Iran", "en": "Iran", "region": "Timur Tengah", "visa": "bebas", "stay": "15 hari", "cost": "Gratis", "notes": "Iran memasukkan WNI ke daftar bebas visa. Situasi perlu dimonitor. Paspor Israel didiskualifikasi."},
-  {"id": 41, "flag": "🇫🇷", "name": "Prancis", "en": "France", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90 (~Rp 1,5jt)", "notes": "Visa Schengen berlaku di 27 negara. Ajukan di VFS Global / kedutaan."},
-  {"id": 42, "flag": "🇩🇪", "name": "Jerman", "en": "Germany", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Salah satu kedutaan paling ketat. Bukti keuangan & asuransi wajib."},
-  {"id": 43, "flag": "🇮🇹", "name": "Italia", "en": "Italy", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Ajukan di mana negara utama tujuan/persinggahan terlama."},
-  {"id": 44, "flag": "🇪🇸", "name": "Spanyol", "en": "Spain", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Proses 15–30 hari kerja. Rekening bank 3 bulan terakhir wajib."},
-  {"id": 45, "flag": "🇳🇱", "name": "Belanda", "en": "Netherlands", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. VFS Global tersedia di Jakarta."},
-  {"id": 46, "flag": "🇨🇭", "name": "Swiss", "en": "Switzerland", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "CHF 100 (~Rp 1,75jt)", "notes": "Schengen. Meski bukan EU, Swiss bagian dari zona Schengen."},
-  {"id": 47, "flag": "🇦🇹", "name": "Austria", "en": "Austria", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Visa bisa diajukan via Kedutaan Austria Jakarta."},
-  {"id": 48, "flag": "🇧🇪", "name": "Belgia", "en": "Belgium", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen."},
-  {"id": 49, "flag": "🇬🇷", "name": "Yunani", "en": "Greece", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Musim ramai April–Oktober."},
-  {"id": 50, "flag": "🇵🇹", "name": "Portugal", "en": "Portugal", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen."},
-  {"id": 51, "flag": "🇨🇿", "name": "Republik Ceko", "en": "Czech Republic", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Praha salah satu kota wisata populer di Eropa Tengah."},
-  {"id": 52, "flag": "🇭🇺", "name": "Hungaria", "en": "Hungary", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Budapest — destinasi populer wisatawan Indonesia."},
-  {"id": 53, "flag": "🇵🇱", "name": "Polandia", "en": "Poland", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen."},
-  {"id": 54, "flag": "🇸🇪", "name": "Swedia", "en": "Sweden", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen."},
-  {"id": 55, "flag": "🇳🇴", "name": "Norwegia", "en": "Norway", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Northern Lights & Fjord populer untuk wisata alam."},
-  {"id": 56, "flag": "🇩🇰", "name": "Denmark", "en": "Denmark", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen."},
-  {"id": 57, "flag": "🇫🇮", "name": "Finlandia", "en": "Finland", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Rovaniemi populer untuk wisata Natal & Aurora."},
-  {"id": 58, "flag": "🇸🇰", "name": "Slovakia", "en": "Slovakia", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen."},
-  {"id": 59, "flag": "🇸🇮", "name": "Slovenia", "en": "Slovenia", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Danau Bled — spot foto favorit wisatawan Indonesia."},
-  {"id": 60, "flag": "🇪🇪", "name": "Estonia", "en": "Estonia", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Tallinn Old Town UNESCO."},
-  {"id": 61, "flag": "🇱🇻", "name": "Latvia", "en": "Latvia", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Riga — kota art nouveau terbesar di dunia."},
-  {"id": 62, "flag": "🇱🇹", "name": "Lithuania", "en": "Lithuania", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Vilnius UNESCO World Heritage."},
-  {"id": 63, "flag": "🇲🇹", "name": "Malta", "en": "Malta", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen. Negara kepulauan Mediterania."},
-  {"id": 64, "flag": "🇮🇸", "name": "Islandia", "en": "Iceland", "region": "Eropa Schengen", "visa": "wajib", "stay": "Maks. 90 hari/180 hari", "cost": "EUR 90", "notes": "Schengen meski bukan EU. Northern Lights & Golden Circle."},
-  {"id": 65, "flag": "🇬🇧", "name": "Inggris", "en": "United Kingdom", "region": "Eropa Non-Schengen", "visa": "wajib", "stay": "Maks. 6 bulan", "cost": "GBP 115 (~Rp 2,3jt)", "notes": "Visa UK Standard Visitor. Proses 3–8 minggu via UKVI/VFS. Biometric wajib."},
-  {"id": 66, "flag": "🇮🇪", "name": "Irlandia", "en": "Ireland", "region": "Eropa Non-Schengen", "visa": "wajib", "stay": "Sesuai visa", "cost": "EUR 60–100", "notes": "Visa C (short stay). Irlandia punya kebijakan visa independen dari Schengen."},
-  {"id": 67, "flag": "🇷🇸", "name": "Serbia", "en": "Serbia", "region": "Eropa Non-Schengen", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Bebas visa 30 hari. Beograd semakin populer untuk wisata budget Eropa."},
-  {"id": 68, "flag": "🇲🇪", "name": "Montenegro", "en": "Montenegro", "region": "Eropa Non-Schengen", "visa": "wajib", "stay": "Sesuai visa", "cost": "Via kedutaan", "notes": "Bebas visa hanya jika pegang visa Schengen/US/UK berlaku; selain itu wajib visa kedutaan."},
-  {"id": 69, "flag": "🇦🇱", "name": "Albania", "en": "Albania", "region": "Eropa Non-Schengen", "visa": "evisa", "stay": "90 hari", "cost": "EUR 60 (~USD 65)", "notes": "Ada jendela bebas visa musiman (sekitar 15 Apr–31 Des, cek tanggal tiap tahun). Di luar itu pakai e-visa (e-visa.al). Bebas juga jika pegang visa Schengen multiple-entry."},
-  {"id": 70, "flag": "🇧🇦", "name": "Bosnia Herzegovina", "en": "Bosnia and Herzegovina", "region": "Eropa Non-Schengen", "visa": "wajib", "stay": "Sesuai visa", "cost": "Via kedutaan", "notes": "Bebas visa hanya jika pegang visa Schengen multiple-entry berlaku; selain itu wajib visa kedutaan."},
-  {"id": 71, "flag": "🇲🇰", "name": "Makedonia Utara", "en": "North Macedonia", "region": "Eropa Non-Schengen", "visa": "wajib", "stay": "Sesuai visa", "cost": "Via kedutaan", "notes": "Bebas visa hanya jika pegang visa Schengen type-C multiple-entry berlaku; selain itu wajib visa kedutaan."},
-  {"id": 72, "flag": "🇷🇺", "name": "Rusia", "en": "Russia", "region": "Eropa Non-Schengen", "visa": "evisa", "stay": "30 hari", "cost": "~USD 52", "notes": "e-Visa terpadu via evisa.kdmid.ru, berbayar ~USD 52. Masa tinggal diperpanjang jadi 30 hari sejak Agustus 2025. Verifikasi kondisi terkini mengingat situasi geopolitik."},
-  {"id": 73, "flag": "🇺🇸", "name": "Amerika Serikat", "en": "United States", "region": "Amerika", "visa": "wajib", "stay": "Maks. 6 bulan (B1/B2)", "cost": "USD 185", "notes": "Visa B1/B2 via usvisas.state.gov. Wawancara wajib di Kedutaan/Konsulat AS. Penolakan lumayan tinggi untuk WNI."},
-  {"id": 74, "flag": "🇨🇦", "name": "Kanada", "en": "Canada", "region": "Amerika", "visa": "wajib", "stay": "Maks. 6 bulan", "cost": "CAD 100 (~USD 74)", "notes": "Visa turis via IRCC. Biometrik wajib. Proses 4–8 minggu."},
-  {"id": 75, "flag": "🇲🇽", "name": "Meksiko", "en": "Mexico", "region": "Amerika", "visa": "wajib", "stay": "Sesuai visa", "cost": "~USD 48–54", "notes": "WNI butuh visa, KECUALI pegang visa/izin tinggal US/Kanada/Schengen/Jepang. Verifikasi tarif ke kedutaan."},
-  {"id": 76, "flag": "🇧🇷", "name": "Brasil", "en": "Brazil", "region": "Amerika", "visa": "bebas", "stay": "90 hari", "cost": "Gratis", "notes": "Bebas visa 90 hari. Brasil membuka bebas visa untuk Indonesia per 2023."},
-  {"id": 77, "flag": "🇦🇷", "name": "Argentina", "en": "Argentina", "region": "Amerika", "visa": "wajib", "stay": "Sesuai visa", "cost": "~USD 50 (AVE)", "notes": "WNI butuh visa. AVE elektronik (~USD 50) tersedia jika pegang visa US berlaku — masuk via udara saja."},
-  {"id": 78, "flag": "🇵🇪", "name": "Peru", "en": "Peru", "region": "Amerika", "visa": "bebas", "stay": "183 hari", "cost": "Gratis", "notes": "Bebas visa 183 hari. Machu Picchu — salah satu keajaiban dunia."},
-  {"id": 79, "flag": "🇨🇴", "name": "Kolombia", "en": "Colombia", "region": "Amerika", "visa": "bebas", "stay": "90 hari", "cost": "Gratis", "notes": "Bebas visa 90 hari."},
-  {"id": 80, "flag": "🇨🇱", "name": "Cile", "en": "Chile", "region": "Amerika", "visa": "bebas", "stay": "90 hari", "cost": "Gratis", "notes": "Bebas visa 90 hari. Patagonia & Atacama — destinasi alam kelas dunia."},
-  {"id": 81, "flag": "🇲🇦", "name": "Maroko", "en": "Morocco", "region": "Afrika", "visa": "bebas", "stay": "90 hari", "cost": "Gratis", "notes": "Bebas visa 90 hari. Marrakech, Fes, Sahara — sangat populer wisatawan Muslim Indonesia."},
-  {"id": 82, "flag": "🇰🇪", "name": "Kenya", "en": "Kenya", "region": "Afrika", "visa": "evisa", "stay": "90 hari", "cost": "USD 51", "notes": "e-Visa wajib via etakenya.go.ke. Proses 3 hari. Safari Masai Mara."},
-  {"id": 83, "flag": "🇹🇿", "name": "Tanzania", "en": "Tanzania", "region": "Afrika", "visa": "voa", "stay": "90 hari", "cost": "USD 50", "notes": "Visa on arrival di bandara utama & border. E-Visa juga tersedia."},
-  {"id": 84, "flag": "🇿🇦", "name": "Afrika Selatan", "en": "South Africa", "region": "Afrika", "visa": "evisa", "stay": "90 hari", "cost": "Cek situs ETA", "notes": "Sistem ETA/e-visa berlaku untuk WNI sejak 12 Feb 2026 (masuk via bandara OR Tambo/Cape Town/Lanseria). Cek eta.dha.gov.za."},
-  {"id": 85, "flag": "🇷🇼", "name": "Rwanda", "en": "Rwanda", "region": "Afrika", "visa": "bebas", "stay": "30 hari", "cost": "Gratis", "notes": "Bebas visa on arrival. Rwanda — salah satu negara teraman & terbersih di Afrika."},
-  {"id": 86, "flag": "🇦🇺", "name": "Australia", "en": "Australia", "region": "Oseania", "visa": "wajib", "stay": "Maks. 3 bulan (turis)", "cost": "AUD 145 (~Rp 1,5jt)", "notes": "Visa turis subclass 600 via immi.homeaffairs.gov.au. Biometrik di VFS. Proses 2–6 minggu."},
-  {"id": 87, "flag": "🇳🇿", "name": "Selandia Baru", "en": "New Zealand", "region": "Oseania", "visa": "wajib", "stay": "Sesuai visa", "cost": "NZD 311 (~USD 185)", "notes": "NZeTA tidak berlaku untuk WNI — wajib Visitor Visa via immigration.govt.nz. Biaya sudah termasuk IVL (International Visitor Levy)."},
-  {"id": 88, "flag": "🇫🇯", "name": "Fiji", "en": "Fiji", "region": "Oseania", "visa": "bebas", "stay": "4 bulan", "cost": "Gratis", "notes": "Bebas visa 4 bulan. Surganya pantai Pasifik Selatan."}
+  {
+    "id": 1,
+    "flag": "🇸🇬",
+    "name": "Singapura",
+    "en": "Singapore",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Paspor berlaku min. 6 bulan. Bisa masuk berulang kali.",
+    "conditions": [
+      "SG Arrival Card tetap wajib diisi sebelum kedatangan",
+      "Izin masuk akhir ditentukan petugas ICA di Singapura"
+    ],
+    "sourceUrl": "https://www.ica.gov.sg/enter-transit-depart/entering-singapore/visa_requirements",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 2,
+    "flag": "🇲🇾",
+    "name": "Malaysia",
+    "en": "Malaysia",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Perpanjangan bisa diajukan di imigrasi Malaysia.",
+    "conditions": [
+      "Bebas visa untuk kunjungan sosial singkat",
+      "Izin masuk akhir ditentukan petugas Imigresen Malaysia"
+    ],
+    "sourceUrl": "https://malaysiavisa.imi.gov.my/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 3,
+    "flag": "🇹🇭",
+    "name": "Thailand",
+    "en": "Thailand",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "60 hari",
+    "cost": "Gratis",
+    "notes": "Masuk via darat maks. 2×/tahun. Via udara tidak dibatasi.",
+    "conditions": [
+      "Skema visa exemption Thailand dapat berubah cepat",
+      "Pastikan paspor, tiket keluar, dan bukti akomodasi siap saat masuk"
+    ],
+    "sourceUrl": "https://www.thaievisa.go.th/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 4,
+    "flag": "🇻🇳",
+    "name": "Vietnam",
+    "en": "Vietnam",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "WNI sebagai warga ASEAN dapat bebas visa 30 hari.",
+    "conditions": [
+      "WNI mendapat bebas visa untuk kunjungan singkat sesuai kebijakan Vietnam",
+      "e-Visa tetap relevan untuk durasi atau tujuan yang tidak masuk skema bebas visa"
+    ],
+    "sourceUrl": "https://evisa.gov.vn/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 5,
+    "flag": "🇵🇭",
+    "name": "Filipina",
+    "en": "Philippines",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Dapat diperpanjang di BI Office setempat.",
+    "conditions": [
+      "Bebas visa berlaku untuk kunjungan singkat yang memenuhi syarat",
+      "Izin masuk akhir ditentukan Bureau of Immigration Philippines"
+    ],
+    "sourceUrl": "https://evisa.gov.ph/page/policy",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 6,
+    "flag": "🇧🇳",
+    "name": "Brunei Darussalam",
+    "en": "Brunei",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "14 hari",
+    "cost": "Gratis",
+    "notes": "Perpanjangan bisa diajukan ke Imigrasi Brunei.",
+    "conditions": [
+      "Bebas visa berlaku untuk kunjungan singkat yang memenuhi syarat",
+      "Perpanjangan atau tujuan non-wisata mengikuti Imigresen Brunei"
+    ],
+    "sourceUrl": "https://www.immigration.gov.bn/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 7,
+    "flag": "🇰🇭",
+    "name": "Kamboja",
+    "en": "Cambodia",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Sesama ASEAN — WNI bebas visa. Paspor berlaku min. 6 bulan.",
+    "conditions": [
+      "WNI mendapat bebas visa ASEAN untuk kunjungan singkat",
+      "e-Visa Cambodia tetap relevan untuk paspor/tujuan yang tidak memenuhi bebas visa"
+    ],
+    "sourceUrl": "https://www.evisa.gov.kh/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 8,
+    "flag": "🇱🇦",
+    "name": "Laos",
+    "en": "Laos",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Sesama ASEAN — WNI bebas visa.",
+    "conditions": [
+      "WNI mendapat bebas visa ASEAN untuk kunjungan singkat",
+      "e-Visa Laos tetap relevan untuk paspor/tujuan yang tidak memenuhi bebas visa"
+    ],
+    "sourceUrl": "https://laoevisa.gov.la/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 9,
+    "flag": "🇲🇲",
+    "name": "Myanmar",
+    "en": "Myanmar",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "14 hari",
+    "cost": "Gratis",
+    "notes": "Sesama ASEAN — WNI bebas visa. Situasi politik perlu dimonitor.",
+    "conditions": [
+      "Kebijakan masuk Myanmar dapat berubah karena situasi politik dan keamanan",
+      "Cek portal resmi sebelum menjual atau menerbitkan itinerary"
+    ],
+    "sourceUrl": "https://evisa.moip.gov.mm/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 10,
+    "flag": "🇹🇱",
+    "name": "Timor-Leste",
+    "en": "Timor-Leste",
+    "region": "Asia Tenggara",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Bebas visa lewat perjanjian RI–Timor-Leste. Tersedia di Bandara Dili & border darat Batugade.",
+    "conditions": [
+      "Bebas visa berlaku untuk kunjungan singkat yang memenuhi syarat",
+      "Izin masuk akhir ditentukan Serviço de Migração Timor-Leste"
+    ],
+    "sourceUrl": "https://migracao.gov.tl/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 11,
+    "flag": "🇯🇵",
+    "name": "Jepang",
+    "en": "Japan",
+    "region": "Asia Timur",
+    "visa": "conditional",
+    "stay": "15 hari (waiver) / sesuai visa",
+    "cost": "Mulai Rp 300.000",
+    "officialFee": "Gratis untuk visa waiver; biaya visa reguler mengikuti jenis visa",
+    "servicePrice": "Mulai Rp 300.000",
+    "notes": "Bebas visa hanya untuk e-paspor Indonesia yang sudah registrasi waiver. Paspor biasa atau e-paspor tanpa registrasi tetap perlu visa.",
+    "conditions": [
+      "Khusus e-paspor ICAO Indonesia yang sudah registrasi visa waiver",
+      "Masa tinggal waiver maksimal 15 hari",
+      "Paspor biasa atau e-paspor tanpa registrasi tetap perlu visa"
+    ],
+    "sourceUrl": "https://www.mofa.go.jp/j_info/visit/visa/short/novisa.html",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 12,
+    "flag": "🇰🇷",
+    "name": "Korea Selatan",
+    "en": "South Korea",
+    "region": "Asia Timur",
+    "visa": "wajib",
+    "stay": "Sesuai visa",
+    "cost": "Mulai Rp 1.550.000",
+    "notes": "Paspor biasa Indonesia perlu visa Korea Selatan untuk wisata. Layanan Sundaf dipisahkan dari biaya resmi kedutaan/KVAC.",
+    "officialFee": "Cek Kedutaan/KVAC untuk fee resmi terbaru",
+    "servicePrice": "Mulai Rp 1.550.000",
+    "conditions": [
+      "Visa turis C-3 diajukan melalui jalur resmi Kedutaan/KVAC",
+      "K-ETA tidak menggantikan visa untuk pemegang paspor biasa Indonesia yang tidak eligible"
+    ],
+    "sourceUrl": "https://www.visa.go.kr/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 13,
+    "flag": "🇨🇳",
+    "name": "China",
+    "en": "China",
+    "region": "Asia Timur",
+    "visa": "wajib",
+    "stay": "Sesuai visa",
+    "cost": "Mulai Rp 1.450.000",
+    "notes": "Paspor biasa Indonesia perlu visa China untuk wisata, kecuali skema transit bebas visa yang memenuhi syarat dan rute tertentu.",
+    "officialFee": "Cek Chinese Visa Application Service Center",
+    "servicePrice": "Mulai Rp 1.450.000",
+    "conditions": [
+      "Visa turis L diperlukan untuk kunjungan wisata reguler",
+      "Transit bebas visa hanya berlaku jika memenuhi syarat rute, tiket lanjutan, dan kota/port tertentu"
+    ],
+    "sourceUrl": "https://www.visaforchina.cn/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 14,
+    "flag": "🇭🇰",
+    "name": "Hong Kong",
+    "en": "Hong Kong",
+    "region": "Asia Timur",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Hong Kong memiliki kebijakan visa independen dari China.",
+    "conditions": [
+      "Hong Kong memiliki kebijakan imigrasi sendiri, terpisah dari visa China daratan",
+      "Izin masuk akhir ditentukan petugas Immigration Department"
+    ],
+    "sourceUrl": "https://www.immd.gov.hk/eng/services/visas/visit-transit/visit-visa-entry-permit.html",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 15,
+    "flag": "🇲🇴",
+    "name": "Makau",
+    "en": "Macao SAR",
+    "region": "Asia Timur",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Masuk langsung tanpa perlu visa.",
+    "conditions": [
+      "Macao memiliki kebijakan imigrasi sendiri, terpisah dari visa China daratan",
+      "Izin masuk akhir ditentukan petugas Public Security Police Force"
+    ],
+    "sourceUrl": "https://www.gov.mo/en/services/ps-1474/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 16,
+    "flag": "🇹🇼",
+    "name": "Taiwan",
+    "en": "Taiwan",
+    "region": "Asia Timur",
+    "visa": "conditional",
+    "stay": "30 hari (TAC) / sesuai visa",
+    "cost": "Mulai Rp 300.000",
+    "officialFee": "Gratis untuk Travel Authorization Certificate; visa reguler mengikuti TETO",
+    "servicePrice": "Mulai Rp 300.000",
+    "notes": "Travel Authorization Certificate Taiwan bersifat bersyarat, bukan e-Visa umum. Jika tidak memenuhi syarat TAC, ajukan visa reguler via TETO.",
+    "conditions": [
+      "TAC hanya untuk pemohon yang memenuhi kriteria BOCA",
+      "Jika tidak memenuhi TAC, gunakan visa reguler via TETO",
+      "Masa tinggal TAC maksimal 30 hari"
+    ],
+    "sourceUrl": "https://www.boca.gov.tw/cp-152-274-8c0e2-2.html",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 17,
+    "flag": "🇲🇳",
+    "name": "Mongolia",
+    "en": "Mongolia",
+    "region": "Asia Timur",
+    "visa": "evisa",
+    "stay": "30 hari",
+    "cost": "~USD 50",
+    "notes": "WNI menggunakan e-Visa Mongolia untuk kunjungan wisata. Tarif resmi perlu dicek langsung di portal karena dapat berubah.",
+    "officialFee": "Cek portal resmi e-Visa Mongolia",
+    "servicePrice": null,
+    "conditions": [
+      "Ajukan lewat portal resmi e-Visa Mongolia",
+      "Masa tinggal dan jumlah masuk mengikuti tipe visa yang disetujui"
+    ],
+    "sourceUrl": "https://evisa.mn/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 18,
+    "flag": "🇮🇳",
+    "name": "India",
+    "en": "India",
+    "region": "Asia Selatan",
+    "visa": "evisa",
+    "stay": "30 / 90 / 365 hari",
+    "cost": "Rp 550.000",
+    "notes": "India memakai e-Tourist Visa via portal resmi. Biaya resmi harus dipisahkan dari biaya layanan Sundaf.",
+    "officialFee": "Gratis untuk e-Tourist Visa 30 hari bagi WNI; cek tabel resmi untuk tipe lain",
+    "servicePrice": "Rp 550.000",
+    "conditions": [
+      "Ajukan hanya lewat portal resmi Indian Visa Online",
+      "Durasi dan masa berlaku mengikuti tipe e-Tourist Visa yang dipilih",
+      "Biaya resmi dapat berbeda untuk tipe 1 tahun, 5 tahun, atau kewarganegaraan lain"
+    ],
+    "sourceUrl": "https://indianvisaonline.gov.in/evisa/tvoa.html",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 19,
+    "flag": "🇳🇵",
+    "name": "Nepal",
+    "en": "Nepal",
+    "region": "Asia Selatan",
+    "visa": "voa",
+    "stay": "15/30/90 hari",
+    "cost": "Rp 300.000",
+    "officialFee": "USD 30/50/125",
+    "servicePrice": "Rp 300.000",
+    "notes": "Tourist visa on arrival tersedia di Tribhuvan Airport dan border utama. Siapkan paspor, foto, tiket pulang, dan biaya sesuai durasi.",
+    "conditions": [
+      "Durasi VOA tersedia 15, 30, atau 90 hari",
+      "Biaya resmi berbeda sesuai durasi tinggal",
+      "Keputusan akhir tetap di petugas imigrasi Nepal"
+    ],
+    "sourceUrl": "https://ntb.gov.np/plan-your-trip/before-you-come/tourist-visa",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 20,
+    "flag": "🇱🇰",
+    "name": "Sri Lanka",
+    "en": "Sri Lanka",
+    "region": "Asia Selatan",
+    "visa": "evisa",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Sri Lanka memberlakukan bebas biaya ETA/tourist visa 30 hari untuk WNI per 25 Mei 2026. Tetap cek portal resmi sebelum berangkat.",
+    "officialFee": "Gratis untuk ETA/tourist visa 30 hari mulai 25 Mei 2026",
+    "servicePrice": null,
+    "conditions": [
+      "Kebijakan gratis berlaku untuk kunjungan wisata 30 hari sesuai pengumuman resmi",
+      "Aturan dapat berubah, terutama untuk durasi lebih panjang atau tujuan non-wisata"
+    ],
+    "sourceUrl": "https://www.immigration.gov.lk/pages_e.php?id=14",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 21,
+    "flag": "🇲🇻",
+    "name": "Maladewa",
+    "en": "Maldives",
+    "region": "Asia Selatan",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Sticker visa diberikan gratis saat tiba. Tiket pulang & akomodasi wajib.",
+    "conditions": [
+      "Tourist visa diberikan saat kedatangan jika memenuhi syarat masuk",
+      "Tiket keluar, akomodasi, dan bukti dana dapat diminta"
+    ],
+    "sourceUrl": "https://immigration.gov.mv/visa/tourist-visa/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 22,
+    "flag": "🇧🇩",
+    "name": "Bangladesh",
+    "en": "Bangladesh",
+    "region": "Asia Selatan",
+    "visa": "voa",
+    "stay": "30 hari",
+    "cost": "~USD 51",
+    "notes": "VOA Bangladesh bersifat diskresioner. Pemohon harus siap dengan tiket pulang, bukti dana, dan akomodasi.",
+    "officialFee": "Cek Department of Immigration & Passports Bangladesh",
+    "servicePrice": null,
+    "conditions": [
+      "Visa on arrival tidak boleh dianggap jaminan masuk",
+      "Petugas imigrasi dapat meminta dokumen pendukung tambahan"
+    ],
+    "sourceUrl": "https://dip.gov.bd/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 23,
+    "flag": "🇵🇰",
+    "name": "Pakistan",
+    "en": "Pakistan",
+    "region": "Asia Selatan",
+    "visa": "evisa",
+    "stay": "90 hari",
+    "cost": "~USD 20",
+    "notes": "Pakistan memakai Online Visa System. Status bebas biaya/berbayar harus dicek ulang di portal resmi sebelum menjual layanan.",
+    "officialFee": "Cek kalkulator resmi Pakistan Online Visa System",
+    "servicePrice": null,
+    "conditions": [
+      "Ajukan lewat Pakistan Online Visa System",
+      "Fee mengikuti tipe visa, durasi, dan kewarganegaraan"
+    ],
+    "sourceUrl": "https://visa.nadra.gov.pk/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 24,
+    "flag": "🇺🇿",
+    "name": "Uzbekistan",
+    "en": "Uzbekistan",
+    "region": "Asia Tengah",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "WNI ada di daftar bebas visa Uzbekistan. Daftarkan diri di kantor polisi jika menginap.",
+    "conditions": [
+      "WNI masuk daftar bebas visa untuk kunjungan singkat",
+      "Registrasi tempat tinggal dapat berlaku untuk masa tinggal tertentu"
+    ],
+    "sourceUrl": "https://e-visa.gov.uz/main",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 25,
+    "flag": "🇰🇿",
+    "name": "Kazakhstan",
+    "en": "Kazakhstan",
+    "region": "Asia Tengah",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Bebas visa 30 hari sejak 2023. Daftarkan diri di kantor polisi jika menginap.",
+    "conditions": [
+      "WNI masuk skema bebas visa Kazakhstan untuk kunjungan singkat",
+      "Aturan registrasi dan durasi tinggal perlu dicek untuk perjalanan panjang"
+    ],
+    "sourceUrl": "https://www.gov.kz/memleket/entities/mfa/press/article/details/6764",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 26,
+    "flag": "🇬🇪",
+    "name": "Georgia",
+    "en": "Georgia",
+    "region": "Asia Tengah",
+    "visa": "evisa",
+    "stay": "30 hari",
+    "cost": "USD 20",
+    "notes": "WNI tidak termasuk daftar bebas visa Georgia satu tahun, sehingga gunakan e-Visa untuk wisata reguler.",
+    "officialFee": "USD 20 + biaya layanan/verifikasi sesuai portal",
+    "servicePrice": null,
+    "conditions": [
+      "Ajukan lewat portal resmi e-Visa Georgia",
+      "Pemegang visa/izin tinggal tertentu dapat punya jalur pengecualian terpisah"
+    ],
+    "sourceUrl": "https://www.evisa.gov.ge/GeoVisa/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 27,
+    "flag": "🇦🇿",
+    "name": "Azerbaijan",
+    "en": "Azerbaijan",
+    "region": "Asia Tengah",
+    "visa": "evisa",
+    "stay": "30 hari",
+    "cost": "USD 26",
+    "notes": "E-Visa via evisa.gov.az. Proses 3 hari kerja. ASAN Visa tersedia di bandara.",
+    "conditions": [
+      "ASAN e-Visa tersedia untuk kunjungan wisata",
+      "Visa on arrival hanya tersedia untuk kondisi/kebangsaan tertentu, jadi e-Visa lebih aman"
+    ],
+    "sourceUrl": "https://evisa.gov.az/en/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "USD 26"
+  },
+  {
+    "id": 28,
+    "flag": "🇦🇲",
+    "name": "Armenia",
+    "en": "Armenia",
+    "region": "Asia Tengah",
+    "visa": "evisa",
+    "stay": "120 hari",
+    "cost": "~USD 8–38",
+    "notes": "e-Visa via evisa.mfa.am: ~USD 8 (21 hari) atau ~USD 38 (120 hari). VOA juga tersedia.",
+    "conditions": [
+      "e-Visa dan visa on arrival Armenia tersedia untuk sejumlah kewarganegaraan",
+      "Gunakan portal resmi untuk memilih durasi 21 atau 120 hari"
+    ],
+    "sourceUrl": "https://www.mfa.am/en/visa/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "~USD 8–38"
+  },
+  {
+    "id": 29,
+    "flag": "🇰🇬",
+    "name": "Kyrgyzstan",
+    "en": "Kyrgyzstan",
+    "region": "Asia Tengah",
+    "visa": "bebas",
+    "stay": "30 hari (dalam periode 60 hari)",
+    "cost": "Gratis",
+    "officialFee": "Gratis",
+    "servicePrice": null,
+    "notes": "Bebas visa 30 hari dalam periode 60 hari. Untuk tinggal lebih lama, cek jalur e-Visa atau izin lain sebelum berangkat.",
+    "conditions": [
+      "Bebas visa maksimal 30 hari dalam periode 60 hari",
+      "Tinggal lebih lama perlu cek e-Visa/izin lain"
+    ],
+    "sourceUrl": "https://www.evisa.e-gov.kg/get_information.php?lng=en",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 30,
+    "flag": "🇹🇯",
+    "name": "Tajikistan",
+    "en": "Tajikistan",
+    "region": "Asia Tengah",
+    "visa": "conditional",
+    "stay": "30 hari bebas visa / 60 hari e-Visa",
+    "cost": "Gratis / USD 30",
+    "officialFee": "Gratis untuk bebas visa 30 hari; e-Visa mulai USD 30",
+    "servicePrice": null,
+    "notes": "WNI masuk daftar bebas visa Tajikistan 30 hari. e-Visa tetap relevan untuk kebutuhan tinggal lebih lama atau izin khusus seperti GBAO.",
+    "conditions": [
+      "Bebas visa maksimal 30 hari",
+      "e-Visa diperlukan untuk kebutuhan tertentu atau tinggal lebih lama",
+      "Izin GBAO diperlukan jika masuk wilayah Pamir/GBAO"
+    ],
+    "sourceUrl": "https://mfa.tj/en/brussels/view/9213/visa-free-travel-to-tajikistan",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 31,
+    "flag": "🇦🇪",
+    "name": "Uni Emirat Arab",
+    "en": "UAE",
+    "region": "Timur Tengah",
+    "visa": "wajib",
+    "stay": "30/60 hari sesuai visa",
+    "cost": "Mulai Rp 2.500.000",
+    "notes": "WNI perlu visa UAE yang diatur sebelum berangkat melalui sponsor, maskapai, hotel, atau agen resmi. Tidak boleh ditulis sebagai VOA gratis.",
+    "officialFee": "Mulai AED 252 untuk 30-day tourist visa Dubai; tipe lain bervariasi",
+    "servicePrice": "Mulai Rp 2.500.000",
+    "conditions": [
+      "Biaya resmi bergantung pada sponsor dan jenis visa",
+      "Transit visa berbeda dari tourist visa",
+      "Persetujuan akhir mengikuti otoritas UAE"
+    ],
+    "sourceUrl": "https://www.gdrfad.gov.ae/en/services/f9e586fe-0642-11ec-0320-0050569629e8",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 32,
+    "flag": "🇸🇦",
+    "name": "Arab Saudi",
+    "en": "Saudi Arabia",
+    "region": "Timur Tengah",
+    "visa": "conditional",
+    "stay": "90 hari (maks. 180/tahun)",
+    "cost": "Mulai Rp 2.500.000",
+    "officialFee": "SAR 535 (~USD 140)",
+    "servicePrice": "Mulai Rp 2.500.000",
+    "notes": "e-Visa turis Saudi bersifat bersyarat untuk sebagian WNI. Jika tidak memenuhi syarat e-Visa, gunakan jalur visa sesuai tujuan perjalanan.",
+    "conditions": [
+      "e-Visa turis tidak boleh dianggap otomatis untuk semua WNI",
+      "Cek syarat berdasarkan riwayat visa, tujuan perjalanan, dan jalur masuk",
+      "Aturan dapat berubah cepat menjelang musim umrah/haji"
+    ],
+    "sourceUrl": "https://visa.visitsaudi.com/",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 33,
+    "flag": "🇹🇷",
+    "name": "Türkiye",
+    "en": "Turkey",
+    "region": "Timur Tengah",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Bebas visa lewat perjanjian RI–Turki. Paspor berlaku min. 6 bulan.",
+    "conditions": [
+      "Paspor biasa Indonesia mendapat bebas visa untuk kunjungan singkat",
+      "Pastikan paspor berlaku minimal 6 bulan dan tiket keluar tersedia"
+    ],
+    "sourceUrl": "https://www.evisa.gov.tr/en/apply/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 34,
+    "flag": "🇶🇦",
+    "name": "Qatar",
+    "en": "Qatar",
+    "region": "Timur Tengah",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Visa waiver gratis diberikan saat tiba di Hamad International Airport. Bisa diperpanjang 30 hari.",
+    "conditions": [
+      "Visa waiver diberikan saat tiba jika memenuhi syarat dokumen",
+      "Akomodasi, tiket pulang, atau asuransi dapat diminta sesuai kebijakan Qatar"
+    ],
+    "sourceUrl": "https://visitqatar.com/intl-en/practical-info/visas",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 35,
+    "flag": "🇴🇲",
+    "name": "Oman",
+    "en": "Oman",
+    "region": "Timur Tengah",
+    "visa": "conditional",
+    "stay": "14 hari bebas visa / 30 hari e-Visa",
+    "cost": "Gratis / OMR 20",
+    "officialFee": "Gratis untuk bebas visa 14 hari; OMR 20 untuk e-Visa 30 hari",
+    "servicePrice": null,
+    "notes": "WNI dapat memakai bebas visa 14 hari untuk kunjungan singkat. Untuk tinggal 30 hari, gunakan e-Visa Oman.",
+    "conditions": [
+      "Bebas visa hanya untuk kunjungan singkat sampai 14 hari",
+      "e-Visa diperlukan untuk masa tinggal 30 hari",
+      "Paspor dan dokumen perjalanan tetap harus memenuhi syarat masuk"
+    ],
+    "sourceUrl": "https://evisa.rop.gov.om/",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 36,
+    "flag": "🇧🇭",
+    "name": "Bahrain",
+    "en": "Bahrain",
+    "region": "Timur Tengah",
+    "visa": "evisa",
+    "stay": "14 hari",
+    "cost": "BD 9 (~USD 24)",
+    "notes": "Visa on arrival & e-visa tersedia. Via evisa.npra.gov.bh.",
+    "conditions": [
+      "eVisa atau visa on arrival tergantung paspor, rute, dan kategori kunjungan",
+      "Gunakan portal resmi NPRA untuk cek fee dan eligibility terbaru"
+    ],
+    "sourceUrl": "https://www.evisa.gov.bh/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "BD 9 (~USD 24)"
+  },
+  {
+    "id": 37,
+    "flag": "🇰🇼",
+    "name": "Kuwait",
+    "en": "Kuwait",
+    "region": "Timur Tengah",
+    "visa": "wajib",
+    "stay": "Sesuai visa",
+    "cost": "~USD 50",
+    "notes": "Ajukan di Kedutaan Kuwait Jakarta. Proses bisa memakan waktu.",
+    "conditions": [
+      "Kuwait tidak boleh diasumsikan bebas visa untuk WNI",
+      "Cek eligibility e-Visa dan jalur kedutaan sebelum menjual layanan"
+    ],
+    "sourceUrl": "https://evisa.moi.gov.kw/evisa/home_e.do",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "~USD 50"
+  },
+  {
+    "id": 38,
+    "flag": "🇯🇴",
+    "name": "Yordania",
+    "en": "Jordan",
+    "region": "Timur Tengah",
+    "visa": "voa",
+    "stay": "30 hari",
+    "cost": "JD 40",
+    "notes": "Jordan menyediakan visa on arrival/eVisa untuk kunjungan wisata. Jordan Pass dapat menghapus biaya visa jika memenuhi minimum stay.",
+    "officialFee": "JD 40 untuk single-entry tourist visa; dapat gratis dengan Jordan Pass sesuai syarat",
+    "servicePrice": null,
+    "conditions": [
+      "Visa on arrival/eVisa tersedia untuk kunjungan wisata reguler",
+      "Jordan Pass hanya relevan jika memenuhi syarat paket dan lama tinggal",
+      "Entry point dan keputusan akhir tetap mengikuti otoritas Jordan"
+    ],
+    "sourceUrl": "https://eservices.moi.gov.jo/MOI_EVISA/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 39,
+    "flag": "🇪🇬",
+    "name": "Mesir",
+    "en": "Egypt",
+    "region": "Timur Tengah",
+    "visa": "evisa",
+    "stay": "30 hari",
+    "cost": "Mulai Rp 2.100.000",
+    "notes": "Paspor biasa Indonesia dapat memakai e-Visa Mesir untuk kunjungan wisata. Biaya resmi e-Visa dipisahkan dari layanan Sundaf.",
+    "officialFee": "USD 25 single entry / USD 60 multiple entry",
+    "servicePrice": "Mulai Rp 2.100.000",
+    "conditions": [
+      "Ajukan lewat portal resmi Egypt e-Visa",
+      "Visa on arrival tidak boleh diasumsikan untuk semua kondisi perjalanan",
+      "Masa tinggal dan jumlah masuk mengikuti tipe e-Visa yang dipilih"
+    ],
+    "sourceUrl": "https://www.visa2egypt.gov.eg/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 40,
+    "flag": "🇮🇷",
+    "name": "Iran",
+    "en": "Iran",
+    "region": "Timur Tengah",
+    "visa": "bebas",
+    "stay": "15 hari",
+    "cost": "Gratis",
+    "notes": "Iran memasukkan WNI ke daftar bebas visa. Situasi perlu dimonitor. Paspor Israel didiskualifikasi.",
+    "conditions": [
+      "Skema bebas visa Iran untuk WNI berlaku untuk kunjungan singkat",
+      "Situasi keamanan dan rute penerbangan perlu dicek ulang sebelum berangkat"
+    ],
+    "sourceUrl": "https://evisa.mfa.ir/en/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 41,
+    "flag": "🇫🇷",
+    "name": "Prancis",
+    "en": "France",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 42,
+    "flag": "🇩🇪",
+    "name": "Jerman",
+    "en": "Germany",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 43,
+    "flag": "🇮🇹",
+    "name": "Italia",
+    "en": "Italy",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 44,
+    "flag": "🇪🇸",
+    "name": "Spanyol",
+    "en": "Spain",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 45,
+    "flag": "🇳🇱",
+    "name": "Belanda",
+    "en": "Netherlands",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 46,
+    "flag": "🇨🇭",
+    "name": "Swiss",
+    "en": "Switzerland",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 47,
+    "flag": "🇦🇹",
+    "name": "Austria",
+    "en": "Austria",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 48,
+    "flag": "🇧🇪",
+    "name": "Belgia",
+    "en": "Belgium",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 49,
+    "flag": "🇬🇷",
+    "name": "Yunani",
+    "en": "Greece",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 50,
+    "flag": "🇵🇹",
+    "name": "Portugal",
+    "en": "Portugal",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 51,
+    "flag": "🇨🇿",
+    "name": "Republik Ceko",
+    "en": "Czech Republic",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 52,
+    "flag": "🇭🇺",
+    "name": "Hungaria",
+    "en": "Hungary",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 53,
+    "flag": "🇵🇱",
+    "name": "Polandia",
+    "en": "Poland",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 54,
+    "flag": "🇸🇪",
+    "name": "Swedia",
+    "en": "Sweden",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 55,
+    "flag": "🇳🇴",
+    "name": "Norwegia",
+    "en": "Norway",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 56,
+    "flag": "🇩🇰",
+    "name": "Denmark",
+    "en": "Denmark",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 57,
+    "flag": "🇫🇮",
+    "name": "Finlandia",
+    "en": "Finland",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 58,
+    "flag": "🇸🇰",
+    "name": "Slovakia",
+    "en": "Slovakia",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 59,
+    "flag": "🇸🇮",
+    "name": "Slovenia",
+    "en": "Slovenia",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 60,
+    "flag": "🇪🇪",
+    "name": "Estonia",
+    "en": "Estonia",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 61,
+    "flag": "🇱🇻",
+    "name": "Latvia",
+    "en": "Latvia",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 62,
+    "flag": "🇱🇹",
+    "name": "Lithuania",
+    "en": "Lithuania",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 63,
+    "flag": "🇲🇹",
+    "name": "Malta",
+    "en": "Malta",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 64,
+    "flag": "🇮🇸",
+    "name": "Islandia",
+    "en": "Iceland",
+    "region": "Eropa Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 90 hari/180 hari",
+    "cost": "Rp 3.500.000",
+    "notes": "Visa Schengen short-stay berlaku maksimal 90 hari dalam periode 180 hari. Ajukan ke negara tujuan utama atau negara masuk pertama jika durasi sama.",
+    "officialFee": "EUR 90 untuk visa Schengen short-stay dewasa",
+    "servicePrice": "Rp 3.500.000",
+    "conditions": [
+      "WNI pemegang paspor biasa perlu visa Schengen untuk kunjungan singkat",
+      "Batas tinggal short-stay maksimal 90 hari dalam periode 180 hari",
+      "Biaya dan pengecualian dapat berbeda untuk anak, keluarga warga EU/EEA, atau kategori khusus"
+    ],
+    "sourceUrl": "https://home-affairs.ec.europa.eu/policies/schengen/visa-policy/applying-schengen-visa_en",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 65,
+    "flag": "🇬🇧",
+    "name": "Inggris",
+    "en": "United Kingdom",
+    "region": "Eropa Non-Schengen",
+    "visa": "wajib",
+    "stay": "Maks. 6 bulan",
+    "cost": "Mulai Rp 4.300.000",
+    "notes": "Paspor biasa Indonesia perlu Standard Visitor visa untuk kunjungan wisata ke Inggris. Biometrik wajib di jalur resmi UKVI/VFS.",
+    "officialFee": "Cek GOV.UK visa fees untuk Standard Visitor",
+    "servicePrice": "Mulai Rp 4.300.000",
+    "conditions": [
+      "Visa visitor tidak boleh dipakai untuk bekerja atau tinggal jangka panjang",
+      "Biaya resmi berubah mengikuti GOV.UK visa fees",
+      "Priority/Super Priority adalah layanan tambahan, bukan jaminan persetujuan"
+    ],
+    "sourceUrl": "https://www.gov.uk/standard-visitor",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 66,
+    "flag": "🇮🇪",
+    "name": "Irlandia",
+    "en": "Ireland",
+    "region": "Eropa Non-Schengen",
+    "visa": "wajib",
+    "stay": "Sesuai visa",
+    "cost": "EUR 60–100",
+    "notes": "Visa C (short stay). Irlandia punya kebijakan visa independen dari Schengen.",
+    "conditions": [
+      "Irlandia bukan bagian dari Schengen",
+      "Visa Irlandia harus dicek terpisah dari visa Schengen/UK"
+    ],
+    "sourceUrl": "https://www.irishimmigration.ie/coming-to-visit-ireland/visit-ireland-travel-path/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "EUR 60–100"
+  },
+  {
+    "id": 67,
+    "flag": "🇷🇸",
+    "name": "Serbia",
+    "en": "Serbia",
+    "region": "Eropa Non-Schengen",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "notes": "Bebas visa 30 hari. Beograd semakin populer untuk wisata budget Eropa.",
+    "conditions": [
+      "Bebas visa Serbia untuk WNI berlaku untuk kunjungan singkat",
+      "Tujuan non-wisata atau tinggal lebih lama perlu cek izin lain"
+    ],
+    "sourceUrl": "https://www.mfa.gov.rs/en/citizens/travel-serbia/visa-regime",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 68,
+    "flag": "🇲🇪",
+    "name": "Montenegro",
+    "en": "Montenegro",
+    "region": "Eropa Non-Schengen",
+    "visa": "conditional",
+    "stay": "Sesuai visa / pengecualian visa holder",
+    "cost": "Via kedutaan",
+    "notes": "WNI perlu visa Montenegro, kecuali memenuhi pengecualian seperti pemegang visa Schengen/US/UK tertentu yang masih berlaku.",
+    "officialFee": "Cek Kedutaan/Konsulat Montenegro",
+    "servicePrice": null,
+    "conditions": [
+      "Pengecualian hanya berlaku jika visa/izin tinggal pendukung masih valid dan memenuhi syarat",
+      "Jika tidak memenuhi pengecualian, ajukan visa kedutaan"
+    ],
+    "sourceUrl": "https://www.gov.me/en/diplomatic-missions/embassies-and-consulates-of-montenegro/indonesia",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 69,
+    "flag": "🇦🇱",
+    "name": "Albania",
+    "en": "Albania",
+    "region": "Eropa Non-Schengen",
+    "visa": "conditional",
+    "stay": "90 hari",
+    "cost": "EUR 60 (~USD 65)",
+    "notes": "Albania tidak boleh ditulis e-Visa murni karena ada pengecualian untuk pemegang visa/izin tinggal tertentu dan kebijakan musiman yang harus dicek per tahun.",
+    "officialFee": "EUR 60 atau sesuai portal e-Visa Albania",
+    "servicePrice": null,
+    "conditions": [
+      "e-Visa berlaku jika tidak memenuhi pengecualian",
+      "Pemegang visa/izin tinggal Schengen, US, atau UK tertentu dapat dikecualikan",
+      "Kebijakan musiman harus dicek ulang setiap tahun"
+    ],
+    "sourceUrl": "https://e-visa.al/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 70,
+    "flag": "🇧🇦",
+    "name": "Bosnia Herzegovina",
+    "en": "Bosnia and Herzegovina",
+    "region": "Eropa Non-Schengen",
+    "visa": "conditional",
+    "stay": "Sesuai visa / pengecualian visa holder",
+    "cost": "Via kedutaan",
+    "notes": "WNI perlu visa Bosnia dan Herzegovina, kecuali memenuhi pengecualian seperti pemegang visa Schengen multiple-entry yang masih berlaku.",
+    "officialFee": "Cek Kedutaan Bosnia dan Herzegovina",
+    "servicePrice": null,
+    "conditions": [
+      "Pengecualian hanya berlaku jika visa pendukung masih valid dan memenuhi syarat masuk",
+      "Jika tidak memenuhi pengecualian, ajukan visa kedutaan"
+    ],
+    "sourceUrl": "https://mvp.gov.ba/en/vize",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 71,
+    "flag": "🇲🇰",
+    "name": "Makedonia Utara",
+    "en": "North Macedonia",
+    "region": "Eropa Non-Schengen",
+    "visa": "conditional",
+    "stay": "Sesuai visa / pengecualian visa holder",
+    "cost": "Via kedutaan",
+    "notes": "WNI perlu visa North Macedonia, kecuali memenuhi pengecualian seperti pemegang Schengen type-C multiple-entry yang masih berlaku.",
+    "officialFee": "Cek Kementerian Luar Negeri North Macedonia",
+    "servicePrice": null,
+    "conditions": [
+      "Pengecualian visa holder hanya berlaku jika visa masih valid dan memenuhi syarat",
+      "Jika tidak memenuhi pengecualian, ajukan visa kedutaan"
+    ],
+    "sourceUrl": "https://mfa.gov.mk/en-GB/konzularni-uslugi/informacii-za-vlez-vo-rsm",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 72,
+    "flag": "🇷🇺",
+    "name": "Rusia",
+    "en": "Russia",
+    "region": "Eropa Non-Schengen",
+    "visa": "evisa",
+    "stay": "30 hari",
+    "cost": "Rp 1.500.000",
+    "notes": "Rusia memakai unified e-Visa untuk WNI. Masa tinggal e-Visa 30 hari, tetapi kondisi perjalanan perlu dicek ulang karena aturan dapat berubah.",
+    "officialFee": "Cek portal resmi e-Visa Rusia",
+    "servicePrice": "Rp 1.500.000",
+    "conditions": [
+      "Ajukan lewat portal resmi Kementerian Luar Negeri Rusia",
+      "e-Visa hanya berlaku untuk tujuan dan port masuk yang diizinkan",
+      "Kondisi geopolitik dapat memengaruhi rute dan penerimaan aplikasi"
+    ],
+    "sourceUrl": "https://evisa.kdmid.ru/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 73,
+    "flag": "🇺🇸",
+    "name": "Amerika Serikat",
+    "en": "United States",
+    "region": "Amerika",
+    "visa": "wajib",
+    "stay": "Maks. 6 bulan (B1/B2)",
+    "cost": "Rp 4.300.000",
+    "notes": "Paspor biasa Indonesia perlu visa B1/B2 untuk wisata/bisnis singkat. Wawancara dan keputusan akhir mengikuti Kedutaan/Konsulat AS.",
+    "officialFee": "USD 185 untuk visa visitor B1/B2",
+    "servicePrice": "Rp 4.300.000",
+    "conditions": [
+      "Appointment dan DS-160 dilakukan melalui jalur resmi",
+      "Fee MRV tidak dikembalikan meski visa ditolak",
+      "Durasi izin tinggal ditentukan petugas CBP saat masuk"
+    ],
+    "sourceUrl": "https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/fees/fees-visa-services.html",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 74,
+    "flag": "🇨🇦",
+    "name": "Kanada",
+    "en": "Canada",
+    "region": "Amerika",
+    "visa": "wajib",
+    "stay": "Maks. 6 bulan",
+    "cost": "Rp 3.600.000",
+    "notes": "Paspor biasa Indonesia perlu visitor visa Canada. Biometrik biasanya wajib dan dibayar terpisah dari biaya aplikasi.",
+    "officialFee": "CAD 100 visa visitor + CAD 85 biometrik jika wajib",
+    "servicePrice": "Rp 3.600.000",
+    "conditions": [
+      "Pengajuan dilakukan lewat akun resmi IRCC",
+      "Biometrik dilakukan di VAC/VFS jika diminta",
+      "Durasi izin tinggal ditentukan petugas perbatasan Canada"
+    ],
+    "sourceUrl": "https://ircc.canada.ca/english/information/fees/fees.asp",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 75,
+    "flag": "🇲🇽",
+    "name": "Meksiko",
+    "en": "Mexico",
+    "region": "Amerika",
+    "visa": "wajib",
+    "stay": "Sesuai visa",
+    "cost": "~USD 48–54",
+    "notes": "WNI butuh visa, KECUALI pegang visa/izin tinggal US/Kanada/Schengen/Jepang. Verifikasi tarif ke kedutaan.",
+    "conditions": [
+      "WNI perlu visa Mexico kecuali memegang visa/izin tinggal tertentu yang diakui",
+      "Pengecualian umum meliputi visa/izin tinggal US, Canada, Schengen, UK, atau Jepang yang masih berlaku"
+    ],
+    "sourceUrl": "https://embamex.sre.gob.mx/indonesia/index.php/en/consular-services/visas",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "~USD 48–54"
+  },
+  {
+    "id": 76,
+    "flag": "🇧🇷",
+    "name": "Brasil",
+    "en": "Brazil",
+    "region": "Amerika",
+    "visa": "bebas",
+    "stay": "30 hari",
+    "cost": "Gratis",
+    "officialFee": "Gratis",
+    "servicePrice": null,
+    "notes": "Bebas visa 30 hari untuk kunjungan wisata singkat. Verifikasi durasi final sebelum berangkat karena aturan dapat berubah.",
+    "conditions": [
+      "Paspor berlaku dan dokumen perjalanan lengkap",
+      "Durasi final mengikuti izin imigrasi saat masuk"
+    ],
+    "sourceUrl": "https://www.gov.br/mre/",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 77,
+    "flag": "🇦🇷",
+    "name": "Argentina",
+    "en": "Argentina",
+    "region": "Amerika",
+    "visa": "conditional",
+    "stay": "Sesuai visa / AVE",
+    "cost": "Mulai Rp 4.600.000",
+    "notes": "WNI perlu visa Argentina, kecuali memenuhi syarat AVE elektronik berbasis visa US yang masih berlaku.",
+    "conditions": [
+      "AVE hanya untuk pemohon yang memenuhi syarat dokumen pendukung tertentu",
+      "Jika tidak eligible AVE, gunakan visa kedutaan",
+      "Biaya dan proses berbeda antara visa tempel dan AVE"
+    ],
+    "sourceUrl": "https://cancilleria.gob.ar/en/services/visas/tourist-visa",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Cek Kedutaan Argentina atau portal AVE resmi",
+    "servicePrice": "Mulai Rp 4.600.000"
+  },
+  {
+    "id": 78,
+    "flag": "🇵🇪",
+    "name": "Peru",
+    "en": "Peru",
+    "region": "Amerika",
+    "visa": "bebas",
+    "stay": "90 hari",
+    "cost": "Gratis",
+    "officialFee": "Gratis",
+    "servicePrice": null,
+    "notes": "Bebas visa 90 hari untuk kunjungan wisata singkat. Verifikasi durasi final sebelum berangkat karena izin masuk dapat ditentukan petugas imigrasi.",
+    "conditions": [
+      "Paspor berlaku dan dokumen perjalanan lengkap",
+      "Durasi final mengikuti izin imigrasi saat masuk"
+    ],
+    "sourceUrl": "https://www.gob.pe/rree",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 79,
+    "flag": "🇨🇴",
+    "name": "Kolombia",
+    "en": "Colombia",
+    "region": "Amerika",
+    "visa": "bebas",
+    "stay": "90 hari",
+    "cost": "Gratis",
+    "notes": "Bebas visa 90 hari.",
+    "conditions": [
+      "Bebas visa untuk kunjungan singkat hanya untuk tujuan yang diizinkan",
+      "Izin masuk akhir ditentukan otoritas migrasi Colombia"
+    ],
+    "sourceUrl": "https://www.cancilleria.gov.co/tramites_servicios/visa/requisitos",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 80,
+    "flag": "🇨🇱",
+    "name": "Cile",
+    "en": "Chile",
+    "region": "Amerika",
+    "visa": "bebas",
+    "stay": "60 hari",
+    "cost": "Gratis",
+    "officialFee": "Gratis",
+    "servicePrice": null,
+    "notes": "Bebas visa 60 hari untuk kunjungan wisata singkat. Verifikasi durasi final sebelum berangkat karena izin masuk dapat ditentukan petugas imigrasi.",
+    "conditions": [
+      "Paspor berlaku dan dokumen perjalanan lengkap",
+      "Durasi final mengikuti izin imigrasi saat masuk"
+    ],
+    "sourceUrl": "https://www.serviciosconsulares.cl/",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 81,
+    "flag": "🇲🇦",
+    "name": "Maroko",
+    "en": "Morocco",
+    "region": "Afrika",
+    "visa": "bebas",
+    "stay": "90 hari",
+    "cost": "Gratis",
+    "notes": "Bebas visa 90 hari. Marrakech, Fes, Sahara — sangat populer wisatawan Muslim Indonesia.",
+    "conditions": [
+      "Bebas visa untuk WNI berlaku untuk kunjungan singkat",
+      "Pastikan paspor, tiket keluar, dan bukti akomodasi tersedia"
+    ],
+    "sourceUrl": "https://www.acces-maroc.ma/#/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  },
+  {
+    "id": 82,
+    "flag": "🇰🇪",
+    "name": "Kenya",
+    "en": "Kenya",
+    "region": "Afrika",
+    "visa": "evisa",
+    "stay": "90 hari",
+    "cost": "USD 30",
+    "notes": "Kenya memakai Electronic Travel Authorization (eTA), bukan visa tempel lama. Pengajuan dilakukan sebelum berangkat via portal resmi.",
+    "officialFee": "Cek portal resmi eTA Kenya",
+    "servicePrice": null,
+    "conditions": [
+      "eTA wajib diajukan sebelum perjalanan kecuali kategori yang dikecualikan",
+      "Persetujuan eTA bukan jaminan masuk; keputusan akhir di imigrasi Kenya"
+    ],
+    "sourceUrl": "https://www.etakenya.go.ke/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 83,
+    "flag": "🇹🇿",
+    "name": "Tanzania",
+    "en": "Tanzania",
+    "region": "Afrika",
+    "visa": "voa",
+    "stay": "90 hari",
+    "cost": "USD 50",
+    "notes": "Tanzania menyediakan e-Visa dan visa on arrival untuk kunjungan wisata. e-Visa disarankan untuk mengurangi risiko antrean.",
+    "officialFee": "USD 50 untuk ordinary/tourist visa single entry",
+    "servicePrice": null,
+    "conditions": [
+      "Visa on arrival tersedia di bandara dan perbatasan tertentu",
+      "e-Visa tetap tersedia sebagai jalur pra-keberangkatan",
+      "Paspor harus berlaku minimal 6 bulan"
+    ],
+    "sourceUrl": "https://visa.immigration.go.tz/",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 84,
+    "flag": "🇿🇦",
+    "name": "Afrika Selatan",
+    "en": "South Africa",
+    "region": "Afrika",
+    "visa": "conditional",
+    "stay": "Maks. 90 hari",
+    "cost": "Mulai Rp 300.000",
+    "officialFee": "IDR 462.000 untuk visitor visa; ETA cek situs resmi",
+    "servicePrice": "Mulai Rp 300.000",
+    "notes": "Paspor biasa Indonesia masih memerlukan visitor visa sampai perjanjian bebas visa diterapkan. ETA direkomendasikan sebagai jalur pengajuan online yang lebih cepat.",
+    "conditions": [
+      "Paspor biasa Indonesia masih perlu visitor visa/ETA",
+      "Bebas visa 30 hari hanya untuk paspor diplomatik dan dinas",
+      "ETA tersedia lewat situs resmi Department of Home Affairs"
+    ],
+    "sourceUrl": "https://dirco1.azurewebsites.net/jakarta/immigration.html",
+    "lastVerifiedAt": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "id": 85,
+    "flag": "🇷🇼",
+    "name": "Rwanda",
+    "en": "Rwanda",
+    "region": "Afrika",
+    "visa": "voa",
+    "stay": "30 hari",
+    "cost": "USD 50",
+    "notes": "Rwanda memberi visa on arrival untuk semua negara, tetapi WNI tidak boleh ditulis sebagai bebas visa umum tanpa pengecualian fee.",
+    "officialFee": "USD 50 untuk single-entry visitor visa; USD 70 untuk multiple-entry",
+    "servicePrice": null,
+    "conditions": [
+      "Visa on arrival tersedia untuk semua negara",
+      "Single-entry visitor visa berlaku 30 hari",
+      "Multiple-entry visitor visa dapat berlaku 90 hari dengan fee berbeda"
+    ],
+    "sourceUrl": "https://www.migration.gov.rw/visa/visitors-visa",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 86,
+    "flag": "🇦🇺",
+    "name": "Australia",
+    "en": "Australia",
+    "region": "Oseania",
+    "visa": "wajib",
+    "stay": "Maks. 3 bulan (turis)",
+    "cost": "Mulai Rp 3.400.000",
+    "notes": "Paspor biasa Indonesia perlu Visitor visa subclass 600 untuk wisata Australia. Biometrik dapat diminta melalui VFS.",
+    "officialFee": "Cek ImmiAccount untuk Visitor visa subclass 600",
+    "servicePrice": "Mulai Rp 3.400.000",
+    "conditions": [
+      "Ajukan melalui ImmiAccount resmi Department of Home Affairs",
+      "Biaya resmi dan dokumen dapat berubah sesuai stream dan lokasi pemohon",
+      "Masa tinggal mengikuti grant letter"
+    ],
+    "sourceUrl": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 87,
+    "flag": "🇳🇿",
+    "name": "Selandia Baru",
+    "en": "New Zealand",
+    "region": "Oseania",
+    "visa": "wajib",
+    "stay": "Sesuai visa",
+    "cost": "Mulai Rp 5.800.000",
+    "notes": "NZeTA tidak berlaku untuk paspor biasa Indonesia. WNI perlu Visitor Visa sebelum berangkat.",
+    "officialFee": "Cek Immigration New Zealand untuk Visitor Visa dan IVL",
+    "servicePrice": "Mulai Rp 5.800.000",
+    "conditions": [
+      "Ajukan melalui portal resmi Immigration New Zealand",
+      "IVL dapat dikenakan bersama biaya aplikasi",
+      "Masa tinggal mengikuti visa grant"
+    ],
+    "sourceUrl": "https://www.immigration.govt.nz/new-zealand-visas/visas/visa/visitor-visa",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 88,
+    "flag": "🇫🇯",
+    "name": "Fiji",
+    "en": "Fiji",
+    "region": "Oseania",
+    "visa": "bebas",
+    "stay": "4 bulan",
+    "cost": "Gratis",
+    "notes": "Bebas visa 4 bulan. Surganya pantai Pasifik Selatan.",
+    "conditions": [
+      "WNI termasuk daftar negara bebas visa Fiji untuk kunjungan singkat",
+      "Izin masuk akhir tetap mengikuti petugas imigrasi Fiji"
+    ],
+    "sourceUrl": "https://www.immigration.gov.fj/travel-requirements/visa-exempted-countries",
+    "lastVerifiedAt": "2026-06-29T00:00:00.000Z",
+    "officialFee": "Gratis"
+  }
 ]

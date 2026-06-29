@@ -52,7 +52,12 @@ export default async function VisaPage() {
       visa: true,
       stay: true,
       cost: true,
+      officialFee: true,
+      servicePrice: true,
       notes: true,
+      conditions: true,
+      sourceUrl: true,
+      lastVerifiedAt: true,
     },
   });
 
@@ -138,7 +143,12 @@ export default async function VisaPage() {
           </span>
         </Link>
 
-        <VisaDatabase entries={visaEntries} />
+        <VisaDatabase
+          entries={visaEntries.map((entry) => ({
+            ...entry,
+            lastVerifiedAt: entry.lastVerifiedAt?.toISOString() ?? null,
+          }))}
+        />
       </div>
     </div>
   );

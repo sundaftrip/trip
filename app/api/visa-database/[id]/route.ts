@@ -24,14 +24,26 @@ type VisaInput = {
   visa?: string;
   stay?: string;
   cost?: string;
+  officialFee?: string | null;
+  servicePrice?: string | null;
   notes?: string;
+  conditions?: string[];
+  sourceUrl?: string | null;
+  lastVerifiedAt?: string | null;
   eligibility?: string[];
   documents?: DocInput[];
   faqs?: FaqInput[];
   variants?: VariantInput[];
 };
 
+function parseDate(value: string): Date | null {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 function pickInput(body: VisaInput) {
+  const lastVerifiedAt = (body.lastVerifiedAt ?? "").toString().trim();
   return {
     sortOrder: typeof body.sortOrder === "number" ? body.sortOrder : 0,
     flag: (body.flag ?? "").toString(),
@@ -41,7 +53,14 @@ function pickInput(body: VisaInput) {
     visa: (body.visa ?? "").toString(),
     stay: (body.stay ?? "").toString(),
     cost: (body.cost ?? "").toString(),
+    officialFee: ((body.officialFee ?? "") as string).toString().trim() || null,
+    servicePrice: ((body.servicePrice ?? "") as string).toString().trim() || null,
     notes: (body.notes ?? "").toString(),
+    conditions: Array.isArray(body.conditions)
+      ? body.conditions.map((s) => (s ?? "").toString().trim()).filter(Boolean)
+      : [],
+    sourceUrl: ((body.sourceUrl ?? "") as string).toString().trim() || null,
+    lastVerifiedAt: parseDate(lastVerifiedAt),
     eligibility: Array.isArray(body.eligibility)
       ? body.eligibility.map((s) => (s ?? "").toString().trim()).filter(Boolean)
       : [],

@@ -59,7 +59,7 @@ const specs: Spec[] = [
     find: () => prisma.tour.findMany(), update: (id, d) => prisma.tour.update({ where: { id }, data: d }) },
   { model: "Testimonial", fields: ["name", "content"],
     find: () => prisma.testimonial.findMany(), update: (id, d) => prisma.testimonial.update({ where: { id }, data: d }) },
-  { model: "CountryVisa", fields: ["name", "en", "region", "stay", "cost", "notes", "eligibility", "documents", "faqs"],
+  { model: "CountryVisa", fields: ["name", "en", "region", "stay", "cost", "officialFee", "servicePrice", "notes", "conditions", "sourceUrl", "eligibility", "documents", "faqs"],
     find: () => prisma.countryVisa.findMany(), update: (id, d) => prisma.countryVisa.update({ where: { id }, data: d }) },
   { model: "VisaVariant", fields: ["name", "processingTime", "notes"],
     find: () => prisma.visaVariant.findMany(), update: (id, d) => prisma.visaVariant.update({ where: { id }, data: d }) },

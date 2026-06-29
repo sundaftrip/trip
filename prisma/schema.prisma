@@ -172,23 +172,23 @@ model SiteText {
 }
 
 model Receipt {
-  id            String    @id @default(cuid())
-  receiptNo     String    @unique
-  customerName  String
-  customerPhone String?
-  customerEmail String?
-  tourId        String?
-  tourTitle     String
-  tripDate      String?
-  pax           Int       @default(1)
-  amount        Float
-  paymentMethod String?
-  paymentDate   DateTime?
+  id               String    @id @default(cuid())
+  receiptNo        String    @unique
+  customerName     String
+  customerPhone    String?
+  customerEmail    String?
+  tourId           String?
+  tourTitle        String
+  tripDate         String?
+  pax              Int       @default(1)
+  amount           Float
+  paymentMethod    String?
+  paymentDate      DateTime?
   pricingBreakdown Json?
-  notes         String?
-  status        String    @default("UNPAID")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  notes            String?
+  status           String    @default("UNPAID")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   tour        Tour?   @relation(fields: [tourId], references: [id])
   createdBy   User?   @relation(fields: [createdById], references: [id])
@@ -441,22 +441,27 @@ model LedgerEntry {
 // Database visa 88 negara — info persyaratan visa paspor Indonesia.
 // Dikelola lewat CMS (/admin/visa-database), tampil di halaman publik /visa.
 model CountryVisa {
-  id          String   @id @default(cuid())
-  sortOrder   Int      @default(0)
-  flag        String
-  name        String
-  en          String
-  region      String
-  visa        String // "bebas" | "voa" | "evisa" | "wajib"
-  stay        String
-  cost        String // kosong = ditampilkan "Gratis"
-  notes       String
+  id             String    @id @default(cuid())
+  sortOrder      Int       @default(0)
+  flag           String
+  name           String
+  en             String
+  region         String
+  visa           String // "bebas" | "voa" | "evisa" | "wajib" | "conditional"
+  stay           String
+  cost           String // legacy headline; kosong = fallback dari officialFee/servicePrice/"Gratis"
+  officialFee    String?
+  servicePrice   String?
+  notes          String
+  conditions     String[]  @default([])
+  sourceUrl      String?
+  lastVerifiedAt DateTime?
   // Konten kaya per-negara — kosong = fallback ke template per-kategori (lib/visa-defaults.ts).
-  eligibility String[] @default([])
-  documents   Json     @default("[]") // [{ name: string, hint?: string }]
-  faqs        Json     @default("[]") // [{ question: string, answer: string }]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  eligibility    String[]  @default([])
+  documents      Json      @default("[]") // [{ name: string, hint?: string }]
+  faqs           Json      @default("[]") // [{ question: string, answer: string }]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   variants VisaVariant[]
 
