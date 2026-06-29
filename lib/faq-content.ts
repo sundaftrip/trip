@@ -207,7 +207,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
         ],
         relatedLinks: [
           { label: "Private trip", href: "/custom-trip" },
-          { label: "Corporate & B2B", href: "/b2b" },
+          { label: "Corporate & group", href: "/#contact" },
         ],
       },
       {
@@ -227,8 +227,8 @@ export const FAQ_SECTIONS: FaqSection[] = [
           "Rincian seperti objective perjalanan, jumlah peserta, standar hotel, ruang meeting, kebutuhan transportasi, dan batas budget perlu disampaikan sejak awal agar penawaran lebih akurat.",
         ],
         relatedLinks: [
-          { label: "Corporate & B2B", href: "/b2b" },
-          { label: "Diskusi kerja sama", href: "/b2b" },
+          { label: "Corporate & group", href: "/#contact" },
+          { label: "Diskusi kerja sama", href: "/#contact" },
         ],
       },
     ],
@@ -469,9 +469,9 @@ export const FAQ_SECTIONS: FaqSection[] = [
     ],
   },
   {
-    id: "private-corporate-b2b",
-    title: "Private Trip, Corporate & B2B",
-    description: "Kebutuhan custom, corporate travel, supplier, dan kerja sama B2B.",
+    id: "private-corporate-kerja-sama",
+    title: "Private Trip, Corporate & Kerja Sama",
+    description: "Kebutuhan custom, corporate travel, supplier, dan kerja sama melalui kontak resmi.",
     items: [
       {
         id: "itinerary-custom",
@@ -489,18 +489,18 @@ export const FAQ_SECTIONS: FaqSection[] = [
           "Ya. Sundaf Trip dapat membantu company outing, incentive trip, business group, delegation trip, community trip, family group, dan koordinasi perjalanan bergaya MICE bila sesuai kapasitas operasional.",
           "Kebutuhan seperti agenda, standar hotel, ruang meeting, transportasi, dokumentasi, dan approval internal perusahaan perlu disampaikan sejak awal.",
         ],
-        relatedLinks: [{ label: "Corporate & B2B", href: "/b2b" }],
+        relatedLinks: [{ label: "Corporate & group", href: "/#contact" }],
       },
       {
         id: "agent-supplier-kerja-sama",
         question: "Apakah travel agent lain atau supplier bisa bekerja sama dengan Sundaf Trip?",
         answer: [
-          "Ya. Sundaf Trip terbuka untuk pembahasan B2B, DMC, supplier, land arrangement, partnership, dan koordinasi produk perjalanan yang relevan.",
+          "Ya. Sundaf Trip terbuka untuk pembahasan kerja sama agen, DMC, supplier, land arrangement, partnership, dan koordinasi produk perjalanan yang relevan melalui kontak resmi.",
           "Calon partner sebaiknya mengirim profil usaha, coverage destinasi, rate, terms, PIC, dan batasan operasional agar proses review lebih efisien.",
         ],
         relatedLinks: [
-          { label: "B2B", href: "/b2b" },
-          { label: "Diskusi kerja sama", href: "/b2b" },
+          { label: "Kontak resmi", href: "/#contact" },
+          { label: "Diskusi kerja sama", href: "/#contact" },
         ],
       },
       {

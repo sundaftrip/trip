@@ -40,7 +40,7 @@ const SECTION_ICONS: Record<string, typeof HelpCircle> = {
   "visa-dokumen": FileCheck2,
   "pembayaran-deposit-refund": CreditCard,
   "selama-perjalanan": Users,
-  "private-corporate-b2b": BriefcaseBusiness,
+  "private-corporate-kerja-sama": BriefcaseBusiness,
   "bantuan-kontak": MessageCircle,
 };
 
