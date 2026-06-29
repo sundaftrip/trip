@@ -106,12 +106,17 @@ function Carousel({ items, renderCard, darkDots = false }: {
               <button key={i} onClick={() => scrollToIndex(i)}
                 aria-label={`Buka testimoni ke-${i + 1}`}
                 type="button"
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === current
-                    ? `w-6 ${darkDots ? "bg-white" : "bg-gray-900 dark:bg-white"}`
-                    : `w-2 ${darkDots ? "bg-white/30" : "bg-gray-300 dark:bg-gray-700"}`
-                }`}
-              />
+                className="flex h-6 w-7 items-center justify-center rounded-full"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === current
+                      ? `w-6 ${darkDots ? "bg-white" : "bg-gray-900 dark:bg-white"}`
+                      : `w-2 ${darkDots ? "bg-white/30" : "bg-gray-300 dark:bg-gray-700"}`
+                  }`}
+                />
+              </button>
             ))}
           </div>
         )}

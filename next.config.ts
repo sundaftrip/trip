@@ -49,6 +49,7 @@ const scriptSrc = [
   ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
   "https://va.vercel-scripts.com",
   "https://vercel.live",
+  "https://www.googletagmanager.com",
 ].join(" ");
 
 const nextConfig: NextConfig = {

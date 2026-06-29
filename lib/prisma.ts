@@ -6,8 +6,8 @@ function buildUrl() {
   const url = process.env.DATABASE_URL ?? "";
   if (!url) return url;
   const u = new URL(url);
-  u.searchParams.set("connection_limit", "3");
-  u.searchParams.set("pool_timeout", "20");
+  u.searchParams.set("connection_limit", process.env.PRISMA_CONNECTION_LIMIT ?? "3");
+  u.searchParams.set("pool_timeout", process.env.PRISMA_POOL_TIMEOUT ?? "20");
   if (!u.searchParams.has("pgbouncer")) u.searchParams.set("pgbouncer", "true");
   return u.toString();
 }

@@ -94,6 +94,33 @@ body {
   color: var(--foreground);
   /* --site-font-family diinjeksi oleh website layout berdasarkan pilihan admin */
   font-family: var(--site-font-family, var(--font-jost, ui-sans-serif, sans-serif));
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@media (max-width: 767px) {
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+}
+
+html {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+main[data-theme] {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body,
+  main[data-theme] {
+    overflow-x: hidden;
+  }
 }
 
 /* Public website reading text: justify only long-form content.
@@ -187,6 +214,17 @@ main[data-theme]:not(.cns-main) :where(
 }
 .hero-fade-up  { animation: hero-up   0.55s cubic-bezier(0.16,1,0.3,1) both; }
 .hero-fade-left { animation: hero-left 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+
+@media (max-width: 767px) {
+  .hero-fade-up,
+  .hero-fade-left {
+    animation: none;
+  }
+
+  .sundaf-fall {
+    animation: none;
+  }
+}
 
 /* Sembunyikan scrollbar (carousel ulasan mobile) tanpa kehilangan scroll */
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
@@ -1564,11 +1602,11 @@ a.gl-pill:has(svg:only-child) {
   --at-bg:      color-mix(in srgb, var(--site-accent, #00ADB5) 4%,  #ffffff);
   --at-card:    color-mix(in srgb, var(--site-accent, #00ADB5) 2.5%, #ffffff);
   --at-border:  color-mix(in srgb, var(--site-accent, #00ADB5) 55%, #1a1a1a);
-  --at-text:    color-mix(in srgb, var(--site-accent, #00ADB5) 20%, #0a0a0a);
-  --at-subtext: color-mix(in srgb, var(--site-accent, #00ADB5) 32%, #6b7280);
+  --at-text:    #111827;
+  --at-subtext: #374151;
   --at-grid:    color-mix(in srgb, var(--site-accent, #00ADB5) 11%, transparent);
   --at-shadow:  rgba(0,0,0,0.07);
-  --at-muted:   color-mix(in srgb, var(--site-accent, #00ADB5) 9%,  #f5f5f5);
+  --at-muted:   #f3f4f6;
 }
 .dark {
   /* NIGHT (mode malam) — biru/indigo, dipertahankan */
@@ -2343,6 +2381,18 @@ a.gl-pill:has(svg:only-child) {
   opacity: 0.9;
 }
 
+@media (max-width: 767px) {
+  .atlas-action-stabilo {
+    padding: 0 0.08em 0.02em;
+    background: linear-gradient(100deg, transparent 0%, rgba(251, 211, 36, 0.86) 10%, rgba(251, 211, 36, 0.78) 90%, transparent 100%);
+  }
+
+  .atlas-action-stabilo::before,
+  .atlas-action-stabilo::after {
+    content: none;
+  }
+}
+
 /* ── WhyGallery: marquee foto homepage (arah kanan-kiri-kanan) ── */
 /* ===== Galeri marquee gaya portfolio (lattice editorial) =====
    2 baris berlawanan arah, foto rasio natural (tinggi tetap, lebar ikut foto),
@@ -2429,8 +2479,8 @@ a.gl-pill:has(svg:only-child) {
       animation-range: entry 0% cover 22%;
     }
     @keyframes ai-reveal-kf {
-      from { opacity: 0; transform: var(--ai-from, translateY(40px)); }
-      to   { opacity: 1; transform: none; }
+      from { transform: var(--ai-from, translateY(40px)); }
+      to   { transform: none; }
     }
   }
 }

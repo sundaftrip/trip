@@ -21,7 +21,7 @@ export default function StickyWhatsApp({ phone }: { phone: string }) {
       rel="noreferrer"
       aria-label="Chat via WhatsApp"
       className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 items-center justify-center gap-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-black/25 transition hover:scale-105 active:scale-95 sm:w-auto sm:pl-3 sm:pr-4 sm:h-14"
-      style={{ background: "#25D366" }}
+      style={{ background: "#075E54" }}
     >
       <svg
         width="22"

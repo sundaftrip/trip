@@ -108,11 +108,10 @@ export default function ToursCatalog({
       {showFilter && <FilterChips active={region} onChange={changeRegion} theme={theme} />}
       <PaginationBar current={current} total={totalPages} onChange={changePage} />
       {showAllLink && (
-        <div className="flex justify-center pt-2 pb-2">
+        <div className="flex justify-center pt-5 pb-6">
           <Link
             href="/tours"
             prefetch
-            aria-label="Lihat semua jadwal tour dan dokumentasi trip"
             className="tours-cta group inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-semibold tracking-wide"
             style={{ color: "var(--site-accent,#2d6a4f)" }}
           >

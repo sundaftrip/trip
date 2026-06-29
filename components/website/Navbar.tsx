@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cldFit, cn } from "@/lib/utils";
 import GlobalSearch from "./GlobalSearch";
 import { primaryNav as navLinks } from "@/lib/nav";
 
@@ -42,6 +42,11 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   }
 
   const isDark = mounted && resolvedTheme === "dark";
+  const defaultLogoSrc = "/logo.png";
+  const logoSrc = cldFit(logo || defaultLogoSrc, 320);
+  const atlasLogoSrc = logo?.includes("/sundaftrip/ritdbnbozrthfceunzuq")
+    ? defaultLogoSrc
+    : logoSrc;
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") return (
@@ -51,7 +56,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           <Link href="/" className="flex items-center">
             <span className="inline-flex items-center rounded-xl px-3 py-1.5"
               style={{ border: "2px solid var(--fb-line)", background: "var(--fb-yellow)", boxShadow: "0 3px 0 0 var(--fb-line)" }}>
-              <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+              <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
                 className="h-8 w-auto" priority />
             </span>
           </Link>
@@ -120,7 +125,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+            <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -195,7 +200,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           <Link href="/" className="flex items-center shrink-0">
-            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+            <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -281,14 +286,14 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       style={{ backgroundColor: "var(--at-bg)", borderColor: "var(--at-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
-              className="h-8 sm:h-11 w-auto logo-theme" priority />
+          <Link href="/" prefetch={false} className="flex items-center">
+            <Image src={atlasLogoSrc} alt="Sundaf Trip" width={176} height={54}
+              className="h-8 sm:h-11 w-auto logo-theme" priority fetchPriority="high" />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1.5">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}
+              <Link key={link.href} href={link.href} prefetch={false}
                 className="at-pill hover:opacity-70 transition-opacity"
                 style={{ color: "var(--at-text)" }}>
                 {link.label[lang]}
@@ -319,17 +324,17 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
           <div className="lg:hidden border-t py-4 space-y-1"
             style={{ borderColor: "var(--at-border)", background: "var(--at-bg)" }}>
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+              <Link key={link.href} href={link.href} prefetch={false} onClick={() => setOpen(false)}
                 className="block px-4 py-2.5 text-sm font-medium" style={{ color: "var(--at-text)" }}>
                 {link.label[lang]}
               </Link>
             ))}
             <div className="px-4 pt-2 space-y-2">
-              <Link href="/visa" onClick={() => setOpen(false)}
+              <Link href="/visa" prefetch={false} onClick={() => setOpen(false)}
                 className="flex at-btn px-5 py-2.5 text-xs w-full justify-center">
                 {lang === "id" ? "Layanan Visa" : "Visa Service"}
               </Link>
-              <Link href="/tours" onClick={() => setOpen(false)}
+              <Link href="/tours" prefetch={false} onClick={() => setOpen(false)}
                 className="flex at-btn-solid px-5 py-2.5 text-xs w-full justify-center">
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
@@ -347,7 +352,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+            <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -422,7 +427,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+            <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -503,7 +508,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-3">
           <Link href="/" className="flex items-center min-w-0 shrink">
-            <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+            <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
               className={`h-7 sm:h-11 w-auto max-w-[126px] sm:max-w-none${mounted && isDark ? " logo-dark" : ""}`} priority />
           </Link>
 
@@ -591,7 +596,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src={logo || "/logo.png"} alt="Sundaf Trip" width={176} height={54}
+              <Image src={logoSrc} alt="Sundaf Trip" width={176} height={54}
                 className={`h-8 sm:h-10 w-auto${mounted && isDark ? " logo-dark" : ""}`} priority />
             </Link>
 
@@ -678,7 +683,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
 
           <Link href="/" className="flex items-center">
             <Image
-              src={logo || "/logo.png"}
+              src={logoSrc}
               alt="Sundaf Trip"
               width={176} height={54}
               className={`h-8 sm:h-11 w-auto${mounted && isDark ? " logo-dark" : ""}`}

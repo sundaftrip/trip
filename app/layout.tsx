@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
 import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Anonymous_Pro, Caveat } from "next/font/google";
 import "./globals.css";
-import "flag-icons/css/flag-icons.min.css";
 import Providers from "@/components/Providers";
 import Analytics from "@/components/Analytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 /* Font loading strategy:
-   - Jost: default body font, PRELOAD (paling sering jadi --site-font)
-   - Anonymous_Pro: monospace dipakai Globe theme (boarding pass), PRELOAD
-   - Sisanya (7 fonts): tetap available tapi preload: false → tidak dimuat
-     kecuali admin mengaktifkan via site_font setting. Lighthouse drop dari
-     15 woff2 preload → 2.
+   - Public fonts stay available through CSS variables.
+   - Preload is disabled so mobile LCP is not competing with non-critical font
+     files; font-display: swap keeps text visible while the chosen font loads.
 */
-const jost         = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
+const jost         = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap", preload: false });
 const anonymousPro = Anonymous_Pro({ weight: ["400","700"], subsets: ["latin"], variable: "--font-anonymous-pro", display: "swap", preload: false });
 const plusJakarta  = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap", preload: false });
 const dmSans       = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap", preload: false });
@@ -31,6 +28,7 @@ const ALL_FONT_VARS = [
 ].join(" ");
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+const enableSpeedInsights = process.env.VERCEL === "1";
 
 // Brand-forward, hardcode "Sundaf Trip" sebagai brand consumer-facing.
 // Legal entity (CV SUNDAF HOLIDAY GROUP) tetap dipakai untuk schema/footer
@@ -116,14 +114,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id" className={`${ALL_FONT_VARS} h-full antialiased`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Providers>{children}</Providers>
         <Analytics />
-        <SpeedInsights />
+        {enableSpeedInsights && <SpeedInsights />}
       </body>
     </html>
   );

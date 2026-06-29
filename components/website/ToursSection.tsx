@@ -16,25 +16,32 @@ interface Props {
   children?: React.ReactNode;
 }
 
-function CardsGrid({ tours, theme, className }: { tours: Tour[]; theme: string; className: string }) {
+function CardsGrid({ tours, theme, className, eagerImageCount = 0 }: { tours: Tour[]; theme: string; className: string; eagerImageCount?: number }) {
   if (tours.length === 0) return null;
 
   return (
-    <div className={className}>
-      {tours.map((tour, i) => (
-        <AnimateIn key={tour.id} delay={i * 80} className="h-full">
-          <TourCard tour={tour} theme={theme} />
-        </AnimateIn>
-      ))}
+    <div className={`min-w-0 ${className}`}>
+      {tours.map((tour, i) => {
+        const eagerImage = i < eagerImageCount;
+        const card = <TourCard tour={tour} theme={theme} eagerImage={eagerImage} />;
+        if (eagerImage) {
+          return <div key={tour.id} className="h-full min-w-0">{card}</div>;
+        }
+        return (
+          <AnimateIn key={tour.id} delay={i * 80} className="h-full min-w-0">
+            {card}
+          </AnimateIn>
+        );
+      })}
     </div>
   );
 }
 
-function PinnedRail({ tours, theme }: { tours: Tour[]; theme: string }) {
+function PinnedRail({ tours, theme, eagerImageCount = 0 }: { tours: Tour[]; theme: string; eagerImageCount?: number }) {
   if (tours.length === 0) return null;
 
   return (
-    <aside className="order-first self-start border-b pb-5 lg:sticky lg:top-24 lg:order-none lg:border-b-0 lg:border-l lg:pl-5 lg:pb-0" style={{ borderColor: "color-mix(in srgb, var(--site-accent,#00ADB5) 35%, transparent)" }}>
+    <aside className="order-first min-w-0 self-start border-b pb-5 lg:sticky lg:top-24 lg:order-none lg:border-b-0 lg:border-l lg:pl-5 lg:pb-0" style={{ borderColor: "color-mix(in srgb, var(--site-accent,#00ADB5) 35%, transparent)" }}>
       <div className="mb-3 flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--site-accent,#00ADB5)" }}>
           Pilihan Utama
@@ -43,12 +50,19 @@ function PinnedRail({ tours, theme }: { tours: Tour[]; theme: string }) {
           {String(tours.length).padStart(2, "0")}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-        {tours.map((tour, i) => (
-          <AnimateIn key={tour.id} delay={i * 70} className="h-full">
-            <TourCard tour={tour} theme={theme} />
-          </AnimateIn>
-        ))}
+      <div className="grid min-w-0 grid-cols-2 gap-3 lg:grid-cols-1">
+        {tours.map((tour, i) => {
+          const eagerImage = i < eagerImageCount;
+          const card = <TourCard tour={tour} theme={theme} eagerImage={eagerImage} />;
+          if (eagerImage) {
+            return <div key={tour.id} className="h-full min-w-0">{card}</div>;
+          }
+          return (
+            <AnimateIn key={tour.id} delay={i * 70} className="h-full min-w-0">
+              {card}
+            </AnimateIn>
+          );
+        })}
       </div>
     </aside>
   );
@@ -72,7 +86,7 @@ function PinnedLayout({
   const hasRegularTours = tours.length > 0;
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
+    <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
       {hasRegularTours && <CardsGrid tours={tours} theme={theme} className={gridClassName} />}
       <div className={hasRegularTours ? "" : "lg:col-start-2"}>
         <PinnedRail tours={pinnedTours} theme={theme} />
@@ -252,8 +266,9 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="py-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="pt-24 pb-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="sr-only">Tour Pilihan Sundaf Trip</h2>
         <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>

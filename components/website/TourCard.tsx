@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
-import { formatCurrency, formatDate, cldOptimize } from "@/lib/utils";
+import { formatCurrency, formatDate, cldOptimize, cldThumb } from "@/lib/utils";
 
 interface Tour {
   slug?: string | null;
@@ -487,17 +487,17 @@ function MapCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
-function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
+function AtlasCard({ tour, isDimmed, eagerImage }: { tour: Tour; isDimmed: boolean; eagerImage: boolean }) {
   const isFull = tour.status === "FULL";
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
   const dateStr = departureCode(tour);
   const duration = shortenDuration(tour.duration);
 
   return (
-    <div className={`at-card group overflow-hidden h-full flex flex-col ${isDimmed ? "opacity-60 grayscale cursor-default" : ""}`}>
-      <div className="relative h-36 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
+    <div className={`at-card group min-w-0 overflow-hidden h-full flex flex-col ${isDimmed ? "grayscale cursor-default" : ""}`}>
+      <div className="relative h-28 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
         {tour.heroImg
-          ? <Image src={cldOptimize(tour.heroImg, 480)} alt={tour.title} fill loading="lazy" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={cldThumb(tour.heroImg, 360, 220)} alt={tour.title} fill loading={eagerImage ? "eager" : "lazy"} fetchPriority={eagerImage ? "high" : "low"} decoding="async" sizes="(max-width:768px) 50vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
 
         {tour.badge && !isDimmed && (
@@ -516,35 +516,35 @@ function AtlasCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
       </div>
 
       {/* === BODY COMPACT, ala boarding pass: judul / durasi · tanggal / harga === */}
-      <div className="px-3 py-3 sm:px-5 sm:py-4 flex-1 flex flex-col space-y-1.5 sm:space-y-2">
-        <p className="text-[10px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>
+      <div className="min-w-0 px-2.5 py-3 sm:px-5 sm:py-4 flex-1 flex flex-col space-y-1.5 sm:space-y-2">
+        <p className="min-w-0 truncate text-[10px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
         </p>
-        <h3 className="font-semibold text-[13px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
+        <h3 className="min-w-0 font-semibold text-[13px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
           {tour.title}
         </h3>
-        <div className="flex items-center gap-1.5 text-[9px] sm:text-[12px] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] sm:text-[12px] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
           <span className="whitespace-nowrap">{duration || "-"}</span>
           <span className="opacity-40">·</span>
           <span className="whitespace-nowrap">{dateStr}</span>
         </div>
-        <div className="flex items-baseline gap-2 flex-wrap mt-auto pt-1">
-          <span className="font-bold text-[15px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
+        <div className="flex min-w-0 items-baseline gap-2 flex-wrap mt-auto pt-1">
+          <span className="max-w-full whitespace-nowrap font-bold tabular-nums text-[14px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
             {priceText(tour)}
           </span>
           {strikePrice(tour) && (
-            <span className="text-[10px] line-through opacity-50 whitespace-nowrap" style={{ color: "var(--at-subtext)" }}>
+            <span className="text-[10px] line-through whitespace-nowrap" style={{ color: "var(--at-subtext)" }}>
               {strikePrice(tour)}
             </span>
           )}
         </div>
-        <div className="flex items-center justify-between gap-2 pt-2 sm:hidden">
-          <span className="text-[9px] font-semibold" style={{ color: "var(--at-subtext)" }}>
+        <div className="flex min-w-0 items-center justify-between gap-2 pt-2 sm:hidden">
+          <span className="min-w-0 truncate text-[9px] font-semibold" style={{ color: "var(--at-subtext)" }}>
             {capacityAvailableText(tour)}
           </span>
           {!isDimmed && (
-            <span className="inline-flex h-7 items-center rounded px-2.5 text-[10px] font-bold text-white" style={{ background: "var(--site-accent)" }}>
-              Lihat detail
+            <span className="inline-flex h-6 shrink-0 items-center rounded px-2 text-[9px] font-bold text-white" style={{ background: "color-mix(in srgb, var(--site-accent, #00ADB5) 55%, #111827)" }}>
+              Detail
             </span>
           )}
         </div>
@@ -719,7 +719,7 @@ function CoreiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
   );
 }
 
-export default function TourCard({ tour, theme = "classic" }: { tour: Tour; theme?: string }) {
+export default function TourCard({ tour, theme = "classic", eagerImage = false }: { tour: Tour; theme?: string; eagerImage?: boolean }) {
   const now = new Date();
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
   const isFull = tour.status === "FULL";
@@ -731,7 +731,7 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} />;
+  else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} eagerImage={eagerImage} />;
   else if (theme === "fumayo") card = <FumayoCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "attic") card = <AtticCard tour={tour} isDimmed={isDimmed} />;
   else if (theme === "teri") card = <TeriCard tour={tour} isDimmed={isDimmed} />;
@@ -739,5 +739,5 @@ export default function TourCard({ tour, theme = "classic" }: { tour: Tour; them
   else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
-  return <Link href={`/tours/${tour.slug ?? tour.id}`} className="block h-full">{card}</Link>;
+  return <Link href={`/tours/${tour.slug ?? tour.id}`} prefetch={false} className="block h-full min-w-0">{card}</Link>;
 }

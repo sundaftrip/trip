@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import AnimatedStatValue from "./AnimatedStatValue";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -100,6 +99,9 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     STRATEGIC_HERO.subtitle,
     GENERIC_HERO_SUBTITLE,
   );
+  const atlasMobileTitle = atlasHeroTitle === STRATEGIC_HERO.title
+    ? "Tour Rusia,\nAsia Tengah & Aurora"
+    : atlasHeroTitle.split(/\s+/).filter(Boolean).join("\n");
   const atlasActions = [
     { href: "/tours", label: "Tour", value: "Jadwal & paket siap dibooking", external: false },
     { href: "/visa", label: "Layanan visa", value: "Dokumen & itinerary dibantu", external: false },
@@ -469,21 +471,30 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="lg:min-h-[82vh] flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-7 lg:pb-12 px-4 at-grid-bg"
+    <section className="min-h-[82svh] lg:min-h-[82vh] flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-24 lg:pb-12 px-4 at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Desktop: dua kolom (judul kiri, aksi di samping). Mobile: tumpuk rapat. */}
         <div className="lg:flex lg:items-end lg:gap-12">
           {/* Kiri — eyebrow + judul */}
           <div className="flex-1 min-w-0">
-            <div className="mb-3 hero-fade-up">
+            <div className="mb-3 hidden hero-fade-up sm:block">
               <span className="at-pill" style={{ color: "var(--at-text)" }}>
                 {atlasEyebrow}
               </span>
             </div>
-            <h1 aria-label={atlasHeroTitle} className="text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
+            <h1 aria-label={atlasHeroTitle} className="text-[clamp(1.82rem,8.3vw,6rem)] sm:text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
               style={{ color: "var(--at-text)" }}>
-              {renderTitleWords(atlasHeroTitle)}
+              <span
+                aria-hidden="true"
+                className="block whitespace-pre-line sm:hidden"
+                style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}
+              >
+                {atlasMobileTitle}
+              </span>
+              <span className="hidden sm:block">
+                {renderTitleWords(atlasHeroTitle)}
+              </span>
             </h1>
             <div className="mb-5 grid gap-2 lg:hidden">
               {atlasActions.map(({ href, label, value, external }) => {
@@ -501,11 +512,11 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
                 const className = "group flex items-center justify-between gap-3 border-b py-2 text-sm transition-colors";
                 const style = { borderColor: "var(--at-border)" };
                 return external ? (
-                  <a key={href} href={href} target="_blank" rel="noreferrer" className={className} style={style} aria-label={`${label}: ${value}`}>
+                  <a key={href} href={href} target="_blank" rel="noreferrer" className={className} style={style}>
                     {content}
                   </a>
                 ) : (
-                  <Link key={href} href={href} className={className} style={style} aria-label={`${label}: ${value}`}>
+                  <Link key={href} href={href} prefetch={false} className={className} style={style}>
                     {content}
                   </Link>
                 );
@@ -516,14 +527,17 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           {/* Kanan — tombol aksi di samping hero + trust badge */}
           <div className="hidden lg:flex lg:w-[300px] shrink-0 flex-col gap-2.5 hero-fade-up">
             <Link href="/tours"
+              prefetch={false}
               className="at-btn-solid w-full px-6 py-3.5 text-sm">
               Tour <ArrowRight size={15} />
             </Link>
             <Link href="/visa"
+              prefetch={false}
               className="at-btn-solid w-full px-6 py-3.5 text-sm">
               Layanan Visa <ArrowRight size={15} />
             </Link>
             <Link href="/custom-trip"
+              prefetch={false}
               className="at-btn w-full px-6 py-3.5 text-sm">
               Custom Trip <ArrowRight size={15} />
             </Link>
@@ -545,7 +559,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
           {atlasProofs.map((proof) => (
             <div key={proof.label} className="border-b border-r px-3 py-3 sm:px-4" style={{ borderColor: "var(--at-border)" }}>
               <p className="text-lg font-bold leading-none sm:text-2xl" style={{ color: "var(--at-text)" }}>
-                <AnimatedStatValue value={proof.value} />
+                {proof.value}
               </p>
               <p className="mt-1 text-[11px] leading-snug sm:text-xs" style={{ color: "var(--at-subtext)" }}>{proof.label}</p>
             </div>

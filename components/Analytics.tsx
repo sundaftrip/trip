@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { useEffect } from "react";
 
 /**
@@ -8,30 +7,73 @@ import { useEffect } from "react";
  *   NEXT_PUBLIC_GA_ID        → GA4 (mis. "G-XXXXXXXXXX")
  *   NEXT_PUBLIC_FB_PIXEL_ID  → Meta/Facebook Pixel (mis. "1234567890")
  *
- * Tanpa ID, komponen ini TIDAK merender apa pun (no-op) — aman di-deploy
- * walau ID belum dipasang. Cukup tambahkan env var di Vercel lalu redeploy.
- *
- * Bonus: melacak SEMUA klik tautan WhatsApp (a[href*="wa.me"]) sebagai
- * konversi — event "whatsapp_click" (GA4) + "Contact" (Meta Pixel).
+ * GA/Meta vendor scripts sengaja tidak dimuat di jalur render awal. Event tetap
+ * masuk ke queue lebih dulu, lalu vendor script dimuat saat interaksi pertama.
  */
 
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
-    fbq?: (...args: unknown[]) => void;
+    fbq?: ((...args: unknown[]) => void) & {
+      callMethod?: (...args: unknown[]) => void;
+      queue?: unknown[][];
+      loaded?: boolean;
+      version?: string;
+      push?: (...args: unknown[]) => void;
+    };
+    _fbq?: Window["fbq"];
     dataLayer?: unknown[];
   }
 }
 
-// GA4 Measurement ID Sundaf Trip. Bisa di-override via env NEXT_PUBLIC_GA_ID.
-// (Measurement ID bersifat publik — tampil di source halaman — jadi aman di-hardcode.)
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-G7P7VLBDYV";
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+type Fbq = NonNullable<Window["fbq"]>;
+
+function appendScript(id: string, src: string) {
+  if (document.getElementById(id)) return;
+  const script = document.createElement("script");
+  script.id = id;
+  script.async = true;
+  script.src = src;
+  document.head.appendChild(script);
+}
 
 export default function Analytics() {
-  // Lacak klik WhatsApp sebagai konversi (delegated listener, 1x pasang).
   useEffect(() => {
     if (!GA_ID && !FB_PIXEL_ID) return;
+
+    let cancelled = false;
+
+    const loadVendors = () => {
+      if (cancelled) return;
+      if (GA_ID) appendScript("ga4-src", `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`);
+      if (FB_PIXEL_ID) appendScript("fb-pixel-src", "https://connect.facebook.net/en_US/fbevents.js");
+    };
+
+    if (GA_ID) {
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || ((...args: unknown[]) => {
+        window.dataLayer?.push(args);
+      });
+      window.gtag("js", new Date());
+      window.gtag("config", GA_ID, { send_page_view: true });
+    }
+
+    if (FB_PIXEL_ID && !window.fbq) {
+      const fbq = ((...args: unknown[]) => {
+        fbq.queue = fbq.queue || [];
+        fbq.queue.push(args);
+      }) as Fbq;
+      fbq.queue = [];
+      fbq.loaded = true;
+      fbq.version = "2.0";
+      window.fbq = fbq;
+      window._fbq = fbq;
+      window.fbq("init", FB_PIXEL_ID);
+      window.fbq("track", "PageView");
+    }
+
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       const link = target?.closest?.('a[href*="wa.me"], a[href*="api.whatsapp.com"]');
@@ -45,49 +87,23 @@ export default function Analytics() {
       } catch {
         /* no-op */
       }
+      loadVendors();
     };
+
+    const onFirstInteraction = () => loadVendors();
     document.addEventListener("click", onClick, { capture: true });
-    return () => document.removeEventListener("click", onClick, { capture: true });
+    window.addEventListener("pointerdown", onFirstInteraction, { once: true, passive: true });
+    window.addEventListener("touchstart", onFirstInteraction, { once: true, passive: true });
+    window.addEventListener("keydown", onFirstInteraction, { once: true });
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener("click", onClick, { capture: true });
+      window.removeEventListener("pointerdown", onFirstInteraction);
+      window.removeEventListener("touchstart", onFirstInteraction);
+      window.removeEventListener("keydown", onFirstInteraction);
+    };
   }, []);
 
-  if (!GA_ID && !FB_PIXEL_ID) return null;
-
-  return (
-    <>
-      {GA_ID && (
-        <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-            strategy="afterInteractive"
-          />
-          <Script id="ga4-init" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              window.gtag = gtag;
-              gtag('js', new Date());
-              gtag('config', '${GA_ID}', { send_page_view: true });
-            `}
-          </Script>
-        </>
-      )}
-
-      {FB_PIXEL_ID && (
-        <Script id="fb-pixel" strategy="afterInteractive">
-          {`
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window,document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '${FB_PIXEL_ID}');
-            fbq('track', 'PageView');
-          `}
-        </Script>
-      )}
-    </>
-  );
+  return null;
 }
