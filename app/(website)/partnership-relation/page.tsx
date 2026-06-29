@@ -18,7 +18,7 @@ import { getProofPhotos } from "@/lib/b2bGallery";
 import { lora } from "@/lib/fonts";
 
 const PAGE_URL = "https://sundaftrip.com/partnership-relation";
-const CONTACT_EMAIL = "tyas@sundaftrip.com";
+const CONTACT_EMAIL = "aisah@sundaftrip.com";
 const FALLBACK_EMAIL = "info@sundaftrip.com";
 const CONTACT_WA =
   "https://wa.me/6281775202759?text=Hello%20Tyas%20and%20the%20Sundaf%20Trip%20team%2C%20I%20would%20like%20to%20introduce%20our%20supplier%20or%20DMC%20services.";
