@@ -9,12 +9,13 @@ import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
   Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Info, ExternalLink, Wallet, Database, Inbox, Globe2,
-  Handshake,
+  Handshake, Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/ai-ops", label: "AI Ops", icon: Bot },
   { href: "/admin/tours", label: "Tour", icon: Map },
   { href: "/admin/b2b-catalog", label: "Katalog B2B", icon: FileText },
   { href: "/admin/inquiries", label: "Lead Masuk", icon: Inbox },
