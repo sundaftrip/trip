@@ -203,14 +203,14 @@ export default async function VisaProtectionPage() {
 
             <aside className="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900/60 dark:bg-amber-950/30">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
-                Target screening
+                Dibahas sebelum submit
               </p>
-              <p className="mt-2 text-3xl font-black text-gray-900 dark:text-white">
-                Rp400-650 ribu
+              <p className="mt-2 text-2xl font-black leading-tight text-gray-900 dark:text-white">
+                Cek polis sebelum visa diajukan
               </p>
               <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                Per orang, bila produk tersedia dan profil perjalanan cocok. Harga final
-                tergantung negara tujuan, durasi, usia, nilai manfaat, dan ketentuan insurer.
+                Produk harus dibeli sebelum pengajuan dan sebelum ada hasil penolakan. Tim kami
+                akan bantu cek apakah manfaat visa rejection benar-benar tertulis di polis.
               </p>
             </aside>
           </div>

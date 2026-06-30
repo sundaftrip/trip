@@ -166,10 +166,10 @@ export default async function LegalitasKeamananPage() {
       desc: "Rujukan resmi untuk status dan syarat e-Visa Rusia.",
     },
     {
-      category: "Calon rujukan industri",
+      category: "Direktori industri",
       label: "ASITA - Direktori anggota travel Indonesia",
       href: "https://asita.id/anggota/",
-      desc: "Kandidat rujukan asosiasi travel Indonesia, bukan klaim keanggotaan Sundaf Trip.",
+      desc: "Direktori publik asosiasi travel Indonesia untuk pengecekan mandiri. Tidak kami tampilkan sebagai klaim keanggotaan Sundaf Trip.",
     },
   ];
 

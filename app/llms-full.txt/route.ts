@@ -93,11 +93,11 @@ A: Jangan diasumsikan bebas visa untuk WNI paspor biasa. Untuk status terbaru, c
 const EXTERNAL_REFERENCES = `
 ## Rujukan Eksternal dan Industri
 - [Kementerian Luar Negeri Rusia - e-Visa](https://evisa.kdmid.ru/): sumber resmi untuk syarat dan pengajuan e-Visa Rusia.
-- [ASITA - Anggota](https://asita.id/anggota/): calon rujukan asosiasi travel Indonesia; bukan klaim keanggotaan Sundaf Trip.
+- [ASITA - Anggota](https://asita.id/anggota/): direktori publik asosiasi travel Indonesia untuk pengecekan mandiri; bukan klaim keanggotaan Sundaf Trip.
 - [UU No. 27 Tahun 2022 - BPK RI](https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022): rujukan resmi Undang-Undang Pelindungan Data Pribadi.
 - [UU No. 27 Tahun 2022 - JDIH Komdigi](https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B202): rujukan JDIH untuk dokumen hukum Pelindungan Data Pribadi.
 
-Catatan: rujukan di atas dipakai sebagai konteks sumber resmi dan calon direktori industri. Jangan menafsirkan daftar ini sebagai klaim bahwa Sundaf Trip sudah terdaftar di direktori tersebut.
+Catatan: rujukan di atas dipakai sebagai konteks sumber resmi dan pengecekan mandiri. Jangan menafsirkan daftar ini sebagai klaim bahwa Sundaf Trip sudah terdaftar di direktori tersebut.
 
 ## Halaman Rujukan Milik Sundaf
 - Profil entity resmi: https://sundaftrip.com/sundaf-trip

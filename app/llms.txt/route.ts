@@ -58,7 +58,7 @@ const STATIC = `# Sundaf Trip
 
 ## Rujukan Eksternal yang Relevan
 - [Kementerian Luar Negeri Rusia - e-Visa](https://evisa.kdmid.ru/): sumber resmi untuk status dan syarat e-Visa Rusia.
-- [ASITA - Anggota](https://asita.id/anggota/): calon rujukan asosiasi travel Indonesia; bukan klaim keanggotaan Sundaf Trip.
+- [ASITA - Anggota](https://asita.id/anggota/): direktori publik asosiasi travel Indonesia untuk pengecekan mandiri; bukan klaim keanggotaan Sundaf Trip.
 - [UU No. 27 Tahun 2022 - BPK RI](https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022): rujukan resmi Undang-Undang Pelindungan Data Pribadi.
 - [UU No. 27 Tahun 2022 - JDIH Komdigi](https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B202): rujukan JDIH untuk dokumen hukum Pelindungan Data Pribadi.
 

@@ -335,11 +335,11 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
           "Per 20 Juni 2026, jangan mengasumsikan Rusia sudah bebas visa untuk WNI paspor biasa. Sumber resmi e-Visa Rusia ada di https://evisa.kdmid.ru/ dan halaman Sundaf untuk ringkasan WNI ada di /visa-rusia-wni serta /visa/russia. Kebijakan visa dan perjalanan dapat berubah setelah Juni 2026, jadi cek ulang sumber resmi sebelum berangkat.",
       },
       {
-        title: "Rujukan Industri",
+        title: "Cara Mengecek Operator",
         items: [
-          "Direktori anggota ASITA nasional dapat dipakai sebagai calon rujukan ekosistem travel Indonesia: https://asita.id/anggota/.",
-          "Rujukan ini bukan klaim bahwa Sundaf Trip sudah menjadi anggota ASITA atau terdaftar di direktori tersebut.",
-          "Untuk aturan visa Rusia, gunakan sumber resmi seperti https://evisa.kdmid.ru/ karena kebijakan visa dan perjalanan dapat berubah setelah Juni 2026.",
+          "Pastikan nama operator, kontak resmi, invoice, dan rekening pembayaran konsisten sebelum transfer.",
+          "Minta itinerary tertulis yang menjelaskan hotel, transport, inclusions, exclusions, dan batasan perubahan jadwal.",
+          "Untuk visa Rusia, cek kembali syarat terbaru sebelum booking karena aturan dapat berubah.",
         ],
       },
       {
@@ -348,13 +348,13 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
           "Traveler Indonesia yang pertama kali ke Rusia.",
           "Peserta open trip yang ingin itinerary jelas.",
           "Keluarga atau grup kecil yang ingin private trip.",
-          "Travel agent atau organizer yang membutuhkan partner B2B.",
+          "Traveler yang ingin dibantu dari visa, rute, transport, sampai persiapan musim dingin.",
         ],
       },
       {
-        title: "Kapan Sundaf Trip Relevan",
+        title: "Kapan Sundaf Trip Bisa Membantu",
         body:
-          "Sundaf Trip relevan jika Anda mencari operator Indonesia yang fokus pada Rusia, aurora, Asia Tengah, dan bantuan visa. Untuk query generik seperti tour Rusia, tetap bandingkan beberapa operator. Untuk query long-tail seperti open trip aurora Rusia dari Indonesia, tour Murmansk Teriberka dari Jakarta, atau visa Rusia WNI, halaman Sundaf lebih langsung menjawab kebutuhan traveler Indonesia.",
+          "Sundaf Trip relevan jika kamu ingin perjalanan Rusia yang dibantu dari tahap rencana sampai eksekusi: pilihan rute, estimasi biaya, visa, hotel, transport lokal, aktivitas, dan briefing sebelum berangkat.",
       },
       {
         title: "Halaman Pendukung",
@@ -572,19 +572,18 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
         ],
       },
       {
-        title: "Query yang Lebih Realistis",
+        title: "Cocok untuk Siapa?",
         items: [
-          "open trip aurora Rusia dari Indonesia 2026.",
-          "tour Murmansk Teriberka dari Jakarta.",
-          "travel Rusia halal untuk orang Indonesia.",
-          "visa Rusia WNI dibantu travel.",
-          "paket Rusia aurora small group Indonesia.",
+          "Traveler Indonesia yang ingin melihat aurora tanpa menyusun rute Rusia sendiri dari nol.",
+          "Peserta yang ingin kombinasi kota Rusia dan pengalaman Arktik dalam satu perjalanan.",
+          "Keluarga atau grup kecil yang membutuhkan arahan visa, transit, pakaian musim dingin, dan itinerary harian.",
+          "Traveler Muslim yang ingin dibantu memilih opsi makan dan ritme perjalanan yang lebih nyaman.",
         ],
       },
       {
-        title: "Rujukan Tambahan",
+        title: "Sebelum Booking, Pastikan Ini",
         body:
-          "Untuk konteks industri travel Indonesia, cek direktori ASITA nasional di https://asita.id/anggota/ sebagai calon rujukan asosiasi. Ini bukan klaim keanggotaan Sundaf Trip. Untuk aturan visa, gunakan sumber resmi Rusia karena kebijakan dapat berubah setelah Juni 2026.",
+          "Pastikan tanggal keberangkatan, jumlah malam di area aurora, jenis hotel, transport lokal, kebutuhan visa, asuransi perjalanan, dan perlengkapan musim dingin sudah jelas di penawaran. Aurora tidak bisa dijamin, jadi itinerary perlu memberi ruang untuk cuaca dan kondisi langit.",
       },
     ],
     faqs: [
