@@ -173,9 +173,6 @@ export default async function CustomTripPage() {
     ? { borderColor: "color-mix(in srgb, var(--at-border) 56%, transparent)" }
     : undefined;
   const accentTextStyle = isAtlas ? { color: "var(--site-accent)" } : undefined;
-  const markerStyle = isAtlas
-    ? { background: "var(--site-accent)", borderColor: "var(--at-bg)" }
-    : undefined;
 
   return (
     <main
@@ -215,8 +212,7 @@ export default async function CustomTripPage() {
           </div>
 
           <div
-            className={`p-5 ${isAtlas ? "border-l-2" : "rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"}`}
-            style={isAtlas ? { borderColor: "var(--site-accent)" } : undefined}
+            className={`p-5 ${isAtlas ? "at-card" : "rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"}`}
           >
             <p
               className={`text-xs font-black uppercase tracking-widest ${!isAtlas ? "text-gray-500 dark:text-gray-400" : ""}`}
@@ -311,26 +307,16 @@ export default async function CustomTripPage() {
             Dari ide kasar menjadi itinerary siap jalan
           </h2>
 
-          <ol
-            className={`mt-8 border-l pl-5 ${!isAtlas ? "border-gray-200 dark:border-gray-800" : ""}`}
-            style={lineStyle}
-          >
+          <ol className="mt-8 space-y-6">
             {timeline.map((item) => (
-              <li key={item.step} className="relative pb-8 last:pb-0">
-                <span
-                  aria-hidden="true"
-                  className={`absolute -left-[27px] top-1.5 h-3 w-3 rounded-full border-4 ${
-                    !isAtlas ? "border-white bg-gray-950 dark:border-slate-950 dark:bg-white" : ""
-                  }`}
-                  style={markerStyle}
-                />
+              <li key={item.step}>
                 <div className="grid gap-2 sm:grid-cols-[112px_minmax(0,1fr)] sm:gap-7">
                   <div className="flex items-center gap-3 sm:block">
                     <span
                       className={`text-sm font-black ${!isAtlas ? "text-gray-950 dark:text-white" : ""}`}
                       style={accentTextStyle}
                     >
-                      {item.step}
+                      <span className="stabilo">{item.step}</span>
                     </span>
                     <span
                       className={`text-xs font-bold uppercase tracking-wide sm:mt-2 sm:block ${!isAtlas ? "text-gray-500 dark:text-gray-400" : ""}`}

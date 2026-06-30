@@ -148,9 +148,8 @@ function SectionHead({ eyebrow, sub, big = false, highlight = false, theme }: { 
             {highlight ? <span className="stabilo">{eyebrow}</span> : eyebrow}
           </h2>
         ) : (
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent,#2d6a4f)" }} />
-            <span className="text-sm font-bold uppercase tracking-widest text-gray-700 dark:text-gray-200">{eyebrow}</span>
+          <div className="mb-1.5">
+            <span className="stabilo text-sm font-bold uppercase tracking-widest">{eyebrow}</span>
           </div>
         )}
         {sub && <p className={`text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed ${big ? "mt-4" : ""}`}>{sub}</p>}

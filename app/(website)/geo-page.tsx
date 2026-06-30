@@ -108,9 +108,11 @@ export default function GeoPage({
         <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
           {title}
         </h1>
-        <div className="mt-6 max-w-3xl border-l-4 pl-5" style={{ borderColor: "var(--site-accent)" }}>
+        <div className="mt-6 max-w-3xl">
           <p className="text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-            <LinkedText text={description} />
+            <span className="stabilo">
+              <LinkedText text={description} />
+            </span>
           </p>
         </div>
         <div className="mt-8 flex flex-col sm:flex-row gap-3">

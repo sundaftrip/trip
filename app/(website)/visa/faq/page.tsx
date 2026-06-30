@@ -125,9 +125,10 @@ export default async function VisaFaqPage() {
           if (items.length === 0) return null;
           return (
             <section key={sec.db} id={sec.id} className={`mb-12${sec.id ? " scroll-mt-24" : ""}`}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-block w-1.5 h-5 rounded-full" style={{ background: "var(--site-accent-ink,#2d6a4f)" }} />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{sec.title}</h2>
+              <div className="mb-1">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <span className="stabilo">{sec.title}</span>
+                </h2>
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{sec.sub}</p>
               <FaqList items={items} showInlinePreview={sec.inlinePreview ?? true} />

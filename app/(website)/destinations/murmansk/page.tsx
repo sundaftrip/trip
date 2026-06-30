@@ -339,10 +339,11 @@ export default async function MurmanskPage() {
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {destination.guide.cards.map(({ title, content }) => (
-              <div key={title} className="flex gap-3">
-                <div className="w-1 rounded-full shrink-0 mt-1" style={{ background: "var(--site-accent,#2d6a4f)" }} />
+              <div key={title}>
                 <div>
-                  <p className={`font-bold mb-1 ${!isOutlined ? "text-gray-900" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>{title}</p>
+                  <p className={`font-bold mb-1 ${!isOutlined ? "text-gray-900" : ""}`} style={{ color: isOutlined ? headClr : undefined }}>
+                    <span className="stabilo">{title}</span>
+                  </p>
                   <p className={`text-sm leading-relaxed ${!isOutlined ? "text-gray-700" : ""}`} style={{ color: isOutlined ? subClr : undefined }}>{content}</p>
                 </div>
               </div>

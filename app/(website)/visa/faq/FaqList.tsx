@@ -184,19 +184,8 @@ export function FaqList({
                               "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 28%, transparent)",
                           }}
                         >
-                          <div
-                            className="flex items-center gap-2 mb-1 text-[11px] font-bold uppercase tracking-wider"
-                            style={{
-                              color: "var(--site-accent-ink,#2d6a4f)",
-                            }}
-                          >
-                            <span
-                              className="inline-block w-1 h-3.5 rounded-full"
-                              style={{
-                                background: "var(--site-accent-ink,#2d6a4f)",
-                              }}
-                            />
-                            Pengurusan Visa via Sundaf
+                          <div className="mb-1 text-[11px] font-bold uppercase tracking-wider">
+                            <span className="stabilo">Pengurusan Visa via Sundaf</span>
                           </div>
                           {PENGURUSAN_VISA_DETAIL}
                         </div>

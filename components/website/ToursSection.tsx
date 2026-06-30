@@ -41,7 +41,7 @@ function PinnedRail({ tours, theme, eagerImageCount = 0 }: { tours: Tour[]; them
   if (tours.length === 0) return null;
 
   return (
-    <aside className="order-first min-w-0 self-start border-b pb-5 lg:sticky lg:top-24 lg:order-none lg:border-b-0 lg:border-l lg:pl-5 lg:pb-0" style={{ borderColor: "color-mix(in srgb, var(--site-accent,#00ADB5) 35%, transparent)" }}>
+    <aside className="order-first min-w-0 self-start border-b pb-5 lg:sticky lg:top-24 lg:order-none lg:border-b-0 lg:pb-0">
       <div className="mb-3 flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--site-accent,#00ADB5)" }}>
           Pilihan Utama
