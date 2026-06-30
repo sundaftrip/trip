@@ -4,12 +4,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight, ShieldCheck } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { findBySlug } from "@/lib/visa-slug";
-import { visaDefaults, type VisaDocument, type VisaFaq } from "@/lib/visa-defaults";
+import {
+  VISA_PROTECTION_PATH,
+  visaDefaultsForCountry,
+  type VisaDocument,
+  type VisaFaq,
+} from "@/lib/visa-defaults";
 import { FlagIcon } from "@/lib/flag-icon";
 import VisaOrderForm from "@/components/website/VisaOrderForm";
 import TestimonialSection from "@/components/website/TestimonialSection";
@@ -91,7 +96,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
   // FAQ tidak diambil dari tabel global Faq lagi, pertanyaan spesifik
   // (mis. "Berapa lama proses visa Rusia?") akan bocor ke semua halaman
   // negara. Sumber FAQ per-negara: country.faqs (Json di DB) atau
-  // visaDefaults(category) sebagai fallback.
+  // visaDefaultsForCountry(country) sebagai fallback.
   // Testimonial: hanya ulasan kategori "visa" (layanan pengurusan visa),
   // BUKAN ulasan trip rombongan, supaya relevan & tidak misleading.
   const [countries, companyRows, testimonials] = await Promise.all([
@@ -109,9 +114,28 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const country = findBySlug(countries, slug);
   if (!country) notFound();
 
+  // Ekstrak "proses X hari/minggu/bulan" dari notes, buat badge, timeline,
+  // dan FAQ fallback yang lebih spesifik per negara.
+  const processMatch = country.notes.match(
+    /proses\s+([\d–\-]+\s*(?:hari|minggu|bulan)(?:\s+kerja)?)/i,
+  );
+  const processTime = processMatch?.[1].trim() ?? null;
+
+  const officialFee = country.officialFee?.trim() || null;
+  const servicePrice = country.servicePrice?.trim() || null;
+  const conditions = Array.isArray(country.conditions) ? country.conditions : [];
+
   // Eligibility / documents / faqs: pakai data per-negara kalau ada,
-  // kalau kosong fallback ke template per-kategori visa.
-  const defaults = visaDefaults(country.visa);
+  // kalau kosong fallback ke template per-kategori visa yang dipersonalisasi.
+  const defaults = visaDefaultsForCountry({
+    category: country.visa,
+    countryName: country.name,
+    stay: country.stay,
+    officialFee,
+    servicePrice,
+    processTime,
+    conditions,
+  });
   const eligibility =
     Array.isArray(country.eligibility) && country.eligibility.length > 0
       ? country.eligibility
@@ -124,6 +148,11 @@ export default async function VisaDetailPage({ params }: PageProps) {
     Array.isArray(faqsRaw) && faqsRaw.length > 0 ? faqsRaw : defaults.faqs;
 
   const wa = toWaNumber(companyRows.find((r) => r.key === "company_whatsapp")?.value ?? "");
+  const protectionWaHref = wa
+    ? `https://wa.me/${wa}?text=${encodeURIComponent(
+        `Halo, saya ingin cek Asuransi Visa Protection untuk pengajuan visa ${country.name}.`,
+      )}`
+    : "";
   const rawTheme = companyRows.find((r) => r.key === "site_theme")?.value || "classic";
   const theme = rawTheme === "console" ? "atlas" : rawTheme;
 
@@ -135,19 +164,10 @@ export default async function VisaDetailPage({ params }: PageProps) {
     country.servicePrice?.trim() || country.officialFee?.trim() || country.cost?.trim() || "Gratis";
   const isFree = costRaw === "Gratis";
   const costMain = costRaw.replace(/^mulai\s+/i, "");
-  const officialFee = country.officialFee?.trim() || null;
-  const servicePrice = country.servicePrice?.trim() || null;
-  const conditions = Array.isArray(country.conditions) ? country.conditions : [];
   const verifiedLabel = formatVerified(country.lastVerifiedAt);
 
   // "Layanan kami: …" → buang prefiks, sisanya jadi paragraf layanan.
   const layananText = country.notes.replace(/^Layanan kami:\s*/i, "").trim();
-
-  // Ekstrak "proses X hari/minggu/bulan" dari notes, buat badge & timeline.
-  const processMatch = country.notes.match(
-    /proses\s+([\d–\-]+\s*(?:hari|minggu|bulan)(?:\s+kerja)?)/i,
-  );
-  const processTime = processMatch?.[1].trim() ?? null;
 
   const isRussia = slug === "russia" || country.en.toLowerCase() === "russia";
   if (isRussia) {
@@ -275,6 +295,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
               ["#eligibility", "Kelayakan"],
               ["#dokumen", "Dokumen"],
               ["#layanan", "Layanan & Harga"],
+              ["#protection", "Visa Protection"],
               ["#proses", "Proses"],
               ["#faq", "FAQ"],
             ].map(([href, label]) => (
@@ -552,6 +573,55 @@ export default async function VisaDetailPage({ params }: PageProps) {
             )}
           </section>
 
+          {/* VISA PROTECTION */}
+          <section id="protection">
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900/60 dark:bg-amber-950/30">
+              <div className="flex items-start gap-3">
+                <span className="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200">
+                  <ShieldCheck size={21} aria-hidden />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+                    Add-on terpisah
+                  </p>
+                  <h2 className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
+                    Asuransi Visa Protection
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                    Untuk visa yang berisiko ditolak, Sundaf Trip dapat membantu screening
+                    produk Visa Protection sebelum pengajuan. Manfaat bisa membantu mengurangi
+                    kerugian biaya tertentu jika visa ditolak, tetapi hanya berlaku sesuai polis
+                    dan tidak menjamin approval visa.
+                  </p>
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <Link
+                      href={VISA_PROTECTION_PATH}
+                      className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition hover:opacity-90"
+                      style={{ background: "var(--site-accent,#2d6a4f)" }}
+                    >
+                      Pelajari Visa Protection <ArrowRight size={15} aria-hidden />
+                    </Link>
+                    {protectionWaHref && (
+                      <a
+                        href={protectionWaHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center rounded-lg border border-amber-300 px-4 py-2.5 text-sm font-bold text-amber-800 transition hover:bg-amber-100 dark:border-amber-800 dark:text-amber-100 dark:hover:bg-amber-950"
+                      >
+                        Cek kecocokan polis
+                      </a>
+                    )}
+                  </div>
+                  <p className="mt-3 text-xs leading-relaxed text-amber-800/80 dark:text-amber-200/80">
+                    Target premi yang kami screening: sekitar Rp400.000-Rp650.000 per orang bila
+                    tersedia dan sesuai profil perjalanan. Harga final mengikuti negara tujuan,
+                    durasi, usia, nilai manfaat, dan ketentuan insurer.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* PROSES */}
           <section id="proses">
             <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
@@ -694,6 +764,10 @@ function russiaVisaFaqs(costLabel: string, processTime: string | null, stay: str
     {
       question: "Berapa lama masa tinggal dengan e-Visa Rusia?",
       answer: `Masa tinggal yang ditampilkan di halaman Sundaf Trip adalah ${stay}. Aturan visa dapat berubah, sehingga detail final perlu dikonfirmasi sebelum pengajuan.`,
+    },
+    {
+      question: "Kalau e-Visa Rusia ditolak, apakah biaya bisa kembali?",
+      answer: `Biaya resmi dan biaya layanan tidak otomatis refundable setelah proses berjalan. Jika ingin mengurangi risiko biaya saat visa ditolak, cek dulu Asuransi Visa Protection di ${VISA_PROTECTION_PATH}. Manfaat hanya berlaku sesuai polis dan harus dibeli sebelum pengajuan, bukan setelah ada indikasi penolakan.`,
     },
   ];
 }

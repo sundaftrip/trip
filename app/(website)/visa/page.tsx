@@ -34,6 +34,12 @@ const SERVICE_LINKS = [
     description: "Pendampingan transparan tanpa janji approval palsu atau klaim pasti lolos.",
     icon: ShieldCheck,
   },
+  {
+    href: "/visa/asuransi-visa-protection",
+    title: "Asuransi Visa Protection",
+    description: "Screening polis terpisah untuk bantu kurangi risiko biaya saat visa ditolak.",
+    icon: ShieldCheck,
+  },
 ] as const;
 
 export default async function VisaPage() {
@@ -74,7 +80,7 @@ export default async function VisaPage() {
           Visa Paspor Indonesia
         </h1>
 
-        <div className="grid gap-3 md:grid-cols-3 mb-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
           {SERVICE_LINKS.map((item) => {
             const Icon = item.icon;
             return (

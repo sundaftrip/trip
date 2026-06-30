@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/jasa-urus-visa-eropa`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.86 },
     { url: `${base}/jasa-urus-visa-amerika-canada`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.86 },
     { url: `${base}/jasa-urus-visa-terpercaya`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.86 },
+    { url: `${base}/visa/asuransi-visa-protection`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.84 },
     { url: `${base}/visa/faq`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
