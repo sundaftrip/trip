@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
-  Bot,
   CheckCircle2,
   CheckCheck,
   MessageCircle,
@@ -253,13 +251,6 @@ export default function WhatsAppClientPrototype() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link
-              href="/admin/ai-ops"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
-              <Bot size={16} />
-              AI Ops
-            </Link>
             <button
               type="button"
               onClick={resetChat}

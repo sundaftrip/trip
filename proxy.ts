@@ -12,6 +12,10 @@ export function proxy(req: NextRequest) {
 
   // Auth guard hanya untuk /admin (tidak pernah dijalankan untuk halaman publik)
   if (isAdmin) {
+    if (pathname === "/admin/ai-ops" || pathname.startsWith("/admin/ai-ops/")) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
+
     const isLoginPage = pathname === "/admin/login";
     // Halaman auth publik — boleh diakses tanpa login.
     const isPublicAuthPage = isLoginPage;
