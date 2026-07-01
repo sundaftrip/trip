@@ -35,6 +35,8 @@ type UploadSignature = {
   useFilename: string;
 };
 
+const MAX_B2B_PDF_BYTES = 25 * 1024 * 1024;
+
 function formatBytes(value: number) {
   if (!value) return "-";
   if (value < 1024 * 1024) return `${Math.round(value / 1024)} KB`;
@@ -325,6 +327,10 @@ export default function B2BCatalogManager({
     }
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       setUploadError("File harus PDF.");
+      return;
+    }
+    if (file.size <= 0 || file.size > MAX_B2B_PDF_BYTES) {
+      setUploadError("Ukuran PDF harus 1 byte sampai 25 MB.");
       return;
     }
 

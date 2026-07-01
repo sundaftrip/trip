@@ -5,8 +5,8 @@ import visaSeed from "./visa-seed.json";
 
 const prisma = new PrismaClient();
 
-const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
-const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? "Admin2025!";
+const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD;
 const ADMIN_NAME = process.env.SEED_ADMIN_NAME ?? "Super Admin";
 const SEED_THEME = process.env.SEED_THEME ?? "classic";
 const SEED_COMPANY_NAME = process.env.SEED_COMPANY_NAME ?? "";
@@ -15,20 +15,22 @@ async function main() {
   // Bikin superadmin HANYA kalau DB benar-benar kosong (tidak ada user sama sekali).
   // Mencegah clutter user dummy di deployment existing yang sudah punya admin.
   const userCount = await prisma.user.count();
-  const isProduction = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
-  if (userCount === 0 && isProduction && !process.env.SEED_ADMIN_PASSWORD) {
-    // Jangan pernah membuat admin production dengan password default yang tertulis di repo.
-    console.warn("⚠️  DB kosong tapi SEED_ADMIN_PASSWORD tidak di-set — skip pembuatan admin. Set env lalu jalankan ulang seed.");
-  } else if (userCount === 0) {
-    await prisma.user.create({
-      data: {
-        name: ADMIN_NAME,
-        email: ADMIN_EMAIL,
-        password: await bcrypt.hash(ADMIN_PASSWORD, 12),
-        role: "SUPERADMIN",
-      },
-    });
-    console.log(`✅ Superadmin created: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
+  if (userCount === 0) {
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      console.warn("⚠️  DB kosong tapi SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD tidak lengkap — skip pembuatan admin. Set env lalu jalankan ulang seed.");
+    } else if (ADMIN_PASSWORD.length < 12) {
+      console.warn("⚠️  SEED_ADMIN_PASSWORD minimal 12 karakter — skip pembuatan admin.");
+    } else {
+      await prisma.user.create({
+        data: {
+          name: ADMIN_NAME,
+          email: ADMIN_EMAIL,
+          password: await bcrypt.hash(ADMIN_PASSWORD, 12),
+          role: "SUPERADMIN",
+        },
+      });
+      console.log(`✅ Superadmin created: ${ADMIN_EMAIL}`);
+    }
   } else {
     console.log(`ℹ️  ${userCount} user(s) sudah ada, skip seed admin`);
   }

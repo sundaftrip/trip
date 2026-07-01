@@ -1,7 +1,7 @@
 import { revalidateTag, revalidatePath } from "next/cache";
 
 // Next mengetik revalidateTag/Path agak ketat di beberapa versi; cast aman.
-const rTag = revalidateTag as unknown as (t: string) => void;
+const rTag = revalidateTag as unknown as (t: string, profile: "max") => void;
 const rPath = revalidatePath as unknown as (p: string, t?: "page" | "layout") => void;
 
 /**
@@ -14,7 +14,7 @@ const rPath = revalidatePath as unknown as (p: string, t?: "page" | "layout") =>
  */
 export function revalidatePublicContent() {
   for (const tag of ["home-data", "footer-data", "site-org-schema", "company-info"]) {
-    rTag(tag);
+    rTag(tag, "max");
   }
   rPath("/", "layout");
 }
