@@ -97,7 +97,7 @@ export default function FooterContactList({
           <li key={label} className={itemClassName}>
             <Icon size={13} className={iconClassName} style={iconStyle} />
             {href ? (
-              <a href={href} className={linkClassName} style={linkStyle}>
+              <a href={href} className={["inline-flex min-h-11 items-center break-words", linkClassName].filter(Boolean).join(" ")} style={linkStyle}>
                 {value}
               </a>
             ) : (

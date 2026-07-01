@@ -124,7 +124,7 @@ function Carousel({ items, renderCard, darkDots = false }: {
         {/* Prev / Next */}
         <div className="flex gap-2">
           <button onClick={prev} disabled={current === 0} type="button" aria-label="Testimoni sebelumnya"
-            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
+            className={`h-11 w-11 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
               darkDots
                 ? "border-white/30 text-white hover:bg-white/10"
                 : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -132,7 +132,7 @@ function Carousel({ items, renderCard, darkDots = false }: {
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
           <button onClick={next} disabled={current === items.length - 1} type="button" aria-label="Testimoni berikutnya"
-            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
+            className={`h-11 w-11 rounded-full flex items-center justify-center border transition-all disabled:opacity-30 ${
               darkDots
                 ? "border-white/30 text-white hover:bg-white/10"
                 : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -235,7 +235,7 @@ function MobileDenseTestimonials({
                   <button
                     type="button"
                     onClick={() => onOpen(item)}
-                    className="mt-2 inline-flex cursor-pointer text-[10px] font-semibold uppercase"
+                    className="mt-2 inline-flex min-h-11 cursor-pointer items-center text-[10px] font-semibold uppercase"
                     style={{ color: "var(--site-accent)" }}
                   >
                     Baca penuh

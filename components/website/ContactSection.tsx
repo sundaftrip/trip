@@ -156,7 +156,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--at-subtext)" }}>{label}</p>
                   {href
-                    ? <a href={href} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-text)" }}>{value}</a>
+                    ? <a href={href} className="inline-flex min-h-11 items-center text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-text)" }}>{value}</a>
                     : <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--at-text)" }}>{value}</p>}
                 </div>
               </div>

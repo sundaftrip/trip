@@ -213,17 +213,22 @@ export default async function BlogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`} className="block at-card overflow-hidden group">
-                <div className="relative h-48 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
-                  {post.cover
-                    ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
-                  {post.category && (
-                    <span className="absolute top-3 left-3 at-pill" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
+                {post.cover && (
+                  <div className="relative h-48 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
+                    <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {post.category && (
+                      <span className="absolute top-3 left-3 at-pill" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
+                        {post.category}
+                      </span>
+                    )}
+                  </div>
+                )}
+                <div className={post.cover ? "p-5" : "p-5 sm:p-6"}>
+                  {!post.cover && post.category && (
+                    <span className="at-pill mb-4 inline-flex" style={{ background: "var(--at-muted)", color: "var(--at-text)" }}>
                       {post.category}
                     </span>
                   )}
-                </div>
-                <div className="p-5">
                   <h2 className="font-semibold mb-2 line-clamp-2" style={{ color: "var(--at-text)" }}>{post.title}</h2>
                   {post.excerpt && <p className="text-sm line-clamp-2 mb-4" style={{ color: "var(--at-subtext)" }}>{post.excerpt}</p>}
                   <div className="flex items-center justify-between text-xs" style={{ color: "var(--at-subtext)" }}>

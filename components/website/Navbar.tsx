@@ -33,6 +33,15 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   function toggleLang() {
     const next = lang === "id" ? "en" : "id";
     setLang(next);
@@ -286,7 +295,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       style={{ backgroundColor: "var(--at-bg)", borderColor: "var(--at-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" prefetch={false} className="flex items-center">
+          <Link href="/" prefetch={false} className="flex min-h-11 items-center">
             <Image src={atlasLogoSrc} alt="Sundaf Trip" width={176} height={54}
               className="h-8 sm:h-11 w-auto logo-theme" priority fetchPriority="high" />
           </Link>

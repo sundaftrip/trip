@@ -172,11 +172,11 @@ function FilterChips({
   return (
     <div className={gb.className} style={gb.style}>
     <div
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-6"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-5 sm:pt-6 sm:pb-6"
       style={{ fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}
     >
-      <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
-        <span className="text-[9px] tracking-[0.22em] uppercase opacity-50 mr-1 sm:mr-2">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] sm:justify-center">
+        <span className="sticky left-0 z-10 shrink-0 bg-inherit pr-1 text-[9px] tracking-[0.22em] uppercase opacity-60 sm:static sm:mr-2">
           Filter
         </span>
         {REGIONS.map((r) => {
@@ -188,7 +188,7 @@ function FilterChips({
               onClick={() => onChange(r.key)}
               aria-current={isActive ? "true" : undefined}
               aria-label={`Filter region ${r.label}`}
-              className={`px-3 sm:px-4 h-8 inline-flex items-center text-[11px] tracking-[0.14em] uppercase font-bold transition-all rounded-sm border ${
+              className={`inline-flex h-11 shrink-0 items-center rounded-sm border px-3.5 text-[11px] font-bold uppercase tracking-[0.14em] transition-all sm:px-4 ${
                 isActive
                   ? "border-current opacity-100"
                   : "border-transparent opacity-50 hover:opacity-80 hover:border-current"
@@ -295,10 +295,15 @@ function PaginationBar({
               onClick={() => onChange(p)}
               aria-label={`Halaman ${p}`}
               aria-current={isActive ? "page" : undefined}
-              className={`h-1.5 rounded-full transition-all ${
-                isActive ? "w-8 bg-current opacity-90" : "w-1.5 bg-current opacity-25 hover:opacity-50"
-              }`}
-            />
+              className="group inline-flex h-11 w-11 items-center justify-center rounded-full transition-all"
+            >
+              <span
+                aria-hidden="true"
+                className={`h-1.5 rounded-full transition-all ${
+                  isActive ? "w-8 bg-current opacity-90" : "w-1.5 bg-current opacity-25 group-hover:opacity-50"
+                }`}
+              />
+            </button>
           );
         })}
       </div>

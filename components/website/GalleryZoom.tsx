@@ -59,7 +59,7 @@ export default function GalleryZoom({
           aria-label="Buka dokumentasi foto 1"
           className="relative w-full h-72 sm:h-96 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group block"
         >
-          <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+          <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} loading="eager" fetchPriority="high" className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
         </button>
       )}
 
@@ -69,7 +69,7 @@ export default function GalleryZoom({
             <button key={i} onClick={() => setActive(i)}
               aria-label={`Buka dokumentasi foto ${i + 1}`}
               className="relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-              <Image src={grid(url)} alt={altFor(i)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+              <Image src={grid(url)} alt={altFor(i)} fill draggable={false} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             </button>
           ))}
         </div>
@@ -81,7 +81,7 @@ export default function GalleryZoom({
           <button onClick={() => setActive(0)}
             aria-label="Buka dokumentasi foto 1"
             className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-            <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+            <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} loading="eager" fetchPriority="high" className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center bg-black/10" />
           </button>
 
