@@ -6,6 +6,7 @@
     "dev": "next dev --webpack",
     "build": "node scripts/build.mjs",
     "start": "next start",
+    "test": "tsx --test tests/admin-permissions.test.ts",
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
