@@ -40,16 +40,31 @@ const adminItems = [
 
 interface Props {
   role: string;
+  canAccessFinance: boolean;
   user: { name?: string | null; email?: string | null; role: string };
   logo?: string;
   children: React.ReactNode;
 }
 
-function NavLinks({ pathname, role, onClose }: { pathname: string; role: string; onClose?: () => void }) {
+function NavLinks({
+  pathname,
+  role,
+  canAccessFinance,
+  onClose,
+}: {
+  pathname: string;
+  role: string;
+  canAccessFinance: boolean;
+  onClose?: () => void;
+}) {
+  const visibleNavItems = navItems.filter((item) => (
+    item.href !== "/admin/keuangan" || canAccessFinance
+  ));
+
   return (
     <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
       <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</p>
-      {navItems.map((item) => {
+      {visibleNavItems.map((item) => {
         const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
         return (
           <Link key={item.href} href={item.href} onClick={onClose}
@@ -88,7 +103,7 @@ function NavLinks({ pathname, role, onClose }: { pathname: string; role: string;
   );
 }
 
-export default function AdminShell({ role, user, logo, children }: Props) {
+export default function AdminShell({ role, canAccessFinance, user, logo, children }: Props) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -109,7 +124,7 @@ export default function AdminShell({ role, user, logo, children }: Props) {
         <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
           <Image src={logo || "/logo.png"} alt="Logo" width={120} height={36} className="h-8 w-auto object-contain dark:brightness-0 dark:invert" />
         </div>
-        <NavLinks pathname={pathname} role={role} />
+        <NavLinks pathname={pathname} role={role} canAccessFinance={canAccessFinance} />
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">
           <p className="text-xs text-center text-gray-400">Travel CMS</p>
         </div>
@@ -126,7 +141,12 @@ export default function AdminShell({ role, user, logo, children }: Props) {
                 <X size={18} />
               </button>
             </div>
-            <NavLinks pathname={pathname} role={role} onClose={() => setSidebarOpen(false)} />
+            <NavLinks
+              pathname={pathname}
+              role={role}
+              canAccessFinance={canAccessFinance}
+              onClose={() => setSidebarOpen(false)}
+            />
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
               <p className="text-xs text-center text-gray-400">Travel CMS</p>
             </div>

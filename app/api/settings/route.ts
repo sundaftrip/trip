@@ -8,6 +8,9 @@ import { PLAN_FEATURES } from "@/lib/plan";
 import { getPlan } from "@/lib/license";
 import { apiError } from "@/lib/api-error";
 
+const revalidateDataTag = revalidateTag as unknown as (tag: string, profile: "max") => void;
+const revalidateSitePath = revalidatePath as unknown as (path: string, type?: string) => void;
+
 export async function GET() {
   const items = await prisma.companyInfo.findMany();
   const result: Record<string, string> = {};
@@ -61,15 +64,15 @@ export async function PUT(req: NextRequest) {
         prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
       )
     );
-    (revalidateTag as unknown as (t: string) => void)("site-colors");
-    (revalidateTag as unknown as (t: string) => void)("footer-data");
-    (revalidateTag as unknown as (t: string) => void)("home-data");
-    (revalidateTag as unknown as (t: string) => void)("company-meta");
+    revalidateDataTag("site-colors", "max");
+    revalidateDataTag("footer-data", "max");
+    revalidateDataTag("home-data", "max");
+    revalidateDataTag("company-meta", "max");
     // Schema Organization juga baca info perusahaan — ikut disegarkan biar sinkron
-    (revalidateTag as unknown as (t: string) => void)("site-org-schema");
-    (revalidateTag as unknown as (t: string) => void)("company-info");
+    revalidateDataTag("site-org-schema", "max");
+    revalidateDataTag("company-info", "max");
     // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
-    (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
+    revalidateSitePath("/", "layout");
 
     await logActivity({
       userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",

@@ -3,10 +3,9 @@
  * Run AFTER setting up .env with correct DATABASE_URL.
  *
  * Usage:
- *   node scripts/setup-client.js
+ *   ADMIN_EMAIL=owner@mytravelco.com ADMIN_PASSWORD='use-a-strong-password' node scripts/setup-client.js
  *
- * Or with custom values:
- *   ADMIN_EMAIL=owner@mytravelco.com ADMIN_PASSWORD=MyPass123 node scripts/setup-client.js
+ * ADMIN_PASSWORD is required and is never printed back to the terminal.
  */
 
 const { PrismaClient } = require("@prisma/client");
@@ -14,13 +13,20 @@ const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@example.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "Admin2025!";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ADMIN_NAME = process.env.ADMIN_NAME ?? "Super Admin";
 const COMPANY_NAME = process.env.COMPANY_NAME ?? "";
 
 async function main() {
   console.log("🚀 Setting up new client deployment...\n");
+
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    throw new Error("Set ADMIN_EMAIL dan ADMIN_PASSWORD sebelum menjalankan setup-client.js");
+  }
+  if (ADMIN_PASSWORD.length < 12) {
+    throw new Error("ADMIN_PASSWORD minimal 12 karakter.");
+  }
 
   // 1. Create superadmin
   const existing = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
@@ -35,7 +41,6 @@ async function main() {
     });
     console.log(`✅ SuperAdmin created`);
     console.log(`   Email    : ${ADMIN_EMAIL}`);
-    console.log(`   Password : ${ADMIN_PASSWORD}`);
   } else {
     console.log("ℹ️  SuperAdmin already exists, skipping");
   }
@@ -83,7 +88,7 @@ async function main() {
 
   console.log("🎉 Setup complete! Next steps:");
   console.log("   1. Go to /admin/login");
-  console.log(`   2. Login with: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
+  console.log(`   2. Login with: ${ADMIN_EMAIL}`);
   console.log("   3. Fill in company info at /admin/settings");
   console.log("   4. Upload your logo to /public/logo.png");
   console.log("   5. Start adding tour packages at /admin/tours\n");

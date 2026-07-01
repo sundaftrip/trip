@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
 import AdminProviders from "@/components/admin/AdminProviders";
 import { prisma } from "@/lib/prisma";
+import { checkPermission } from "@/lib/permissions";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const headersList = await headers();
@@ -34,10 +35,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const logoRow = await prisma.companyInfo.findFirst({ where: { key: "company_logo" } });
   const logo = logoRow?.value || "";
+  const canAccessFinance = await checkPermission(session, "finance_view");
 
   return (
     <AdminProviders>
-      <AdminShell role={session!.user.role} user={session!.user} logo={logo}>
+      <AdminShell
+        role={session!.user.role}
+        canAccessFinance={canAccessFinance}
+        user={session!.user}
+        logo={logo}
+      >
         {children}
       </AdminShell>
     </AdminProviders>
