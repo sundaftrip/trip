@@ -49,11 +49,70 @@ function inferImageDimensions(src: string) {
   return { width: 1200, height: 800 };
 }
 
+function parseJsonLd(value: string) {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function isUnsafeUrl(value: string) {
+  const compact = value.trim().replace(/[\x00-\x1F\x7F\s]+/g, "");
+  if (/^(javascript|vbscript):/i.test(compact)) return true;
+  if (/^data:/i.test(compact) && !/^data:image\/(avif|gif|jpeg|jpg|png|webp);/i.test(compact)) return true;
+  return false;
+}
+
 function enhanceArticleHtml(html: string, fallbackAlt: string) {
   const $ = cheerio.load(html, undefined, false);
+  const structuredData: unknown[] = [];
+
+  $("script").each((_, element) => {
+    const script = $(element);
+    const type = (script.attr("type") ?? "").trim().toLowerCase();
+
+    if (type === "application/ld+json") {
+      const parsed = parseJsonLd(script.text());
+      if (parsed) structuredData.push(parsed);
+    }
+
+    script.remove();
+  });
+
+  $("iframe,object,embed").remove();
+
+  $("h1").each((_, element) => {
+    const heading = $(element);
+    const replacement = $("<h2></h2>");
+    const attributes = heading.attr();
+    for (const [name, value] of Object.entries(attributes ?? {})) {
+      if (typeof value === "string") replacement.attr(name, value);
+    }
+    replacement.html(heading.html() ?? "");
+    heading.replaceWith(replacement);
+  });
+
+  $("*").each((_, element) => {
+    const node = $(element);
+    const attributes = node.attr();
+    for (const [name, value] of Object.entries(attributes ?? {})) {
+      if (/^on/i.test(name)) node.removeAttr(name);
+      if (typeof value === "string" && ["action", "href", "src", "xlink:href"].includes(name.toLowerCase()) && isUnsafeUrl(value)) {
+        node.removeAttr(name);
+      }
+    }
+  });
+
   $("img").each((index, element) => {
     const img = $(element);
     const src = img.attr("src") ?? "";
+    if (!src) {
+      img.remove();
+      return;
+    }
+
     const alt = img.attr("alt")?.trim();
 
     if (!alt) img.attr("alt", `${fallbackAlt} - dokumentasi ${index + 1}`);
@@ -67,7 +126,7 @@ function enhanceArticleHtml(html: string, fallbackAlt: string) {
     }
   });
 
-  return $.html();
+  return { html: $.html(), structuredData };
 }
 
 /* ── #5: generateMetadata, og:image dari cover artikel ─────────────── */
@@ -185,7 +244,8 @@ export default async function BlogDetailPage({
     publisher: { "@type": "Organization", name: companyName, url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blog/${slug}` },
   };
-  const articleBody = post.body ? enhanceArticleHtml(post.body, post.title) : "";
+  const enhancedArticle = post.body ? enhanceArticleHtml(post.body, post.title) : { html: "", structuredData: [] };
+  const articleBody = enhancedArticle.html;
 
   const divider = (
     <div
@@ -211,6 +271,13 @@ export default async function BlogDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      {enhancedArticle.structuredData.map((schema, index) => (
+        <script
+          key={`cms-jsonld-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
