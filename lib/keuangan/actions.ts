@@ -5,13 +5,15 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
 import { isTokenActive } from "@/lib/keuangan/calc";
 
 export type ActionState = { ok: boolean; error?: string };
 
-async function guard() {
+async function guard(permission = "finance_edit") {
   const session = await auth();
   if (!session?.user) throw new Error("Sesi tidak valid — silakan login ulang.");
+  if (!await checkPermission(session, permission)) throw new Error("Tidak memiliki izin mengubah data keuangan.");
   return session.user;
 }
 
@@ -390,7 +392,7 @@ export async function resetKeuangan(
   fd: FormData,
 ): Promise<ActionState> {
   return run(async () => {
-    const user = await guard();
+    const user = await guard("finance_edit");
     if (user.role !== "SUPERADMIN")
       throw new Error("Hanya Super Admin yang boleh mereset data keuangan.");
 
