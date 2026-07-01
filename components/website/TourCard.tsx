@@ -497,7 +497,7 @@ function AtlasCard({ tour, isDimmed, eagerImage }: { tour: Tour; isDimmed: boole
     <div className={`at-card group min-w-0 overflow-hidden h-full flex flex-col ${isDimmed ? "grayscale cursor-default" : ""}`}>
       <div className="relative h-28 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
         {tour.heroImg
-          ? <Image src={cldThumb(tour.heroImg, 360, 220)} alt={tour.title} fill loading={eagerImage ? "eager" : "lazy"} fetchPriority={eagerImage ? "high" : "low"} decoding="async" sizes="(max-width:768px) 50vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          ? <Image src={cldThumb(tour.heroImg, 900, 520)} alt={tour.title} fill loading={eagerImage ? "eager" : "lazy"} fetchPriority={eagerImage ? "high" : "low"} decoding="async" sizes="(max-width:768px) 50vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
           : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
 
         {tour.badge && !isDimmed && (

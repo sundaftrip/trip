@@ -49,7 +49,7 @@ export function cldOptimize(url: string | null | undefined, width: number): stri
 export function cldThumb(url: string | null | undefined, width: number, height: number): string {
   if (!url) return "";
   if (!url.includes("res.cloudinary.com")) return url;
-  const seg = `w_${width},h_${height},c_fill,g_auto,q_auto:eco,f_auto`;
+  const seg = `w_${width},h_${height},c_fill,g_auto,q_auto:good,f_auto`;
   if (url.includes(`/upload/${seg}/`) || url.includes(`/upload/${seg},`)) return url;
   return url.replace("/upload/", `/upload/${seg}/`);
 }
