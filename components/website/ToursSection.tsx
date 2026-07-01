@@ -16,13 +16,21 @@ interface Props {
   children?: React.ReactNode;
 }
 
+const EAGER_CARD_COUNT = 4;
+
+function eagerTourIds(tours: Tour[], count: number) {
+  if (count <= 0) return new Set<string>();
+  return new Set(tours.filter((tour) => tour.heroImg).slice(0, count).map((tour) => tour.id));
+}
+
 function CardsGrid({ tours, theme, className, eagerImageCount = 0 }: { tours: Tour[]; theme: string; className: string; eagerImageCount?: number }) {
   if (tours.length === 0) return null;
+  const eagerIds = eagerTourIds(tours, eagerImageCount);
 
   return (
     <div className={`min-w-0 ${className}`}>
       {tours.map((tour, i) => {
-        const eagerImage = i < eagerImageCount;
+        const eagerImage = eagerIds.has(tour.id);
         const card = <TourCard tour={tour} theme={theme} eagerImage={eagerImage} />;
         if (eagerImage) {
           return <div key={tour.id} className="h-full min-w-0">{card}</div>;
@@ -39,6 +47,7 @@ function CardsGrid({ tours, theme, className, eagerImageCount = 0 }: { tours: To
 
 function PinnedRail({ tours, theme, eagerImageCount = 0 }: { tours: Tour[]; theme: string; eagerImageCount?: number }) {
   if (tours.length === 0) return null;
+  const eagerIds = eagerTourIds(tours, eagerImageCount);
 
   return (
     <aside className="order-first min-w-0 self-start border-b pb-5 lg:sticky lg:top-24 lg:order-none lg:border-b-0 lg:pb-0">
@@ -50,9 +59,9 @@ function PinnedRail({ tours, theme, eagerImageCount = 0 }: { tours: Tour[]; them
           {String(tours.length).padStart(2, "0")}
         </span>
       </div>
-      <div className="grid min-w-0 grid-cols-2 gap-3 lg:grid-cols-1">
+      <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3 lg:grid-cols-1">
         {tours.map((tour, i) => {
-          const eagerImage = i < eagerImageCount;
+          const eagerImage = eagerIds.has(tour.id);
           const card = <TourCard tour={tour} theme={theme} eagerImage={eagerImage} />;
           if (eagerImage) {
             return <div key={tour.id} className="h-full min-w-0">{card}</div>;
@@ -80,16 +89,16 @@ function PinnedLayout({
   gridClassName: string;
 }) {
   if (pinnedTours.length === 0) {
-    return <CardsGrid tours={tours} theme={theme} className={gridClassName} />;
+    return <CardsGrid tours={tours} theme={theme} className={gridClassName} eagerImageCount={EAGER_CARD_COUNT} />;
   }
 
   const hasRegularTours = tours.length > 0;
 
   return (
     <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
-      {hasRegularTours && <CardsGrid tours={tours} theme={theme} className={gridClassName} />}
+      {hasRegularTours && <CardsGrid tours={tours} theme={theme} className={gridClassName} eagerImageCount={EAGER_CARD_COUNT} />}
       <div className={hasRegularTours ? "" : "lg:col-start-2"}>
-        <PinnedRail tours={pinnedTours} theme={theme} />
+        <PinnedRail tours={pinnedTours} theme={theme} eagerImageCount={hasRegularTours ? 0 : EAGER_CARD_COUNT} />
       </div>
     </div>
   );
@@ -201,7 +210,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             </div>
           </div>
         </AnimateIn>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="pixel" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="pixel" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -219,7 +228,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             </h2>
           </div>
         </AnimateIn>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="fumayo" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="fumayo" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -237,7 +246,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             </div>
           </div>
         </AnimateIn>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="kawaii" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="kawaii" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -258,7 +267,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             </div>
           </div>
         </AnimateIn>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="globe" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="globe" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -269,7 +278,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
     <section className="pt-24 pb-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="sr-only">Tour Pilihan Sundaf Trip</h2>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -291,7 +300,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             </div>
           </div>
         </AnimateIn>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="map" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="map" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -309,7 +318,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             </div>
           </div>
         </AnimateIn>
-        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="tropical" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
+        <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="tropical" gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>
     </section>
@@ -336,7 +345,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
 
         {/* Classic / Daun: equal 3-column grid (clean default) */}
         {(theme === "classic" || theme === "daun") && (
-          <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme={theme === "daun" ? "classic" : "classic"} gridClassName="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3" />
+          <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme={theme === "daun" ? "classic" : "classic"} gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3" />
         )}
 
         {children}

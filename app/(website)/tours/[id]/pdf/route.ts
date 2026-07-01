@@ -1,6 +1,6 @@
 /* GET /tours/[id]/pdf, generates a branded itinerary PDF on the fly
    from the Tour record and streams it back as a one-click download. */
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
@@ -42,25 +42,156 @@ function mimeForFile(filePath: string) {
   return null;
 }
 
-async function toPdfImageSrc(src?: string | null) {
+type PdfAssetLog = {
+  src: string;
+  status:
+    | "data-url"
+    | "remote-ok"
+    | "remote-passthrough"
+    | "remote-fetch-failed"
+    | "local-ok"
+    | "local-missing"
+    | "unsupported";
+  reason?: string;
+  bytes?: number;
+  contentType?: string;
+};
+
+function recordPdfAsset(
+  assetLog: PdfAssetLog[],
+  src: string,
+  status: PdfAssetLog["status"],
+  reason?: string,
+  extra: Pick<PdfAssetLog, "bytes" | "contentType"> = {},
+) {
+  assetLog.push({ src: src.slice(0, 220), status, reason, ...extra });
+}
+
+function remoteImageMime(contentType: string | null) {
+  const compact = contentType?.split(";")[0]?.trim().toLowerCase();
+  if (compact === "image/jpeg" || compact === "image/png") return compact;
+  return null;
+}
+
+async function fetchWithTimeout(src: string, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(src, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function toPdfImageSrc(src?: string | null, assetLog: PdfAssetLog[] = []) {
   if (!src) return null;
-  if (/^data:image\/(?:png|jpe?g);base64,/i.test(src)) return src;
-  if (/^https?:\/\//i.test(src)) return src;
-  if (!src.startsWith("/")) return null;
+  if (/^data:image\/(?:png|jpe?g);base64,/i.test(src)) {
+    recordPdfAsset(assetLog, "data:image/*;base64", "data-url");
+    return src;
+  }
+  if (/^https?:\/\//i.test(src)) {
+    try {
+      const res = await fetchWithTimeout(src);
+      const contentType = res.headers.get("content-type");
+      const mime = remoteImageMime(contentType);
+      if (!res.ok) {
+        recordPdfAsset(assetLog, src, "remote-fetch-failed", `HTTP ${res.status}`, { contentType: contentType ?? undefined });
+        return src;
+      }
+      if (!mime) {
+        recordPdfAsset(assetLog, src, "remote-passthrough", "Remote image is not JPEG/PNG, passing URL through to react-pdf.", { contentType: contentType ?? undefined });
+        return src;
+      }
+      const bytes = Buffer.from(await res.arrayBuffer());
+      recordPdfAsset(assetLog, src, "remote-ok", undefined, { bytes: bytes.byteLength, contentType: mime });
+      return `data:${mime};base64,${bytes.toString("base64")}`;
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "Remote fetch failed.";
+      recordPdfAsset(assetLog, src, "remote-fetch-failed", reason);
+    }
+    return src;
+  }
+  if (!src.startsWith("/")) {
+    recordPdfAsset(assetLog, src, "unsupported", "Only public-root, http(s), and image data URLs are supported.");
+    return null;
+  }
 
   const publicDir = path.resolve(process.cwd(), "public");
   const filePath = path.resolve(publicDir, src.replace(/^\/+/, ""));
-  if (!filePath.startsWith(`${publicDir}${path.sep}`)) return null;
+  if (!filePath.startsWith(`${publicDir}${path.sep}`)) {
+    recordPdfAsset(assetLog, src, "unsupported", "Resolved outside public directory.");
+    return null;
+  }
 
   const mime = mimeForFile(filePath);
-  if (!mime) return null;
+  if (!mime) {
+    recordPdfAsset(assetLog, src, "unsupported", "Unsupported local image mime.");
+    return null;
+  }
 
   try {
     const bytes = await readFile(filePath);
+    recordPdfAsset(assetLog, src, "local-ok");
     return `data:${mime};base64,${Buffer.from(bytes).toString("base64")}`;
   } catch {
+    recordPdfAsset(assetLog, src, "local-missing", "Failed to read local public asset.");
     return null;
   }
+}
+
+function estimatePdfPageCount(buffer: Buffer) {
+  const text = buffer.toString("latin1");
+  return text.match(/\/Type\s*\/Page\b/g)?.length ?? null;
+}
+
+function failedPdfAssets(assetLog: PdfAssetLog[]) {
+  return assetLog.filter((asset) =>
+    asset.status === "local-missing" ||
+    asset.status === "unsupported" ||
+    asset.status === "remote-fetch-failed"
+  );
+}
+
+function shouldWritePdfDebugFiles() {
+  if (process.env.PDF_DEBUG !== "true") return false;
+  if (process.env.VERCEL_ENV === "production" && process.env.PDF_DEBUG_ALLOW_PRODUCTION !== "true") {
+    return false;
+  }
+  return true;
+}
+
+async function writePdfDebugArtifacts({
+  id,
+  title,
+  pdfBuffer,
+  assetLog,
+  generateMs,
+  pageCount,
+}: {
+  id: string;
+  title: string;
+  pdfBuffer: Buffer;
+  assetLog: PdfAssetLog[];
+  generateMs: number;
+  pageCount: number | null;
+}) {
+  if (!shouldWritePdfDebugFiles()) return;
+
+  const dir = process.env.PDF_DEBUG_DIR || "/tmp/pdf-debug";
+  await mkdir(dir, { recursive: true });
+  const fileBase = `${slugify(`${id}-${title}`) || id}-${Date.now()}`;
+  await Promise.all([
+    writeFile(path.join(dir, `${fileBase}.pdf`), pdfBuffer),
+    writeFile(path.join(dir, `${fileBase}.json`), JSON.stringify({
+      id,
+      title,
+      generateMs,
+      sizeBytes: pdfBuffer.byteLength,
+      pageCount,
+      failedAssets: failedPdfAssets(assetLog),
+      assetLog,
+    }, null, 2)),
+  ]);
 }
 
 function uniqueImages(images: Array<string | null | undefined>) {
@@ -104,6 +235,8 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const startedAt = Date.now();
+  const assetLog: PdfAssetLog[] = [];
   const { id } = await params;
 
   const [tour, companyRows] = await Promise.all([
@@ -148,9 +281,9 @@ export async function GET(
   const rawHero = tour.heroImg || fallbackHeroForTour(tour);
   const rawGallery = uniqueImages([rawHero, ...tour.gallery, fallbackHeroForTour(tour)]);
   const [heroImg, gallery, logo] = await Promise.all([
-    toPdfImageSrc(rawHero),
-    Promise.all(rawGallery.map((img) => toPdfImageSrc(img))),
-    toPdfImageSrc(ci["company_logo"]),
+    toPdfImageSrc(rawHero, assetLog),
+    Promise.all(rawGallery.map((img) => toPdfImageSrc(img, assetLog))),
+    toPdfImageSrc(ci["company_logo"], assetLog),
   ]);
   const pdfTour = localizePdfTour({
     title: tour.title,
@@ -195,12 +328,35 @@ export async function GET(
       faqUrl,
     }) as unknown as PdfElement,
   );
+  const pdfBuffer = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
+  const generateMs = Date.now() - startedAt;
+  const pageCount = estimatePdfPageCount(pdfBuffer);
 
-  return new Response(new Uint8Array(buffer), {
+  console.info("[pdf:itinerary]", {
+    tourId: id,
+    title: pdfTour.title,
+    generateMs,
+    sizeBytes: pdfBuffer.byteLength,
+    pageCount,
+    failedAssets: failedPdfAssets(assetLog),
+  });
+
+  await writePdfDebugArtifacts({
+    id,
+    title: pdfTour.title,
+    pdfBuffer,
+    assetLog,
+    generateMs,
+    pageCount,
+  });
+
+  return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="Rencana-Perjalanan-${slugify(pdfTour.title)}.pdf"`,
       "Cache-Control": "no-store, must-revalidate",
+      "X-PDF-Generate-Ms": String(generateMs),
+      ...(pageCount ? { "X-PDF-Page-Count": String(pageCount) } : {}),
       // Jangan sampai PDF terindex sebagai duplikat halaman tour di Google.
       "X-Robots-Tag": "noindex",
     },

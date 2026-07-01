@@ -21,7 +21,7 @@ const FONT = {
   bold: "Helvetica-Bold",
 } as const;
 const TYPOGRAPHY = {
-  documentTitle: { fontFamily: FONT.bold, fontSize: 29, lineHeight: 1.12 },
+  documentTitle: { fontFamily: FONT.bold, fontSize: 24, lineHeight: 1.12 },
   subtitle: { fontFamily: FONT.regular, fontSize: 11.5, lineHeight: 1.35 },
   sectionHeading: { fontFamily: FONT.bold, fontSize: 14.5, lineHeight: 1.15 },
   tableHeader: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25 },
@@ -168,14 +168,54 @@ const s = StyleSheet.create({
     color: SUB,
     textAlign: "right",
   },
-  flowTitleBlock: { marginBottom: 18 },
+  flowTitleBlock: {
+    marginBottom: 18,
+    padding: 13,
+    borderWidth: 0.8,
+    borderColor: HAIR,
+    backgroundColor: "#FFFBE8",
+  },
+  flowHeroBand: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 18,
+    padding: 12,
+    borderWidth: 0.8,
+    borderColor: HAIR,
+    backgroundColor: "#FFFBE8",
+  },
+  flowHeroCopy: {
+    flex: 1,
+    paddingRight: 4,
+  },
+  flowDocLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 7.6,
+    lineHeight: 1.2,
+    letterSpacing: 1.1,
+    color: SUB,
+    textTransform: "uppercase",
+    marginBottom: 6,
+  },
+  flowHeroImageWrap: {
+    width: 154,
+    height: 108,
+    borderWidth: 0.8,
+    borderColor: HAIR,
+    padding: 3,
+    backgroundColor: WHITE,
+  },
+  flowHeroImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
   flowTitle: {
     ...TYPOGRAPHY.documentTitle,
     color: CHARCOAL,
-    backgroundColor: TEAL,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    alignSelf: "flex-start",
+    borderLeftWidth: 7,
+    borderLeftColor: TEAL,
+    paddingLeft: 9,
   },
   flowSubtitle: {
     ...TYPOGRAPHY.subtitle,
@@ -185,10 +225,11 @@ const s = StyleSheet.create({
   flowSection: { marginTop: 16 },
   flowSectionTitle: {
     ...TYPOGRAPHY.sectionHeading,
+    fontSize: 12.5,
     color: CHARCOAL,
     backgroundColor: TEAL,
-    paddingVertical: 3.5,
-    paddingHorizontal: 7,
+    paddingVertical: 3,
+    paddingHorizontal: 6,
     alignSelf: "flex-start",
     marginBottom: 9,
   },
@@ -212,6 +253,7 @@ const s = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 0.45,
     borderBottomColor: DASH,
+    minHeight: 31,
   },
   flowCell: {
     ...TYPOGRAPHY.body,
@@ -1542,9 +1584,18 @@ export function ItineraryPDF({
       <Page size="A4" style={s.flowPage} wrap>
         <FixedChrome company={company} runningTitle={runningTitle} />
 
-        <View style={s.flowTitleBlock}>
-          <Text style={s.flowTitle}>{runningTitle}</Text>
-          <Text style={s.flowSubtitle}>{subtitleParts.join(" - ")}</Text>
+        <View style={tour.heroImg ? s.flowHeroBand : s.flowTitleBlock} wrap={false}>
+          <View style={s.flowHeroCopy}>
+            <Text style={s.flowDocLabel}>Customer itinerary</Text>
+            <Text style={s.flowTitle}>{runningTitle}</Text>
+            <Text style={s.flowSubtitle}>{subtitleParts.join(" - ")}</Text>
+          </View>
+          {tour.heroImg && (
+            <View style={s.flowHeroImageWrap}>
+              {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt prop; title and running header provide context. */}
+              <Image src={tour.heroImg} style={s.flowHeroImage} />
+            </View>
+          )}
         </View>
 
         <View style={s.flowSection}>

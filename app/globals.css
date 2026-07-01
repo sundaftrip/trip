@@ -1644,10 +1644,17 @@ a.gl-pill:has(svg:only-child) {
   text-transform: uppercase;
   background: transparent;
 }
+button.at-pill,
+a.at-pill {
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
+}
 .at-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
   white-space: nowrap;
   gap: 8px;
   color: var(--at-text);
@@ -1670,6 +1677,7 @@ a.gl-pill:has(svg:only-child) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
   white-space: nowrap;
   gap: 8px;
   border-radius: 4px;
@@ -1693,6 +1701,10 @@ a.gl-pill:has(svg:only-child) {
 /* Grid lebih rapat & tipis di HP — 32px terasa terlalu besar di layar kecil */
 @media (max-width: 640px) {
   .at-grid-bg { background-size: 18px 18px; }
+  .at-card:hover {
+    transform: none;
+    box-shadow: 0 1px 4px var(--at-shadow);
+  }
 }
 
 /* ─── CONSOLE THEME — layout sidebar, turunan Atlas ─── */

@@ -51,7 +51,7 @@ export default function TourBookingCTA({
   }
 
   const inputCls =
-    "w-full text-sm rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2.5 outline-none focus:border-gray-400 dark:focus:border-gray-600";
+    "min-h-11 w-full text-sm rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2.5 outline-none focus:border-gray-400 dark:focus:border-gray-600";
 
   return (
     <div className="mb-3">

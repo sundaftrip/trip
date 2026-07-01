@@ -492,13 +492,32 @@ function AtlasCard({ tour, isDimmed, eagerImage }: { tour: Tour; isDimmed: boole
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < new Date();
   const dateStr = departureCode(tour);
   const duration = shortenDuration(tour.duration);
+  const hasHeroImage = Boolean(tour.heroImg);
+  const iata = getIata(tour.title, tour.cityHighlight);
 
   return (
     <div className={`at-card group min-w-0 overflow-hidden h-full flex flex-col ${isDimmed ? "grayscale cursor-default" : ""}`}>
-      <div className="relative h-28 sm:h-44 overflow-hidden border-b shrink-0" style={{ borderColor: "var(--at-border)" }}>
+      <div
+        className={`relative overflow-hidden border-b shrink-0 ${
+          hasHeroImage ? "aspect-[16/10] sm:aspect-auto sm:h-44" : "min-h-[96px] sm:min-h-[128px]"
+        }`}
+        style={{ borderColor: "var(--at-border)" }}
+      >
         {tour.heroImg
-          ? <Image src={cldThumb(tour.heroImg, 900, 520)} alt={tour.title} fill loading={eagerImage ? "eager" : "lazy"} fetchPriority={eagerImage ? "high" : "low"} decoding="async" sizes="(max-width:768px) 50vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-          : <div className="h-full" style={{ background: "var(--at-muted)" }} />}
+          ? <Image src={cldThumb(tour.heroImg, 900, 520)} alt={tour.title} fill loading={eagerImage ? "eager" : "lazy"} fetchPriority={eagerImage ? "high" : "low"} decoding="async" sizes="(max-width:639px) 100vw, (max-width:1280px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+          : (
+            <div className="flex min-h-[96px] items-end justify-between gap-4 px-4 py-3 sm:min-h-[128px] sm:px-5 sm:py-4" style={{ background: "var(--at-muted)" }}>
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
+                  {tour.country}
+                </p>
+                <p className="mt-1 text-[34px] font-bold leading-none tracking-normal sm:text-[42px]" style={{ color: "var(--at-text)", fontFamily: "var(--font-anonymous-pro), ui-monospace, monospace" }}>
+                  {iata}
+                </p>
+              </div>
+              <MapPin size={22} className="mb-1 shrink-0 opacity-45" style={{ color: "var(--at-text)" }} />
+            </div>
+          )}
 
         {tour.badge && !isDimmed && (
           <div className="absolute top-3 left-3 at-pill"
@@ -516,20 +535,20 @@ function AtlasCard({ tour, isDimmed, eagerImage }: { tour: Tour; isDimmed: boole
       </div>
 
       {/* === BODY COMPACT, ala boarding pass: judul / durasi · tanggal / harga === */}
-      <div className="min-w-0 px-2.5 py-3 sm:px-5 sm:py-4 flex-1 flex flex-col space-y-1.5 sm:space-y-2">
+      <div className="min-w-0 px-4 py-4 sm:px-5 sm:py-4 flex-1 flex flex-col space-y-2 sm:space-y-2">
         <p className="min-w-0 truncate text-[10px] font-semibold uppercase" style={{ color: "var(--at-subtext)" }}>
           {tour.country}
         </p>
-        <h3 className="min-w-0 font-semibold text-[13px] sm:text-[16px] leading-snug line-clamp-2" style={{ color: "var(--at-text)" }}>
+        <h3 className="min-w-0 font-semibold text-[17px] leading-snug line-clamp-3 sm:text-[16px] sm:line-clamp-2" style={{ color: "var(--at-text)" }}>
           {tour.title}
         </h3>
-        <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] sm:text-[12px] uppercase font-medium" style={{ color: "var(--at-subtext)" }}>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase font-medium sm:text-[12px]" style={{ color: "var(--at-subtext)" }}>
           <span className="whitespace-nowrap">{duration || "-"}</span>
           <span className="opacity-40">·</span>
           <span className="whitespace-nowrap">{dateStr}</span>
         </div>
         <div className="flex min-w-0 items-baseline gap-2 flex-wrap mt-auto pt-1">
-          <span className="max-w-full whitespace-nowrap font-bold tabular-nums text-[14px] sm:text-[19px] leading-tight" style={{ color: "var(--at-text)" }}>
+          <span className="max-w-full whitespace-nowrap font-bold tabular-nums text-[20px] leading-tight sm:text-[19px]" style={{ color: "var(--at-text)" }}>
             {priceText(tour)}
           </span>
           {strikePrice(tour) && (
@@ -538,12 +557,12 @@ function AtlasCard({ tour, isDimmed, eagerImage }: { tour: Tour; isDimmed: boole
             </span>
           )}
         </div>
-        <div className="flex min-w-0 items-center justify-between gap-2 pt-2 sm:hidden">
-          <span className="min-w-0 truncate text-[9px] font-semibold" style={{ color: "var(--at-subtext)" }}>
+        <div className="flex min-w-0 items-center justify-between gap-3 pt-3 sm:hidden">
+          <span className="min-w-0 truncate text-[11px] font-semibold" style={{ color: "var(--at-subtext)" }}>
             {capacityAvailableText(tour)}
           </span>
           {!isDimmed && (
-            <span className="inline-flex h-6 shrink-0 items-center rounded px-2 text-[9px] font-bold text-white" style={{ background: "color-mix(in srgb, var(--site-accent, #00ADB5) 55%, #111827)" }}>
+            <span className="inline-flex h-9 shrink-0 items-center rounded px-3 text-[11px] font-bold text-white" style={{ background: "color-mix(in srgb, var(--site-accent, #00ADB5) 55%, #111827)" }}>
               Detail
             </span>
           )}
