@@ -6,7 +6,13 @@ import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
 import { getStyle } from "@/lib/scraper-styles";
-import { assessGeneratedContent, hasUsableSource, qualityErrorMessage } from "@/lib/content-quality";
+import {
+  assessGeneratedContent,
+  hasUsableSource,
+  normalizeGeneratedDraftFields,
+  normalizeGeneratedDraftText,
+  qualityErrorMessage,
+} from "@/lib/content-quality";
 import { chooseSourceGroundedImageKeywords, injectImagesIntoBody } from "@/lib/scraper-images";
 
 export const maxDuration = 120;
@@ -214,6 +220,7 @@ export async function POST(req: NextRequest) {
     const body = sepIdx !== -1 ? aiText.slice(sepIdx + 10).trim() : `<p>${cleanBody || originalTitle}</p>`;
     parsed = { title, excerpt, category, body };
   }
+  parsed = normalizeGeneratedDraftFields(parsed);
 
   const imageKeywords = chooseSourceGroundedImageKeywords({
     generatedKeywords: parsed.imageKeywords,
@@ -225,6 +232,11 @@ export async function POST(req: NextRequest) {
       ? preFetchedImages
       : await fetchPexelsImages(imageKeywords, 5)
     : [];
+
+  if (imageKeywords) {
+    parsed.body = injectImagesIntoBody(parsed.body, pexelsImages.slice(1), imageKeywords);
+  }
+  parsed.body = normalizeGeneratedDraftText(parsed.body);
 
   const quality = assessGeneratedContent({
     title: parsed.title,
@@ -240,10 +252,6 @@ export async function POST(req: NextRequest) {
   let cover = typeof coverImage === "string" && /^https?:\/\//i.test(coverImage.trim()) ? coverImage.trim() : "";
   if (!cover && pexelsImages.length > 0) {
     cover = pexelsImages[0].url;
-  }
-
-  if (imageKeywords) {
-    parsed.body = injectImagesIntoBody(parsed.body, pexelsImages.slice(1), imageKeywords);
   }
 
   const baseSlug = slugify(parsed.title, { lower: true, strict: true, locale: "id" });

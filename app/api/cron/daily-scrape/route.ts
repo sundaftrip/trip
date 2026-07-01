@@ -3,7 +3,12 @@ import Anthropic from "@anthropic-ai/sdk";
 import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
-import { assessGeneratedContent, qualityErrorMessage } from "@/lib/content-quality";
+import {
+  assessGeneratedContent,
+  normalizeGeneratedDraftFields,
+  normalizeGeneratedDraftText,
+  qualityErrorMessage,
+} from "@/lib/content-quality";
 import { getStyle } from "@/lib/scraper-styles";
 import { chooseSourceGroundedImageKeywords, injectImagesIntoBody } from "@/lib/scraper-images";
 
@@ -187,7 +192,7 @@ export async function GET(req: NextRequest) {
 
   for (const post of toProcess) {
     try {
-      const rewritten = await rewriteArticle(post.title, post.body, destinationFacts);
+      const rewritten = normalizeGeneratedDraftFields(await rewriteArticle(post.title, post.body, destinationFacts));
 
       const sourceContent = [destinationFacts, post.body].filter(Boolean).join("\n\n");
       const imageKeywords = chooseSourceGroundedImageKeywords({
@@ -202,9 +207,9 @@ export async function GET(req: NextRequest) {
         cover = await mirrorToCloudinary(pexelsImages[0].url);
       }
 
-      const body = imageKeywords
+      const body = normalizeGeneratedDraftText(imageKeywords
         ? injectImagesIntoBody(rewritten.body, pexelsImages.slice(1), imageKeywords)
-        : rewritten.body;
+        : rewritten.body);
       const quality = assessGeneratedContent({
         title: rewritten.title,
         excerpt: rewritten.excerpt,
@@ -226,7 +231,7 @@ export async function GET(req: NextRequest) {
           category: rewritten.category,
           body,
           cover,
-          readTime: estimateReadTime(rewritten.body),
+          readTime: estimateReadTime(body),
           published: false,
           author: "Tim Sundaftrip",
         },

@@ -13,6 +13,8 @@ export type ContentQualityReport = {
 
 export const MIN_SOURCE_CHARS = 350;
 
+const EM_DASH_RE = /\s*(?:\u2014|&mdash;|&#8212;|&#x2014;)\s*/gi;
+
 const FALSE_PERSONA_RE =
   /\b(saya|aku|gue|kami)\s+(pergi|berangkat|menginap|makan|naik|tiba|mengunjungi|melihat|ketemu|kehilangan|hampir|sempat|baru sadar|jalan)\b/i;
 
@@ -39,6 +41,7 @@ function plainText(html: string) {
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
+    .replace(/&(?:mdash|#8212|#x2014);/gi, "\u2014")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/\s+/g, " ")
@@ -51,6 +54,29 @@ function wordCount(text: string) {
 
 export function hasUsableSource(sourceContent: string | null | undefined) {
   return typeof sourceContent === "string" && sourceContent.trim().length >= MIN_SOURCE_CHARS;
+}
+
+export function normalizeGeneratedDraftText(value: string) {
+  return value.replace(EM_DASH_RE, ", ");
+}
+
+export function normalizeGeneratedDraftFields<
+  T extends {
+    title: string;
+    excerpt: string;
+    category: string;
+    body: string;
+    imageKeywords?: string;
+  },
+>(draft: T): T {
+  return {
+    ...draft,
+    title: normalizeGeneratedDraftText(draft.title),
+    excerpt: normalizeGeneratedDraftText(draft.excerpt),
+    category: normalizeGeneratedDraftText(draft.category),
+    body: normalizeGeneratedDraftText(draft.body),
+    imageKeywords: draft.imageKeywords ? normalizeGeneratedDraftText(draft.imageKeywords) : draft.imageKeywords,
+  };
 }
 
 export function assessGeneratedContent(input: QualityInput): ContentQualityReport {
