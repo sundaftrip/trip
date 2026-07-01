@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     siteName: "Sundaf Trip",
     locale: "id_ID",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: TOURS_TITLE }],
   },
   twitter: {
     card: "summary_large_image",
@@ -78,7 +79,7 @@ export default async function ToursPage() {
   const bg = bgTema[theme] ?? {};
 
   return (
-    <main className={`pt-24${bg.cls ? ` ${bg.cls}` : ""}`} style={bg.style}>
+    <div className={`pt-24${bg.cls ? ` ${bg.cls}` : ""}`} style={bg.style}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -92,6 +93,6 @@ export default async function ToursPage() {
         <h1 className="sr-only">Jadwal Tour dan Dokumentasi Sundaf Trip</h1>
         <ToursCatalog tours={tours} theme={theme} showFilter split />
       </div>
-    </main>
+    </div>
   );
 }

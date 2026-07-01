@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import * as cheerio from "cheerio";
 import { ArrowLeft, Clock, Calendar, User, MapPin } from "lucide-react";
 import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
@@ -28,6 +29,104 @@ async function getSiteInfo() {
   } catch {
     return { theme: "classic", companyName: "Sundaftrip" };
   }
+}
+
+function inferImageDimensions(src: string) {
+  try {
+    const url = new URL(src, siteUrl);
+    const queryWidth = Number(url.searchParams.get("w") ?? url.searchParams.get("width"));
+    const queryHeight = Number(url.searchParams.get("h") ?? url.searchParams.get("height"));
+    if (queryWidth > 0 && queryHeight > 0) return { width: queryWidth, height: queryHeight };
+  } catch {
+    // Relative or malformed URLs fall through to the Cloudinary/default checks.
+  }
+
+  const cloudinarySize = src.match(/(?:^|[,/])w_(\d+)(?:,h_(\d+))?/);
+  if (cloudinarySize?.[1] && cloudinarySize?.[2]) {
+    return { width: Number(cloudinarySize[1]), height: Number(cloudinarySize[2]) };
+  }
+
+  return { width: 1200, height: 800 };
+}
+
+function parseJsonLd(value: string) {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function isUnsafeUrl(value: string) {
+  const compact = value.trim().replace(/[\x00-\x1F\x7F\s]+/g, "");
+  if (/^(javascript|vbscript):/i.test(compact)) return true;
+  if (/^data:/i.test(compact) && !/^data:image\/(avif|gif|jpeg|jpg|png|webp);/i.test(compact)) return true;
+  return false;
+}
+
+function enhanceArticleHtml(html: string, fallbackAlt: string) {
+  const $ = cheerio.load(html, undefined, false);
+  const structuredData: unknown[] = [];
+
+  $("script").each((_, element) => {
+    const script = $(element);
+    const type = (script.attr("type") ?? "").trim().toLowerCase();
+
+    if (type === "application/ld+json") {
+      const parsed = parseJsonLd(script.text());
+      if (parsed) structuredData.push(parsed);
+    }
+
+    script.remove();
+  });
+
+  $("iframe,object,embed").remove();
+
+  $("h1").each((_, element) => {
+    const heading = $(element);
+    const replacement = $("<h2></h2>");
+    const attributes = heading.attr();
+    for (const [name, value] of Object.entries(attributes ?? {})) {
+      if (typeof value === "string") replacement.attr(name, value);
+    }
+    replacement.html(heading.html() ?? "");
+    heading.replaceWith(replacement);
+  });
+
+  $("*").each((_, element) => {
+    const node = $(element);
+    const attributes = node.attr();
+    for (const [name, value] of Object.entries(attributes ?? {})) {
+      if (/^on/i.test(name)) node.removeAttr(name);
+      if (typeof value === "string" && ["action", "href", "src", "xlink:href"].includes(name.toLowerCase()) && isUnsafeUrl(value)) {
+        node.removeAttr(name);
+      }
+    }
+  });
+
+  $("img").each((index, element) => {
+    const img = $(element);
+    const src = img.attr("src") ?? "";
+    if (!src) {
+      img.remove();
+      return;
+    }
+
+    const alt = img.attr("alt")?.trim();
+
+    if (!alt) img.attr("alt", `${fallbackAlt} - dokumentasi ${index + 1}`);
+    if (!img.attr("loading")) img.attr("loading", "lazy");
+    if (!img.attr("decoding")) img.attr("decoding", "async");
+
+    if (!img.attr("width") || !img.attr("height")) {
+      const { width, height } = inferImageDimensions(src);
+      img.attr("width", String(width));
+      img.attr("height", String(height));
+    }
+  });
+
+  return { html: $.html(), structuredData };
 }
 
 /* ── #5: generateMetadata, og:image dari cover artikel ─────────────── */
@@ -145,6 +244,8 @@ export default async function BlogDetailPage({
     publisher: { "@type": "Organization", name: companyName, url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blog/${slug}` },
   };
+  const enhancedArticle = post.body ? enhanceArticleHtml(post.body, post.title) : { html: "", structuredData: [] };
+  const articleBody = enhancedArticle.html;
 
   const divider = (
     <div
@@ -170,6 +271,13 @@ export default async function BlogDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      {enhancedArticle.structuredData.map((schema, index) => (
+        <script
+          key={`cms-jsonld-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
@@ -248,19 +356,19 @@ export default async function BlogDetailPage({
         )}
 
         {/* Body */}
-        {post.body && (
+        {articleBody && (
           isGlobe ? (
             <div className="gl-card p-8 prose max-w-none" style={{ background: cardBg, color: headClr }}>
-              <div dangerouslySetInnerHTML={{ __html: post.body }} />
+              <div dangerouslySetInnerHTML={{ __html: articleBody }} />
             </div>
           ) : isOutlined ? (
             <div className="rounded-none p-8 border-2 prose max-w-none"
               style={{ background: cardBg, borderColor: bdrClr, color: headClr }}>
-              <div dangerouslySetInnerHTML={{ __html: post.body }} />
+              <div dangerouslySetInnerHTML={{ __html: articleBody }} />
             </div>
           ) : (
             <div className="prose prose-blue dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.body }} />
+              dangerouslySetInnerHTML={{ __html: articleBody }} />
           )
         )}
 

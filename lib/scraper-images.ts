@@ -145,7 +145,7 @@ export function injectImagesIntoBody(body: string, images: ScraperImage[], keywo
     if (/^<\/h2>$/i.test(sections[i]) && imgIdx < images.length) {
       const img = images[imgIdx];
       result += `\n<figure style="margin:1.5rem 0;border-radius:12px;overflow:hidden;">` +
-        `<img src="${escapeAttribute(img.url)}" alt="${alt}" style="width:100%;height:auto;display:block;" loading="lazy" />` +
+        `<img src="${escapeAttribute(img.url)}" alt="${alt}" width="1200" height="800" style="width:100%;height:auto;display:block;" loading="lazy" decoding="async" />` +
         `</figure>\n`;
       imgIdx++;
     }

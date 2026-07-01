@@ -120,6 +120,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
+              aria-label="Cari negara visa"
               placeholder="Cari negara..."
               className={`w-full pl-9 ${FIELD}`}
             />
@@ -128,6 +129,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
+              aria-label="Filter wilayah visa"
               className={`${FIELD} cursor-pointer w-full sm:w-auto`}
             >
               <option value="">Semua Wilayah</option>
@@ -140,6 +142,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             <select
               value={visa}
               onChange={(e) => setVisa(e.target.value)}
+              aria-label="Filter jenis visa"
               className={`${FIELD} cursor-pointer w-full sm:w-auto`}
             >
               <option value="">Semua Jenis Visa</option>

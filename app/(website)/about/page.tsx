@@ -274,7 +274,7 @@ export default async function AboutPage() {
                 style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
                 Cuplikan perjalanan peserta kami di Rusia, Asia Tengah, dan rute aurora. Klik untuk lihat lebih dekat.
               </p>
-              <GalleryZoom images={gallery} />
+              <GalleryZoom images={gallery} altPrefix="Dokumentasi perjalanan Sundaf Trip" />
             </div>
           </>
         )}

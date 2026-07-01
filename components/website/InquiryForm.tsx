@@ -90,7 +90,12 @@ export default function InquiryForm({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <select name="destination" defaultValue={defaultDestination} className={inputCls}>
+        <select
+          name="destination"
+          defaultValue={defaultDestination}
+          aria-label="Tujuan perjalanan yang diminati"
+          className={inputCls}
+        >
           <option value="">Tujuan yang diminati…</option>
           {DESTINATIONS.map((d) => (
             <option key={d} value={d}>{d}</option>

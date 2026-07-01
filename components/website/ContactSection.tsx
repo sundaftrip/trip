@@ -1,5 +1,5 @@
 import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
-import { toWaNumber } from "@/lib/utils";
+import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -26,7 +26,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const contacts = [
     address && { Icon: MapPin,        label: "Alamat",    value: address, href: null },
     phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
-    wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: `https://wa.me/${wa}` },
+    wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
   ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
 
