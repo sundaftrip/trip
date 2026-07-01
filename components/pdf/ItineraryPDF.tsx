@@ -1,6 +1,6 @@
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
 import {
-  Document, Page, View, Text, Link, Image, Svg, Path, Rect, Circle, StyleSheet, Font,
+  Document, Page, View, Text, Link, Image, StyleSheet, Font,
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
@@ -16,12 +16,30 @@ const HAIR = "#D9D9D9";
 const DASH = "#EEEEEE";
 const WHITE = "#FFFFFF";
 const VISA_URL = "https://sundaftrip.com/visa";
-const ICON_BLUE = "#2563EB";
-const BODY_FONT_SIZE = 11;
-const BODY_LINE_HEIGHT = 1.36;
-const MAIN_TITLE_SIZE = 29;
-const SECTION_TITLE_SIZE = 15;
-const SUBTITLE_SIZE = 13;
+const FONT = {
+  regular: "Helvetica",
+  bold: "Helvetica-Bold",
+} as const;
+const TYPOGRAPHY = {
+  documentTitle: { fontFamily: FONT.bold, fontSize: 29, lineHeight: 1.12 },
+  subtitle: { fontFamily: FONT.regular, fontSize: 11.5, lineHeight: 1.35 },
+  sectionHeading: { fontFamily: FONT.bold, fontSize: 14.5, lineHeight: 1.15 },
+  tableHeader: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25 },
+  summaryLabel: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25, letterSpacing: 0.2 },
+  summaryValue: { fontFamily: FONT.regular, fontSize: 10.25, lineHeight: 1.3 },
+  itineraryDay: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25 },
+  itineraryTitle: { fontFamily: FONT.bold, fontSize: 10.75, lineHeight: 1.25 },
+  itineraryDescription: { fontFamily: FONT.regular, fontSize: 9.75, lineHeight: 1.35 },
+  itineraryMeta: { fontFamily: FONT.regular, fontSize: 8.75, lineHeight: 1.2 },
+  body: { fontFamily: FONT.regular, fontSize: 9.75, lineHeight: 1.35 },
+  bullet: { fontFamily: FONT.regular, fontSize: 9.75, lineHeight: 1.35 },
+  priceValue: { fontFamily: FONT.bold, fontSize: 10.25, lineHeight: 1.3 },
+  footnote: { fontFamily: FONT.regular, fontSize: 8.25, lineHeight: 1.3 },
+  headerSmall: { fontFamily: FONT.regular, fontSize: 8, lineHeight: 1.2 },
+  footer: { fontFamily: FONT.bold, fontSize: 7.75, lineHeight: 1.2 },
+  subsectionHeading: { fontFamily: FONT.bold, fontSize: 10.75, lineHeight: 1.25 },
+} as const;
+const MAX_ITINERARY_BRIEF_LENGTH = 260;
 const PAYMENT_TERMS = [
   "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
   "DP mengunci seat dan nominalnya mengikuti invoice awal.",
@@ -77,6 +95,7 @@ export interface ItineraryPDFProps {
     whatsapp?: string;
     email?: string;
     website?: string;
+    instagram?: string;
     nib?: string;
   };
   faqUrl?: string;
@@ -87,7 +106,7 @@ const s = StyleSheet.create({
   page: {
     backgroundColor: PAPER,
     color: INK,
-    fontFamily: "Helvetica",
+    fontFamily: FONT.regular,
     paddingTop: 30,
     paddingBottom: 44,
     paddingHorizontal: 34,
@@ -95,7 +114,7 @@ const s = StyleSheet.create({
   flowPage: {
     backgroundColor: PAPER,
     color: INK,
-    fontFamily: "Helvetica",
+    fontFamily: FONT.regular,
     paddingTop: 84,
     paddingBottom: 72,
     paddingHorizontal: 38,
@@ -114,7 +133,7 @@ const s = StyleSheet.create({
     paddingBottom: 9,
   },
   flowLogo: { width: 92, height: 28, objectFit: "contain" },
-  flowHeaderTitle: { fontSize: 9, color: SUB, textAlign: "right" },
+  flowHeaderTitle: { ...TYPOGRAPHY.headerSmall, color: SUB, textAlign: "right" },
   flowFooter: {
     position: "absolute",
     left: 38,
@@ -128,37 +147,44 @@ const s = StyleSheet.create({
     borderTopColor: HAIR,
     paddingTop: 7,
   },
-  flowFooterText: { fontSize: 8, color: SUB, lineHeight: 1.2 },
+  flowFooterText: { ...TYPOGRAPHY.footnote, color: SUB },
+  flowFooterLinks: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 18,
+    paddingRight: 48,
+  },
+  flowFooterLink: {
+    ...TYPOGRAPHY.footer,
+    color: CHARCOAL,
+    textDecoration: "underline",
+  },
   flowPageNumber: {
     position: "absolute",
     top: 813,
     right: 38,
     width: 38,
-    fontSize: 8,
+    ...TYPOGRAPHY.headerSmall,
     color: SUB,
     textAlign: "right",
   },
   flowTitleBlock: { marginBottom: 18 },
   flowTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: MAIN_TITLE_SIZE,
+    ...TYPOGRAPHY.documentTitle,
     color: CHARCOAL,
     backgroundColor: TEAL,
     paddingVertical: 6,
     paddingHorizontal: 10,
     alignSelf: "flex-start",
-    lineHeight: 1.12,
   },
   flowSubtitle: {
-    fontSize: SUBTITLE_SIZE,
+    ...TYPOGRAPHY.subtitle,
     color: CHARCOAL,
-    lineHeight: 1.28,
     marginTop: 9,
   },
   flowSection: { marginTop: 16 },
   flowSectionTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: SECTION_TITLE_SIZE,
+    ...TYPOGRAPHY.sectionHeading,
     color: CHARCOAL,
     backgroundColor: TEAL,
     paddingVertical: 3.5,
@@ -167,9 +193,8 @@ const s = StyleSheet.create({
     marginBottom: 9,
   },
   flowBodyText: {
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.body,
     color: INK,
-    lineHeight: BODY_LINE_HEIGHT,
     textAlign: "justify",
   },
   flowTable: {
@@ -189,79 +214,54 @@ const s = StyleSheet.create({
     borderBottomColor: DASH,
   },
   flowCell: {
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.body,
     color: INK,
-    lineHeight: BODY_LINE_HEIGHT,
     paddingVertical: 7,
     paddingHorizontal: 6,
   },
   flowCellBold: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.tableHeader,
     color: CHARCOAL,
-    lineHeight: BODY_LINE_HEIGHT,
     paddingVertical: 7,
     paddingHorizontal: 6,
   },
+  flowSummaryLabel: { ...TYPOGRAPHY.summaryLabel, color: CHARCOAL },
+  flowSummaryValue: { ...TYPOGRAPHY.summaryValue, color: INK },
   flowInfoLabel: { width: 150 },
   flowDayCell: { width: 46, textAlign: "center" },
-  flowLocationCell: { width: 100 },
+  flowItineraryDay: { ...TYPOGRAPHY.itineraryDay, color: CHARCOAL },
   flowAgendaCell: { flex: 1 },
   flowItineraryTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.itineraryTitle,
     color: CHARCOAL,
-    lineHeight: BODY_LINE_HEIGHT,
   },
   flowBriefText: {
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.itineraryDescription,
     color: INK,
-    lineHeight: 1.28,
-    marginTop: 3,
-  },
-  flowInsight: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: BODY_FONT_SIZE,
-    color: CHARCOAL,
-    lineHeight: BODY_LINE_HEIGHT,
-    marginTop: 3,
+    marginTop: 2,
+    textAlign: "justify",
   },
   flowInsightGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 4,
-    paddingTop: 2,
+    marginTop: 5,
+    paddingTop: 1,
   },
   flowInsightItem: {
-    width: "33.333%",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    paddingRight: 6,
-    marginBottom: 3,
+    marginTop: 2,
   },
-  flowInsightIconBox: {
-    width: 8,
-    height: 8,
-    marginRight: 3,
-    marginTop: 0.8,
-  },
-  flowInsightText: { flex: 1 },
   flowInsightLabel: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 7,
-    color: ICON_BLUE,
-    lineHeight: 1.12,
+    ...TYPOGRAPHY.itineraryMeta,
+    fontFamily: FONT.bold,
+    color: CHARCOAL,
   },
   flowInsightValue: {
-    fontSize: 7,
+    ...TYPOGRAPHY.itineraryMeta,
     color: CHARCOAL,
-    lineHeight: 1.12,
+    marginTop: 0.5,
   },
   flowTwoCol: { flexDirection: "row", gap: 18 },
   flowCol: { flex: 1 },
   flowListHead: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: SUBTITLE_SIZE,
+    ...TYPOGRAPHY.subsectionHeading,
     color: CHARCOAL,
     marginBottom: 7,
   },
@@ -271,24 +271,35 @@ const s = StyleSheet.create({
     marginBottom: 5,
   },
   flowBullet: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.bullet,
+    fontFamily: FONT.bold,
     color: CHARCOAL,
     width: 13,
-    lineHeight: BODY_LINE_HEIGHT,
   },
   flowListText: {
     flex: 1,
-    fontSize: BODY_FONT_SIZE,
+    ...TYPOGRAPHY.bullet,
     color: INK,
-    lineHeight: BODY_LINE_HEIGHT,
     textAlign: "justify",
   },
   flowLink: {
     color: CHARCOAL,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: FONT.bold,
     textDecoration: "underline",
   },
+  flowPriceValue: { ...TYPOGRAPHY.priceValue, color: CHARCOAL },
+  flowPriceNormal: {
+    ...TYPOGRAPHY.summaryValue,
+    fontSize: 8.6,
+    color: SUB,
+    textDecoration: "line-through",
+  },
+  flowPriceSavings: {
+    ...TYPOGRAPHY.summaryLabel,
+    fontSize: 8.6,
+    color: CHARCOAL,
+  },
+  flowFootnote: { ...TYPOGRAPHY.footnote, color: SUB },
   flowAddOnName: { flex: 1.35 },
   flowAddOnPrice: { width: 130, textAlign: "right" },
   flowPaymentStage: { width: 92 },
@@ -933,6 +944,29 @@ function cleanText(value?: string | null) {
   return value ? stripItineraryMarkup(value).replace(/\s+/g, " ").trim() : "";
 }
 
+function websiteFooterLink(raw?: string | null) {
+  const cleaned = cleanText(raw) || "www.sundaftrip.com";
+  const withoutProtocol = cleaned.replace(/^https?:\/\//i, "").replace(/\/+$/, "");
+  const display = withoutProtocol.startsWith("www.") ? withoutProtocol : `www.${withoutProtocol}`;
+  return {
+    display,
+    href: `https://${display.replace(/^www\./i, "")}`,
+  };
+}
+
+function instagramFooterLink(raw?: string | null) {
+  const cleaned = (cleanText(raw) || "sundaf.trip")
+    .replace(/^@/, "")
+    .replace(/^https?:\/\/(?:www\.)?instagram\.com\//i, "")
+    .replace(/\/+$/, "");
+  const username = cleaned || "sundaf.trip";
+
+  return {
+    display: `Instagram @${username}`,
+    href: `https://www.instagram.com/${username}`,
+  };
+}
+
 function profileText(company: ItineraryPDFProps["company"]) {
   const name = company.name || "Sundaf Trip";
   const story = company.story?.map(cleanText).find(Boolean);
@@ -959,12 +993,8 @@ function FixedChrome({
   company: ItineraryPDFProps["company"];
   runningTitle: string;
 }) {
-  const contactParts = [
-    company.name || "Sundaf Trip",
-    company.address,
-    company.email,
-    company.website,
-  ].filter(Boolean);
+  const websiteLink = websiteFooterLink(company.website);
+  const instagramLink = instagramFooterLink(company.instagram);
 
   return (
     <>
@@ -978,7 +1008,10 @@ function FixedChrome({
         <Text style={s.flowHeaderTitle}>{runningTitle}</Text>
       </View>
       <View fixed style={s.flowFooter}>
-        <Text style={[s.flowFooterText, { flex: 1, paddingRight: 10 }]}>{contactParts.join(" - ")}</Text>
+        <View style={s.flowFooterLinks}>
+          <Link src={websiteLink.href} style={s.flowFooterLink}>{websiteLink.display}</Link>
+          <Link src={instagramLink.href} style={s.flowFooterLink}>{instagramLink.display}</Link>
+        </View>
       </View>
       <Text
         fixed
@@ -1000,8 +1033,9 @@ function SectionTitle({ children }: { children: string }) {
 }
 
 function FlowLinkedText({ text }: { text: string }) {
-  const parts = linkedTextParts(text);
-  if (!parts) return <Text style={s.flowListText}>{cleanText(text)}</Text>;
+  const displayText = formatPdfListText(text);
+  const parts = linkedTextParts(displayText);
+  if (!parts) return <Text style={s.flowListText}>{displayText}</Text>;
 
   return (
     <Text style={s.flowListText}>
@@ -1021,91 +1055,125 @@ function FlowBullet({ text }: { text: string }) {
   );
 }
 
-type PdfInsightIcon = "utensils" | "hotel" | "clock" | "route" | "plane" | "train" | "bus" | "ship" | "car";
+function splitNormalPriceLabel(value?: string | null) {
+  const label = cleanText(value);
+  if (!label) return null;
 
-function pdfInsightIcon(insight: ItineraryInsight): PdfInsightIcon {
-  if (insight.kind === "meals") return "utensils";
-  if (insight.kind === "stay") return "hotel";
-  if (insight.kind === "time") return "clock";
-  if (insight.kind === "distance" || insight.kind === "ascent") return "route";
-  if (insight.value.includes("Penerbangan")) return "plane";
-  if (insight.value.includes("Kereta")) return "train";
-  if (insight.value.includes("Bus")) return "bus";
-  if (insight.value.includes("Kapal")) return "ship";
-  return "car";
+  const match = label.match(/^(.+?)\s*[-\u2013\u2014]\s*hemat\s+(.+)$/i);
+  if (!match) return { normalLabel: label, savingsLabel: null };
+
+  return {
+    normalLabel: match[1].trim(),
+    savingsLabel: `hemat ${match[2].trim()}`,
+  };
 }
 
-function FlowInsightIcon({ icon }: { icon: PdfInsightIcon }) {
-  const common = { stroke: ICON_BLUE, strokeWidth: 1.8, fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+function FlowPriceSummary({
+  priceLabel,
+  priceCoretLabel,
+}: {
+  priceLabel: string;
+  priceCoretLabel?: string | null;
+}) {
+  const normalPrice = splitNormalPriceLabel(priceCoretLabel);
 
   return (
-    <Svg viewBox="0 0 24 24" style={s.flowInsightIconBox}>
-      {icon === "utensils" && (
+    <Text style={[s.flowCell, s.flowPriceValue, { flex: 1 }]}>
+      <Text style={s.flowPriceValue}>{priceLabel}</Text>
+      {normalPrice ? (
         <>
-          <Path {...common} d="M6 3v8" />
-          <Path {...common} d="M4 3v4" />
-          <Path {...common} d="M8 3v4" />
-          <Path {...common} d="M6 11v10" />
-          <Path {...common} d="M16 3v18" />
-          <Path {...common} d="M14 3c-1.5 2.5-1.5 5 0 7h2" />
+          <Text style={s.flowSummaryValue}>  normal </Text>
+          <Text style={s.flowPriceNormal}>{normalPrice.normalLabel}</Text>
+          {normalPrice.savingsLabel ? <Text style={s.flowPriceSavings}>  {normalPrice.savingsLabel}</Text> : null}
         </>
-      )}
-      {icon === "hotel" && (
-        <>
-          <Rect {...common} x="4" y="5" width="16" height="16" rx="1.5" />
-          <Path {...common} d="M8 21v-4h8v4" />
-          <Path {...common} d="M8 9h.01M12 9h.01M16 9h.01M8 13h.01M12 13h.01M16 13h.01" />
-        </>
-      )}
-      {icon === "clock" && (
-        <>
-          <Circle {...common} cx="12" cy="12" r="8" />
-          <Path {...common} d="M12 8v5l3 2" />
-        </>
-      )}
-      {icon === "route" && (
-        <>
-          <Circle {...common} cx="6" cy="6" r="2" />
-          <Circle {...common} cx="18" cy="18" r="2" />
-          <Path {...common} d="M8 6h5a3 3 0 0 1 0 6h-2a3 3 0 0 0 0 6h5" />
-        </>
-      )}
-      {icon === "plane" && (
-        <Path {...common} d="M3 12l18-7-6 14-4-6-6-1zM11 13l4-8" />
-      )}
-      {icon === "train" && (
-        <>
-          <Rect {...common} x="6" y="3" width="12" height="13" rx="2" />
-          <Path {...common} d="M8 8h8M9 16l-2 3M15 16l2 3" />
-          <Circle {...common} cx="9" cy="13" r="1" />
-          <Circle {...common} cx="15" cy="13" r="1" />
-        </>
-      )}
-      {icon === "bus" && (
-        <>
-          <Rect {...common} x="4" y="6" width="16" height="11" rx="2" />
-          <Path {...common} d="M7 17v2M17 17v2M4 11h16" />
-          <Circle {...common} cx="8" cy="15" r="1.2" />
-          <Circle {...common} cx="16" cy="15" r="1.2" />
-        </>
-      )}
-      {icon === "ship" && (
-        <>
-          <Path {...common} d="M4 15l2-7h12l2 7" />
-          <Path {...common} d="M3 15h18l-2 4H5l-2-4z" />
-          <Path {...common} d="M8 8V4h8v4" />
-        </>
-      )}
-      {icon === "car" && (
-        <>
-          <Path {...common} d="M5 14l2-5h10l2 5" />
-          <Rect {...common} x="4" y="12" width="16" height="6" rx="2" />
-          <Circle {...common} cx="8" cy="18" r="1.5" />
-          <Circle {...common} cx="16" cy="18" r="1.5" />
-        </>
-      )}
-    </Svg>
+      ) : null}
+    </Text>
   );
+}
+
+function FlowSummaryValue({
+  label,
+  value,
+  priceCoretLabel,
+}: {
+  label: string;
+  value: string;
+  priceCoretLabel?: string | null;
+}) {
+  if (label === "HARGA PER ORANG") {
+    return <FlowPriceSummary priceLabel={value} priceCoretLabel={priceCoretLabel} />;
+  }
+
+  return (
+    <Text style={[
+      s.flowCell,
+      /HARGA|LAND TOUR/.test(label) ? s.flowPriceValue : s.flowSummaryValue,
+      { flex: 1 },
+    ]}>
+      {value}
+    </Text>
+  );
+}
+
+function uniqueCommaList(value: string) {
+  const items: string[] = [];
+
+  cleanText(value)
+    .split(/\s*,\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .forEach((item) => {
+      if (!items.some((existing) => existing.toLowerCase() === item.toLowerCase())) {
+        items.push(item);
+      }
+    });
+
+  return items.join(", ");
+}
+
+function translateMealInsight(value: string) {
+  return uniqueCommaList(value
+    .replace(/\bBreakfast\b/gi, "Sarapan")
+    .replace(/\bLunch\b/gi, "Makan siang")
+    .replace(/\bDinner\b/gi, "Makan malam")
+    .replace(/\bNo meals? included\b/gi, "Belum termasuk")
+    .replace(/\s+dan\s+/gi, ", ")
+    .replace(/\s*,\s*/g, ", ")
+    .trim());
+}
+
+function translateTransportInsight(value: string) {
+  return uniqueCommaList(value
+    .replace(/\bKapal\/Boat\/Cruise\b/gi, "Kapal/cruise")
+    .replace(/\bKapal\/Boat\b/gi, "Kapal")
+    .replace(/\bKapal\/Kapal\/cruise\b/gi, "Kapal/cruise")
+    .replace(/\bFlights?\b/gi, "Penerbangan")
+    .replace(/\bTrains?\b/gi, "Kereta api")
+    .replace(/\bBoat\/Cruise\b/gi, "Kapal/cruise")
+    .replace(/\bBoat\b/gi, "Kapal")
+    .replace(/\bCruise\b/gi, "Kapal/cruise")
+    .replace(/\bKapal\/Kapal\/cruise\b/gi, "Kapal/cruise")
+    .replace(/\s*,\s*/g, ", ")
+    .trim());
+}
+
+function translateStayInsight(value: string) {
+  const cleaned = cleanText(value);
+  if (/^(?:overnight stay|meng?inap)$/i.test(cleaned)) return "Menginap";
+  return cleaned
+    .replace(/\bOvernight\b/gi, "Bermalam")
+    .replace(/\bYurt Camp\b/gi, "Yurt Camp")
+    .trim();
+}
+
+function pdfInsightDisplay(insight: ItineraryInsight) {
+  if (insight.kind === "meals") return { label: "Makan", value: translateMealInsight(insight.value) };
+  if (insight.kind === "transport") return { label: "Transportasi", value: translateTransportInsight(insight.value) };
+  if (insight.kind === "stay") return { label: "Bermalam", value: translateStayInsight(insight.value) };
+  if (insight.kind === "time") return { label: "Waktu", value: insight.value };
+  if (insight.kind === "distance") return { label: "Jarak", value: insight.value };
+  if (insight.kind === "ascent") return { label: "Pendakian", value: insight.value };
+  return { label: insight.label, value: insight.value };
 }
 
 function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
@@ -1113,15 +1181,18 @@ function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
 
   return (
     <View style={s.flowInsightGrid}>
-      {insights.map((insight) => (
-        <View key={`${insight.kind}-${insight.value}`} style={s.flowInsightItem}>
-          <FlowInsightIcon icon={pdfInsightIcon(insight)} />
-          <Text style={s.flowInsightValue}>
-            <Text style={s.flowInsightLabel}>{insight.label}: </Text>
-            {insight.value}
-          </Text>
-        </View>
-      ))}
+      {insights.map((insight) => {
+        const display = pdfInsightDisplay(insight);
+
+        return (
+          <View key={`${insight.kind}-${insight.value}`} style={s.flowInsightItem}>
+            <Text style={s.flowInsightLabel}>{display.label}</Text>
+            <Text style={s.flowInsightValue}>
+              {display.value}
+            </Text>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -1255,15 +1326,131 @@ function finishSentence(value: string) {
   return /[.!?]$/.test(value) ? value : `${value}.`;
 }
 
+const DANGLING_BRIEF_END_WORDS = new Set([
+  "dan",
+  "atau",
+  "lalu",
+  "kemudian",
+  "serta",
+  "dengan",
+  "untuk",
+  "ke",
+  "di",
+  "dari",
+  "menuju",
+  "yang",
+  "sebagai",
+  "agar",
+  "karena",
+  "jika",
+  "bila",
+  "sambil",
+  "sebelum",
+  "sesudah",
+  "setelah",
+  "termasuk",
+  "melalui",
+  "hingga",
+  "sampai",
+  "pada",
+  "dalam",
+  "tanpa",
+]);
+
+function stripDanglingBriefEnding(value: string) {
+  let text = value.replace(/[\s,;:()/-]+$/g, "").trim();
+  let words = text.split(/\s+/).filter(Boolean);
+
+  while (words.length > 1) {
+    const lastWord = words[words.length - 1].toLowerCase().replace(/[^a-z0-9]+/g, "");
+    if (!DANGLING_BRIEF_END_WORDS.has(lastWord)) break;
+    words = words.slice(0, -1);
+  }
+
+  text = words.join(" ").replace(/[\s,;:()/-]+$/g, "").trim();
+  return text;
+}
+
+function lastBoundaryIndex(value: string, pattern: RegExp, minLength: number) {
+  let index = -1;
+  let match: RegExpExecArray | null;
+  pattern.lastIndex = 0;
+
+  while ((match = pattern.exec(value))) {
+    const boundary = match.index + match[0].length;
+    if (boundary >= minLength) index = boundary;
+  }
+
+  return index;
+}
+
 function shortenAtWord(value: string, maxLength: number) {
   const text = cleanBriefSegment(value);
   if (text.length <= maxLength) return text;
 
-  const clipped = text.slice(0, maxLength).replace(/\s+\S*$/, "").replace(/[,\s]+$/g, "");
-  return clipped ? `${clipped}...` : `${text.slice(0, maxLength).trim()}...`;
+  const minLength = Math.max(90, Math.floor(maxLength * 0.58));
+  const minSentenceLength = 70;
+  const window = text.slice(0, maxLength);
+  const sentenceBoundary = lastBoundaryIndex(window, /[.!?](?=\s|$)/g, minSentenceLength);
+  if (sentenceBoundary > -1) return stripDanglingBriefEnding(window.slice(0, sentenceBoundary));
+
+  const clauseBoundary = lastBoundaryIndex(window, /[,;:](?=\s|$)/g, minLength);
+  const clipped = clauseBoundary > -1
+    ? window.slice(0, clauseBoundary)
+    : window.replace(/\s+\S*$/, "");
+  const cleanClip = stripDanglingBriefEnding(clipped);
+  return cleanClip ? `${cleanClip}...` : `${stripDanglingBriefEnding(window)}...`;
+}
+
+function formatPdfBriefText(value: string) {
+  return cleanBriefSegment(value)
+    .replace(/\bBreakfast at (?:the )?hotel\b/gi, "Sarapan di hotel")
+    .replace(/\bBreakfast\b/gi, "Sarapan")
+    .replace(/\bLunch\b/gi, "Makan siang")
+    .replace(/\bDinner\b/gi, "Makan malam")
+    .replace(/\bReturn flight to\b/gi, "Penerbangan kembali menuju")
+    .replace(/\bFlight to\b/gi, "Penerbangan menuju")
+    .replace(/\bFlights?\b/gi, "Penerbangan")
+    .replace(/\bPrivate transfer\b/gi, "Transfer privat")
+    .replace(/\bSarapan dan\b/gi, "Sarapan,")
+    .replace(/\bTransportasi private\b/gi, "Transfer privat")
+    .replace(/\bTransportasi\b\s*:?\s*/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function formatPdfListText(value: string) {
+  return cleanText(value)
+    .replace(/\bFlights?\b/gi, "Penerbangan")
+    .replace(/\bIncluding baggage\b/gi, "Termasuk bagasi")
+    .replace(/\bBreakfast at (?:the )?hotel\b/gi, "Sarapan di hotel")
+    .replace(/\bBreakfasts?\b/gi, "Sarapan")
+    .replace(/\bLunches?\b/gi, "Makan siang")
+    .replace(/\bDinners?\b/gi, "Makan malam")
+    .replace(/\bMeals outside the program\b/gi, "Makan di luar program")
+    .replace(/\bMeals?\b/gi, "Makan")
+    .replace(/\bTransportasi\b\s*:?\s*/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isBriefMetadataLine(value: string) {
+  return /^(?:makan|bermalam|overnight|meal|meals)\s*:/i.test(value)
+    || /^(?:makan|meals)\s+(?:belum|di luar|diluar|dengan|with)\b/i.test(value)
+    || /^termasuk\s+(?:sarapan|makan|breakfast|lunch|dinner)\b/i.test(value);
 }
 
 function firstBriefSentence(value: string) {
+  const lines = stripItineraryMarkup(value)
+    .split(/\n+/)
+    .map(cleanBriefSegment)
+    .filter(Boolean);
+  const firstNarrativeLine = lines.find((line) => (
+    line.length >= 18 && !isBriefMetadataLine(line)
+  ));
+
+  if (firstNarrativeLine) return firstNarrativeLine;
+
   const cleaned = cleanBriefSegment(value);
   const sentences = cleaned.match(/[^.!?]+[.!?]?/g) ?? [];
 
@@ -1282,11 +1469,12 @@ function itineraryBriefForDay(
   const title = cleanBriefSegment(day.title);
   const sentence = firstBriefSentence(day.description);
   const compactSentence = sentence && !title.toLowerCase().includes(sentence.slice(0, 24).toLowerCase())
-    ? shortenAtWord(sentence, 145)
+    ? shortenAtWord(sentence, MAX_ITINERARY_BRIEF_LENGTH)
     : "";
 
-  if (compactSentence) return finishSentence(compactSentence);
-  if (highlights.length > 0) return finishSentence(`Rute utama: ${highlights.join(", ")}`);
+  if (compactSentence) return finishSentence(formatPdfBriefText(compactSentence));
+  if (title) return finishSentence(shortenAtWord(`Rute utama: ${title}`, MAX_ITINERARY_BRIEF_LENGTH));
+  if (highlights.length > 0) return finishSentence(shortenAtWord(`Rute utama: ${highlights.join(", ")}`, MAX_ITINERARY_BRIEF_LENGTH));
   return "";
 }
 
@@ -1315,7 +1503,7 @@ function placeForDay(day: Pick<ItineraryDay, "title" | "description">) {
   if (/murmansk|aurora|sami|husky|reindeer|snow/.test(text)) return "Murmansk";
   if (/petersburg|nevski|nevsky|kazan|isaac|hermitage|spilled|mosque/.test(text)) return "St Petersburg";
   if (/jakarta|indonesia/.test(text)) return "Indonesia";
-  return "Sesuai rute";
+  return "";
 }
 
 export function ItineraryPDF({
@@ -1334,7 +1522,6 @@ export function ItineraryPDF({
   const infoRows = [
     ...meta,
     ["HARGA PER ORANG", priceLabel],
-    priceCoretLabel ? ["HARGA NORMAL", priceCoretLabel] : null,
     landTourLabel ? ["LAND TOUR", landTourLabel] : null,
   ].filter(Boolean) as [string, string][];
   const subtitleParts = [
@@ -1365,8 +1552,8 @@ export function ItineraryPDF({
           <View style={s.flowTable}>
             {infoRows.map(([label, value]) => (
               <View key={label} style={s.flowTableRow}>
-                <Text style={[s.flowCellBold, s.flowInfoLabel]}>{label}</Text>
-                <Text style={[s.flowCell, { flex: 1 }]}>{value}</Text>
+                <Text style={[s.flowCellBold, s.flowSummaryLabel, s.flowInfoLabel]}>{label}</Text>
+                <FlowSummaryValue label={label} value={value} priceCoretLabel={priceCoretLabel} />
               </View>
             ))}
           </View>
@@ -1378,7 +1565,6 @@ export function ItineraryPDF({
             <View style={s.flowTableHead}>
               <Text style={[s.flowCellBold, s.flowDayCell]}>Hari</Text>
               <Text style={[s.flowCellBold, s.flowAgendaCell]}>Agenda</Text>
-              <Text style={[s.flowCellBold, s.flowLocationCell]}>Lokasi</Text>
             </View>
             {displayItinerary.map((day, idx) => {
               const highlights = destinationHighlightsForDay(day);
@@ -1386,18 +1572,17 @@ export function ItineraryPDF({
 
               return (
                 <View key={`${day.day}-${idx}`} style={s.flowTableRow} wrap={false}>
-                  <Text style={[s.flowCellBold, s.flowDayCell]}>{day.day}</Text>
+                  <Text style={[s.flowCellBold, s.flowDayCell, s.flowItineraryDay]}>{day.day}</Text>
                   <View style={[s.flowCell, s.flowAgendaCell]}>
                     <Text style={s.flowItineraryTitle}>{cleanText(day.title)}</Text>
                     {!!brief && <Text style={s.flowBriefText}>{brief}</Text>}
                     <FlowInsightGrid insights={day.insights} />
                   </View>
-                  <Text style={[s.flowCellBold, s.flowLocationCell]}>{placeForDay(day)}</Text>
                 </View>
               );
             })}
           </View>
-          <Text style={[s.flowBodyText, { marginTop: 7 }]}>
+          <Text style={[s.flowFootnote, { marginTop: 7 }]}>
             *Detail aktivitas mengikuti itinerary website dan dapat berubah sesuai kondisi cuaca serta operasional di lapangan.
           </Text>
         </View>
@@ -1444,8 +1629,7 @@ export function ItineraryPDF({
             <>
               <Text style={s.flowBodyText}>{paymentPlan.intro}</Text>
               <Text style={[s.flowBodyText, { marginTop: 4 }]}>({paymentPlan.paymentMethodsLabel})</Text>
-              <Text style={[s.flowItineraryTitle, { marginTop: 4 }]}>{paymentPlan.urgencyLabel}</Text>
-              <Text style={[s.flowItineraryTitle, { marginTop: 4 }]}>Total skema: {paymentPlan.totalLabel} / orang</Text>
+              <Text style={[s.flowPriceValue, { marginTop: 4 }]}>Total skema: {paymentPlan.totalLabel} / orang</Text>
               <View style={[s.flowTable, { marginTop: 8 }]}>
                 <View style={s.flowTableHead}>
                   <Text style={[s.flowCellBold, s.flowPaymentStage]}>Tahap</Text>
@@ -1456,7 +1640,7 @@ export function ItineraryPDF({
                   <View key={step.label} style={s.flowTableRow}>
                     <Text style={[s.flowCellBold, s.flowPaymentStage]}>{step.label}</Text>
                     <Text style={[s.flowCell, s.flowPaymentDue]}>{step.dueDateLabel}</Text>
-                    <Text style={[s.flowCellBold, s.flowPaymentAmount]}>{step.amountLabel}</Text>
+                    <Text style={[s.flowCellBold, s.flowPaymentAmount, s.flowPriceValue]}>{step.amountLabel}</Text>
                   </View>
                 ))}
               </View>

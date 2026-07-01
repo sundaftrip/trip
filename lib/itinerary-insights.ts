@@ -130,6 +130,21 @@ function inferStay(source: string): string | null {
     if (value) return value;
   }
 
+  const hasYurtStay = /\b(?:yurt|yurta|camp|tenda)\b/i.test(source)
+    && /\b(?:check[-\s]?in|menginap|bermalam|overnight)\b/i.test(source);
+  if (hasYurtStay) return "Yurt Camp";
+
+  const hasHotelCheckIn = (
+    /\b(?:check[-\s]?in|menginap|bermalam|overnight)\b[^.\n]{0,90}\b(?:hotel|penginapan|akomodasi)\b/i.test(source)
+    || /\b(?:hotel|penginapan|akomodasi)\b[^.\n]{0,90}\b(?:check[-\s]?in|menginap|bermalam|overnight)\b/i.test(source)
+  );
+  if (hasHotelCheckIn) return "Hotel";
+
+  const hasHotelReturn = /\b(?:kembali|diantar|transfer|menuju)\s+(?:ke\s+|menuju\s+)?(?:hotel|penginapan)\b[^.\n]{0,90}\b(?:istirahat|rest|free time)\b/i.test(source);
+  if (hasHotelReturn) return "Hotel";
+
+  if (/\b(?:menginap|bermalam|overnight)\b/i.test(source)) return "Overnight stay";
+
   return null;
 }
 

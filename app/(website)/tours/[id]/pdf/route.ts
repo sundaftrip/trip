@@ -112,7 +112,7 @@ export async function GET(
       where: { key: { in: [
         "company_name", "company_logo", "company_whatsapp", "company_phone",
         "company_email", "company_website", "company_address", "company_nib",
-        "about_tagline", "about_story",
+        "company_instagram", "about_tagline", "about_story",
       ] } },
     }),
   ]);
@@ -189,6 +189,7 @@ export async function GET(
         whatsapp: ci["company_whatsapp"],
         email: ci["company_email"],
         website: ci["company_website"],
+        instagram: ci["company_instagram"],
         nib: ci["company_nib"],
       },
       faqUrl,
