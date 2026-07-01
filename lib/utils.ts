@@ -27,6 +27,13 @@ export function toWaNumber(raw?: string | null) {
   return (raw ?? "").replace(/\D/g, "");
 }
 
+export const DEFAULT_WHATSAPP_MESSAGE = "Halo, saya ingin konsultasi paket tour Sundaf Trip.";
+
+export function buildWhatsAppHref(raw?: string | null, message = DEFAULT_WHATSAPP_MESSAGE) {
+  const wa = toWaNumber(raw);
+  return wa ? `https://wa.me/${wa}?text=${encodeURIComponent(message)}` : "";
+}
+
 /** Inject Cloudinary transformation segment ke URL agar gambar di-deliver
  *  dengan width tertentu + auto-format (WebP/AVIF) + auto-quality.
  *  Tanpa ini gambar di-serve original size (sering 2-5MB) → CLS + LCP buruk.

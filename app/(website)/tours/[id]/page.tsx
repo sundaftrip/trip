@@ -709,7 +709,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
                   {isOutlined && <Camera size={18} />} Galeri
                 </h2>
-                <GalleryZoom images={tour.gallery} />
+                <GalleryZoom images={tour.gallery} altPrefix={`${displayTitle} - dokumentasi`} />
               </div>
             )}
 

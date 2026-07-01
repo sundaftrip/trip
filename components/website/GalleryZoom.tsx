@@ -10,8 +10,15 @@ import { cldOptimize } from "@/lib/utils";
 const grid = (u: string) => cldOptimize(u, 1100);
 const big = (u: string) => cldOptimize(u, 1366);
 
-export default function GalleryZoom({ images }: { images: string[] }) {
+export default function GalleryZoom({
+  images,
+  altPrefix = "Dokumentasi perjalanan Sundaf Trip",
+}: {
+  images: string[];
+  altPrefix?: string;
+}) {
   const [active, setActive] = useState<number | null>(null);
+  const altFor = useCallback((index: number) => `${altPrefix} ${index + 1}`, [altPrefix]);
 
   const prev = useCallback(() => {
     setActive((i) => (i !== null ? (i - 1 + images.length) % images.length : null));
@@ -49,9 +56,10 @@ export default function GalleryZoom({ images }: { images: string[] }) {
       {images.length === 1 && (
         <button
           onClick={() => setActive(0)}
+          aria-label="Buka dokumentasi foto 1"
           className="relative w-full h-72 sm:h-96 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group block"
         >
-          <Image src={grid(images[0])} alt="Gallery" fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+          <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
         </button>
       )}
 
@@ -59,8 +67,9 @@ export default function GalleryZoom({ images }: { images: string[] }) {
         <div className="grid grid-cols-2 gap-2 h-64 sm:h-80">
           {images.map((url, i) => (
             <button key={i} onClick={() => setActive(i)}
+              aria-label={`Buka dokumentasi foto ${i + 1}`}
               className="relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-              <Image src={grid(url)} alt={`Gallery ${i + 1}`} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+              <Image src={grid(url)} alt={altFor(i)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             </button>
           ))}
         </div>
@@ -70,8 +79,9 @@ export default function GalleryZoom({ images }: { images: string[] }) {
         <div className="grid grid-cols-3 grid-rows-2 gap-2 h-64 sm:h-80">
           {/* Hero, 2 cols × 2 rows */}
           <button onClick={() => setActive(0)}
+            aria-label="Buka dokumentasi foto 1"
             className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-            <Image src={grid(images[0])} alt="Gallery 1" fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+            <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center bg-black/10" />
           </button>
 
@@ -81,8 +91,9 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             const isLast = i === 1 && extras > 0;
             return (
               <button key={idx} onClick={() => setActive(idx)}
+                aria-label={`Buka dokumentasi foto ${idx + 1}`}
                 className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-                <Image src={grid(url)} alt={`Gallery ${idx + 1}`} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+                <Image src={grid(url)} alt={altFor(idx)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
                 {isLast && (
                   <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
                     <span className="text-white font-bold text-base">+{extras + 1}</span>
@@ -109,6 +120,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             </span>
             <button
               onClick={() => setActive(null)}
+              aria-label="Tutup galeri"
               className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition"
             >
               <X size={18} />
@@ -125,7 +137,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             <img
               key={active}
               src={big(images[active])}
-              alt={`Foto ${active + 1}`}
+              alt={altFor(active)}
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}
               style={{
@@ -146,6 +158,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             <button
               onClick={(e) => { e.stopPropagation(); prev(); }}
               disabled={active === 0}
+              aria-label="Foto sebelumnya"
               className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 text-white transition disabled:opacity-20"
             >
               <ChevronLeft size={22} />
@@ -157,6 +170,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
             <button
               onClick={(e) => { e.stopPropagation(); next(); }}
               disabled={active === images.length - 1}
+              aria-label="Foto berikutnya"
               className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 text-white transition disabled:opacity-20"
             >
               <ChevronRight size={22} />
@@ -182,7 +196,7 @@ export default function GalleryZoom({ images }: { images: string[] }) {
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={cldOptimize(url,160)} alt={`Thumbnail ${i + 1}`} draggable={false} className="w-full h-full object-cover pointer-events-none" />
+                  <img src={cldOptimize(url,160)} alt={altFor(i)} draggable={false} className="w-full h-full object-cover pointer-events-none" />
                 </button>
               ))}
             </div>

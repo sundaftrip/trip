@@ -12,7 +12,7 @@ export const primaryNav: NavItem[] = [
   { href: "/visa", label: { id: "Layanan Visa", en: "Visa Service" } },
   { href: "/blog", label: { id: "Blog", en: "Blog" } },
   { href: "/about", label: { id: "Tentang Kami", en: "About" } },
-  { href: "/#contact", label: { id: "Kontak", en: "Contact" } },
+  { href: "/contact", label: { id: "Kontak", en: "Contact" } },
 ];
 
 // Link tambahan yang hanya muncul di footer (boleh lebih panjang dari nav atas).

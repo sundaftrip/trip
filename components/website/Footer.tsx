@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { cldFit, toWaNumber } from "@/lib/utils";
+import { buildWhatsAppHref, cldFit, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 import FooterContactList, { type FooterContact } from "./FooterContactList";
 import FooterTagline from "./FooterTagline";
 import { footerNav } from "@/lib/nav";
@@ -67,7 +67,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const contacts = [
     address  && { kind: "address", label: "Alamat", value: address, href: null },
     phone    && { kind: "phone", label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
-    whatsapp && { kind: "whatsapp", label: "WhatsApp", value: "WhatsApp", href: `https://wa.me/${whatsapp}` },
+    whatsapp && { kind: "whatsapp", label: "WhatsApp", value: "WhatsApp", href: buildWhatsAppHref(whatsapp, DEFAULT_WHATSAPP_MESSAGE) },
     email    && { kind: "email", label: "Email", value: email, href: `mailto:${email}` },
     hours    && { kind: "hours", label: "Jam layanan", value: hours, href: null },
     igUser   && { kind: "instagram", label: "Instagram", value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },

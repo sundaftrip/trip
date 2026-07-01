@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE } from "@/lib/utils";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -99,9 +100,6 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     STRATEGIC_HERO.subtitle,
     GENERIC_HERO_SUBTITLE,
   );
-  const atlasMobileTitle = atlasHeroTitle === STRATEGIC_HERO.title
-    ? "Tour Rusia,\nAsia Tengah & Aurora"
-    : atlasHeroTitle.split(/\s+/).filter(Boolean).join("\n");
   const atlasActions = [
     { href: "/tours", label: "Tour", value: "Jadwal & paket siap dibooking", external: false },
     { href: "/visa", label: "Layanan visa", value: "Dokumen & itinerary dibantu", external: false },
@@ -113,6 +111,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     { value: "700+", label: "peserta travel agent 2025" },
     { value: "NIB", label: "1601260060842" },
   ];
+  const whatsappHref = buildWhatsAppHref(waNumber, DEFAULT_WHATSAPP_MESSAGE);
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") {
@@ -149,8 +148,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               <Link href="/tours" className="fb-btn px-7 py-3.5 text-sm">
                 {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
               </Link>
-              {waNumber && (
-                <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+              {whatsappHref && (
+                <a href={whatsappHref} target="_blank" rel="noreferrer"
                   className="fb-btn-outline px-7 py-3.5 text-sm">
                   WhatsApp
                 </a>
@@ -204,8 +203,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             style={{ background: "var(--kw-border)", color: "#ffffff" }}>
             {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
           </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+          {whatsappHref && (
+            <a href={whatsappHref} target="_blank" rel="noreferrer"
               className="kw-btn px-8 py-4 text-sm font-black"
               style={{ background: "var(--kw-card)", color: "var(--kw-text)" }}>
               💬 WhatsApp
@@ -262,8 +261,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             style={{ background: "var(--site-accent)", color: "#fff" }}>
             {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
           </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+          {whatsappHref && (
+            <a href={whatsappHref} target="_blank" rel="noreferrer"
               className="tr-btn px-8 py-4 text-sm font-black"
               style={{ background: "var(--tr-card)", color: "var(--tr-text)" }}>
               💬 WhatsApp
@@ -318,8 +317,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               style={{ background: "var(--gl-border)", color: "#ffffff", borderColor: "var(--gl-border)" }}>
               {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
             </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+            {whatsappHref && (
+              <a href={whatsappHref} target="_blank" rel="noreferrer"
                 className="gl-btn px-8 py-4 text-sm font-black"
                 style={{ background: "var(--gl-card)", color: "var(--gl-text)" }}>
                 💬 WhatsApp
@@ -393,8 +392,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             style={{ background: "var(--mp-accent)", color: "#ffffff", borderColor: "var(--mp-border)" }}>
             {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
           </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+          {whatsappHref && (
+            <a href={whatsappHref} target="_blank" rel="noreferrer"
               className="mp-btn px-8 py-4 text-sm font-bold"
               style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>
               WhatsApp
@@ -457,8 +456,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             style={{ background: "var(--site-accent)", color: "#ffffff" }}>
             {t("hero_btn", "LIHAT TOUR")} ►
           </Link>
-          {waNumber && (
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+          {whatsappHref && (
+            <a href={whatsappHref} target="_blank" rel="noreferrer"
               className="px-btn px-5 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm"
               style={{ background: "var(--px-card)", color: "var(--px-text)" }}>
               [WA] CHAT KAMI
@@ -485,16 +484,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             </div>
             <h1 aria-label={atlasHeroTitle} className="text-[clamp(1.82rem,8.3vw,6rem)] sm:text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
               style={{ color: "var(--at-text)" }}>
-              <span
-                aria-hidden="true"
-                className="block whitespace-pre-line sm:hidden"
-                style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}
-              >
-                {atlasMobileTitle}
-              </span>
-              <span className="hidden sm:block">
-                {renderTitleWords(atlasHeroTitle)}
-              </span>
+              {atlasHeroTitle}
             </h1>
             <div className="mb-5 grid gap-2 lg:hidden">
               {atlasActions.map(({ href, label, value, external }) => {
@@ -592,8 +582,8 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
               style={{ background: "var(--site-accent,#2d6a4f)" }}>
               {t("hero_btn", "Lihat Paket Tour")} <ArrowRight size={15} />
             </Link>
-            {waNumber && (
-              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+            {whatsappHref && (
+              <a href={whatsappHref} target="_blank" rel="noreferrer"
                 className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors underline underline-offset-4">
                 WhatsApp
               </a>

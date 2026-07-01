@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import * as cheerio from "cheerio";
 import { ArrowLeft, Clock, Calendar, User, MapPin } from "lucide-react";
 import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
@@ -28,6 +29,45 @@ async function getSiteInfo() {
   } catch {
     return { theme: "classic", companyName: "Sundaftrip" };
   }
+}
+
+function inferImageDimensions(src: string) {
+  try {
+    const url = new URL(src, siteUrl);
+    const queryWidth = Number(url.searchParams.get("w") ?? url.searchParams.get("width"));
+    const queryHeight = Number(url.searchParams.get("h") ?? url.searchParams.get("height"));
+    if (queryWidth > 0 && queryHeight > 0) return { width: queryWidth, height: queryHeight };
+  } catch {
+    // Relative or malformed URLs fall through to the Cloudinary/default checks.
+  }
+
+  const cloudinarySize = src.match(/(?:^|[,/])w_(\d+)(?:,h_(\d+))?/);
+  if (cloudinarySize?.[1] && cloudinarySize?.[2]) {
+    return { width: Number(cloudinarySize[1]), height: Number(cloudinarySize[2]) };
+  }
+
+  return { width: 1200, height: 800 };
+}
+
+function enhanceArticleHtml(html: string, fallbackAlt: string) {
+  const $ = cheerio.load(html, undefined, false);
+  $("img").each((index, element) => {
+    const img = $(element);
+    const src = img.attr("src") ?? "";
+    const alt = img.attr("alt")?.trim();
+
+    if (!alt) img.attr("alt", `${fallbackAlt} - dokumentasi ${index + 1}`);
+    if (!img.attr("loading")) img.attr("loading", "lazy");
+    if (!img.attr("decoding")) img.attr("decoding", "async");
+
+    if (!img.attr("width") || !img.attr("height")) {
+      const { width, height } = inferImageDimensions(src);
+      img.attr("width", String(width));
+      img.attr("height", String(height));
+    }
+  });
+
+  return $.html();
 }
 
 /* ── #5: generateMetadata, og:image dari cover artikel ─────────────── */
@@ -145,6 +185,7 @@ export default async function BlogDetailPage({
     publisher: { "@type": "Organization", name: companyName, url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blog/${slug}` },
   };
+  const articleBody = post.body ? enhanceArticleHtml(post.body, post.title) : "";
 
   const divider = (
     <div
@@ -248,19 +289,19 @@ export default async function BlogDetailPage({
         )}
 
         {/* Body */}
-        {post.body && (
+        {articleBody && (
           isGlobe ? (
             <div className="gl-card p-8 prose max-w-none" style={{ background: cardBg, color: headClr }}>
-              <div dangerouslySetInnerHTML={{ __html: post.body }} />
+              <div dangerouslySetInnerHTML={{ __html: articleBody }} />
             </div>
           ) : isOutlined ? (
             <div className="rounded-none p-8 border-2 prose max-w-none"
               style={{ background: cardBg, borderColor: bdrClr, color: headClr }}>
-              <div dangerouslySetInnerHTML={{ __html: post.body }} />
+              <div dangerouslySetInnerHTML={{ __html: articleBody }} />
             </div>
           ) : (
             <div className="prose prose-blue dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.body }} />
+              dangerouslySetInnerHTML={{ __html: articleBody }} />
           )
         )}
 
