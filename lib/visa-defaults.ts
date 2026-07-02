@@ -259,6 +259,27 @@ export function visaDefaultsForCountry(ctx: VisaDefaultContext): VisaDefaults {
   };
 }
 
+export function mergeVisaFaqs(defaultFaqs: VisaFaq[], customFaqs: VisaFaq[]): VisaFaq[] {
+  const validCustomFaqs = customFaqs.filter(
+    (faq) => faq && faq.question?.trim() && faq.answer?.trim(),
+  );
+  if (validCustomFaqs.length === 0) return defaultFaqs;
+
+  const seen = new Set<string>();
+  const merged: VisaFaq[] = [];
+  const pushUnique = (faq: VisaFaq) => {
+    const key = faq.question.trim().toLowerCase().replace(/\s+/g, " ");
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(faq);
+  };
+
+  defaultFaqs.forEach(pushUnique);
+  validCustomFaqs.forEach(pushUnique);
+
+  return merged;
+}
+
 function normalizeCategory(category: string): VisaCategory {
   if (
     category === "bebas" ||

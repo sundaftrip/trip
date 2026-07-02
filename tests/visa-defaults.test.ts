@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { visaDefaultsForCountry } from "../lib/visa-defaults";
+import { mergeVisaFaqs, visaDefaultsForCountry } from "../lib/visa-defaults";
 
 const answers = (params: Parameters<typeof visaDefaultsForCountry>[0]) =>
   visaDefaultsForCountry(params).faqs.map((faq) => `${faq.question}\n${faq.answer}`).join("\n\n");
@@ -59,4 +59,26 @@ test("biometric country data triggers a non-generic biometric FAQ", () => {
   assert.match(text, /biometrik/i);
   assert.match(text, /VAC\/VFS/);
   assert.doesNotMatch(text, /Tergantung negara/);
+});
+
+test("custom country FAQs keep the standardized visa process answers", () => {
+  const defaults = visaDefaultsForCountry({
+    category: "wajib",
+    countryName: "Australia",
+    countryEnglishName: "Australia",
+    region: "Oseania",
+    notes: "Paspor biasa Indonesia perlu Visitor visa subclass 600 untuk wisata Australia. Biometrik dapat diminta melalui VFS.",
+  }).faqs;
+
+  const merged = mergeVisaFaqs(defaults, [
+    {
+      question: "Apakah ada formulir yang wajib ditandatangani?",
+      answer: "Form 956A dan Form 1229 dapat dibutuhkan sesuai profil pemohon.",
+    },
+  ]);
+  const text = merged.map((faq) => `${faq.question}\n${faq.answer}`).join("\n\n");
+
+  assert.match(text, /biometrik/i);
+  assert.match(text, /Form 956A/);
+  assert.ok(merged.length > defaults.length);
 });
