@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { findBySlug } from "@/lib/visa-slug";
 import {
+  mergeVisaFaqs,
   VISA_PROTECTION_PATH,
   visaDefaultsForCountry,
   type VisaDocument,
@@ -130,11 +131,14 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const defaults = visaDefaultsForCountry({
     category: country.visa,
     countryName: country.name,
+    countryEnglishName: country.en,
+    region: country.region,
     stay: country.stay,
     officialFee,
     servicePrice,
     processTime,
     conditions,
+    notes: country.notes,
   });
   const eligibility =
     Array.isArray(country.eligibility) && country.eligibility.length > 0
@@ -145,7 +149,9 @@ export default async function VisaDetailPage({ params }: PageProps) {
     Array.isArray(docsRaw) && docsRaw.length > 0 ? docsRaw : defaults.documents;
   const faqsRaw = (country.faqs as unknown as VisaFaq[]) ?? [];
   let countryFaqs: VisaFaq[] =
-    Array.isArray(faqsRaw) && faqsRaw.length > 0 ? faqsRaw : defaults.faqs;
+    Array.isArray(faqsRaw) && faqsRaw.length > 0
+      ? mergeVisaFaqs(defaults.faqs, faqsRaw)
+      : defaults.faqs;
 
   const wa = toWaNumber(companyRows.find((r) => r.key === "company_whatsapp")?.value ?? "");
   const protectionWaHref = wa

@@ -26,11 +26,14 @@ export interface VisaDefaults {
 export interface VisaDefaultContext {
   category: string;
   countryName: string;
+  countryEnglishName?: string | null;
+  region?: string | null;
   stay?: string | null;
   officialFee?: string | null;
   servicePrice?: string | null;
   processTime?: string | null;
   conditions?: string[] | null;
+  notes?: string | null;
 }
 
 export const VISA_PROTECTION_PATH = "/visa/asuransi-visa-protection";
@@ -256,6 +259,27 @@ export function visaDefaultsForCountry(ctx: VisaDefaultContext): VisaDefaults {
   };
 }
 
+export function mergeVisaFaqs(defaultFaqs: VisaFaq[], customFaqs: VisaFaq[]): VisaFaq[] {
+  const validCustomFaqs = customFaqs.filter(
+    (faq) => faq && faq.question?.trim() && faq.answer?.trim(),
+  );
+  if (validCustomFaqs.length === 0) return defaultFaqs;
+
+  const seen = new Set<string>();
+  const merged: VisaFaq[] = [];
+  const pushUnique = (faq: VisaFaq) => {
+    const key = faq.question.trim().toLowerCase().replace(/\s+/g, " ");
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(faq);
+  };
+
+  defaultFaqs.forEach(pushUnique);
+  validCustomFaqs.forEach(pushUnique);
+
+  return merged;
+}
+
 function normalizeCategory(category: string): VisaCategory {
   if (
     category === "bebas" ||
@@ -345,6 +369,12 @@ function eVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
 }
 
 function wajibVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
+  if (isUnitedStates(ctx)) return unitedStatesVisaFaqs(ctx);
+  if (isSchengen(ctx)) return schengenVisaFaqs(ctx);
+  if (isCanada(ctx)) return canadaVisaFaqs(ctx);
+  if (mentionsBiometrics(ctx)) return biometricVisaFaqs(ctx);
+  if (mentionsInterview(ctx)) return interviewVisaFaqs(ctx);
+
   return [
     {
       question: `Apa jalur pengajuan visa ${ctx.countryName} untuk WNI?`,
@@ -355,9 +385,9 @@ function wajibVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
       answer: processAnswer(ctx, "visa"),
     },
     {
-      question: `Apakah visa ${ctx.countryName} butuh appointment atau wawancara?`,
+      question: `Apakah visa ${ctx.countryName} butuh biometrik, appointment, atau wawancara?`,
       answer:
-        "Tergantung negara, jenis visa, dan profil pemohon. Sebagian visa hanya perlu dokumen, sebagian meminta biometrik, appointment, atau wawancara. Tim Sundaf Trip akan cek jalur terbaru sebelum menyarankan jadwal submit.",
+        "Untuk visa wajib, jangan menganggap prosesnya hanya kirim dokumen. Banyak negara meminta appointment, biometrik, paspor fisik, atau wawancara tambahan sesuai profil pemohon. Tim Sundaf Trip akan cek jalur resmi terbaru sebelum menyarankan jadwal submit dan menyiapkan briefing yang relevan.",
     },
     {
       question: `Kalau visa ${ctx.countryName} ditolak, biaya kembali?`,
@@ -367,6 +397,146 @@ function wajibVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
       question: `Saya pernah ditolak visa, apakah bisa apply ke ${ctx.countryName}?`,
       answer:
         "Bisa saja, tetapi riwayat penolakan harus dijelaskan dengan jujur bila diminta di formulir. Jangan menutup-nutupi riwayat reject, overstay, atau pelanggaran imigrasi. Strategi terbaik adalah memperbaiki penyebab penolakan sebelumnya sebelum submit lagi.",
+    },
+  ];
+}
+
+function unitedStatesVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
+  return [
+    {
+      question: "Apa jalur pengajuan visa Amerika Serikat untuk WNI?",
+      answer:
+        "Untuk visa visitor B1/B2 Amerika Serikat, pemohon WNI mengisi DS-160, membayar MRV fee, membuat akun/appointment melalui jalur resmi, lalu hadir untuk wawancara di Kedutaan/Konsulat AS. Sundaf Trip membantu review profil, pengisian DS-160, susun dokumen pendukung, dan briefing wawancara; keputusan tetap berada di petugas konsuler.",
+    },
+    {
+      question: "Kapan sebaiknya mulai proses visa Amerika Serikat?",
+      answer:
+        "Mulai jauh sebelum tanggal berangkat, idealnya 2-3 bulan bila jadwal memungkinkan. Angka proses yang terlihat di paket layanan bukan berarti slot interview selalu tersedia cepat; total timeline tetap dipengaruhi DS-160, pembayaran MRV, ketersediaan appointment, kebutuhan administrasi tambahan, dan pengembalian paspor setelah interview.",
+    },
+    {
+      question: "Apakah visa Amerika Serikat wajib wawancara dan biometrik?",
+      answer:
+        "Untuk B1/B2, interview biasanya menjadi bagian utama proses, kecuali pemohon masuk kategori waiver yang sangat terbatas. Sidik jari/foto biometrik biasanya diambil dalam proses aplikasi, umumnya saat interview. Karena itu persiapan jawaban, konsistensi data DS-160, dan bukti ikatan ke Indonesia harus disiapkan sebelum jadwal kedutaan.",
+    },
+    {
+      question: "Kalau visa Amerika Serikat ditolak, biaya kembali?",
+      answer: rejectionAnswer(ctx),
+    },
+    {
+      question: "Saya pernah ditolak visa, apakah bisa apply ke Amerika Serikat?",
+      answer:
+        "Bisa, tetapi riwayat penolakan harus dijawab jujur di DS-160. Jangan mengubah cerita hanya supaya terlihat lebih kuat. Yang perlu diperbaiki adalah penyebab penolakan sebelumnya: profil perjalanan, pekerjaan, dana, riwayat kunjungan, tujuan ke AS, dan bukti ikatan pulang ke Indonesia.",
+    },
+  ];
+}
+
+function schengenVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
+  return [
+    {
+      question: `Apa jalur pengajuan visa ${ctx.countryName} untuk WNI?`,
+      answer: `Untuk ${ctx.countryName}, pemegang paspor Indonesia mengajukan visa Schengen short-stay melalui negara tujuan utama atau negara masuk pertama bila durasi tinggalnya sama. Jalurnya biasanya memakai portal resmi kedutaan/otoritas negara tersebut dan visa application centre yang ditunjuk. Sundaf Trip membantu susun itinerary, formulir, dokumen finansial, asuransi perjalanan, dan arahan appointment.`,
+    },
+    {
+      question: `Kapan sebaiknya mulai proses visa ${ctx.countryName}?`,
+      answer:
+        "Mulai 6-8 minggu sebelum berangkat lebih aman. Estimasi 1-3 minggu pada paket Schengen biasanya mengacu pada proses setelah submit/biometrik, bukan jaminan slot appointment langsung tersedia. Musim ramai, dokumen tambahan, dan jadwal visa center bisa membuat total timeline lebih panjang.",
+    },
+    {
+      question: `Apakah visa ${ctx.countryName} butuh biometrik atau wawancara?`,
+      answer:
+        "Untuk visa Schengen, pemohon biasanya perlu hadir pada appointment visa center/kedutaan untuk menyerahkan dokumen dan biometrik sidik jari, terutama jika belum pernah rekam biometrik atau rekaman sebelumnya sudah tidak berlaku. Wawancara formal tidak selalu seperti visa Amerika, tetapi petugas bisa meminta klarifikasi atau dokumen tambahan bila profil perjalanan perlu dijelaskan.",
+    },
+    {
+      question: `Kalau visa ${ctx.countryName} ditolak, biaya kembali?`,
+      answer: rejectionAnswer(ctx),
+    },
+    {
+      question: `Saya pernah ditolak visa, apakah bisa apply ke ${ctx.countryName}?`,
+      answer:
+        "Bisa saja, tetapi penyebab penolakan sebelumnya harus dibaca dulu. Untuk Schengen, alasan seperti tujuan tidak jelas, dana tidak meyakinkan, itinerary lemah, atau keraguan akan pulang perlu diperbaiki sebelum submit lagi. Riwayat reject jangan disembunyikan bila diminta.",
+    },
+  ];
+}
+
+function canadaVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
+  return [
+    {
+      question: "Apa jalur pengajuan visa Kanada untuk WNI?",
+      answer:
+        "Untuk visitor visa Kanada, pengajuan dilakukan melalui akun resmi IRCC. Setelah formulir dan dokumen diunggah, pemohon dapat diminta memberikan biometrik di VAC/VFS. Sundaf Trip membantu review profil, susun dokumen pendukung, pengisian form, dan arahan jadwal biometrik bila instruksi sudah keluar.",
+    },
+    {
+      question: "Kapan sebaiknya mulai proses visa Kanada?",
+      answer:
+        "Mulai 8-12 minggu sebelum berangkat lebih aman bila ada rencana perjalanan yang sensitif tanggal. Total timeline tidak hanya upload dokumen; ada tahap instruksi biometrik, appointment VAC/VFS, review IRCC, dan kemungkinan permintaan dokumen tambahan.",
+    },
+    {
+      question: "Apakah visa Kanada butuh biometrik atau wawancara?",
+      answer:
+        "Biometrik biasanya menjadi bagian penting untuk visitor visa Kanada jika pemohon belum memiliki biometrik valid. Wawancara tidak selalu diminta, tetapi IRCC bisa meminta klarifikasi atau dokumen tambahan. Karena itu data perjalanan, dana, pekerjaan, dan sponsor harus konsisten sejak awal.",
+    },
+    {
+      question: "Kalau visa Kanada ditolak, biaya kembali?",
+      answer: rejectionAnswer(ctx),
+    },
+    {
+      question: "Saya pernah ditolak visa, apakah bisa apply ke Kanada?",
+      answer:
+        "Bisa, tetapi alasan penolakan sebelumnya harus diperbaiki. Untuk Kanada, isu yang sering krusial adalah purpose of visit, dana, travel history, employment, family ties, dan konsistensi sponsor. Submit ulang tanpa memperbaiki inti masalah biasanya hanya mengulang risiko reject.",
+    },
+  ];
+}
+
+function biometricVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
+  return [
+    {
+      question: `Apa jalur pengajuan visa ${ctx.countryName} untuk WNI?`,
+      answer: `Visa ${ctx.countryName} perlu diajukan sebelum berangkat melalui jalur resmi negara tujuan, seperti kedutaan, konsulat, visa center, VAC/VFS, atau sistem online. Data negara ini mencatat kebutuhan biometrik, jadi pemohon harus siap hadir sesuai instruksi resmi bila diminta.`,
+    },
+    {
+      question: `Kapan sebaiknya mulai proses visa ${ctx.countryName}?`,
+      answer: processAnswer(ctx, "visa"),
+    },
+    {
+      question: `Apakah visa ${ctx.countryName} butuh biometrik atau wawancara?`,
+      answer:
+        "Data visa ini menunjukkan biometrik dapat menjadi bagian dari proses. Artinya pemohon mungkin perlu hadir untuk sidik jari/foto di visa center, VAC/VFS, kedutaan, atau titik layanan resmi lain. Wawancara tidak selalu diminta, tetapi petugas bisa meminta klarifikasi bila profil atau dokumen perlu dijelaskan.",
+    },
+    {
+      question: `Kalau visa ${ctx.countryName} ditolak, biaya kembali?`,
+      answer: rejectionAnswer(ctx),
+    },
+    {
+      question: `Saya pernah ditolak visa, apakah bisa apply ke ${ctx.countryName}?`,
+      answer:
+        "Bisa saja, tetapi jangan submit ulang sebelum penyebab reject dibedah. Tim Sundaf Trip akan cek riwayat penolakan, kekuatan dokumen, dana, sponsor, pekerjaan, dan tujuan perjalanan agar pengajuan berikutnya tidak mengulang kelemahan yang sama.",
+    },
+  ];
+}
+
+function interviewVisaFaqs(ctx: VisaDefaultContext): VisaFaq[] {
+  return [
+    {
+      question: `Apa jalur pengajuan visa ${ctx.countryName} untuk WNI?`,
+      answer: `Visa ${ctx.countryName} perlu diajukan sebelum berangkat melalui jalur resmi negara tujuan. Data negara ini mencatat unsur wawancara atau interview, jadi persiapan tidak cukup hanya mengumpulkan dokumen; jawaban, tujuan perjalanan, dan bukti ikatan pulang juga perlu disiapkan.`,
+    },
+    {
+      question: `Kapan sebaiknya mulai proses visa ${ctx.countryName}?`,
+      answer: processAnswer(ctx, "visa"),
+    },
+    {
+      question: `Apakah visa ${ctx.countryName} butuh appointment atau wawancara?`,
+      answer:
+        "Ada indikasi wawancara menjadi bagian dari jalur pengajuan negara ini. Sundaf Trip membantu briefing sebelum appointment: dokumen yang dibawa, pertanyaan yang mungkin muncul, cara menjelaskan tujuan perjalanan secara jujur, dan titik risiko yang perlu dijawab konsisten.",
+    },
+    {
+      question: `Kalau visa ${ctx.countryName} ditolak, biaya kembali?`,
+      answer: rejectionAnswer(ctx),
+    },
+    {
+      question: `Saya pernah ditolak visa, apakah bisa apply ke ${ctx.countryName}?`,
+      answer:
+        "Bisa saja, tetapi riwayat penolakan harus dijelaskan dengan jujur bila diminta. Fokusnya bukan menutup cerita lama, melainkan memperbaiki alasan reject dan menyiapkan jawaban yang konsisten dengan dokumen.",
     },
   ];
 }
@@ -400,6 +570,49 @@ function processAnswer(ctx: VisaDefaultContext, label: string): string {
   }
 
   return `Waktu proses ${label} ${ctx.countryName} bergantung pada aturan negara tujuan, volume pengajuan, kelengkapan dokumen, dan kebutuhan appointment. Untuk visa reguler, mulai 6-8 minggu sebelum berangkat lebih aman; untuk e-Visa, mulai minimal 2 minggu sebelum berangkat bila jadwal memungkinkan.`;
+}
+
+function isUnitedStates(ctx: VisaDefaultContext): boolean {
+  return normalizedContext(ctx).some((value) =>
+    ["amerika serikat", "united states", "b1/b2", "ds-160"].some((needle) => value.includes(needle)),
+  );
+}
+
+function isCanada(ctx: VisaDefaultContext): boolean {
+  return normalizedContext(ctx).some((value) =>
+    ["kanada", "canada", "ircc"].some((needle) => value.includes(needle)),
+  );
+}
+
+function isSchengen(ctx: VisaDefaultContext): boolean {
+  return normalizedContext(ctx).some((value) => value.includes("schengen"));
+}
+
+function mentionsBiometrics(ctx: VisaDefaultContext): boolean {
+  return normalizedContext(ctx).some((value) =>
+    ["biometrik", "biometric", "biometrics", "sidik jari", "fingerprint", "fingerprints"].some(
+      (needle) => value.includes(needle),
+    ),
+  );
+}
+
+function mentionsInterview(ctx: VisaDefaultContext): boolean {
+  return normalizedContext(ctx).some((value) =>
+    ["wawancara", "interview"].some((needle) => value.includes(needle)),
+  );
+}
+
+function normalizedContext(ctx: VisaDefaultContext): string[] {
+  return [
+    ctx.countryName,
+    ctx.countryEnglishName,
+    ctx.region,
+    ctx.officialFee,
+    ctx.notes,
+    ...(ctx.conditions ?? []),
+  ]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => value.toLowerCase());
 }
 
 function rejectionAnswer(ctx: VisaDefaultContext): string {
