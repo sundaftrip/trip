@@ -130,11 +130,14 @@ export default async function VisaDetailPage({ params }: PageProps) {
   const defaults = visaDefaultsForCountry({
     category: country.visa,
     countryName: country.name,
+    countryEnglishName: country.en,
+    region: country.region,
     stay: country.stay,
     officialFee,
     servicePrice,
     processTime,
     conditions,
+    notes: country.notes,
   });
   const eligibility =
     Array.isArray(country.eligibility) && country.eligibility.length > 0
