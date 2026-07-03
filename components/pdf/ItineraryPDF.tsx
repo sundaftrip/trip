@@ -1,7 +1,7 @@
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
 import type { ComponentProps } from "react";
 import {
-  Document, Page, View, Text, Link, Image, StyleSheet, Font,
+  Document, Page, View, Text, Link, Image, StyleSheet, Font, Svg, Circle, Path, Rect, Line,
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
@@ -15,6 +15,7 @@ const GOLD = CHARCOAL;
 const SUB = CHARCOAL;
 const HAIR = "#D9D9D9";
 const DASH = "#EEEEEE";
+const DASH_STRONG = "#C5C5C5";
 const WHITE = "#FFFFFF";
 const VISA_URL = "https://sundaftrip.com/visa";
 const FONT = {
@@ -214,6 +215,11 @@ const s = StyleSheet.create({
     borderBottomWidth: 0.45,
     borderBottomColor: DASH,
   },
+  flowItineraryRow: {
+    borderBottomWidth: 0.85,
+    borderBottomColor: DASH_STRONG,
+    borderBottomStyle: "dashed",
+  },
   flowCell: {
     ...TYPOGRAPHY.body,
     color: INK,
@@ -243,21 +249,34 @@ const s = StyleSheet.create({
     textAlign: "justify",
   },
   flowInsightGrid: {
-    marginTop: 5,
+    marginTop: 7,
     paddingTop: 1,
   },
   flowInsightItem: {
-    marginTop: 2,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 6,
+    marginTop: 4,
+  },
+  flowInsightIcon: {
+    width: 13,
+    height: 13,
+    marginTop: 0.5,
+  },
+  flowInsightCopy: {
+    flex: 1,
   },
   flowInsightLabel: {
     ...TYPOGRAPHY.itineraryMeta,
     fontFamily: FONT.bold,
     color: CHARCOAL,
+    textAlign: "left",
   },
   flowInsightValue: {
     ...TYPOGRAPHY.itineraryMeta,
     color: CHARCOAL,
     marginTop: 0.5,
+    textAlign: "left",
   },
   flowTwoCol: { flexDirection: "row", gap: 18 },
   flowCol: { flex: 1 },
@@ -1249,6 +1268,45 @@ function pdfInsightDisplay(insight: ItineraryInsight) {
   return { label: insight.label, value: insight.value };
 }
 
+type PremiumInsightKind = Extract<ItineraryInsight["kind"], "meals" | "transport" | "stay">;
+
+function isPremiumInsightKind(kind: ItineraryInsight["kind"]): kind is PremiumInsightKind {
+  return kind === "meals" || kind === "transport" || kind === "stay";
+}
+
+function FlowInsightIcon({ kind }: { kind: PremiumInsightKind }) {
+  return (
+    <Svg viewBox="0 0 24 24" style={s.flowInsightIcon}>
+      <Circle cx={12} cy={12} r={10.5} fill={TEAL} stroke={CHARCOAL} strokeWidth={0.9} />
+      {kind === "meals" && (
+        <>
+          <Circle cx={10} cy={12} r={3.5} fill="none" stroke={CHARCOAL} strokeWidth={1.3} />
+          <Path d="M15 7.5v9" stroke={CHARCOAL} strokeWidth={1.3} strokeLinecap="round" />
+          <Path d="M17.2 7.5v9" stroke={CHARCOAL} strokeWidth={1.3} strokeLinecap="round" />
+        </>
+      )}
+      {kind === "transport" && (
+        <Path
+          d="M6 13.5l12-6-3.2 10-3-3-3.8 2 1.5-3.2L6 13.5z"
+          fill="none"
+          stroke={CHARCOAL}
+          strokeWidth={1.25}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      )}
+      {kind === "stay" && (
+        <>
+          <Rect x={6.2} y={10.4} width={11.6} height={5.4} rx={1.1} fill="none" stroke={CHARCOAL} strokeWidth={1.3} />
+          <Line x1={6.2} y1={13.2} x2={17.8} y2={13.2} stroke={CHARCOAL} strokeWidth={1.15} />
+          <Line x1={7.2} y1={15.8} x2={7.2} y2={17.2} stroke={CHARCOAL} strokeWidth={1.15} strokeLinecap="round" />
+          <Line x1={16.8} y1={15.8} x2={16.8} y2={17.2} stroke={CHARCOAL} strokeWidth={1.15} strokeLinecap="round" />
+        </>
+      )}
+    </Svg>
+  );
+}
+
 function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
   if (insights.length === 0) return null;
 
@@ -1259,10 +1317,13 @@ function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
 
         return (
           <View key={`${insight.kind}-${insight.value}`} style={s.flowInsightItem}>
-            <Text style={s.flowInsightLabel}>{display.label}</Text>
-            <Text style={s.flowInsightValue}>
-              {display.value}
-            </Text>
+            {isPremiumInsightKind(insight.kind) && <FlowInsightIcon kind={insight.kind} />}
+            <View style={s.flowInsightCopy}>
+              <Text style={s.flowInsightLabel}>{display.label}</Text>
+              <Text style={s.flowInsightValue}>
+                {display.value}
+              </Text>
+            </View>
           </View>
         );
       })}
@@ -1648,7 +1709,7 @@ export function ItineraryPDF({
               const brief = itineraryBriefForDay(day, highlights);
 
               return (
-                <View key={`${day.day}-${idx}`} style={s.flowTableRow} wrap={false}>
+                <View key={`${day.day}-${idx}`} style={[s.flowTableRow, s.flowItineraryRow]} wrap={false}>
                   <Text style={[s.flowCellBold, s.flowDayCell, s.flowItineraryDay]}>{day.day}</Text>
                   <View style={[s.flowCell, s.flowAgendaCell]}>
                     <Text style={s.flowItineraryTitle}>{cleanText(day.title)}</Text>
