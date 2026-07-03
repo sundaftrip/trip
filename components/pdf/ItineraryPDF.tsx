@@ -1,4 +1,5 @@
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
+import type { ComponentProps } from "react";
 import {
   Document, Page, View, Text, Link, Image, StyleSheet, Font,
 } from "@react-pdf/renderer";
@@ -305,6 +306,49 @@ const s = StyleSheet.create({
   flowPaymentStage: { width: 92 },
   flowPaymentDue: { flex: 1 },
   flowPaymentAmount: { width: 112, textAlign: "right" },
+  galleryLeadRow: {
+    flexDirection: "row",
+    gap: 10,
+    height: 286,
+    marginTop: 6,
+  },
+  galleryLeadImage: {
+    width: 333,
+    height: 286,
+    objectFit: "cover",
+    borderWidth: 0.7,
+    borderColor: HAIR,
+  },
+  gallerySideStack: {
+    flex: 1,
+    gap: 10,
+  },
+  gallerySideImage: {
+    width: "100%",
+    height: 138,
+    objectFit: "cover",
+    borderWidth: 0.7,
+    borderColor: HAIR,
+  },
+  galleryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 10,
+  },
+  galleryGridImage: {
+    width: 249,
+    height: 122,
+    objectFit: "cover",
+    borderWidth: 0.7,
+    borderColor: HAIR,
+  },
+  galleryNote: {
+    ...TYPOGRAPHY.footnote,
+    color: SUB,
+    marginTop: 12,
+    lineHeight: 1.35,
+  },
 
   cover: {
     backgroundColor: WHITE,
@@ -975,6 +1019,35 @@ function profileText(company: ItineraryPDFProps["company"]) {
   return story || `${name} adalah brand perjalanan Indonesia untuk paket tour, private/open trip, aurora borealis, Asia Tengah, dan bantuan visa bagi traveler Indonesia.${nib}`;
 }
 
+function uniquePdfGalleryImages(images?: string[] | null) {
+  const seen = new Set<string>();
+  const items: string[] = [];
+
+  for (const image of images ?? []) {
+    const cleaned = cleanText(image);
+    if (!cleaned || seen.has(cleaned)) continue;
+    seen.add(cleaned);
+    items.push(cleaned);
+  }
+
+  return items;
+}
+
+type PdfImageStyle = ComponentProps<typeof Image>["style"];
+
+function PdfImage({
+  src,
+  style,
+}: {
+  src: string;
+  style: PdfImageStyle;
+}) {
+  return (
+    // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; nearby text identifies the PDF gallery context.
+    <Image src={src} style={style} />
+  );
+}
+
 function linkedTextParts(text: string) {
   const match = /visa/i.exec(text);
   if (!match) return null;
@@ -1536,6 +1609,10 @@ export function ItineraryPDF({
     PAYMENT_TERMS.filter((_, index) => index % 2 === 0),
     PAYMENT_TERMS.filter((_, index) => index % 2 === 1),
   ];
+  const galleryImages = uniquePdfGalleryImages(tour.gallery).slice(0, 7);
+  const leadGalleryImage = galleryImages[0];
+  const sideGalleryImages = galleryImages.slice(1, 3);
+  const gridGalleryImages = galleryImages.slice(3, 7);
 
   return (
     <Document title={`Rencana Perjalanan ${tour.title}`} author={company.name || "Sundaf Trip"}>
@@ -1696,6 +1773,40 @@ export function ItineraryPDF({
           <Text style={s.flowBodyText}>{profileText(company)}</Text>
         </View>
       </Page>
+
+      {!!leadGalleryImage && (
+        <Page size="A4" style={s.flowPage} wrap={false}>
+          <FixedChrome company={company} runningTitle={runningTitle} />
+
+          <View style={s.flowTitleBlock}>
+            <Text style={s.flowTitle}>Dokumentasi Perjalanan Sundaf</Text>
+            <Text style={s.flowSubtitle}>
+              Foto dipilih dari galeri paket ini dan dokumentasi perjalanan Sundaf Trip.
+            </Text>
+          </View>
+
+          <View style={s.galleryLeadRow}>
+            <PdfImage src={leadGalleryImage} style={s.galleryLeadImage} />
+            <View style={s.gallerySideStack}>
+              {sideGalleryImages.map((image, index) => (
+                <PdfImage key={`side-${index}`} src={image} style={s.gallerySideImage} />
+              ))}
+            </View>
+          </View>
+
+          {gridGalleryImages.length > 0 && (
+            <View style={s.galleryGrid}>
+              {gridGalleryImages.map((image, index) => (
+                <PdfImage key={`grid-${index}`} src={image} style={s.galleryGridImage} />
+              ))}
+            </View>
+          )}
+
+          <Text style={s.galleryNote}>
+            Foto bersifat dokumentasi perjalanan. Susunan aktivitas, cuaca, dan kondisi lapangan mengikuti jadwal final serta arahan operasional setempat.
+          </Text>
+        </Page>
+      )}
     </Document>
   );
 }

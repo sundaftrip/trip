@@ -13,6 +13,17 @@ import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const PDF_GALLERY_FALLBACKS = [
+  "/trip-photos/trip-1.jpg",
+  "/trip-photos/trip-2.jpg",
+  "/trip-photos/trip-3.jpg",
+  "/trip-photos/trip-4.jpg",
+  "/trip-photos/trip-5.jpg",
+  "/trip-photos/trip-6.jpg",
+  "/trip-photos/cp-1.jpg",
+  "/trip-photos/cp-2.jpg",
+];
+
 function slugify(s: string) {
   return s.normalize("NFKD").replace(/[^\w\s-]/g, "").trim()
     .replace(/\s+/g, "-").replace(/-+/g, "-").slice(0, 70) || "itinerary";
@@ -42,10 +53,16 @@ function mimeForFile(filePath: string) {
   return null;
 }
 
+function toPdfRemoteImageSrc(src: string) {
+  if (!src.includes("res.cloudinary.com") || !src.includes("/image/upload/")) return src;
+
+  return src.replace("/image/upload/", "/image/upload/w_1400,c_fill,g_auto,q_auto:good,f_jpg/");
+}
+
 async function toPdfImageSrc(src?: string | null) {
   if (!src) return null;
   if (/^data:image\/(?:png|jpe?g);base64,/i.test(src)) return src;
-  if (/^https?:\/\//i.test(src)) return src;
+  if (/^https?:\/\//i.test(src)) return toPdfRemoteImageSrc(src);
   if (!src.startsWith("/")) return null;
 
   const publicDir = path.resolve(process.cwd(), "public");
@@ -146,7 +163,12 @@ export async function GET(
       })
     : null;
   const rawHero = tour.heroImg || fallbackHeroForTour(tour);
-  const rawGallery = uniqueImages([rawHero, ...tour.gallery, fallbackHeroForTour(tour)]);
+  const rawGallery = uniqueImages([
+    rawHero,
+    ...tour.gallery,
+    fallbackHeroForTour(tour),
+    ...PDF_GALLERY_FALLBACKS,
+  ]);
   const [heroImg, gallery, logo] = await Promise.all([
     toPdfImageSrc(rawHero),
     Promise.all(rawGallery.map((img) => toPdfImageSrc(img))),

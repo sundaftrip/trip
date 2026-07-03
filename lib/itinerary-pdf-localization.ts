@@ -20,6 +20,8 @@ export interface LocalizablePdfTour {
   itinerary: LocalizableItineraryDay[];
   inclusions: string[];
   exclusions: string[];
+  gallery?: string[];
+  heroImg?: string | null;
   visaInfo?: string | null;
   notes?: string | null;
   addOns?: LocalizablePdfAddOn[];
