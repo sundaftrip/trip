@@ -1,5 +1,6 @@
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
+import { CalendarCheck2, FileText, MessageCircle, UsersRound, WalletCards } from "lucide-react";
 
 interface Tour {
   slug?: string | null;
@@ -97,6 +98,7 @@ function PinnedLayout({
 
 export default function ToursSection({ tours, pinnedTours = [], theme = "classic", children }: Props) {
   if (tours.length === 0 && pinnedTours.length === 0) return null;
+  const activeCount = tours.length + pinnedTours.length;
 
   /* ── NUSANTARA ── */
   if (theme === "nusantara") {
@@ -266,9 +268,42 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="pt-24 pb-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="pt-10 pb-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="sr-only">Tour Pilihan Sundaf Trip</h2>
+        <AnimateIn>
+          <div className="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div className="min-w-0">
+              <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>
+                Paket aktif
+              </span>
+              <h2 className="text-2xl font-bold leading-tight sm:text-4xl" style={{ color: "var(--at-text)" }}>
+                Jadwal yang bisa langsung dicek
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+                Ada {activeCount} paket aktif di halaman ini. Buka kartu untuk melihat rute, tanggal, harga, sisa kursi, dan itinerary sebelum lanjut konsultasi.
+              </p>
+            </div>
+            <div className="at-card p-4">
+              <p className="text-sm font-bold" style={{ color: "var(--at-text)" }}>
+                Siapkan info ini saat chat
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] font-semibold sm:grid-cols-5 lg:grid-cols-2">
+                {[
+                  { label: "Tanggal", Icon: CalendarCheck2 },
+                  { label: "Jumlah peserta", Icon: UsersRound },
+                  { label: "Budget", Icon: WalletCards },
+                  { label: "Paspor / visa", Icon: FileText },
+                  { label: "Preferensi rute", Icon: MessageCircle },
+                ].map(({ label, Icon }) => (
+                  <div key={label} className="flex items-center gap-2 border px-2.5 py-2" style={{ borderColor: "var(--at-border)", color: "var(--at-subtext)" }}>
+                    <Icon size={13} aria-hidden="true" className="shrink-0" />
+                    <span>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </AnimateIn>
         <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />
         {children}
       </div>

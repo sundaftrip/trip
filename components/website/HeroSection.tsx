@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CheckCircle2,
+  FileCheck2,
+  MapPinned,
+  MessageCircle,
+  ShieldCheck,
+} from "lucide-react";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE } from "@/lib/utils";
 
 interface Props {
@@ -104,6 +112,36 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
     { href: "/tours", label: "Tour", value: "Jadwal & paket siap dibooking", external: false },
     { href: "/visa", label: "Layanan visa", value: "Dokumen & itinerary dibantu", external: false },
     { href: "/custom-trip", label: "Custom trip", value: "Rute sesuai tanggal & budget", external: false },
+  ];
+  const atlasGuide = [
+    {
+      href: "/tours",
+      label: "Punya tanggal liburan",
+      title: "Cek jadwal aktif",
+      desc: "Bandingkan rute, tanggal, harga, dan sisa kursi sebelum tanya admin.",
+      Icon: CalendarDays,
+    },
+    {
+      href: "/visa",
+      label: "Masih bingung dokumen",
+      title: "Mulai dari visa",
+      desc: "Lihat syarat negara tujuan dan opsi pendampingan dokumen perjalanan.",
+      Icon: FileCheck2,
+    },
+    {
+      href: "/custom-trip",
+      label: "Butuh rute sendiri",
+      title: "Minta rencana custom",
+      desc: "Kirim tanggal, jumlah peserta, budget, dan gaya perjalanan yang diinginkan.",
+      Icon: MapPinned,
+    },
+    {
+      href: "/legalitas-dan-keamanan",
+      label: "Ingin cek kepercayaan",
+      title: "Lihat legalitas",
+      desc: "Cek identitas usaha, kontak resmi, dan cara transaksi yang aman.",
+      Icon: ShieldCheck,
+    },
   ];
   const atlasProofs = [
     { value: "1500+", label: "traveler Indonesia" },
@@ -470,7 +508,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="min-h-[82svh] lg:min-h-[82vh] flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-24 lg:pb-12 px-4 at-grid-bg"
+    <section className="relative overflow-hidden px-4 pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 at-grid-bg"
       style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Desktop: dua kolom (judul kiri, aksi di samping). Mobile: tumpuk rapat. */}
@@ -482,7 +520,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
                 {atlasEyebrow}
               </span>
             </div>
-            <h1 aria-label={atlasHeroTitle} className="text-[clamp(1.82rem,8.3vw,6rem)] sm:text-[clamp(2.05rem,9.5vw,6rem)] font-bold leading-[1.02] max-w-4xl mb-5 lg:mb-0 hero-fade-up"
+            <h1 aria-label={atlasHeroTitle} className="max-w-[12ch] text-[clamp(1.82rem,8.3vw,6rem)] font-bold leading-[1.02] sm:max-w-4xl sm:text-[clamp(2.05rem,9.5vw,6rem)] mb-5 lg:mb-0 hero-fade-up"
               style={{ color: "var(--at-text)" }}>
               {atlasHeroTitle}
             </h1>
@@ -555,6 +593,51 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
             </div>
           ))}
         </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-4">
+          {atlasGuide.map(({ href, label, title, desc, Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              prefetch={false}
+              className="group at-card min-w-0 p-4 transition-transform"
+            >
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <span className="at-pill" style={{ color: "var(--at-subtext)" }}>
+                  {label}
+                </span>
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center border"
+                  style={{ background: "var(--at-muted)", borderColor: "var(--at-border)", color: "var(--at-text)" }}
+                  aria-hidden="true"
+                >
+                  <Icon size={16} />
+                </span>
+              </div>
+              <h2 className="text-base font-bold leading-tight" style={{ color: "var(--at-text)" }}>
+                {title}
+              </h2>
+              <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+                {desc}
+              </p>
+              <span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold" style={{ color: "var(--site-accent-ink)" }}>
+                Buka halaman <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          ))}
+        </div>
+        {whatsappHref && (
+          <div className="mt-4 flex flex-col gap-3 border px-4 py-3 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "var(--at-border)", background: "var(--at-card)" }}>
+            <div className="flex min-w-0 items-start gap-3">
+              <MessageCircle size={18} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} aria-hidden="true" />
+              <p className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+                Sudah punya tujuan? Kirim destinasi, tanggal, jumlah peserta, status paspor/visa, dan kisaran budget supaya admin bisa jawab lebih cepat.
+              </p>
+            </div>
+            <a href={whatsappHref} target="_blank" rel="noreferrer" className="at-btn-solid shrink-0 px-4 py-2.5 text-xs">
+              Chat WhatsApp <ArrowRight size={13} />
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );

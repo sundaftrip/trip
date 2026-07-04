@@ -9,7 +9,7 @@ import { ThemeProvider } from "next-themes";
 // itu (mis. di AdminProviders), jangan di root global.
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem enableColorScheme={false} storageKey="sundaf-theme">
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} enableColorScheme={false} storageKey="sundaf-theme">
       {children}
     </ThemeProvider>
   );
