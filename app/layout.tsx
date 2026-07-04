@@ -89,7 +89,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     appleWebApp: {
       capable: true,
-      statusBarStyle: "black-translucent",
+      statusBarStyle: "default",
       title: BRAND_NAME,
     },
     icons: {
@@ -101,13 +101,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// theme-color sengaja dinamis: gelap saat dark scheme, terang saat light.
-// PWA splash + status bar Android jadi mengikuti tema sistem.
+// Public site defaults to light mode, so browser chrome and PWA splash should
+// not switch to a dark surface just because the device theme is dark.
 export const viewport: import("next").Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
