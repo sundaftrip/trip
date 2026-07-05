@@ -85,15 +85,15 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     <style>{`
       :root { ${cssVars} }
       .dark {
-        --site-accent: #FBD324;
+        --site-accent: #00ADB5;
         --site-hero: #ffffff;
         --site-heading: #f9fafb;
         --site-tour-title: #f3f4f6;
         --site-blog-title: #f3f4f6;
-        --site-eyebrow: #FBD324;
-        --site-bg: color-mix(in srgb, var(--site-accent) 14%, #060606);
-        --site-bg-soft: color-mix(in srgb, var(--site-accent) 20%, #0a0a0a);
-        --site-accent-ink: color-mix(in srgb, var(--site-accent) 55%, #ffffff);
+        --site-eyebrow: #7EEBF0;
+        --site-bg: color-mix(in srgb, var(--site-accent) 10%, #0b2024);
+        --site-bg-soft: color-mix(in srgb, var(--site-accent) 14%, #102a2e);
+        --site-accent-ink: #8EF4F2;
       }
     `}</style>
   );

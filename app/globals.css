@@ -2,10 +2,13 @@
 @plugin "@tailwindcss/typography";
 @variant dark (&:where(.dark, .dark *));
 
-/* Highlight/seleksi teks — stabilo kuning, font SELALU hitam (kontras di light & dark) */
-::selection { background: #ffe66d; color: #111827; text-shadow: none; }
-::-moz-selection { background: #ffe66d; color: #111827; text-shadow: none; }
-mark { background: #ffe66d; color: #111827; text-shadow: none; }
+/* Highlight/seleksi teks — Sundaf teal/white, font selalu gelap untuk kontras. */
+::selection { background: rgba(0, 173, 181, 0.62); color: #041417; text-shadow: none; }
+::-moz-selection { background: rgba(0, 173, 181, 0.62); color: #041417; text-shadow: none; }
+mark { background: rgba(0, 173, 181, 0.32); color: #041417; text-shadow: none; }
+.dark ::selection { background: rgba(242, 251, 252, 0.92); color: #052024; }
+.dark ::-moz-selection { background: rgba(242, 251, 252, 0.92); color: #052024; }
+.dark mark { background: rgba(242, 251, 252, 0.88); color: #052024; }
 
 @theme {
   --font-jost: "Jost", sans-serif;
@@ -57,9 +60,9 @@ mark { background: #ffe66d; color: #111827; text-shadow: none; }
 }
 
 .dark {
-  /* REBRAND 2026-05-31 — night mode = charcoal #222831 bg, light #EEEEEE ink. */
-  --background: #222831;
-  --foreground: #eeeeee;
+  /* REBRAND 2026-05-31 — teal-dark preview from Sundaf logo #00ADB5. */
+  --background: #0b2024;
+  --foreground: #f3fbfb;
 
   /* ── Tropical dark ── border lightened, bg tinted with accent ── */
   --tr-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 14%, #0d0d08);
@@ -200,7 +203,7 @@ main[data-theme]:not(.cns-main) :where(
 }
 /* Logo inverted only when dark class is active (for themed light-bg navbars/footers) */
 .dark .logo-theme {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(0, 173, 181, 0.24));
 }
 
 /* Hero CSS animations — no JS blocking */
@@ -1596,7 +1599,7 @@ a.gl-pill:has(svg:only-child) {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
-/* ─── ATLAS THEME — SIANG: original putih/charcoal/teal · MALAM: biru/indigo ─── */
+/* ─── ATLAS THEME — SIANG: original putih/charcoal/teal · MALAM: teal-dark ─── */
 :root {
   /* LIGHT (mode siang) — original, diturunkan dari --site-accent (teal) */
   --at-bg:      color-mix(in srgb, var(--site-accent, #00ADB5) 4%,  #ffffff);
@@ -1609,15 +1612,15 @@ a.gl-pill:has(svg:only-child) {
   --at-muted:   #f3f4f6;
 }
 .dark {
-  /* NIGHT (mode malam) — biru/indigo, dipertahankan */
-  --at-bg:      #1B2356;
-  --at-card:    #242D67;
-  --at-border:  rgba(255,255,255,0.16);
-  --at-text:    #FFFFFF;
-  --at-subtext: rgba(255,255,255,0.70);
-  --at-grid:    rgba(255,255,255,0.08);
-  --at-shadow:  rgba(0,0,0,0.45);
-  --at-muted:   rgba(255,255,255,0.08);
+  /* NIGHT (mode malam) — charcoal base with balanced Sundaf teal accents. */
+  --at-bg:      color-mix(in srgb, var(--site-accent, #00ADB5) 8%, #0b2024);
+  --at-card:    color-mix(in srgb, var(--site-accent, #00ADB5) 8%, #112a2d);
+  --at-border:  color-mix(in srgb, var(--site-accent, #00ADB5) 30%, rgba(255,255,255,0.18));
+  --at-text:    #F5FCFC;
+  --at-subtext: color-mix(in srgb, var(--site-accent, #00ADB5) 10%, rgba(255,255,255,0.74));
+  --at-grid:    color-mix(in srgb, var(--site-accent, #00ADB5) 16%, transparent);
+  --at-shadow:  rgba(0,0,0,0.44);
+  --at-muted:   color-mix(in srgb, var(--site-accent, #00ADB5) 10%, rgba(255,255,255,0.08));
 }
 .at-card {
   border: 1px solid var(--at-border);
@@ -1678,8 +1681,8 @@ a.gl-pill:has(svg:only-child) {
   cursor: pointer;
   text-decoration: none;
 }
-/* Mode malam: CTA kuning -> teks navy supaya kontras */
-.dark .at-btn-solid { color: #21307A; }
+/* Mode malam: CTA teal -> teks charcoal supaya kontras */
+.dark .at-btn-solid { color: #041417; }
 .at-btn-solid:hover {
   background: transparent;
   color: var(--at-text);
@@ -1693,6 +1696,36 @@ a.gl-pill:has(svg:only-child) {
 /* Grid lebih rapat & tipis di HP — 32px terasa terlalu besar di layar kecil */
 @media (max-width: 640px) {
   .at-grid-bg { background-size: 18px 18px; }
+}
+
+/* Public brand consistency: legacy blue utilities on website pages resolve to
+   the Sundaf teal accent. Admin screens are intentionally outside main[data-theme]. */
+main[data-theme] :where(.text-blue-400, .text-blue-500, .text-blue-600, .text-blue-700, .text-blue-800, .dark\:text-blue-300, .dark\:text-blue-400) {
+  color: var(--site-accent-ink, var(--site-accent, #00ADB5)) !important;
+}
+main[data-theme] :where(.hover\:text-blue-600:hover, .hover\:text-blue-700:hover) {
+  color: var(--site-accent-ink, var(--site-accent, #00ADB5)) !important;
+}
+main[data-theme] :where(.bg-blue-600, .hover\:bg-blue-700:hover) {
+  background-color: var(--site-accent, #00ADB5) !important;
+}
+main[data-theme] :where(.bg-blue-600.text-white, .hover\:bg-blue-700:hover.text-white) {
+  color: #041417 !important;
+}
+main[data-theme] :where(.bg-blue-50, .bg-blue-100, .dark\:bg-blue-900\/20, .dark\:bg-blue-900\/30, .dark\:bg-blue-900\/40, .dark\:bg-blue-950, .dark\:bg-blue-950\/30, .dark\:bg-blue-950\/40) {
+  background-color: color-mix(in srgb, var(--site-accent, #00ADB5) 14%, transparent) !important;
+}
+main[data-theme] :where(.hover\:bg-blue-50:hover, .hover\:bg-blue-100:hover, .dark\:hover\:bg-blue-900\/20:hover, .dark\:hover\:bg-blue-900\/30:hover, .dark\:hover\:bg-blue-900\/50:hover) {
+  background-color: color-mix(in srgb, var(--site-accent, #00ADB5) 20%, transparent) !important;
+}
+main[data-theme] :where(.border-blue-100, .border-blue-200, .border-blue-400, .border-blue-500, .border-blue-600, .dark\:border-blue-400, .dark\:border-blue-800, .dark\:border-blue-900\/50) {
+  border-color: color-mix(in srgb, var(--site-accent, #00ADB5) 48%, transparent) !important;
+}
+main[data-theme] :where(.focus\:ring-blue-500:focus, .focus-visible\:ring-blue-500:focus-visible) {
+  --tw-ring-color: color-mix(in srgb, var(--site-accent, #00ADB5) 62%, transparent) !important;
+}
+main[data-theme] :where(.ring-blue-600\/30, .ring-blue-400\/30, .dark\:ring-blue-400\/30) {
+  --tw-ring-color: color-mix(in srgb, var(--site-accent, #00ADB5) 42%, transparent) !important;
 }
 
 /* ─── CONSOLE THEME — layout sidebar, turunan Atlas ─── */
@@ -1791,13 +1824,16 @@ a.gl-pill:has(svg:only-child) {
 .dark .prose code { color: #e2e8f0; background: #1e293b; }
 
 /* ── Highlight / mark — website rendering ── */
-.prose mark,
-.dark .prose mark {
-  background: #ffe66d;
-  color: #111827;
+.prose mark {
+  background: rgba(0, 173, 181, 0.32);
+  color: #041417;
   text-shadow: none;
   border-radius: 3px;
   padding: 0 3px;
+}
+.dark .prose mark {
+  background: rgba(242, 251, 252, 0.88);
+  color: #052024;
 }
 
 /* ── Table — website rendering ── */
@@ -2212,10 +2248,10 @@ a.gl-pill:has(svg:only-child) {
 /* ── Stabilo highlighter (coretan marker organik, à la buku catatan) ── */
 /* Coretan stabilo natural (tepi bergerigi seperti goresan tangan) via SVG */
 .stabilo {
-  --stabilo-bg: rgba(255, 225, 77, 0.86);
-  --stabilo-text: #111827;
+  --stabilo-bg: rgba(0, 173, 181, 0.62);
+  --stabilo-text: #041417;
   background-color: var(--stabilo-bg);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%23ffe14d' fill-opacity='0.85'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%2300adb5' fill-opacity='0.62'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: 100% 92%;
   background-position: 0 58%;
@@ -2226,6 +2262,11 @@ a.gl-pill:has(svg:only-child) {
   margin: 0 -0.06em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+.dark .stabilo {
+  --stabilo-bg: rgba(242, 251, 252, 0.74);
+  --stabilo-text: #052024;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cpath d='M4,22 C70,11 150,16 235,12 C300,9 356,16 397,9 L395,45 C330,54 248,46 164,49 C94,51 44,47 5,44 Z' fill='%23f2fbfc' fill-opacity='0.74'/%3E%3C/svg%3E");
 }
 /* varian warna alternatif (teal SUNDAF) */
 .stabilo--mint {
@@ -2324,13 +2365,13 @@ a.gl-pill:has(svg:only-child) {
 }
 
 .sundaf-title-stabilo {
-  --stabilo-title-yellow: rgba(251, 211, 36, 0.92);
-  --stabilo-title-yellow-soft: rgba(251, 211, 36, 0.64);
+  --stabilo-title-strong: rgba(0, 173, 181, 0.9);
+  --stabilo-title-soft: rgba(126, 235, 240, 0.42);
   display: inline;
   color: #071f22;
   background-image:
-    linear-gradient(101deg, transparent 0.06em, var(--stabilo-title-yellow) 0.06em, var(--stabilo-title-yellow) calc(100% - 0.16em), transparent calc(100% - 0.16em)),
-    linear-gradient(86deg, transparent 0.16em, var(--stabilo-title-yellow-soft) 0.16em, var(--stabilo-title-yellow-soft) calc(100% - 0.04em), transparent calc(100% - 0.04em));
+    linear-gradient(101deg, transparent 0.06em, var(--stabilo-title-strong) 0.06em, var(--stabilo-title-strong) calc(100% - 0.16em), transparent calc(100% - 0.16em)),
+    linear-gradient(86deg, transparent 0.16em, var(--stabilo-title-soft) 0.16em, var(--stabilo-title-soft) calc(100% - 0.04em), transparent calc(100% - 0.04em));
   background-repeat: no-repeat;
   background-size: 100% 0.9em, 96% 0.34em;
   background-position: 0.02em 59%, -0.03em 80%;
@@ -2339,6 +2380,11 @@ a.gl-pill:has(svg:only-child) {
   text-shadow: none;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+.dark .sundaf-title-stabilo {
+  --stabilo-title-strong: rgba(242, 251, 252, 0.94);
+  --stabilo-title-soft: rgba(126, 235, 240, 0.36);
+  color: #052024;
 }
 
 .atlas-action-stabilo {
@@ -2362,8 +2408,8 @@ a.gl-pill:has(svg:only-child) {
   top: 0.16em;
   height: 1.12em;
   background-image:
-    linear-gradient(100deg, transparent 0%, rgba(251, 211, 36, 0.9) 8%, rgba(251, 211, 36, 0.82) 92%, transparent 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 70' preserveAspectRatio='none'%3E%3Cpath d='M6 24 C58 12 113 20 174 13 C238 5 300 19 365 12 C423 6 475 14 514 10 L511 58 C451 65 389 54 324 61 C261 67 200 55 135 62 C78 67 34 58 7 61 Z' fill='%23fbd324' fill-opacity='0.78'/%3E%3C/svg%3E");
+    linear-gradient(100deg, transparent 0%, rgba(0, 173, 181, 0.9) 8%, rgba(0, 173, 181, 0.82) 92%, transparent 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 70' preserveAspectRatio='none'%3E%3Cpath d='M6 24 C58 12 113 20 174 13 C238 5 300 19 365 12 C423 6 475 14 514 10 L511 58 C451 65 389 54 324 61 C261 67 200 55 135 62 C78 67 34 58 7 61 Z' fill='%2300adb5' fill-opacity='0.78'/%3E%3C/svg%3E");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -2373,23 +2419,38 @@ a.gl-pill:has(svg:only-child) {
 .atlas-action-stabilo::after {
   bottom: -0.22em;
   height: 0.32em;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 28' preserveAspectRatio='none'%3E%3Cpath d='M5 15 C60 6 112 22 170 12 C233 2 292 20 356 10 C420 1 468 17 515 8' fill='none' stroke='%23f59e0b' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 21 C84 12 128 25 190 18 C248 12 307 24 369 15 C430 7 474 21 504 14' fill='none' stroke='%23f59e0b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.86'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 28' preserveAspectRatio='none'%3E%3Cpath d='M5 15 C60 6 112 22 170 12 C233 2 292 20 356 10 C420 1 468 17 515 8' fill='none' stroke='%2317d9e0' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 21 C84 12 128 25 190 18 C248 12 307 24 369 15 C430 7 474 21 504 14' fill='none' stroke='%2317d9e0' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.86'/%3E%3C/svg%3E");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   transform: translateX(-50%) rotate(1.1deg);
   opacity: 0.9;
 }
+.dark .atlas-action-stabilo {
+  color: #041417;
+}
+.dark .atlas-action-stabilo::before {
+  background-image:
+    linear-gradient(100deg, transparent 0%, rgba(242, 251, 252, 0.86) 8%, rgba(242, 251, 252, 0.76) 92%, transparent 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 70' preserveAspectRatio='none'%3E%3Cpath d='M6 24 C58 12 113 20 174 13 C238 5 300 19 365 12 C423 6 475 14 514 10 L511 58 C451 65 389 54 324 61 C261 67 200 55 135 62 C78 67 34 58 7 61 Z' fill='%23f2fbfc' fill-opacity='0.72'/%3E%3C/svg%3E");
+}
+.dark .atlas-action-stabilo::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 28' preserveAspectRatio='none'%3E%3Cpath d='M5 15 C60 6 112 22 170 12 C233 2 292 20 356 10 C420 1 468 17 515 8' fill='none' stroke='%237EEBF0' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.62'/%3E%3Cpath d='M18 21 C84 12 128 25 190 18 C248 12 307 24 369 15 C430 7 474 21 504 14' fill='none' stroke='%23f2fbfc' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.68'/%3E%3C/svg%3E");
+}
 
 @media (max-width: 767px) {
   .atlas-action-stabilo {
     padding: 0 0.08em 0.02em;
-    background: linear-gradient(100deg, transparent 0%, rgba(251, 211, 36, 0.86) 10%, rgba(251, 211, 36, 0.78) 90%, transparent 100%);
+    background: linear-gradient(100deg, transparent 0%, rgba(0, 173, 181, 0.9) 10%, rgba(0, 173, 181, 0.8) 90%, transparent 100%);
   }
 
   .atlas-action-stabilo::before,
   .atlas-action-stabilo::after {
     content: none;
+  }
+
+  .dark .atlas-action-stabilo {
+    background: linear-gradient(100deg, transparent 0%, rgba(242, 251, 252, 0.84) 10%, rgba(242, 251, 252, 0.72) 90%, transparent 100%);
   }
 }
 
