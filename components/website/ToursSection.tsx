@@ -266,7 +266,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="pt-24 pb-8 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="pt-8 pb-5 sm:py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="sr-only">Tour Pilihan Sundaf Trip</h2>
         <PinnedLayout tours={tours} pinnedTours={pinnedTours} theme="atlas" gridClassName="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-2 xl:grid-cols-3" />

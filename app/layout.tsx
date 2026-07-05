@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import Analytics from "@/components/Analytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 
 /* Font loading strategy:
    - Public fonts stay available through CSS variables.
@@ -80,12 +81,13 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: BRAND_NAME,
       locale: "id_ID",
       type: "website",
-      // Gambar OG diambil otomatis dari app/opengraph-image.tsx (kartu 1200×630).
+      images: defaultOpenGraphImages(),
     },
     twitter: {
       card: "summary_large_image",
       title: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
       description,
+      images: defaultTwitterImages(),
     },
     appleWebApp: {
       capable: true,

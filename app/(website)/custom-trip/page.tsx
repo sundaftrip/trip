@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { toWaNumber } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
@@ -34,11 +35,13 @@ export const metadata: Metadata = {
     siteName: "Sundaf Trip",
     locale: "id_ID",
     type: "website",
+    images: defaultOpenGraphImages(PAGE_TITLE),
   },
   twitter: {
     card: "summary_large_image",
     title: `${PAGE_TITLE} · Sundaf Trip`,
     description: PAGE_DESC,
+    images: defaultTwitterImages(),
   },
 };
 

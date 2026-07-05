@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import type { GeoDestinationContent, GeoFaq, GeoPageContent, GeoSection } from "@/types/geo";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -1224,6 +1225,13 @@ export function geoMetadata(content: GeoPageContent): Metadata {
       siteName: "Sundaf Trip",
       locale: "id_ID",
       type: "website",
+      images: defaultOpenGraphImages(title),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} · Sundaf Trip`,
+      description: content.metaDescription,
+      images: defaultTwitterImages(),
     },
   };
 }

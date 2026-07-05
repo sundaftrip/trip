@@ -18,7 +18,7 @@ const DURATIONS = [66, 80]; // detik
 export default function WhyGallery({ theme = "classic" }: { theme?: string }) {
   // Samakan background dengan section lain agar carousel berjalan DI ATAS
   // background grid tema aktif (bukan papan polos). Bekerja gelap & terang.
-  let secClass = "py-12 sm:py-16 overflow-hidden";
+  let secClass = "pt-4 pb-5 sm:py-16 overflow-hidden";
   let secStyle: CSSProperties = {};
   if (theme === "atlas") { secClass += " at-grid-bg"; secStyle = { backgroundColor: "var(--at-bg)" }; }
   else if (theme === "map") { secStyle = { background: "var(--mp-bg)", backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }; }

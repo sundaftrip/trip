@@ -2464,6 +2464,26 @@ a.gl-pill:has(svg:only-child) {
   .wg-track { animation: none; }
 }
 
+/* Mobile homepage spacing: keep content-visibility, but reserve the real mobile
+   height so the browser does not draw a blank placeholder between sections. */
+.home-defer {
+  content-visibility: auto;
+}
+.home-defer-gallery {
+  contain-intrinsic-size: 268px;
+}
+.home-defer-blog {
+  contain-intrinsic-size: 1276px;
+}
+@media (min-width: 640px) {
+  .home-defer-gallery {
+    contain-intrinsic-size: 544px;
+  }
+  .home-defer-blog {
+    contain-intrinsic-size: 620px;
+  }
+}
+
 /* === Scroll-reveal CSS-only — gantikan AnimateIn (IntersectionObserver) ===
    Browser tanpa animation-timeline: view() menampilkan konten apa adanya
    (tidak ada opacity:0 di luar @supports → fallback aman, konten selalu terlihat). */

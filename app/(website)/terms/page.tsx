@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 
 const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
@@ -20,12 +21,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Sundaf Trip",
     locale: "id_ID",
+    images: defaultOpenGraphImages("Syarat & Ketentuan Sundaf Trip"),
   },
   twitter: {
     card: "summary_large_image",
     title: "Syarat & Ketentuan Sundaf Trip",
     description:
       "Syarat dan ketentuan layanan Sundaf Trip untuk pemesanan tour, pembayaran, pembatalan, perubahan jadwal, visa, dan tanggung jawab perjalanan.",
+    images: defaultTwitterImages(),
   },
 };
 
