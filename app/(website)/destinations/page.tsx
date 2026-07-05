@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { MapPin, ChevronRight, Compass, FileText } from "lucide-react";
 import { cldOptimize } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
@@ -28,6 +29,13 @@ export const metadata: Metadata = {
     siteName: "Sundaf Trip",
     locale: "id_ID",
     type: "website",
+    images: defaultOpenGraphImages("Destinasi Pilihan Sundaf Trip"),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: PAGE_TITLE,
+    description: PAGE_DESC,
+    images: defaultTwitterImages(),
   },
 };
 

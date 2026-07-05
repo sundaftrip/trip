@@ -244,7 +244,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
             <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 md:block md:space-y-3">
               {navLinks.map(([label, href]) => (
                 <li key={href}>
-                  <Link href={href} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-subtext)" }}>{label}</Link>
+                  <Link href={href} className="inline-flex min-h-10 items-center text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-subtext)" }}>{label}</Link>
                 </li>
               ))}
             </ul>
@@ -257,7 +257,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
                 contacts={contacts}
                 iconClassName="mt-0.5 shrink-0"
                 iconStyle={{ color: "var(--at-border)" }}
-                linkClassName="text-sm hover:opacity-70 transition-opacity"
+                linkClassName="inline-flex min-h-10 items-center text-sm hover:opacity-70 transition-opacity"
                 linkStyle={{ color: "var(--at-subtext)" }}
                 textClassName="text-sm leading-relaxed"
                 textStyle={{ color: "var(--at-subtext)" }}

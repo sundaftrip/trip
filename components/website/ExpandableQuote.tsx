@@ -38,7 +38,7 @@ export default function ExpandableQuote({
         <button
           type="button"
           onClick={() => onExpand ? onExpand() : setExpanded(!expanded)}
-          className="text-[10px] tracking-[0.16em] uppercase font-semibold mt-3 opacity-60 hover:opacity-100 transition-opacity self-start"
+          className="mt-3 inline-flex min-h-10 min-w-28 items-center text-[10px] font-semibold uppercase tracking-[0.16em] opacity-60 transition-opacity self-start hover:opacity-100"
           style={color ? { color } : undefined}
         >
           {onExpand ? "Selengkapnya" : expanded ? "Tutup ↑" : "Selengkapnya ↓"}

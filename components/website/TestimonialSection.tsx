@@ -235,7 +235,7 @@ function MobileDenseTestimonials({
                   <button
                     type="button"
                     onClick={() => onOpen(item)}
-                    className="mt-2 inline-flex cursor-pointer text-[10px] font-semibold uppercase"
+                    className="mt-2 inline-flex min-h-10 min-w-24 cursor-pointer items-center text-[10px] font-semibold uppercase"
                     style={{ color: "var(--site-accent)" }}
                   >
                     Baca penuh

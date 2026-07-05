@@ -16,6 +16,7 @@ import {
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { getProofPhotos } from "@/lib/b2bGallery";
 import { lora } from "@/lib/fonts";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 
 const PAGE_URL = "https://sundaftrip.com/partnership-relation";
 const CONTACT_EMAIL = "aisah@sundaftrip.com";
@@ -37,6 +38,14 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     siteName: "Sundaf Trip",
     type: "website",
+    images: defaultOpenGraphImages("Sundaf Trip supplier relations"),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sundaf Trip Group - Travel Operations & Supplier Relations",
+    description:
+      "Official corporate-facing supplier relations page for Sundaf Trip travel operations and partner coordination.",
+    images: defaultTwitterImages(),
   },
 };
 

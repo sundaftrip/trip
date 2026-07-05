@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight, ShieldCheck } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { toWaNumber } from "@/lib/utils";
 import { findBySlug } from "@/lib/visa-slug";
 import {
@@ -87,6 +88,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: "Sundaf Trip",
       locale: "id_ID",
       type: "website",
+      images: defaultOpenGraphImages(title),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} · Sundaf Trip`,
+      description,
+      images: defaultTwitterImages(),
     },
   };
 }

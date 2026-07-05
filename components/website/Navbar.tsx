@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type CSSProperties } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -47,6 +47,17 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
   const atlasLogoSrc = logo?.includes("/sundaftrip/ritdbnbozrthfceunzuq")
     ? defaultLogoSrc
     : logoSrc;
+  const atlasControlStyle = {
+    color: "var(--at-text)",
+    justifyContent: "center",
+    minHeight: 44,
+    minWidth: 44,
+  } satisfies CSSProperties;
+  const atlasNavStyle = {
+    color: "var(--at-text)",
+    justifyContent: "center",
+    minHeight: 40,
+  } satisfies CSSProperties;
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") return (
@@ -286,7 +297,7 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
       style={{ backgroundColor: "var(--at-bg)", borderColor: "var(--at-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" prefetch={false} className="flex items-center">
+          <Link href="/" prefetch={false} className="flex min-h-11 items-center">
             <Image src={atlasLogoSrc} alt="Sundaf Trip" width={176} height={54}
               className="h-8 sm:h-11 w-auto logo-theme" priority fetchPriority="high" />
           </Link>
@@ -295,26 +306,26 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} prefetch={false}
                 className="at-pill hover:opacity-70 transition-opacity"
-                style={{ color: "var(--at-text)" }}>
+                style={atlasNavStyle}>
                 {link.label[lang]}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
-            <GlobalSearch lang={lang} triggerClassName="at-pill" triggerStyle={{ color: "var(--at-text)" }} />
+            <GlobalSearch lang={lang} triggerClassName="at-pill" triggerStyle={atlasControlStyle} />
             <button onClick={toggleLang} className="at-pill"
-              style={{ color: "var(--at-text)" }}>
+              style={atlasControlStyle}>
               {lang === "id" ? "EN" : "ID"}
             </button>
             {mounted && (
               <button onClick={() => setTheme(isDark ? "light" : "dark")} aria-label="Toggle dark mode"
-                className="at-pill" style={{ color: "var(--at-text)" }}>
+                className="at-pill" style={atlasControlStyle}>
                 {isDark ? <Sun size={13} /> : <Moon size={13} />}
               </button>
             )}
             <button aria-label="Buka menu navigasi" aria-expanded={open} type="button" onClick={() => setOpen(!open)} className="lg:hidden at-pill"
-              style={{ color: "var(--at-text)" }}>
+              style={atlasControlStyle}>
               {open ? <X size={16} aria-hidden="true" /> : <Menu size={16} aria-hidden="true" />}
             </button>
           </div>
@@ -325,17 +336,17 @@ export default function Navbar({ logo, theme = "classic" }: { logo?: string; the
             style={{ borderColor: "var(--at-border)", background: "var(--at-bg)" }}>
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} prefetch={false} onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 text-sm font-medium" style={{ color: "var(--at-text)" }}>
+                className="flex min-h-11 items-center px-4 text-sm font-medium" style={{ color: "var(--at-text)" }}>
                 {link.label[lang]}
               </Link>
             ))}
             <div className="px-4 pt-2 space-y-2">
               <Link href="/visa" prefetch={false} onClick={() => setOpen(false)}
-                className="flex at-btn px-5 py-2.5 text-xs w-full justify-center">
+                className="flex min-h-11 at-btn px-5 text-xs w-full justify-center">
                 {lang === "id" ? "Layanan Visa" : "Visa Service"}
               </Link>
               <Link href="/tours" prefetch={false} onClick={() => setOpen(false)}
-                className="flex at-btn-solid px-5 py-2.5 text-xs w-full justify-center">
+                className="flex min-h-11 at-btn-solid px-5 text-xs w-full justify-center">
                 {lang === "id" ? "Lihat Tour" : "See Tours"}
               </Link>
             </div>
