@@ -5,13 +5,14 @@ import { Plus, Pencil, Trash2, X, Eye, EyeOff } from "lucide-react";
 
 type User = { id: string; name: string; email: string; role: string; createdAt: string };
 type Form = { name: string; email: string; role: string; password: string };
-const EMPTY: Form = { name: "", email: "", role: "EDITOR", password: "" };
+const EMPTY: Form = { name: "", email: "", role: "VIEWER", password: "" };
 
-const ROLE_LABELS: Record<string, string> = { SUPERADMIN: "Super Admin", ADMIN: "Admin", EDITOR: "Editor" };
+const ROLE_LABELS: Record<string, string> = { SUPERADMIN: "Super Admin", ADMIN: "Admin", EDITOR: "Editor", VIEWER: "Demo" };
 const ROLE_COLORS: Record<string, string> = {
   SUPERADMIN: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
   ADMIN: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   EDITOR: "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400",
+  VIEWER: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
 };
 
 export default function UsersPage() {
@@ -131,6 +132,7 @@ export default function UsersPage() {
               <div>
                 <label className="label">Role</label>
                 <select className="input" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+                  <option value="VIEWER">Demo</option>
                   <option value="EDITOR">Editor</option>
                   <option value="ADMIN">Admin</option>
                   <option value="SUPERADMIN">Super Admin</option>

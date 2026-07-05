@@ -64,10 +64,12 @@ async function readJson<T>(res: Response): Promise<T> {
 
 function DocumentRow({
   document,
+  readOnly,
   onUpdate,
   onDelete,
 }: {
   document: CatalogDocument;
+  readOnly: boolean;
   onUpdate: (document: CatalogDocument) => void;
   onDelete: (id: string) => void;
 }) {
@@ -115,6 +117,7 @@ function DocumentRow({
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          disabled={readOnly}
           className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
         <p className="mt-1 truncate text-xs text-gray-400">{document.fileName} · {formatBytes(document.fileSize)}</p>
@@ -127,6 +130,7 @@ function DocumentRow({
           type="number"
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
+          disabled={readOnly}
           className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
       </div>
@@ -134,6 +138,7 @@ function DocumentRow({
       <button
         type="button"
         onClick={() => setActive((value) => !value)}
+        disabled={readOnly}
         className={`inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition sm:py-2 ${
           active
             ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
@@ -154,24 +159,28 @@ function DocumentRow({
           <Download size={15} />
           Buka
         </a>
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
-        >
-          {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-          Simpan
-        </button>
-        <button
-          type="button"
-          onClick={remove}
-          disabled={saving}
-          aria-label={`Hapus ${document.title}`}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300 sm:py-2"
-        >
-          <Trash2 size={15} />
-        </button>
+        {!readOnly && (
+          <>
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
+            >
+              {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
+              Simpan
+            </button>
+            <button
+              type="button"
+              onClick={remove}
+              disabled={saving}
+              aria-label={`Hapus ${document.title}`}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300 sm:py-2"
+            >
+              <Trash2 size={15} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -179,10 +188,12 @@ function DocumentRow({
 
 function PasswordRow({
   password,
+  readOnly,
   onUpdate,
   onDelete,
 }: {
   password: CatalogPassword;
+  readOnly: boolean;
   onUpdate: (password: CatalogPassword) => void;
   onDelete: (id: string) => void;
 }) {
@@ -232,6 +243,7 @@ function PasswordRow({
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
+          disabled={readOnly}
           className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
         {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
@@ -243,11 +255,13 @@ function PasswordRow({
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           placeholder="Password baru"
+          disabled={readOnly}
           className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 pr-10 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white sm:py-2"
         />
         <button
           type="button"
           onClick={() => setShowNewPassword((value) => !value)}
+          disabled={readOnly}
           aria-label={showNewPassword ? "Sembunyikan password baru" : "Lihat password baru"}
           className="absolute right-2 top-[calc(50%+0.5rem)] inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200 lg:top-1/2"
         >
@@ -257,6 +271,7 @@ function PasswordRow({
       <button
         type="button"
         onClick={() => setActive((value) => !value)}
+        disabled={readOnly}
         className={`inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition sm:py-2 ${
           active
             ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
@@ -267,33 +282,39 @@ function PasswordRow({
       </button>
       <p className="text-xs text-gray-500 dark:text-gray-400">Terakhir: {formatDate(password.lastUsedAt)}</p>
       <div className="grid grid-cols-[1fr_auto] items-center gap-2 sm:flex sm:flex-wrap lg:justify-end">
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
-        >
-          {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-          Simpan
-        </button>
-        <button
-          type="button"
-          onClick={remove}
-          disabled={saving}
-          aria-label={`Hapus ${password.label}`}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300 sm:py-2"
-        >
-          <Trash2 size={15} />
-        </button>
+        {!readOnly && (
+          <>
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 sm:py-2"
+            >
+              {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
+              Simpan
+            </button>
+            <button
+              type="button"
+              onClick={remove}
+              disabled={saving}
+              aria-label={`Hapus ${password.label}`}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-900/20 dark:text-red-300 sm:py-2"
+            >
+              <Trash2 size={15} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 export default function B2BCatalogManager({
+  readOnly = false,
   initialDocuments,
   initialPasswords,
 }: {
+  readOnly?: boolean;
   initialDocuments: CatalogDocument[];
   initialPasswords: CatalogPassword[];
 }) {
@@ -398,7 +419,14 @@ export default function B2BCatalogManager({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="grid gap-4 sm:gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
+      {readOnly && (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-200">
+          Mode demo aktif. Data bisa dibuka untuk review, tetapi upload, simpan, dan hapus dinonaktifkan.
+        </div>
+      )}
+
+      {!readOnly && (
+        <div className="grid gap-4 sm:gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
         <section className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:p-5">
           <div className="mb-4 flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 sm:h-10 sm:w-10">
@@ -501,6 +529,7 @@ export default function B2BCatalogManager({
           {passwordError && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{passwordError}</p>}
         </section>
       </div>
+      )}
 
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-4 dark:border-gray-700 sm:px-5">
@@ -525,6 +554,7 @@ export default function B2BCatalogManager({
             <DocumentRow
               key={document.id}
               document={document}
+              readOnly={readOnly}
               onUpdate={(next) => setDocuments((items) => items.map((item) => item.id === next.id ? next : item).sort((a, b) => a.sortOrder - b.sortOrder))}
               onDelete={(id) => setDocuments((items) => items.filter((item) => item.id !== id))}
             />
@@ -544,6 +574,7 @@ export default function B2BCatalogManager({
             <PasswordRow
               key={password.id}
               password={password}
+              readOnly={readOnly}
               onUpdate={(next) => setPasswords((items) => items.map((item) => item.id === next.id ? next : item))}
               onDelete={(id) => setPasswords((items) => items.filter((item) => item.id !== id))}
             />

@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import bcrypt from "bcryptjs";
 import { apiError } from "@/lib/api-error";
+import { isAdminRole } from "@/lib/viewer-access";
 
-// Nilai sah enum Role di prisma/schema.prisma
-const VALID_ROLES = ["SUPERADMIN", "ADMIN", "EDITOR"] as const;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -33,7 +32,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     data.email = email.trim();
   }
   if (role !== undefined) {
-    if (typeof role !== "string" || !VALID_ROLES.includes(role as (typeof VALID_ROLES)[number]))
+    if (!isAdminRole(role))
       return NextResponse.json({ error: "Role tidak valid." }, { status: 422 });
     data.role = role;
   }

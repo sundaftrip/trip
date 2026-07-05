@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Shield, Save, ChevronDown, ChevronUp, User } from "lucide-react";
 import { ALL_PERMISSION_KEYS, DEFAULT_PERMISSIONS, PERMISSION_LABELS } from "@/lib/permission-keys";
 
-const SECTIONS = ["Tour", "Receipt", "Blog", "Konten", "B2B", "GEO", "Scraper"];
+const SECTIONS = ["Tour", "Receipt", "Blog", "Konten", "B2B", "GEO", "Keuangan", "Scraper"];
 
 interface UserPerm {
   id: string;
@@ -28,7 +28,7 @@ function UserPermCard({ user, onSaved }: { user: UserPerm; onSaved: () => void }
   };
 
   const resetToDefault = () => {
-    setPerms({ ...DEFAULT_PERMISSIONS[user.role] });
+    setPerms({ ...(DEFAULT_PERMISSIONS[user.role] ?? {}) });
     setStatus("idle");
   };
 
@@ -63,8 +63,10 @@ function UserPermCard({ user, onSaved }: { user: UserPerm; onSaved: () => void }
           <span className={`ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
             user.role === "ADMIN"
               ? "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400"
+              : user.role === "VIEWER"
+                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
               : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
-          }`}>{user.role}</span>
+          }`}>{user.role === "VIEWER" ? "DEMO" : user.role}</span>
         </div>
         <div className="flex items-center gap-3">
           {status === "saved" && <span className="text-xs text-green-600 dark:text-green-400 font-medium">✓ Tersimpan</span>}

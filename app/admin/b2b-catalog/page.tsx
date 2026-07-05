@@ -7,7 +7,9 @@ import { prisma } from "@/lib/prisma";
 export default async function B2BCatalogAdminPage() {
   const session = await auth();
   if (!session) redirect("/admin/login");
-  if (!await checkPermission(session, "b2b_catalog_edit")) redirect("/admin");
+  const canManage = await checkPermission(session, "b2b_catalog_edit");
+  const canView = canManage || await checkPermission(session, "b2b_catalog_view");
+  if (!canView) redirect("/admin");
 
   const [documents, passwords] = await Promise.all([
     prisma.b2bCatalogDocument.findMany({
@@ -36,6 +38,7 @@ export default async function B2BCatalogAdminPage() {
       </div>
 
       <B2BCatalogManager
+        readOnly={!canManage}
         initialDocuments={documents.map((item) => ({
           ...item,
           createdAt: item.createdAt.toISOString(),
