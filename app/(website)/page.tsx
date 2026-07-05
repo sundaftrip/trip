@@ -2,7 +2,6 @@
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
 export const revalidate = 60;
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
 import { ArrowRight } from "lucide-react";
@@ -81,16 +80,6 @@ const getData = unstable_cache(async () => {
 // tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
 }, ["home-page-data", "home-payload-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
-const galleryDeferStyle: CSSProperties = {
-  contentVisibility: "auto",
-  containIntrinsicSize: "544px",
-};
-
-const blogDeferStyle: CSSProperties = {
-  contentVisibility: "auto",
-  containIntrinsicSize: "620px",
-};
-
 export async function generateMetadata(): Promise<Metadata> {
   // Title, description, keywords, OG & Twitter card — semuanya diwarisi dari
   // root layout (app/layout.tsx) yang sudah brand-forward + kaya kata kunci
@@ -124,7 +113,7 @@ export default async function HomePage() {
       <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
       <div id="tours">
         <ToursSection tours={regularTours} pinnedTours={pinnedTours} theme={theme}>
-          <div className="flex justify-center pt-5 pb-6">
+          <div className="flex justify-center pt-4 pb-3 sm:pt-5 sm:pb-6">
             <Link
               href="/tours"
               prefetch={false}
@@ -137,10 +126,10 @@ export default async function HomePage() {
           </div>
         </ToursSection>
       </div>
-      <div style={galleryDeferStyle}>
+      <div className="home-defer home-defer-gallery">
         <WhyGallery theme={theme} />
       </div>
-      <div style={blogDeferStyle}>
+      <div className="home-defer home-defer-blog">
         <BlogSection posts={posts} theme={theme} />
       </div>
       <TestimonialSection items={testimonials} theme={theme} />

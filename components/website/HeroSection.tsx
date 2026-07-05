@@ -470,7 +470,7 @@ export default function HeroSection({ texts, waNumber, companyName, theme = "cla
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section className="min-h-[82svh] lg:min-h-[82vh] flex flex-col justify-center relative overflow-hidden pt-20 lg:pt-24 pb-24 lg:pb-12 px-4 at-grid-bg"
+    <section className="relative overflow-hidden px-4 pt-20 pb-8 at-grid-bg lg:flex lg:min-h-[82vh] lg:flex-col lg:justify-center lg:pt-24 lg:pb-12"
       style={{ backgroundColor: "var(--at-bg)" }}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         {/* Desktop: dua kolom (judul kiri, aksi di samping). Mobile: tumpuk rapat. */}
