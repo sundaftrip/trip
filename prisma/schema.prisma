@@ -11,6 +11,7 @@ enum Role {
   SUPERADMIN
   ADMIN
   EDITOR
+  VIEWER
 }
 
 enum TourStatus {

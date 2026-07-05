@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { shouldBlockViewerMutation } from "@/lib/viewer-access";
 
 const VALID_THEMES = new Set([
   "classic", "vibrant", "bold", "tropical", "kawaii", "pixel",
@@ -6,9 +8,20 @@ const VALID_THEMES = new Set([
   "corei",
 ]);
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
   const isAdmin = pathname.startsWith("/admin");
+
+  if (isAdmin || pathname.startsWith("/api")) {
+    const authSecret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
+    const token = authSecret ? await getToken({ req, secret: authSecret }) : null;
+    if (shouldBlockViewerMutation(req.method, pathname, token?.role)) {
+      if (pathname.startsWith("/api")) {
+        return NextResponse.json({ error: "Akun viewer hanya boleh melihat data CMS." }, { status: 403 });
+      }
+      return new NextResponse("Akun viewer hanya boleh melihat data CMS.", { status: 403 });
+    }
+  }
 
   // Auth guard hanya untuk /admin (tidak pernah dijalankan untuk halaman publik)
   if (isAdmin) {
@@ -61,7 +74,8 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match semua kecuali aset Next internal, api, dan file statik
-    "/((?!_next/static|_next/image|favicon|api|.*\\..*).*)",
+    "/api/:path*",
+    // Match semua kecuali aset Next internal dan file statik.
+    "/((?!_next/static|_next/image|favicon|.*\\..*).*)",
   ],
 };

@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import bcrypt from "bcryptjs";
 import { apiError } from "@/lib/api-error";
+import { type AdminRole, isAdminRole } from "@/lib/viewer-access";
 
-// Nilai sah enum Role di prisma/schema.prisma
-const VALID_ROLES = ["SUPERADMIN", "ADMIN", "EDITOR"] as const;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function GET() {
@@ -37,13 +36,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Format email tidak valid." }, { status: 422 });
   if (typeof password !== "string" || password.length < 8)
     return NextResponse.json({ error: "Password wajib diisi, minimal 8 karakter." }, { status: 422 });
-  if (typeof role !== "string" || !VALID_ROLES.includes(role as (typeof VALID_ROLES)[number]))
+  if (!isAdminRole(role))
     return NextResponse.json({ error: "Role tidak valid." }, { status: 422 });
 
   try {
     const hashed = await bcrypt.hash(password, 12);
     const user = await prisma.user.create({
-      data: { name: name.trim(), email: email.trim(), password: hashed, role: role as "SUPERADMIN" | "ADMIN" | "EDITOR" },
+      data: { name: name.trim(), email: email.trim(), password: hashed, role: role as AdminRole },
       select: { id: true, name: true, email: true, role: true },
     });
     return NextResponse.json(user, { status: 201 });
