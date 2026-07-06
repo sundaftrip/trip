@@ -20,7 +20,7 @@ const FONT = {
 } as const;
 
 const TYPOGRAPHY = {
-  eyebrow: { fontFamily: FONT.bold, fontSize: 8.5, letterSpacing: 1.1, lineHeight: 1.25 },
+  eyebrow: { fontFamily: FONT.bold, fontSize: 8.5, letterSpacing: 0.35, lineHeight: 1.25 },
   title: { fontFamily: FONT.bold, fontSize: 30, lineHeight: 1.12 },
   subtitle: { fontFamily: FONT.regular, fontSize: 11, lineHeight: 1.45 },
   sectionTitle: { fontFamily: FONT.bold, fontSize: 14, lineHeight: 1.25 },
@@ -119,21 +119,26 @@ export const s = StyleSheet.create({
   },
   footerLinks: {
     flexDirection: "row",
+    alignItems: "center",
     width: 390,
   },
-  footerLink: {
+  footerLinkGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 22,
+  },
+  footerLinkText: {
     ...TYPOGRAPHY.footer,
     color: COLORS.tealDark,
     textDecoration: "underline",
-    marginRight: 20,
   },
   pageNumber: {
     position: "absolute",
     right: 38,
     bottom: 31,
     width: 55,
-    ...TYPOGRAPHY.small,
-    color: COLORS.slate,
+    ...TYPOGRAPHY.footer,
+    color: COLORS.tealDark,
     textAlign: "right",
   },
   coverIntro: {

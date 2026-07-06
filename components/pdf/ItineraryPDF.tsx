@@ -76,7 +76,7 @@ export const PDF_LINKS = {
     href: "https://www.sundaftrip.com",
   },
   instagram: {
-    display: "Instagram @sundaf.trip",
+    display: "@sundaf.trip",
     href: "https://www.instagram.com/sundaf.trip",
   },
   visa: {
@@ -473,23 +473,43 @@ export function PdfHeader({
   );
 }
 
-export function PdfFooter() {
+type PdfPageNumber = {
+  pageNumber: number;
+  totalPages: number;
+};
+
+export function PdfFooter({ pageNumber, totalPages }: PdfPageNumber) {
   return (
     <>
       <View fixed style={s.footer}>
         <View style={s.footerLinks}>
-          <Link src={PDF_LINKS.website.href} style={s.footerLink}>{PDF_LINKS.website.display}</Link>
-          <Link src={PDF_LINKS.instagram.href} style={s.footerLink}>{PDF_LINKS.instagram.display}</Link>
+          <FooterLink href={PDF_LINKS.website.href} icon="globe">
+            {PDF_LINKS.website.display}
+          </FooterLink>
+          <FooterLink href={PDF_LINKS.instagram.href} icon="instagram">
+            {PDF_LINKS.instagram.display}
+          </FooterLink>
         </View>
       </View>
-      <Text
-        fixed
-        style={s.pageNumber}
-        render={({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) => (
-          `${pageNumber}/${totalPages}`
-        )}
-      />
+      <Text fixed style={s.pageNumber}>{pageNumber}/{totalPages}</Text>
     </>
+  );
+}
+
+function FooterLink({
+  href,
+  icon,
+  children,
+}: {
+  href: string;
+  icon: PdfIconName;
+  children: string;
+}) {
+  return (
+    <Link src={href} style={s.footerLinkGroup}>
+      <PdfIcon icon={icon} />
+      <Text style={s.footerLinkText}>{children}</Text>
+    </Link>
   );
 }
 
@@ -499,18 +519,20 @@ function PdfPage({
   children,
   cover = false,
   wrap = true,
+  pageNumber,
+  totalPages,
 }: {
   company: ItineraryPDFProps["company"];
   runningTitle: string;
   children: ReactNode;
   cover?: boolean;
   wrap?: boolean;
-}) {
+} & PdfPageNumber) {
   return (
     <Page size={A4_PORTRAIT} style={cover ? s.coverPage : s.page} wrap={wrap}>
       <PdfHeader company={company} runningTitle={runningTitle} />
       {children}
-      <PdfFooter />
+      <PdfFooter pageNumber={pageNumber} totalPages={totalPages} />
     </Page>
   );
 }
@@ -562,9 +584,8 @@ export function OverviewCards({
   landTourLabel?: string | null;
 }) {
   const normalPrice = splitNormalPriceLabel(priceCoretLabel);
-  const durationNote = getDurationArrivalNote(tour);
   const cards = [
-    { label: "Durasi", value: tour.duration || "Mengikuti program", note: durationNote },
+    { label: "Durasi", value: tour.duration || "Mengikuti program" },
     { label: "Keberangkatan", value: tour.tripDateLabel || "Tanggal mengikuti jadwal" },
     { label: "Harga Paket Utama", value: priceLabel, price: true },
     { label: "Land tour", value: landTourLabel || "Hubungi tim Sundaf" },
@@ -587,7 +608,6 @@ export function OverviewCards({
                 {normalPrice.savingsLabel ? ` - ${normalPrice.savingsLabel}` : ""}
               </Text>
             ) : null}
-            {card.note ? <Text style={s.priceSubline}>{card.note}</Text> : null}
           </View>
         );
       })}
@@ -961,6 +981,8 @@ function CoverPage({
   landTourLabel,
   company,
   runningTitle,
+  pageNumber,
+  totalPages,
 }: {
   tour: ItineraryPDFProps["tour"];
   priceLabel: string;
@@ -968,21 +990,19 @@ function CoverPage({
   landTourLabel?: string | null;
   company: ItineraryPDFProps["company"];
   runningTitle: string;
-}) {
+} & PdfPageNumber) {
   const subtitle = [
     tour.duration,
     tour.tripDateLabel ? `Keberangkatan ${tour.tripDateLabel}` : "Tanggal mengikuti jadwal",
   ].filter(Boolean).join(" - ");
-  const preparedBy = `Disiapkan oleh ${company.name || "Sundaf Trip"}`;
 
   return (
-    <PdfPage company={company} runningTitle={runningTitle} cover>
+    <PdfPage company={company} runningTitle={runningTitle} pageNumber={pageNumber} totalPages={totalPages} cover>
       <View style={s.coverIntro}>
         <View style={s.coverCopy}>
-          <Text style={s.label}>Itinerary SUNDAF</Text>
+          <Text style={s.label}>ITINERARY SUNDAF</Text>
           <Text style={s.title}>{runningTitle}</Text>
           <Text style={s.subtitle}>{subtitle}</Text>
-          <Text style={s.coverSupport}>{preparedBy}</Text>
           <RouteChips tour={tour} />
         </View>
         {tour.heroImg ? (
@@ -1031,6 +1051,10 @@ export function ItineraryPDF({
   }, []);
   const galleryImages = uniquePdfGalleryImages([tour.heroImg ?? "", ...(tour.gallery ?? [])]);
   const galleryPages = splitGalleryPages(galleryImages);
+  const totalPages = 1 + itineraryPageEntries.length + 2 + galleryPages.length;
+  const inclusionsPageNumber = 2 + itineraryPageEntries.length;
+  const operationsPageNumber = inclusionsPageNumber + 1;
+  const galleryStartPageNumber = operationsPageNumber + 1;
 
   return (
     <Document title={documentTitle} author="Sundaf Trip">
@@ -1041,28 +1065,52 @@ export function ItineraryPDF({
         landTourLabel={landTourLabel}
         company={company}
         runningTitle={runningTitle}
+        pageNumber={1}
+        totalPages={totalPages}
       />
 
       {itineraryPageEntries.map(({ days, offset }, index) => (
-        <PdfPage key={`itinerary-${index}`} company={company} runningTitle={runningTitle}>
+        <PdfPage
+          key={`itinerary-${index}`}
+          company={company}
+          runningTitle={runningTitle}
+          pageNumber={2 + index}
+          totalPages={totalPages}
+        >
           <SectionShell title={index === 0 ? "Alur Perjalanan" : "Alur Perjalanan Lanjutan"} card={false}>
             <ItineraryTimeline tour={tour} itinerary={days} offset={offset} />
           </SectionShell>
         </PdfPage>
       ))}
 
-      <PdfPage company={company} runningTitle={runningTitle}>
+      <PdfPage
+        company={company}
+        runningTitle={runningTitle}
+        pageNumber={inclusionsPageNumber}
+        totalPages={totalPages}
+      >
         <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
         <AddOnList addOns={addOns} />
       </PdfPage>
 
-      <PdfPage company={company} runningTitle={runningTitle}>
+      <PdfPage
+        company={company}
+        runningTitle={runningTitle}
+        pageNumber={operationsPageNumber}
+        totalPages={totalPages}
+      >
         <PaymentSection paymentPlan={paymentPlan} basePriceLabel={priceLabel} />
         <OperationsContactSection company={company} notes={tour.notes} />
       </PdfPage>
 
       {galleryPages.map((pageImages, index) => (
-        <PdfPage key={`gallery-${index}`} company={company} runningTitle={runningTitle}>
+        <PdfPage
+          key={`gallery-${index}`}
+          company={company}
+          runningTitle={runningTitle}
+          pageNumber={galleryStartPageNumber + index}
+          totalPages={totalPages}
+        >
           <SectionShell title="Dokumentasi Perjalanan" card>
             <Text style={[s.subtitle, { marginBottom: 10 }]}>
               Beberapa dokumentasi perjalanan SUNDAF Trip sebagai gambaran suasana destinasi.

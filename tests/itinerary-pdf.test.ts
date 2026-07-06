@@ -93,6 +93,7 @@ const sampleProps: ItineraryPDFProps = {
 test("itinerary PDF exposes the required customer-facing link contract", () => {
   assert.equal(PDF_LINKS.website.href, "https://www.sundaftrip.com");
   assert.equal(PDF_LINKS.instagram.href, "https://www.instagram.com/sundaf.trip");
+  assert.equal(PDF_LINKS.instagram.display, "@sundaf.trip");
   assert.equal(PDF_LINKS.visa.href, "https://sundaftrip.com/visa");
   assert.equal(PDF_LINKS.faq.href, "https://sundaftrip.com/faq");
   assert.equal(PDF_LINKS.email.href, "mailto:info@sundaftrip.com");
