@@ -5,6 +5,8 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import {
   buildImportantNotes,
   deriveItineraryMeta,
+  destinationChips,
+  ensureSentencePunctuation,
   formatPaymentTotalHeading,
   getDurationArrivalNote,
   ItineraryPDF,
@@ -121,6 +123,9 @@ test("itinerary PDF polishes Russia Aurora copy without changing the template st
   assert.equal(polishPdfCopy("pemimpin tur berpengalaman start Jakarta"), "Tour Leader berpengalaman dari Jakarta");
   assert.equal(polishPdfCopy("Akomodasi *3 & *4"), "Akomodasi hotel bintang 3 & 4");
   assert.equal(polishPdfCopy("bagasi pesawat domestik (2.5) PP"), "Bagasi pesawat domestik 25 kg PP");
+  assert.equal(polishPdfCopy("jantung kota Piter"), "jantung kota Saint Petersburg");
+  assert.equal(polishPdfCopy("Sundaftrip berawal dari rasa penasaran."), "SUNDAF Trip berawal dari rasa penasaran.");
+  assert.equal(polishPdfCopy("Profil Sundaf Trip"), "Profil SUNDAF Trip");
   assert.equal(polishItineraryTitle("Arrive Jakarta"), "Tiba di Jakarta");
   assert.equal(polishItineraryTitle("Sammi Village"), "Sami Village");
   assert.equal(
@@ -135,6 +140,15 @@ test("itinerary PDF polishes Russia Aurora copy without changing the template st
     polishItineraryTitle("Sami Village (opsional) Husky Farm Deer Farm Reindeer Husky riding (opsional) Banana Boat Aurora (opsional) • Culinary Tour kepiting alaska (opsional)"),
     "Sami Village Opsional • Husky Farm • Deer Farm • Aurora Hunt",
   );
+});
+
+test("itinerary PDF keeps final microcopy polished", () => {
+  assert.deepEqual(
+    destinationChips({ ...sampleProps.tour, cityHighlight: "Moskow Murmansk St Petersburg" }),
+    ["Moskow • Murmansk • Saint Petersburg"],
+  );
+  assert.equal(ensureSentencePunctuation("Semoga berjumpa kembali"), "Semoga berjumpa kembali.");
+  assert.equal(ensureSentencePunctuation("Semoga berjumpa kembali."), "Semoga berjumpa kembali.");
 });
 
 test("itinerary PDF keeps payment and operational notes customer-facing", () => {

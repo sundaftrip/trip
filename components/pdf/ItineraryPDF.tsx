@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -97,6 +97,8 @@ export const PDF_LINKS = {
   },
 } as const;
 
+const BRAND_DISPLAY = "SUNDAF Trip";
+
 const CRITICAL_OPERATIONAL_NOTES = [
   "Aurora adalah fenomena alam sehingga kemunculannya tidak dapat dijamin.",
   "Minimum keberangkatan 15 peserta.",
@@ -140,6 +142,7 @@ export function polishPdfCopy(value?: string | null) {
     .replace(/\bIconic Rusia\b/g, "ikonik Rusia")
     .replace(/\bes cream\b/gi, "es krim")
     .replace(/\bambil melihat\b/gi, "sambil melihat")
+    .replace(/\bjantung kota Piter\b/gi, "jantung kota Saint Petersburg")
     .replace(/\bSammi Village\b/g, "Sami Village")
     .replace(/\bCulinary Tour kepiting alaska\b/gi, "culinary tour kepiting Alaska")
     .replace(/\bBanana yang ditarik snowmobile\b/gi, "Banana Boat")
@@ -149,6 +152,9 @@ export function polishPdfCopy(value?: string | null) {
     .replace(/\bbagasi pesawat domestik\s*\(2\.5\)\s*PP\b/gi, "Bagasi pesawat domestik 25 kg PP")
     .replace(/\bbagasi pesawat domestik\s*2\.5\s*PP\b/gi, "Bagasi pesawat domestik 25 kg PP")
     .replace(/\bIsmailovo\b/g, "Izmailovo")
+    .replace(/\bSt\.?\s+Petersburg\b/gi, "Saint Petersburg")
+    .replace(/\bSundaftrip\b/g, BRAND_DISPLAY)
+    .replace(/\bSundaf Trip\b/g, BRAND_DISPLAY)
     .replace(/\s+([,.])/g, "$1")
     .replace(/\s{2,}/g, " ")
     .trim();
@@ -178,6 +184,12 @@ function normalizeBodyText(value: string) {
     .replace(/\bPrivate transfer\b/gi, "Transfer privat")
     .replace(/\bReturn flight to\b/gi, "Penerbangan kembali menuju")
     .replace(/\bFlight to\b/gi, "Penerbangan menuju");
+}
+
+export function ensureSentencePunctuation(value?: string | null) {
+  const text = cleanText(value);
+  if (!text || /[.!?…]$/.test(text)) return text;
+  return `${text}.`;
 }
 
 function splitNormalPriceLabel(value?: string | null) {
@@ -263,7 +275,7 @@ export function professionalizePaymentText(value?: string | null) {
     .replace(/^Pembayaran aman dan fleksibel\. Kamu cukup bayar DP dulu, sisanya dicicil santai sesuai skema pembayaran\.$/i, "Pembayaran dilakukan bertahap sesuai skema di bawah ini.")
     .replace(/^Pembayaran aman dan fleksibel\. Kamu cukup amankan seat dulu, sisanya dilunasi sesuai tempo sebelum berangkat\.$/i, "Peserta dapat mengamankan seat terlebih dahulu, lalu melunasi sesuai tempo sebelum keberangkatan.")
     .replace(/^Sisa\s+(\d+)\s+traveler lagi\s+-\s+gas sebelum habis\s*🙂?$/i, "Sisa $1 seat. Konfirmasi segera untuk mengamankan ketersediaan.")
-    .replace(/^Booking sekarang\s+-\s+tim Sundaf bantu cek seat$/i, "Tim Sundaf akan membantu konfirmasi ketersediaan seat.")
+    .replace(/^Booking sekarang\s+-\s+tim Sundaf bantu cek seat$/i, `Tim ${BRAND_DISPLAY} akan membantu konfirmasi ketersediaan seat.`)
     .replace(/\bKamu\b/g, "Peserta")
     .replace(/\bkamu\b/g, "peserta")
     .replace(/\bdicicil santai\b/gi, "dibayar bertahap")
@@ -300,13 +312,17 @@ export function splitItineraryPages(itinerary: ItineraryDay[], maxDaysPerPage = 
   return pages;
 }
 
-function destinationChips(tour: ItineraryPDFProps["tour"]) {
+export function destinationChips(tour: ItineraryPDFProps["tour"]) {
   const source = tour.cityHighlight || tour.country;
-  return cleanText(source)
+  const normalizedSource = cleanText(source)
+    .replace(/\bMoskow\s+Murmansk\s+Saint Petersburg\b/i, "Moskow, Murmansk, Saint Petersburg");
+  const destinations = normalizedSource
     .split(/\s*,\s*|\s+-\s+|\s+\|\s+/)
     .map((item) => item.trim())
     .filter(Boolean)
     .slice(0, 6);
+
+  return destinations.length > 1 ? [destinations.join(" • ")] : destinations;
 }
 
 function uniquePdfGalleryImages(images?: string[] | null) {
@@ -324,7 +340,7 @@ function uniquePdfGalleryImages(images?: string[] | null) {
 }
 
 function profileText(company: ItineraryPDFProps["company"]) {
-  const name = company.name || "Sundaf Trip";
+  const name = cleanText(company.name) || BRAND_DISPLAY;
   const story = company.story?.map(cleanText).find(Boolean);
   const nib = company.nib ? ` NIB ${company.nib}.` : "";
 
@@ -588,7 +604,7 @@ export function OverviewCards({
     { label: "Durasi", value: tour.duration || "Mengikuti program" },
     { label: "Keberangkatan", value: tour.tripDateLabel || "Tanggal mengikuti jadwal" },
     { label: "Harga Paket Utama", value: priceLabel, price: true },
-    { label: "Land tour", value: landTourLabel || "Hubungi tim Sundaf" },
+    { label: "Land tour", value: landTourLabel || `Hubungi tim ${BRAND_DISPLAY}` },
   ];
 
   return (
@@ -653,6 +669,10 @@ function MetaInlineItem({ label, value, icon }: DayMetaItem) {
   );
 }
 
+function MetaSeparator() {
+  return <Text style={s.metaSeparator}>•</Text>;
+}
+
 function ContactInlineItem({
   icon,
   label,
@@ -688,7 +708,7 @@ export function ItineraryTimeline({
         const sourceDay = itinerary[index];
         const globalIndex = offset + index;
         const rawTitle = displayDay.title || sourceDay.title;
-        const description = polishItineraryDescription(rawTitle, displayDay.description || sourceDay.description);
+        const description = ensureSentencePunctuation(polishItineraryDescription(rawTitle, displayDay.description || sourceDay.description));
         const inferredMeta = displayDay.insights.map(insightDisplay);
         const meta = deriveItineraryMeta(sourceDay, globalIndex, tour.itinerary, tour, inferredMeta);
         const rowStyle = index === displayDays.length - 1
@@ -707,8 +727,11 @@ export function ItineraryTimeline({
               {description ? <Text style={s.dayDescription}>{description}</Text> : null}
               {meta.length > 0 ? (
                 <View style={s.metaRow}>
-                  {meta.slice(0, 5).map((item) => (
-                    <MetaInlineItem key={`${item.label}-${item.value}`} {...item} />
+                  {meta.slice(0, 5).map((item, metaIndex) => (
+                    <Fragment key={`${item.label}-${item.value}`}>
+                      {metaIndex > 0 ? <MetaSeparator /> : null}
+                      <MetaInlineItem {...item} />
+                    </Fragment>
                   ))}
                 </View>
               ) : null}
@@ -841,7 +864,7 @@ export function PaymentSection({
         </>
       ) : (
         <Text style={s.paymentIntro}>
-          Jadwal pembayaran mengikuti invoice resmi Sundaf Trip dan konfirmasi administrasi terbaru.
+          Jadwal pembayaran mengikuti invoice resmi {BRAND_DISPLAY} dan konfirmasi administrasi terbaru.
         </Text>
       )}
 
@@ -879,14 +902,14 @@ function OperationsContactSection({
             </View>
           ))}
 
-          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Profil Sundaf Trip</Text>
+          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Profil {BRAND_DISPLAY}</Text>
           <Text style={s.compactBody}>{profileText(company)}</Text>
         </View>
 
         <View style={[s.operationsPanel, s.columnRight]}>
           <Text style={s.compactTitle}>Visa & Registrasi</Text>
           <Text style={s.compactBody}>
-            SUNDAF membantu arahan dan persiapan dokumen visa sesuai kebutuhan destinasi. Keputusan akhir mengikuti ketentuan kedutaan/imigrasi negara tujuan.
+            {BRAND_DISPLAY} membantu arahan dan persiapan dokumen visa sesuai kebutuhan destinasi. Keputusan akhir mengikuti ketentuan kedutaan/imigrasi negara tujuan.
           </Text>
           <View style={s.compactLinkRow}>
             <ContactInlineItem icon="globe" label="Visa">
@@ -897,7 +920,7 @@ function OperationsContactSection({
             </ContactInlineItem>
           </View>
 
-          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Kontak Sundaf Trip</Text>
+          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Kontak {BRAND_DISPLAY}</Text>
           <ContactInlineItem icon="phone" label="WA">
             <Link src={PDF_LINKS.whatsapp.href} style={[s.contactInlineValue, s.link]}>{whatsappDisplay}</Link>
           </ContactInlineItem>
@@ -1000,7 +1023,7 @@ function CoverPage({
     <PdfPage company={company} runningTitle={runningTitle} pageNumber={pageNumber} totalPages={totalPages} cover>
       <View style={s.coverIntro}>
         <View style={s.coverCopy}>
-          <Text style={s.label}>ITINERARY SUNDAF</Text>
+          <Text style={s.label}>SUNDAF ITINERARY</Text>
           <Text style={s.title}>{runningTitle}</Text>
           <Text style={s.subtitle}>{subtitle}</Text>
           <RouteChips tour={tour} />

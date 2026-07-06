@@ -33,7 +33,7 @@ const TYPOGRAPHY = {
 } as const;
 
 export const PAYMENT_TERMS = [
-  "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
+  "Pembayaran hanya mengikuti invoice resmi SUNDAF Trip.",
   "DP mengamankan seat sesuai nominal pada invoice awal.",
   "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
   "Add-on opsional, visa, dan layanan tambahan dibayar terpisah setelah dikonfirmasi.",
@@ -356,9 +356,15 @@ export const s = StyleSheet.create({
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 12,
+    marginRight: 6,
     marginBottom: 2,
     maxWidth: 210,
+  },
+  metaSeparator: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.borderStrong,
+    marginRight: 6,
+    marginBottom: 2,
   },
   metaIcon: {
     width: 11,
