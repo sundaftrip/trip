@@ -103,12 +103,27 @@ const CRITICAL_OPERATIONAL_NOTES = [
   "Jadwal final mengikuti cuaca, kondisi operasional, dan konfirmasi layanan.",
 ] as const;
 
-type DayMetaIcon = "bed" | "clock" | "meal" | "note" | "plane" | "route" | "train" | "transfer";
+type PdfIconName =
+  | "bed"
+  | "calendar"
+  | "clock"
+  | "creditCard"
+  | "globe"
+  | "instagram"
+  | "mail"
+  | "mapPin"
+  | "meal"
+  | "note"
+  | "phone"
+  | "plane"
+  | "route"
+  | "train"
+  | "transfer";
 
-type DayMetaItem = {
+export type DayMetaItem = {
   label: string;
   value: string;
-  icon: DayMetaIcon;
+  icon: PdfIconName;
 };
 
 function baseCleanText(value?: string | null) {
@@ -274,6 +289,17 @@ export function splitGalleryPages(images: string[]) {
   return galleryImages.length > 0 ? [galleryImages.slice(0, 6)] : [];
 }
 
+export function splitItineraryPages(itinerary: ItineraryDay[], maxDaysPerPage = 10) {
+  if (itinerary.length <= maxDaysPerPage) return itinerary.length > 0 ? [itinerary] : [];
+
+  const pages: ItineraryDay[][] = [];
+  for (let index = 0; index < itinerary.length; index += maxDaysPerPage) {
+    pages.push(itinerary.slice(index, index + maxDaysPerPage));
+  }
+
+  return pages;
+}
+
 function destinationChips(tour: ItineraryPDFProps["tour"]) {
   const source = tour.cityHighlight || tour.country;
   return cleanText(source)
@@ -309,10 +335,11 @@ function companyTagline(company: ItineraryPDFProps["company"]) {
   return cleanText(company.tagline) || "Rencana perjalanan rapi, jelas, dan siap dibagikan kepada traveler.";
 }
 
-function metaIconFor(label: string, value: string): DayMetaIcon {
+function metaIconFor(label: string, value: string): PdfIconName {
   const joined = `${label} ${value}`.toLowerCase();
   if (joined.includes("kereta") || joined.includes("train")) return "train";
   if (joined.includes("pesawat") || joined.includes("penerbangan") || joined.includes("flight")) return "plane";
+  if (joined.includes("transfer") || joined.includes("bus") || joined.includes("car")) return "transfer";
   if (joined.includes("makan") || joined.includes("sarapan") || joined.includes("lunch") || joined.includes("dinner")) return "meal";
   if (joined.includes("bermalam") || joined.includes("hotel") || joined.includes("akomodasi")) return "bed";
   if (joined.includes("waktu") || joined.includes("jam")) return "clock";
@@ -334,6 +361,10 @@ function insightDisplay(insight: ItineraryInsight): DayMetaItem {
   return { label: insight.label, value: insight.value, icon: metaIconFor(insight.label, insight.value) };
 }
 
+function isNegativeMetaValue(value?: string | null) {
+  return /^(?:-|n\/a|none|no|tidak|tanpa)$/i.test(cleanText(value));
+}
+
 function explicitDayMeta(day: ItineraryDay) {
   const items: DayMetaItem[] = [];
   const transport = cleanText(day.transport);
@@ -341,10 +372,76 @@ function explicitDayMeta(day: ItineraryDay) {
   const notes = cleanText(day.notes);
 
   if (transport) items.push({ label: "Transportasi", value: transport, icon: metaIconFor("Transportasi", transport) });
-  if (accommodation) items.push({ label: "Bermalam", value: accommodation, icon: "bed" });
+  if (accommodation && !isNegativeMetaValue(accommodation)) items.push({ label: "Bermalam", value: accommodation, icon: "bed" });
   if (notes) items.push({ label: "Catatan", value: notes, icon: "note" });
 
   return items;
+}
+
+function tourIncludesAccommodation(tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions">) {
+  const source = [tour.duration, ...tour.inclusions].map(cleanText).join(" ").toLowerCase();
+  return /\b(?:akomodasi|hotel|bermalam|penginapan|lodging|accommodation)\b/.test(source);
+}
+
+function isFinalArrivalDay(day: ItineraryDay, index: number, allDays: ItineraryDay[]) {
+  if (index !== allDays.length - 1) return false;
+  const text = `${day.title} ${day.description}`.toLowerCase();
+  return /(?:tiba|arrive|arrival|jakarta|indonesia)/i.test(text);
+}
+
+function isOutboundDepartureDay(day: ItineraryDay, index: number) {
+  if (index !== 0) return false;
+  const text = `${day.title} ${day.description}`.toLowerCase();
+  return /(?:jakarta|penerbangan|flight|berangkat|departure)/i.test(text);
+}
+
+function isHomeboundAirportDay(day: ItineraryDay) {
+  const text = `${polishItineraryTitle(day.title)} ${cleanText(day.description)}`.toLowerCase();
+  return /(?:transfer bandara|pulang ke indonesia|kembali ke indonesia|menuju indonesia|flight home|return flight)/i.test(text);
+}
+
+function shouldInferOvernight(
+  day: ItineraryDay,
+  index: number,
+  allDays: ItineraryDay[],
+  tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions">,
+) {
+  const rawAccommodation = cleanText(day.accommodation || day.overnight);
+  if (rawAccommodation) return false;
+  if (!tourIncludesAccommodation(tour)) return false;
+  if (isOutboundDepartureDay(day, index)) return false;
+  if (isFinalArrivalDay(day, index, allDays)) return false;
+  if (isHomeboundAirportDay(day)) return false;
+  return index > 0 && index < allDays.length - 1;
+}
+
+export function deriveItineraryMeta(
+  day: ItineraryDay,
+  index: number,
+  allDays: ItineraryDay[],
+  tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions">,
+  inferredMeta: DayMetaItem[] = [],
+) {
+  const explicitMeta = explicitDayMeta(day);
+  const displayInferredMeta = inferredMeta.length > 0
+    ? inferredMeta
+    : buildItineraryDisplay(day).insights.map(insightDisplay);
+  const hasOvernight = [...explicitMeta, ...displayInferredMeta].some((item) => item.label.toLowerCase() === "bermalam");
+  const meta = [
+    ...explicitMeta,
+    ...displayInferredMeta,
+    ...(!hasOvernight && shouldInferOvernight(day, index, allDays, tour)
+      ? [{ label: "Bermalam", value: "Hotel", icon: "bed" as const }]
+      : []),
+  ];
+
+  const seen = new Set<string>();
+  return meta.filter((item) => {
+    const key = `${item.label}:${item.value}`.toLowerCase();
+    if (!item.value || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function BrandMark() {
@@ -498,12 +595,19 @@ export function OverviewCards({
   );
 }
 
-function MetaIcon({ icon }: { icon: DayMetaIcon }) {
-  const paths: Record<DayMetaIcon, string> = {
+function PdfIcon({ icon }: { icon: PdfIconName }) {
+  const paths: Record<PdfIconName, string> = {
     bed: "M4 12V6 M4 12h16 M20 12v6 M4 18v-6 M7 12V9h8c1.7 0 3 1.3 3 3",
+    calendar: "M7 3v4 M17 3v4 M4 9h16 M6 5h12c1.1 0 2 .9 2 2v12H4V7c0-1.1.9-2 2-2Z",
     clock: "M12 6v6l4 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+    creditCard: "M3 6h18v12H3V6Z M3 10h18 M7 15h4",
+    globe: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M3 12h18 M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21c-2.3-2.5-3.5-5.5-3.5-9S9.7 5.5 12 3Z",
+    instagram: "M7 3h10c2.2 0 4 1.8 4 4v10c0 2.2-1.8 4-4 4H7c-2.2 0-4-1.8-4-4V7c0-2.2 1.8-4 4-4Z M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z M17.5 6.5h.01",
+    mail: "M4 6h16v12H4V6Z M4 7l8 6 8-6",
+    mapPin: "M12 21s7-4.8 7-11a7 7 0 1 0-14 0c0 6.2 7 11 7 11Z M12 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
     meal: "M7 3v8 M4 3v8 M10 3v8 M4 7h6 M7 11v10 M17 3c2 2 2 6 0 8v10",
     note: "M6 4h9l3 3v13H6V4Z M15 4v4h4 M9 12h6 M9 16h6",
+    phone: "M5 4l4 3-2 3c1.5 3 4 5.5 7 7l3-2 3 4c-1 1.3-2.5 2-4 2C9.5 21 3 14.5 3 8c0-1.5.7-3 2-4Z",
     plane: "M3 11.5 21 4l-7.5 17-3-7-7.5-2.5Z M10.5 14 21 4",
     route: "M5 19c3-8 11-6 14-14 M5 19h4 M5 19v-4 M19 5h-4 M19 5v4",
     train: "M7 3h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2Z M8 7h8 M8 17l-2 3 M16 17l2 3 M8.5 13h.01 M15.5 13h.01",
@@ -520,7 +624,7 @@ function MetaIcon({ icon }: { icon: DayMetaIcon }) {
 function MetaInlineItem({ label, value, icon }: DayMetaItem) {
   return (
     <View style={s.metaItem} wrap={false}>
-      <MetaIcon icon={icon} />
+      <PdfIcon icon={icon} />
       <Text style={s.metaText}>
         <Text style={s.metaLabel}>{label}: </Text>
         {value}
@@ -529,34 +633,56 @@ function MetaInlineItem({ label, value, icon }: DayMetaItem) {
   );
 }
 
-export function ItineraryTimeline({ itinerary }: { itinerary: ItineraryDay[] }) {
+function ContactInlineItem({
+  icon,
+  label,
+  children,
+}: {
+  icon: PdfIconName;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <View style={s.contactInlineItem} wrap={false}>
+      <PdfIcon icon={icon} />
+      <Text style={s.contactInlineLabel}>{label}</Text>
+      {children}
+    </View>
+  );
+}
+
+export function ItineraryTimeline({
+  tour,
+  itinerary,
+  offset = 0,
+}: {
+  tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions" | "itinerary">;
+  itinerary: ItineraryDay[];
+  offset?: number;
+}) {
   const displayDays = itinerary.map(buildItineraryDisplay);
 
   return (
     <View style={s.timeline}>
       {displayDays.map((displayDay, index) => {
         const sourceDay = itinerary[index];
+        const globalIndex = offset + index;
         const rawTitle = displayDay.title || sourceDay.title;
         const description = polishItineraryDescription(rawTitle, displayDay.description || sourceDay.description);
         const inferredMeta = displayDay.insights.map(insightDisplay);
-        const explicitMeta = explicitDayMeta(sourceDay);
-        const seen = new Set<string>();
-        const meta = [...explicitMeta, ...inferredMeta].filter((item) => {
-          const key = `${item.label}:${item.value}`.toLowerCase();
-          if (!item.value || seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
+        const meta = deriveItineraryMeta(sourceDay, globalIndex, tour.itinerary, tour, inferredMeta);
+        const rowStyle = index === displayDays.length - 1
+          ? [s.timelineItem, s.timelineItemLast]
+          : s.timelineItem;
 
         return (
-          <View key={`${displayDay.day}-${index}`} style={s.timelineItem} wrap={false}>
+          <View key={`${displayDay.day}-${index}`} style={rowStyle} wrap={false}>
             <View style={s.timelineRail}>
-              {index < displayDays.length - 1 ? <View style={s.timelineLine} /> : null}
               <View style={s.dayBadge}>
                 <Text style={s.dayBadgeText}>H{displayDay.day}</Text>
               </View>
             </View>
-            <View style={s.dayCard}>
+            <View style={s.dayContent}>
               <Text style={s.dayTitle}>{polishItineraryTitle(rawTitle)}</Text>
               {description ? <Text style={s.dayDescription}>{description}</Text> : null}
               {meta.length > 0 ? (
@@ -566,7 +692,6 @@ export function ItineraryTimeline({ itinerary }: { itinerary: ItineraryDay[] }) 
                   ))}
                 </View>
               ) : null}
-              {sourceDay.notes ? <Text style={s.noteText}>Catatan: {cleanText(sourceDay.notes)}</Text> : null}
             </View>
           </View>
         );
@@ -665,8 +790,10 @@ export function PaymentSection({
     <SectionShell title="Settlement & Pembayaran">
       {paymentPlan && paymentPlan.steps.length > 0 ? (
         <>
-          <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.intro)}</Text>
-          <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.paymentMethodsLabel)}</Text>
+          <View style={s.paymentIntroRow}>
+            <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.intro)}</Text>
+            <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.paymentMethodsLabel)}</Text>
+          </View>
           <View style={s.paymentTotalBox} wrap={false}>
             <Text style={s.paymentTotalLabel}>{totalHeading}</Text>
             <Text style={s.paymentTotalValue}>{paymentPlan.totalLabel} / orang</Text>
@@ -709,69 +836,65 @@ export function PaymentSection({
   );
 }
 
-export function VisaContactSection({ company }: { company: ItineraryPDFProps["company"] }) {
+function OperationsContactSection({
+  company,
+  notes,
+}: {
+  company: ItineraryPDFProps["company"];
+  notes?: string | null;
+}) {
   const phoneDisplay = cleanText(company.phone) || PDF_LINKS.whatsapp.display;
   const whatsappDisplay = cleanText(company.whatsapp) || PDF_LINKS.whatsapp.display;
-
-  return (
-    <SectionShell title="Visa & Kontak" card={false}>
-      <View style={s.twoColumn}>
-        <View style={[s.sectionCard, s.columnLeft]}>
-          <Text style={s.listTitle}>Visa & Registrasi</Text>
-          <Text style={[s.dayDescription, { textAlign: "left" }]}>
-            SUNDAF dapat membantu proses arahan dan persiapan dokumen visa sesuai kebutuhan destinasi. Keputusan akhir tetap mengikuti ketentuan kedutaan/imigrasi negara tujuan.
-          </Text>
-          <Text style={[s.dayDescription, { marginTop: 8 }]}>
-            Informasi visa: <Link src={PDF_LINKS.visa.href} style={s.link}>{PDF_LINKS.visa.display}</Link>
-          </Text>
-          <Text style={[s.dayDescription, { marginTop: 5 }]}>
-            FAQ perjalanan: <Link src={PDF_LINKS.faq.href} style={s.link}>{PDF_LINKS.faq.display}</Link>
-          </Text>
-        </View>
-        <View style={[s.sectionCard, s.columnRight]}>
-          <Text style={s.listTitle}>Kontak Sundaf Trip</Text>
-          <View style={s.contactRow}>
-            <Text style={s.contactLabel}>WhatsApp</Text>
-            <Link src={PDF_LINKS.whatsapp.href} style={[s.contactValue, s.link]}>{whatsappDisplay}</Link>
-          </View>
-          <View style={s.contactRow}>
-            <Text style={s.contactLabel}>Telepon</Text>
-            <Text style={s.contactValue}>{phoneDisplay}</Text>
-          </View>
-          <View style={s.contactRow}>
-            <Text style={s.contactLabel}>Email</Text>
-            <Link src={PDF_LINKS.email.href} style={[s.contactValue, s.link]}>{PDF_LINKS.email.display}</Link>
-          </View>
-          <View style={s.contactRow}>
-            <Text style={s.contactLabel}>Website</Text>
-            <Link src={PDF_LINKS.website.href} style={[s.contactValue, s.link]}>{PDF_LINKS.website.display}</Link>
-          </View>
-          <View style={s.contactRow}>
-            <Text style={s.contactLabel}>Instagram</Text>
-            <Link src={PDF_LINKS.instagram.href} style={[s.contactValue, s.link]}>@sundaf.trip</Link>
-          </View>
-        </View>
-      </View>
-    </SectionShell>
-  );
-}
-
-function ImportantNotesSection({ notes }: { notes?: string | null }) {
   const noteItems = buildImportantNotes(notes);
 
   return (
-    <SectionShell title="Catatan Penting">
-      {noteItems.map((note) => (
-        <ListItem key={note} text={note} icon="!" />
-      ))}
-    </SectionShell>
-  );
-}
+    <SectionShell title="Catatan, Visa & Kontak" card={false}>
+      <View style={s.operationsGrid}>
+        <View style={[s.operationsPanel, s.columnLeft]}>
+          <Text style={s.compactTitle}>Catatan Penting</Text>
+          {noteItems.map((note) => (
+            <View key={note} style={s.compactNoteRow} wrap={false}>
+              <PdfIcon icon="note" />
+              <Text style={[s.compactBody, s.compactNoteText]}>{note}</Text>
+            </View>
+          ))}
 
-function ProfileSection({ company }: { company: ItineraryPDFProps["company"] }) {
-  return (
-    <SectionShell title="Profil Sundaf Trip">
-      <Text style={s.profileText}>{profileText(company)}</Text>
+          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Profil Sundaf Trip</Text>
+          <Text style={s.compactBody}>{profileText(company)}</Text>
+        </View>
+
+        <View style={[s.operationsPanel, s.columnRight]}>
+          <Text style={s.compactTitle}>Visa & Registrasi</Text>
+          <Text style={s.compactBody}>
+            SUNDAF membantu arahan dan persiapan dokumen visa sesuai kebutuhan destinasi. Keputusan akhir mengikuti ketentuan kedutaan/imigrasi negara tujuan.
+          </Text>
+          <View style={s.compactLinkRow}>
+            <ContactInlineItem icon="globe" label="Visa">
+              <Link src={PDF_LINKS.visa.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.visa.display}</Link>
+            </ContactInlineItem>
+            <ContactInlineItem icon="note" label="FAQ">
+              <Link src={PDF_LINKS.faq.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.faq.display}</Link>
+            </ContactInlineItem>
+          </View>
+
+          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Kontak Sundaf Trip</Text>
+          <ContactInlineItem icon="phone" label="WA">
+            <Link src={PDF_LINKS.whatsapp.href} style={[s.contactInlineValue, s.link]}>{whatsappDisplay}</Link>
+          </ContactInlineItem>
+          <ContactInlineItem icon="phone" label="Tel">
+            <Text style={s.contactInlineValue}>{phoneDisplay}</Text>
+          </ContactInlineItem>
+          <ContactInlineItem icon="mail" label="Email">
+            <Link src={PDF_LINKS.email.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.email.display}</Link>
+          </ContactInlineItem>
+          <ContactInlineItem icon="globe" label="Web">
+            <Link src={PDF_LINKS.website.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.website.display}</Link>
+          </ContactInlineItem>
+          <ContactInlineItem icon="instagram" label="IG">
+            <Link src={PDF_LINKS.instagram.href} style={[s.contactInlineValue, s.link]}>@sundaf.trip</Link>
+          </ContactInlineItem>
+        </View>
+      </View>
     </SectionShell>
   );
 }
@@ -901,6 +1024,11 @@ export function ItineraryPDF({
   const runningTitle = cleanText(tour.title) || "Itinerary SUNDAF";
   const documentTitle = `Itinerary SUNDAF - ${runningTitle}`;
   const addOns = tour.addOns ?? [];
+  const itineraryPages = splitItineraryPages(tour.itinerary);
+  const itineraryPageEntries = itineraryPages.reduce<Array<{ days: ItineraryDay[]; offset: number }>>((entries, days) => {
+    const offset = entries.reduce((sum, entry) => sum + entry.days.length, 0);
+    return [...entries, { days, offset }];
+  }, []);
   const galleryImages = uniquePdfGalleryImages([tour.heroImg ?? "", ...(tour.gallery ?? [])]);
   const galleryPages = splitGalleryPages(galleryImages);
 
@@ -915,11 +1043,13 @@ export function ItineraryPDF({
         runningTitle={runningTitle}
       />
 
-      <PdfPage company={company} runningTitle={runningTitle}>
-        <SectionShell title="Alur Perjalanan" card={false}>
-          <ItineraryTimeline itinerary={tour.itinerary} />
-        </SectionShell>
-      </PdfPage>
+      {itineraryPageEntries.map(({ days, offset }, index) => (
+        <PdfPage key={`itinerary-${index}`} company={company} runningTitle={runningTitle}>
+          <SectionShell title={index === 0 ? "Alur Perjalanan" : "Alur Perjalanan Lanjutan"} card={false}>
+            <ItineraryTimeline tour={tour} itinerary={days} offset={offset} />
+          </SectionShell>
+        </PdfPage>
+      ))}
 
       <PdfPage company={company} runningTitle={runningTitle}>
         <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
@@ -928,12 +1058,7 @@ export function ItineraryPDF({
 
       <PdfPage company={company} runningTitle={runningTitle}>
         <PaymentSection paymentPlan={paymentPlan} basePriceLabel={priceLabel} />
-        <ImportantNotesSection notes={tour.notes} />
-      </PdfPage>
-
-      <PdfPage company={company} runningTitle={runningTitle}>
-        <VisaContactSection company={company} />
-        <ProfileSection company={company} />
+        <OperationsContactSection company={company} notes={tour.notes} />
       </PdfPage>
 
       {galleryPages.map((pageImages, index) => (

@@ -4,6 +4,7 @@ import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import {
   buildImportantNotes,
+  deriveItineraryMeta,
   formatPaymentTotalHeading,
   getDurationArrivalNote,
   ItineraryPDF,
@@ -12,6 +13,7 @@ import {
   polishPdfCopy,
   professionalizePaymentText,
   splitGalleryPages,
+  splitItineraryPages,
   type ItineraryPDFProps,
 } from "../components/pdf/ItineraryPDF";
 
@@ -156,6 +158,58 @@ test("itinerary PDF keeps the gallery to one premium page with up to six images"
   assert.deepEqual(splitGalleryPages(twelveImages).map((page) => page.length), [6]);
 });
 
+test("itinerary PDF splits itinerary rows into compact page groups", () => {
+  const tenDays = Array.from({ length: 10 }, (_, index) => ({
+    day: index + 1,
+    title: `Day ${index + 1}`,
+    description: "",
+  }));
+  const twelveDays = Array.from({ length: 12 }, (_, index) => ({
+    day: index + 1,
+    title: `Day ${index + 1}`,
+    description: "",
+  }));
+
+  assert.deepEqual(splitItineraryPages(tenDays).map((page) => page.length), [10]);
+  assert.deepEqual(splitItineraryPages(twelveDays).map((page) => page.length), [10, 2]);
+});
+
+test("itinerary PDF derives consistent Russia Aurora day metadata", () => {
+  const tour = {
+    duration: "9 hari 7 malam",
+    inclusions: ["Akomodasi hotel bintang 3 & 4"],
+  };
+  const days = [
+    { day: 1, title: "Penerbangan ke Moskow", description: "", transport: "Penerbangan" },
+    { day: 2, title: "Tiba di Moskow (SVO) transfer check-in hotel", description: "" },
+    { day: 3, title: "Metro Tour • Red Square • Arbat", description: "" },
+    { day: 4, title: "Kereta ke Saint Petersburg check-in hotel Hermitage Museum (opsional), waktu bebas", description: "", transport: "Kereta api" },
+    { day: 5, title: "Nevski Prospect • Kazan Cathedral • Spilled Blood Cathedral • Photostop St. Isaac • Blue mosque", description: "" },
+    { day: 6, title: "Penerbangan ke Murmansk • Pemberhentian foto pemecah es Lenin • Perburuan Aurora", description: "", transport: "Penerbangan" },
+    { day: 7, title: "Sammi Village Husky Farm Deer Farm Aurora", description: "" },
+    { day: 8, title: "Penerbangan ke Moskow check-in, waktu bebas", description: "", transport: "Penerbangan" },
+    { day: 9, title: "Izmailovo Market Transfer", description: "Belanja suvenir lalu transfer bandara untuk pulang ke Indonesia.", transport: "Penerbangan" },
+    { day: 10, title: "Arrive Jakarta", description: "Semoga berjumpa kembali." },
+  ];
+
+  const actual = days.map((day, index) => (
+    deriveItineraryMeta(day, index, days, tour).map((item) => `${item.icon}:${item.label}:${item.value}`)
+  ));
+
+  assert.deepEqual(actual, [
+    ["plane:Transportasi:Penerbangan"],
+    ["bed:Bermalam:Hotel"],
+    ["bed:Bermalam:Hotel"],
+    ["train:Transportasi:Kereta api", "bed:Bermalam:Hotel"],
+    ["bed:Bermalam:Hotel"],
+    ["plane:Transportasi:Penerbangan", "bed:Bermalam:Hotel"],
+    ["bed:Bermalam:Hotel"],
+    ["plane:Transportasi:Penerbangan", "bed:Bermalam:Hotel"],
+    ["plane:Transportasi:Penerbangan"],
+    [],
+  ]);
+});
+
 test("itinerary PDF renders a React PDF document buffer", async () => {
   type PdfElement = Parameters<typeof renderToBuffer>[0];
   const buffer = await renderToBuffer(
@@ -163,5 +217,5 @@ test("itinerary PDF renders a React PDF document buffer", async () => {
   );
 
   assert.equal(buffer.subarray(0, 4).toString(), "%PDF");
-  assert.ok(buffer.length > 25_000, "expected a fully rendered itinerary PDF");
+  assert.ok(buffer.length > 18_000, `expected a fully rendered compact itinerary PDF, got ${buffer.length} bytes`);
 });
