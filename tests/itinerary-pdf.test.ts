@@ -6,10 +6,12 @@ import {
   buildImportantNotes,
   deriveItineraryMeta,
   destinationChips,
+  estimateItineraryRowUnits,
   ensureSentencePunctuation,
   formatPaymentTotalHeading,
   getDurationArrivalNote,
   ItineraryPDF,
+  itineraryNeedsCompactMode,
   PDF_LINKS,
   polishItineraryTitle,
   polishPdfCopy,
@@ -173,20 +175,97 @@ test("itinerary PDF keeps the gallery to one premium page with up to six images"
   assert.deepEqual(splitGalleryPages(twelveImages).map((page) => page.length), [6]);
 });
 
-test("itinerary PDF splits itinerary rows into compact page groups", () => {
-  const tenDays = Array.from({ length: 10 }, (_, index) => ({
-    day: index + 1,
-    title: `Day ${index + 1}`,
-    description: "",
-  }));
-  const twelveDays = Array.from({ length: 12 }, (_, index) => ({
-    day: index + 1,
-    title: `Day ${index + 1}`,
-    description: "",
-  }));
+test("itinerary PDF paginates dense tours without a final arrival orphan", () => {
+  const asiaTengahDays = [
+    {
+      day: 1,
+      title: "Jakarta - Almaty",
+      description: "Penerbangan internasional dari Jakarta menuju Almaty.",
+      transport: "Pesawat internasional",
+    },
+    {
+      day: 2,
+      title: "Almaty City Tour",
+      description: "Panfilov Park, Zenkov Cathedral, Green Bazaar, dan Kok Tobe.",
+    },
+    {
+      day: 3,
+      title: "Almaty - Kaindy Lake - Kolsay",
+      description: "Eksplorasi Danau Kaindy dan kawasan Kolsay.",
+    },
+    {
+      day: 4,
+      title: "Kolsay - Charyn Canyon - Almaty",
+      description: "Kunjungan ke Charyn Canyon lalu kembali ke Almaty.",
+    },
+    {
+      day: 5,
+      title: "Almaty - Bishkek",
+      description: "Perjalanan darat menuju Bishkek dan orientasi kota.",
+    },
+    {
+      day: 6,
+      title: "Bishkek - Ala Archa - Issyk Kul",
+      description: "Kunjungan ke Ala Archa National Park dan perjalanan menuju Issyk Kul.",
+    },
+    {
+      day: 7,
+      title: "Issyk Kul - Chon Kemin",
+      description: "Menikmati Fairy Tale Canyon, Boom Gorge, dan desa Chon Kemin.",
+    },
+    {
+      day: 8,
+      title: "Chon Kemin - Tashkent",
+      description: "Transfer dan penerbangan menuju Tashkent.",
+      transport: "Pesawat domestik",
+    },
+    {
+      day: 9,
+      title: "Tashkent - Samarkand",
+      description: "Naik kereta menuju Samarkand untuk Registan Square dan city tour.",
+      transport: "Kereta",
+    },
+    {
+      day: 10,
+      title: "Samarkand - Tashkent - Jakarta",
+      description: "Transfer bandara untuk penerbangan kembali ke Jakarta.",
+    },
+  ];
+  const tour = {
+    duration: "10 hari 8 malam",
+    inclusions: ["Akomodasi hotel sesuai program"],
+    itinerary: asiaTengahDays,
+  };
 
-  assert.deepEqual(splitItineraryPages(tenDays).map((page) => page.length), [10]);
-  assert.deepEqual(splitItineraryPages(twelveDays).map((page) => page.length), [10, 2]);
+  const pages = splitItineraryPages(asiaTengahDays, { tour });
+
+  assert.equal(itineraryNeedsCompactMode(asiaTengahDays), true);
+  assert.deepEqual(pages.map((page) => page.length), [10]);
+  assert.ok(estimateItineraryRowUnits(asiaTengahDays[9], 9, asiaTengahDays, tour) < 1.2);
+});
+
+test("itinerary PDF uses content scoring instead of fixed day-count chunking", () => {
+  const twelveShortDays = Array.from({ length: 12 }, (_, index) => ({
+    day: index + 1,
+    title: `Day ${index + 1}`,
+    description: "",
+  }));
+  const longDays = Array.from({ length: 13 }, (_, index) => ({
+    day: index + 1,
+    title: index === 12 ? "Arrive Jakarta" : `Long itinerary day ${index + 1}`,
+    description: index === 12
+      ? "Tiba di Jakarta."
+      : "Agenda padat dengan beberapa kunjungan destinasi, perjalanan antarkota, waktu makan, dan koordinasi operasional bersama tim lokal.",
+  }));
+  const tour = {
+    duration: "13 hari 11 malam",
+    inclusions: ["Akomodasi hotel sesuai program"],
+    itinerary: longDays,
+  };
+  const longPages = splitItineraryPages(longDays, { tour });
+
+  assert.deepEqual(splitItineraryPages(twelveShortDays).map((page) => page.length), [12]);
+  assert.notEqual(longPages[longPages.length - 1].length, 1);
 });
 
 test("itinerary PDF derives consistent Russia Aurora day metadata", () => {
@@ -223,6 +302,23 @@ test("itinerary PDF derives consistent Russia Aurora day metadata", () => {
     ["plane:Transportasi:Penerbangan"],
     [],
   ]);
+});
+
+test("itinerary PDF avoids duplicate inferred metadata when explicit fields exist", () => {
+  const days = [
+    {
+      day: 1,
+      title: "Jakarta - Almaty",
+      description: "Penerbangan internasional dari Jakarta menuju Almaty.",
+      transport: "Pesawat internasional",
+    },
+  ];
+
+  assert.deepEqual(
+    deriveItineraryMeta(days[0], 0, days, { duration: "10 hari 8 malam", inclusions: ["Akomodasi hotel"] })
+      .map((item) => `${item.label}:${item.value}`),
+    ["Transportasi:Pesawat internasional"],
+  );
 });
 
 test("itinerary PDF renders a React PDF document buffer", async () => {

@@ -304,12 +304,22 @@ export const s = StyleSheet.create({
     borderColor: COLORS.border,
     overflow: "hidden",
   },
+  timelineCompact: {
+    marginTop: 1,
+  },
   timelineItem: {
     flexDirection: "row",
     borderBottomWidth: 0.7,
     borderBottomColor: COLORS.border,
     paddingVertical: 6,
     paddingHorizontal: 9,
+  },
+  timelineItemCompact: {
+    paddingVertical: 4.7,
+    paddingHorizontal: 8,
+  },
+  timelineItemClosing: {
+    backgroundColor: COLORS.mutedPanel,
   },
   timelineItemLast: {
     borderBottomWidth: 0,
@@ -319,6 +329,9 @@ export const s = StyleSheet.create({
     alignItems: "center",
     paddingTop: 1,
   },
+  timelineRailCompact: {
+    width: 26,
+  },
   dayBadge: {
     width: 24,
     height: 24,
@@ -326,6 +339,11 @@ export const s = StyleSheet.create({
     backgroundColor: COLORS.tealDark,
     alignItems: "center",
     justifyContent: "center",
+  },
+  dayBadgeCompact: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
   },
   dayBadgeText: {
     fontFamily: FONT.bold,
@@ -342,16 +360,27 @@ export const s = StyleSheet.create({
     color: COLORS.navy,
     marginBottom: 2,
   },
+  dayTitleCompact: {
+    fontSize: 10,
+    marginBottom: 1.5,
+  },
   dayDescription: {
     fontFamily: FONT.regular,
     fontSize: 8.3,
     lineHeight: 1.28,
     color: COLORS.navy,
   },
+  dayDescriptionCompact: {
+    fontSize: 7.9,
+    lineHeight: 1.24,
+  },
   metaRow: {
     flexDirection: "row",
     flexWrap: "wrap",
     marginTop: 4,
+  },
+  metaRowCompact: {
+    marginTop: 3,
   },
   metaItem: {
     flexDirection: "row",

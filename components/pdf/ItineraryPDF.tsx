@@ -301,17 +301,6 @@ export function splitGalleryPages(images: string[]) {
   return galleryImages.length > 0 ? [galleryImages.slice(0, 6)] : [];
 }
 
-export function splitItineraryPages(itinerary: ItineraryDay[], maxDaysPerPage = 10) {
-  if (itinerary.length <= maxDaysPerPage) return itinerary.length > 0 ? [itinerary] : [];
-
-  const pages: ItineraryDay[][] = [];
-  for (let index = 0; index < itinerary.length; index += maxDaysPerPage) {
-    pages.push(itinerary.slice(index, index + maxDaysPerPage));
-  }
-
-  return pages;
-}
-
 export function destinationChips(tour: ItineraryPDFProps["tour"]) {
   const source = tour.cityHighlight || tour.country;
   const normalizedSource = cleanText(source)
@@ -416,6 +405,13 @@ function isHomeboundAirportDay(day: ItineraryDay) {
   return /(?:transfer bandara|pulang ke indonesia|kembali ke indonesia|menuju indonesia|flight home|return flight)/i.test(text);
 }
 
+function isClosingItineraryRow(day: ItineraryDay, index: number, allDays: ItineraryDay[]) {
+  if (!isFinalArrivalDay(day, index, allDays)) return false;
+
+  const text = `${polishItineraryTitle(day.title)} ${cleanText(day.description)}`.toLowerCase();
+  return /(?:jakarta|indonesia|arrive|arrival|tiba|return|pulang)/i.test(text);
+}
+
 function shouldInferOvernight(
   day: ItineraryDay,
   index: number,
@@ -442,10 +438,12 @@ export function deriveItineraryMeta(
   const displayInferredMeta = inferredMeta.length > 0
     ? inferredMeta
     : buildItineraryDisplay(day).insights.map(insightDisplay);
-  const hasOvernight = [...explicitMeta, ...displayInferredMeta].some((item) => item.label.toLowerCase() === "bermalam");
+  const explicitLabels = new Set(explicitMeta.map((item) => item.label.toLowerCase()));
+  const filteredInferredMeta = displayInferredMeta.filter((item) => !explicitLabels.has(item.label.toLowerCase()));
+  const hasOvernight = [...explicitMeta, ...filteredInferredMeta].some((item) => item.label.toLowerCase() === "bermalam");
   const meta = [
     ...explicitMeta,
-    ...displayInferredMeta,
+    ...filteredInferredMeta,
     ...(!hasOvernight && shouldInferOvernight(day, index, allDays, tour)
       ? [{ label: "Bermalam", value: "Hotel", icon: "bed" as const }]
       : []),
@@ -458,6 +456,134 @@ export function deriveItineraryMeta(
     seen.add(key);
     return true;
   });
+}
+
+type ItinerarySplitTour = Pick<ItineraryPDFProps["tour"], "duration" | "inclusions" | "itinerary">;
+
+type ItinerarySplitOptions = {
+  tour?: ItinerarySplitTour;
+  targetUnits?: number;
+};
+
+const NORMAL_ITINERARY_PAGE_UNITS = 13.4;
+const DENSE_ITINERARY_PAGE_UNITS = 16.8;
+const ORPHAN_FLEX_PAGE_UNITS = 18.2;
+
+function paginationTour(itinerary: ItineraryDay[], tour?: ItinerarySplitTour): ItinerarySplitTour {
+  return tour ?? {
+    duration: null,
+    inclusions: [],
+    itinerary,
+  };
+}
+
+function continuationUnits(text: string, charactersPerLine: number, unitsPerExtraLine: number) {
+  if (!text) return 0;
+  return Math.max(0, Math.ceil(text.length / charactersPerLine) - 1) * unitsPerExtraLine;
+}
+
+export function itineraryNeedsCompactMode(itinerary: ItineraryDay[]) {
+  return itinerary.length >= 10;
+}
+
+export function estimateItineraryRowUnits(
+  day: ItineraryDay,
+  index: number,
+  allDays: ItineraryDay[],
+  tour?: ItinerarySplitTour,
+) {
+  const displayDay = buildItineraryDisplay(day);
+  const rawTitle = displayDay.title || day.title;
+  const title = polishItineraryTitle(rawTitle);
+  const description = ensureSentencePunctuation(polishItineraryDescription(rawTitle, displayDay.description || day.description));
+  const inferredMeta = displayDay.insights.map(insightDisplay);
+  const meta = deriveItineraryMeta(day, index, allDays, paginationTour(allDays, tour), inferredMeta);
+  const closing = isClosingItineraryRow(day, index, allDays);
+
+  if (closing) {
+    const closingUnits = 0.78
+      + continuationUnits(title, 64, 0.18)
+      + continuationUnits(description, 170, 0.18);
+    return Math.min(1.18, Math.max(0.78, closingUnits));
+  }
+
+  const descriptionUnits = description ? Math.max(0.34, Math.ceil(description.length / 130) * 0.34) : 0;
+  const metaUnits = meta.length > 0 ? 0.22 + Math.min(meta.length, 5) * 0.08 : 0;
+  const units = 1.05
+    + continuationUnits(title, 56, 0.28)
+    + descriptionUnits
+    + metaUnits;
+
+  return Math.min(2.9, Math.max(1.05, units));
+}
+
+function pageUnitTotal(days: ItineraryDay[], offset: number, allDays: ItineraryDay[], tour?: ItinerarySplitTour) {
+  return days.reduce(
+    (total, day, index) => total + estimateItineraryRowUnits(day, offset + index, allDays, tour),
+    0,
+  );
+}
+
+function rebalanceItineraryOrphans(
+  pages: ItineraryDay[][],
+  itinerary: ItineraryDay[],
+  tour: ItinerarySplitTour,
+  targetUnits: number,
+) {
+  if (pages.length < 2) return pages;
+
+  const lastPage = pages[pages.length - 1];
+  const previousPage = pages[pages.length - 2];
+  if (lastPage.length !== 1 || previousPage.length === 0) return pages;
+
+  const previousOffset = pages.slice(0, -2).reduce((sum, page) => sum + page.length, 0);
+  const previousUnits = pageUnitTotal(previousPage, previousOffset, itinerary, tour);
+  const orphanUnits = estimateItineraryRowUnits(lastPage[0], itinerary.length - 1, itinerary, tour);
+  const flexibleCapacity = Math.max(targetUnits * 1.08, ORPHAN_FLEX_PAGE_UNITS);
+
+  if (previousUnits + orphanUnits <= flexibleCapacity) {
+    return [
+      ...pages.slice(0, -2),
+      [...previousPage, ...lastPage],
+    ];
+  }
+
+  if (previousPage.length > 2) {
+    return [
+      ...pages.slice(0, -2),
+      previousPage.slice(0, -1),
+      [previousPage[previousPage.length - 1], ...lastPage],
+    ];
+  }
+
+  return pages;
+}
+
+export function splitItineraryPages(itinerary: ItineraryDay[], options: ItinerarySplitOptions = {}) {
+  if (itinerary.length === 0) return [];
+
+  const tour = paginationTour(itinerary, options.tour);
+  const targetUnits = options.targetUnits
+    ?? (itineraryNeedsCompactMode(itinerary) ? DENSE_ITINERARY_PAGE_UNITS : NORMAL_ITINERARY_PAGE_UNITS);
+  const pages: ItineraryDay[][] = [];
+  let page: ItineraryDay[] = [];
+  let pageUnits = 0;
+
+  itinerary.forEach((day, index) => {
+    const rowUnits = estimateItineraryRowUnits(day, index, itinerary, tour);
+    if (page.length > 0 && pageUnits + rowUnits > targetUnits) {
+      pages.push(page);
+      page = [];
+      pageUnits = 0;
+    }
+
+    page.push(day);
+    pageUnits += rowUnits;
+  });
+
+  if (page.length > 0) pages.push(page);
+
+  return rebalanceItineraryOrphans(pages, itinerary, tour, targetUnits);
 }
 
 function BrandMark() {
@@ -695,15 +821,17 @@ export function ItineraryTimeline({
   tour,
   itinerary,
   offset = 0,
+  compact = false,
 }: {
   tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions" | "itinerary">;
   itinerary: ItineraryDay[];
   offset?: number;
+  compact?: boolean;
 }) {
   const displayDays = itinerary.map(buildItineraryDisplay);
 
   return (
-    <View style={s.timeline}>
+    <View style={compact ? [s.timeline, s.timelineCompact] : s.timeline}>
       {displayDays.map((displayDay, index) => {
         const sourceDay = itinerary[index];
         const globalIndex = offset + index;
@@ -711,22 +839,26 @@ export function ItineraryTimeline({
         const description = ensureSentencePunctuation(polishItineraryDescription(rawTitle, displayDay.description || sourceDay.description));
         const inferredMeta = displayDay.insights.map(insightDisplay);
         const meta = deriveItineraryMeta(sourceDay, globalIndex, tour.itinerary, tour, inferredMeta);
-        const rowStyle = index === displayDays.length - 1
-          ? [s.timelineItem, s.timelineItemLast]
-          : s.timelineItem;
+        const closing = isClosingItineraryRow(sourceDay, globalIndex, tour.itinerary);
+        const rowStyle = [
+          s.timelineItem,
+          compact ? s.timelineItemCompact : {},
+          closing ? s.timelineItemClosing : {},
+          index === displayDays.length - 1 ? s.timelineItemLast : {},
+        ];
 
         return (
           <View key={`${displayDay.day}-${index}`} style={rowStyle} wrap={false}>
-            <View style={s.timelineRail}>
-              <View style={s.dayBadge}>
+            <View style={compact ? [s.timelineRail, s.timelineRailCompact] : s.timelineRail}>
+              <View style={compact ? [s.dayBadge, s.dayBadgeCompact] : s.dayBadge}>
                 <Text style={s.dayBadgeText}>H{displayDay.day}</Text>
               </View>
             </View>
             <View style={s.dayContent}>
-              <Text style={s.dayTitle}>{polishItineraryTitle(rawTitle)}</Text>
-              {description ? <Text style={s.dayDescription}>{description}</Text> : null}
+              <Text style={compact ? [s.dayTitle, s.dayTitleCompact] : s.dayTitle}>{polishItineraryTitle(rawTitle)}</Text>
+              {description ? <Text style={compact ? [s.dayDescription, s.dayDescriptionCompact] : s.dayDescription}>{description}</Text> : null}
               {meta.length > 0 ? (
-                <View style={s.metaRow}>
+                <View style={compact ? [s.metaRow, s.metaRowCompact] : s.metaRow}>
                   {meta.slice(0, 5).map((item, metaIndex) => (
                     <Fragment key={`${item.label}-${item.value}`}>
                       {metaIndex > 0 ? <MetaSeparator /> : null}
@@ -1056,6 +1188,11 @@ function CoverPage({
   );
 }
 
+type PdfPageDescriptor = {
+  key: string;
+  render: (pageNumber: number, totalPages: number) => ReactNode;
+};
+
 export function ItineraryPDF({
   tour,
   priceLabel,
@@ -1067,71 +1204,106 @@ export function ItineraryPDF({
   const runningTitle = cleanText(tour.title) || "Itinerary SUNDAF";
   const documentTitle = `Itinerary SUNDAF - ${runningTitle}`;
   const addOns = tour.addOns ?? [];
-  const itineraryPages = splitItineraryPages(tour.itinerary);
+  const itineraryPages = splitItineraryPages(tour.itinerary, { tour });
   const itineraryPageEntries = itineraryPages.reduce<Array<{ days: ItineraryDay[]; offset: number }>>((entries, days) => {
     const offset = entries.reduce((sum, entry) => sum + entry.days.length, 0);
     return [...entries, { days, offset }];
   }, []);
+  const denseItinerary = itineraryNeedsCompactMode(tour.itinerary);
+  const lastItineraryEntry = itineraryPageEntries[itineraryPageEntries.length - 1];
+  const lastItineraryUnits = lastItineraryEntry
+    ? pageUnitTotal(lastItineraryEntry.days, lastItineraryEntry.offset, tour.itinerary, tour)
+    : 0;
+  const inclusionItemCount = tour.inclusions.length + tour.exclusions.length + addOns.length;
+  const inlineInclusionsWithLastItinerary = itineraryPageEntries.length > 1
+    && Boolean(lastItineraryEntry)
+    && lastItineraryUnits <= 4.2
+    && inclusionItemCount <= 18;
   const galleryImages = uniquePdfGalleryImages([tour.heroImg ?? "", ...(tour.gallery ?? [])]);
   const galleryPages = splitGalleryPages(galleryImages);
-  const totalPages = 1 + itineraryPageEntries.length + 2 + galleryPages.length;
-  const inclusionsPageNumber = 2 + itineraryPageEntries.length;
-  const operationsPageNumber = inclusionsPageNumber + 1;
-  const galleryStartPageNumber = operationsPageNumber + 1;
-
-  return (
-    <Document title={documentTitle} author="Sundaf Trip">
-      <CoverPage
-        tour={tour}
-        priceLabel={priceLabel}
-        priceCoretLabel={priceCoretLabel}
-        landTourLabel={landTourLabel}
-        company={company}
-        runningTitle={runningTitle}
-        pageNumber={1}
-        totalPages={totalPages}
-      />
-
-      {itineraryPageEntries.map(({ days, offset }, index) => (
-        <PdfPage
-          key={`itinerary-${index}`}
+  const pages: PdfPageDescriptor[] = [
+    {
+      key: "cover",
+      render: (pageNumber, totalPages) => (
+        <CoverPage
+          tour={tour}
+          priceLabel={priceLabel}
+          priceCoretLabel={priceCoretLabel}
+          landTourLabel={landTourLabel}
           company={company}
           runningTitle={runningTitle}
-          pageNumber={2 + index}
+          pageNumber={pageNumber}
+          totalPages={totalPages}
+        />
+      ),
+    },
+    ...itineraryPageEntries.map<PdfPageDescriptor>(({ days, offset }, index) => {
+      const isLastItineraryPage = index === itineraryPageEntries.length - 1;
+
+      return {
+        key: `itinerary-${index}`,
+        render: (pageNumber, totalPages) => (
+          <PdfPage
+            company={company}
+            runningTitle={runningTitle}
+            pageNumber={pageNumber}
+            totalPages={totalPages}
+          >
+            <SectionShell title={index === 0 ? "Alur Perjalanan" : "Alur Perjalanan Lanjutan"} card={false}>
+              <ItineraryTimeline tour={tour} itinerary={days} offset={offset} compact={denseItinerary} />
+            </SectionShell>
+            {inlineInclusionsWithLastItinerary && isLastItineraryPage ? (
+              <>
+                <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
+                <AddOnList addOns={addOns} />
+              </>
+            ) : null}
+          </PdfPage>
+        ),
+      };
+    }),
+  ];
+
+  if (!inlineInclusionsWithLastItinerary) {
+    pages.push({
+      key: "inclusions",
+      render: (pageNumber, totalPages) => (
+        <PdfPage
+          company={company}
+          runningTitle={runningTitle}
+          pageNumber={pageNumber}
           totalPages={totalPages}
         >
-          <SectionShell title={index === 0 ? "Alur Perjalanan" : "Alur Perjalanan Lanjutan"} card={false}>
-            <ItineraryTimeline tour={tour} itinerary={days} offset={offset} />
-          </SectionShell>
+          <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
+          <AddOnList addOns={addOns} />
         </PdfPage>
-      ))}
+      ),
+    });
+  }
 
+  pages.push({
+    key: "operations",
+    render: (pageNumber, totalPages) => (
       <PdfPage
         company={company}
         runningTitle={runningTitle}
-        pageNumber={inclusionsPageNumber}
-        totalPages={totalPages}
-      >
-        <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
-        <AddOnList addOns={addOns} />
-      </PdfPage>
-
-      <PdfPage
-        company={company}
-        runningTitle={runningTitle}
-        pageNumber={operationsPageNumber}
+        pageNumber={pageNumber}
         totalPages={totalPages}
       >
         <PaymentSection paymentPlan={paymentPlan} basePriceLabel={priceLabel} />
         <OperationsContactSection company={company} notes={tour.notes} />
       </PdfPage>
+    ),
+  });
 
-      {galleryPages.map((pageImages, index) => (
+  pages.push(
+    ...galleryPages.map<PdfPageDescriptor>((pageImages, index) => ({
+      key: `gallery-${index}`,
+      render: (pageNumber, totalPages) => (
         <PdfPage
-          key={`gallery-${index}`}
           company={company}
           runningTitle={runningTitle}
-          pageNumber={galleryStartPageNumber + index}
+          pageNumber={pageNumber}
           totalPages={totalPages}
         >
           <SectionShell title="Dokumentasi Perjalanan" card>
@@ -1141,6 +1313,16 @@ export function ItineraryPDF({
             <GallerySection images={pageImages} />
           </SectionShell>
         </PdfPage>
+      ),
+    })),
+  );
+
+  return (
+    <Document title={documentTitle} author="Sundaf Trip">
+      {pages.map((page, index) => (
+        <Fragment key={page.key}>
+          {page.render(index + 1, pages.length)}
+        </Fragment>
       ))}
     </Document>
   );
