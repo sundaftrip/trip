@@ -274,16 +274,7 @@ export const s = StyleSheet.create({
     marginBottom: 10,
   },
   sectionTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
     marginBottom: 8,
-  },
-  sectionAccent: {
-    width: 3,
-    height: 16,
-    borderRadius: 2,
-    backgroundColor: COLORS.tealDark,
-    marginRight: 8,
   },
   sectionTitle: {
     ...TYPOGRAPHY.sectionTitle,
@@ -494,13 +485,16 @@ export const s = StyleSheet.create({
   },
   paymentIntro: {
     flex: 1,
-    ...TYPOGRAPHY.body,
+    fontFamily: FONT.regular,
+    fontSize: 8.7,
+    lineHeight: 1.38,
     color: COLORS.navy,
-    marginRight: 10,
+    paddingRight: 9,
   },
   paymentIntroRow: {
     flexDirection: "row",
-    marginBottom: 6,
+    alignItems: "flex-start",
+    marginBottom: 7,
   },
   paymentTotalBox: {
     backgroundColor: COLORS.tealSoft,
@@ -525,6 +519,7 @@ export const s = StyleSheet.create({
     ...TYPOGRAPHY.small,
     color: COLORS.navy,
     marginTop: 4,
+    lineHeight: 1.38,
   },
   paymentTable: {
     borderWidth: 0.8,
@@ -563,22 +558,22 @@ export const s = StyleSheet.create({
   termGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 7,
+    alignItems: "flex-start",
+    marginTop: 8,
   },
   termCard: {
-    width: 235,
-    paddingVertical: 1,
-    paddingRight: 8,
+    width: 232,
+    paddingRight: 12,
     marginRight: 10,
-    marginBottom: 4,
+    marginBottom: 5,
   },
   termCardRight: {
     marginRight: 0,
   },
   termText: {
     fontFamily: FONT.regular,
-    fontSize: 7.2,
-    lineHeight: 1.25,
+    fontSize: 7.45,
+    lineHeight: 1.4,
     color: COLORS.slate,
   },
   contactRow: {

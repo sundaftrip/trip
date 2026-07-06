@@ -691,7 +691,6 @@ function SectionShell({
   return (
     <View style={s.sectionBlock}>
       <View style={s.sectionTitleRow} wrap={false}>
-        <View style={s.sectionAccent} />
         <Text style={s.sectionTitle}>{title}</Text>
       </View>
       {card ? <View style={s.sectionCard}>{children}</View> : children}
@@ -1002,7 +1001,7 @@ export function PaymentSection({
 
       <View style={s.termGrid}>
         {PAYMENT_TERMS.map((term, index) => (
-          <View key={term} style={index % 2 === 1 ? [s.termCard, s.termCardRight] : s.termCard} wrap={false}>
+          <View key={term} style={index % 2 === 1 ? [s.termCard, s.termCardRight] : s.termCard}>
             <Text style={s.termText}>{term}</Text>
           </View>
         ))}
