@@ -121,6 +121,14 @@ test("itinerary PDF polishes Russia Aurora copy without changing the template st
   assert.equal(polishItineraryTitle("Arrive Jakarta"), "Tiba di Jakarta");
   assert.equal(polishItineraryTitle("Sammi Village"), "Sami Village");
   assert.equal(
+    polishItineraryTitle("Kereta ke Saint Petersburg check-in hotel Hermitage Museum (opsional), waktu bebas"),
+    "Kereta ke Saint Petersburg • Check-in Hotel • Hermitage Museum Opsional",
+  );
+  assert.equal(
+    polishItineraryTitle("Nevski Prospect • Kazan Cathedral • Spilled Blood Cathedral • Photostop St. Isaac • Blue mosque"),
+    "Nevsky Prospect • Kazan Cathedral • Spilled Blood Cathedral • St. Isaac • Blue Mosque",
+  );
+  assert.equal(
     polishItineraryTitle("Sami Village (opsional) Husky Farm Deer Farm Reindeer Husky riding (opsional) Banana Boat Aurora (opsional) • Culinary Tour kepiting alaska (opsional)"),
     "Sami Village Opsional • Husky Farm • Deer Farm • Aurora Hunt",
   );
@@ -138,14 +146,14 @@ test("itinerary PDF keeps payment and operational notes customer-facing", () => 
   assert.ok(notes.includes("Jadwal final mengikuti cuaca, kondisi operasional, dan konfirmasi layanan."));
 });
 
-test("itinerary PDF balances gallery pages instead of leaving a sparse final page", () => {
+test("itinerary PDF keeps the gallery to one premium page with up to six images", () => {
   const sixImages = Array.from({ length: 6 }, (_, index) => `image-${index + 1}`);
   const sevenImages = Array.from({ length: 7 }, (_, index) => `image-${index + 1}`);
   const twelveImages = Array.from({ length: 12 }, (_, index) => `image-${index + 1}`);
 
   assert.deepEqual(splitGalleryPages(sixImages), [sixImages]);
-  assert.deepEqual(splitGalleryPages(sevenImages).map((page) => page.length), [4, 3]);
-  assert.deepEqual(splitGalleryPages(twelveImages).map((page) => page.length), [6, 6]);
+  assert.deepEqual(splitGalleryPages(sevenImages).map((page) => page.length), [6]);
+  assert.deepEqual(splitGalleryPages(twelveImages).map((page) => page.length), [6]);
 });
 
 test("itinerary PDF renders a React PDF document buffer", async () => {

@@ -1,17 +1,17 @@
 import { Font, StyleSheet } from "@react-pdf/renderer";
 
 const COLORS = {
-  pearl: "#F7FBFA",
+  pearl: "#F6FAF9",
   pearlDeep: "#EEF7F5",
-  teal: "#0EA5A8",
-  tealDark: "#0B7477",
-  tealSoft: "#DFF6F4",
+  teal: "#087A7D",
+  tealDark: "#075E63",
+  tealSoft: "#E8F5F4",
   navy: "#1F2937",
   slate: "#64748B",
-  border: "#DCEBEA",
-  borderStrong: "#B9DAD8",
+  border: "#D8E8E6",
+  borderStrong: "#B7D6D2",
   white: "#FFFFFF",
-  mutedPanel: "#F9FCFB",
+  mutedPanel: "#F8FBFA",
 } as const;
 
 const FONT = {
@@ -101,9 +101,9 @@ export const s = StyleSheet.create({
   },
   headerTitle: {
     ...TYPOGRAPHY.small,
-    color: COLORS.slate,
+    color: COLORS.tealDark,
     textAlign: "right",
-    width: 260,
+    width: 220,
   },
   footer: {
     position: "absolute",
@@ -157,6 +157,11 @@ export const s = StyleSheet.create({
   subtitle: {
     ...TYPOGRAPHY.subtitle,
     color: COLORS.slate,
+  },
+  coverSupport: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.tealDark,
+    marginTop: 8,
   },
   heroWrap: {
     flex: 1,
@@ -269,10 +274,10 @@ export const s = StyleSheet.create({
     marginBottom: 10,
   },
   sectionAccent: {
-    width: 4,
-    height: 18,
+    width: 3,
+    height: 16,
     borderRadius: 2,
-    backgroundColor: COLORS.teal,
+    backgroundColor: COLORS.tealDark,
     marginRight: 8,
   },
   sectionTitle: {
@@ -291,41 +296,34 @@ export const s = StyleSheet.create({
   },
   timelineItem: {
     flexDirection: "row",
-    marginBottom: 11,
+    marginBottom: 9,
   },
   timelineRail: {
-    width: 42,
+    width: 36,
     alignItems: "center",
   },
   timelineLine: {
     position: "absolute",
-    top: 38,
-    bottom: -11,
-    left: 20,
-    borderLeftWidth: 0.8,
-    borderLeftColor: COLORS.borderStrong,
+    top: 32,
+    bottom: -9,
+    left: 17.5,
+    borderLeftWidth: 0.6,
+    borderLeftColor: COLORS.border,
     borderStyle: "dashed",
   },
   dayBadge: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: COLORS.teal,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.tealDark,
     alignItems: "center",
     justifyContent: "center",
   },
-  dayBadgeLabel: {
+  dayBadgeText: {
     fontFamily: FONT.bold,
-    fontSize: 6.5,
+    fontSize: 10,
     color: COLORS.white,
     lineHeight: 1,
-  },
-  dayBadgeNumber: {
-    fontFamily: FONT.bold,
-    fontSize: 13,
-    color: COLORS.white,
-    lineHeight: 1.05,
-    marginTop: 1,
   },
   dayCard: {
     flex: 1,
@@ -333,7 +331,7 @@ export const s = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 0.8,
     borderColor: COLORS.border,
-    padding: 12,
+    padding: 10,
   },
   dayTitle: {
     ...TYPOGRAPHY.cardTitle,
@@ -348,26 +346,28 @@ export const s = StyleSheet.create({
   metaRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 8,
+    marginTop: 7,
   },
-  metaBadge: {
-    backgroundColor: COLORS.tealSoft,
-    borderRadius: 7,
-    borderWidth: 0.7,
-    borderColor: COLORS.borderStrong,
-    paddingVertical: 4,
-    paddingHorizontal: 7,
-    marginRight: 6,
-    marginBottom: 6,
+  metaItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 13,
+    marginBottom: 4,
+    maxWidth: 210,
+  },
+  metaIcon: {
+    width: 12,
+    height: 12,
+    marginRight: 4,
+    flexShrink: 0,
+  },
+  metaText: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.slate,
   },
   metaLabel: {
     ...TYPOGRAPHY.smallBold,
     color: COLORS.tealDark,
-  },
-  metaValue: {
-    ...TYPOGRAPHY.small,
-    color: COLORS.navy,
-    marginTop: 1,
   },
   noteText: {
     ...TYPOGRAPHY.small,
@@ -563,12 +563,20 @@ export const s = StyleSheet.create({
   },
   galleryLeadRow: {
     flexDirection: "row",
-    height: 286,
+    height: 292,
     marginTop: 2,
   },
+  gallerySingleImage: {
+    width: "100%",
+    height: 460,
+    objectFit: "cover",
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+  },
   galleryLeadImage: {
-    width: 333,
-    height: 286,
+    width: 316,
+    height: 292,
     objectFit: "cover",
     borderRadius: 8,
     borderWidth: 0.8,
@@ -580,12 +588,12 @@ export const s = StyleSheet.create({
   },
   gallerySideImage: {
     width: "100%",
-    height: 138,
+    height: 142,
     objectFit: "cover",
     borderRadius: 8,
     borderWidth: 0.8,
     borderColor: COLORS.border,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   galleryGrid: {
     flexDirection: "row",
@@ -593,34 +601,16 @@ export const s = StyleSheet.create({
     marginTop: 10,
   },
   galleryGridImage: {
-    width: 249,
-    height: 122,
+    width: 154,
+    height: 128,
     objectFit: "cover",
     borderRadius: 8,
     borderWidth: 0.8,
     borderColor: COLORS.border,
     marginRight: 10,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   galleryGridImageRight: {
-    marginRight: 0,
-  },
-  galleryBalancedGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 2,
-  },
-  galleryBalancedImage: {
-    width: 235,
-    height: 124,
-    objectFit: "cover",
-    borderRadius: 8,
-    borderWidth: 0.8,
-    borderColor: COLORS.border,
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  galleryBalancedImageRight: {
     marginRight: 0,
   },
   galleryNote: {

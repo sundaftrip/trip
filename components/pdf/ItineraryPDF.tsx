@@ -4,6 +4,8 @@ import {
   Image,
   Link,
   Page,
+  Path,
+  Svg,
   Text,
   View,
 } from "@react-pdf/renderer";
@@ -100,6 +102,14 @@ const CRITICAL_OPERATIONAL_NOTES = [
   "Minimum keberangkatan 15 peserta.",
   "Jadwal final mengikuti cuaca, kondisi operasional, dan konfirmasi layanan.",
 ] as const;
+
+type DayMetaIcon = "bed" | "clock" | "meal" | "note" | "plane" | "route" | "train" | "transfer";
+
+type DayMetaItem = {
+  label: string;
+  value: string;
+  icon: DayMetaIcon;
+};
 
 function baseCleanText(value?: string | null) {
   return value
@@ -206,9 +216,12 @@ export function polishItineraryTitle(value?: string | null) {
     .replace(/^Arrive Jakarta$/i, "Tiba di Jakarta")
     .replace(/^Metro tour/i, "Metro Tour")
     .replace(/^Kereta ke Saint Petersburg\s*•\s*check-in hotel Hermitage Museum \(opsional\), waktu bebas$/i, "Kereta ke Saint Petersburg • Check-in Hotel • Hermitage Museum Opsional")
+    .replace(/^Kereta ke Saint Petersburg\s+check-in hotel Hermitage Museum \(opsional\), waktu bebas$/i, "Kereta ke Saint Petersburg • Check-in Hotel • Hermitage Museum Opsional")
     .replace(/^Penerbangan ke Moskow check-in, waktu bebas$/i, "Penerbangan ke Moskow • Check-in • Waktu Bebas")
     .replace(/^Izmailovo Market Transfer$/i, "Izmailovo Market • Transfer Bandara")
     .replace(/^Nevski Prospect/i, "Nevsky Prospect")
+    .replace(/^Nevsky Prospect\s*•\s*Kazan Cathedral\s*•\s*Spilled Blood Cathedral\s*•\s*Photostop St\. Isaac\s*•\s*Blue mosque$/i, "Nevsky Prospect • Kazan Cathedral • Spilled Blood Cathedral • St. Isaac • Blue Mosque")
+    .replace(/^Penerbangan ke Murmansk\s*•\s*Pemberhentian foto pemecah es Lenin\s*•\s*Perburuan Aurora$/i, "Penerbangan ke Murmansk • Lenin Icebreaker • Aurora Hunt")
     .trim();
 
   if (/sami village/i.test(title) && /husky farm/i.test(title) && /deer farm/i.test(title)) {
@@ -258,14 +271,7 @@ export function buildImportantNotes(notes?: string | null) {
 
 export function splitGalleryPages(images: string[]) {
   const galleryImages = uniquePdfGalleryImages(images);
-  if (galleryImages.length <= 6) return galleryImages.length > 0 ? [galleryImages] : [];
-
-  const visibleImages = galleryImages.slice(0, 12);
-  const firstPageCount = Math.ceil(visibleImages.length / 2);
-  return [
-    visibleImages.slice(0, firstPageCount),
-    visibleImages.slice(firstPageCount),
-  ].filter((page) => page.length > 0);
+  return galleryImages.length > 0 ? [galleryImages.slice(0, 6)] : [];
 }
 
 function destinationChips(tour: ItineraryPDFProps["tour"]) {
@@ -303,25 +309,40 @@ function companyTagline(company: ItineraryPDFProps["company"]) {
   return cleanText(company.tagline) || "Rencana perjalanan rapi, jelas, dan siap dibagikan kepada traveler.";
 }
 
-function insightDisplay(insight: ItineraryInsight) {
-  if (insight.kind === "meals") return { label: "Makan", value: normalizeListText(insight.value) };
-  if (insight.kind === "transport") return { label: "Transportasi", value: normalizeListText(insight.value) };
-  if (insight.kind === "stay") return { label: "Bermalam", value: normalizeListText(insight.value) };
-  if (insight.kind === "time") return { label: "Waktu", value: insight.value };
-  if (insight.kind === "distance") return { label: "Jarak", value: insight.value };
-  if (insight.kind === "ascent") return { label: "Pendakian", value: insight.value };
-  return { label: insight.label, value: insight.value };
+function metaIconFor(label: string, value: string): DayMetaIcon {
+  const joined = `${label} ${value}`.toLowerCase();
+  if (joined.includes("kereta") || joined.includes("train")) return "train";
+  if (joined.includes("pesawat") || joined.includes("penerbangan") || joined.includes("flight")) return "plane";
+  if (joined.includes("makan") || joined.includes("sarapan") || joined.includes("lunch") || joined.includes("dinner")) return "meal";
+  if (joined.includes("bermalam") || joined.includes("hotel") || joined.includes("akomodasi")) return "bed";
+  if (joined.includes("waktu") || joined.includes("jam")) return "clock";
+  if (joined.includes("jarak") || joined.includes("pendakian")) return "route";
+  if (joined.includes("catatan")) return "note";
+  return "transfer";
+}
+
+function insightDisplay(insight: ItineraryInsight): DayMetaItem {
+  if (insight.kind === "meals") return { label: "Makan", value: normalizeListText(insight.value), icon: "meal" };
+  if (insight.kind === "transport") {
+    const value = normalizeListText(insight.value);
+    return { label: "Transportasi", value, icon: metaIconFor("Transportasi", value) };
+  }
+  if (insight.kind === "stay") return { label: "Bermalam", value: normalizeListText(insight.value), icon: "bed" };
+  if (insight.kind === "time") return { label: "Waktu", value: insight.value, icon: "clock" };
+  if (insight.kind === "distance") return { label: "Jarak", value: insight.value, icon: "route" };
+  if (insight.kind === "ascent") return { label: "Pendakian", value: insight.value, icon: "route" };
+  return { label: insight.label, value: insight.value, icon: metaIconFor(insight.label, insight.value) };
 }
 
 function explicitDayMeta(day: ItineraryDay) {
-  const items: Array<{ label: string; value: string }> = [];
+  const items: DayMetaItem[] = [];
   const transport = cleanText(day.transport);
   const accommodation = cleanText(day.accommodation || day.overnight);
   const notes = cleanText(day.notes);
 
-  if (transport) items.push({ label: "Transportasi", value: transport });
-  if (accommodation) items.push({ label: "Bermalam", value: accommodation });
-  if (notes) items.push({ label: "Catatan", value: notes });
+  if (transport) items.push({ label: "Transportasi", value: transport, icon: metaIconFor("Transportasi", transport) });
+  if (accommodation) items.push({ label: "Bermalam", value: accommodation, icon: "bed" });
+  if (notes) items.push({ label: "Catatan", value: notes, icon: "note" });
 
   return items;
 }
@@ -477,11 +498,33 @@ export function OverviewCards({
   );
 }
 
-function MetaBadge({ label, value }: { label: string; value: string }) {
+function MetaIcon({ icon }: { icon: DayMetaIcon }) {
+  const paths: Record<DayMetaIcon, string> = {
+    bed: "M4 12V6 M4 12h16 M20 12v6 M4 18v-6 M7 12V9h8c1.7 0 3 1.3 3 3",
+    clock: "M12 6v6l4 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+    meal: "M7 3v8 M4 3v8 M10 3v8 M4 7h6 M7 11v10 M17 3c2 2 2 6 0 8v10",
+    note: "M6 4h9l3 3v13H6V4Z M15 4v4h4 M9 12h6 M9 16h6",
+    plane: "M3 11.5 21 4l-7.5 17-3-7-7.5-2.5Z M10.5 14 21 4",
+    route: "M5 19c3-8 11-6 14-14 M5 19h4 M5 19v-4 M19 5h-4 M19 5v4",
+    train: "M7 3h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2Z M8 7h8 M8 17l-2 3 M16 17l2 3 M8.5 13h.01 M15.5 13h.01",
+    transfer: "M4 7h12l4 5v5h-2 M6 17H4V7 M8 17h8 M8 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z M20 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z",
+  };
+
   return (
-    <View style={s.metaBadge} wrap={false}>
-      <Text style={s.metaLabel}>{label}</Text>
-      <Text style={s.metaValue}>{value}</Text>
+    <Svg style={s.metaIcon} viewBox="0 0 24 24">
+      <Path d={paths[icon]} fill="none" stroke="#087A7D" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+function MetaInlineItem({ label, value, icon }: DayMetaItem) {
+  return (
+    <View style={s.metaItem} wrap={false}>
+      <MetaIcon icon={icon} />
+      <Text style={s.metaText}>
+        <Text style={s.metaLabel}>{label}: </Text>
+        {value}
+      </Text>
     </View>
   );
 }
@@ -510,8 +553,7 @@ export function ItineraryTimeline({ itinerary }: { itinerary: ItineraryDay[] }) 
             <View style={s.timelineRail}>
               {index < displayDays.length - 1 ? <View style={s.timelineLine} /> : null}
               <View style={s.dayBadge}>
-                <Text style={s.dayBadgeLabel}>Hari</Text>
-                <Text style={s.dayBadgeNumber}>{displayDay.day}</Text>
+                <Text style={s.dayBadgeText}>H{displayDay.day}</Text>
               </View>
             </View>
             <View style={s.dayCard}>
@@ -520,7 +562,7 @@ export function ItineraryTimeline({ itinerary }: { itinerary: ItineraryDay[] }) 
               {meta.length > 0 ? (
                 <View style={s.metaRow}>
                   {meta.slice(0, 5).map((item) => (
-                    <MetaBadge key={`${item.label}-${item.value}`} label={item.label} value={item.value} />
+                    <MetaInlineItem key={`${item.label}-${item.value}`} {...item} />
                   ))}
                 </View>
               ) : null}
@@ -735,29 +777,20 @@ function ProfileSection({ company }: { company: ItineraryPDFProps["company"] }) 
 }
 
 export function GallerySection({ images }: { images: string[] }) {
-  const galleryImages = uniquePdfGalleryImages(images);
+  const galleryImages = uniquePdfGalleryImages(images).slice(0, 6);
   const leadGalleryImage = galleryImages[0];
   const sideGalleryImages = galleryImages.slice(1, 3);
   const gridGalleryImages = galleryImages.slice(3, 6);
 
   if (!leadGalleryImage) return null;
 
-  if (galleryImages.length >= 5) {
+  if (galleryImages.length === 1) {
     return (
       <>
-        <View style={s.galleryBalancedGrid}>
-          {galleryImages.slice(0, 6).map((image, index) => (
-            // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support.
-            <Image
-              key={`balanced-${index}`}
-              src={image}
-              style={index % 2 === 1 ? [s.galleryBalancedImage, s.galleryBalancedImageRight] : s.galleryBalancedImage}
-            />
-          ))}
-        </View>
-
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; the page title identifies the gallery. */}
+        <Image src={leadGalleryImage} style={s.gallerySingleImage} />
         <Text style={s.galleryNote}>
-          Foto bersifat dokumentasi perjalanan. Susunan aktivitas, cuaca, dan kondisi lapangan mengikuti jadwal final serta arahan operasional setempat.
+          Foto bersifat dokumentasi perjalanan; kondisi destinasi mengikuti cuaca, jadwal final, dan arahan operasional setempat.
         </Text>
       </>
     );
@@ -768,12 +801,14 @@ export function GallerySection({ images }: { images: string[] }) {
       <View style={s.galleryLeadRow}>
         {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; the page title identifies the gallery. */}
         <Image src={leadGalleryImage} style={s.galleryLeadImage} />
-        <View style={s.gallerySideStack}>
-          {sideGalleryImages.map((image, index) => (
-            // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support.
-            <Image key={`side-${index}`} src={image} style={s.gallerySideImage} />
-          ))}
-        </View>
+        {sideGalleryImages.length > 0 ? (
+          <View style={s.gallerySideStack}>
+            {sideGalleryImages.map((image, index) => (
+              // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support.
+              <Image key={`side-${index}`} src={image} style={s.gallerySideImage} />
+            ))}
+          </View>
+        ) : null}
       </View>
 
       {gridGalleryImages.length > 0 ? (
@@ -783,14 +818,14 @@ export function GallerySection({ images }: { images: string[] }) {
             <Image
               key={`grid-${index}`}
               src={image}
-              style={index % 2 === 1 ? [s.galleryGridImage, s.galleryGridImageRight] : s.galleryGridImage}
+              style={index === 2 ? [s.galleryGridImage, s.galleryGridImageRight] : s.galleryGridImage}
             />
           ))}
         </View>
       ) : null}
 
       <Text style={s.galleryNote}>
-        Foto bersifat dokumentasi perjalanan. Susunan aktivitas, cuaca, dan kondisi lapangan mengikuti jadwal final serta arahan operasional setempat.
+        Foto bersifat dokumentasi perjalanan; kondisi destinasi mengikuti cuaca, jadwal final, dan arahan operasional setempat.
       </Text>
     </>
   );
@@ -812,18 +847,19 @@ function CoverPage({
   runningTitle: string;
 }) {
   const subtitle = [
-    `Disiapkan oleh ${company.name || "Sundaf Trip"}`,
     tour.duration,
-    tour.tripDateLabel || "Tanggal mengikuti jadwal",
+    tour.tripDateLabel ? `Keberangkatan ${tour.tripDateLabel}` : "Tanggal mengikuti jadwal",
   ].filter(Boolean).join(" - ");
+  const preparedBy = `Disiapkan oleh ${company.name || "Sundaf Trip"}`;
 
   return (
     <PdfPage company={company} runningTitle={runningTitle} cover>
       <View style={s.coverIntro}>
         <View style={s.coverCopy}>
-          <Text style={s.label}>Rencana Perjalanan</Text>
+          <Text style={s.label}>Itinerary SUNDAF</Text>
           <Text style={s.title}>{runningTitle}</Text>
           <Text style={s.subtitle}>{subtitle}</Text>
+          <Text style={s.coverSupport}>{preparedBy}</Text>
           <RouteChips tour={tour} />
         </View>
         {tour.heroImg ? (
@@ -862,13 +898,14 @@ export function ItineraryPDF({
   company,
   paymentPlan,
 }: ItineraryPDFProps) {
-  const runningTitle = `Rencana Perjalanan ${tour.title}`;
+  const runningTitle = cleanText(tour.title) || "Itinerary SUNDAF";
+  const documentTitle = `Itinerary SUNDAF - ${runningTitle}`;
   const addOns = tour.addOns ?? [];
   const galleryImages = uniquePdfGalleryImages([tour.heroImg ?? "", ...(tour.gallery ?? [])]);
   const galleryPages = splitGalleryPages(galleryImages);
 
   return (
-    <Document title={runningTitle} author="Sundaf Trip">
+    <Document title={documentTitle} author="Sundaf Trip">
       <CoverPage
         tour={tour}
         priceLabel={priceLabel}
@@ -879,7 +916,7 @@ export function ItineraryPDF({
       />
 
       <PdfPage company={company} runningTitle={runningTitle}>
-        <SectionShell title="Rencana Perjalanan" card={false}>
+        <SectionShell title="Alur Perjalanan" card={false}>
           <ItineraryTimeline itinerary={tour.itinerary} />
         </SectionShell>
       </PdfPage>
@@ -903,7 +940,7 @@ export function ItineraryPDF({
         <PdfPage key={`gallery-${index}`} company={company} runningTitle={runningTitle}>
           <SectionShell title="Dokumentasi Perjalanan" card>
             <Text style={[s.subtitle, { marginBottom: 10 }]}>
-              {`Foto dipilih dari galeri paket ini dan dokumentasi perjalanan Sundaf Trip${galleryPages.length > 1 ? ` (${index + 1}/${galleryPages.length}).` : "."}`}
+              Beberapa dokumentasi perjalanan SUNDAF Trip sebagai gambaran suasana destinasi.
             </Text>
             <GallerySection images={pageImages} />
           </SectionShell>
