@@ -95,8 +95,42 @@ export const PDF_LINKS = {
   },
 } as const;
 
+const CRITICAL_OPERATIONAL_NOTES = [
+  "Aurora adalah fenomena alam sehingga kemunculannya tidak dapat dijamin.",
+  "Minimum keberangkatan 15 peserta.",
+  "Jadwal final mengikuti cuaca, kondisi operasional, dan konfirmasi layanan.",
+] as const;
+
+function baseCleanText(value?: string | null) {
+  return value
+    ? stripItineraryMarkup(value)
+        .replace(/^[\s"'“”]+|[\s"'“”]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+    : "";
+}
+
+export function polishPdfCopy(value?: string | null) {
+  return baseCleanText(value)
+    .replace(/\bIconic Rusia\b/g, "ikonik Rusia")
+    .replace(/\bes cream\b/gi, "es krim")
+    .replace(/\bambil melihat\b/gi, "sambil melihat")
+    .replace(/\bSammi Village\b/g, "Sami Village")
+    .replace(/\bCulinary Tour kepiting alaska\b/gi, "culinary tour kepiting Alaska")
+    .replace(/\bBanana yang ditarik snowmobile\b/gi, "Banana Boat")
+    .replace(/\bHusky riding\b/gi, "Husky Riding")
+    .replace(/\bpemimpin tur berpengalaman start Jakarta\b/gi, "Tour Leader berpengalaman dari Jakarta")
+    .replace(/\bAkomodasi\s+\*?3\s*&\s*\*?4\b/gi, "Akomodasi hotel bintang 3 & 4")
+    .replace(/\bbagasi pesawat domestik\s*\(2\.5\)\s*PP\b/gi, "Bagasi pesawat domestik 25 kg PP")
+    .replace(/\bbagasi pesawat domestik\s*2\.5\s*PP\b/gi, "Bagasi pesawat domestik 25 kg PP")
+    .replace(/\bIsmailovo\b/g, "Izmailovo")
+    .replace(/\s+([,.])/g, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function cleanText(value?: string | null) {
-  return value ? stripItineraryMarkup(value).replace(/\s+/g, " ").trim() : "";
+  return polishPdfCopy(value);
 }
 
 function normalizeListText(value: string) {
@@ -132,6 +166,106 @@ function splitNormalPriceLabel(value?: string | null) {
     normalLabel: match[1].trim(),
     savingsLabel: `hemat ${match[2].trim()}`,
   };
+}
+
+function normalizePriceText(value?: string | null) {
+  return cleanText(value).replace(/\s+/g, "").toLowerCase();
+}
+
+export function formatPaymentTotalHeading(totalLabel?: string | null, basePriceLabel?: string | null) {
+  if (!totalLabel) return "Total Settlement";
+  return normalizePriceText(totalLabel) && normalizePriceText(totalLabel) !== normalizePriceText(basePriceLabel)
+    ? "Estimasi Total dengan Add-on Terpilih"
+    : "Total Settlement";
+}
+
+function durationDayCount(duration?: string | null) {
+  const match = cleanText(duration).match(/(\d+)\s*hari/i);
+  return match ? Number(match[1]) : null;
+}
+
+export function getDurationArrivalNote(tour: Pick<ItineraryPDFProps["tour"], "duration" | "itinerary">) {
+  const packageDays = durationDayCount(tour.duration);
+  const maxItineraryDay = Math.max(0, ...tour.itinerary.map((day) => Number(day.day) || 0));
+  if (!packageDays || maxItineraryDay <= packageDays) return null;
+
+  const finalDay = tour.itinerary.find((day) => day.day === maxItineraryDay);
+  const finalText = `${finalDay?.title ?? ""} ${finalDay?.description ?? ""}`.toLowerCase();
+  if (finalText.includes("jakarta") || finalText.includes("indonesia")) {
+    return `Estimasi tiba kembali di Jakarta: Hari ke-${maxItineraryDay}`;
+  }
+
+  const duration = cleanText(tour.duration);
+  return duration
+    ? `Program ${duration} + estimasi kedatangan di hari berikutnya`
+    : `Estimasi kedatangan akhir: Hari ke-${maxItineraryDay}`;
+}
+
+export function polishItineraryTitle(value?: string | null) {
+  const title = polishPdfCopy(value)
+    .replace(/^Arrive Jakarta$/i, "Tiba di Jakarta")
+    .replace(/^Metro tour/i, "Metro Tour")
+    .replace(/^Kereta ke Saint Petersburg\s*•\s*check-in hotel Hermitage Museum \(opsional\), waktu bebas$/i, "Kereta ke Saint Petersburg • Check-in Hotel • Hermitage Museum Opsional")
+    .replace(/^Penerbangan ke Moskow check-in, waktu bebas$/i, "Penerbangan ke Moskow • Check-in • Waktu Bebas")
+    .replace(/^Izmailovo Market Transfer$/i, "Izmailovo Market • Transfer Bandara")
+    .replace(/^Nevski Prospect/i, "Nevsky Prospect")
+    .trim();
+
+  if (/sami village/i.test(title) && /husky farm/i.test(title) && /deer farm/i.test(title)) {
+    return "Sami Village Opsional • Husky Farm • Deer Farm • Aurora Hunt";
+  }
+
+  return title;
+}
+
+function polishItineraryDescription(title: string, value?: string | null) {
+  const cleanTitle = polishItineraryTitle(title);
+  if (/^Sami Village Opsional/.test(cleanTitle)) {
+    return "Agenda seperti Husky Farm, Deer Farm, Reindeer, Husky Riding, Banana Boat, dan culinary tour kepiting Alaska tersedia untuk peserta yang mengambil trip opsional. Peserta yang tidak mengambil trip opsional dapat menggunakan waktu bebas untuk beristirahat atau menikmati fasilitas hotel.";
+  }
+
+  return normalizeBodyText(value ?? "");
+}
+
+export function professionalizePaymentText(value?: string | null) {
+  const text = polishPdfCopy(value);
+  if (!text) return "";
+
+  return text
+    .replace(/^Pembayaran aman dan fleksibel\. Kamu cukup bayar DP dulu, sisanya dicicil santai sesuai skema pembayaran\.$/i, "Pembayaran dilakukan bertahap sesuai skema di bawah ini.")
+    .replace(/^Pembayaran aman dan fleksibel\. Kamu cukup amankan seat dulu, sisanya dilunasi sesuai tempo sebelum berangkat\.$/i, "Peserta dapat mengamankan seat terlebih dahulu, lalu melunasi sesuai tempo sebelum keberangkatan.")
+    .replace(/^Sisa\s+(\d+)\s+traveler lagi\s+-\s+gas sebelum habis\s*🙂?$/i, "Sisa $1 seat. Konfirmasi segera untuk mengamankan ketersediaan.")
+    .replace(/^Booking sekarang\s+-\s+tim Sundaf bantu cek seat$/i, "Tim Sundaf akan membantu konfirmasi ketersediaan seat.")
+    .replace(/\bKamu\b/g, "Peserta")
+    .replace(/\bkamu\b/g, "peserta")
+    .replace(/\bdicicil santai\b/gi, "dibayar bertahap")
+    .trim();
+}
+
+export function buildImportantNotes(notes?: string | null) {
+  const cleaned = polishPdfCopy(notes)
+    .replace(/^Penawaran Harga paket ini memiliki syarat minimum keberangkatan 15 orang\. Jika peserta tidak memenuhi kuota minimum maka pendaftar akan diinfokan kembali$/i, "")
+    .replace(/^Penawaran Harga paket ini memiliki syarat minimum keberangkatan 15 orang\.$/i, "")
+    .trim();
+
+  const items = [
+    cleaned,
+    ...CRITICAL_OPERATIONAL_NOTES,
+  ].filter(Boolean);
+
+  return [...new Set(items)];
+}
+
+export function splitGalleryPages(images: string[]) {
+  const galleryImages = uniquePdfGalleryImages(images);
+  if (galleryImages.length <= 6) return galleryImages.length > 0 ? [galleryImages] : [];
+
+  const visibleImages = galleryImages.slice(0, 12);
+  const firstPageCount = Math.ceil(visibleImages.length / 2);
+  return [
+    visibleImages.slice(0, firstPageCount),
+    visibleImages.slice(firstPageCount),
+  ].filter((page) => page.length > 0);
 }
 
 function destinationChips(tour: ItineraryPDFProps["tour"]) {
@@ -310,10 +444,11 @@ export function OverviewCards({
   landTourLabel?: string | null;
 }) {
   const normalPrice = splitNormalPriceLabel(priceCoretLabel);
+  const durationNote = getDurationArrivalNote(tour);
   const cards = [
-    { label: "Durasi", value: tour.duration || "Mengikuti program" },
+    { label: "Durasi", value: tour.duration || "Mengikuti program", note: durationNote },
     { label: "Keberangkatan", value: tour.tripDateLabel || "Tanggal mengikuti jadwal" },
-    { label: "Harga per orang", value: priceLabel, price: true },
+    { label: "Harga Paket Utama", value: priceLabel, price: true },
     { label: "Land tour", value: landTourLabel || "Hubungi tim Sundaf" },
   ];
 
@@ -334,6 +469,7 @@ export function OverviewCards({
                 {normalPrice.savingsLabel ? ` - ${normalPrice.savingsLabel}` : ""}
               </Text>
             ) : null}
+            {card.note ? <Text style={s.priceSubline}>{card.note}</Text> : null}
           </View>
         );
       })}
@@ -357,7 +493,8 @@ export function ItineraryTimeline({ itinerary }: { itinerary: ItineraryDay[] }) 
     <View style={s.timeline}>
       {displayDays.map((displayDay, index) => {
         const sourceDay = itinerary[index];
-        const description = normalizeBodyText(displayDay.description || sourceDay.description);
+        const rawTitle = displayDay.title || sourceDay.title;
+        const description = polishItineraryDescription(rawTitle, displayDay.description || sourceDay.description);
         const inferredMeta = displayDay.insights.map(insightDisplay);
         const explicitMeta = explicitDayMeta(sourceDay);
         const seen = new Set<string>();
@@ -378,7 +515,7 @@ export function ItineraryTimeline({ itinerary }: { itinerary: ItineraryDay[] }) 
               </View>
             </View>
             <View style={s.dayCard}>
-              <Text style={s.dayTitle}>{cleanText(displayDay.title || sourceDay.title)}</Text>
+              <Text style={s.dayTitle}>{polishItineraryTitle(rawTitle)}</Text>
               {description ? <Text style={s.dayDescription}>{description}</Text> : null}
               {meta.length > 0 ? (
                 <View style={s.metaRow}>
@@ -472,14 +609,31 @@ export function AddOnList({ addOns }: { addOns: PdfAddOn[] }) {
   );
 }
 
-export function PaymentSection({ paymentPlan }: { paymentPlan?: TourPaymentPlan | null }) {
+export function PaymentSection({
+  paymentPlan,
+  basePriceLabel,
+}: {
+  paymentPlan?: TourPaymentPlan | null;
+  basePriceLabel: string;
+}) {
+  const totalHeading = formatPaymentTotalHeading(paymentPlan?.totalLabel, basePriceLabel);
+  const hasAddOnTotal = paymentPlan?.totalLabel && normalizePriceText(paymentPlan.totalLabel) !== normalizePriceText(basePriceLabel);
+
   return (
     <SectionShell title="Settlement & Pembayaran">
       {paymentPlan && paymentPlan.steps.length > 0 ? (
         <>
-          <Text style={s.paymentIntro}>{paymentPlan.intro}</Text>
-          <Text style={s.paymentIntro}>{paymentPlan.paymentMethodsLabel}</Text>
-          <Text style={s.overviewValue}>Total skema: {paymentPlan.totalLabel} / orang</Text>
+          <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.intro)}</Text>
+          <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.paymentMethodsLabel)}</Text>
+          <View style={s.paymentTotalBox} wrap={false}>
+            <Text style={s.paymentTotalLabel}>{totalHeading}</Text>
+            <Text style={s.paymentTotalValue}>{paymentPlan.totalLabel} / orang</Text>
+            {hasAddOnTotal ? (
+              <Text style={s.paymentTotalNote}>
+                Harga paket utama: {basePriceLabel} / orang. Total settlement mencakup komponen wajib atau add-on terpilih sesuai invoice.
+              </Text>
+            ) : null}
+          </View>
           <View style={s.paymentTable}>
             <View style={[s.paymentRow, s.paymentHeader]} wrap={false}>
               <Text style={[s.paymentCell, s.paymentCellBold, s.paymentStage]}>Tahap</Text>
@@ -494,7 +648,7 @@ export function PaymentSection({ paymentPlan }: { paymentPlan?: TourPaymentPlan 
               </View>
             ))}
           </View>
-          {paymentPlan.finePrint ? <Text style={[s.galleryNote, { marginTop: 8 }]}>{paymentPlan.finePrint}</Text> : null}
+          {paymentPlan.finePrint ? <Text style={[s.galleryNote, { marginTop: 8 }]}>{professionalizePaymentText(paymentPlan.finePrint)}</Text> : null}
         </>
       ) : (
         <Text style={s.paymentIntro}>
@@ -561,11 +715,13 @@ export function VisaContactSection({ company }: { company: ItineraryPDFProps["co
 }
 
 function ImportantNotesSection({ notes }: { notes?: string | null }) {
-  const notesCopy = cleanText(notes) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional, cuaca, ketersediaan layanan, dan konfirmasi akhir dari pihak terkait.";
+  const noteItems = buildImportantNotes(notes);
 
   return (
     <SectionShell title="Catatan Penting">
-      <Text style={s.dayDescription}>{notesCopy}</Text>
+      {noteItems.map((note) => (
+        <ListItem key={note} text={note} icon="!" />
+      ))}
     </SectionShell>
   );
 }
@@ -579,12 +735,33 @@ function ProfileSection({ company }: { company: ItineraryPDFProps["company"] }) 
 }
 
 export function GallerySection({ images }: { images: string[] }) {
-  const galleryImages = uniquePdfGalleryImages(images).slice(0, 7);
+  const galleryImages = uniquePdfGalleryImages(images);
   const leadGalleryImage = galleryImages[0];
   const sideGalleryImages = galleryImages.slice(1, 3);
-  const gridGalleryImages = galleryImages.slice(3, 7);
+  const gridGalleryImages = galleryImages.slice(3, 6);
 
   if (!leadGalleryImage) return null;
+
+  if (galleryImages.length >= 5) {
+    return (
+      <>
+        <View style={s.galleryBalancedGrid}>
+          {galleryImages.slice(0, 6).map((image, index) => (
+            // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support.
+            <Image
+              key={`balanced-${index}`}
+              src={image}
+              style={index % 2 === 1 ? [s.galleryBalancedImage, s.galleryBalancedImageRight] : s.galleryBalancedImage}
+            />
+          ))}
+        </View>
+
+        <Text style={s.galleryNote}>
+          Foto bersifat dokumentasi perjalanan. Susunan aktivitas, cuaca, dan kondisi lapangan mengikuti jadwal final serta arahan operasional setempat.
+        </Text>
+      </>
+    );
+  }
 
   return (
     <>
@@ -688,6 +865,7 @@ export function ItineraryPDF({
   const runningTitle = `Rencana Perjalanan ${tour.title}`;
   const addOns = tour.addOns ?? [];
   const galleryImages = uniquePdfGalleryImages([tour.heroImg ?? "", ...(tour.gallery ?? [])]);
+  const galleryPages = splitGalleryPages(galleryImages);
 
   return (
     <Document title={runningTitle} author="Sundaf Trip">
@@ -712,7 +890,7 @@ export function ItineraryPDF({
       </PdfPage>
 
       <PdfPage company={company} runningTitle={runningTitle}>
-        <PaymentSection paymentPlan={paymentPlan} />
+        <PaymentSection paymentPlan={paymentPlan} basePriceLabel={priceLabel} />
         <ImportantNotesSection notes={tour.notes} />
       </PdfPage>
 
@@ -721,16 +899,16 @@ export function ItineraryPDF({
         <ProfileSection company={company} />
       </PdfPage>
 
-      {galleryImages.length > 0 ? (
-        <PdfPage company={company} runningTitle={runningTitle}>
+      {galleryPages.map((pageImages, index) => (
+        <PdfPage key={`gallery-${index}`} company={company} runningTitle={runningTitle}>
           <SectionShell title="Dokumentasi Perjalanan" card>
             <Text style={[s.subtitle, { marginBottom: 10 }]}>
-              Foto dipilih dari galeri paket ini dan dokumentasi perjalanan Sundaf Trip.
+              {`Foto dipilih dari galeri paket ini dan dokumentasi perjalanan Sundaf Trip${galleryPages.length > 1 ? ` (${index + 1}/${galleryPages.length}).` : "."}`}
             </Text>
-            <GallerySection images={galleryImages} />
+            <GallerySection images={pageImages} />
           </SectionShell>
         </PdfPage>
-      ) : null}
+      ))}
     </Document>
   );
 }

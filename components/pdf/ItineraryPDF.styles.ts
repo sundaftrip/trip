@@ -34,7 +34,7 @@ const TYPOGRAPHY = {
 
 export const PAYMENT_TERMS = [
   "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
-  "DP mengunci seat dan nominalnya mengikuti invoice awal.",
+  "DP mengamankan seat sesuai nominal pada invoice awal.",
   "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
   "Add-on opsional, visa, dan layanan tambahan dibayar terpisah setelah dikonfirmasi.",
   "Bukti transfer wajib dikirim untuk verifikasi administrasi.",
@@ -457,6 +457,30 @@ export const s = StyleSheet.create({
     color: COLORS.navy,
     marginBottom: 8,
   },
+  paymentTotalBox: {
+    backgroundColor: COLORS.tealSoft,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.borderStrong,
+    padding: 10,
+    marginBottom: 9,
+  },
+  paymentTotalLabel: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.tealDark,
+    marginBottom: 3,
+  },
+  paymentTotalValue: {
+    fontFamily: FONT.bold,
+    fontSize: 13,
+    lineHeight: 1.2,
+    color: COLORS.navy,
+  },
+  paymentTotalNote: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.navy,
+    marginTop: 4,
+  },
   paymentTable: {
     borderWidth: 0.8,
     borderColor: COLORS.border,
@@ -497,7 +521,7 @@ export const s = StyleSheet.create({
     marginTop: 10,
   },
   termCard: {
-    width: 249,
+    width: 235,
     backgroundColor: COLORS.mutedPanel,
     borderRadius: 8,
     borderWidth: 0.7,
@@ -579,6 +603,24 @@ export const s = StyleSheet.create({
     marginBottom: 10,
   },
   galleryGridImageRight: {
+    marginRight: 0,
+  },
+  galleryBalancedGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 2,
+  },
+  galleryBalancedImage: {
+    width: 235,
+    height: 124,
+    objectFit: "cover",
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  galleryBalancedImageRight: {
     marginRight: 0,
   },
   galleryNote: {

@@ -3,8 +3,15 @@ import test from "node:test";
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import {
+  buildImportantNotes,
+  formatPaymentTotalHeading,
+  getDurationArrivalNote,
   ItineraryPDF,
   PDF_LINKS,
+  polishItineraryTitle,
+  polishPdfCopy,
+  professionalizePaymentText,
+  splitGalleryPages,
   type ItineraryPDFProps,
 } from "../components/pdf/ItineraryPDF";
 
@@ -88,6 +95,57 @@ test("itinerary PDF exposes the required customer-facing link contract", () => {
   assert.equal(PDF_LINKS.faq.href, "https://sundaftrip.com/faq");
   assert.equal(PDF_LINKS.email.href, "mailto:info@sundaftrip.com");
   assert.equal(PDF_LINKS.whatsapp.href, "https://wa.me/6281775202759");
+});
+
+test("itinerary PDF clarifies price and duration semantics", () => {
+  assert.equal(formatPaymentTotalHeading("Rp33.500.000", "Rp31.000.000"), "Estimasi Total dengan Add-on Terpilih");
+  assert.equal(formatPaymentTotalHeading("Rp31.000.000", "Rp31.000.000"), "Total Settlement");
+  assert.equal(
+    getDurationArrivalNote({
+      duration: "9 hari 7 malam",
+      itinerary: [
+        { day: 1, title: "Berangkat", description: "" },
+        { day: 10, title: "Arrive Jakarta", description: "" },
+      ],
+    }),
+    "Estimasi tiba kembali di Jakarta: Hari ke-10",
+  );
+});
+
+test("itinerary PDF polishes Russia Aurora copy without changing the template style", () => {
+  assert.equal(polishPdfCopy("Iconic Rusia dengan bangunan gereja berkubah es cream"), "ikonik Rusia dengan bangunan gereja berkubah es krim");
+  assert.equal(polishPdfCopy("Kereta cepat Rusia ambil melihat pemandangan"), "Kereta cepat Rusia sambil melihat pemandangan");
+  assert.equal(polishPdfCopy("pemimpin tur berpengalaman start Jakarta"), "Tour Leader berpengalaman dari Jakarta");
+  assert.equal(polishPdfCopy("Akomodasi *3 & *4"), "Akomodasi hotel bintang 3 & 4");
+  assert.equal(polishPdfCopy("bagasi pesawat domestik (2.5) PP"), "Bagasi pesawat domestik 25 kg PP");
+  assert.equal(polishItineraryTitle("Arrive Jakarta"), "Tiba di Jakarta");
+  assert.equal(polishItineraryTitle("Sammi Village"), "Sami Village");
+  assert.equal(
+    polishItineraryTitle("Sami Village (opsional) Husky Farm Deer Farm Reindeer Husky riding (opsional) Banana Boat Aurora (opsional) • Culinary Tour kepiting alaska (opsional)"),
+    "Sami Village Opsional • Husky Farm • Deer Farm • Aurora Hunt",
+  );
+});
+
+test("itinerary PDF keeps payment and operational notes customer-facing", () => {
+  assert.equal(
+    professionalizePaymentText("Pembayaran aman dan fleksibel. Kamu cukup bayar DP dulu, sisanya dicicil santai sesuai skema pembayaran."),
+    "Pembayaran dilakukan bertahap sesuai skema di bawah ini.",
+  );
+
+  const notes = buildImportantNotes("Penawaran Harga paket ini memiliki syarat minimum keberangkatan 15 orang.");
+  assert.ok(notes.includes("Aurora adalah fenomena alam sehingga kemunculannya tidak dapat dijamin."));
+  assert.ok(notes.includes("Minimum keberangkatan 15 peserta."));
+  assert.ok(notes.includes("Jadwal final mengikuti cuaca, kondisi operasional, dan konfirmasi layanan."));
+});
+
+test("itinerary PDF balances gallery pages instead of leaving a sparse final page", () => {
+  const sixImages = Array.from({ length: 6 }, (_, index) => `image-${index + 1}`);
+  const sevenImages = Array.from({ length: 7 }, (_, index) => `image-${index + 1}`);
+  const twelveImages = Array.from({ length: 12 }, (_, index) => `image-${index + 1}`);
+
+  assert.deepEqual(splitGalleryPages(sixImages), [sixImages]);
+  assert.deepEqual(splitGalleryPages(sevenImages).map((page) => page.length), [4, 3]);
+  assert.deepEqual(splitGalleryPages(twelveImages).map((page) => page.length), [6, 6]);
 });
 
 test("itinerary PDF renders a React PDF document buffer", async () => {
