@@ -1,10 +1,50 @@
-import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
   company: Record<string, string>;
   theme?: string;
+}
+
+type ContactIconProps = SVGProps<SVGSVGElement> & { size?: number };
+
+type ContactItem = {
+  Icon: ComponentType<ContactIconProps>;
+  label: string;
+  value: string;
+  href: string | null;
+};
+
+const OPENING_HOURS = "Senin-Jumat 09:00-17:00 WIB";
+
+function instagramUser(value?: string) {
+  return (value || "")
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .replace(/\/+$/, "")
+    .trim();
+}
+
+function InstagramIcon({ size = 16, ...props }: ContactIconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
 }
 
 export default function ContactSection({ texts, company, theme = "classic" }: Props) {
@@ -22,13 +62,22 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const email   = company["company_email"] || "";
   const phone   = company["company_phone"] || "";
   const address = company["company_address"] || "";
+  const igUser  = instagramUser(company["company_instagram"]);
 
   const contacts = [
     address && { Icon: MapPin,        label: "Alamat",    value: address, href: null },
     phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
-  ].filter(Boolean) as { Icon: typeof MapPin; label: string; value: string; href: string | null }[];
+  ].filter(Boolean) as ContactItem[];
+  const atlasContacts = [
+    address && { Icon: MapPin,        label: "Alamat",      value: address, href: null },
+    phone   && { Icon: Phone,         label: "Telepon",     value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
+    wa      && { Icon: Phone,         label: "WhatsApp",    value: "WhatsApp", href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
+    email   && { Icon: Mail,          label: "Email",       value: email,   href: `mailto:${email}` },
+    { Icon: Clock, label: "Jam layanan", value: OPENING_HOURS, href: null },
+    igUser  && { Icon: InstagramIcon, label: "Instagram",   value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
+  ].filter(Boolean) as ContactItem[];
 
   const headLabel = "Hubungi Kami";
   const bankLabel = "Rekening Pembayaran";
@@ -133,36 +182,27 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
 
   /* ── ATLAS ── */
   if (theme === "atlas") return (
-    <section id="contact" className="py-14 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 max-w-xl">
-          <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>{headLabel}</span>
-          <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>
+    <section id="contact" className="overflow-hidden py-14 sm:py-20 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }} aria-labelledby="contact-section-title">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8" style={{ maxWidth: "min(80rem, 100vw)" }}>
+        <div className="max-w-lg sm:pl-8">
+          <span className="at-pill mb-10 inline-flex px-5 py-2 text-xs font-bold tracking-[0.18em]" style={{ color: "var(--at-subtext)" }}>Kontak</span>
+          <h2 id="contact-section-title" className="sr-only">
             {t("contact_title", "Siap Membantu Perjalanan Anda")}
           </h2>
-          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-            {t("contact_desc", "Konsultasikan perjalanan impian Anda bersama kami.")}
-          </p>
-        </div>
 
-        <div className="max-w-2xl">
-          <div className="space-y-4">
-            {contacts.map(({ Icon, label, value, href }) => (
-              <div key={label} className="at-card p-5 flex items-start gap-4">
-                <div className="w-9 h-9 border flex items-center justify-center shrink-0"
-                  style={{ background: "var(--at-muted)", borderColor: "var(--at-border)" }}>
-                  <Icon size={14} style={{ color: "var(--at-text)" }} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--at-subtext)" }}>{label}</p>
+          <div className="not-prose space-y-8 sm:space-y-9">
+            {atlasContacts.map(({ Icon, label, value, href }) => (
+              <div key={label} className="grid min-w-0 grid-cols-[1.55rem_minmax(0,1fr)] items-start gap-x-5 sm:grid-cols-[1.75rem_minmax(0,1fr)] sm:gap-x-6">
+                <Icon size={22} className="mt-1 shrink-0" aria-hidden="true" style={{ color: "var(--at-border)" }} />
+                <div className="min-w-0 pr-4 sm:pr-0">
                   {href
-                    ? <a href={href} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--at-text)" }}>{value}</a>
-                    : <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--at-text)" }}>{value}</p>}
+                    ? <a href={href} className="break-words text-left text-base font-medium leading-7 transition-opacity hover:opacity-70 sm:text-xl sm:leading-9" style={{ color: "var(--at-subtext)" }}>{value}</a>
+                    : <p className="break-words text-left text-base font-medium leading-7 sm:text-xl sm:leading-9" style={{ color: "var(--at-subtext)" }}>{value}</p>}
                 </div>
               </div>
             ))}
             {bankAcc && (
-              <div className="at-card p-5">
+              <div className="border-t pt-6" style={{ borderColor: "var(--at-border)" }}>
                 <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--at-subtext)" }}>{bankLabel}</p>
                 {bankName && <p className="text-xs mb-1" style={{ color: "var(--at-subtext)" }}>{bankName}</p>}
                 <p className="text-xl font-bold font-mono" style={{ color: "var(--at-text)" }}>{bankAcc}</p>
