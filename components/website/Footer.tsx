@@ -252,14 +252,16 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
 
           <div>
             <span className="at-pill mb-5 inline-flex" style={{ color: "var(--at-subtext)" }}>Kontak</span>
-            <ul className="space-y-3 mt-3">
+            <ul className="mt-4 space-y-4">
               <FooterContactList
                 contacts={contacts}
+                itemClassName="grid min-w-0 grid-cols-[1.1rem_minmax(0,1fr)] items-start gap-x-3"
+                iconSize={15}
                 iconClassName="mt-0.5 shrink-0"
                 iconStyle={{ color: "var(--at-border)" }}
-                linkClassName="inline-flex min-h-10 items-center text-sm hover:opacity-70 transition-opacity"
+                linkClassName="break-words text-sm leading-relaxed hover:opacity-70 transition-opacity"
                 linkStyle={{ color: "var(--at-subtext)" }}
-                textClassName="text-sm leading-relaxed"
+                textClassName="break-words text-sm leading-relaxed"
                 textStyle={{ color: "var(--at-subtext)" }}
               />
             </ul>

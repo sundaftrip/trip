@@ -75,10 +75,12 @@ export default function FooterContactList({
   linkStyle,
   textClassName,
   textStyle,
+  iconSize = 13,
   itemClassName = "flex items-start gap-2",
 }: {
   contacts: FooterContact[];
   itemClassName?: string;
+  iconSize?: number;
   iconClassName?: string;
   iconStyle?: CSSProperties;
   linkClassName?: string;
@@ -95,7 +97,7 @@ export default function FooterContactList({
         const Icon = ICONS[kind];
         return (
           <li key={label} className={itemClassName}>
-            <Icon size={13} className={iconClassName} style={iconStyle} />
+            <Icon size={iconSize} className={iconClassName} style={iconStyle} />
             {href ? (
               <a href={href} className={linkClassName} style={linkStyle}>
                 {value}
