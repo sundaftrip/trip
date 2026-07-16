@@ -1,7 +1,5 @@
 import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
-import PremiumNavbar from "@/components/website/PremiumNavbar";
-import PremiumFooter from "@/components/website/PremiumFooter";
 import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import OrganizationSchema from "@/components/website/OrganizationSchema";
@@ -122,17 +120,16 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
 
   /* ── TERI, tema original (honeycomb + shadow warni + tepi bergerigi) ── */
   const isTeri = theme === "teri";
-  const isPremium = theme === "atlas";
 
   return (
     <>
       {styleBlock}
       <OrganizationSchema />
-      {isPremium ? <PremiumNavbar whatsapp={whatsapp} /> : <Navbar logo={logo} theme={theme} />}
+      <Navbar logo={logo} theme={theme} />
       <main className={`flex-1 ${isTeri ? "teri-bg" : ""}`} data-theme={theme}>{children}</main>
-      {isPremium ? <PremiumFooter /> : <Footer theme={theme} />}
-      <StickyWhatsApp phone={whatsapp} variant={isPremium ? "premium" : "classic"} />
-      {!isPremium && <AutoTranslate />}
+      <Footer theme={theme} />
+      <StickyWhatsApp phone={whatsapp} />
+      <AutoTranslate />
       <ReferralCapture />
     </>
   );
