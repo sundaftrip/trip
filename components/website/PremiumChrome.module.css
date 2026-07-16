@@ -4,7 +4,7 @@
   inset: 0 0 auto;
   height: 76px;
   border-bottom: 1px solid rgba(24, 51, 45, 0.15);
-  background: rgba(247, 244, 237, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   color: #18332d;
   backdrop-filter: blur(14px);
 }
@@ -89,7 +89,7 @@
   border: 1px solid #18332d;
   border-radius: 3px;
   background: #18332d;
-  color: #fffdf7;
+  color: #ffffff;
   font-size: 0.78rem;
   font-weight: 750;
   text-decoration: none;
@@ -108,7 +108,7 @@
 .footer {
   padding: 74px 0 26px;
   background: #102e29;
-  color: rgba(250, 247, 239, 0.78);
+  color: rgba(248, 250, 249, 0.78);
 }
 
 .footerShell {
@@ -149,7 +149,7 @@
 
 .footerColumn a:hover,
 .footerBottom a:hover {
-  color: #fffdf7;
+  color: #ffffff;
   border-color: currentColor;
 }
 
@@ -169,7 +169,7 @@
   gap: 24px;
   padding-top: 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(250, 247, 239, 0.55);
+  color: rgba(248, 250, 249, 0.55);
   font-size: 0.68rem;
 }
 
@@ -266,7 +266,7 @@
     display: grid;
     padding: 12px 16px 22px;
     border-bottom: 1px solid rgba(24, 51, 45, 0.2);
-    background: #f7f4ed;
+    background: #ffffff;
     box-shadow: 0 16px 38px rgba(24, 51, 45, 0.12);
   }
 

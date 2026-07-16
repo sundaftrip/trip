@@ -6,7 +6,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "Pergi lebih jauh bersama Sundaf Trip — Rusia, Asia Tengah & Aurora";
 
-const PAPER = "#F7F4ED";
+const PAPER = "#FFFFFF";
 const INK = "#18332D";
 const MUTED = "#596963";
 const GOLD = "#9A7443";
