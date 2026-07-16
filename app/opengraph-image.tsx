@@ -4,12 +4,12 @@ import { ImageResponse } from "next/og";
 // untuk semua halaman kecuali yang punya opengraph-image sendiri.
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Sundaf Trip, Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
+export const alt = "Pergi lebih jauh bersama Sundaf Trip — Rusia, Asia Tengah & Aurora";
 
-// Palet rebrand 2026: charcoal / slate / teal / light
-const CHARCOAL = "#222831";
-const TEAL = "#00ADB5";
-const LIGHT = "#EEEEEE";
+const PAPER = "#F7F4ED";
+const INK = "#18332D";
+const MUTED = "#596963";
+const GOLD = "#9A7443";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -19,72 +19,57 @@ export default function OpengraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: CHARCOAL,
-          backgroundImage: `radial-gradient(900px circle at 80% -10%, rgba(0,173,181,0.30), transparent 55%), radial-gradient(700px circle at 0% 110%, rgba(0,173,181,0.12), transparent 50%)`,
-          padding: "72px 80px",
-          fontFamily: "sans-serif",
+          background: PAPER,
+          color: INK,
+          padding: "42px",
+          fontFamily: "Georgia, serif",
         }}
       >
-        {/* Top: eyebrow pill */}
-        <div style={{ display: "flex" }}>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            border: `2px solid ${INK}`,
+            padding: "46px 52px 40px",
+          }}
+        >
+          {/* Brand line */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 14,
-              padding: "12px 22px",
-              border: `2px solid ${TEAL}`,
-              borderRadius: 999,
-              color: TEAL,
-              fontSize: 24,
-              fontWeight: 700,
-              letterSpacing: 2,
-              textTransform: "uppercase",
+              justifyContent: "space-between",
+              fontFamily: "sans-serif",
             }}
           >
-            Open Trip · Private Trip
+            <div style={{ display: "flex", fontSize: 31, fontWeight: 800, letterSpacing: -1 }}>
+              Sundaf Trip
+            </div>
+            <div style={{ display: "flex", color: GOLD, fontSize: 18, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase" }}>
+              Rusia · Asia Tengah · Aurora
+            </div>
           </div>
-        </div>
 
-        {/* Middle: brand + tagline */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 96,
-              fontWeight: 900,
-              color: LIGHT,
-              lineHeight: 1,
-              letterSpacing: -2,
-            }}
-          >
-            Sundaf&nbsp;Trip
+          {/* Main editorial message */}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 48 }}>
+            <div style={{ display: "flex", flexDirection: "column", fontSize: 78, lineHeight: 0.98, letterSpacing: -4 }}>
+              <div style={{ display: "flex" }}>Pergi lebih jauh.</div>
+              <div style={{ display: "flex" }}>Kami urus yang rumit.</div>
+            </div>
+            <div style={{ display: "flex", width: 12, height: 154, background: GOLD }} />
           </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 40,
-              fontWeight: 600,
-              color: "#B8C0C8",
-              maxWidth: 920,
-              lineHeight: 1.25,
-            }}
-          >
-            Spesialis Perjalanan Rusia, Asia Tengah & Aurora Borealis
-          </div>
-        </div>
 
-        {/* Bottom: domain + accent bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div style={{ display: "flex", width: 64, height: 8, background: TEAL, borderRadius: 4 }} />
-          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, color: LIGHT }}>
-            sundaftrip.com
-          </div>
-          <div style={{ display: "flex", flex: 1 }} />
-          <div style={{ display: "flex", fontSize: 26, color: "#8A929B" }}>
-            Visa · Itinerary · Pendampingan
+          {/* Service + domain line */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 24, borderTop: `1px solid ${INK}`, fontFamily: "sans-serif" }}>
+            <div style={{ display: "flex", color: MUTED, fontSize: 21 }}>
+              Open trip · Private trip · Layanan visa
+            </div>
+            <div style={{ display: "flex", fontSize: 23, fontWeight: 750 }}>
+              sundaftrip.com
+            </div>
           </div>
         </div>
       </div>
