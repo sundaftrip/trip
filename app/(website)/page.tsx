@@ -2,22 +2,14 @@
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
 export const revalidate = 60;
 import type { Metadata } from "next";
-import Link from "next/link";
 import { unstable_cache } from "next/cache";
-import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { compareFeaturedTourOrder } from "@/lib/tour-order";
-import HeroSection from "@/components/website/HeroSection";
-import WhyGallery from "@/components/website/WhyGallery";
-import ToursSection from "@/components/website/ToursSection";
-import BlogSection from "@/components/website/BlogSection";
-import ContactSection from "@/components/website/ContactSection";
-import TestimonialSection from "@/components/website/TestimonialSection";
+import PremiumHome from "@/components/website/PremiumHome";
 
 const getData = unstable_cache(async () => {
-  const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
-    prisma.siteText.findMany(),
+  const [toursRaw, posts, companyRows, testimonials] = await Promise.all([
     // SELECT explicit, homepage card hanya butuh field ini. Skip:
     // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
     // notes (long), description (long, di-excerpt di card). Hemat JSON
@@ -41,44 +33,42 @@ const getData = unstable_cache(async () => {
     }),
     prisma.blog.findMany({
       where: { published: true },
-      take: 3,
+      take: 2,
       orderBy: { date: "desc" },
       select: {
         id: true,
         slug: true,
         title: true,
-        excerpt: true,
-        cover: true,
         category: true,
         date: true,
-        author: true,
         readTime: true,
       },
     }),
-    prisma.companyInfo.findMany(),
+    prisma.companyInfo.findMany({
+      where: { key: { in: ["company_whatsapp"] } },
+    }),
     prisma.testimonial.findMany({
       where: { published: true, category: "trip" },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+      take: 12,
       select: {
-        id: true,
         name: true,
         role: true,
         content: true,
-        rating: true,
-        avatar: true,
       },
     }),
   ]);
   // Sudah difilter di query, tinggal urut: pinned + niche utama
   // (Rusia/Asia Tengah/Aurora) dulu, lalu tanggal terdekat.
-  const tours = [...toursRaw].sort(compareFeaturedTourOrder).slice(0, 9);
-  const t: Record<string, { id?: string; en?: string }> = {};
-  texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
+  const tours = [...toursRaw].sort(compareFeaturedTourOrder).slice(0, 3);
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  return { texts: t, tours, posts, company, companyRows, testimonials };
+  const testimonial = [...testimonials]
+    .filter((item) => item.content.trim().length >= 70 && item.content.trim().length <= 360)
+    .sort((a, b) => a.content.length - b.content.length)[0] ?? testimonials[0] ?? null;
+  return { tours, posts, company, testimonial };
 // tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
-}, ["home-page-data", "home-payload-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
+}, ["home-page-data", "home-payload-premium-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   // Title, description, keywords, OG & Twitter card — semuanya diwarisi dari
@@ -96,44 +86,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  // Tidak ada searchParams, pagination + filter region ditangani di
-  // client (lihat ToursCatalog). Hasilnya: page HTML jadi STATIC dan
-  // bisa di-cache Vercel Edge.
-  const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();
+  const { tours, posts, company, testimonial } = await getData();
   const wa = toWaNumber(company["company_whatsapp"]);
-  const companyName = "Sundaf Trip";
-  const themeRow = companyRows.find((r) => r.key === "site_theme");
-  const rawTheme = themeRow?.value || "classic";
-  const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
-  const pinnedTours = allTours.filter((tour) => tour.pinned);
-  const regularTours = allTours.filter((tour) => !tour.pinned);
 
-  return (
-    <>
-      <HeroSection texts={texts} waNumber={wa} companyName={companyName} theme={theme} />
-      <div id="tours">
-        <ToursSection tours={regularTours} pinnedTours={pinnedTours} theme={theme}>
-          <div className="flex justify-center pt-4 pb-3 sm:pt-5 sm:pb-6">
-            <Link
-              href="/tours"
-              prefetch={false}
-              className="tours-cta group inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-semibold tracking-wide"
-              style={{ color: "var(--site-accent,#2d6a4f)" }}
-            >
-              <span>Lihat semua jadwal &amp; dokumentasi</span>
-              <ArrowRight size={16} aria-hidden="true" className="tours-cta-arrow" />
-            </Link>
-          </div>
-        </ToursSection>
-      </div>
-      <div className="home-defer home-defer-gallery">
-        <WhyGallery theme={theme} />
-      </div>
-      <div className="home-defer home-defer-blog">
-        <BlogSection posts={posts} theme={theme} />
-      </div>
-      <TestimonialSection items={testimonials} theme={theme} />
-      <ContactSection texts={texts} company={company} theme={theme} />
-    </>
-  );
+  return <PremiumHome tours={tours} posts={posts} testimonial={testimonial} whatsappNumber={wa} />;
 }
