@@ -5,6 +5,7 @@ import path from "node:path";
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
+import { isPublicTourVisible } from "@/lib/public-tours";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -134,7 +135,7 @@ export async function GET(
     }),
   ]);
 
-  if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) {
+  if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) {
     return new Response("Tour tidak ditemukan", { status: 404 });
   }
 

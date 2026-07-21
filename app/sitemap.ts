@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { visaSlug } from "@/lib/visa-slug";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -54,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         orderBy: { updatedAt: "desc" },
       }),
       prisma.tour.findMany({
-        where: { status: { in: ["ACTIVE", "FULL"] } },
+        where: publicTourVisibilityWhere(),
         select: { id: true, slug: true, updatedAt: true },
         orderBy: { updatedAt: "desc" },
       }),

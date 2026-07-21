@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type React from "react";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { isPublicTourVisible, publicTourVisibilityWhere } from "@/lib/public-tours";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -363,7 +364,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
   const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
-  if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
+  if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
   const [companyRows, reviews, visaCountries, relatedRaw] = await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
@@ -376,8 +377,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     prisma.tour.findMany({
       where: {
         id: { not: tour.id },
-        status: { in: ["ACTIVE", "FULL"] },
-        OR: [{ tripDate: { gte: new Date() } }, { tripDate: null }],
+        AND: [
+          publicTourVisibilityWhere(),
+          { OR: [{ tripDate: { gte: new Date() } }, { tripDate: null }] },
+        ],
       },
       orderBy: { tripDate: "asc" },
       take: 6,

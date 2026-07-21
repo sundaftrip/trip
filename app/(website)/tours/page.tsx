@@ -3,9 +3,11 @@
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { comparePublicTourCatalogOrder } from "@/lib/tour-order";
+import { comparePublicTourCatalogOrder, getPublicTourState } from "@/lib/tour-order";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import CleanToursCatalog from "@/components/website/clean/CleanToursCatalog";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
 export const revalidate = 60;
 
@@ -39,7 +41,7 @@ const getData = unstable_cache(
   async () => {
     const [toursRaw, companyRows] = await Promise.all([
       prisma.tour.findMany({
-        where: { status: { in: ["ACTIVE", "FULL"] } },
+        where: publicTourVisibilityWhere(),
         orderBy: { tripDate: "asc" },
         select: {
           id: true, slug: true, title: true, country: true, cityHighlight: true,
@@ -53,16 +55,40 @@ const getData = unstable_cache(
     const now = new Date();
     const tours = [...toursRaw].sort((a, b) => comparePublicTourCatalogOrder(a, b, now));
     const themeRow = companyRows.find((r) => r.key === "site_theme");
-    return { tours, theme: themeRow?.value || "classic" };
+    return { tours, theme: themeRow?.value || "classic", generatedAt: now.toISOString() };
   },
   ["all-tours-page"],
   { revalidate: 300, tags: ["home-data", "site-colors"] },
 );
 
-export default async function ToursPage() {
-  const { tours, theme: rawTheme } = await getData();
+export default async function ToursPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ region?: string; month?: string }>;
+}) {
+  const [{ tours, theme: rawTheme, generatedAt }, params] = await Promise.all([getData(), searchParams]);
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as
     | "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
+
+  if (theme === "atlas") {
+    const now = new Date(generatedAt);
+    const cleanTours = tours.map((tour) => ({
+      ...tour,
+      tripDate: tour.tripDate?.toISOString() ?? null,
+      state: getPublicTourState(tour, now),
+    }));
+    return (
+      <>
+        <BreadcrumbSchema
+          crumbs={[
+            { name: "Beranda", url: "/" },
+            { name: "Jadwal Tour & Dokumentasi", url: "/tours" },
+          ]}
+        />
+        <CleanToursCatalog tours={cleanTours} initialRegion={params.region} initialMonth={params.month} />
+      </>
+    );
+  }
 
   /* Latar main mengikuti tema aktif — tanpa ini, padding navbar (pt-24)
      transparan dan memperlihatkan body charcoal sebagai pita gelap di bawah

@@ -9,6 +9,8 @@ type TourOrderItem = {
   tripDate?: Date | string | null;
 };
 
+export type PublicTourState = "bookable" | "flexible" | "sold" | "completed";
+
 function time(value: Date | string | null | undefined) {
   if (!value) return null;
   const date = value instanceof Date ? value : new Date(value);
@@ -47,9 +49,16 @@ function compareCoreMarket(a: TourOrderItem, b: TourOrderItem) {
   return coreMarketValue(a) - coreMarketValue(b);
 }
 
-export function isDoneTour(tour: TourOrderItem, now = new Date()) {
+export function getPublicTourState(tour: TourOrderItem, now = new Date()): PublicTourState {
+  if (tour.status === "FULL") return "sold";
   const tripTime = time(tour.tripDate);
-  return tour.status === "FULL" || (tripTime !== null && tripTime < now.getTime());
+  if (tripTime !== null && tripTime < now.getTime()) return "completed";
+  return tripTime === null ? "flexible" : "bookable";
+}
+
+export function isDoneTour(tour: TourOrderItem, now = new Date()) {
+  const state = getPublicTourState(tour, now);
+  return state === "sold" || state === "completed";
 }
 
 export function compareFeaturedTourOrder(a: TourOrderItem, b: TourOrderItem) {
