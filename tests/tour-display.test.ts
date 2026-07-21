@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { localizePdfText } from "../lib/itinerary-pdf-localization";
 import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle } from "../lib/tour-display";
 
 test("normalizes an all-lowercase imported tour title", () => {
@@ -36,4 +37,16 @@ test("removes a duplicated itinerary date with inconsistent punctuation", () => 
 
 test("removes a redundant day prefix", () => {
   assert.equal(normalizeItineraryDisplayTitle("Hari ke-3: Eksplorasi kota"), "Eksplorasi kota");
+});
+
+test("localizes mixed imported Vietnam itinerary phrasing", () => {
+  assert.equal(localizePdfText("Sarapan at Hotel"), "Sarapan di hotel");
+  assert.equal(
+    localizePdfText("At 05:00 PM, transfer from Sapa ke Hanoi by shared limousine."),
+    "Pukul 17.00, transfer dari Sapa ke Hanoi dengan shared limousine.",
+  );
+  assert.equal(
+    localizePdfText("Begin your exploration of Hanoi dengan a relaxing one-hour cyclo ride through the charming Hanoi Old Quarter."),
+    "Mulai eksplorasi Hanoi dengan cyclo ride santai selama satu jam melalui Hanoi Old Quarter.",
+  );
 });
