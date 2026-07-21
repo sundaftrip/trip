@@ -62,6 +62,11 @@ const getData = unstable_cache(
   { revalidate: 300, tags: ["home-data", "site-colors"] },
 );
 
+function toIsoDateString(value: Date | string | null | undefined) {
+  if (!value) return null;
+  return value instanceof Date ? value.toISOString() : value;
+}
+
 export default async function ToursPage({
   searchParams,
 }: {
@@ -76,7 +81,7 @@ export default async function ToursPage({
     const cleanTours = tours.map((tour) => ({
       ...tour,
       title: normalizeTourDisplayTitle(tour.title),
-      tripDate: tour.tripDate?.toISOString() ?? null,
+      tripDate: toIsoDateString(tour.tripDate),
       state: getPublicTourState(tour, now),
     }));
     return (
