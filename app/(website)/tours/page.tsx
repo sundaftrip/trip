@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { comparePublicTourCatalogOrder, getPublicTourState } from "@/lib/tour-order";
+import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanToursCatalog from "@/components/website/clean/CleanToursCatalog";
@@ -74,6 +75,7 @@ export default async function ToursPage({
     const now = new Date(generatedAt);
     const cleanTours = tours.map((tour) => ({
       ...tour,
+      title: normalizeTourDisplayTitle(tour.title),
       tripDate: tour.tripDate?.toISOString() ?? null,
       state: getPublicTourState(tour, now),
     }));

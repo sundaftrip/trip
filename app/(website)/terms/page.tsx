@@ -4,7 +4,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 
-const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
   "This website is owned and operated by CV Sundaf Holiday Group, operating under the Sundaf Trip brand.";
 

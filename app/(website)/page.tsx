@@ -8,6 +8,7 @@ import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
 import { compareFeaturedTourOrder, getPublicTourState } from "@/lib/tour-order";
+import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import HeroSection from "@/components/website/HeroSection";
 import WhyGallery from "@/components/website/WhyGallery";
 import ToursSection from "@/components/website/ToursSection";
@@ -115,6 +116,7 @@ export default async function HomePage() {
     const now = new Date();
     const tours = allTours.map((tour) => ({
       ...tour,
+      title: normalizeTourDisplayTitle(tour.title),
       tripDate: tour.tripDate?.toISOString() ?? null,
       state: getPublicTourState(tour, now),
     }));

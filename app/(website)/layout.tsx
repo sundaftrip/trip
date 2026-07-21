@@ -123,7 +123,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
             <Footer theme="atlas" />
           </div>
         </div>
-        <StickyWhatsApp phone={whatsapp} />
+        <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <AutoTranslate />
         <ReferralCapture />
       </>
@@ -139,7 +139,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         <CleanNavbar logo={logo} whatsapp={whatsapp} />
         <main className="flex-1" data-theme="atlas">{children}</main>
         <CleanFooter logo={logo} company={company} />
-        <StickyWhatsApp phone={whatsapp} />
+        <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <AutoTranslate />
         <ReferralCapture />
       </>
