@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { normalizeTourDisplayTitle } from "../lib/tour-display";
+import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle } from "../lib/tour-display";
 
 test("normalizes an all-lowercase imported tour title", () => {
   assert.equal(
@@ -23,3 +23,17 @@ test("preserves intentional mixed case and product acronyms", () => {
   );
 });
 
+test("removes a duplicated itinerary date with inconsistent punctuation", () => {
+  assert.equal(
+    normalizeItineraryDisplayTitle("4 September 2026): Jakarta – Almaty | Gerbang ke Asia Tengah"),
+    "Jakarta – Almaty | Gerbang ke Asia Tengah",
+  );
+  assert.equal(
+    normalizeItineraryDisplayTitle("(6 September 2026): Tur Kota Almaty – Kirgistan"),
+    "Tur Kota Almaty – Kirgistan",
+  );
+});
+
+test("removes a redundant day prefix", () => {
+  assert.equal(normalizeItineraryDisplayTitle("Hari ke-3: Eksplorasi kota"), "Eksplorasi kota");
+});

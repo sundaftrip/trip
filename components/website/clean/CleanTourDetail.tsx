@@ -18,6 +18,7 @@ import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
+import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
@@ -318,7 +319,7 @@ export default function CleanTourDetail({
                         <span className={styles.detailDayNumber}>{String(item.day).padStart(2, "0")}</span>
                         <span className={styles.detailDayHeading}>
                           {date ? <time dateTime={date.iso}>{date.label}</time> : <span>Hari ke-{item.day}</span>}
-                          <strong>{item.title}</strong>
+                          <strong>{normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`}</strong>
                         </span>
                         <span className={styles.detailDayToggle} aria-hidden="true" />
                       </summary>

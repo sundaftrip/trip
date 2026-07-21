@@ -35,3 +35,23 @@ export function normalizeTourDisplayTitle(value: string) {
     .join("");
 }
 
+const MONTH_NAME = [
+  "januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus",
+  "september", "oktober", "november", "desember", "january", "february", "march",
+  "may", "june", "july", "august", "october", "november", "december",
+].join("|");
+
+const LEADING_ITINERARY_DATE = new RegExp(
+  `^\\(?\\d{1,2}\\s+(?:${MONTH_NAME})\\s+\\d{4}\\)?\\s*[):.\\-–—]*\\s*`,
+  "i",
+);
+
+/** Remove a date/day prefix when the itinerary UI already shows it separately. */
+export function normalizeItineraryDisplayTitle(value: string) {
+  return value
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(LEADING_ITINERARY_DATE, "")
+    .replace(/^(?:hari\s*(?:ke-?)?|day\s*)\d+\s*[:.\-–—]+\s*/i, "")
+    .trim();
+}
