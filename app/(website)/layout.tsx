@@ -5,6 +5,8 @@ import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import OrganizationSchema from "@/components/website/OrganizationSchema";
 import AutoTranslate from "@/components/website/AutoTranslate";
 import ReferralCapture from "@/components/website/ReferralCapture";
+import CleanNavbar from "@/components/website/clean/CleanNavbar";
+import CleanFooter from "@/components/website/clean/CleanFooter";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -37,32 +39,42 @@ const getSiteConfig = unstable_cache(
   async () => {
     try {
       const rows = await prisma.companyInfo.findMany({
-        where: { key: { in: [...COLOR_KEYS, "company_logo", "site_theme", "site_font", "company_whatsapp"] } },
+        where: {
+          OR: [
+            { key: { in: [...COLOR_KEYS, "site_theme", "site_font"] } },
+            { key: { startsWith: "company_" } },
+          ],
+        },
       });
       const colors = { ...COLOR_DEFAULTS };
+      const company: Record<string, string> = {};
       let logo = "";
       let theme = "atlas";
       let font = "plus-jakarta";
       let whatsapp = "";
       rows.forEach((r) => {
-        if (r.key === "company_logo") logo = r.value;
-        else if (r.key === "site_theme") theme = r.value;
+        if (r.key.startsWith("company_")) {
+          company[r.key] = r.value;
+          if (r.key === "company_logo") logo = r.value;
+          if (r.key === "company_whatsapp") whatsapp = r.value;
+          return;
+        }
+        if (r.key === "site_theme") theme = r.value;
         else if (r.key === "site_font") font = r.value;
-        else if (r.key === "company_whatsapp") whatsapp = r.value;
-        else colors[r.key] = r.value;
+        else if (r.key in COLOR_DEFAULTS) colors[r.key] = r.value;
       });
-      return { colors, logo, theme, font, whatsapp };
+      return { colors, logo, theme, font, whatsapp, company };
     } catch {
-      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "atlas", font: "plus-jakarta", whatsapp: "" };
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "atlas", font: "plus-jakarta", whatsapp: "", company: {} as Record<string, string> };
     }
   },
-  ["site-config-v3"],
+  ["site-config-v4"],
   { revalidate: 3600, tags: ["site-colors"] }
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
   const config = await getSiteConfig();
-  const { colors, logo, font, theme, whatsapp } = config;
+  const { colors, logo, font, theme, whatsapp, company } = config;
   // Preview-theme via cookie sengaja dihilangkan dari server layout karena
   // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
@@ -111,7 +123,23 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
             <Footer theme="atlas" />
           </div>
         </div>
-        <StickyWhatsApp phone={whatsapp} />
+        <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
+        <AutoTranslate />
+        <ReferralCapture />
+      </>
+    );
+  }
+
+  /* ── CLEAN, tampilan publik yang sekarang menjadi native Next.js ── */
+  if (theme === "atlas") {
+    return (
+      <>
+        {styleBlock}
+        <OrganizationSchema />
+        <CleanNavbar logo={logo} whatsapp={whatsapp} />
+        <main className="flex-1" data-theme="atlas">{children}</main>
+        <CleanFooter logo={logo} company={company} />
+        <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <AutoTranslate />
         <ReferralCapture />
       </>

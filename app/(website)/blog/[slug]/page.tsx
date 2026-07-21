@@ -14,7 +14,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
-const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 
 async function getSiteInfo() {
   try {

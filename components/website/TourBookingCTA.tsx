@@ -5,7 +5,7 @@
    pesan terstruktur yang sudah dibangun di server. Pola sama dengan
    VisaOrderForm — alur tetap WA-first. */
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { MessageCircle } from "lucide-react";
 
 interface Props {
@@ -27,8 +27,12 @@ export default function TourBookingCTA({
   const [wa, setWa] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState("");
+  const nameId = useId();
+  const waId = useId();
+  const errorId = useId();
 
   async function submit() {
+    if (submitting) return;
     setErr("");
     if (!name.trim()) { setErr("Nama wajib diisi."); return; }
     if (wa.replace(/\D/g, "").length < 8) { setErr("Nomor WhatsApp belum valid."); return; }
@@ -54,32 +58,52 @@ export default function TourBookingCTA({
     "w-full text-sm rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2.5 outline-none focus:border-gray-400 dark:focus:border-gray-600";
 
   return (
-    <div className="mb-3">
+    <form
+      className="mb-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void submit();
+      }}
+      noValidate
+    >
       <div className="space-y-2 mb-3">
+        <label className="sr-only" htmlFor={nameId}>Nama lengkap</label>
         <input
+          id={nameId}
+          name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Nama lengkap *"
           className={inputCls}
+          autoComplete="name"
+          required
+          aria-invalid={!!err && !name.trim()}
+          aria-describedby={err ? errorId : undefined}
         />
+        <label className="sr-only" htmlFor={waId}>Nomor WhatsApp</label>
         <input
+          id={waId}
+          name="whatsapp"
           value={wa}
           onChange={(e) => setWa(e.target.value)}
           inputMode="tel"
           placeholder="No. WhatsApp * (mis. 0812xxxx)"
           className={inputCls}
+          autoComplete="tel"
+          required
+          aria-invalid={!!err && wa.replace(/\D/g, "").length < 8}
+          aria-describedby={err ? errorId : undefined}
         />
-        {err && <p className="text-xs text-red-500">{err}</p>}
+        {err && <p id={errorId} className="text-xs text-red-500" role="alert">{err}</p>}
       </div>
       <button
-        type="button"
-        onClick={submit}
+        type="submit"
         disabled={submitting}
         className={buttonClassName}
         style={buttonStyle}
       >
         <MessageCircle size={18} /> {submitting ? "Memproses…" : "Pesan via WhatsApp"}
       </button>
-    </div>
+    </form>
   );
 }

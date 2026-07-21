@@ -7,13 +7,16 @@ import { unstable_cache } from "next/cache";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
-import { compareFeaturedTourOrder } from "@/lib/tour-order";
+import { compareFeaturedTourOrder, getPublicTourState } from "@/lib/tour-order";
+import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import HeroSection from "@/components/website/HeroSection";
 import WhyGallery from "@/components/website/WhyGallery";
 import ToursSection from "@/components/website/ToursSection";
 import BlogSection from "@/components/website/BlogSection";
 import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
+import CleanHome from "@/components/website/clean/CleanHome";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
 const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
@@ -22,14 +25,15 @@ const getData = unstable_cache(async () => {
     // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
     // notes (long), description (long, di-excerpt di card). Hemat JSON
     // payload yang dikirim ke client hydration (ToursCatalog).
-    // Homepage HANYA tampilkan trip yang BISA DIBOOK:
-    //   - status ACTIVE (bukan FULL/DRAFT/CANCELLED)
-    //   - tripDate masih akan datang (atau belum di-set / open trip)
-    // Trip selesai pindah ke halaman /tours sebagai portfolio.
+    // Homepage menampilkan katalog publik bertanggal mendatang/fleksibel.
+    // FULL tetap boleh muncul sebagai social proof, tetapi seluruh kartunya
+    // menjadi monokrom lewat state `sold`.
     prisma.tour.findMany({
       where: {
-        status: "ACTIVE",
-        OR: [{ tripDate: null }, { tripDate: { gte: new Date() } }],
+        AND: [
+          publicTourVisibilityWhere(),
+          { OR: [{ tripDate: null }, { tripDate: { gte: new Date() } }] },
+        ],
       },
       orderBy: { tripDate: "asc" },
       select: {
@@ -107,6 +111,17 @@ export default async function HomePage() {
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
   const pinnedTours = allTours.filter((tour) => tour.pinned);
   const regularTours = allTours.filter((tour) => !tour.pinned);
+
+  if (theme === "atlas") {
+    const now = new Date();
+    const tours = allTours.map((tour) => ({
+      ...tour,
+      title: normalizeTourDisplayTitle(tour.title),
+      tripDate: tour.tripDate?.toISOString() ?? null,
+      state: getPublicTourState(tour, now),
+    }));
+    return <CleanHome tours={tours} testimonials={testimonials} company={company} />;
+  }
 
   return (
     <>

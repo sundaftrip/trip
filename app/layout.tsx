@@ -28,7 +28,7 @@ const ALL_FONT_VARS = [
   anonymousPro.variable, caveat.variable,
 ].join(" ");
 
-const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 const enableSpeedInsights = process.env.VERCEL === "1";
 
 // Brand-forward, hardcode "Sundaf Trip" sebagai brand consumer-facing.

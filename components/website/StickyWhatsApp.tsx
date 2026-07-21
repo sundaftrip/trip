@@ -9,10 +9,17 @@ import { buildWhatsAppHref, toWaNumber } from "@/lib/utils";
 const WA_MESSAGE = "Halo, saya ingin konsultasi paket tour Sundaf Trip.";
 const BILLY_WHATSAPP = "+7 916 889-64-71";
 
-export default function StickyWhatsApp({ phone }: { phone: string }) {
+export default function StickyWhatsApp({
+  phone,
+  hideOnTourDetail = false,
+}: {
+  phone: string;
+  hideOnTourDetail?: boolean;
+}) {
   const pathname = usePathname();
+  const isTourDetail = /^\/tours\/[^/]+\/?$/.test(pathname);
   const wa = toWaNumber(pathname === "/partner" ? BILLY_WHATSAPP : phone);
-  if (!wa) return null;
+  if (!wa || (hideOnTourDetail && isTourDetail)) return null;
   const href = buildWhatsAppHref(wa, WA_MESSAGE);
   return (
     <aside aria-label="Akses cepat WhatsApp" className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50">

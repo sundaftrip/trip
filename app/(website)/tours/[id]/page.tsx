@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type React from "react";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { isPublicTourVisible, publicTourVisibilityWhere } from "@/lib/public-tours";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -19,14 +20,17 @@ import TourShareButtons from "@/components/website/TourShareButtons";
 import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import CleanTourDetail from "@/components/website/clean/CleanTourDetail";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
 import { buildItineraryDisplay, type ItineraryDisplayDay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
+import { normalizeTourDisplayTitle } from "@/lib/tour-display";
+import { getPublicTourState } from "@/lib/tour-order";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
-const siteUrl = process.env.NEXTAUTH_URL ?? "https://sundaftrip.com";
+const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 
 function cleanMetadataText(value?: string | null) {
   const localized = localizePdfText(value);
@@ -334,7 +338,7 @@ export async function generateMetadata({
   if (!tour) return {};
 
   const companyName = companyRow?.value ?? "Sundaftrip";
-  const title = localizePdfText(tour.title) ?? tour.title;
+  const title = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const description = buildTourMetadataDescription(tour, companyName);
 
   const canonicalPath = `/tours/${tour.slug ?? tour.id}`;
@@ -363,7 +367,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
   const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
-  if (!tour || (tour.status === "DRAFT" && process.env.NODE_ENV === "production")) notFound();
+  if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
   const [companyRows, reviews, visaCountries, relatedRaw] = await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
@@ -376,8 +380,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     prisma.tour.findMany({
       where: {
         id: { not: tour.id },
-        status: { in: ["ACTIVE", "FULL"] },
-        OR: [{ tripDate: { gte: new Date() } }, { tripDate: null }],
+        AND: [
+          publicTourVisibilityWhere(),
+          { OR: [{ tripDate: { gte: new Date() } }, { tripDate: null }] },
+        ],
       },
       orderBy: { tripDate: "asc" },
       take: 6,
@@ -408,11 +414,15 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const isExpired = !!tour.tripDate && tour.tripDate < now;
   const isFlexibleDate = !tour.tripDate && tour.status === "ACTIVE";
   const departureLabel = tour.tripDate ? formatDate(tour.tripDate) : isFlexibleDate ? "Tanggal fleksibel" : null;
-  const capacityLabel = isFlexibleDate
-    ? "Privat / sesuai permintaan"
-    : tour.seatsLeft > 0
-      ? `${tour.seatsLeft} seat tersisa`
-      : "Sesuai permintaan";
+  const capacityLabel = isExpired
+    ? "Trip selesai"
+    : tour.status === "FULL"
+      ? "Penuh"
+      : isFlexibleDate
+        ? "Privat / sesuai permintaan"
+        : tour.seatsLeft > 0
+          ? `${tour.seatsLeft} kursi tersisa`
+          : "Tanya ketersediaan";
 
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
@@ -445,8 +455,14 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   const rawItinerary = (tour.itinerary as { day: number; title: string; description: string }[] | null) ?? [];
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
-  const hotelInfo = tour.hotel as Record<string, string> | null;
-  const displayTitle = localizePdfText(tour.title) ?? tour.title;
+  const hotelInfo = tour.hotel && typeof tour.hotel === "object" && !Array.isArray(tour.hotel)
+    ? Object.fromEntries(
+        Object.entries(tour.hotel)
+          .filter(([, value]) => typeof value === "string" || typeof value === "number")
+          .map(([label, value]) => [label, String(value)]),
+      )
+    : null;
+  const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const displayCountry = localizePdfText(tour.country) ?? tour.country;
   const displayCityHighlight = localizePdfText(tour.cityHighlight);
   const displayDuration = localizePdfText(tour.duration);
@@ -474,13 +490,29 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   }));
   const displayRelatedTours = relatedTours.map((item) => ({
     ...item,
-    title: localizePdfText(item.title) ?? item.title,
+    title: normalizeTourDisplayTitle(localizePdfText(item.title) ?? item.title),
     country: localizePdfText(item.country) ?? item.country,
     cityHighlight: localizePdfText(item.cityHighlight),
     duration: localizePdfText(item.duration),
     notes: localizePdfText(item.notes),
     description: localizePdfText(item.description),
     badge: localizePdfText(item.badge),
+  }));
+  const cleanRelatedTours = displayRelatedTours.map((item) => ({
+    id: item.id,
+    slug: item.slug,
+    title: item.title,
+    country: item.country,
+    cityHighlight: item.cityHighlight ?? null,
+    price: item.price,
+    promoPrice: item.promoPrice,
+    seatsLeft: item.seatsLeft,
+    tripDate: item.tripDate?.toISOString() ?? null,
+    duration: item.duration ?? null,
+    heroImg: item.heroImg,
+    badge: item.badge ?? null,
+    status: item.status,
+    state: getPublicTourState(item, now),
   }));
 
   // Untuk add-on visa: deteksi & arahkan otomatis ke halaman visa negara terkait.
@@ -563,16 +595,17 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     image: tour.heroImg ? [tour.heroImg] : undefined,
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(isoDuration ? { duration: isoDuration } : {}),
-    offers: {
-      "@type": "Offer",
-      price: String(tour.promoPrice ?? tour.price),
-      priceCurrency: "IDR",
-      availability:
-        tour.status === "FULL"
+    ...((tour.promoPrice ?? tour.price) > 0 ? {
+      offers: {
+        "@type": "Offer",
+        price: String(tour.promoPrice ?? tour.price),
+        priceCurrency: "IDR",
+        availability: (isExpired || tour.status === "FULL")
           ? "https://schema.org/SoldOut"
           : "https://schema.org/InStock",
-      url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
-    },
+        url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
+      },
+    } : {}),
     provider: {
       "@type": "Organization",
       name: companyName,
@@ -616,6 +649,78 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
       datePublished: r.createdAt.toISOString().slice(0, 10),
     })),
   } : null;
+
+  if (isAtlas) {
+    return (
+      <>
+        <BreadcrumbSchema
+          crumbs={[
+            { name: "Beranda", url: "/" },
+            { name: "Paket Tour", url: "/tours" },
+            { name: displayTitle, url: `/tours/${tour.slug ?? tour.id}` },
+          ]}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
+        />
+        {productJsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+          />
+        )}
+        <CleanTourDetail
+          tour={{
+            id: tour.id,
+            slug: tour.slug,
+            title: displayTitle,
+            country: displayCountry,
+            cityHighlight: displayCityHighlight ?? null,
+            duration: displayDuration ?? null,
+            description: displayDescription ?? null,
+            visaInfo: displayVisaInfo ?? null,
+            notes: displayNotes ?? null,
+            heroImg: tour.heroImg,
+            gallery: tour.gallery,
+            inclusions: displayInclusions,
+            exclusions: displayExclusions,
+            hotel: hotelInfo,
+            price: tour.price,
+            promoPrice: tour.promoPrice,
+            priceLandTour: tour.priceLandTour,
+            seatsLeft: tour.seatsLeft,
+            status: tour.status,
+            tripDate: tour.tripDate,
+          }}
+          itinerary={itinerary}
+          mandatoryAddOns={mandatoryAddOns}
+          optionalAddOns={optionalAddOns.map((item) => ({
+            ...item,
+            visaHref: resolveVisaHref(item.name),
+          }))}
+          paymentPlan={paymentPlan}
+          relatedTours={cleanRelatedTours}
+          reviews={reviews.map((review) => ({
+            id: review.id,
+            name: review.name,
+            role: review.role,
+            content: review.content,
+            rating: review.rating,
+          }))}
+          ratingValue={ratingValue}
+          bookingWaHref={bookingWaHref}
+          bookingSummary={waSummary}
+          basePrice={basePrice}
+          startingTotal={startingTotal}
+          departureLabel={departureLabel}
+          capacityLabel={capacityLabel}
+          isExpired={isExpired}
+          isFlexibleDate={isFlexibleDate}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-16" style={pageBackgroundStyle}>
