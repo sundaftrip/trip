@@ -49,6 +49,13 @@ const RUSSIA_CITY = new Set<string>([
   PEXELS_TOUR_IMAGES.russiaHermitage,
 ]);
 
+const GENERIC_TRAVEL = new Set<string>([
+  PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake,
+  PEXELS_TOUR_IMAGES.vietnamNinhBinh,
+  PEXELS_TOUR_IMAGES.japanTokyo,
+  PEXELS_TOUR_IMAGES.russiaStPetersburg,
+]);
+
 test("maps focused Vietnam routes to their matching visual region", () => {
   assert.ok(
     VIETNAM_NORTH.has(
@@ -152,20 +159,18 @@ test("separates Russian aurora packages from Russian city packages", () => {
   );
 });
 
-test("uses the supplied hero for unknown destinations and a safe local fallback otherwise", () => {
+test("keeps unknown destinations on a local Pexels fallback instead of legacy imagery", () => {
   const suppliedHero = "https://cdn.example.com/tours/iceland.webp";
 
-  assert.equal(
-    getTourProductImage({
+  assert.ok(
+    GENERIC_TRAVEL.has(getTourProductImage({
       title: "Iceland Ring Road",
       country: "Iceland",
       heroImg: suppliedHero,
-    }),
-    suppliedHero,
+    })),
   );
-  assert.equal(
-    getTourProductImage({ title: "Unclassified Journey" }),
-    PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake,
+  assert.ok(
+    GENERIC_TRAVEL.has(getTourProductImage({ title: "Unclassified Journey" })),
   );
 });
 
@@ -183,7 +188,7 @@ test("returns the same product image for the same tour input", () => {
   }
 });
 
-test("converts local product images to absolute URLs and preserves remote URLs", () => {
+test("converts every resolved local product image to an absolute URL", () => {
   const localTour = { title: "Musim Dingin Hokkaido + Tokyo" };
   const localImage = getTourProductImage(localTour);
 
@@ -191,14 +196,14 @@ test("converts local product images to absolute URLs and preserves remote URLs",
     getAbsoluteTourProductImage(localTour, "https://sundaftrip.com/"),
     `https://sundaftrip.com${localImage}`,
   );
+
+  const unknownTour = {
+    title: "Iceland Ring Road",
+    heroImg: "https://cdn.example.com/iceland.webp",
+  };
+  const unknownImage = getTourProductImage(unknownTour);
   assert.equal(
-    getAbsoluteTourProductImage(
-      {
-        title: "Iceland Ring Road",
-        heroImg: "https://cdn.example.com/iceland.webp",
-      },
-      "https://sundaftrip.com",
-    ),
-    "https://cdn.example.com/iceland.webp",
+    getAbsoluteTourProductImage(unknownTour, "https://sundaftrip.com"),
+    `https://sundaftrip.com${unknownImage}`,
   );
 });

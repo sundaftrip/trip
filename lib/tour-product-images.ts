@@ -94,6 +94,13 @@ const RUSSIA_CITY = [
   PEXELS_TOUR_IMAGES.russiaHermitage,
 ] as const;
 
+const GENERIC_TRAVEL = [
+  PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake,
+  PEXELS_TOUR_IMAGES.vietnamNinhBinh,
+  PEXELS_TOUR_IMAGES.japanTokyo,
+  PEXELS_TOUR_IMAGES.russiaStPetersburg,
+] as const;
+
 export function getTourProductImage(tour: TourProductImageInput) {
   const seed = imageSeed(tour);
 
@@ -133,7 +140,7 @@ export function getTourProductImage(tour: TourProductImageInput) {
     return choose(seed, RUSSIA_CITY);
   }
 
-  return tour.heroImg || PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake;
+  return choose(seed || "sundaftrip", GENERIC_TRAVEL);
 }
 
 export function getAbsoluteTourProductImage(tour: TourProductImageInput, siteUrl: string) {
