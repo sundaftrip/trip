@@ -523,15 +523,15 @@
 .destinationGrid strong { display: block; font-size: clamp(22px, 2vw, 30px); font-weight: 730; letter-spacing: -.035em; }
 .destinationGrid small { font-size: 13px; white-space: nowrap; }
 
-.review { overflow: hidden; background: var(--clean-navy); color: #fff; }
-.reviewHeading { display: flex; align-items: flex-end; justify-content: space-between; gap: 36px; }
+.review { overflow: hidden; padding-block: 64px; background: var(--clean-navy); color: #fff; }
+.reviewHeading { width: min(760px, 100%); margin-inline: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
 .reviewKicker { color: #8cdae0; }
-.reviewHeading h2 { max-width: 12ch; color: #fff; }
+.reviewHeading h2 { max-width: none; color: #fff; font-size: clamp(34px, 3.2vw, 44px); line-height: 1.08; }
 .reviewControls { display: flex; gap: 9px; }
 
 .reviewControls button {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border: 1px solid rgba(255, 255, 255, .3);
   border-radius: 50%;
   display: grid;
@@ -543,25 +543,29 @@
 }
 
 .reviewControls button:hover { border-color: #8cdae0; color: #8cdae0; }
+.reviewControls button:focus-visible { outline: 2px solid #8cdae0; outline-offset: 3px; }
+.reviewControls button:disabled { border-color: rgba(255, 255, 255, .14); color: rgba(255, 255, 255, .32); cursor: default; }
 
 .reviewTrack {
-  width: calc(100vw - max(32px, calc((100vw - min(1280px, calc(100vw - 64px))) / 2)));
-  margin-top: 42px;
-  margin-left: max(32px, calc((100vw - min(1280px, calc(100vw - 64px))) / 2));
-  padding: 0 max(32px, calc((100vw - min(1280px, calc(100vw - 64px))) / 2)) 18px 0;
+  width: min(760px, calc(100vw - 64px));
+  margin: 32px auto 0;
+  padding: 0;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: min(840px, 72vw);
-  gap: 20px;
+  grid-auto-columns: 100%;
+  gap: 16px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
+.reviewTrack::-webkit-scrollbar { display: none; }
+.reviewTrack:focus-visible { outline: 2px solid #8cdae0; outline-offset: 8px; }
+
 .reviewSlide {
-  min-height: 360px;
-  padding: 42px;
+  min-height: 220px;
+  padding: 32px 36px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -569,14 +573,15 @@
   border-radius: var(--clean-radius);
   background: rgba(255, 255, 255, .045);
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
-.reviewMark { margin: 0 0 12px; color: #8cdae0; font-size: 58px; line-height: .8; }
-.reviewSlide blockquote { max-width: 29ch; margin: 0; font-size: clamp(24px, 2.2vw, 34px); font-weight: 560; letter-spacing: -.03em; line-height: 1.35; }
-.reviewPerson { margin-top: 36px; display: grid; gap: 4px; }
-.reviewPerson strong { font-size: 16px; }
+.reviewMark { margin: 0 0 8px; color: #8cdae0; font-size: 32px; line-height: .8; }
+.reviewSlide blockquote { max-width: 58ch; margin: 0; font-size: clamp(19px, 1.7vw, 23px); font-weight: 520; letter-spacing: -.02em; line-height: 1.5; }
+.reviewPerson { margin-top: 24px; display: grid; gap: 4px; }
+.reviewPerson strong { font-size: 15px; }
 .reviewPerson span { color: rgba(255, 255, 255, .64); font-size: 13px; }
-.reviewFooter { margin-top: 18px; display: flex; justify-content: space-between; color: rgba(255, 255, 255, .65); font-size: 13px; }
+.reviewFooter { width: min(760px, calc(100vw - 64px)); margin-top: 14px; display: flex; justify-content: space-between; color: rgba(255, 255, 255, .65); font-size: 13px; }
 .reviewFooter a { color: #fff; font-weight: 650; }
 
 .finalCta { padding: 70px 0; background: #fff; }
@@ -1318,11 +1323,15 @@
   .destinationGrid > a:last-child { grid-column: auto; }
   .destinationGrid > a > span { display: block; }
   .destinationGrid small { display: block; margin-top: 4px; }
-  .reviewHeading { align-items: flex-start; }
-  .reviewControls { display: none; }
-  .reviewTrack { width: calc(100vw - 16px); margin-left: 16px; padding-right: 16px; grid-auto-columns: calc(100vw - 48px); }
-  .reviewSlide { min-height: 340px; padding: 30px; }
-  .reviewSlide blockquote { font-size: 24px; }
+  .review { padding-block: 48px; }
+  .reviewHeading { align-items: flex-start; flex-direction: column; gap: 20px; }
+  .reviewHeading h2 { font-size: 30px; }
+  .reviewControls { display: flex; }
+  .reviewTrack { width: calc(100vw - 32px); margin: 28px auto 0; padding: 0; grid-auto-columns: 100%; }
+  .reviewSlide { min-height: 220px; padding: 24px; }
+  .reviewSlide blockquote { font-size: 18px; line-height: 1.55; }
+  .reviewPerson { margin-top: 22px; }
+  .reviewFooter { width: calc(100vw - 32px); margin-top: 14px; gap: 16px; }
   .ctaPanel,
   .supportRow { display: grid; }
   .ctaPanel > a,
@@ -1397,6 +1406,81 @@
   .detailMobileBooking strong { display: block; color: var(--clean-navy); font-size: 17px; line-height: 1.2; }
   .detailMobileBooking a { min-height: 46px; padding: 0 17px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; background: var(--clean-teal-dark); color: #fff; font-size: 12px; font-weight: 750; }
   :global(body):has(.tourDetail) .footer { padding-bottom: 110px; }
+}
+
+@media (max-width: 720px) {
+  .toursSection {
+    padding-block: 52px;
+  }
+
+  .toursSection .sectionHeading {
+    text-align: left;
+  }
+
+  .toursSection .sectionHeading > p:last-child {
+    margin-inline: 0;
+  }
+
+  .toursSection .tourTrack {
+    margin-top: 24px;
+    gap: 20px;
+  }
+
+  .toursSection .tourPhoto {
+    aspect-ratio: 1.55 / 1;
+  }
+
+  .toursSection .sectionLink {
+    margin-top: 30px;
+  }
+
+  .why {
+    padding-block: 52px;
+  }
+
+  .whyLayout {
+    gap: 28px;
+  }
+
+  .why h2 {
+    max-width: 16ch;
+    font-size: 34px;
+  }
+
+  .why .sectionCopy {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .reasons {
+    grid-template-columns: 1fr;
+  }
+
+  .reasons article {
+    padding: 15px 0 17px;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .reasons article > span {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+    padding-top: 3px;
+  }
+
+  .reasons h3 {
+    grid-column: 2;
+    margin: 0 0 4px;
+    font-size: 18px;
+  }
+
+  .reasons p {
+    grid-column: 2;
+    font-size: 14px;
+    line-height: 1.5;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

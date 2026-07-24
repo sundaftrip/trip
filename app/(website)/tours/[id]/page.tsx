@@ -27,6 +27,7 @@ import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
+import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -340,6 +341,7 @@ export async function generateMetadata({
   const companyName = companyRow?.value ?? "Sundaftrip";
   const title = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const description = buildTourMetadataDescription(tour, companyName);
+  const productImage = getAbsoluteTourProductImage(tour, siteUrl);
 
   const canonicalPath = `/tours/${tour.slug ?? tour.id}`;
   return {
@@ -352,13 +354,13 @@ export async function generateMetadata({
       url: `${siteUrl}${canonicalPath}`,
       type: "website",
       siteName: companyName,
-      ...(tour.heroImg ? { images: [{ url: tour.heroImg, width: 1200, height: 630, alt: title }] } : {}),
+      images: [{ url: productImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      ...(tour.heroImg ? { images: [tour.heroImg] } : {}),
+      images: [productImage],
     },
   };
 }
@@ -368,6 +370,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
   const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
+  const productHeroImage = getTourProductImage(tour);
+  const absoluteProductHeroImage = getAbsoluteTourProductImage(tour, siteUrl);
   const [companyRows, reviews, visaCountries, relatedRaw] = await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
@@ -509,7 +513,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     seatsLeft: item.seatsLeft,
     tripDate: item.tripDate?.toISOString() ?? null,
     duration: item.duration ?? null,
-    heroImg: item.heroImg,
+    heroImg: getTourProductImage(item),
     badge: item.badge ?? null,
     status: item.status,
     state: getPublicTourState(item, now),
@@ -592,7 +596,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     "@type": "TouristTrip",
     name: displayTitle,
     description: displayDescription ?? displayNotes ?? displayVisaInfo ?? undefined,
-    image: tour.heroImg ? [tour.heroImg] : undefined,
+    image: [absoluteProductHeroImage],
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(isoDuration ? { duration: isoDuration } : {}),
     ...((tour.promoPrice ?? tour.price) > 0 ? {
@@ -621,7 +625,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     "@type": "Product",
     name: displayTitle,
     description: (displayDescription || displayNotes || displayVisaInfo || `Paket tour ${displayCountry}`).trim(),
-    ...(tour.heroImg ? { image: [tour.heroImg] } : {}),
+    image: [absoluteProductHeroImage],
     brand: { "@type": "Brand", name: companyName || "Sundaf Trip" },
     // offers hanya disertakan kalau harga valid (>0). Harga 0 (trip lama) bikin
     // "Rp 0" & warning Merchant listing, review snippet tidak butuh offers.
@@ -681,7 +685,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             description: displayDescription ?? null,
             visaInfo: displayVisaInfo ?? null,
             notes: displayNotes ?? null,
-            heroImg: tour.heroImg,
+            heroImg: productHeroImage,
             gallery: tour.gallery,
             inclusions: displayInclusions,
             exclusions: displayExclusions,
@@ -743,11 +747,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         />
       )}
       {/* Hero */}
-      <div className={`relative h-80 lg:h-[480px] ${!tour.heroImg && !isOutlined ? "bg-gray-900 dark:bg-gray-950" : ""} ${isOutlined && !tour.heroImg ? "border-b-2" : ""}`}
-        style={isOutlined && !tour.heroImg ? { borderColor: tBdr } : undefined}>
-        {tour.heroImg && (
-          <Image src={tour.heroImg} alt={displayTitle} fill className="object-cover" priority />
-        )}
+      <div className="relative h-80 lg:h-[480px]">
+        <Image src={productHeroImage} alt={displayTitle} fill className="object-cover" priority />
         {/* Cinematic overlay: dark vignette top + strong bottom ramp */}
         <div className="absolute inset-0"
           style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.18) 70%, rgba(0,0,0,0.08) 100%)" }} />

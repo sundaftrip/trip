@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Navigation } from "lucide-react";
+import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { PublicTourState } from "@/lib/tour-order";
 import styles from "./CleanSite.module.css";
@@ -43,7 +44,7 @@ function statusLabel(tour: CleanTour) {
 export default function CleanTourCard({ tour, compact = false }: { tour: CleanTour; compact?: boolean }) {
   const href = `/tours/${tour.slug || tour.id}`;
   const unavailable = tour.state === "sold" || tour.state === "completed";
-  const image = cldThumb(tour.heroImg || "/about-gallery-md/01-aurora.webp", 900, compact ? 520 : 700);
+  const image = cldThumb(getTourProductImage(tour), 900, compact ? 520 : 700);
   const price = tour.promoPrice || tour.price;
 
   return (

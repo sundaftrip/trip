@@ -1,5 +1,6 @@
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
+import { getTourProductImage } from "@/lib/tour-product-images";
 
 interface Tour {
   slug?: string | null;
@@ -112,13 +113,12 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
             <div className="nu-card overflow-hidden">
               {tours.map((tour) => {
                 const price = tour.promoPrice ?? tour.price;
+                const productImage = getTourProductImage(tour);
                 return (
                   <a key={tour.id} href={`/tours/${tour.slug ?? tour.id}`} className="nu-row">
                     <div className="nu-row-thumb">
-                      {tour.heroImg
-                        // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={tour.heroImg} alt={tour.title} loading="lazy" />
-                        : <div className="w-full h-full flex items-center justify-center text-2xl nu-display" style={{ color: "var(--nu-navy)" }}>{tour.title.charAt(0)}</div>}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={productImage} alt={tour.title} loading="lazy" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="nu-display text-[20px] truncate" style={{ color: "var(--nu-navy)" }}>{tour.title}</h3>

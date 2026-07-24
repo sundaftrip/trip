@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
+import { getTourProductImage } from "@/lib/tour-product-images";
 import { formatCurrency, formatDate, cldOptimize, cldThumb } from "@/lib/utils";
 
 interface Tour {
@@ -724,19 +725,20 @@ export default function TourCard({ tour, theme = "classic", eagerImage = false }
   const isExpired = !!tour.tripDate && new Date(tour.tripDate) < now;
   const isFull = tour.status === "FULL";
   const isDimmed = isExpired || isFull;
+  const productTour = { ...tour, heroImg: getTourProductImage(tour) };
 
   let card;
-  if (theme === "tropical") card = <TropicalCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "kawaii") card = <KawaiiCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "pixel") card = <PixelCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "globe") card = <GlobeCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "map")   card = <MapCard   tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "atlas") card = <AtlasCard tour={tour} isDimmed={isDimmed} eagerImage={eagerImage} />;
-  else if (theme === "fumayo") card = <FumayoCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "attic") card = <AtticCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "teri") card = <TeriCard tour={tour} isDimmed={isDimmed} />;
-  else if (theme === "corei") card = <CoreiCard tour={tour} isDimmed={isDimmed} />;
-  else card = <ClassicCard tour={tour} isDimmed={isDimmed} />;
+  if (theme === "tropical") card = <TropicalCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "kawaii") card = <KawaiiCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "pixel") card = <PixelCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "globe") card = <GlobeCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "map")   card = <MapCard   tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "atlas") card = <AtlasCard tour={productTour} isDimmed={isDimmed} eagerImage={eagerImage} />;
+  else if (theme === "fumayo") card = <FumayoCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "attic") card = <AtticCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "teri") card = <TeriCard tour={productTour} isDimmed={isDimmed} />;
+  else if (theme === "corei") card = <CoreiCard tour={productTour} isDimmed={isDimmed} />;
+  else card = <ClassicCard tour={productTour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
   return <Link href={`/tours/${tour.slug ?? tour.id}`} prefetch={false} className="block h-full min-w-0">{card}</Link>;

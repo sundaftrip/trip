@@ -14,6 +14,7 @@ import {
   withoutCodeMessage,
 } from "@/lib/referrals";
 import { cldOptimize, formatCurrency, formatDate } from "@/lib/utils";
+import { getTourProductImage } from "@/lib/tour-product-images";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -208,7 +209,7 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
   const highlights = tripHighlights(matchedTour);
   const compactHighlights = highlights.slice(0, 2);
   const tourHref = matchedTour?.slug ? `/tours/${matchedTour.slug}` : null;
-  const heroImage = matchedTour?.heroImg ? cldOptimize(matchedTour.heroImg, 960) : "";
+  const heroImage = matchedTour ? cldOptimize(getTourProductImage(matchedTour), 960) : "";
   const tripDescription = matchedTour?.description
     ? excerpt(matchedTour.description)
     : `${campaign.discountLabel} berlaku untuk konsultasi ${campaign.packageName}. Tim Sundaf Trip akan bantu cek jadwal, seat, dan skema pembayaran sebelum booking.`;
