@@ -523,10 +523,10 @@
 .destinationGrid strong { display: block; font-size: clamp(22px, 2vw, 30px); font-weight: 730; letter-spacing: -.035em; }
 .destinationGrid small { font-size: 13px; white-space: nowrap; }
 
-.review { overflow: hidden; padding-block: 64px; background: var(--clean-navy); color: #fff; }
-.reviewHeading { width: min(760px, 100%); margin-inline: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
+.review { overflow: hidden; padding-block: 52px; background: var(--clean-navy); color: #fff; }
+.reviewHeading { width: min(600px, 100%); margin-inline: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
 .reviewKicker { color: #8cdae0; }
-.reviewHeading h2 { max-width: none; color: #fff; font-size: clamp(34px, 3.2vw, 44px); line-height: 1.08; }
+.reviewHeading h2 { max-width: none; color: #fff; font-size: clamp(30px, 2.6vw, 38px); line-height: 1.08; }
 .reviewControls { display: flex; gap: 9px; }
 
 .reviewControls button {
@@ -547,10 +547,11 @@
 .reviewControls button:disabled { border-color: rgba(255, 255, 255, .14); color: rgba(255, 255, 255, .32); cursor: default; }
 
 .reviewTrack {
-  width: min(760px, calc(100vw - 64px));
-  margin: 32px auto 0;
+  width: min(600px, calc(100vw - 64px));
+  margin: 24px auto 0;
   padding: 0;
   display: grid;
+  align-items: start;
   grid-auto-flow: column;
   grid-auto-columns: 100%;
   gap: 16px;
@@ -564,24 +565,53 @@
 .reviewTrack:focus-visible { outline: 2px solid #8cdae0; outline-offset: 8px; }
 
 .reviewSlide {
-  min-height: 220px;
-  padding: 32px 36px;
+  min-height: 0;
+  padding: 24px 26px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   border: 1px solid rgba(255, 255, 255, .16);
-  border-radius: var(--clean-radius);
+  border-radius: 10px;
   background: rgba(255, 255, 255, .045);
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
-.reviewMark { margin: 0 0 8px; color: #8cdae0; font-size: 32px; line-height: .8; }
-.reviewSlide blockquote { max-width: 58ch; margin: 0; font-size: clamp(19px, 1.7vw, 23px); font-weight: 520; letter-spacing: -.02em; line-height: 1.5; }
-.reviewPerson { margin-top: 24px; display: grid; gap: 4px; }
+.reviewMark { margin: 0 0 6px; color: #8cdae0; font-size: 27px; line-height: .8; }
+.reviewSlide blockquote {
+  max-width: none;
+  margin: 0;
+  font-size: clamp(17px, 1.35vw, 19px);
+  font-weight: 520;
+  letter-spacing: -.02em;
+  line-height: 1.45;
+}
+
+.reviewSlide .reviewQuoteCollapsed {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.reviewToggle {
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8cdae0;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.reviewToggle:focus-visible { outline: 2px solid #8cdae0; outline-offset: 4px; }
+.reviewPerson { margin-top: 18px; display: grid; gap: 4px; }
 .reviewPerson strong { font-size: 15px; }
 .reviewPerson span { color: rgba(255, 255, 255, .64); font-size: 13px; }
-.reviewFooter { width: min(760px, calc(100vw - 64px)); margin-top: 14px; display: flex; justify-content: space-between; color: rgba(255, 255, 255, .65); font-size: 13px; }
+.reviewFooter { width: min(600px, calc(100vw - 64px)); margin-top: 14px; display: flex; justify-content: space-between; color: rgba(255, 255, 255, .65); font-size: 13px; }
 .reviewFooter a { color: #fff; font-weight: 650; }
 
 .finalCta { padding: 70px 0; background: #fff; }
@@ -1313,25 +1343,92 @@
   .section h2,
   .why h2,
   .catalogPage h2 { font-size: 38px; }
+  .toursSection .shell,
+  .catalogSection .shell,
+  .archiveSection .shell { width: min(100% - 24px, 560px); }
   .tourTrack,
-  .catalogGrid { margin-top: 34px; grid-template-columns: 1fr; }
-  .tourTitle { min-height: 0; }
-  .tourFacts { min-height: 0; }
+  .catalogGrid {
+    margin-top: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(8px, 2.8vw, 12px);
+  }
+  .tourCard { border-radius: 10px; }
+  .tourPhoto,
+  .tourCardCompact .tourPhoto { aspect-ratio: 1.36 / 1; }
+  .tourStatus {
+    top: 8px;
+    left: 8px;
+    max-width: calc(100% - 16px);
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 9px;
+    line-height: 1.15;
+    letter-spacing: .045em;
+    white-space: normal;
+  }
+  .tourMeta {
+    min-height: 2.4em;
+    margin: 10px 10px 0;
+    overflow: hidden;
+    display: -webkit-box;
+    font-size: 9px;
+    line-height: 1.2;
+    letter-spacing: .055em;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .tourTitle {
+    min-height: 2.45em;
+    margin: 5px 10px 0;
+    overflow: hidden;
+    display: -webkit-box;
+    font-size: 14px;
+    line-height: 1.22;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .tourFacts,
+  .tourCardCompact .tourFacts {
+    min-height: 46px;
+    margin: 8px 10px 0;
+    gap: 5px;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+  .tourFact { gap: 5px; }
+  .tourFact svg { width: 12px; height: 12px; flex-basis: 12px; margin-top: 1px; }
+  .tourFact span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .priceRow {
+    margin: 9px 10px 10px;
+    padding-top: 8px;
+    display: block;
+  }
+  .priceLabel { margin-bottom: 2px; font-size: 10px; }
+  .price { display: block; font-size: 14px; line-height: 1.15; white-space: nowrap; }
+  .price small { display: block; margin-top: 2px; font-size: 10px; }
+  .cardArrow { display: none; }
   .reasons { grid-template-columns: 1fr; }
   .destinationGrid { display: grid; grid-template-columns: 1fr; grid-template-rows: repeat(4, 260px); }
   .destinationGrid > a:first-child,
   .destinationGrid > a:last-child { grid-column: auto; }
   .destinationGrid > a > span { display: block; }
   .destinationGrid small { display: block; margin-top: 4px; }
-  .review { padding-block: 48px; }
-  .reviewHeading { align-items: flex-start; flex-direction: column; gap: 20px; }
-  .reviewHeading h2 { font-size: 30px; }
+  .review { padding-block: 38px; }
+  .reviewHeading { align-items: flex-start; flex-direction: column; gap: 16px; }
+  .reviewHeading h2 { font-size: 28px; }
   .reviewControls { display: flex; }
-  .reviewTrack { width: calc(100vw - 32px); margin: 28px auto 0; padding: 0; grid-auto-columns: 100%; }
-  .reviewSlide { min-height: 220px; padding: 24px; }
-  .reviewSlide blockquote { font-size: 18px; line-height: 1.55; }
-  .reviewPerson { margin-top: 22px; }
-  .reviewFooter { width: calc(100vw - 32px); margin-top: 14px; gap: 16px; }
+  .reviewTrack { width: min(520px, calc(100vw - 32px)); margin: 22px auto 0; padding: 0; grid-auto-columns: 100%; }
+  .reviewSlide { min-height: 0; padding: 20px; }
+  .reviewSlide blockquote { font-size: 16px; line-height: 1.45; }
+  .reviewSlide .reviewQuoteCollapsed { -webkit-line-clamp: 5; }
+  .reviewPerson { margin-top: 16px; }
+  .reviewFooter { width: min(520px, calc(100vw - 32px)); margin-top: 12px; gap: 16px; }
   .ctaPanel,
   .supportRow { display: grid; }
   .ctaPanel > a,
@@ -1343,17 +1440,29 @@
   .footerMain > .footerColumn:last-child nav { grid-template-columns: 1fr 1fr; }
   .footerBottom { display: grid; }
   .footerBottom > div { flex-wrap: wrap; gap: 12px 18px; }
-  .catalogHero { padding-top: 62px; }
-  .catalogHero h1 { font-size: 54px; }
+  .catalogHero { padding: 44px 0 48px; }
+  .catalogHeroLayout { gap: 34px; }
+  .breadcrumb { margin-bottom: 24px; font-size: 11px; }
+  .catalogHero h1 { font-size: 38px; line-height: 1.02; }
+  .catalogHeroLayout > div:first-child > p:last-child { margin-top: 16px; font-size: 14px; line-height: 1.55; }
+  .catalogTopline h2,
+  .archiveHeading h2 { font-size: 28px; }
   .catalogSummary { grid-template-columns: 1fr; }
-  .catalogSummary > div { display: grid; padding-inline: 0; border-right: 0; grid-template-columns: 80px 1fr; }
-  .catalogTools { align-items: stretch; flex-direction: column; }
+  .catalogSummary > div { display: grid; padding: 14px 0; border-right: 0; grid-template-columns: 64px 1fr; }
+  .catalogSummary strong { font-size: 27px; }
+  .catalogSummary span { margin-top: 0; font-size: 11px; }
+  .catalogSection,
+  .archiveSection { padding: 50px 0; }
+  .catalogTopline > p { font-size: 12px; }
+  .catalogTopline > p strong { font-size: 16px; }
+  .catalogTools { margin-top: 24px; padding: 13px 0; align-items: stretch; flex-direction: column; }
   .filterRow { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-  .filterRow button { flex: 0 0 auto; }
+  .filterRow button { min-height: 36px; padding-inline: 13px; flex: 0 0 auto; font-size: 11px; }
   .monthFilter { justify-content: space-between; }
-  .monthFilter select { min-width: 0; flex: 1; }
+  .monthFilter select { min-width: 0; min-height: 36px; flex: 1; }
   .catalogTopline,
   .archiveHeading { display: grid; }
+  .archiveHeading > div > p:last-child { margin-top: 12px; font-size: 13px; }
   .archiveHeading > strong { width: max-content; }
   .pagination { gap: 8px; }
   .pagination span { font-size: 11px; text-align: center; }
@@ -1423,11 +1532,20 @@
 
   .toursSection .tourTrack {
     margin-top: 24px;
-    gap: 20px;
+    gap: clamp(8px, 2.8vw, 12px);
   }
 
   .toursSection .tourPhoto {
-    aspect-ratio: 1.55 / 1;
+    aspect-ratio: 1.36 / 1;
+  }
+
+  .toursSection .sectionHeading h2 {
+    font-size: 30px;
+  }
+
+  .toursSection .sectionHeading > p:last-child {
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .toursSection .sectionLink {

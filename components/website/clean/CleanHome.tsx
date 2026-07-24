@@ -29,7 +29,7 @@ export default function CleanHome({
   company: Record<string, string>;
 }) {
   const featured = tours.slice(0, 3);
-  const heroImage = "/about-gallery/20-aurora.webp";
+  const heroImage = "/about-gallery/01-aurora.webp";
   const waHref = buildWhatsAppHref(company.company_whatsapp, "Halo, saya ingin konsultasi perjalanan bersama Sundaf Trip.") || "/contact";
   const nib = company.company_nib || "1601260060842";
   const datedMonths = Array.from(new Set(tours.filter((tour) => tour.tripDate).map((tour) => tour.tripDate!.slice(0, 7)))).slice(0, 8);
@@ -41,7 +41,7 @@ export default function CleanHome({
       <a className={styles.skipLink} href="#main-content">Langsung ke konten utama</a>
       <div id="main-content">
         <section className={styles.hero} aria-labelledby="hero-title">
-          <Image src={heroImage} alt="Rombongan Sundaf Trip di bawah aurora" fill priority sizes="100vw" className={styles.heroImage} />
+          <Image src={heroImage} alt="Peserta Sundaf Trip di bawah aurora yang terang" fill priority sizes="100vw" className={styles.heroImage} />
           <div className={styles.heroShade} aria-hidden="true" />
           <div className={styles.shell}>
             <div className={styles.heroContent}>

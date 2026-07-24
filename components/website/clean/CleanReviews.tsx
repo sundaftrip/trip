@@ -14,6 +14,7 @@ type Review = {
 
 export default function CleanReviews({ items }: { items: Review[] }) {
   const track = useRef<HTMLDivElement>(null);
+  const [expandedReview, setExpandedReview] = useState<string | null>(null);
   const [scrollState, setScrollState] = useState({
     canMoveBack: false,
     canMoveForward: items.length > 1,
@@ -105,15 +106,40 @@ export default function CleanReviews({ items }: { items: Review[] }) {
         tabIndex={0}
         aria-label="Testimoni peserta Sundaf Trip"
       >
-        {items.map((item) => (
-          <article className={styles.reviewSlide} key={item.id}>
-            <div><p className={styles.reviewMark} aria-hidden="true">“</p><blockquote>{item.content}</blockquote></div>
-            <div className={styles.reviewPerson}>
-              <strong>{item.name}</strong>
-              <span>{item.role || "Peserta Sundaf Trip"} · Rating {item.rating}/5</span>
-            </div>
-          </article>
-        ))}
+        {items.map((item) => {
+          const canCollapse = item.content.length > 180;
+          const isExpanded = expandedReview === item.id;
+          const quoteId = `testimonial-quote-${item.id}`;
+
+          return (
+            <article className={styles.reviewSlide} key={item.id}>
+              <div>
+                <p className={styles.reviewMark} aria-hidden="true">“</p>
+                <blockquote
+                  id={quoteId}
+                  className={canCollapse && !isExpanded ? styles.reviewQuoteCollapsed : undefined}
+                >
+                  {item.content}
+                </blockquote>
+                {canCollapse ? (
+                  <button
+                    type="button"
+                    className={styles.reviewToggle}
+                    aria-controls={quoteId}
+                    aria-expanded={isExpanded}
+                    onClick={() => setExpandedReview(isExpanded ? null : item.id)}
+                  >
+                    {isExpanded ? "Ringkas" : "Baca lengkap"}
+                  </button>
+                ) : null}
+              </div>
+              <div className={styles.reviewPerson}>
+                <strong>{item.name}</strong>
+                <span>{item.role || "Peserta Sundaf Trip"} · Rating {item.rating}/5</span>
+              </div>
+            </article>
+          );
+        })}
       </div>
       <div className={`${styles.shell} ${styles.reviewFooter}`}>
         <span>{items.length} testimoni terpilih</span>

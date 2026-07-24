@@ -57,7 +57,7 @@ export default function CleanTourCard({ tour, compact = false }: { tour: CleanTo
           src={image}
           alt={tour.title}
           fill
-          sizes={compact ? "(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw" : "(max-width: 760px) 100vw, 33vw"}
+          sizes="(max-width: 700px) 50vw, (max-width: 1100px) 50vw, 33vw"
           className={styles.tourImage}
         />
         <span className={styles.tourStatus}>{statusLabel(tour)}</span>
