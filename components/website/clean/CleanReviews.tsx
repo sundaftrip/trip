@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import styles from "./CleanSite.module.css";
 
@@ -14,11 +14,54 @@ type Review = {
 
 export default function CleanReviews({ items }: { items: Review[] }) {
   const track = useRef<HTMLDivElement>(null);
+  const [scrollState, setScrollState] = useState({
+    canMoveBack: false,
+    canMoveForward: items.length > 1,
+  });
+
+  useEffect(() => {
+    const element = track.current;
+    if (!element) return;
+    const trackElement = element;
+
+    function updateScrollState() {
+      const maxScrollLeft = trackElement.scrollWidth - trackElement.clientWidth;
+      const nextState = {
+        canMoveBack: trackElement.scrollLeft > 2,
+        canMoveForward: trackElement.scrollLeft < maxScrollLeft - 2,
+      };
+
+      setScrollState((currentState) =>
+        currentState.canMoveBack === nextState.canMoveBack &&
+        currentState.canMoveForward === nextState.canMoveForward
+          ? currentState
+          : nextState,
+      );
+    }
+
+    updateScrollState();
+    trackElement.addEventListener("scroll", updateScrollState, { passive: true });
+    const resizeObserver = new ResizeObserver(updateScrollState);
+    resizeObserver.observe(trackElement);
+
+    return () => {
+      trackElement.removeEventListener("scroll", updateScrollState);
+      resizeObserver.disconnect();
+    };
+  }, [items.length]);
 
   function move(direction: -1 | 1) {
     const element = track.current;
     if (!element) return;
-    element.scrollBy({ left: element.clientWidth * 0.78 * direction, behavior: "smooth" });
+
+    const firstSlide = element.children.item(0) as HTMLElement | null;
+    const secondSlide = element.children.item(1) as HTMLElement | null;
+    const step =
+      firstSlide && secondSlide
+        ? secondSlide.offsetLeft - firstSlide.offsetLeft
+        : element.clientWidth;
+
+    element.scrollBy({ left: step * direction, behavior: "smooth" });
   }
 
   if (!items.length) return null;
@@ -31,13 +74,37 @@ export default function CleanReviews({ items }: { items: Review[] }) {
             <p className={styles.reviewKicker}>Kata peserta, apa adanya</p>
             <h2 id="review-title">Cerita dari perjalanan mereka</h2>
           </div>
-          <div className={styles.reviewControls}>
-            <button type="button" onClick={() => move(-1)} aria-label="Testimoni sebelumnya">←</button>
-            <button type="button" onClick={() => move(1)} aria-label="Testimoni berikutnya">→</button>
-          </div>
+          {items.length > 1 ? (
+            <div className={styles.reviewControls}>
+              <button
+                type="button"
+                onClick={() => move(-1)}
+                aria-controls="testimonial-track"
+                aria-label="Testimoni sebelumnya"
+                disabled={!scrollState.canMoveBack}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                onClick={() => move(1)}
+                aria-controls="testimonial-track"
+                aria-label="Testimoni berikutnya"
+                disabled={!scrollState.canMoveForward}
+              >
+                →
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
-      <div ref={track} className={styles.reviewTrack} tabIndex={0} aria-label="Testimoni peserta Sundaf Trip">
+      <div
+        id="testimonial-track"
+        ref={track}
+        className={styles.reviewTrack}
+        tabIndex={0}
+        aria-label="Testimoni peserta Sundaf Trip"
+      >
         {items.map((item) => (
           <article className={styles.reviewSlide} key={item.id}>
             <div><p className={styles.reviewMark} aria-hidden="true">“</p><blockquote>{item.content}</blockquote></div>
