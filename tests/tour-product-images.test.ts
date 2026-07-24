@@ -4,19 +4,13 @@ import {
   getAbsoluteTourProductImage,
   getTourProductImage,
   PEXELS_TOUR_IMAGES,
+  VIETNAM_PRODUCT_IMAGE_BY_SLUG,
 } from "../lib/tour-product-images";
 
 const VIETNAM_NORTH = new Set<string>([
   PEXELS_TOUR_IMAGES.vietnamNinhBinh,
   PEXELS_TOUR_IMAGES.vietnamHaLong,
   PEXELS_TOUR_IMAGES.vietnamHanoi,
-]);
-
-const VIETNAM_MIXED = new Set<string>([
-  ...VIETNAM_NORTH,
-  PEXELS_TOUR_IMAGES.vietnamHoiAn,
-  PEXELS_TOUR_IMAGES.vietnamGoldenBridge,
-  PEXELS_TOUR_IMAGES.vietnamHoChiMinh,
 ]);
 
 const CENTRAL_ASIA = new Set<string>([
@@ -102,18 +96,29 @@ test("maps Phu Quoc packages to the dedicated island image", () => {
       slug: "4d3n-phu-quoc-island-vietnam",
       title: "4 Hari 3 Malam Pulau Phu Quoc Vietnam",
     }),
-    PEXELS_TOUR_IMAGES.vietnamPhuQuoc,
+    PEXELS_TOUR_IMAGES.vietnamPhuQuocBeach,
   );
 });
 
-test("keeps multi-region Vietnam routes in the mixed image pool", () => {
+test("maps multi-region Vietnam routes to a dedicated itinerary highlight", () => {
   const image = getTourProductImage({
     slug: "10d9n-vietnam-from-north-to-south",
     title: "10 Hari 9 Malam Vietnam dari Utara ke Selatan",
     cityHighlight: "Hanoi – Teluk Halong – Danang – Ho Chi Minh – Mekong",
   });
 
-  assert.ok(VIETNAM_MIXED.has(image));
+  assert.equal(image, PEXELS_TOUR_IMAGES.vietnamGoldenBridgeClose);
+});
+
+test("gives all 23 canonical Vietnam products distinct Pexels covers", () => {
+  const entries = Object.entries(VIETNAM_PRODUCT_IMAGE_BY_SLUG);
+  const images = entries.map(([slug]) => getTourProductImage({ slug, country: "Vietnam" }));
+
+  assert.equal(entries.length, 23);
+  assert.equal(new Set(images).size, 23);
+  for (const image of images) {
+    assert.match(image, /^\/images\/tours\/pexels\/vietnam-.+\.webp$/);
+  }
 });
 
 test("maps Central Asia and winter Japan packages to their destination pools", () => {
