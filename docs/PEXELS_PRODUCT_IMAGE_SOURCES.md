@@ -12,6 +12,21 @@ These photographs are used as destination illustrations for tour product covers.
 | `vietnam-golden-bridge-5037910.webp` | Da Nang | Ba Uoc Phung | [Photo 5037910](https://www.pexels.com/photo/the-golden-bridge-in-vietnam-during-sunset-5037910/) |
 | `vietnam-ho-chi-minh-30853340.webp` | Ho Chi Minh City | Ngọc Khánh Nek | [Photo 30853340](https://www.pexels.com/photo/modern-skyscrapers-in-ho-chi-minh-city-skyline-30853340/) |
 | `vietnam-phu-quoc-26742979.webp` | Phu Quoc | Quang Nguyen Vinh | [Photo 26742979](https://www.pexels.com/photo/view-of-phu-quoc-from-the-cable-car-vietnam-26742979/) |
+| `vietnam-hanoi-skyline-26919110.webp` | Hanoi | tu nguyen | [Photo 26919110](https://www.pexels.com/photo/hanoi-city-in-vietnam-26919110/) |
+| `vietnam-ha-long-bay-islands-6876808.webp` | Ha Long Bay | Quang Nguyen Vinh | [Photo 6876808](https://www.pexels.com/photo/landscape-of-the-ha-long-bay-in-vietnam-6876808/) |
+| `vietnam-ha-long-bay-lush-26854908.webp` | Ha Long Bay | Chu Phi | [Photo 26854908](https://www.pexels.com/photo/ha-long-bay-in-vietnam-26854908/) |
+| `vietnam-sapa-terraces-6713726.webp` | Sapa | Quang Nguyen Vinh | [Photo 6713726](https://www.pexels.com/photo/landscape-with-green-rice-terraces-6713726/) |
+| `vietnam-ninh-binh-sunset-27966525.webp` | Ninh Binh | Ahmad Malulein | [Photo 27966525](https://www.pexels.com/photo/ninh-binh-magical-view-27966525/) |
+| `vietnam-ninh-binh-boat-28706866.webp` | Ninh Binh | Bid | [Photo 28706866](https://www.pexels.com/photo/scenic-boat-ride-in-ninh-binh-vietnam-28706866/) |
+| `vietnam-hoi-an-old-town-27949182.webp` | Hoi An | Phu Nguyen | [Photo 27949182](https://www.pexels.com/photo/hoi-an-old-town-27949182/) |
+| `vietnam-hoi-an-lantern-festival-26805261.webp` | Hoi An | Pragyan Bezbaruah | [Photo 26805261](https://www.pexels.com/photo/lantern-festival-in-hoi-an-vietnam-26805261/) |
+| `vietnam-golden-bridge-32151473.webp` | Da Nang | manvinder social | [Photo 32151473](https://www.pexels.com/photo/golden-bridge-in-da-n-ng-s-ba-na-hills-vietnam-32151473/) |
+| `vietnam-da-nang-coast-36947723.webp` | Da Nang | Cuong Nguyen Manh | [Photo 36947723](https://www.pexels.com/photo/scenic-coastal-view-of-da-nang-vietnam-36947723/) |
+| `vietnam-ho-chi-minh-river-33665972.webp` | Ho Chi Minh City | Lê Đức Khánh | [Photo 33665972](https://www.pexels.com/photo/scenic-view-of-saigon-river-and-ho-chi-minh-skyline-33665972/) |
+| `vietnam-mekong-floating-market-28356799.webp` | Mekong Delta | Flavio Vallone | [Photo 28356799](https://www.pexels.com/photo/vietnamese-woman-on-boat-in-mekong-river-28356799/) |
+| `vietnam-phu-quoc-beach-14012627.webp` | Phu Quoc | Quang Nguyen Vinh | [Photo 14012627](https://www.pexels.com/photo/green-palm-trees-on-beach-shore-14012627/) |
+| `vietnam-phu-quoc-sunset-37571062.webp` | Phu Quoc | Thai Nguyen | [Photo 37571062](https://www.pexels.com/photo/beautiful-sunset-over-phu-quoc-sea-37571062/) |
+| `vietnam-coastal-train-6136133.webp` | Vietnam coast | Quang Nguyen Vinh | [Photo 6136133](https://www.pexels.com/photo/train-riding-through-green-hills-6136133/) |
 | `central-asia-almaty-18516807.webp` | Almaty | White Noiise | [Photo 18516807](https://www.pexels.com/photo/clouds-over-big-almaty-lake-18516807/) |
 | `central-asia-kazakhstan-lake-37088177.webp` | Kazakhstan | Disney Magat | [Photo 37088177](https://www.pexels.com/photo/scenic-lake-in-kazakhstan-mountainous-landscape-37088177/) |
 | `central-asia-issyk-kul-24778688.webp` | Issyk-Kul | Tomáš Malík | [Photo 24778688](https://www.pexels.com/photo/fairytale-canyon-in-issyk-kul-region-kirghistan-24778688/) |
