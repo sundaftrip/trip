@@ -1408,6 +1408,81 @@
   :global(body):has(.tourDetail) .footer { padding-bottom: 110px; }
 }
 
+@media (max-width: 720px) {
+  .toursSection {
+    padding-block: 52px;
+  }
+
+  .toursSection .sectionHeading {
+    text-align: left;
+  }
+
+  .toursSection .sectionHeading > p:last-child {
+    margin-inline: 0;
+  }
+
+  .toursSection .tourTrack {
+    margin-top: 24px;
+    gap: 20px;
+  }
+
+  .toursSection .tourPhoto {
+    aspect-ratio: 1.55 / 1;
+  }
+
+  .toursSection .sectionLink {
+    margin-top: 30px;
+  }
+
+  .why {
+    padding-block: 52px;
+  }
+
+  .whyLayout {
+    gap: 28px;
+  }
+
+  .why h2 {
+    max-width: 16ch;
+    font-size: 34px;
+  }
+
+  .why .sectionCopy {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .reasons {
+    grid-template-columns: 1fr;
+  }
+
+  .reasons article {
+    padding: 15px 0 17px;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .reasons article > span {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+    padding-top: 3px;
+  }
+
+  .reasons h3 {
+    grid-column: 2;
+    margin: 0 0 4px;
+    font-size: 18px;
+  }
+
+  .reasons p {
+    grid-column: 2;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home *,
   .catalogPage *,

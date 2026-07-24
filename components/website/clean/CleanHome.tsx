@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { buildWhatsAppHref, cldThumb } from "@/lib/utils";
+import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
+import { buildWhatsAppHref } from "@/lib/utils";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import CleanReviews from "./CleanReviews";
 import styles from "./CleanSite.module.css";
@@ -14,8 +15,8 @@ type Testimonial = {
 };
 
 function destinationImage(tours: CleanTour[], pattern: RegExp, fallback: string) {
-  const match = tours.find((tour) => pattern.test(`${tour.country} ${tour.title}`) && tour.heroImg);
-  return match?.heroImg ? cldThumb(match.heroImg, 1100, 800) : fallback;
+  const match = tours.find((tour) => pattern.test(`${tour.country} ${tour.title}`));
+  return match ? getTourProductImage(match) : fallback;
 }
 
 export default function CleanHome({
@@ -28,22 +29,20 @@ export default function CleanHome({
   company: Record<string, string>;
 }) {
   const featured = tours.slice(0, 3);
-  const heroTour = tours.find((tour) => /aurora|murmansk|russia|rusia/i.test(`${tour.title} ${tour.country}`) && tour.heroImg);
-  const heroImage = heroTour?.heroImg
-    ? cldThumb(heroTour.heroImg, 1800, 1100)
-    : "/about-gallery/01-aurora.webp";
+  const heroTour = tours.find((tour) => /aurora|murmansk|russia|rusia/i.test(`${tour.title} ${tour.country}`));
+  const heroImage = heroTour ? getTourProductImage(heroTour) : PEXELS_TOUR_IMAGES.russiaAuroraSea;
   const waHref = buildWhatsAppHref(company.company_whatsapp, "Halo, saya ingin konsultasi perjalanan bersama Sundaf Trip.") || "/contact";
   const nib = company.company_nib || "1601260060842";
   const datedMonths = Array.from(new Set(tours.filter((tour) => tour.tripDate).map((tour) => tour.tripDate!.slice(0, 7)))).slice(0, 8);
-  const russiaImage = destinationImage(tours, /russia|rusia|aurora|murmansk/i, "/about-gallery-md/01-aurora.webp");
-  const centralAsiaImage = destinationImage(tours, /kazakh|kyrgyz|uzbek|tajik|asia tengah|central asia/i, "/about-gallery-md/08-aurora.webp");
+  const russiaImage = destinationImage(tours, /russia|rusia|aurora|murmansk/i, PEXELS_TOUR_IMAGES.russiaAuroraSea);
+  const centralAsiaImage = destinationImage(tours, /kazakh|kyrgyz|uzbek|tajik|asia tengah|central asia/i, PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake);
 
   return (
     <div className={styles.home}>
       <a className={styles.skipLink} href="#main-content">Langsung ke konten utama</a>
       <div id="main-content">
         <section className={styles.hero} aria-labelledby="hero-title">
-          <Image src={heroImage} alt="Aurora dalam perjalanan Sundaf Trip di Rusia" fill priority sizes="100vw" className={styles.heroImage} />
+          <Image src={heroImage} alt="Aurora di atas pesisir bersalju" fill priority sizes="100vw" className={styles.heroImage} />
           <div className={styles.heroShade} aria-hidden="true" />
           <div className={styles.shell}>
             <div className={styles.heroContent}>
@@ -84,7 +83,7 @@ export default function CleanHome({
           </div>
         </section>
 
-        <section className={styles.section} id="tours" aria-labelledby="featured-tours-title">
+        <section className={`${styles.section} ${styles.toursSection}`} id="tours" aria-labelledby="featured-tours-title">
           <div className={styles.shell}>
             <div className={`${styles.sectionHeading} ${styles.center}`}>
               <p className={styles.sectionKicker}>Jadwal pilihan Sundaf</p>
@@ -111,7 +110,7 @@ export default function CleanHome({
               <article><span>01</span><h3>Visa &amp; dokumen dibantu</h3><p>Tim membantu mengecek dokumen dan alur pengajuan sebelum perjalanan dikunci.</p></article>
               <article><span>02</span><h3>Itinerary realistis</h3><p>Rute disusun agar destinasi tetap dinikmati, bukan sekadar mengejar jumlah kota.</p></article>
               <article><span>03</span><h3>Koordinasi dari awal</h3><p>Informasi keberangkatan, kebutuhan di destinasi, dan komunikasi grup ditangani end-to-end.</p></article>
-              <article><span>04</span><h3>Dokumentasi asli</h3><p>Foto perjalanan berasal dari trip Sundaf dan peserta, bukan katalog gambar stok.</p></article>
+              <article><span>04</span><h3>Visual destinasi terkurasi</h3><p>Foto destinasi dipilih agar rute dan suasana perjalanan lebih mudah dibayangkan.</p></article>
             </div>
           </div>
         </section>
@@ -124,8 +123,8 @@ export default function CleanHome({
             <div className={styles.destinationGrid}>
               <Link href="/tours?region=rusia"><Image src={russiaImage} alt="Aurora di Rusia" fill sizes="(max-width: 760px) 100vw, 42vw" /><span><strong>Rusia &amp; Aurora</strong><small>Lihat jadwal →</small></span></Link>
               <Link href="/tours?region=asia-tengah"><Image src={centralAsiaImage} alt="Perjalanan Asia Tengah" fill sizes="(max-width: 760px) 100vw, 28vw" /><span><strong>Asia Tengah</strong><small>Lihat tour →</small></span></Link>
-              <Link href="/custom-trip"><Image src="https://res.cloudinary.com/dlmgl1grq/image/upload/w_900,h_700,c_fill,g_auto,q_auto:good,f_auto/sundaftrip/vietnam/catalog/ninh-binh/mua-cave.webp" alt="Lanskap Ninh Binh, Vietnam" fill sizes="(max-width: 760px) 100vw, 28vw" /><span><strong>Vietnam Privat</strong><small>Rancang perjalanan →</small></span></Link>
-              <Link href="/custom-trip"><Image src="https://res.cloudinary.com/dlmgl1grq/image/upload/w_1100,h_600,c_fill,g_auto,q_auto:good,f_auto/sundaftrip/vietnam/catalog/da-nang/golden-bridge-sunset.webp" alt="Golden Bridge di Vietnam" fill sizes="(max-width: 760px) 100vw, 56vw" /><span><strong>Private &amp; Custom Trip</strong><small>Mulai konsultasi →</small></span></Link>
+              <Link href="/custom-trip"><Image src={PEXELS_TOUR_IMAGES.vietnamNinhBinh} alt="Lanskap Ninh Binh, Vietnam" fill sizes="(max-width: 760px) 100vw, 28vw" /><span><strong>Vietnam Privat</strong><small>Rancang perjalanan →</small></span></Link>
+              <Link href="/custom-trip"><Image src={PEXELS_TOUR_IMAGES.vietnamGoldenBridge} alt="Golden Bridge di Vietnam" fill sizes="(max-width: 760px) 100vw, 56vw" /><span><strong>Private &amp; Custom Trip</strong><small>Mulai konsultasi →</small></span></Link>
             </div>
           </div>
         </section>

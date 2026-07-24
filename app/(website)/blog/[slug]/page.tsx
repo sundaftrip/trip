@@ -11,6 +11,7 @@ import { ArrowLeft, Clock, Calendar, User, MapPin } from "lucide-react";
 import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { getTourProductImage } from "@/lib/tour-product-images";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -413,9 +414,7 @@ export default async function BlogDetailPage({
                     }`}
                     style={isOutlined ? { borderColor: bdrClr } : undefined}>
                     <div className="relative h-36">
-                      {t.heroImg
-                        ? <Image src={cldOptimize(t.heroImg, 480)} alt={t.title} fill className="object-cover" />
-                        : <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />}
+                      <Image src={cldOptimize(getTourProductImage(t), 480)} alt={t.title} fill className="object-cover" />
                     </div>
                     <div className="p-3" style={isOutlined ? { background: cardBg } : undefined}>
                       <p

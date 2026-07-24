@@ -4,6 +4,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
+import { getTourProductImage } from "@/lib/tour-product-images";
 
 export const metadata: Metadata = {
   title: "Wisata Kazakhstan dari Indonesia, Almaty, Astana & Alam Liar, Sundaftrip",
@@ -426,9 +427,7 @@ export default async function KazakhstanPage() {
                   className={`group block overflow-hidden transition-all duration-300 hover:-translate-y-1 ${isOutlined ? cardClass : "bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-gray-300"}`}
                   style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
                   <div className="relative h-44 bg-gray-100 dark:bg-slate-800 overflow-hidden">
-                    {tour.heroImg
-                      ? <Image src={tour.heroImg} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, 33vw" />
-                      : <div className="flex items-center justify-center h-full"><MapPin size={28} className="text-gray-300" /></div>}
+                    <Image src={getTourProductImage(tour)} alt={tour.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, 33vw" />
                     {tour.badge && (
                       <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white text-[11px] font-semibold" style={accentStyle}>
                         {tour.badge}
