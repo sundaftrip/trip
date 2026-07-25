@@ -344,9 +344,6 @@
   line-height: 1.65;
 }
 
-.center { text-align: center; }
-.center > p:last-child { margin-inline: auto; }
-
 .tourTrack,
 .catalogGrid {
   margin-top: 54px;

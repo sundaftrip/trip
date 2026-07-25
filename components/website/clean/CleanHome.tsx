@@ -84,7 +84,7 @@ export default function CleanHome({
 
         <section className={`${styles.section} ${styles.toursSection}`} id="tours" aria-labelledby="featured-tours-title">
           <div className={styles.shell}>
-            <div className={`${styles.sectionHeading} ${styles.center}`}>
+            <div className={styles.sectionHeading}>
               <p className={styles.sectionKicker}>Jadwal pilihan Sundaf</p>
               <h2 id="featured-tours-title">Tour yang bisa dipesan sekarang</h2>
               <p>Tanggal, rute, dan harga tampil di depan. Buka detail tour untuk melihat itinerary, fasilitas, dan sisa kursi.</p>
