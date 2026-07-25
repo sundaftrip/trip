@@ -9,6 +9,7 @@ import { isPublicTourVisible } from "@/lib/public-tours";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
+import { getCommerceTourStatus } from "@/lib/tour-commerce";
 import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
 
 export const runtime = "nodejs";
@@ -144,20 +145,28 @@ export async function GET(
   const faqUrl = `${new URL(req.url).origin}/faq`;
 
   const itinerary = (tour.itinerary as ItineraryDay[] | null) ?? [];
-  const finalPrice = tour.promoPrice ?? tour.price;
-  const priceLabel = formatCurrency(finalPrice);
+  const basePrice = tour.promoPrice ?? tour.price;
+  const priceLabel = formatCurrency(basePrice);
   const priceCoretLabel = tour.promoPrice
     ? `${formatCurrency(tour.price)}  -  hemat ${formatCurrency(tour.price - tour.promoPrice)}`
     : null;
   const landTourLabel = tour.priceLandTour ? formatCurrency(tour.priceLandTour) : null;
   const normalizedAddOns = normalizePdfAddOns(tour.addOns);
-  const mandatoryAddOnTotal = normalizedAddOns
-    .filter((item) => item.tag === "wajib")
+  const mandatoryAddOns = normalizedAddOns.filter((item) => item.tag === "wajib");
+  const mandatoryAddOnTotal = mandatoryAddOns
     .reduce((sum, item) => sum + (Number(item.price) || 0), 0);
-  const addOns = normalizedAddOns.filter((item) => item.tag !== "wajib");
-  const paymentPlan = tour.status === "ACTIVE"
+  const inclusivePrice = basePrice + mandatoryAddOnTotal;
+  const inclusivePriceLabel = formatCurrency(inclusivePrice);
+  const inclusivePriceCoretLabel = tour.promoPrice
+    ? `${formatCurrency(tour.price + mandatoryAddOnTotal)}  -  hemat ${formatCurrency(tour.price - tour.promoPrice)}`
+    : null;
+  const commerceStatus = getCommerceTourStatus(tour);
+  const isPurchasable = ["available", "last_seats", "confirmed", "flexible"].includes(
+    commerceStatus,
+  );
+  const paymentPlan = isPublicTourVisible(tour) && tour.status !== "CANCELLED" && isPurchasable
     ? buildTourPaymentPlan({
-        totalAmount: finalPrice + mandatoryAddOnTotal,
+        totalAmount: inclusivePrice,
         departureDate: tour.tripDate,
         seatsLeft: tour.seatsLeft,
         paymentPlanConfig: tour.paymentPlan,
@@ -189,17 +198,27 @@ export async function GET(
     gallery: uniqueImages(gallery),
     visaInfo: tour.visaInfo,
     notes: tour.notes,
-    addOns,
+    addOns: normalizedAddOns,
   });
+  const localizedMandatoryAddOns = (pdfTour.addOns ?? [])
+    .filter((item) => item.tag === "wajib");
+  const localizedOptionalAddOns = (pdfTour.addOns ?? [])
+    .filter((item) => item.tag !== "wajib");
 
   // ItineraryPDF returns a <Document>; cast satisfies renderToBuffer's
   // strict element typing without leaking `any`.
   type PdfElement = Parameters<typeof renderToBuffer>[0];
   const buffer = await renderToBuffer(
     createElement(ItineraryPDF, {
-      tour: pdfTour,
+      tour: {
+        ...pdfTour,
+        addOns: localizedOptionalAddOns,
+      },
       priceLabel,
       priceCoretLabel,
+      mandatoryAddOns: localizedMandatoryAddOns,
+      inclusivePriceLabel,
+      inclusivePriceCoretLabel,
       landTourLabel,
       paymentPlan,
       company: {

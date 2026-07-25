@@ -12,6 +12,10 @@ import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import BlogArticleToc, {
+  type BlogArticleHeading,
+} from "../BlogArticleToc";
+import blogStyles from "../BlogSupporting.module.css";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -66,9 +70,20 @@ function isUnsafeUrl(value: string) {
   return false;
 }
 
+function createHeadingSlug(value: string) {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
 function enhanceArticleHtml(html: string, fallbackAlt: string) {
   const $ = cheerio.load(html, undefined, false);
   const structuredData: unknown[] = [];
+  const headings: BlogArticleHeading[] = [];
 
   $("script").each((_, element) => {
     const script = $(element);
@@ -127,7 +142,37 @@ function enhanceArticleHtml(html: string, fallbackAlt: string) {
     }
   });
 
-  return { html: $.html(), structuredData };
+  const usedHeadingIds = new Set<string>();
+  $("h2,h3").each((index, element) => {
+    const heading = $(element);
+    const label = heading.text().replace(/\s+/g, " ").trim();
+    if (!label) return;
+
+    const requestedId = heading.attr("id")?.trim();
+    const preservedId =
+      requestedId && /^[A-Za-z][A-Za-z0-9_:.-]*$/.test(requestedId)
+        ? requestedId
+        : undefined;
+    const baseId =
+      preservedId || createHeadingSlug(label) || `bagian-${index + 1}`;
+    let headingId = baseId;
+    let duplicateIndex = 2;
+
+    while (usedHeadingIds.has(headingId)) {
+      headingId = `${baseId}-${duplicateIndex}`;
+      duplicateIndex += 1;
+    }
+
+    usedHeadingIds.add(headingId);
+    heading.attr("id", headingId);
+    headings.push({
+      id: headingId,
+      label,
+      level: heading.is("h3") ? 3 : 2,
+    });
+  });
+
+  return { html: $.html(), structuredData, headings };
 }
 
 /* ── #5: generateMetadata, og:image dari cover artikel ─────────────── */
@@ -141,7 +186,7 @@ export async function generateMetadata({
     where: { slug, published: true },
     select: { title: true, excerpt: true, cover: true, date: true },
   });
-  if (!post) return {};
+  if (!post) notFound();
 
   return {
     title: post.title,
@@ -245,8 +290,11 @@ export default async function BlogDetailPage({
     publisher: { "@type": "Organization", name: companyName, url: siteUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blog/${slug}` },
   };
-  const enhancedArticle = post.body ? enhanceArticleHtml(post.body, post.title) : { html: "", structuredData: [] };
+  const enhancedArticle = post.body
+    ? enhanceArticleHtml(post.body, post.title)
+    : { html: "", structuredData: [], headings: [] };
   const articleBody = enhancedArticle.html;
+  const showArticleToc = enhancedArticle.headings.length >= 3;
 
   const divider = (
     <div
@@ -356,19 +404,23 @@ export default async function BlogDetailPage({
           </div>
         )}
 
+        {showArticleToc && (
+          <BlogArticleToc headings={enhancedArticle.headings} />
+        )}
+
         {/* Body */}
         {articleBody && (
           isGlobe ? (
-            <div className="gl-card p-8 prose max-w-none" style={{ background: cardBg, color: headClr }}>
+            <div className={`gl-card p-8 prose max-w-none ${blogStyles.articleBody}`} style={{ background: cardBg, color: headClr }}>
               <div dangerouslySetInnerHTML={{ __html: articleBody }} />
             </div>
           ) : isOutlined ? (
-            <div className="rounded-none p-8 border-2 prose max-w-none"
+            <div className={`rounded-none p-8 border-2 prose max-w-none ${blogStyles.articleBody}`}
               style={{ background: cardBg, borderColor: bdrClr, color: headClr }}>
               <div dangerouslySetInnerHTML={{ __html: articleBody }} />
             </div>
           ) : (
-            <div className="prose prose-blue dark:prose-invert max-w-none"
+            <div className={`prose prose-blue dark:prose-invert max-w-none ${blogStyles.articleBody}`}
               dangerouslySetInnerHTML={{ __html: articleBody }} />
           )
         )}

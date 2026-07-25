@@ -2635,6 +2635,33 @@ main[data-theme] :where(.ring-blue-600\/30, .ring-blue-400\/30, .dark\:ring-blue
   border-color: #e5e7eb !important;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  .destination-light-surface *,
+  .destination-light-surface *::before,
+  .destination-light-surface *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .destination-light-surface [class*="hover:-translate"],
+  .destination-light-surface [class*="hover:scale"],
+  .destination-light-surface [class*="group-hover:scale"] {
+    transform: none !important;
+  }
+}
+
 .destination-light-surface .dark\:text-white {
   color: #111827 !important;
 }

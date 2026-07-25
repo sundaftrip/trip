@@ -22,13 +22,17 @@ export default function StickyWhatsApp({
   if (!wa || (hideOnTourDetail && isTourDetail)) return null;
   const href = buildWhatsAppHref(wa, WA_MESSAGE);
   return (
-    <aside aria-label="Akses cepat WhatsApp" className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50">
+    <aside
+      aria-label="Akses cepat WhatsApp"
+      className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50"
+      data-sticky-whatsapp
+    >
       <a
         href={href}
         target="_blank"
         rel="noreferrer"
         aria-label="Chat via WhatsApp"
-        className="flex h-12 w-12 items-center justify-center gap-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-black/25 transition hover:scale-105 active:scale-95 sm:w-auto sm:pl-3 sm:pr-4 sm:h-14"
+        className="flex h-12 w-12 items-center justify-center gap-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-black/25 transition hover:scale-105 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:w-auto sm:pl-3 sm:pr-4 sm:h-14"
         style={{ background: "#075E54" }}
       >
         <svg

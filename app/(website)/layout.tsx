@@ -7,6 +7,8 @@ import AutoTranslate from "@/components/website/AutoTranslate";
 import ReferralCapture from "@/components/website/ReferralCapture";
 import CleanNavbar from "@/components/website/clean/CleanNavbar";
 import CleanFooter from "@/components/website/clean/CleanFooter";
+import CleanThemeBoundary from "@/components/website/clean/CleanThemeBoundary";
+import cleanShellStyles from "@/components/website/clean/CleanShell.module.css";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -133,16 +135,19 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   /* ── CLEAN, tampilan publik yang sekarang menjadi native Next.js ── */
   if (theme === "atlas") {
     return (
-      <>
+      <CleanThemeBoundary>
         {styleBlock}
         <OrganizationSchema />
+        <a className={cleanShellStyles.skipLink} href="#website-main">
+          Langsung ke konten utama
+        </a>
         <CleanNavbar logo={logo} whatsapp={whatsapp} />
-        <main className="flex-1" data-theme="atlas">{children}</main>
+        <main id="website-main" className="flex-1" data-theme="atlas" tabIndex={-1}>{children}</main>
         <CleanFooter logo={logo} company={company} />
         <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <AutoTranslate />
         <ReferralCapture />
-      </>
+      </CleanThemeBoundary>
     );
   }
 

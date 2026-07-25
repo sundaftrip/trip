@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import VisaDatabase from "./VisaDatabase";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { buildWhatsAppHref } from "@/lib/utils";
+import VisaLanding from "./VisaLanding";
 
 // ISR: database visa jarang berubah — edit dari admin tampil maksimal 5 menit.
 export const revalidate = 300;
@@ -14,50 +15,112 @@ export const metadata: Metadata = {
 };
 
 export default async function VisaPage() {
-  // Hanya ambil 9 field yang dirender VisaDatabase (index). Field kaya
-  // per-negara (eligibility[], documents Json, faqs Json) cuma dipakai di
-  // halaman detail /visa/[slug] — kalau ikut ditarik untuk 88 negara, HTML
-  // index membengkak ratusan KB & berat di mobile. select = payload ramping.
-  const visaEntries = await prisma.countryVisa.findMany({
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    select: {
-      id: true,
-      flag: true,
-      name: true,
-      en: true,
-      region: true,
-      visa: true,
-      stay: true,
-      cost: true,
-      officialFee: true,
-      servicePrice: true,
-      notes: true,
-      conditions: true,
-      sourceUrl: true,
-      lastVerifiedAt: true,
-    },
-  });
+  // Keep the index payload deliberately compact. Rich country fields remain
+  // on /visa/[slug], while this route only needs directory-card information.
+  const [visaEntries, faqRows, companyRows] = await Promise.all([
+    prisma.countryVisa.findMany({
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      select: {
+        id: true,
+        flag: true,
+        name: true,
+        en: true,
+        region: true,
+        visa: true,
+        stay: true,
+        cost: true,
+        officialFee: true,
+        servicePrice: true,
+        notes: true,
+        conditions: true,
+        sourceUrl: true,
+        lastVerifiedAt: true,
+      },
+    }),
+    prisma.faq.findMany({
+      where: { group: "visa", active: true },
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      take: 6,
+      select: { id: true, question: true, answer: true },
+    }),
+    prisma.companyInfo.findMany({
+      where: { key: "company_whatsapp" },
+      select: { key: true, value: true },
+    }),
+  ]);
+
+  const entries = visaEntries.map((entry) => ({
+    ...entry,
+    lastVerifiedAt: entry.lastVerifiedAt?.toISOString() ?? null,
+  }));
+  const serviceEntries = entries.filter((entry) => (
+    entry.visa !== "bebas"
+    && Boolean(
+      entry.servicePrice?.trim()
+      || entry.officialFee?.trim()
+      || (entry.cost?.trim() && entry.cost.trim().toLowerCase() !== "gratis"),
+    )
+  ));
+  const featured = (serviceEntries.length >= 4
+    ? serviceEntries
+    : entries.filter((entry) => entry.visa !== "bebas")
+  ).slice(0, 4);
+  const faqs = faqRows
+    .map((faq) => ({ ...faq, answer: plainText(faq.answer) }))
+    .filter((faq) => faq.question.trim() && faq.answer);
+  const whatsapp = companyRows.find((row) => row.key === "company_whatsapp")?.value;
+  const whatsappHref = buildWhatsAppHref(
+    whatsapp,
+    "Halo Sundaf Trip, saya ingin konsultasi persyaratan dan layanan visa.",
+  );
+  const faqSchema = faqs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": "https://sundaftrip.com/visa#faqpage",
+        inLanguage: "id-ID",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }
+    : null;
 
   return (
-    <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
+    <>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
           { name: "Info Visa", url: "/visa" },
         ]}
       />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8">
-          Visa Paspor Indonesia
-        </h1>
-
-        <VisaDatabase
-          entries={visaEntries.map((entry) => ({
-            ...entry,
-            lastVerifiedAt: entry.lastVerifiedAt?.toISOString() ?? null,
-          }))}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
-      </div>
-    </div>
+      )}
+      <VisaLanding
+        entries={entries}
+        featured={featured}
+        faqs={faqs}
+        whatsappHref={whatsappHref}
+      />
+    </>
   );
+}
+
+function plainText(value: string) {
+  return value
+    .replace(/<\s*br\s*\/?>/gi, "\n")
+    .replace(/<\s*\/p\s*>/gi, "\n")
+    .replace(/<\s*\/li\s*>/gi, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }

@@ -28,7 +28,7 @@ function hasError(value?: string | string[]) {
   return Array.isArray(value) ? Boolean(value[0]) : Boolean(value);
 }
 
-const catalogBackgroundSrc = "/b2b-russia-catalog-background.png?v=2a6be203";
+const catalogBackgroundSrc = "/b2b-russia-catalog-background.png";
 const catalogDateFormatter = new Intl.DateTimeFormat("id-ID", {
   day: "numeric",
   month: "long",

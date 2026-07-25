@@ -164,18 +164,25 @@ test("separates Russian aurora packages from Russian city packages", () => {
   );
 });
 
-test("keeps unknown destinations on a local Pexels fallback instead of legacy imagery", () => {
-  const suppliedHero = "https://cdn.example.com/tours/iceland.webp";
+test("preserves a valid CMS-selected hero and falls back safely when it is absent", () => {
+  const suppliedHero = "https://res.cloudinary.com/sundaf/image/upload/tours/iceland.webp";
 
-  assert.ok(
-    GENERIC_TRAVEL.has(getTourProductImage({
+  assert.equal(
+    getTourProductImage({
       title: "Iceland Ring Road",
       country: "Iceland",
       heroImg: suppliedHero,
-    })),
+    }),
+    suppliedHero,
   );
   assert.ok(
     GENERIC_TRAVEL.has(getTourProductImage({ title: "Unclassified Journey" })),
+  );
+  assert.ok(
+    GENERIC_TRAVEL.has(getTourProductImage({
+      title: "Untrusted external image",
+      heroImg: "https://cdn.example.com/tours/untrusted.webp",
+    })),
   );
 });
 
@@ -204,11 +211,10 @@ test("converts every resolved local product image to an absolute URL", () => {
 
   const unknownTour = {
     title: "Iceland Ring Road",
-    heroImg: "https://cdn.example.com/iceland.webp",
+    heroImg: "https://res.cloudinary.com/sundaf/image/upload/iceland.webp",
   };
-  const unknownImage = getTourProductImage(unknownTour);
   assert.equal(
     getAbsoluteTourProductImage(unknownTour, "https://sundaftrip.com"),
-    `https://sundaftrip.com${unknownImage}`,
+    unknownTour.heroImg,
   );
 });

@@ -1,6 +1,5 @@
-/* Halaman detail visa per-negara, terinspirasi spun.global.
-   Layout: hero hitam + flag besar + badges, anchor nav sticky desktop,
-   konten 2-kolom (sections kiri + sticky pricing card kanan), bottom CTA. */
+/* Country-specific visa detail. Content remains CMS-driven while the
+   presentation follows the public Atlas shell and mobile accessibility rules. */
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -18,9 +17,10 @@ import {
   type VisaFaq,
 } from "@/lib/visa-defaults";
 import { FlagIcon } from "@/lib/flag-icon";
-import VisaOrderForm from "@/components/website/VisaOrderForm";
 import TestimonialSection from "@/components/website/TestimonialSection";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import VisaConsultationForm from "../VisaConsultationForm";
+import styles from "../VisaPages.module.css";
 
 // ISR 5 menit: konten visa jarang berubah, force-dynamic bikin TTFB lambat
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
@@ -34,14 +34,6 @@ const VISA_LABEL: Record<VisaKey, string> = {
   evisa: "E-Visa",
   wajib: "Visa Wajib",
   conditional: "Bersyarat",
-};
-
-const VISA_BADGE: Record<VisaKey, string> = {
-  bebas: "bg-emerald-100 text-emerald-700",
-  voa: "bg-blue-100 text-blue-700",
-  evisa: "bg-amber-100 text-amber-700",
-  wajib: "bg-rose-100 text-rose-700",
-  conditional: "bg-slate-100 text-slate-700",
 };
 
 function isVisaKey(s: string): s is VisaKey {
@@ -68,7 +60,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { name: true, en: true, notes: true },
   });
   const country = findBySlug(countries, slug);
-  if (!country) return { title: "Visa tidak ditemukan" };
+  if (!country) notFound();
   const summary = country.notes.replace(/^Layanan kami:\s*/i, "").slice(0, 140);
   // Suffix "· Sundaf Trip" TIDAK ditulis manual — root layout sudah punya
   // title template `%s · Sundaf Trip` (kalau ditulis lagi jadi dobel).
@@ -172,7 +164,6 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
   const visaKey: VisaKey = isVisaKey(country.visa) ? country.visa : "wajib";
   const visaLabel = VISA_LABEL[visaKey];
-  const visaBadge = VISA_BADGE[visaKey];
 
   const costRaw =
     country.servicePrice?.trim() || country.officialFee?.trim() || country.cost?.trim() || "Gratis";
@@ -232,7 +223,10 @@ export default async function VisaDetailPage({ params }: PageProps) {
       : null;
 
   return (
-    <article className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-950">
+    <article className={styles.page}>
+      <a className={styles.skipLink} href="#visa-detail-content">
+        Lewati ke informasi visa
+      </a>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -253,62 +247,75 @@ export default async function VisaDetailPage({ params }: PageProps) {
         />
       )}
       {/* ─── HERO ─── */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-950 dark:to-black text-white py-10 sm:py-14 px-4">
-        <div className="max-w-6xl mx-auto">
-          <Link
-            href="/visa"
-            className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white mb-6 transition-colors"
-          >
-            <ChevronLeft size={14} aria-hidden /> Database Visa
+      <section className={styles.detailHero} aria-labelledby="visa-country-title">
+        <div className={styles.shell}>
+          <Link href="/visa" className={styles.backLink}>
+            <ChevronLeft size={16} aria-hidden="true" /> Semua negara
           </Link>
 
-          <div className="flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-7">
+          <div className={styles.detailHeroGrid}>
             <FlagIcon
               flag={country.flag}
               rounded
               label={`Bendera ${country.name}`}
               width={112}
-              className="shadow-2xl ring-1 ring-white/10"
+              className={styles.detailFlag}
             />
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/50 mb-1.5">
-                {country.region}
-              </p>
-              <h1 className="text-3xl sm:text-5xl font-bold mb-2 leading-tight">
+            <div>
+              <p className={styles.detailEyebrow}>{country.region}</p>
+              <h1 className={styles.detailTitle} id="visa-country-title">
                 Visa {country.name}
               </h1>
-              <p className="text-sm sm:text-base text-white/60 mb-5">
+              <p className={styles.detailSubtitle}>
                 Untuk pemegang paspor Indonesia &middot; {country.en}
               </p>
-              <div className="flex flex-wrap gap-2">
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${visaBadge}`}
-                >
-                  {visaLabel}
-                </span>
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white">
+              <div className={styles.detailChips}>
+                <span className={styles.detailChip}>{visaLabel}</span>
+                <span className={styles.detailChip}>
                   Maks. tinggal: {country.stay}
                 </span>
                 {processTime && (
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white">
-                    Proses: {processTime}
+                  <span className={styles.detailChip}>
+                    Estimasi proses: {processTime}
                   </span>
                 )}
               </div>
+            </div>
+
+            <div className={styles.detailMeta}>
+              <p>
+                {verifiedLabel
+                  ? `Informasi terakhir diverifikasi ${verifiedLabel}.`
+                  : "Konfirmasi kembali ketentuan sebelum pengajuan."}
+              </p>
+              <p>
+                Persetujuan visa sepenuhnya menjadi kewenangan otoritas terkait.
+              </p>
+              {country.sourceUrl && (
+                <a
+                  className={styles.sourceLink}
+                  href={country.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Buka sumber resmi
+                  <span className="sr-only">, membuka tab baru</span>
+                </a>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── ANCHOR NAV (desktop) ─── */}
-      <nav className="sticky top-20 z-30 bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 hidden md:block">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ul className="flex gap-5 text-sm font-medium overflow-x-auto">
+      {/* ─── ANCHOR NAV ─── */}
+      <nav className={styles.detailNav} aria-label="Bagian informasi visa">
+        <div className={styles.shell}>
+          <ul className={styles.detailNavList}>
             {[
-              ["#overview", "Overview"],
+              ["#overview", "Ringkasan"],
               ["#eligibility", "Kelayakan"],
               ["#dokumen", "Dokumen"],
-              ["#layanan", "Layanan & Harga"],
+              ["#layanan", "Harga"],
               ["#protection", "Visa Protection"],
               ["#proses", "Proses"],
               ["#faq", "FAQ"],
@@ -316,7 +323,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
               <li key={href}>
                 <a
                   href={href}
-                  className="block py-3 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b-2 border-transparent hover:border-current transition-colors"
+                  className={styles.detailNavLink}
                 >
                   {label}
                 </a>
@@ -327,49 +334,36 @@ export default async function VisaDetailPage({ params }: PageProps) {
       </nav>
 
       {/* ─── CONTENT + STICKY PRICING ─── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 lg:gap-12">
-        <main className="space-y-12 min-w-0">
+      <div className={`${styles.shell} ${styles.detailGrid}`} id="visa-detail-content" tabIndex={-1}>
+        <div className={styles.detailContent}>
           {/* OVERVIEW */}
-          <section id="overview">
-            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Overview</h2>
+          <section
+            className={styles.detailSection}
+            id="overview"
+            aria-labelledby="overview-title"
+          >
+            <h2 id="overview-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+              Ringkasan
+            </h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               {overviewText(visaKey, country.name, country.stay)}
             </p>
-            {(conditions.length > 0 || country.sourceUrl || verifiedLabel) && (
+            {conditions.length > 0 && (
               <div className="mt-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-                {conditions.length > 0 && (
-                  <>
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
-                      Kondisi penting
-                    </p>
-                    <ul className="mt-3 space-y-2">
-                      {conditions.map((condition) => (
-                        <li
-                          key={condition}
-                          className="flex items-start gap-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300"
-                        >
-                          <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-amber-500" />
-                          <span>{condition}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-                {(country.sourceUrl || verifiedLabel) && (
-                  <p className="mt-3 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-                    {verifiedLabel && <>Diverifikasi {verifiedLabel}. </>}
-                    {country.sourceUrl && (
-                      <a
-                        href={country.sourceUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-semibold underline underline-offset-4"
-                      >
-                        Sumber resmi
-                      </a>
-                    )}
-                  </p>
-                )}
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+                  Kondisi penting
+                </p>
+                <ul className="mt-3 space-y-2">
+                  {conditions.map((condition) => (
+                    <li
+                      key={condition}
+                      className="flex items-start gap-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                    >
+                      <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-amber-500" />
+                      <span>{condition}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
             {isRussia && (
@@ -393,8 +387,12 @@ export default async function VisaDetailPage({ params }: PageProps) {
           </section>
 
           {/* ELIGIBILITY */}
-          <section id="eligibility">
-            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+          <section
+            className={styles.detailSection}
+            id="eligibility"
+            aria-labelledby="eligibility-title"
+          >
+            <h2 id="eligibility-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
               Syarat Kelayakan
             </h2>
             <ul className="space-y-2">
@@ -412,15 +410,22 @@ export default async function VisaDetailPage({ params }: PageProps) {
           </section>
 
           {/* DOKUMEN */}
-          <section id="dokumen">
-            <h2 className="text-xl font-bold mb-1.5 text-gray-900 dark:text-white">
+          <section
+            className={styles.detailSection}
+            id="dokumen"
+            aria-labelledby="documents-title"
+          >
+            <h2 id="documents-title" className="text-xl font-bold mb-1.5 text-gray-900 dark:text-white">
               Dokumen Wajib
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-2xl leading-relaxed">
               Kamu cukup siapkan dokumen pribadi. Yang bertanda
               {" "}<span
                 className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
-                style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+                style={{
+                  background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
+                  color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                }}
               ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
              , seperti formulir, itinerary, dan booking akomodasi, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
             </p>
@@ -445,7 +450,10 @@ export default async function VisaDetailPage({ params }: PageProps) {
                         {assisted && (
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                            style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 16%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+                            style={{
+                              background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
+                              color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                            }}
                           >
                             <CheckCircle2 size={10} /> Kami bantu
                           </span>
@@ -468,7 +476,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             {/* CTA ke FAQ teknis untuk kasus-kasus khusus */}
             <Link
               href="/visa/faq"
-              className="group mt-4 flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              className="group mt-4 flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               style={{
                 background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 12%, transparent)",
                 border: "1.5px solid color-mix(in srgb, var(--site-accent,#2d6a4f) 55%, transparent)",
@@ -476,7 +484,10 @@ export default async function VisaDetailPage({ params }: PageProps) {
             >
               <span
                 className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+                style={{
+                  background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
+                  color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                }}
               >
                 <HelpCircle size={18} />
               </span>
@@ -484,30 +495,37 @@ export default async function VisaDetailPage({ params }: PageProps) {
                 <span className="block text-sm font-bold text-gray-900 dark:text-white">
                   Kasus khusus? Lihat FAQ Teknis Visa
                 </span>
-                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <span className="block text-xs text-gray-700 dark:text-gray-300 mt-0.5">
                   Cerai, anak di bawah 18, apostille, sponsor pasangan, rekening kecil
                 </span>
               </span>
               <span
                 className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"
-                style={{ background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 22%, transparent)", color: "var(--site-accent-ink,#2d6a4f)" }}
+                style={{
+                  background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
+                  color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                }}
               >
                 Buka
-                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
               </span>
             </Link>
           </section>
 
           {/* LAYANAN */}
-          <section id="layanan">
-            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+          <section
+            className={styles.detailSection}
+            id="layanan"
+            aria-labelledby="service-title"
+          >
+            <h2 id="service-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
               Layanan &amp; Harga
             </h2>
             {(officialFee || servicePrice) && (
               <dl className="mb-4 grid gap-3 sm:grid-cols-2">
                 {officialFee && (
                   <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-600">
                       Biaya resmi
                     </dt>
                     <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
@@ -517,7 +535,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                 )}
                 {servicePrice && (
                   <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-600">
                       Harga layanan Sundaf
                     </dt>
                     <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
@@ -533,7 +551,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   {country.variants.map((v) => {
                     const variantWa = wa
                       ? `https://wa.me/${wa}?text=${encodeURIComponent(
-                          `Halo, saya ingin pesan visa ${country.name}, paket "${v.name}".`,
+                          `Halo, saya tertarik dengan layanan visa ${country.name}, paket "${v.name}". Mohon dibantu cek persyaratan dan biaya terkini.`,
                         )}`
                       : "";
                     const priceLabel =
@@ -561,11 +579,12 @@ export default async function VisaDetailPage({ params }: PageProps) {
                             <a
                               href={variantWa}
                               target="_blank"
-                              rel="noreferrer"
-                              className="shrink-0 px-3 py-2 rounded-lg text-white text-xs font-semibold transition hover:opacity-90"
+                              rel="noopener noreferrer"
+                              className="shrink-0 min-h-11 inline-flex items-center px-3 py-2 rounded-lg text-white text-xs font-semibold transition hover:opacity-90"
                               style={{ background: "#25D366" }}
                             >
-                              Pesan
+                              Tanya paket
+                              <span className="sr-only">, membuka tab baru</span>
                             </a>
                           )}
                         </div>
@@ -574,21 +593,27 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   })}
                 </div>
                 <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu, konfirmasi sebelum pengajuan.
+                  Harga paket berasal dari data layanan saat ini. Tarif resmi dapat berubah;
+                  konfirmasi rincian sebelum pengajuan.
                 </p>
               </>
             ) : (
               <>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{layananText}</p>
                 <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-                  Harga sudah termasuk biaya layanan kami. Tarif kedutaan bisa berubah sewaktu-waktu, konfirmasi sebelum pengajuan.
+                  Biaya dan ketersediaan layanan dapat berubah. Tim akan mengonfirmasi
+                  rincian sebelum dokumen diproses.
                 </p>
               </>
             )}
           </section>
 
           {/* VISA PROTECTION */}
-          <section id="protection">
+          <section
+            className={styles.detailSection}
+            id="protection"
+            aria-labelledby="protection-title"
+          >
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900/60 dark:bg-amber-950/30">
               <div className="flex items-start gap-3">
                 <span className="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200">
@@ -598,7 +623,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
                     Add-on terpisah
                   </p>
-                  <h2 className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
+                  <h2 id="protection-title" className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
                     Asuransi Visa Protection
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
@@ -619,17 +644,17 @@ export default async function VisaDetailPage({ params }: PageProps) {
                       <a
                         href={protectionWaHref}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center justify-center rounded-lg border border-amber-300 px-4 py-2.5 text-sm font-bold text-amber-800 transition hover:bg-amber-100 dark:border-amber-800 dark:text-amber-100 dark:hover:bg-amber-950"
                       >
                         Cek kecocokan polis
+                        <span className="sr-only">, membuka tab baru</span>
                       </a>
                     )}
                   </div>
                   <p className="mt-3 text-xs leading-relaxed text-amber-800/80 dark:text-amber-200/80">
-                    Target premi yang kami screening: sekitar Rp400.000-Rp650.000 per orang bila
-                    tersedia dan sesuai profil perjalanan. Harga final mengikuti negara tujuan,
-                    durasi, usia, nilai manfaat, dan ketentuan insurer.
+                    Ketersediaan, premi, manfaat, dan pengecualian mengikuti negara tujuan,
+                    durasi, usia, profil perjalanan, dan ketentuan perusahaan asuransi.
                   </p>
                 </div>
               </div>
@@ -637,8 +662,12 @@ export default async function VisaDetailPage({ params }: PageProps) {
           </section>
 
           {/* PROSES */}
-          <section id="proses">
-            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+          <section
+            className={styles.detailSection}
+            id="proses"
+            aria-labelledby="process-title"
+          >
+            <h2 id="process-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
               Proses Pengurusan
             </h2>
             <ol className="relative space-y-3 text-sm">
@@ -648,9 +677,9 @@ export default async function VisaDetailPage({ params }: PageProps) {
                 "Untuk visa yang butuh paspor fisik (mis. Eropa & Amerika): antar paspor ke kantor kami, atau cukup kirim via Gojek, tim kami yang terima",
                 "Tim kami review dokumen & ajukan ke konsulat/sistem online",
                 processTime
-                  ? `Visa terbit dalam ${processTime}`
-                  : "Visa terbit sesuai estimasi konsulat",
-                "Paspor + visa bisa diambil langsung di kantor kami, atau kami kirim via Gojek/kurir ke alamatmu",
+                  ? `Pantau hasil permohonan dengan estimasi proses ${processTime}`
+                  : "Pantau hasil permohonan sesuai estimasi otoritas terkait",
+                "Jika proses selesai, dokumen dikembalikan sesuai metode yang sudah disepakati",
               ].map((step, i, arr) => (
                 <li key={i} className="relative flex gap-3">
                   {i < arr.length - 1 && (
@@ -678,23 +707,28 @@ export default async function VisaDetailPage({ params }: PageProps) {
           </section>
 
           {/* FAQ, per-negara dari CMS, atau fallback default per-kategori. */}
-          <section id="faq">
-            <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">FAQ</h2>
-            <div className="space-y-3">
+          <section
+            className={styles.detailSection}
+            id="faq"
+            aria-labelledby="country-faq-title"
+          >
+            <h2 id="country-faq-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+              FAQ
+            </h2>
+            <div className={styles.faqList}>
               {countryFaqs.map((f, i) => (
                 <details
                   key={`country-${i}`}
-                  className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
+                  className={styles.faqItem}
                 >
-                  <summary className="cursor-pointer list-none p-4 font-semibold text-sm flex items-center justify-between gap-3 text-gray-900 dark:text-white">
+                  <summary className={styles.faqSummary}>
                     <span>{f.question}</span>
                     <ChevronDown
-                      size={16}
-                      className="shrink-0 text-gray-400 transition-transform group-open:rotate-180"
-                      aria-hidden
+                      size={18}
+                      aria-hidden="true"
                     />
                   </summary>
-                  <div className="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
+                  <div className={styles.faqAnswer}>
                     {f.answer}
                   </div>
                 </details>
@@ -704,11 +738,14 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
           {/* Ulasan layanan visa (category="visa") dirender full-width
               di bawah grid, lihat <TestimonialSection> setelah </aside>. */}
-        </main>
+        </div>
 
         {/* STICKY ORDER FORM */}
-        <aside className="lg:sticky lg:top-32 lg:self-start">
-          <VisaOrderForm
+        <aside
+          className={styles.orderAside}
+          aria-label={`Konsultasi visa ${country.name}`}
+        >
+          <VisaConsultationForm
             countryName={country.name}
             waNumber={wa}
             variants={country.variants.map((v) => ({
@@ -732,13 +769,13 @@ export default async function VisaDetailPage({ params }: PageProps) {
 function overviewText(visa: VisaKey, name: string, stay: string): string {
   switch (visa) {
     case "bebas":
-      return `Pemegang paspor Indonesia BEBAS VISA masuk ${name} (masa tinggal maksimal ${stay}) — jadi tidak perlu mengurus visa. Tapi "bebas visa" bukan berarti bebas syarat: petugas imigrasi tetap bisa meminta tiket pulang-pergi, bukti akomodasi, dana yang cukup, hingga asuransi perjalanan. Di sinilah kami bantu — menyiapkan dokumen pendukung, itinerary resmi, dan mengatur seluruh perjalanannya supaya kedatanganmu mulus tanpa drama di imigrasi.`;
+      return `Pemegang paspor Indonesia tercatat bebas visa untuk masuk ${name} dengan masa tinggal maksimal ${stay}. Bebas visa bukan berarti bebas syarat: petugas imigrasi dapat meminta tiket pulang-pergi, bukti akomodasi, dana yang cukup, atau dokumen pendukung lain. Tim dapat membantu menyiapkan rencana perjalanan dan mengecek kelengkapan sebelum berangkat.`;
     case "voa":
-      return `${name} memberikan Visa on Arrival (VOA) untuk pemegang paspor Indonesia. Visa diberikan saat tiba di bandara atau border, masa tinggal maksimal ${stay}. Layanan kami: bantu siapkan dokumen pelengkap dan informasi syarat terkini.`;
+      return `${name} menyediakan jalur Visa on Arrival (VOA) untuk pemegang paspor Indonesia dengan masa tinggal maksimal ${stay}. Proses dilakukan saat kedatangan dan tetap mengikuti pemeriksaan petugas imigrasi. Tim dapat membantu menjelaskan dokumen pelengkap dan syarat yang tercatat.`;
     case "evisa":
-      return `Visa ${name} diurus secara elektronik (e-Visa), diajukan online sebelum keberangkatan. Masa tinggal maksimal ${stay}. Tim kami yang uruskan pengajuan e-Visa-nya, kamu cukup kirim dokumen via WhatsApp dan tunggu visa elektronik terbit di email.`;
+      return `Visa ${name} diajukan secara elektronik sebelum keberangkatan dengan masa tinggal maksimal ${stay}. Tim dapat membantu mengecek dokumen dan memproses pengajuan melalui kanal yang berlaku. Hasil permohonan tetap ditentukan oleh otoritas terkait.`;
     case "wajib":
-      return `Visa ${name} wajib diajukan terlebih dahulu sebelum berangkat, biasanya via kedutaan atau VFS Global. Masa tinggal sesuai visa yang diberikan. Tim kami dampingi seluruh proses: dari pengisian formulir, jadwal interview, sampai pengantaran paspor.`;
+      return `Visa ${name} perlu diajukan sebelum berangkat melalui kanal resmi yang berlaku. Masa tinggal mengikuti visa yang diberikan. Tim dapat membantu pengecekan formulir, penjadwalan bila diperlukan, dan alur penyerahan dokumen tanpa menjanjikan persetujuan.`;
     case "conditional":
       return `Aturan masuk ${name} bersyarat untuk pemegang paspor Indonesia. Sebagian traveler bisa memakai jalur bebas visa, waiver, e-Visa, atau ETA jika memenuhi kondisi tertentu; di luar kondisi itu, visa reguler tetap perlu disiapkan. Masa tinggal yang ditampilkan: ${stay}.`;
   }

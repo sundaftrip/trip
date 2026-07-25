@@ -1,22 +1,18 @@
-/* Halaman hub Destinasi — index 3 halaman destinasi (Murmansk, Teriberka,
-   Kazakhstan). Breadcrumb JSON-LD halaman destinasi sudah menunjuk ke
-   /destinations, jadi halaman ini wajib ada (sebelumnya 404).
-   Design system mengikuti pola halaman destinasi & tours (theme helpers). */
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
-import { MapPin, ChevronRight, Compass, FileText } from "lucide-react";
-import { cldOptimize } from "@/lib/utils";
-import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { ArrowRight, ArrowUpRight, Compass, MapPin } from "lucide-react";
 
-// Konten hub jarang berubah — cukup segarkan tiap 1 jam (cuma baca site_theme).
+import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
+import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
+import styles from "@/components/website/clean/DestinationIndex.module.css";
+
 export const revalidate = 3600;
 
 const PAGE_TITLE = "Destinasi Pilihan · Sundaf Trip";
 const PAGE_DESC =
-  "Jelajahi destinasi pilihan Sundaf Trip untuk traveler Indonesia: aurora borealis di Murmansk, desa di ujung dunia Teriberka, dan alam liar Kazakhstan. Panduan lengkap, budget rupiah, dan paket tour tersedia.";
+  "Jelajahi hub perjalanan Rusia dan Aurora, Asia Tengah, Vietnam, dan Jepang, serta panduan destinasi Sundaf Trip untuk traveler Indonesia.";
 
 export const metadata: Metadata = {
   title: "Destinasi Pilihan",
@@ -39,192 +35,228 @@ export const metadata: Metadata = {
   },
 };
 
-/* Gambar kartu diambil dari URL yang sudah dipakai halaman destinasi
-   masing-masing, dioptimasi via cldOptimize (Cloudinary w_480; URL
-   non-Cloudinary lolos apa adanya). */
-const DESTINATIONS = [
+const REGIONAL_HUBS = [
   {
-    slug: "murmansk",
+    href: "/destinations/rusia-aurora",
+    name: "Rusia & Aurora",
+    region: "Rusia, Murmansk & Lingkar Arktik",
+    description:
+      "Bandingkan jadwal aktif, rute kota, dokumentasi peserta, dan kebutuhan visa sebelum memilih perjalanan.",
+    image: PEXELS_TOUR_IMAGES.russiaAuroraSea,
+    imageAlt: "Aurora di atas lanskap bersalju Rusia",
+  },
+  {
+    href: "/destinations/asia-tengah",
+    name: "Asia Tengah",
+    region: "Kazakhstan, Kyrgyzstan, Uzbekistan & Tajikistan",
+    description:
+      "Lihat pilihan perjalanan, alur antarnegara, musim, dan biaya wajib yang tersedia di data tour Sundaf.",
+    image: PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake,
+    imageAlt: "Danau pegunungan di Asia Tengah",
+  },
+  {
+    href: "/destinations/vietnam",
+    name: "Vietnam",
+    region: "Vietnam Utara, Tengah & Selatan",
+    description:
+      "Pilih wilayah, durasi, dan gaya perjalanan dari katalog land tour yang sudah dimiliki Sundaf.",
+    image: PEXELS_TOUR_IMAGES.vietnamNinhBinh,
+    imageAlt: "Lanskap karst hijau di Ninh Binh, Vietnam",
+  },
+  {
+    href: "/destinations/jepang",
+    name: "Jepang",
+    region: "Tokyo, Hokkaido & musim dingin",
+    description:
+      "Temukan jadwal, dokumentasi, dan panduan persiapan dari data tour Jepang Sundaf.",
+    image: PEXELS_TOUR_IMAGES.japanHokkaido,
+    imageAlt: "Lanskap musim dingin Hokkaido, Jepang",
+  },
+] as const;
+
+const EXISTING_GUIDES = [
+  {
+    href: "/destinations/murmansk",
     name: "Murmansk",
-    region: "Rusia · Lingkar Arktik",
-    img: cldOptimize(
-      "https://res.cloudinary.com/dlmgl1grq/image/upload/v1778586061/WhatsApp_Image_2026-05-12_at_18.25.04_bghn1q.jpg",
-      480,
-    ),
-    alt: "Aurora borealis di langit Murmansk, Rusia",
-    desc: "Kota terbesar di atas Lingkar Arktik dan gerbang berburu aurora borealis. Husky sledding, snowmobile safari, sampai makan kepiting raja Murmansk — semua dalam satu trip.",
+    context: "Panduan tujuan Rusia",
   },
   {
-    slug: "teriberka",
+    href: "/destinations/teriberka",
     name: "Teriberka",
-    region: "Rusia · Laut Barents",
-    img: cldOptimize(
-      "https://res.cloudinary.com/dlmgl1grq/image/upload/v1778586061/WhatsApp_Image_2026-05-12_at_18.27.58_xusryb.jpg",
-      480,
-    ),
-    alt: "Teriberka di tepi Laut Barents, Rusia",
-    desc: "Desa nelayan terpencil tempat daratan Rusia berakhir, lokasi syuting film Leviathan. Whale watching di Laut Barents, aurora paling gelap, dan pantai telur naga yang ikonik.",
+    context: "Panduan tujuan Rusia",
   },
   {
-    slug: "kazakhstan",
+    href: "/destinations/kazakhstan",
     name: "Kazakhstan",
-    region: "Asia Tengah · Bebas Visa 30 Hari",
-    img: cldOptimize(
-      "https://images.pexels.com/photos/33731541/pexels-photo-33731541.jpeg?auto=compress&cs=tinysrgb&w=800",
-      480,
-    ),
-    alt: "Danau Kaindy dengan hutan tenggelam, Kazakhstan",
-    desc: "Bebas visa 30 hari untuk WNI. Danau Kaindy dengan hutan tenggelamnya, Charyn Canyon, Almaty di kaki Tian Shan, sampai Astana yang futuristik di tengah stepa.",
+    context: "Panduan tujuan Asia Tengah",
   },
-];
+] as const;
 
-async function getTheme() {
-  try {
-    const row = await prisma.companyInfo.findFirst({ where: { key: "site_theme" } });
-    return row?.value ?? "classic";
-  } catch {
-    return "classic";
-  }
-}
+const destinationSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://sundaftrip.com/destinations#webpage",
+  url: "https://sundaftrip.com/destinations",
+  name: PAGE_TITLE,
+  description: PAGE_DESC,
+  inLanguage: "id-ID",
+  isPartOf: { "@id": "https://sundaftrip.com#website" },
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: REGIONAL_HUBS.map((destination, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: destination.name,
+      url: `https://sundaftrip.com${destination.href}`,
+    })),
+  },
+};
 
-export default async function DestinationsPage() {
-  const rawTheme = await getTheme();
-  const theme = rawTheme === "console" ? "atlas" : rawTheme;
-
-  /* ── theme helpers (pola sama dengan halaman destinasi lain) ── */
-  const isKawaii   = theme === "kawaii";
-  const isTropical = theme === "tropical";
-  const isPixel    = theme === "pixel";
-  const isGlobe    = theme === "globe";
-  const isMap      = theme === "map";
-  const isAtlas    = theme === "atlas";
-  const isFumayo   = theme === "fumayo";
-  const isOutlined = isKawaii || isTropical || isPixel || isGlobe || isMap || isAtlas || isFumayo;
-
-  const pageBg  = isFumayo ? "var(--fb-bg)" : isKawaii ? "var(--kw-bg)" : isTropical ? "var(--tr-bg)" : isPixel ? "var(--px-bg)" : isGlobe ? "var(--gl-bg)" : isMap ? "var(--mp-bg)" : isAtlas ? "var(--at-bg)" : undefined;
-  const headClr = isFumayo ? "var(--fb-text)" : isKawaii ? "var(--kw-text)" : isTropical ? "var(--tr-text)" : isPixel ? "var(--px-text)" : isGlobe ? "var(--gl-text)" : isMap ? "var(--mp-text)" : isAtlas ? "var(--at-text)" : undefined;
-  const subClr  = isFumayo ? "var(--fb-subtext)" : isKawaii ? "var(--kw-subtext)" : isTropical ? "var(--tr-subtext)" : isPixel ? "var(--px-subtext)" : isGlobe ? "var(--gl-subtext)" : isMap ? "var(--mp-subtext)" : isAtlas ? "var(--at-subtext)" : undefined;
-  const cardBg  = isFumayo ? "var(--fb-card)" : isKawaii ? "var(--kw-card)" : isTropical ? "var(--tr-card)" : isPixel ? "var(--px-card)" : isGlobe ? "var(--gl-card)" : isMap ? "var(--mp-card)" : isAtlas ? "var(--at-card)" : undefined;
-  const bdrClr  = isFumayo ? "var(--fb-border)" : isKawaii ? "var(--kw-border)" : isTropical ? "var(--tr-border)" : isPixel ? "var(--px-border)" : isGlobe ? "color-mix(in srgb, var(--gl-border) 40%, transparent)" : isMap ? "var(--mp-border)" : isAtlas ? "var(--at-border)" : undefined;
-
-  const pageGrid = isPixel ? { backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)", backgroundSize: "24px 24px" }
-    : isMap ? { backgroundImage: "linear-gradient(var(--mp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mp-grid) 1px,transparent 1px)", backgroundSize: "28px 28px" }
-    : isAtlas ? { backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)", backgroundSize: "32px 32px" }
-    : isFumayo ? { backgroundImage: "linear-gradient(var(--fb-grid) 1px,transparent 1px),linear-gradient(90deg,var(--fb-grid) 1px,transparent 1px)", backgroundSize: "26px 26px", fontFamily: "var(--fb-font)" }
-    : {};
-
-  const wrapperStyle = pageBg ? { background: pageBg, ...pageGrid } : {};
-
-  const pillClass = isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isPixel ? "px-pill" : isGlobe ? "gl-pill" : isMap ? "mp-pill" : isAtlas ? "at-pill" : "rounded-full px-3 py-1 text-xs font-medium";
-
-  const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
-                     : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
-                     : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
-                     : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
-                     : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
-                     : isAtlas    ? { color: "var(--at-subtext)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#111827", opacity: 0.95 };
-
-  const cardClass = isKawaii ? "kw-card" : isTropical ? "tr-card" : isPixel ? "px-card" : isGlobe ? "gl-card" : isMap ? "mp-card" : isAtlas ? "at-card"
-    : "bg-white rounded-2xl border border-gray-200 hover:border-gray-300";
-
+export default function DestinationsPage() {
   return (
-    <div className={`destination-light-surface min-h-screen pt-24 ${!isOutlined ? "bg-white" : ""}`} style={wrapperStyle}>
+    <div className={styles.page} id="main-content">
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
           { name: "Destinasi", url: "/destinations" },
         ]}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(destinationSchema) }}
+      />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
-        {/* ── HEADER ── */}
-        <div className="pt-8 mb-10">
-          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={eyebrowStyle}>
-            {isPixel ? "► DESTINASI" : "Destinasi"}
-          </span>
-          <h1 className={`text-3xl sm:text-5xl font-black mt-3 mb-4 leading-tight ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
-            style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-            Destinasi Pilihan Sundaf Trip
-          </h1>
-          <p className={`text-sm sm:text-base max-w-2xl leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
-            style={{ color: subClr }}>
-            Panduan destinasi yang kami tulis khusus untuk traveler Indonesia: cara ke sana
-            dari Jakarta, aktivitas terbaik, sampai estimasi budget dalam rupiah.
-          </p>
-        </div>
+      <section className={styles.hero} aria-labelledby="destinations-title">
+        <div className={`${styles.shell} ${styles.heroGrid}`}>
+          <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>DESTINASI SUNDAF</p>
+            <h1 id="destinations-title">Pilih kawasan. Mulai dari informasi yang tepat.</h1>
+            <p className={styles.heroLead}>
+              Masuk lewat hub regional untuk membandingkan jadwal aktif, gambaran
+              rute, dokumentasi, panduan, dan informasi visa yang tersedia.
+            </p>
+            <div className={styles.heroActions}>
+              <a className={styles.primaryAction} href="#hub-regional">
+                Jelajahi kawasan
+                <ArrowRight size={16} aria-hidden="true" />
+              </a>
+              <Link className={styles.secondaryAction} href="/tours">
+                Lihat semua tour
+              </Link>
+            </div>
+          </div>
 
-        {/* ── KARTU DESTINASI ── */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
-          {DESTINATIONS.map((d) => (
-            <Link key={d.slug} href={`/destinations/${d.slug}`}
-              className={`group block overflow-hidden transition-all duration-300 hover:-translate-y-1 ${cardClass}`}
-              style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
-              <div className="relative h-48 bg-gray-100 dark:bg-slate-800 overflow-hidden">
+          <div className={styles.heroMosaic} aria-hidden="true">
+            {REGIONAL_HUBS.map((destination, index) => (
+              <div className={styles.heroTile} key={destination.href}>
                 <Image
-                  src={d.img}
-                  alt={d.alt}
+                  src={destination.image}
+                  alt=""
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  priority={index === 0}
+                  sizes="(max-width: 700px) 45vw, 260px"
                 />
               </div>
-              <div className="p-5">
-                <p className={`text-xs mb-1.5 flex items-center gap-1 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
-                  <MapPin size={11} /> {d.region}
-                </p>
-                <h2 className={`font-black text-lg leading-tight mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
-                  style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-                  {d.name}
-                </h2>
-                <p className={`text-sm leading-relaxed mb-3 ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
-                  {d.desc}
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-semibold group-hover:underline"
-                  style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
-                  Baca panduan {d.name} <ChevronRight size={14} />
-                </span>
-              </div>
-            </Link>
-          ))}
+            ))}
+          </div>
         </div>
+      </section>
 
-        {/* ── CTA: tour & visa ── */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Link href="/tours"
-            className={`group flex items-start gap-4 p-6 transition-all duration-300 hover:-translate-y-0.5 ${cardClass}`}
-            style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
-            <span className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
-              <Compass size={18} />
-            </span>
-            <span>
-              <span className={`block font-black mb-1 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>
-                Lihat Semua Paket Tour
-              </span>
-              <span className={`block text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
-                Trip rombongan ke destinasi-destinasi ini, sudah termasuk visa, tiket, dan pendampingan tour leader.
-              </span>
-            </span>
-          </Link>
-          <Link href="/visa"
-            className={`group flex items-start gap-4 p-6 transition-all duration-300 hover:-translate-y-0.5 ${cardClass}`}
-            style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
-            <span className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
-              <FileText size={18} />
-            </span>
-            <span>
-              <span className={`block font-black mb-1 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>
-                Cek Info & Layanan Visa
-              </span>
-              <span className={`block text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`} style={{ color: subClr }}>
-                Database visa 88 negara untuk paspor Indonesia, lengkap dengan layanan pengurusannya.
-              </span>
-            </span>
+      <section
+        className={styles.regionalSection}
+        id="hub-regional"
+        aria-labelledby="regional-title"
+      >
+        <div className={styles.shell}>
+          <div className={styles.sectionHeading}>
+            <div>
+              <p className={styles.eyebrow}>EMPAT HUB REGIONAL</p>
+              <h2 id="regional-title">Satu tempat untuk memahami tiap kawasan.</h2>
+            </div>
+            <p>
+              Setiap hub menghubungkan informasi perjalanan yang relevan tanpa
+              mengubah jadwal, harga, atau data tour yang sudah dipublikasikan.
+            </p>
+          </div>
+
+          <div className={styles.regionGrid}>
+            {REGIONAL_HUBS.map((destination) => (
+              <article className={styles.regionCard} key={destination.href}>
+                <Link
+                  className={styles.regionLink}
+                  href={destination.href}
+                  aria-label={`Jelajahi hub ${destination.name}`}
+                >
+                  <div className={styles.regionImage}>
+                    <Image
+                      src={destination.image}
+                      alt={destination.imageAlt}
+                      fill
+                      sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1100px) 50vw, 560px"
+                    />
+                    <span className={styles.regionArrow} aria-hidden="true">
+                      <ArrowUpRight size={18} />
+                    </span>
+                  </div>
+                  <div className={styles.regionBody}>
+                    <p className={styles.regionMeta}>
+                      <MapPin size={13} aria-hidden="true" />
+                      {destination.region}
+                    </p>
+                    <h3>{destination.name}</h3>
+                    <p>{destination.description}</p>
+                    <span className={styles.textLink}>
+                      Buka hub regional
+                      <ArrowRight size={15} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.guideSection} aria-labelledby="guide-title">
+        <div className={`${styles.shell} ${styles.guideLayout}`}>
+          <div className={styles.guideIntro}>
+            <p className={styles.eyebrow}>PANDUAN YANG SUDAH TERSEDIA</p>
+            <h2 id="guide-title">Perlu melihat tujuan yang lebih spesifik?</h2>
+            <p>
+              Tiga panduan ini tetap tersedia di alamat sebelumnya, lengkap
+              dengan konten dan tautan yang sudah dimiliki Sundaf.
+            </p>
+          </div>
+          <div className={styles.guideLinks}>
+            {EXISTING_GUIDES.map((guide) => (
+              <Link href={guide.href} key={guide.href}>
+                <span>
+                  <small>{guide.context}</small>
+                  <strong>{guide.name}</strong>
+                </span>
+                <ArrowUpRight size={19} aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.cta} aria-labelledby="destination-cta-title">
+        <div className={styles.shell}>
+          <div>
+            <p className={styles.eyebrow}>BELUM MENENTUKAN RUTE?</p>
+            <h2 id="destination-cta-title">Mulai dari kebutuhan perjalananmu.</h2>
+            <p>
+              Sampaikan kawasan, waktu, dan jumlah peserta. Tim Sundaf akan
+              membantu meninjau opsi perjalanan yang tersedia.
+            </p>
+          </div>
+          <Link href="/custom-trip">
+            <Compass size={17} aria-hidden="true" />
+            Rancang private trip
           </Link>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

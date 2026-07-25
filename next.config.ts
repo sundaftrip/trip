@@ -1,36 +1,5 @@
 import type { NextConfig } from "next";
 import withSerwistInit from "@serwist/next";
-import crypto from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
-
-function publicPrecacheEntries(publicDir = path.join(process.cwd(), "public")) {
-  if (!fs.existsSync(publicDir)) return [];
-
-  const entries: Array<{ url: string; revision: string }> = [];
-  const exclude = [/^sw\.js(\.map)?$/, /^swe-worker-.*\.js(\.map)?$/, /^vietnam\/catalog\//];
-
-  const walk = (dir: string) => {
-    for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
-      const absolutePath = path.join(dir, item.name);
-      const relativePath = path.relative(publicDir, absolutePath).split(path.sep).join("/");
-      if (exclude.some((pattern) => pattern.test(item.isDirectory() ? `${relativePath}/` : relativePath))) continue;
-
-      if (item.isDirectory()) {
-        walk(absolutePath);
-        continue;
-      }
-
-      entries.push({
-        url: `/${relativePath}`,
-        revision: crypto.createHash("md5").update(fs.readFileSync(absolutePath)).digest("hex"),
-      });
-    }
-  };
-
-  walk(publicDir);
-  return entries;
-}
 
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
@@ -38,9 +7,17 @@ const withSerwist = withSerwistInit({
   // Dev: matikan service worker supaya HMR Next dev tidak diintervensi cache.
   // Production build tetap aktifkan.
   disable: process.env.NODE_ENV !== "production",
-  cacheOnNavigation: true,
+  // Serwist's optional navigation helper writes directly to a generic "pages"
+  // cache and bypasses app/sw.ts route guards. Keep it off so authenticated
+  // documents can only pass through the ordered NetworkOnly rules.
+  cacheOnNavigation: false,
   reloadOnOnline: true,
-  additionalPrecacheEntries: publicPrecacheEntries(),
+  // Keep install lightweight on mobile. Only the explicit offline fallback is
+  // precached; Next.js chunks, rendered pages, media, PDFs, and API-shaped
+  // output are fetched through the ordered runtime rules in app/sw.ts.
+  globPublicPatterns: [],
+  exclude: [() => true],
+  additionalPrecacheEntries: [{ url: "/~offline", revision: "offline-v1" }],
 });
 
 const scriptSrc = [
@@ -62,10 +39,11 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
   images: {
-    // unoptimized=true → skip Vercel Image Optimization, foto langsung di-serve
-    // dari Cloudinary CDN (yang sudah punya auto-resize via URL params).
-    // Hemat kuota Vercel Image Optim free tier (1000 source/bulan).
-    unoptimized: true,
+    // Next generates viewport-aware srcset candidates for local and remote
+    // assets. Cloudinary URLs may still carry source-level quality transforms,
+    // while the browser receives only the size selected for its viewport/DPR.
+    deviceSizes: [360, 390, 430, 640, 768, 1024, 1280, 1440, 1920],
+    imageSizes: [64, 96, 128, 160, 240, 320],
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
@@ -77,6 +55,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
     formats: ["image/avif", "image/webp"],
+    qualities: [60, 75],
     minimumCacheTTL: 31536000,
   },
   compress: true,

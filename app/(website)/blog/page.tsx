@@ -7,6 +7,9 @@ import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
 import { formatDate, cldOptimize } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import BlogCategoryFilter, {
+  type BlogCategoryOption,
+} from "./BlogCategoryFilter";
 
 const BLOG_TITLE = "Blog & Tips Travel · Sundaf Trip";
 const BLOG_DESC =
@@ -46,6 +49,17 @@ export default async function BlogPage() {
     prisma.blog.findMany({ where: { published: true }, orderBy: { date: "desc" } }),
     getSiteTheme(),
   ]);
+
+  const categoryCounts = posts.reduce((counts, post) => {
+    const category = post.category?.trim();
+    if (!category) return counts;
+    counts.set(category, (counts.get(category) ?? 0) + 1);
+    return counts;
+  }, new Map<string, number>());
+  const categoryOptions: BlogCategoryOption[] = Array.from(
+    categoryCounts,
+    ([name, count]) => ({ name, count }),
+  ).sort((a, b) => a.name.localeCompare(b.name, "id"));
 
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
@@ -109,10 +123,20 @@ export default async function BlogPage() {
             <p className="text-4xl mb-3">📝</p>
             <p>Belum ada artikel yang dipublish.</p>
           </div>
-        ) : isGlobe ? (
+        ) : (
+          <BlogCategoryFilter
+            categories={categoryOptions}
+            totalCount={posts.length}
+          >
+          {isGlobe ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="block gl-card overflow-hidden group">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
+                className="block gl-card overflow-hidden group"
+              >
                 <div className="relative h-48 overflow-hidden rounded-t-[18px]">
                   {post.cover
                     ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -137,7 +161,12 @@ export default async function BlogPage() {
         ) : isKawaii ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="block kw-card overflow-hidden group">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
+                className="block kw-card overflow-hidden group"
+              >
                 <div className="relative h-48 overflow-hidden rounded-t-[22px] border-b-2" style={{ borderColor: "var(--kw-border)" }}>
                   {post.cover
                     ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -162,7 +191,12 @@ export default async function BlogPage() {
         ) : isTropical ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="block tr-card overflow-hidden group">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
+                className="block tr-card overflow-hidden group"
+              >
                 <div className="relative h-48 overflow-hidden rounded-t-[18px] border-b-2" style={{ borderColor: "var(--tr-border)" }}>
                   {post.cover
                     ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -187,7 +221,12 @@ export default async function BlogPage() {
         ) : isPixel ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="block px-card overflow-hidden group">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
+                className="block px-card overflow-hidden group"
+              >
                 <div className="relative h-48 overflow-hidden border-b-2" style={{ borderColor: "var(--px-border)" }}>
                   {post.cover
                     ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover" />
@@ -212,7 +251,12 @@ export default async function BlogPage() {
         ) : isAtlas ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="block at-card overflow-hidden group">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
+                className="block at-card overflow-hidden group"
+              >
                 <div className="relative h-48 overflow-hidden border-b" style={{ borderColor: "var(--at-border)" }}>
                   {post.cover
                     ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -237,7 +281,12 @@ export default async function BlogPage() {
         ) : isFumayo ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="block fb-card overflow-hidden group">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
+                className="block fb-card overflow-hidden group"
+              >
                 <div className="relative h-48 overflow-hidden" style={{ borderBottom: "2px solid var(--fb-line)" }}>
                   {post.cover
                     ? <Image src={cldOptimize(post.cover, 480)} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -263,6 +312,7 @@ export default async function BlogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}
+                data-blog-category={post.category?.trim() ?? ""}
                 className="group block bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:-translate-y-1 transition-all">
                 <div className="relative h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
                   {post.cover
@@ -283,6 +333,8 @@ export default async function BlogPage() {
               </Link>
             ))}
           </div>
+          )}
+          </BlogCategoryFilter>
         )}
       </div>
     </div>

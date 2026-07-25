@@ -17,9 +17,10 @@ import ContactSection from "@/components/website/ContactSection";
 import TestimonialSection from "@/components/website/TestimonialSection";
 import CleanHome from "@/components/website/clean/CleanHome";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
+import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 
 const getData = unstable_cache(async () => {
-  const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
+  const [texts, toursRaw, posts, companyRows, testimonials, faqs] = await Promise.all([
     prisma.siteText.findMany(),
     // SELECT explicit, homepage card hanya butuh field ini. Skip:
     // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
@@ -40,7 +41,7 @@ const getData = unstable_cache(async () => {
         id: true, slug: true, title: true, country: true, cityHighlight: true,
         price: true, promoPrice: true, seatsLeft: true,
         tripDate: true, duration: true, heroImg: true, badge: true,
-        status: true, pinned: true,
+        status: true, pinned: true, addOns: true,
       },
     }),
     prisma.blog.findMany({
@@ -72,6 +73,11 @@ const getData = unstable_cache(async () => {
         avatar: true,
       },
     }),
+    prisma.faq.findMany({
+      where: { group: "umum", active: true },
+      orderBy: { order: "asc" },
+      select: { id: true, question: true, answer: true },
+    }),
   ]);
   // Sudah difilter di query, tinggal urut: pinned + niche utama
   // (Rusia/Asia Tengah/Aurora) dulu, lalu tanggal terdekat.
@@ -80,7 +86,7 @@ const getData = unstable_cache(async () => {
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  return { texts: t, tours, posts, company, companyRows, testimonials };
+  return { texts: t, tours, posts, company, companyRows, testimonials, faqs };
 // tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
 }, ["home-page-data", "home-payload-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
@@ -99,11 +105,16 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+function toIsoDateString(value: Date | string | null | undefined) {
+  if (!value) return null;
+  return value instanceof Date ? value.toISOString() : value;
+}
+
 export default async function HomePage() {
   // Tidak ada searchParams, pagination + filter region ditangani di
   // client (lihat ToursCatalog). Hasilnya: page HTML jadi STATIC dan
   // bisa di-cache Vercel Edge.
-  const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();
+  const { texts, tours: allTours, posts, company, companyRows, testimonials, faqs } = await getData();
   const wa = toWaNumber(company["company_whatsapp"]);
   const companyName = "Sundaf Trip";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
@@ -114,13 +125,26 @@ export default async function HomePage() {
 
   if (theme === "atlas") {
     const now = new Date();
-    const tours = allTours.map((tour) => ({
-      ...tour,
-      title: normalizeTourDisplayTitle(tour.title),
-      tripDate: tour.tripDate?.toISOString() ?? null,
-      state: getPublicTourState(tour, now),
-    }));
-    return <CleanHome tours={tours} testimonials={testimonials} company={company} />;
+    const tours = allTours.map((tour) => {
+      const { addOns, ...tourFields } = tour;
+      return {
+        ...tourFields,
+        title: normalizeTourDisplayTitle(tour.title),
+        tripDate: toIsoDateString(tour.tripDate),
+        mandatoryTotal: mandatoryAddOnsTotal(addOns),
+        state: getPublicTourState(tour, now),
+      };
+    });
+    return (
+      <CleanHome
+        tours={tours}
+        testimonials={testimonials}
+        posts={posts}
+        company={company}
+        faqs={faqs}
+        texts={texts}
+      />
+    );
   }
 
   return (

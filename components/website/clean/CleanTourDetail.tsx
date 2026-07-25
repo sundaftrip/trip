@@ -16,13 +16,18 @@ import {
 import GalleryZoom from "@/components/website/GalleryZoom";
 import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourShareButtons from "@/components/website/TourShareButtons";
-import { formatCurrency } from "@/lib/utils";
+import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
+import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
 import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
+import TourBookingExperience from "./TourBookingExperience";
+import TourDetailTabs from "./TourDetailTabs";
+import TourHeroGallery from "./TourHeroGallery";
 import styles from "./CleanSite.module.css";
+import interactiveStyles from "./TourDetailInteractive.module.css";
 
 type TourAddOn = {
   name: string;
@@ -51,6 +56,7 @@ type DetailTour = {
   visaInfo: string | null;
   notes: string | null;
   heroImg: string | null;
+  badge: string | null;
   gallery: string[];
   inclusions: string[];
   exclusions: string[];
@@ -72,6 +78,7 @@ type CleanTourDetailProps = {
   relatedTours: CleanTour[];
   reviews: TourReview[];
   ratingValue: number;
+  bookingPhone: string;
   bookingWaHref: string;
   bookingSummary: string;
   basePrice: number;
@@ -185,10 +192,16 @@ function itineraryDate(tripDate: Date | null, day: number) {
   };
 }
 
-function bookingStatus(tour: DetailTour, isExpired: boolean, isFlexibleDate: boolean) {
-  if (isExpired) return "Trip selesai";
-  if (tour.status === "FULL") return "Penuh";
-  if (isFlexibleDate) return "Jadwal disesuaikan";
+function bookingStatus(
+  tour: DetailTour,
+  commerceStatus: ReturnType<typeof getCommerceTourStatus>,
+) {
+  if (commerceStatus === "completed") return "Trip selesai";
+  if (commerceStatus === "sold_out") return "Penuh";
+  if (commerceStatus === "waitlist") return "Daftar tunggu";
+  if (commerceStatus === "confirmed") return "Pasti berangkat";
+  if (commerceStatus === "last_seats") return `${tour.seatsLeft} kursi terakhir`;
+  if (commerceStatus === "flexible") return "Jadwal disesuaikan";
   if (tour.seatsLeft > 0) return `${tour.seatsLeft} kursi tersedia`;
   return "Tanya ketersediaan";
 }
@@ -202,6 +215,7 @@ export default function CleanTourDetail({
   relatedTours,
   reviews,
   ratingValue,
+  bookingPhone,
   bookingWaHref,
   bookingSummary,
   basePrice,
@@ -216,23 +230,83 @@ export default function CleanTourDetail({
   const visaParagraphs = cleanParagraphs(tour.visaInfo);
   const noteParagraphs = cleanParagraphs(tour.notes);
   const heroImage = tour.heroImg || tour.gallery[0] || "/about-gallery-md/01-aurora.webp";
+  const heroImages = [heroImage, ...tour.gallery];
   const route = tour.cityHighlight || tour.country;
-  const status = bookingStatus(tour, isExpired, isFlexibleDate);
-  const unavailable = isExpired || tour.status === "FULL";
+  const commerceStatus = isExpired ? "completed" : getCommerceTourStatus(tour);
+  const status = bookingStatus(tour, commerceStatus);
+  const unavailable = ["completed", "sold_out", "waitlist"].includes(commerceStatus);
   const displayPrice = tour.promoPrice ?? tour.price;
   const hasPrice = displayPrice > 0;
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
-  const sectionLinks = [
-    { href: "#ringkasan", label: "Ringkasan", show: true },
-    { href: "#galeri", label: "Dokumentasi", show: tour.gallery.length > 0 },
-    { href: "#itinerary", label: "Itinerary", show: itinerary.length > 0 },
-    { href: "#fasilitas", label: "Termasuk & tidak", show: hasFacilities },
-    { href: "#hotel", label: "Hotel", show: !!tour.hotel && Object.keys(tour.hotel).length > 0 },
-    { href: "#catatan", label: "Catatan", show: hasNotes },
-    { href: "#pembayaran", label: "Pembayaran", show: !!paymentPlan },
-    { href: "#ulasan", label: "Ulasan", show: reviews.length > 0 },
-  ].filter((item) => item.show);
+  const sectionTabs = [
+    { id: "itinerary", label: "Itinerary", show: itinerary.length > 0 },
+    { id: "harga-tanggal", label: "Harga & Tanggal", show: true },
+    { id: "ulasan", label: "Ulasan", show: true },
+  ].filter((item) => item.show).map(({ id, label }) => ({ id, label }));
+  const bookingMode = commerceStatus === "completed"
+    ? "completed"
+    : commerceStatus === "sold_out" || commerceStatus === "waitlist"
+      ? "sold_out"
+      : commerceStatus === "flexible"
+        ? "flexible"
+        : "available";
+  const priceLabel = hasPrice ? formatCurrency(startingTotal || displayPrice) : "Sesuai permintaan";
+  const bookingDepartures = tour.tripDate && !isExpired
+    ? [{
+        id: `${tour.id}-${tour.tripDate.toISOString().slice(0, 10)}`,
+        label: departureLabel || "Tanggal akan dikonfirmasi",
+        priceLabel,
+        status: commerceStatus === "sold_out"
+          ? "sold_out" as const
+          : commerceStatus === "waitlist"
+            ? "waitlist" as const
+            : commerceStatus === "confirmed"
+              ? "confirmed" as const
+              : commerceStatus === "last_seats"
+                ? "last_seats" as const
+                : "available" as const,
+        availabilityLabel: status,
+      }]
+    : [];
+  const experienceItems = itinerary.slice(0, 6).map((item, index) => ({
+    title: normalizeItineraryDisplayTitle(item.title) || `Hari ke-${item.day}`,
+    description:
+      cleanParagraphs(item.description)[0]
+      || `Lihat aktivitas dan perpindahan untuk hari ke-${item.day}.`,
+    image: heroImages[index % heroImages.length],
+  }));
+  const destinationSlug = getDestinationSlug(tour);
+  const destinationHref =
+    destinationSlug === "lainnya" ? "/destinations" : `/destinations/${destinationSlug}`;
+  const destinationLabel =
+    destinationSlug === "rusia-aurora"
+      ? "Rusia & Aurora"
+      : destinationSlug === "asia-tengah"
+        ? "Asia Tengah"
+        : destinationSlug === "vietnam"
+          ? "Vietnam"
+          : destinationSlug === "jepang"
+            ? "Jepang"
+            : "destinasi Sundaf";
+  const tourFaqs = [
+    {
+      question: "Apakah harga sudah memasukkan seluruh biaya wajib?",
+      answer: mandatoryAddOns.length
+        ? `Estimasi total mulai ${formatCurrency(startingTotal)} per orang sudah menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal.`
+        : "Tidak ada biaya tambahan berlabel wajib pada data tour ini. Tim tetap mengonfirmasi rincian final sebelum pembayaran.",
+    },
+    {
+      question: "Apakah kursi langsung terpesan setelah mengirim WhatsApp?",
+      answer: "Belum. Pesan WhatsApp adalah permintaan ketersediaan. Kursi baru mengikuti konfirmasi tertulis dan instruksi pembayaran dari tim Sundaf.",
+    },
+    {
+      question: isFlexibleDate ? "Apakah tanggal dapat disesuaikan?" : "Bagaimana status keberangkatan dikonfirmasi?",
+      answer: isFlexibleDate
+        ? "Tanggal diajukan lebih dulu dan dikonfirmasi berdasarkan ketersediaan layanan, akomodasi, serta kebutuhan grup."
+        : `Status saat ini: ${status}. Tim memeriksa kembali ketersediaan sebelum peserta melakukan pembayaran.`,
+    },
+  ];
 
   return (
     <div className={styles.tourDetail}>
@@ -246,6 +320,10 @@ export default function CleanTourDetail({
             <span aria-current="page">{tour.title}</span>
           </nav>
 
+          <div className={interactiveStyles.heroGallery}>
+            <TourHeroGallery images={heroImages} title={tour.title} />
+          </div>
+
           <div className={styles.detailHeroHeading}>
             <div>
               <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
@@ -254,31 +332,16 @@ export default function CleanTourDetail({
             <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
           </div>
 
-          <div className={styles.detailHeroFacts} aria-label="Ringkasan perjalanan">
+          <div className={styles.detailHeroFacts} role="group" aria-label="Ringkasan perjalanan">
             <span><MapPin aria-hidden="true" />{route}</span>
             {tour.duration && <span><Clock aria-hidden="true" />{tour.duration}</span>}
             {departureLabel && <span><Calendar aria-hidden="true" />{departureLabel}</span>}
             <span><Users aria-hidden="true" />{capacityLabel}</span>
           </div>
-
-          <figure className={styles.detailHeroPhoto}>
-            <Image
-              src={heroImage}
-              alt={`Visual perjalanan ${tour.title}`}
-              fill
-              priority
-              sizes="(max-width: 760px) 100vw, 1280px"
-            />
-            <figcaption>Gambaran perjalanan {tour.country}</figcaption>
-          </figure>
         </div>
       </section>
 
-      <nav className={styles.detailSectionNav} aria-label="Isi halaman">
-        <div className={styles.shell}>
-          {sectionLinks.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-        </div>
-      </nav>
+      <TourDetailTabs tabs={sectionTabs} tourId={tour.id} />
 
       <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
@@ -291,15 +354,48 @@ export default function CleanTourDetail({
                   <p>{copy.heroSupport}</p>
                 )}
                 <div className={styles.detailRouteLine}><strong>Rute utama</strong><span>{route}</span></div>
+                <Link className={styles.detailDestinationLink} href={destinationHref}>
+                  Baca panduan {destinationLabel} →
+                </Link>
               </div>
             </div>
           </section>
+
+          {experienceItems.length > 1 && (
+            <section className={styles.detailContentSection} aria-labelledby="highlights-title">
+              <p className={styles.detailSectionKicker}>Sorotan pengalaman</p>
+              <h2 className={styles.detailSectionTitle} id="highlights-title">Yang akan ditemui di perjalanan</h2>
+              <div
+                className={styles.detailHighlightRail}
+                role="region"
+                aria-label="Sorotan pengalaman, geser untuk melihat lainnya"
+                tabIndex={0}
+              >
+                {experienceItems.map((item, index) => (
+                  <article key={`${item.title}-${index}`}>
+                    <div>
+                      <Image
+                        src={cldThumb(item.image, 640, 480)}
+                        alt={`Gambaran destinasi untuk ${item.title}`}
+                        fill
+                        quality={60}
+                        sizes="(max-width: 700px) 78vw, 320px"
+                      />
+                    </div>
+                    <span>Hari {itinerary[index]?.day || index + 1}</span>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
           {tour.gallery.length > 0 && (
             <section className={styles.detailContentSection} id="galeri" aria-labelledby="galeri-title">
               <p className={styles.detailSectionKicker}>Visual perjalanan</p>
               <h2 className={styles.detailSectionTitle} id="galeri-title">Dokumentasi &amp; gambaran perjalanan</h2>
-              <p className={styles.detailSectionLede}>Lihat suasana destinasi, akomodasi, atau dokumentasi perjalanan yang tersedia untuk paket ini.</p>
+              <p className={styles.detailSectionLede}>Foto peserta dan dokumentasi operasional Sundaf ditampilkan jika tersedia. Visual destinasi berlisensi hanya digunakan sebagai gambaran dan tidak dinyatakan sebagai dokumentasi peserta.</p>
               <div className={styles.detailGallery}><GalleryZoom images={tour.gallery} altPrefix={`${tour.title} - dokumentasi`} /></div>
             </section>
           )}
@@ -338,6 +434,47 @@ export default function CleanTourDetail({
             </section>
           )}
 
+          <section className={styles.detailContentSection} id="harga-tanggal" aria-labelledby="harga-tanggal-title">
+            <p className={styles.detailSectionKicker}>Harga &amp; tanggal</p>
+            <h2 className={styles.detailSectionTitle} id="harga-tanggal-title">
+              {isFlexibleDate ? "Rancang tanggal perjalanan" : "Pilih tanggal keberangkatan"}
+            </h2>
+            <p className={styles.detailSectionLede}>
+              Harga, biaya wajib, dan status ditampilkan sebelum kamu mengirim permintaan ketersediaan.
+            </p>
+            <div className={interactiveStyles.dateGrid}>
+              <article className={interactiveStyles.dateCard} data-unavailable={unavailable}>
+                <div className={interactiveStyles.dateCardTop}>
+                  <span>{status}</span>
+                  <strong>{departureLabel || "Tanggal fleksibel"}</strong>
+                </div>
+                <dl>
+                  <div><dt>Harga paket</dt><dd>{hasPrice ? formatCurrency(basePrice) : "Sesuai permintaan"}/orang</dd></div>
+                  {mandatoryAddOns.map((item) => (
+                    <div key={item.name}><dt>{item.name} <small>WAJIB</small></dt><dd>+{formatCurrency(item.price)}</dd></div>
+                  ))}
+                  <div className={interactiveStyles.dateTotal}>
+                    <dt>Estimasi total wajib</dt>
+                    <dd>{hasPrice ? formatCurrency(startingTotal) : "Dikonfirmasi tim"}</dd>
+                  </div>
+                  {paymentPlan?.steps[0] && (
+                    <div><dt>Minimum pembayaran awal</dt><dd>{paymentPlan.steps[0].amountLabel}</dd></div>
+                  )}
+                </dl>
+                <TourBookingExperience
+                  phone={bookingPhone}
+                  tourId={tour.id}
+                  tourName={tour.title}
+                  priceLabel={priceLabel}
+                  availabilityLabel={status}
+                  mode={bookingMode}
+                  departures={bookingDepartures}
+                  documentationHref={tour.gallery.length ? "#galeri" : "#ringkasan"}
+                />
+              </article>
+            </div>
+          </section>
+
           {hasFacilities && (
             <section className={styles.detailContentSection} id="fasilitas" aria-labelledby="fasilitas-title">
               <p className={styles.detailSectionKicker}>Transparansi paket</p>
@@ -358,6 +495,28 @@ export default function CleanTourDetail({
               </div>
             </section>
           )}
+
+          <section className={styles.detailContentSection} aria-labelledby="suitability-title">
+            <p className={styles.detailSectionKicker}>Sebelum mengambil keputusan</p>
+            <h2 className={styles.detailSectionTitle} id="suitability-title">Apakah perjalanan ini sesuai?</h2>
+            <div className={styles.detailSuitabilityGrid}>
+              <article>
+                <span>TANGGAL</span>
+                <h3>{isFlexibleDate ? "Diajukan sesuai kebutuhan grup" : departureLabel || "Dikonfirmasi tim"}</h3>
+                <p>{isFlexibleDate ? "Tanggal final mengikuti ketersediaan layanan dan akomodasi." : "Gunakan tanggal yang tertera sebagai dasar permintaan ketersediaan."}</p>
+              </article>
+              <article>
+                <span>RITME</span>
+                <h3>{itinerary.length ? `${itinerary.length} hari itinerary ditampilkan` : tour.duration || "Durasi dikonfirmasi"}</h3>
+                <p>Baca aktivitas harian dan sampaikan kebutuhan mobilitas atau ritme perjalanan saat konsultasi.</p>
+              </article>
+              <article>
+                <span>TRANSPARANSI HARGA</span>
+                <h3>{mandatoryAddOns.length ? `${mandatoryAddOns.length} biaya wajib ditampilkan` : "Tidak ada add-on wajib tercatat"}</h3>
+                <p>Periksa bagian termasuk, belum termasuk, dan total wajib sebelum melanjutkan ke pembayaran.</p>
+              </article>
+            </div>
+          </section>
 
           {tour.hotel && Object.keys(tour.hotel).length > 0 && (
             <section className={styles.detailContentSection} id="hotel" aria-labelledby="hotel-title">
@@ -394,7 +553,12 @@ export default function CleanTourDetail({
                 <div><span>Total per orang</span><strong>{paymentPlan.totalLabel}</strong></div>
                 <p>{paymentPlan.intro}</p>
               </div>
-              <div className={styles.detailPaymentTableWrap}>
+              <div
+                className={styles.detailPaymentTableWrap}
+                role="region"
+                aria-label="Rincian tahap pembayaran, geser untuk melihat semua kolom"
+                tabIndex={0}
+              >
                 <table className={styles.detailPaymentTable}>
                   <thead><tr><th>Tahap</th><th>Jatuh tempo</th><th>Nominal</th></tr></thead>
                   <tbody>{paymentPlan.steps.map((step, index) => <tr key={`${step.label}-${index}`}><td>{step.label}</td><td>{step.dueDateLabel}</td><td>{step.amountLabel}</td></tr>)}</tbody>
@@ -404,24 +568,78 @@ export default function CleanTourDetail({
             </section>
           )}
 
-          {reviews.length > 0 && (
-            <section className={styles.detailContentSection} id="ulasan" aria-labelledby="ulasan-title">
+          <section className={styles.detailContentSection} aria-labelledby="tour-faq-title">
+            <p className={styles.detailSectionKicker}>Pertanyaan sebelum booking</p>
+            <h2 className={styles.detailSectionTitle} id="tour-faq-title">Hal yang perlu dipastikan</h2>
+            <div className={styles.detailFaqs}>
+              {tourFaqs.map((item, index) => (
+                <details key={item.question} open={index === 0}>
+                  <summary>{item.question}</summary>
+                  <p>{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+
+          <section className={styles.detailContentSection} id="ulasan" aria-labelledby="ulasan-title">
               <p className={styles.detailSectionKicker}>Pengalaman peserta</p>
               <div className={styles.detailReviewHeading}>
                 <h2 className={styles.detailSectionTitle} id="ulasan-title">Ulasan peserta</h2>
-                <span><strong>{ratingValue.toFixed(1)}</strong><Star aria-hidden="true" />{reviews.length} ulasan</span>
+                {reviews.length > 0 && <span><strong>{ratingValue.toFixed(1)}</strong><Star aria-hidden="true" />{reviews.length} ulasan</span>}
               </div>
-              <div className={styles.detailReviewGrid}>
-                {reviews.map((review) => (
-                  <article key={review.id}>
-                    <div aria-label={`Rating ${review.rating} dari 5`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} aria-hidden="true" className={index < review.rating ? styles.detailStarActive : ""} />)}</div>
-                    <blockquote>“{review.content}”</blockquote>
-                    <p><strong>{review.name}</strong>{review.role && <span> · {review.role}</span>}</p>
-                  </article>
-                ))}
-              </div>
+              {reviews.length > 0 ? (
+                <div className={styles.detailReviewGrid}>
+                  {reviews.map((review) => (
+                    <article key={review.id}>
+                      <div role="img" aria-label={`Rating ${review.rating} dari 5`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} aria-hidden="true" className={index < review.rating ? styles.detailStarActive : ""} />)}</div>
+                      <blockquote>“{review.content}”</blockquote>
+                      <p><strong>{review.name}</strong>{review.role && <span> · {review.role}</span>}</p>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.detailSectionLede}>Ulasan khusus untuk perjalanan ini belum dipublikasikan. Lihat halaman testimoni untuk cerita peserta Sundaf lainnya.</p>
+              )}
             </section>
-          )}
+
+          <section className={styles.detailMobileUtilities} aria-labelledby="mobile-trip-tools-title">
+            <h2 id="mobile-trip-tools-title">Simpan dan bandingkan detail</h2>
+            <a
+              href={`/tours/${tour.id}/pdf`}
+              data-analytics-event="itinerary_pdf_download"
+              data-tour-id={tour.id}
+              aria-describedby="mobile-pdf-recovery"
+            >
+              <Download aria-hidden="true" />Unduh itinerary PDF
+            </a>
+            <p className={styles.detailPdfRecovery} id="mobile-pdf-recovery">
+              Jika PDF tidak terbuka, <a href={bookingWaHref} data-analytics-placement="detail-mobile-pdf-recovery">minta salinan via WhatsApp</a>.
+            </p>
+            {optionalAddOns.length > 0 && (
+              <details>
+                <summary>Tambahan opsional <span>{optionalAddOns.length}</span></summary>
+                <div>
+                  {optionalAddOns.map((item) => (
+                    <article key={item.name}>
+                      <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
+                      {item.desc && <small>{item.desc}</small>}
+                      {item.visaHref && <Link href={item.visaHref}>Lihat bantuan visa →</Link>}
+                    </article>
+                  ))}
+                </div>
+              </details>
+            )}
+            <TourShareButtons
+              tourTitle={tour.title}
+              isOutlined
+              isAtlas
+              pfx="at"
+              tText="#202934"
+              tCard="#f3f6f6"
+              tBdr="#e2e7e8"
+              tSub="#606b72"
+            />
+          </section>
         </div>
 
         <aside className={styles.detailBookingSidebar} aria-label="Informasi pemesanan">
@@ -451,7 +669,18 @@ export default function CleanTourDetail({
               />
             )}
 
-            <a className={styles.detailBookingPdf} href={`/tours/${tour.id}/pdf`}><Download aria-hidden="true" />Unduh itinerary PDF</a>
+            <a
+              className={styles.detailBookingPdf}
+              href={`/tours/${tour.id}/pdf`}
+              data-analytics-event="itinerary_pdf_download"
+              data-tour-id={tour.id}
+              aria-describedby="detail-pdf-recovery"
+            >
+              <Download aria-hidden="true" />Unduh itinerary PDF
+            </a>
+            <p className={styles.detailPdfRecovery} id="detail-pdf-recovery">
+              Jika unduhan gagal, <a href={bookingWaHref} data-analytics-placement="detail-pdf-recovery">minta salinan via WhatsApp</a>.
+            </p>
             <p className={styles.detailBookingNote}>Konsultasi awal gratis. Tim akan mengonfirmasi harga, jadwal, dan ketersediaan terbaru.</p>
 
             <dl className={styles.detailBookingFacts}>
@@ -507,12 +736,6 @@ export default function CleanTourDetail({
         </section>
       )}
 
-      {!unavailable && (
-        <div className={styles.detailMobileBooking} aria-label="Pemesanan cepat">
-          <div><span>Mulai dari</span><strong>{hasPrice ? formatCurrency(displayPrice) : "Sesuai permintaan"}</strong></div>
-          <a href={bookingWaHref}>Tanya &amp; booking</a>
-        </div>
-      )}
     </div>
   );
 }
