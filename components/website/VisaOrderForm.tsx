@@ -265,7 +265,7 @@ export default function VisaOrderForm({
           onClick={submitOrder}
           disabled={submitting}
           className="flex items-center justify-center gap-2 w-full text-center px-5 py-3.5 rounded-xl text-white font-semibold transition hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
-          style={{ background: "#25D366" }}
+          style={{ background: "#075E54" }}
         >
           <MessageCircle size={16} aria-hidden />
           {submitting ? "Memproses…" : "Pesan via WhatsApp"}

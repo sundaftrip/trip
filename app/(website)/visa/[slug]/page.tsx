@@ -581,7 +581,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="shrink-0 min-h-11 inline-flex items-center px-3 py-2 rounded-lg text-white text-xs font-semibold transition hover:opacity-90"
-                              style={{ background: "#25D366" }}
+                              style={{ background: "#075E54" }}
                             >
                               Tanya paket
                               <span className="sr-only">, membuka tab baru</span>
