@@ -161,7 +161,7 @@
   min-height: 156px;
   padding: 20px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(240px, 0.84fr) minmax(280px, 1.16fr) auto;
   gap: 12px;
   align-items: stretch;
   border: 1px solid rgba(232, 237, 236, 0.96);
