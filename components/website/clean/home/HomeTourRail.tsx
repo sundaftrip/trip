@@ -1,9 +1,9 @@
 "use client";
 
-import { Fragment, type MouseEvent, useEffect, useId, useRef, useState } from "react";
+import { Fragment, type MouseEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { CleanTour } from "../CleanTourCard";
@@ -63,54 +63,6 @@ function routeHighlight(value: string) {
 }
 
 export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
-  const track = useRef<HTMLDivElement>(null);
-  const trackId = useId();
-  const [scrollState, setScrollState] = useState({
-    back: false,
-    forward: tours.length > 1,
-  });
-
-  useEffect(() => {
-    const element = track.current;
-    if (!element) return;
-
-    function update() {
-      if (!element) return;
-      const maximum = element.scrollWidth - element.clientWidth;
-      const next = {
-        back: element.scrollLeft > 3,
-        forward: element.scrollLeft < maximum - 3,
-      };
-      setScrollState((current) =>
-        current.back === next.back && current.forward === next.forward ? current : next,
-      );
-    }
-
-    update();
-    element.addEventListener("scroll", update, { passive: true });
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
-    observer?.observe(element);
-
-    return () => {
-      element.removeEventListener("scroll", update);
-      observer?.disconnect();
-    };
-  }, [tours.length]);
-
-  function move(direction: -1 | 1) {
-    const element = track.current;
-    if (!element) return;
-    const first = element.children.item(0) as HTMLElement | null;
-    const second = element.children.item(1) as HTMLElement | null;
-    const distance =
-      first && second ? second.offsetLeft - first.offsetLeft : element.clientWidth * 0.84;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    element.scrollBy({
-      left: distance * direction,
-      behavior: reduceMotion ? "auto" : "smooth",
-    });
-  }
-
   function preserveCampaign(
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -123,32 +75,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
 
   return (
     <div className={styles.railStage}>
-      {tours.length > 1 ? (
-        <div className={styles.railControls} role="group" aria-label="Navigasi perjalanan">
-          <button
-            type="button"
-            aria-label="Perjalanan sebelumnya"
-            aria-controls={trackId}
-            disabled={!scrollState.back}
-            onClick={() => move(-1)}
-          >
-            <ArrowLeft aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            aria-label="Perjalanan berikutnya"
-            aria-controls={trackId}
-            disabled={!scrollState.forward}
-            onClick={() => move(1)}
-          >
-            <ArrowRight aria-hidden="true" />
-          </button>
-        </div>
-      ) : null}
-
       <div
-        ref={track}
-        id={trackId}
         className={styles.tourRail}
         role="region"
         aria-roledescription="carousel"
