@@ -741,9 +741,7 @@
   gap: 16px;
   margin-top: 38px;
   padding: 2px 2px 18px;
-  overflow-y: clip;
   scroll-padding-inline: 2px;
-  transition: height 220ms ease;
 }
 
 .reviewCard {
@@ -772,7 +770,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  color: var(--home-primary-strong);
+  color: #fbbc04;
 }
 
 .reviewRating svg {
@@ -794,7 +792,11 @@
   letter-spacing: -0.015em;
 }
 
-.reviewClamped {
+.reviewBody {
+  min-width: 0;
+}
+
+.reviewExcerpt {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -805,8 +807,9 @@
   min-height: 44px;
   margin-top: 7px;
   padding: 0;
-  border: 0;
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   color: var(--home-primary);
   font-size: 13px;
   font-weight: 730;
@@ -1570,11 +1573,6 @@
     display: block;
   }
 
-  .reviewHeading .railControls {
-    margin-top: 14px;
-    justify-content: flex-start;
-  }
-
   .reviewRail {
     grid-auto-columns: 86vw;
     gap: 12px;
@@ -1582,9 +1580,9 @@
   }
 
   .reviewCard {
-    min-height: 0;
+    height: 270px;
+    min-height: 270px;
     padding: 20px 18px;
-    align-self: start;
     justify-content: flex-start;
     gap: 16px;
     border-color: #ddd7cb;
@@ -1596,6 +1594,15 @@
     font-weight: 450;
     line-height: 1.5;
     letter-spacing: -0.006em;
+  }
+
+  .reviewExcerpt {
+    -webkit-line-clamp: 3;
+  }
+
+  .reviewBody {
+    height: 127.5px;
+    flex: 0 0 127.5px;
   }
 
   .reviewer {
@@ -1619,6 +1626,13 @@
   .reviewer small {
     margin-top: 2px;
     font-size: 10.5px;
+  }
+
+  .reviewer strong,
+  .reviewer small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .reviewLink {
