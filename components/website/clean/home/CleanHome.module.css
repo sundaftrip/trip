@@ -154,7 +154,7 @@
   position: relative;
   z-index: 3;
   margin-top: -78px;
-  background: #fff;
+  background: #FFFFFF;
 }
 
 .finderCard {
@@ -363,7 +363,7 @@
 
 .tourSection {
   padding-top: 74px;
-  background: #fff;
+  background: #FFFFFF;
 }
 
 .railStage {
@@ -606,7 +606,7 @@
 }
 
 .destinationSection {
-  background: #fff;
+  background: #FFFFFF;
 }
 
 .destinationMosaic > a {
@@ -663,7 +663,7 @@
 }
 
 .benefitSection {
-  background: #fff;
+  background: #FFFFFF;
 }
 
 .benefitSection .sectionHeading {
@@ -740,7 +740,11 @@
 }
 
 .reviewSection {
-  background: var(--home-white);
+  background: #FFFFFF;
+}
+
+.faqSection {
+  background: #FFFFFF;
 }
 
 .reviewHeading .sectionHeading {
@@ -970,6 +974,7 @@
 
 .privateSection {
   padding-block: clamp(46px, 6vw, 72px);
+  background: #FFFFFF;
 }
 
 .privatePanel {
@@ -1030,6 +1035,7 @@
 
 .journalSection {
   padding-top: 78px;
+  background: #FFFFFF;
 }
 
 .journalGrid {
@@ -1390,7 +1396,7 @@
     background: linear-gradient(
       to bottom,
       transparent 0 58px,
-      #fff 58px 100%
+      #FFFFFF 58px 100%
     );
   }
 
