@@ -91,36 +91,29 @@ export default function TourHeroGallery({
 
       {usableImages.length > 1 && (
         <>
-          <button
-            className={`${styles.arrow} ${styles.previous}`}
-            type="button"
-            aria-label="Foto sebelumnya"
-            disabled={active === 0}
-            onClick={() => showSlide(active - 1)}
-          >
-            <ChevronLeft aria-hidden="true" />
-          </button>
-          <button
-            className={`${styles.arrow} ${styles.next}`}
-            type="button"
-            aria-label="Foto berikutnya"
-            disabled={active === usableImages.length - 1}
-            onClick={() => showSlide(active + 1)}
-          >
-            <ChevronRight aria-hidden="true" />
-          </button>
-          <div className={styles.dots} role="group" aria-label="Pilih foto">
-            {usableImages.map((_, index) => (
+          <div className={styles.controls} aria-label="Navigasi galeri">
+            <span className={styles.counter} aria-hidden="true">
+              {active + 1} / {usableImages.length}
+            </span>
+            <span className={styles.controlDivider} aria-hidden="true" />
+            <div className={styles.controlButtons}>
               <button
-                key={index}
                 type="button"
-                aria-label={`Foto ${index + 1}`}
-                aria-pressed={active === index}
-                onClick={() => showSlide(index)}
+                aria-label="Foto sebelumnya"
+                disabled={active === 0}
+                onClick={() => showSlide(active - 1)}
               >
-                <span />
+                <ChevronLeft aria-hidden="true" />
               </button>
-            ))}
+              <button
+                type="button"
+                aria-label="Foto berikutnya"
+                disabled={active === usableImages.length - 1}
+                onClick={() => showSlide(active + 1)}
+              >
+                <ChevronRight aria-hidden="true" />
+              </button>
+            </div>
           </div>
           <p className={styles.liveStatus} aria-live="polite">
             Foto {active + 1} dari {usableImages.length}

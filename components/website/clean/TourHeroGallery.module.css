@@ -45,7 +45,6 @@
   object-fit: cover;
 }
 
-.arrow,
 .lightboxArrow,
 .lightboxTop button {
   width: 44px;
@@ -60,65 +59,72 @@
   backdrop-filter: blur(8px);
 }
 
-.arrow {
+.controls {
   position: absolute;
-  top: 50%;
+  right: 16px;
+  bottom: 16px;
   z-index: 3;
-  transform: translateY(-50%);
+  min-height: 40px;
+  padding: 3px 4px 3px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 999px;
+  background: rgb(7 29 32 / 72%);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(3 18 21 / 20%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.arrow:disabled {
-  opacity: .3;
+.counter {
+  min-width: 29px;
+  color: rgb(255 255 255 / 94%);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-align: center;
 }
 
-.arrow svg,
-.lightboxArrow svg,
-.lightboxTop svg {
-  width: 20px;
-  height: 20px;
+.controlDivider {
+  width: 1px;
+  height: 18px;
+  background: rgb(255 255 255 / 26%);
 }
 
-.previous {
-  left: 12px;
+.controlButtons {
+  display: inline-flex;
+  align-items: center;
 }
 
-.next {
-  right: 12px;
-}
-
-.dots {
-  position: absolute;
-  right: 0;
-  bottom: 8px;
-  left: 0;
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-}
-
-.dots button {
-  width: 44px;
-  height: 44px;
+.controlButtons button {
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 0;
-  background: transparent;
-}
-
-.dots span {
-  width: 7px;
-  height: 7px;
-  border: 1px solid rgb(255 255 255 / 88%);
   border-radius: 50%;
-  background: rgb(8 31 35 / 35%);
-  transition: width 180ms ease, background 180ms ease;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
 }
 
-.dots button[aria-pressed="true"] span {
-  width: 22px;
-  border-radius: 999px;
-  background: #fff;
+.controlButtons button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 14%);
+}
+
+.controlButtons button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.controlButtons svg,
+.lightboxArrow svg,
+.lightboxTop svg {
+  width: 17px;
+  height: 17px;
 }
 
 .liveStatus {
@@ -193,18 +199,9 @@
     aspect-ratio: 4 / 5;
   }
 
-  .arrow {
-    top: auto;
-    bottom: 10px;
-    transform: none;
-  }
-
-  .previous {
-    left: 14px;
-  }
-
-  .next {
-    right: 14px;
+  .controls {
+    right: 12px;
+    bottom: 12px;
   }
 
   .lightboxBackdrop {
