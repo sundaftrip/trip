@@ -741,7 +741,9 @@
   gap: 16px;
   margin-top: 38px;
   padding: 2px 2px 18px;
+  overflow-y: clip;
   scroll-padding-inline: 2px;
+  transition: height 220ms ease;
 }
 
 .reviewCard {

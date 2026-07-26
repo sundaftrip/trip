@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import type { CleanHomeTestimonial } from "../CleanHome";
@@ -36,8 +36,9 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
     back: false,
     forward: items.length > 1,
   });
+  const [railHeight, setRailHeight] = useState<number>();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = track.current;
     if (!element) return;
 
@@ -51,12 +52,29 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
       setScrollState((current) =>
         current.back === next.back && current.forward === next.forward ? current : next,
       );
+
+      const cards = Array.from(element.children) as HTMLElement[];
+      const activeCard = cards.reduce<HTMLElement | null>((closest, card) => {
+        if (!closest) return card;
+        return Math.abs(card.offsetLeft - element.scrollLeft)
+          < Math.abs(closest.offsetLeft - element.scrollLeft)
+          ? card
+          : closest;
+      }, null);
+      if (activeCard) {
+        const styles = window.getComputedStyle(element);
+        const verticalPadding =
+          Number.parseFloat(styles.paddingTop) + Number.parseFloat(styles.paddingBottom);
+        const nextHeight = Math.ceil(activeCard.offsetHeight + verticalPadding);
+        setRailHeight((current) => (current === nextHeight ? current : nextHeight));
+      }
     }
 
     update();
     element.addEventListener("scroll", update, { passive: true });
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
     observer?.observe(element);
+    Array.from(element.children).forEach((card) => observer?.observe(card));
 
     return () => {
       element.removeEventListener("scroll", update);
@@ -119,6 +137,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
           role="region"
           aria-roledescription="carousel"
           aria-label="Cerita peserta Sundaf Trip"
+          style={railHeight ? { height: `${railHeight}px` } : undefined}
           tabIndex={0}
         >
           {items.map((item, index) => {
