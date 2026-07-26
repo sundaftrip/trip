@@ -1393,11 +1393,7 @@
 
   .finderZone {
     margin-top: -58px;
-    background: linear-gradient(
-      to bottom,
-      transparent 0 58px,
-      #FFFFFF 58px 100%
-    );
+    background: #FFFFFF;
   }
 
   .finderCard {
