@@ -475,12 +475,15 @@
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.76);
   color: var(--home-primary-strong);
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 500;
   line-height: 1.2;
-  box-shadow: 0 4px 16px rgba(8, 33, 36, 0.12);
+  box-shadow: 0 4px 16px rgba(8, 33, 36, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .tourCard[data-state="sold"] .tourBadge {
