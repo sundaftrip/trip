@@ -40,7 +40,7 @@ function formatTripDate(value: string | null) {
 function statusLabel(tour: CleanTour) {
   const status = getCommerceTourStatus(tour);
   if (status === "completed") return "Trip selesai";
-  if (status === "sold_out") return "Penuh · daftar tunggu";
+  if (status === "sold_out") return "Penuh";
   if (status === "waitlist") return "Daftar tunggu";
   if (status === "confirmed") return "Pasti berangkat";
   if (status === "last_seats") return "Kursi terakhir";
