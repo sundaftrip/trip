@@ -1,0 +1,717 @@
+import { Font, StyleSheet } from "@react-pdf/renderer";
+
+const COLORS = {
+  pearl: "#F6FAF9",
+  pearlDeep: "#EEF7F5",
+  teal: "#087A7D",
+  tealDark: "#075E63",
+  tealSoft: "#E8F5F4",
+  navy: "#1F2937",
+  slate: "#64748B",
+  border: "#D8E8E6",
+  borderStrong: "#B7D6D2",
+  white: "#FFFFFF",
+  mutedPanel: "#F8FBFA",
+} as const;
+
+const FONT = {
+  regular: "Helvetica",
+  bold: "Helvetica-Bold",
+} as const;
+
+const TYPOGRAPHY = {
+  eyebrow: { fontFamily: FONT.bold, fontSize: 8.5, letterSpacing: 0.35, lineHeight: 1.25 },
+  title: { fontFamily: FONT.bold, fontSize: 30, lineHeight: 1.12 },
+  subtitle: { fontFamily: FONT.regular, fontSize: 11, lineHeight: 1.45 },
+  sectionTitle: { fontFamily: FONT.bold, fontSize: 14, lineHeight: 1.25 },
+  cardTitle: { fontFamily: FONT.bold, fontSize: 10.5, lineHeight: 1.3 },
+  body: { fontFamily: FONT.regular, fontSize: 9.2, lineHeight: 1.45 },
+  bodyBold: { fontFamily: FONT.bold, fontSize: 9.2, lineHeight: 1.45 },
+  small: { fontFamily: FONT.regular, fontSize: 7.6, lineHeight: 1.35 },
+  smallBold: { fontFamily: FONT.bold, fontSize: 7.6, lineHeight: 1.35 },
+  footer: { fontFamily: FONT.bold, fontSize: 7.4, lineHeight: 1.25 },
+} as const;
+
+export const PAYMENT_TERMS = [
+  "Pembayaran hanya mengikuti invoice resmi SUNDAF Trip.",
+  "DP mengamankan seat sesuai nominal pada invoice awal.",
+  "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
+  "Add-on opsional, visa, dan layanan tambahan dibayar terpisah setelah dikonfirmasi.",
+  "Bukti transfer wajib dikirim untuk verifikasi administrasi.",
+  "Keterlambatan pembayaran dapat memengaruhi ketersediaan tiket, hotel, dan layanan.",
+];
+export const A4_PORTRAIT = { width: 595.28, height: 841.89 } as const;
+
+Font.registerHyphenationCallback((word) => {
+  if (word.length <= 24) return [word];
+  return word.match(/.{1,14}/g) ?? [word];
+});
+
+export const s = StyleSheet.create({
+  page: {
+    backgroundColor: COLORS.pearl,
+    color: COLORS.navy,
+    fontFamily: FONT.regular,
+    paddingTop: 74,
+    paddingBottom: 56,
+    paddingHorizontal: 38,
+  },
+  coverPage: {
+    backgroundColor: COLORS.pearl,
+    color: COLORS.navy,
+    fontFamily: FONT.regular,
+    paddingTop: 76,
+    paddingBottom: 56,
+    paddingHorizontal: 38,
+  },
+  header: {
+    position: "absolute",
+    top: 25,
+    left: 38,
+    right: 38,
+    height: 34,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 0.8,
+    borderBottomColor: COLORS.border,
+    paddingBottom: 9,
+  },
+  logo: {
+    width: 102,
+    height: 29,
+    objectFit: "contain",
+  },
+  brandFallback: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  brandName: {
+    fontFamily: FONT.bold,
+    fontSize: 17,
+    color: COLORS.tealDark,
+    lineHeight: 1,
+  },
+  brandTrip: {
+    fontFamily: FONT.bold,
+    fontSize: 5.8,
+    color: COLORS.navy,
+    marginLeft: 2,
+    marginTop: 1,
+  },
+  headerTitle: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.tealDark,
+    textAlign: "right",
+    width: 220,
+  },
+  footer: {
+    position: "absolute",
+    left: 38,
+    right: 38,
+    bottom: 25,
+    height: 22,
+    flexDirection: "row",
+    alignItems: "center",
+    borderTopWidth: 0.8,
+    borderTopColor: COLORS.border,
+    paddingTop: 7,
+  },
+  footerLinks: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 390,
+  },
+  footerLinkGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 22,
+  },
+  footerLinkText: {
+    ...TYPOGRAPHY.footer,
+    color: COLORS.tealDark,
+    textDecoration: "underline",
+  },
+  pageNumber: {
+    position: "absolute",
+    right: 38,
+    bottom: 31,
+    width: 55,
+    ...TYPOGRAPHY.footer,
+    color: COLORS.tealDark,
+    textAlign: "right",
+  },
+  coverIntro: {
+    flexDirection: "row",
+    marginTop: 3,
+  },
+  coverCopy: {
+    width: 305,
+    paddingRight: 18,
+  },
+  label: {
+    ...TYPOGRAPHY.eyebrow,
+    color: COLORS.tealDark,
+    marginBottom: 8,
+  },
+  title: {
+    ...TYPOGRAPHY.title,
+    color: COLORS.navy,
+    marginBottom: 9,
+  },
+  subtitle: {
+    ...TYPOGRAPHY.subtitle,
+    color: COLORS.slate,
+  },
+  coverSupport: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.tealDark,
+    marginTop: 8,
+  },
+  heroWrap: {
+    flex: 1,
+    height: 220,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.white,
+    padding: 5,
+  },
+  heroImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    borderRadius: 6,
+  },
+  heroFallback: {
+    flex: 1,
+    height: 220,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.white,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 18,
+  },
+  heroFallbackText: {
+    ...TYPOGRAPHY.cardTitle,
+    color: COLORS.tealDark,
+    textAlign: "center",
+  },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 16,
+    marginBottom: 4,
+  },
+  chip: {
+    borderRadius: 10,
+    backgroundColor: COLORS.tealSoft,
+    borderWidth: 0.8,
+    borderColor: COLORS.borderStrong,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 6,
+    marginBottom: 6,
+  },
+  chipText: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.tealDark,
+  },
+  overviewGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 18,
+  },
+  overviewCard: {
+    width: 249,
+    minHeight: 72,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    padding: 12,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  overviewCardRight: {
+    marginRight: 0,
+  },
+  overviewLabel: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.slate,
+    marginBottom: 5,
+  },
+  overviewValue: {
+    ...TYPOGRAPHY.cardTitle,
+    color: COLORS.navy,
+  },
+  overviewPrice: {
+    fontFamily: FONT.bold,
+    fontSize: 13.5,
+    lineHeight: 1.2,
+    color: COLORS.tealDark,
+  },
+  priceSubline: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.slate,
+    marginTop: 3,
+  },
+  trustNote: {
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    padding: 13,
+    marginTop: 4,
+  },
+  trustText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.slate,
+  },
+  sectionBlock: {
+    marginBottom: 10,
+  },
+  sectionTitleRow: {
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    ...TYPOGRAPHY.sectionTitle,
+    color: COLORS.navy,
+  },
+  sectionCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    padding: 12,
+  },
+  timeline: {
+    marginTop: 2,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    overflow: "hidden",
+  },
+  timelineCompact: {
+    marginTop: 1,
+  },
+  timelineItem: {
+    flexDirection: "row",
+    borderBottomWidth: 0.7,
+    borderBottomColor: COLORS.border,
+    paddingVertical: 6,
+    paddingHorizontal: 9,
+  },
+  timelineItemCompact: {
+    paddingVertical: 4.7,
+    paddingHorizontal: 8,
+  },
+  timelineItemClosing: {
+    backgroundColor: COLORS.mutedPanel,
+  },
+  timelineItemLast: {
+    borderBottomWidth: 0,
+  },
+  timelineRail: {
+    width: 28,
+    alignItems: "center",
+    paddingTop: 1,
+  },
+  timelineRailCompact: {
+    width: 26,
+  },
+  dayBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: COLORS.tealDark,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dayBadgeCompact: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+  },
+  dayBadgeText: {
+    fontFamily: FONT.bold,
+    fontSize: 8,
+    color: COLORS.white,
+    lineHeight: 1,
+  },
+  dayContent: {
+    flex: 1,
+    paddingLeft: 2,
+  },
+  dayTitle: {
+    ...TYPOGRAPHY.cardTitle,
+    color: COLORS.navy,
+    marginBottom: 2,
+  },
+  dayTitleCompact: {
+    fontSize: 10,
+    marginBottom: 1.5,
+  },
+  dayDescription: {
+    fontFamily: FONT.regular,
+    fontSize: 8.3,
+    lineHeight: 1.28,
+    color: COLORS.navy,
+  },
+  dayDescriptionCompact: {
+    fontSize: 7.9,
+    lineHeight: 1.24,
+  },
+  metaRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 4,
+  },
+  metaRowCompact: {
+    marginTop: 3,
+  },
+  metaItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 6,
+    marginBottom: 2,
+    maxWidth: 210,
+  },
+  metaSeparator: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.borderStrong,
+    marginRight: 6,
+    marginBottom: 2,
+  },
+  metaIcon: {
+    width: 11,
+    height: 11,
+    marginRight: 4,
+    flexShrink: 0,
+  },
+  metaText: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.slate,
+  },
+  metaLabel: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.tealDark,
+  },
+  noteText: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.slate,
+    marginTop: 6,
+  },
+  twoColumn: {
+    flexDirection: "row",
+  },
+  columnLeft: {
+    flex: 1,
+    marginRight: 10,
+  },
+  columnRight: {
+    flex: 1,
+  },
+  listTitle: {
+    ...TYPOGRAPHY.cardTitle,
+    color: COLORS.navy,
+    marginBottom: 8,
+  },
+  listItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 6,
+  },
+  listIcon: {
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: COLORS.tealSoft,
+    color: COLORS.tealDark,
+    fontFamily: FONT.bold,
+    fontSize: 8.5,
+    lineHeight: 1.35,
+    textAlign: "center",
+    marginRight: 7,
+    marginTop: 0.5,
+  },
+  listIconMuted: {
+    backgroundColor: COLORS.pearlDeep,
+    color: COLORS.slate,
+  },
+  listText: {
+    flex: 1,
+    ...TYPOGRAPHY.body,
+    color: COLORS.navy,
+  },
+  addOnRow: {
+    borderTopWidth: 0.7,
+    borderTopColor: COLORS.border,
+    paddingTop: 8,
+    marginTop: 8,
+  },
+  addOnTop: {
+    flexDirection: "row",
+  },
+  addOnName: {
+    flex: 1,
+    ...TYPOGRAPHY.bodyBold,
+    color: COLORS.navy,
+    paddingRight: 10,
+  },
+  addOnPrice: {
+    width: 110,
+    ...TYPOGRAPHY.bodyBold,
+    color: COLORS.tealDark,
+    textAlign: "right",
+  },
+  addOnDesc: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.slate,
+    marginTop: 3,
+  },
+  recommendedBadge: {
+    alignSelf: "flex-start",
+    backgroundColor: COLORS.tealSoft,
+    color: COLORS.tealDark,
+    borderRadius: 6,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    marginTop: 5,
+    ...TYPOGRAPHY.smallBold,
+  },
+  paymentIntro: {
+    flex: 1,
+    fontFamily: FONT.regular,
+    fontSize: 8.7,
+    lineHeight: 1.38,
+    color: COLORS.navy,
+    paddingRight: 9,
+  },
+  paymentIntroRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 7,
+  },
+  paymentTotalBox: {
+    backgroundColor: COLORS.tealSoft,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.borderStrong,
+    padding: 8,
+    marginBottom: 7,
+  },
+  paymentTotalLabel: {
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.tealDark,
+    marginBottom: 3,
+  },
+  paymentTotalValue: {
+    fontFamily: FONT.bold,
+    fontSize: 13,
+    lineHeight: 1.2,
+    color: COLORS.navy,
+  },
+  paymentTotalNote: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.navy,
+    marginTop: 4,
+    lineHeight: 1.38,
+  },
+  paymentTable: {
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+    overflow: "hidden",
+    marginTop: 4,
+  },
+  paymentRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.7,
+    borderBottomColor: COLORS.border,
+  },
+  paymentHeader: {
+    backgroundColor: COLORS.pearlDeep,
+  },
+  paymentCell: {
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    ...TYPOGRAPHY.small,
+    color: COLORS.navy,
+  },
+  paymentCellBold: {
+    fontFamily: FONT.bold,
+  },
+  paymentStage: {
+    width: 92,
+  },
+  paymentDue: {
+    flex: 1,
+  },
+  paymentAmount: {
+    width: 112,
+    textAlign: "right",
+  },
+  termGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    marginTop: 8,
+  },
+  termCard: {
+    width: 232,
+    paddingRight: 12,
+    marginRight: 10,
+    marginBottom: 5,
+  },
+  termCardRight: {
+    marginRight: 0,
+  },
+  termText: {
+    fontFamily: FONT.regular,
+    fontSize: 7.45,
+    lineHeight: 1.4,
+    color: COLORS.slate,
+  },
+  contactRow: {
+    flexDirection: "row",
+    marginBottom: 6,
+  },
+  contactLabel: {
+    width: 76,
+    ...TYPOGRAPHY.smallBold,
+    color: COLORS.slate,
+  },
+  contactValue: {
+    flex: 1,
+    ...TYPOGRAPHY.body,
+    color: COLORS.navy,
+  },
+  operationsGrid: {
+    flexDirection: "row",
+  },
+  operationsPanel: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    padding: 10,
+  },
+  compactTitle: {
+    fontFamily: FONT.bold,
+    fontSize: 9.4,
+    lineHeight: 1.25,
+    color: COLORS.navy,
+    marginBottom: 5,
+  },
+  compactTitleSpacing: {
+    marginTop: 8,
+  },
+  compactBody: {
+    fontFamily: FONT.regular,
+    fontSize: 7.5,
+    lineHeight: 1.3,
+    color: COLORS.navy,
+  },
+  compactNoteText: {
+    flex: 1,
+  },
+  compactNoteRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 4,
+  },
+  compactLinkRow: {
+    marginTop: 6,
+  },
+  contactInlineItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  contactInlineLabel: {
+    width: 28,
+    fontFamily: FONT.bold,
+    fontSize: 7.4,
+    lineHeight: 1.25,
+    color: COLORS.tealDark,
+  },
+  contactInlineValue: {
+    flex: 1,
+    fontFamily: FONT.regular,
+    fontSize: 7.6,
+    lineHeight: 1.25,
+    color: COLORS.navy,
+  },
+  link: {
+    color: COLORS.tealDark,
+    fontFamily: FONT.bold,
+    textDecoration: "underline",
+  },
+  profileText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.navy,
+    textAlign: "justify",
+  },
+  galleryLeadRow: {
+    flexDirection: "row",
+    height: 292,
+    marginTop: 2,
+  },
+  gallerySingleImage: {
+    width: "100%",
+    height: 460,
+    objectFit: "cover",
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+  },
+  galleryLeadImage: {
+    width: 316,
+    height: 292,
+    objectFit: "cover",
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+  },
+  gallerySideStack: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  gallerySideImage: {
+    width: "100%",
+    height: 142,
+    objectFit: "cover",
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    marginBottom: 8,
+  },
+  galleryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 10,
+  },
+  galleryGridImage: {
+    width: 154,
+    height: 128,
+    objectFit: "cover",
+    borderRadius: 8,
+    borderWidth: 0.8,
+    borderColor: COLORS.border,
+    marginRight: 10,
+    marginBottom: 8,
+  },
+  galleryGridImageRight: {
+    marginRight: 0,
+  },
+  galleryNote: {
+    ...TYPOGRAPHY.small,
+    color: COLORS.slate,
+    marginTop: 4,
+  },
+});

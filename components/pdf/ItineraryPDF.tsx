@@ -1,62 +1,28 @@
 /* Itinerary PDF document - rendered server-side via @react-pdf/renderer. */
-import type { ComponentProps } from "react";
 import {
-  Document, Page, View, Text, Link, Image, StyleSheet, Font, Svg, Circle, Path, Rect, Line,
+  Document,
+  Image,
+  Link,
+  Page,
+  Path,
+  Svg,
+  Text,
+  View,
 } from "@react-pdf/renderer";
+import { Fragment, type ReactNode } from "react";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
-
-const PAPER = "#FFFFFF";
-const TEAL = "#FBD324";
-const CHARCOAL = "#050505";
-const INK = CHARCOAL;
-const GOLD = CHARCOAL;
-const SUB = CHARCOAL;
-const HAIR = "#D9D9D9";
-const DASH = "#EEEEEE";
-const DASH_STRONG = "#C5C5C5";
-const WHITE = "#FFFFFF";
-const VISA_URL = "https://sundaftrip.com/visa";
-const FONT = {
-  regular: "Helvetica",
-  bold: "Helvetica-Bold",
-} as const;
-const TYPOGRAPHY = {
-  documentTitle: { fontFamily: FONT.bold, fontSize: 29, lineHeight: 1.12 },
-  subtitle: { fontFamily: FONT.regular, fontSize: 11.5, lineHeight: 1.35 },
-  sectionHeading: { fontFamily: FONT.bold, fontSize: 14.5, lineHeight: 1.15 },
-  tableHeader: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25 },
-  summaryLabel: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25, letterSpacing: 0.2 },
-  summaryValue: { fontFamily: FONT.regular, fontSize: 10.25, lineHeight: 1.3 },
-  itineraryDay: { fontFamily: FONT.bold, fontSize: 10, lineHeight: 1.25 },
-  itineraryTitle: { fontFamily: FONT.bold, fontSize: 10.75, lineHeight: 1.25 },
-  itineraryDescription: { fontFamily: FONT.regular, fontSize: 9.75, lineHeight: 1.35 },
-  itineraryMeta: { fontFamily: FONT.regular, fontSize: 8.75, lineHeight: 1.2 },
-  body: { fontFamily: FONT.regular, fontSize: 9.75, lineHeight: 1.35 },
-  bullet: { fontFamily: FONT.regular, fontSize: 9.75, lineHeight: 1.35 },
-  priceValue: { fontFamily: FONT.bold, fontSize: 10.25, lineHeight: 1.3 },
-  footnote: { fontFamily: FONT.regular, fontSize: 8.25, lineHeight: 1.3 },
-  headerSmall: { fontFamily: FONT.regular, fontSize: 8, lineHeight: 1.2 },
-  footer: { fontFamily: FONT.bold, fontSize: 7.75, lineHeight: 1.2 },
-  subsectionHeading: { fontFamily: FONT.bold, fontSize: 10.75, lineHeight: 1.25 },
-} as const;
-const MAX_ITINERARY_BRIEF_LENGTH = 260;
-const PAYMENT_TERMS = [
-  "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
-  "DP mengunci seat dan nominalnya mengikuti invoice awal.",
-  "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
-  "Add-on opsional, visa, dan layanan tambahan dibayar terpisah setelah dikonfirmasi.",
-  "Bukti transfer wajib dikirim untuk verifikasi administrasi.",
-  "Keterlambatan pembayaran dapat memengaruhi ketersediaan tiket, hotel, dan layanan.",
-];
-
-Font.registerHyphenationCallback((word) => [word]);
+import { A4_PORTRAIT, PAYMENT_TERMS, s } from "./ItineraryPDF.styles";
 
 export interface ItineraryDay {
   day: number;
   title: string;
   description: string;
+  transport?: string | null;
+  accommodation?: string | null;
+  overnight?: string | null;
+  notes?: string | null;
 }
 
 export interface PdfAddOn {
@@ -104,938 +70,248 @@ export interface ItineraryPDFProps {
   paymentPlan?: TourPaymentPlan | null;
 }
 
-const s = StyleSheet.create({
-  page: {
-    backgroundColor: PAPER,
-    color: INK,
-    fontFamily: FONT.regular,
-    paddingTop: 30,
-    paddingBottom: 44,
-    paddingHorizontal: 34,
+export const PDF_LINKS = {
+  website: {
+    display: "www.sundaftrip.com",
+    href: "https://www.sundaftrip.com",
   },
-  flowPage: {
-    backgroundColor: PAPER,
-    color: INK,
-    fontFamily: FONT.regular,
-    paddingTop: 84,
-    paddingBottom: 72,
-    paddingHorizontal: 38,
+  instagram: {
+    display: "@sundaf.trip",
+    href: "https://www.instagram.com/sundaf.trip",
   },
-  flowHeader: {
-    position: "absolute",
-    top: 26,
-    left: 38,
-    right: 38,
-    height: 34,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-    paddingBottom: 9,
+  visa: {
+    display: "sundaftrip.com/visa",
+    href: "https://sundaftrip.com/visa",
   },
-  flowLogo: { width: 92, height: 28, objectFit: "contain" },
-  flowHeaderTitle: { ...TYPOGRAPHY.headerSmall, color: SUB, textAlign: "right" },
-  flowFooter: {
-    position: "absolute",
-    left: 38,
-    right: 38,
-    top: 806,
-    height: 22,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTopWidth: 0.7,
-    borderTopColor: HAIR,
-    paddingTop: 7,
+  faq: {
+    display: "sundaftrip.com/faq",
+    href: "https://sundaftrip.com/faq",
   },
-  flowFooterText: { ...TYPOGRAPHY.footnote, color: SUB },
-  flowFooterLinks: {
-    flex: 1,
-    flexDirection: "row",
-    gap: 18,
-    paddingRight: 48,
+  email: {
+    display: "info@sundaftrip.com",
+    href: "mailto:info@sundaftrip.com",
   },
-  flowFooterLink: {
-    ...TYPOGRAPHY.footer,
-    color: CHARCOAL,
-    textDecoration: "underline",
+  whatsapp: {
+    display: "+62 817-7520-2759",
+    href: "https://wa.me/6281775202759",
   },
-  flowPageNumber: {
-    position: "absolute",
-    top: 813,
-    right: 38,
-    width: 38,
-    ...TYPOGRAPHY.headerSmall,
-    color: SUB,
-    textAlign: "right",
-  },
-  flowTitleBlock: { marginBottom: 18 },
-  flowTitle: {
-    ...TYPOGRAPHY.documentTitle,
-    color: CHARCOAL,
-    backgroundColor: TEAL,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    alignSelf: "flex-start",
-  },
-  flowSubtitle: {
-    ...TYPOGRAPHY.subtitle,
-    color: CHARCOAL,
-    marginTop: 9,
-  },
-  flowSection: { marginTop: 16 },
-  flowSectionTitle: {
-    ...TYPOGRAPHY.sectionHeading,
-    color: CHARCOAL,
-    backgroundColor: TEAL,
-    paddingVertical: 3.5,
-    paddingHorizontal: 7,
-    alignSelf: "flex-start",
-    marginBottom: 9,
-  },
-  flowBodyText: {
-    ...TYPOGRAPHY.body,
-    color: INK,
-    textAlign: "justify",
-  },
-  flowTable: {
-    borderTopWidth: 0.7,
-    borderTopColor: HAIR,
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-  },
-  flowTableHead: {
-    flexDirection: "row",
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-  },
-  flowTableRow: {
-    flexDirection: "row",
-    borderBottomWidth: 0.45,
-    borderBottomColor: DASH,
-  },
-  flowItineraryRow: {
-    borderBottomWidth: 0.85,
-    borderBottomColor: DASH_STRONG,
-    borderBottomStyle: "dashed",
-  },
-  flowCell: {
-    ...TYPOGRAPHY.body,
-    color: INK,
-    paddingVertical: 7,
-    paddingHorizontal: 6,
-  },
-  flowCellBold: {
-    ...TYPOGRAPHY.tableHeader,
-    color: CHARCOAL,
-    paddingVertical: 7,
-    paddingHorizontal: 6,
-  },
-  flowSummaryLabel: { ...TYPOGRAPHY.summaryLabel, color: CHARCOAL },
-  flowSummaryValue: { ...TYPOGRAPHY.summaryValue, color: INK },
-  flowInfoLabel: { width: 150 },
-  flowDayCell: { width: 46, textAlign: "center" },
-  flowItineraryDay: { ...TYPOGRAPHY.itineraryDay, color: CHARCOAL },
-  flowAgendaCell: { flex: 1 },
-  flowItineraryTitle: {
-    ...TYPOGRAPHY.itineraryTitle,
-    color: CHARCOAL,
-  },
-  flowBriefText: {
-    ...TYPOGRAPHY.itineraryDescription,
-    color: INK,
-    marginTop: 2,
-    textAlign: "justify",
-  },
-  flowInsightGrid: {
-    marginTop: 7,
-    paddingTop: 1,
-  },
-  flowInsightItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 6,
-    marginTop: 4,
-  },
-  flowInsightIcon: {
-    width: 13,
-    height: 13,
-    marginTop: 0.5,
-  },
-  flowInsightCopy: {
-    flex: 1,
-  },
-  flowInsightLabel: {
-    ...TYPOGRAPHY.itineraryMeta,
-    fontFamily: FONT.bold,
-    color: CHARCOAL,
-    textAlign: "left",
-  },
-  flowInsightValue: {
-    ...TYPOGRAPHY.itineraryMeta,
-    color: CHARCOAL,
-    marginTop: 0.5,
-    textAlign: "left",
-  },
-  flowTwoCol: { flexDirection: "row", gap: 18 },
-  flowCol: { flex: 1 },
-  flowListHead: {
-    ...TYPOGRAPHY.subsectionHeading,
-    color: CHARCOAL,
-    marginBottom: 7,
-  },
-  flowListItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 5,
-  },
-  flowBullet: {
-    ...TYPOGRAPHY.bullet,
-    fontFamily: FONT.bold,
-    color: CHARCOAL,
-    width: 13,
-  },
-  flowListText: {
-    flex: 1,
-    ...TYPOGRAPHY.bullet,
-    color: INK,
-    textAlign: "justify",
-  },
-  flowLink: {
-    color: CHARCOAL,
-    fontFamily: FONT.bold,
-    textDecoration: "underline",
-  },
-  flowPriceValue: { ...TYPOGRAPHY.priceValue, color: CHARCOAL },
-  flowPriceNormal: {
-    ...TYPOGRAPHY.summaryValue,
-    fontSize: 8.6,
-    color: SUB,
-    textDecoration: "line-through",
-  },
-  flowPriceSavings: {
-    ...TYPOGRAPHY.summaryLabel,
-    fontSize: 8.6,
-    color: CHARCOAL,
-  },
-  flowFootnote: { ...TYPOGRAPHY.footnote, color: SUB },
-  flowAddOnName: { flex: 1.35 },
-  flowAddOnPrice: { width: 130, textAlign: "right" },
-  flowPaymentStage: { width: 92 },
-  flowPaymentDue: { flex: 1 },
-  flowPaymentAmount: { width: 112, textAlign: "right" },
-  galleryLeadRow: {
-    flexDirection: "row",
-    gap: 10,
-    height: 286,
-    marginTop: 6,
-  },
-  galleryLeadImage: {
-    width: 333,
-    height: 286,
-    objectFit: "cover",
-    borderWidth: 0.7,
-    borderColor: HAIR,
-  },
-  gallerySideStack: {
-    flex: 1,
-    gap: 10,
-  },
-  gallerySideImage: {
-    width: "100%",
-    height: 138,
-    objectFit: "cover",
-    borderWidth: 0.7,
-    borderColor: HAIR,
-  },
-  galleryGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 10,
-  },
-  galleryGridImage: {
-    width: 249,
-    height: 122,
-    objectFit: "cover",
-    borderWidth: 0.7,
-    borderColor: HAIR,
-  },
-  galleryNote: {
-    ...TYPOGRAPHY.footnote,
-    color: SUB,
-    marginTop: 12,
-    lineHeight: 1.35,
-  },
+} as const;
 
-  cover: {
-    backgroundColor: WHITE,
-    color: INK,
-    padding: 18,
-    minHeight: 342,
-    borderBottomWidth: 1,
-    borderBottomColor: HAIR,
-  },
-  coverTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  logoBadge: {
-    width: 132,
-    height: 42,
-    justifyContent: "center",
-  },
-  logo: { height: 34, width: 126, objectFit: "contain" },
-  logoFallback: { fontFamily: "Helvetica-Bold", fontSize: 13, color: CHARCOAL, letterSpacing: 1 },
-  docTag: { fontFamily: "Helvetica-Bold", fontSize: 8.5, color: TEAL, letterSpacing: 1.4 },
-  coverMain: { flexDirection: "row", gap: 18, alignItems: "center" },
-  coverCopy: { width: 270, paddingRight: 8 },
-  title: { fontFamily: "Helvetica-Bold", fontSize: 39, color: CHARCOAL, lineHeight: 1.02 },
-  routeLine: { fontFamily: "Helvetica-Bold", fontSize: 14, color: SUB, lineHeight: 1.35, marginTop: 15 },
-  coverImageWrap: {
-    flex: 1,
-    height: 248,
-    borderWidth: 0.8,
-    borderColor: TEAL,
-    padding: 5,
-    backgroundColor: PAPER,
-  },
-  hero: { width: "100%", height: "100%", objectFit: "cover" },
-  coverFallback: {
-    flex: 1,
-    height: 248,
-    borderWidth: 0.8,
-    borderColor: TEAL,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: PAPER,
-  },
-  coverFallbackText: { fontFamily: "Helvetica-Bold", fontSize: 15, color: SUB },
-  summaryBand: {
-    backgroundColor: WHITE,
-    flexDirection: "row",
-    paddingVertical: 11,
-    paddingHorizontal: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: HAIR,
-  },
-  summaryCell: { flex: 1, paddingRight: 10 },
-  summaryLabel: { fontFamily: "Helvetica-Bold", fontSize: 6.5, color: SUB, letterSpacing: 0.6 },
-  summaryValue: { fontFamily: "Helvetica-Bold", fontSize: 10, color: CHARCOAL, marginTop: 4, lineHeight: 1.25 },
-  priceValue: { fontFamily: "Helvetica-Bold", fontSize: 15, color: CHARCOAL, marginTop: 2 },
-  priceCoret: { fontSize: 7.5, color: SUB, marginTop: 2, textDecoration: "line-through" },
-  priceLand: { fontSize: 7.5, color: SUB, marginTop: 2 },
+const BRAND_DISPLAY = "SUNDAF Trip";
 
-  photoStrip: {
-    flexDirection: "row",
-    gap: 6,
-    backgroundColor: WHITE,
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: HAIR,
-  },
-  stripImage: { flex: 1, height: 74, objectFit: "cover" },
+const CRITICAL_OPERATIONAL_NOTES = [
+  "Aurora adalah fenomena alam sehingga kemunculannya tidak dapat dijamin.",
+  "Minimum keberangkatan 15 peserta.",
+  "Jadwal final mengikuti cuaca, kondisi operasional, dan konfirmasi layanan.",
+] as const;
 
-  section: {
-    backgroundColor: WHITE,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: HAIR,
-  },
-  sectionTight: {
-    backgroundColor: WHITE,
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: HAIR,
-  },
-  secHeadRow: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
-  secAccent: { width: 4, height: 17, backgroundColor: TEAL, marginRight: 8 },
-  secHead: { fontFamily: "Helvetica-Bold", fontSize: 13, color: CHARCOAL },
+type PdfIconName =
+  | "bed"
+  | "calendar"
+  | "clock"
+  | "creditCard"
+  | "globe"
+  | "instagram"
+  | "mail"
+  | "mapPin"
+  | "meal"
+  | "note"
+  | "phone"
+  | "plane"
+  | "route"
+  | "train"
+  | "transfer";
 
-  dayRow: {
-    flexDirection: "row",
-    paddingVertical: 9,
-    borderTopWidth: 1,
-    borderTopColor: HAIR,
-  },
-  dayNumCol: { width: 54, paddingRight: 10 },
-  dayBadge: {
-    width: 38,
-    height: 38,
-    backgroundColor: PAPER,
-    borderWidth: 1,
-    borderColor: TEAL,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayNumLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.8, color: TEAL, letterSpacing: 0.6 },
-  dayNum: { fontFamily: "Helvetica-Bold", fontSize: 15, color: CHARCOAL, marginTop: 1 },
-  dayBody: { flex: 1 },
-  dayTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.4, color: CHARCOAL, lineHeight: 1.3 },
-  dayDesc: { fontSize: 8.6, color: INK, lineHeight: 1.48, marginTop: 4 },
-  itineraryTable: {
-    backgroundColor: PAPER,
-  },
-  itineraryHeadRow: {
-    flexDirection: "row",
-    backgroundColor: PAPER,
-    borderWidth: 0.7,
-    borderColor: DASH,
-    borderStyle: "dashed",
-  },
-  itineraryHeadDay: {
-    width: 62,
-    borderRightWidth: 0.7,
-    borderRightColor: DASH,
-    borderRightStyle: "dashed",
-    paddingVertical: 6,
-    textAlign: "center",
-    fontFamily: "Helvetica-Bold",
-    fontSize: 7,
-    color: TEAL,
-  },
-  itineraryHeadAgenda: {
-    flex: 1,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    textAlign: "center",
-    fontFamily: "Helvetica-Bold",
-    fontSize: 7,
-    color: CHARCOAL,
-  },
-  itineraryRow: {
-    flexDirection: "row",
-    borderLeftWidth: 0.6,
-    borderRightWidth: 0.6,
-    borderTopWidth: 0.6,
-    borderBottomWidth: 0.6,
-    borderTopColor: DASH,
-    borderBottomColor: DASH,
-    borderLeftColor: DASH,
-    borderRightColor: DASH,
-    borderStyle: "dashed",
-  },
-  itineraryFirstRow: { borderTopWidth: 0 },
-  itineraryDayCell: {
-    width: 62,
-    borderRightWidth: 0.6,
-    borderRightColor: DASH,
-    borderRightStyle: "dashed",
-    paddingVertical: 8,
-    paddingHorizontal: 5,
-    alignItems: "center",
-  },
-  itineraryDayText: { fontFamily: "Helvetica-Bold", fontSize: 6.3, color: TEAL, letterSpacing: 0.4 },
-  itineraryDayNum: { fontFamily: "Helvetica-Bold", fontSize: 15, color: CHARCOAL, marginTop: 1 },
-  itineraryAgendaCell: { flex: 1, paddingVertical: 8, paddingHorizontal: 10 },
+export type DayMetaItem = {
+  label: string;
+  value: string;
+  icon: PdfIconName;
+};
 
-  twoCol: { flexDirection: "row", gap: 16 },
-  col: {
-    flex: 1,
-    borderWidth: 0.7,
-    borderColor: DASH,
-    borderStyle: "dashed",
-    backgroundColor: PAPER,
-    padding: 10,
-  },
-  colHeadRow: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
-  colHead: { fontFamily: "Helvetica-Bold", fontSize: 10, marginLeft: 6 },
-  liRow: { flexDirection: "row", marginBottom: 6, alignItems: "flex-start" },
-  liIcon: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 7,
-    marginTop: 1,
-  },
-  liText: { flex: 1, fontSize: 8.5, lineHeight: 1.42, color: INK },
-  inlineLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
-  optionalList: {
-    borderWidth: 0.7,
-    borderColor: DASH,
-    borderStyle: "dashed",
-    backgroundColor: PAPER,
-    padding: 10,
-  },
-  addonRow: {
-    flexDirection: "row",
-    paddingVertical: 7,
-    borderTopWidth: 0.6,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
-  },
-  addonFirstRow: { borderTopWidth: 0, paddingTop: 0 },
-  addonBody: { flex: 1 },
-  addonTop: { flexDirection: "row", justifyContent: "space-between", gap: 10 },
-  addonName: { flex: 1, fontFamily: "Helvetica-Bold", fontSize: 8.8, color: CHARCOAL, lineHeight: 1.35 },
-  addonPrice: { fontFamily: "Helvetica-Bold", fontSize: 8.5, color: GOLD },
-  addonDesc: { fontSize: 7.8, lineHeight: 1.4, color: SUB, marginTop: 2 },
-  addonTag: {
-    alignSelf: "flex-start",
-    marginTop: 3,
-    backgroundColor: PAPER,
-    color: CHARCOAL,
-    fontFamily: "Helvetica-Bold",
-    fontSize: 6,
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-  },
+function baseCleanText(value?: string | null) {
+  return value
+    ? stripItineraryMarkup(value)
+        .replace(/^[\s"'“”]+|[\s"'“”]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+    : "";
+}
 
-  para: { fontSize: 8.8, lineHeight: 1.55, color: INK, marginTop: 4 },
-  ctaRow: { flexDirection: "row", gap: 14 },
-  ctaBox: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: CHARCOAL,
-    padding: 12,
-  },
-  ctaTitle: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL },
-  ctaBody: { fontSize: 8.8, color: INK, lineHeight: 1.5, marginTop: 5 },
-  faqBox: {
-    width: 190,
-    backgroundColor: PAPER,
-    borderLeftWidth: 3,
-    borderLeftColor: TEAL,
-    padding: 11,
-  },
-  faqLine: { fontSize: 8.5, color: SUB, lineHeight: 1.45 },
-  faqLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
-  waLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
-  visaHelp: { fontSize: 8.2, color: SUB, lineHeight: 1.45, marginTop: 6 },
-
-  profileName: { fontFamily: "Helvetica-Bold", fontSize: 11, color: CHARCOAL, marginTop: 8 },
-  profileTag: { fontSize: 8.8, color: TEAL, fontFamily: "Helvetica-Bold", marginTop: 2 },
-  contactGrid: { marginTop: 8, borderTopWidth: 1, borderTopColor: HAIR, paddingTop: 7 },
-  contactRow: { flexDirection: "row", marginTop: 3 },
-  contactLabel: { width: 70, fontFamily: "Helvetica-Bold", fontSize: 7.8, color: SUB },
-  contactValue: { flex: 1, fontSize: 8.2, color: INK, lineHeight: 1.35 },
-
-  disclaimer: { fontSize: 7.2, color: SUB, lineHeight: 1.4, marginTop: 10 },
-  footer: {
-    position: "absolute",
-    bottom: 18,
-    left: 34,
-    right: 34,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderTopWidth: 1,
-    borderTopColor: HAIR,
-    paddingTop: 7,
-  },
-  footerText: { fontSize: 7, color: SUB },
-
-  compactPage: {
-    backgroundColor: PAPER,
-    color: INK,
-    fontFamily: "Helvetica",
-    paddingTop: 26,
-    paddingBottom: 42,
-    paddingHorizontal: 28,
-  },
-  compactSpread: { flexDirection: "row", gap: 14, minHeight: 764 },
-  compactPanel: {
-    flex: 1,
-    backgroundColor: WHITE,
-    padding: 14,
-    borderWidth: 0.7,
-    borderColor: DASH,
-    borderStyle: "dashed",
-  },
-  compactLogo: { width: 100, height: 28, objectFit: "contain" },
-  compactDocTag: { fontFamily: "Helvetica-Bold", fontSize: 7, color: TEAL, letterSpacing: 1 },
-  compactTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  compactTitle: { fontFamily: "Helvetica-Bold", fontSize: 28, color: CHARCOAL, lineHeight: 1, marginTop: 42 },
-  compactRoute: { fontFamily: "Helvetica-Bold", fontSize: 10, color: SUB, lineHeight: 1.3, marginTop: 9 },
-  compactHero: { width: "100%", height: 148, objectFit: "cover", borderWidth: 0.7, borderColor: TEAL, padding: 3 },
-  compactMetaGrid: { marginTop: 12, borderTopWidth: 0.7, borderTopColor: DASH, borderTopStyle: "dashed" },
-  compactMetaRow: {
-    flexDirection: "row",
-    borderBottomWidth: 0.7,
-    borderBottomColor: DASH,
-    borderBottomStyle: "dashed",
-    paddingVertical: 5,
-  },
-  compactMetaPriceRow: { minHeight: 40, alignItems: "flex-start" },
-  compactMetaLabel: { width: 76, fontFamily: "Helvetica-Bold", fontSize: 6.2, color: TEAL, letterSpacing: 0.4 },
-  compactMetaValue: { flex: 1, fontFamily: "Helvetica-Bold", fontSize: 7.4, color: CHARCOAL, lineHeight: 1.25 },
-  compactPriceStack: { flex: 1 },
-  compactPrice: { fontFamily: "Helvetica-Bold", fontSize: 8.8, color: CHARCOAL, lineHeight: 1.15 },
-  compactSmallText: { fontSize: 5.8, color: SUB, lineHeight: 1.25, marginTop: 2 },
-  compactSecHead: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 10,
-    color: CHARCOAL,
-    borderLeftWidth: 4,
-    borderLeftColor: TEAL,
-    paddingLeft: 7,
-    marginBottom: 8,
-  },
-  compactDayRow: {
-    flexDirection: "row",
-    borderTopWidth: 0.6,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
-    paddingVertical: 5.5,
-  },
-  compactDayBox: { width: 34, alignItems: "center", paddingRight: 6 },
-  compactDayLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.2, color: TEAL, letterSpacing: 0.3 },
-  compactDayNum: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL, marginTop: 1 },
-  compactDayBody: { flex: 1 },
-  compactDayTitle: { fontFamily: "Helvetica-Bold", fontSize: 7.6, color: CHARCOAL, lineHeight: 1.22 },
-  compactDayDesc: { fontSize: 6.3, color: INK, lineHeight: 1.28, marginTop: 2 },
-  compactTwoCol: { flexDirection: "row", gap: 8 },
-  compactCol: { flex: 1 },
-  compactColHead: { fontFamily: "Helvetica-Bold", fontSize: 7.5, marginBottom: 4 },
-  compactListRow: { flexDirection: "row", marginBottom: 3.4, alignItems: "flex-start" },
-  compactListText: { flex: 1, fontSize: 6.4, color: INK, lineHeight: 1.3 },
-  compactLink: { color: TEAL, fontFamily: "Helvetica-Bold", textDecoration: "none" },
-  compactBlock: { marginTop: 10 },
-  compactAddonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 8,
-    borderTopWidth: 0.6,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
-    paddingVertical: 3.6,
-  },
-  compactAddonName: { flex: 1, fontSize: 6.4, color: INK, lineHeight: 1.25 },
-  compactAddonPrice: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: GOLD },
-  compactNote: { fontSize: 6.5, color: INK, lineHeight: 1.35 },
-  compactContact: {
-    marginTop: 10,
-    borderTopWidth: 0.7,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
-    paddingTop: 8,
-  },
-
-  densePage: {
-    backgroundColor: PAPER,
-    color: INK,
-    fontFamily: "Helvetica",
-    paddingTop: 12,
-    paddingBottom: 22,
-    paddingHorizontal: 18,
-  },
-  denseSheet: {
-    backgroundColor: WHITE,
-    padding: 12,
-    minHeight: 516,
-  },
-  proposalHeader: {
-    marginBottom: 8,
-    alignItems: "center",
-  },
-  proposalBrand: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2 },
-  proposalBrandName: { fontFamily: "Helvetica-Bold", fontSize: 17, color: CHARCOAL, lineHeight: 1 },
-  proposalBrandTrip: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: CHARCOAL, marginLeft: 2, marginTop: 1 },
-  proposalTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 18,
-    color: CHARCOAL,
-    backgroundColor: TEAL,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    alignSelf: "center",
-    lineHeight: 1.12,
-    textAlign: "center",
-  },
-  proposalSubtitle: { fontSize: 7.4, color: CHARCOAL, textAlign: "center", marginTop: 6 },
-  proposalGrid: { flexDirection: "row", gap: 16 },
-  proposalLeft: { width: "58%" },
-  proposalRight: { flex: 1 },
-  proposalSectionGap: { marginTop: 8 },
-  proposalTable: {
-    borderTopWidth: 0.7,
-    borderTopColor: HAIR,
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-  },
-  proposalHeadRow: { flexDirection: "row", backgroundColor: WHITE },
-  proposalHeadCell: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 7.8,
-    color: CHARCOAL,
-    paddingVertical: 4,
-    paddingHorizontal: 5,
-  },
-  proposalRow: {
-    flexDirection: "row",
-    borderBottomWidth: 0.45,
-    borderBottomColor: HAIR,
-    minHeight: 34,
-  },
-  proposalCell: { paddingVertical: 3.6, paddingHorizontal: 5, justifyContent: "center" },
-  proposalDayCell: { width: 31, alignItems: "center" },
-  proposalDateCell: { width: 66 },
-  proposalEventCell: { flex: 1 },
-  proposalPlaceCell: { width: 58 },
-  proposalDayText: { fontFamily: "Helvetica-Bold", fontSize: 12, color: CHARCOAL },
-  proposalDateText: { fontSize: 6.2, color: CHARCOAL, lineHeight: 1.18 },
-  proposalEventTitle: { fontFamily: "Helvetica-Bold", fontSize: 7.1, color: CHARCOAL, lineHeight: 1.18 },
-  proposalEventDesc: { fontSize: 5.9, color: INK, lineHeight: 1.22, marginTop: 1.2, textAlign: "justify" },
-  proposalInsightLine: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: CHARCOAL, lineHeight: 1.2, marginTop: 2 },
-  proposalPlaceText: { fontFamily: "Helvetica-Bold", fontSize: 6.4, color: CHARCOAL, lineHeight: 1.16 },
-  proposalMiniTable: {
-    borderTopWidth: 0.7,
-    borderTopColor: HAIR,
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-  },
-  proposalMiniRow: {
-    flexDirection: "row",
-    borderBottomWidth: 0.45,
-    borderBottomColor: HAIR,
-  },
-  proposalMiniCell: { flex: 1, paddingVertical: 3.4, paddingHorizontal: 5 },
-  proposalMiniLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.8, color: CHARCOAL, letterSpacing: 0.3 },
-  proposalMiniValue: { fontFamily: "Helvetica-Bold", fontSize: 7.1, color: CHARCOAL, lineHeight: 1.14, marginTop: 1.5 },
-  proposalPrice: { fontFamily: "Helvetica-Bold", fontSize: 8.5, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.5 },
-  proposalSectionTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 12,
-    color: CHARCOAL,
-    backgroundColor: TEAL,
-    paddingVertical: 3,
-    paddingHorizontal: 6,
-    alignSelf: "flex-start",
-    marginBottom: 7,
-  },
-  proposalListGrid: { flexDirection: "row", gap: 10 },
-  proposalListCol: { flex: 1 },
-  proposalListHead: { fontFamily: "Helvetica-Bold", fontSize: 8.5, marginBottom: 5, color: CHARCOAL },
-  proposalListItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2.5 },
-  proposalBullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginRight: 4.5,
-    marginTop: 2.6,
-  },
-  proposalListText: { flex: 1, fontSize: 6.3, color: CHARCOAL, lineHeight: 1.25, textAlign: "justify" },
-  proposalAddOnRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: HAIR },
-  proposalAddOnName: { flex: 1.35, fontSize: 6.4, color: CHARCOAL, paddingVertical: 3.2, paddingHorizontal: 5 },
-  proposalAddOnPrice: {
-    flex: 0.8,
-    fontFamily: "Helvetica-Bold",
-    fontSize: 6.4,
-    color: GOLD,
-    paddingVertical: 3.2,
-    paddingHorizontal: 5,
-    textAlign: "right",
-  },
-  proposalFooterGrid: { flexDirection: "row", gap: 12, marginTop: 7 },
-  proposalFooterCol: { flex: 1 },
-  proposalLeftNoteGrid: { flexDirection: "row", gap: 10, marginTop: 7 },
-  proposalLeftNoteCol: { flex: 1 },
-  proposalSmallText: { fontSize: 6.25, color: INK, lineHeight: 1.24, textAlign: "justify" },
-  paymentIntro: { fontSize: 6.4, color: INK, lineHeight: 1.24, textAlign: "justify" },
-  paymentMethods: { fontFamily: "Helvetica-Bold", fontSize: 5.65, color: CHARCOAL, lineHeight: 1.2, marginTop: 2 },
-  paymentBadge: {
-    alignSelf: "flex-start",
-    fontFamily: "Helvetica-Bold",
-    fontSize: 5.65,
-    color: GOLD,
-    marginTop: 4,
-  },
-  paymentTotal: { fontFamily: "Helvetica-Bold", fontSize: 5.8, color: CHARCOAL, marginTop: 4 },
-  paymentTable: {
-    marginTop: 5,
-    borderTopWidth: 0.7,
-    borderTopColor: HAIR,
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-  },
-  paymentRow: { flexDirection: "row", borderBottomWidth: 0.45, borderBottomColor: HAIR },
-  paymentHeadRow: { flexDirection: "row", backgroundColor: WHITE },
-  paymentHeadCell: { fontFamily: "Helvetica-Bold", fontSize: 6.1, color: CHARCOAL, paddingVertical: 3.3, paddingHorizontal: 4 },
-  paymentCell: { fontSize: 6.2, color: CHARCOAL, paddingVertical: 3.2, paddingHorizontal: 4 },
-  paymentStageCell: { width: 62, fontFamily: "Helvetica-Bold" },
-  paymentDueCell: { flex: 1 },
-  paymentAmountCell: { width: 76, textAlign: "right", fontFamily: "Helvetica-Bold" },
-  paymentFinePrint: { fontSize: 5.25, color: SUB, lineHeight: 1.18, marginTop: 3 },
-  portraitPage: {
-    backgroundColor: PAPER,
-    color: CHARCOAL,
-    fontFamily: "Helvetica",
-    paddingTop: 25,
-    paddingBottom: 36,
-    paddingHorizontal: 38,
-  },
-  portraitSheet: { backgroundColor: PAPER },
-  portraitHeader: {
-    marginBottom: 16,
-    alignItems: "center",
-    borderBottomWidth: 0.7,
-    borderBottomColor: HAIR,
-    paddingBottom: 10,
-  },
-  portraitPageTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 17,
-    color: CHARCOAL,
-    backgroundColor: TEAL,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    alignSelf: "center",
-    textAlign: "center",
-  },
-  portraitTableRow: {
-    flexDirection: "row",
-    borderBottomWidth: 0.45,
-    borderBottomColor: HAIR,
-    minHeight: 45,
-  },
-  portraitSectionGap: { marginTop: 10 },
-  portraitFooterGrid: { flexDirection: "row", gap: 12, marginTop: 9 },
-  denseSpread: { flexDirection: "row", gap: 14 },
-  densePanel: { flex: 1 },
-  denseLeftPanel: {
-    borderRightWidth: 0.7,
-    borderRightColor: DASH,
-    borderRightStyle: "dashed",
-    paddingRight: 14,
-  },
-  denseTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  denseLogo: { width: 96, height: 27, objectFit: "contain" },
-  denseDocTag: { fontFamily: "Helvetica-Bold", fontSize: 6.8, color: TEAL, letterSpacing: 0.9 },
-  denseCoverRow: { flexDirection: "row", gap: 12, marginTop: 10, marginBottom: 8 },
-  denseCoverCopy: { flex: 1 },
-  denseTitle: { fontFamily: "Helvetica-Bold", fontSize: 33, color: CHARCOAL, lineHeight: 0.98, marginTop: 7 },
-  denseRoute: { fontFamily: "Helvetica-Bold", fontSize: 10, color: SUB, lineHeight: 1.2, marginTop: 6 },
-  denseHero: { width: 198, height: 150, objectFit: "cover", borderWidth: 0.7, borderColor: TEAL, padding: 2 },
-  denseMetaGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 8,
-  },
-  denseMetaItem: {
-    width: "50%",
-    paddingVertical: 3.2,
-    paddingRight: 8,
-  },
-  denseMetaLabel: { fontFamily: "Helvetica-Bold", fontSize: 5.3, color: TEAL, letterSpacing: 0.35 },
-  denseMetaValue: { fontFamily: "Helvetica-Bold", fontSize: 6.6, color: CHARCOAL, lineHeight: 1.16, marginTop: 1.6 },
-  densePrice: { fontFamily: "Helvetica-Bold", fontSize: 7.8, color: CHARCOAL, lineHeight: 1.1, marginTop: 1.6 },
-  denseSmallText: { fontSize: 4.9, color: SUB, lineHeight: 1.16, marginTop: 1.4 },
-  denseSecHead: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 8.4,
-    color: WHITE,
-    backgroundColor: TEAL,
-    paddingVertical: 3.2,
-    paddingHorizontal: 7,
-    marginBottom: 5.2,
-    width: "100%",
-  },
-  denseDayRow: {
-    flexDirection: "row",
-    borderTopWidth: 0.55,
-    borderTopColor: DASH,
-    borderTopStyle: "dashed",
-    paddingVertical: 4.1,
-  },
-  denseDayBox: { width: 29, alignItems: "center", paddingRight: 5 },
-  denseDayLabel: { fontFamily: "Helvetica-Bold", fontSize: 4.5, color: TEAL, letterSpacing: 0.25 },
-  denseDayNum: { fontFamily: "Helvetica-Bold", fontSize: 10.5, color: CHARCOAL, marginTop: 0.5 },
-  denseDayBody: { flex: 1 },
-  denseDayTitle: { fontFamily: "Helvetica-Bold", fontSize: 6.8, color: CHARCOAL, lineHeight: 1.16 },
-  denseDayDesc: { fontSize: 5.65, color: INK, lineHeight: 1.22, marginTop: 1.3 },
-  denseTwoCol: { flexDirection: "row", gap: 8 },
-  denseCol: { flex: 1 },
-  denseColHead: { fontFamily: "Helvetica-Bold", fontSize: 6.7, marginBottom: 3 },
-  denseListRow: { flexDirection: "row", marginBottom: 2.7, alignItems: "flex-start" },
-  denseListIcon: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 5,
-    marginTop: 0.4,
-  },
-  denseListText: { flex: 1, fontSize: 5.7, color: INK, lineHeight: 1.18 },
-  denseBlock: { marginTop: 7 },
-  denseAddonGrid: { flexDirection: "row", gap: 8 },
-  denseAddonCol: { flex: 1 },
-  denseAddonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 6,
-    paddingVertical: 2.5,
-  },
-  denseAddonName: { flex: 1, fontSize: 5.7, color: INK, lineHeight: 1.16 },
-  denseAddonPrice: { fontFamily: "Helvetica-Bold", fontSize: 5.6, color: GOLD },
-  denseBottomGrid: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 7,
-    paddingTop: 6,
-  },
-  denseBottomCol: { flex: 1 },
-  denseNote: { fontSize: 5.65, color: INK, lineHeight: 1.22 },
-  denseLink: { color: CHARCOAL, fontFamily: "Helvetica-Bold", textDecoration: "underline" },
-  denseFooter: {
-    position: "absolute",
-    bottom: 8,
-    left: 20,
-    right: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderTopWidth: 0.7,
-    borderTopColor: HAIR,
-    paddingTop: 5,
-  },
-  denseFooterText: { fontSize: 6.2, color: SUB },
-});
-
-function waLink(raw: string) {
-  return `https://wa.me/${raw.replace(/\D/g, "")}`;
+export function polishPdfCopy(value?: string | null) {
+  return baseCleanText(value)
+    .replace(/\bIconic Rusia\b/g, "ikonik Rusia")
+    .replace(/\bes cream\b/gi, "es krim")
+    .replace(/\bambil melihat\b/gi, "sambil melihat")
+    .replace(/\bjantung kota Piter\b/gi, "jantung kota Saint Petersburg")
+    .replace(/\bSammi Village\b/g, "Sami Village")
+    .replace(/\bCulinary Tour kepiting alaska\b/gi, "culinary tour kepiting Alaska")
+    .replace(/\bBanana yang ditarik snowmobile\b/gi, "Banana Boat")
+    .replace(/\bHusky riding\b/gi, "Husky Riding")
+    .replace(/\bpemimpin tur berpengalaman start Jakarta\b/gi, "Tour Leader berpengalaman dari Jakarta")
+    .replace(/\bAkomodasi\s+\*?3\s*&\s*\*?4\b/gi, "Akomodasi hotel bintang 3 & 4")
+    .replace(/\bbagasi pesawat domestik\s*\(2\.5\)\s*PP\b/gi, "Bagasi pesawat domestik 25 kg PP")
+    .replace(/\bbagasi pesawat domestik\s*2\.5\s*PP\b/gi, "Bagasi pesawat domestik 25 kg PP")
+    .replace(/\bIsmailovo\b/g, "Izmailovo")
+    .replace(/\bSt\.?\s+Petersburg\b/gi, "Saint Petersburg")
+    .replace(/\bSundaftrip\b/g, BRAND_DISPLAY)
+    .replace(/\bSundaf Trip\b/g, BRAND_DISPLAY)
+    .replace(/\s+([,.])/g, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function cleanText(value?: string | null) {
-  return value ? stripItineraryMarkup(value).replace(/\s+/g, " ").trim() : "";
+  return polishPdfCopy(value);
 }
 
-function websiteFooterLink(raw?: string | null) {
-  const cleaned = cleanText(raw) || "www.sundaftrip.com";
-  const withoutProtocol = cleaned.replace(/^https?:\/\//i, "").replace(/\/+$/, "");
-  const display = withoutProtocol.startsWith("www.") ? withoutProtocol : `www.${withoutProtocol}`;
+function normalizeListText(value: string) {
+  return cleanText(value)
+    .replace(/\bFlights?\b/gi, "Penerbangan")
+    .replace(/\bIncluding baggage\b/gi, "Termasuk bagasi")
+    .replace(/\bBreakfast at (?:the )?hotel\b/gi, "Sarapan di hotel")
+    .replace(/\bBreakfasts?\b/gi, "Sarapan")
+    .replace(/\bLunches?\b/gi, "Makan siang")
+    .replace(/\bDinners?\b/gi, "Makan malam")
+    .replace(/\bMeals outside the program\b/gi, "Makan di luar program")
+    .replace(/\bMeals?\b/gi, "Makan")
+    .replace(/\bTransportasi\b\s*:?\s*/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeBodyText(value: string) {
+  return normalizeListText(value)
+    .replace(/\bPrivate transfer\b/gi, "Transfer privat")
+    .replace(/\bReturn flight to\b/gi, "Penerbangan kembali menuju")
+    .replace(/\bFlight to\b/gi, "Penerbangan menuju");
+}
+
+export function ensureSentencePunctuation(value?: string | null) {
+  const text = cleanText(value);
+  if (!text || /[.!?…]$/.test(text)) return text;
+  return `${text}.`;
+}
+
+function splitNormalPriceLabel(value?: string | null) {
+  const label = cleanText(value);
+  if (!label) return null;
+
+  const match = label.match(/^(.+?)\s*[-\u2013\u2014]\s*hemat\s+(.+)$/i);
+  if (!match) return { normalLabel: label, savingsLabel: null };
+
   return {
-    display,
-    href: `https://${display.replace(/^www\./i, "")}`,
+    normalLabel: match[1].trim(),
+    savingsLabel: `hemat ${match[2].trim()}`,
   };
 }
 
-function instagramFooterLink(raw?: string | null) {
-  const cleaned = (cleanText(raw) || "sundaf.trip")
-    .replace(/^@/, "")
-    .replace(/^https?:\/\/(?:www\.)?instagram\.com\//i, "")
-    .replace(/\/+$/, "");
-  const username = cleaned || "sundaf.trip";
-
-  return {
-    display: `Instagram @${username}`,
-    href: `https://www.instagram.com/${username}`,
-  };
+function normalizePriceText(value?: string | null) {
+  return cleanText(value).replace(/\s+/g, "").toLowerCase();
 }
 
-function profileText(company: ItineraryPDFProps["company"]) {
-  const name = company.name || "Sundaf Trip";
-  const story = company.story?.map(cleanText).find(Boolean);
-  const nib = company.nib ? ` NIB ${company.nib}.` : "";
+export function formatPaymentTotalHeading(totalLabel?: string | null, basePriceLabel?: string | null) {
+  if (!totalLabel) return "Total Settlement";
+  return normalizePriceText(totalLabel) && normalizePriceText(totalLabel) !== normalizePriceText(basePriceLabel)
+    ? "Estimasi Total dengan Add-on Terpilih"
+    : "Total Settlement";
+}
 
-  return story || `${name} adalah brand perjalanan Indonesia untuk paket tour, private/open trip, aurora borealis, Asia Tengah, dan bantuan visa bagi traveler Indonesia.${nib}`;
+function durationDayCount(duration?: string | null) {
+  const match = cleanText(duration).match(/(\d+)\s*hari/i);
+  return match ? Number(match[1]) : null;
+}
+
+export function getDurationArrivalNote(tour: Pick<ItineraryPDFProps["tour"], "duration" | "itinerary">) {
+  const packageDays = durationDayCount(tour.duration);
+  const maxItineraryDay = Math.max(0, ...tour.itinerary.map((day) => Number(day.day) || 0));
+  if (!packageDays || maxItineraryDay <= packageDays) return null;
+
+  const finalDay = tour.itinerary.find((day) => day.day === maxItineraryDay);
+  const finalText = `${finalDay?.title ?? ""} ${finalDay?.description ?? ""}`.toLowerCase();
+  if (finalText.includes("jakarta") || finalText.includes("indonesia")) {
+    return `Estimasi tiba kembali di Jakarta: Hari ke-${maxItineraryDay}`;
+  }
+
+  const duration = cleanText(tour.duration);
+  return duration
+    ? `Program ${duration} + estimasi kedatangan di hari berikutnya`
+    : `Estimasi kedatangan akhir: Hari ke-${maxItineraryDay}`;
+}
+
+export function polishItineraryTitle(value?: string | null) {
+  const title = polishPdfCopy(value)
+    .replace(/^Arrive Jakarta$/i, "Tiba di Jakarta")
+    .replace(/^Metro tour/i, "Metro Tour")
+    .replace(/^Kereta ke Saint Petersburg\s*•\s*check-in hotel Hermitage Museum \(opsional\), waktu bebas$/i, "Kereta ke Saint Petersburg • Check-in Hotel • Hermitage Museum Opsional")
+    .replace(/^Kereta ke Saint Petersburg\s+check-in hotel Hermitage Museum \(opsional\), waktu bebas$/i, "Kereta ke Saint Petersburg • Check-in Hotel • Hermitage Museum Opsional")
+    .replace(/^Penerbangan ke Moskow check-in, waktu bebas$/i, "Penerbangan ke Moskow • Check-in • Waktu Bebas")
+    .replace(/^Izmailovo Market Transfer$/i, "Izmailovo Market • Transfer Bandara")
+    .replace(/^Nevski Prospect/i, "Nevsky Prospect")
+    .replace(/^Nevsky Prospect\s*•\s*Kazan Cathedral\s*•\s*Spilled Blood Cathedral\s*•\s*Photostop St\. Isaac\s*•\s*Blue mosque$/i, "Nevsky Prospect • Kazan Cathedral • Spilled Blood Cathedral • St. Isaac • Blue Mosque")
+    .replace(/^Penerbangan ke Murmansk\s*•\s*Pemberhentian foto pemecah es Lenin\s*•\s*Perburuan Aurora$/i, "Penerbangan ke Murmansk • Lenin Icebreaker • Aurora Hunt")
+    .trim();
+
+  if (/sami village/i.test(title) && /husky farm/i.test(title) && /deer farm/i.test(title)) {
+    return "Sami Village Opsional • Husky Farm • Deer Farm • Aurora Hunt";
+  }
+
+  return title;
+}
+
+function polishItineraryDescription(title: string, value?: string | null) {
+  const cleanTitle = polishItineraryTitle(title);
+  if (/^Sami Village Opsional/.test(cleanTitle)) {
+    return "Agenda seperti Husky Farm, Deer Farm, Reindeer, Husky Riding, Banana Boat, dan culinary tour kepiting Alaska tersedia untuk peserta yang mengambil trip opsional. Peserta yang tidak mengambil trip opsional dapat menggunakan waktu bebas untuk beristirahat atau menikmati fasilitas hotel.";
+  }
+
+  return normalizeBodyText(value ?? "");
+}
+
+export function professionalizePaymentText(value?: string | null) {
+  const text = polishPdfCopy(value);
+  if (!text) return "";
+
+  return text
+    .replace(/^Pembayaran aman dan fleksibel\. Kamu cukup bayar DP dulu, sisanya dicicil santai sesuai skema pembayaran\.$/i, "Pembayaran dilakukan bertahap sesuai skema di bawah ini.")
+    .replace(/^Pembayaran aman dan fleksibel\. Kamu cukup amankan seat dulu, sisanya dilunasi sesuai tempo sebelum berangkat\.$/i, "Peserta dapat mengamankan seat terlebih dahulu, lalu melunasi sesuai tempo sebelum keberangkatan.")
+    .replace(/^Sisa\s+(\d+)\s+traveler lagi\s+-\s+gas sebelum habis\s*🙂?$/i, "Sisa $1 seat. Konfirmasi segera untuk mengamankan ketersediaan.")
+    .replace(/^Booking sekarang\s+-\s+tim Sundaf bantu cek seat$/i, `Tim ${BRAND_DISPLAY} akan membantu konfirmasi ketersediaan seat.`)
+    .replace(/\bKamu\b/g, "Peserta")
+    .replace(/\bkamu\b/g, "peserta")
+    .replace(/\bdicicil santai\b/gi, "dibayar bertahap")
+    .trim();
+}
+
+export function buildImportantNotes(notes?: string | null) {
+  const cleaned = polishPdfCopy(notes)
+    .replace(/^Penawaran Harga paket ini memiliki syarat minimum keberangkatan 15 orang\. Jika peserta tidak memenuhi kuota minimum maka pendaftar akan diinfokan kembali$/i, "")
+    .replace(/^Penawaran Harga paket ini memiliki syarat minimum keberangkatan 15 orang\.$/i, "")
+    .trim();
+
+  const items = [
+    cleaned,
+    ...CRITICAL_OPERATIONAL_NOTES,
+  ].filter(Boolean);
+
+  return [...new Set(items)];
+}
+
+export function splitGalleryPages(images: string[]) {
+  const galleryImages = uniquePdfGalleryImages(images);
+  return galleryImages.length > 0 ? [galleryImages.slice(0, 6)] : [];
+}
+
+export function destinationChips(tour: ItineraryPDFProps["tour"]) {
+  const source = tour.cityHighlight || tour.country;
+  const normalizedSource = cleanText(source)
+    .replace(/\bMoskow\s+Murmansk\s+Saint Petersburg\b/i, "Moskow, Murmansk, Saint Petersburg");
+  const destinations = normalizedSource
+    .split(/\s*,\s*|\s+-\s+|\s+\|\s+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+
+  return destinations.length > 1 ? [destinations.join(" • ")] : destinations;
 }
 
 function uniquePdfGalleryImages(images?: string[] | null) {
@@ -1052,277 +328,544 @@ function uniquePdfGalleryImages(images?: string[] | null) {
   return items;
 }
 
-type PdfImageStyle = ComponentProps<typeof Image>["style"];
+function profileText(company: ItineraryPDFProps["company"]) {
+  const name = cleanText(company.name) || BRAND_DISPLAY;
+  const story = company.story?.map(cleanText).find(Boolean);
+  const nib = company.nib ? ` NIB ${company.nib}.` : "";
 
-function PdfImage({
-  src,
-  style,
-}: {
-  src: string;
-  style: PdfImageStyle;
-}) {
-  return (
-    // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; nearby text identifies the PDF gallery context.
-    <Image src={src} style={style} />
-  );
+  return story || `${name} adalah brand perjalanan Indonesia untuk paket tour, private/open trip, aurora borealis, Asia Tengah, dan bantuan visa bagi traveler Indonesia.${nib}`;
 }
 
-function linkedTextParts(text: string) {
-  const match = /visa/i.exec(text);
-  if (!match) return null;
+function companyTagline(company: ItineraryPDFProps["company"]) {
+  return cleanText(company.tagline) || "Rencana perjalanan rapi, jelas, dan siap dibagikan kepada traveler.";
+}
 
-  return {
-    before: text.slice(0, match.index),
-    linked: text.slice(match.index, match.index + match[0].length),
-    after: text.slice(match.index + match[0].length),
+function metaIconFor(label: string, value: string): PdfIconName {
+  const joined = `${label} ${value}`.toLowerCase();
+  if (joined.includes("kereta") || joined.includes("train")) return "train";
+  if (joined.includes("pesawat") || joined.includes("penerbangan") || joined.includes("flight")) return "plane";
+  if (joined.includes("transfer") || joined.includes("bus") || joined.includes("car")) return "transfer";
+  if (joined.includes("makan") || joined.includes("sarapan") || joined.includes("lunch") || joined.includes("dinner")) return "meal";
+  if (joined.includes("bermalam") || joined.includes("hotel") || joined.includes("akomodasi")) return "bed";
+  if (joined.includes("waktu") || joined.includes("jam")) return "clock";
+  if (joined.includes("jarak") || joined.includes("pendakian")) return "route";
+  if (joined.includes("catatan")) return "note";
+  return "transfer";
+}
+
+function insightDisplay(insight: ItineraryInsight): DayMetaItem {
+  if (insight.kind === "meals") return { label: "Makan", value: normalizeListText(insight.value), icon: "meal" };
+  if (insight.kind === "transport") {
+    const value = normalizeListText(insight.value);
+    return { label: "Transportasi", value, icon: metaIconFor("Transportasi", value) };
+  }
+  if (insight.kind === "stay") return { label: "Bermalam", value: normalizeListText(insight.value), icon: "bed" };
+  if (insight.kind === "time") return { label: "Waktu", value: insight.value, icon: "clock" };
+  if (insight.kind === "distance") return { label: "Jarak", value: insight.value, icon: "route" };
+  if (insight.kind === "ascent") return { label: "Pendakian", value: insight.value, icon: "route" };
+  return { label: insight.label, value: insight.value, icon: metaIconFor(insight.label, insight.value) };
+}
+
+function isNegativeMetaValue(value?: string | null) {
+  return /^(?:-|n\/a|none|no|tidak|tanpa)$/i.test(cleanText(value));
+}
+
+function explicitDayMeta(day: ItineraryDay) {
+  const items: DayMetaItem[] = [];
+  const transport = cleanText(day.transport);
+  const accommodation = cleanText(day.accommodation || day.overnight);
+  const notes = cleanText(day.notes);
+
+  if (transport) items.push({ label: "Transportasi", value: transport, icon: metaIconFor("Transportasi", transport) });
+  if (accommodation && !isNegativeMetaValue(accommodation)) items.push({ label: "Bermalam", value: accommodation, icon: "bed" });
+  if (notes) items.push({ label: "Catatan", value: notes, icon: "note" });
+
+  return items;
+}
+
+function tourIncludesAccommodation(tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions">) {
+  const source = [tour.duration, ...tour.inclusions].map(cleanText).join(" ").toLowerCase();
+  return /\b(?:akomodasi|hotel|bermalam|penginapan|lodging|accommodation)\b/.test(source);
+}
+
+function isFinalArrivalDay(day: ItineraryDay, index: number, allDays: ItineraryDay[]) {
+  if (index !== allDays.length - 1) return false;
+  const text = `${day.title} ${day.description}`.toLowerCase();
+  return /(?:tiba|arrive|arrival|jakarta|indonesia)/i.test(text);
+}
+
+function isOutboundDepartureDay(day: ItineraryDay, index: number) {
+  if (index !== 0) return false;
+  const text = `${day.title} ${day.description}`.toLowerCase();
+  return /(?:jakarta|penerbangan|flight|berangkat|departure)/i.test(text);
+}
+
+function isHomeboundAirportDay(day: ItineraryDay) {
+  const text = `${polishItineraryTitle(day.title)} ${cleanText(day.description)}`.toLowerCase();
+  return /(?:transfer bandara|pulang ke indonesia|kembali ke indonesia|menuju indonesia|flight home|return flight)/i.test(text);
+}
+
+function isClosingItineraryRow(day: ItineraryDay, index: number, allDays: ItineraryDay[]) {
+  if (!isFinalArrivalDay(day, index, allDays)) return false;
+
+  const text = `${polishItineraryTitle(day.title)} ${cleanText(day.description)}`.toLowerCase();
+  return /(?:jakarta|indonesia|arrive|arrival|tiba|return|pulang)/i.test(text);
+}
+
+function shouldInferOvernight(
+  day: ItineraryDay,
+  index: number,
+  allDays: ItineraryDay[],
+  tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions">,
+) {
+  const rawAccommodation = cleanText(day.accommodation || day.overnight);
+  if (rawAccommodation) return false;
+  if (!tourIncludesAccommodation(tour)) return false;
+  if (isOutboundDepartureDay(day, index)) return false;
+  if (isFinalArrivalDay(day, index, allDays)) return false;
+  if (isHomeboundAirportDay(day)) return false;
+  return index > 0 && index < allDays.length - 1;
+}
+
+export function deriveItineraryMeta(
+  day: ItineraryDay,
+  index: number,
+  allDays: ItineraryDay[],
+  tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions">,
+  inferredMeta: DayMetaItem[] = [],
+) {
+  const explicitMeta = explicitDayMeta(day);
+  const displayInferredMeta = inferredMeta.length > 0
+    ? inferredMeta
+    : buildItineraryDisplay(day).insights.map(insightDisplay);
+  const explicitLabels = new Set(explicitMeta.map((item) => item.label.toLowerCase()));
+  const filteredInferredMeta = displayInferredMeta.filter((item) => !explicitLabels.has(item.label.toLowerCase()));
+  const hasOvernight = [...explicitMeta, ...filteredInferredMeta].some((item) => item.label.toLowerCase() === "bermalam");
+  const meta = [
+    ...explicitMeta,
+    ...filteredInferredMeta,
+    ...(!hasOvernight && shouldInferOvernight(day, index, allDays, tour)
+      ? [{ label: "Bermalam", value: "Hotel", icon: "bed" as const }]
+      : []),
+  ];
+
+  const seen = new Set<string>();
+  return meta.filter((item) => {
+    const key = `${item.label}:${item.value}`.toLowerCase();
+    if (!item.value || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+type ItinerarySplitTour = Pick<ItineraryPDFProps["tour"], "duration" | "inclusions" | "itinerary">;
+
+type ItinerarySplitOptions = {
+  tour?: ItinerarySplitTour;
+  targetUnits?: number;
+};
+
+const NORMAL_ITINERARY_PAGE_UNITS = 13.4;
+const DENSE_ITINERARY_PAGE_UNITS = 16.8;
+const ORPHAN_FLEX_PAGE_UNITS = 18.2;
+
+function paginationTour(itinerary: ItineraryDay[], tour?: ItinerarySplitTour): ItinerarySplitTour {
+  return tour ?? {
+    duration: null,
+    inclusions: [],
+    itinerary,
   };
 }
 
-function FixedChrome({
+function continuationUnits(text: string, charactersPerLine: number, unitsPerExtraLine: number) {
+  if (!text) return 0;
+  return Math.max(0, Math.ceil(text.length / charactersPerLine) - 1) * unitsPerExtraLine;
+}
+
+export function itineraryNeedsCompactMode(itinerary: ItineraryDay[]) {
+  return itinerary.length >= 10;
+}
+
+export function estimateItineraryRowUnits(
+  day: ItineraryDay,
+  index: number,
+  allDays: ItineraryDay[],
+  tour?: ItinerarySplitTour,
+) {
+  const displayDay = buildItineraryDisplay(day);
+  const rawTitle = displayDay.title || day.title;
+  const title = polishItineraryTitle(rawTitle);
+  const description = ensureSentencePunctuation(polishItineraryDescription(rawTitle, displayDay.description || day.description));
+  const inferredMeta = displayDay.insights.map(insightDisplay);
+  const meta = deriveItineraryMeta(day, index, allDays, paginationTour(allDays, tour), inferredMeta);
+  const closing = isClosingItineraryRow(day, index, allDays);
+
+  if (closing) {
+    const closingUnits = 0.78
+      + continuationUnits(title, 64, 0.18)
+      + continuationUnits(description, 170, 0.18);
+    return Math.min(1.18, Math.max(0.78, closingUnits));
+  }
+
+  const descriptionUnits = description ? Math.max(0.34, Math.ceil(description.length / 130) * 0.34) : 0;
+  const metaUnits = meta.length > 0 ? 0.22 + Math.min(meta.length, 5) * 0.08 : 0;
+  const units = 1.05
+    + continuationUnits(title, 56, 0.28)
+    + descriptionUnits
+    + metaUnits;
+
+  return Math.min(2.9, Math.max(1.05, units));
+}
+
+function pageUnitTotal(days: ItineraryDay[], offset: number, allDays: ItineraryDay[], tour?: ItinerarySplitTour) {
+  return days.reduce(
+    (total, day, index) => total + estimateItineraryRowUnits(day, offset + index, allDays, tour),
+    0,
+  );
+}
+
+function rebalanceItineraryOrphans(
+  pages: ItineraryDay[][],
+  itinerary: ItineraryDay[],
+  tour: ItinerarySplitTour,
+  targetUnits: number,
+) {
+  if (pages.length < 2) return pages;
+
+  const lastPage = pages[pages.length - 1];
+  const previousPage = pages[pages.length - 2];
+  if (lastPage.length !== 1 || previousPage.length === 0) return pages;
+
+  const previousOffset = pages.slice(0, -2).reduce((sum, page) => sum + page.length, 0);
+  const previousUnits = pageUnitTotal(previousPage, previousOffset, itinerary, tour);
+  const orphanUnits = estimateItineraryRowUnits(lastPage[0], itinerary.length - 1, itinerary, tour);
+  const flexibleCapacity = Math.max(targetUnits * 1.08, ORPHAN_FLEX_PAGE_UNITS);
+
+  if (previousUnits + orphanUnits <= flexibleCapacity) {
+    return [
+      ...pages.slice(0, -2),
+      [...previousPage, ...lastPage],
+    ];
+  }
+
+  if (previousPage.length > 2) {
+    return [
+      ...pages.slice(0, -2),
+      previousPage.slice(0, -1),
+      [previousPage[previousPage.length - 1], ...lastPage],
+    ];
+  }
+
+  return pages;
+}
+
+export function splitItineraryPages(itinerary: ItineraryDay[], options: ItinerarySplitOptions = {}) {
+  if (itinerary.length === 0) return [];
+
+  const tour = paginationTour(itinerary, options.tour);
+  const targetUnits = options.targetUnits
+    ?? (itineraryNeedsCompactMode(itinerary) ? DENSE_ITINERARY_PAGE_UNITS : NORMAL_ITINERARY_PAGE_UNITS);
+  const pages: ItineraryDay[][] = [];
+  let page: ItineraryDay[] = [];
+  let pageUnits = 0;
+
+  itinerary.forEach((day, index) => {
+    const rowUnits = estimateItineraryRowUnits(day, index, itinerary, tour);
+    if (page.length > 0 && pageUnits + rowUnits > targetUnits) {
+      pages.push(page);
+      page = [];
+      pageUnits = 0;
+    }
+
+    page.push(day);
+    pageUnits += rowUnits;
+  });
+
+  if (page.length > 0) pages.push(page);
+
+  return rebalanceItineraryOrphans(pages, itinerary, tour, targetUnits);
+}
+
+function BrandMark() {
+  return (
+    <View style={s.brandFallback}>
+      <Text style={s.brandName}>Sundaf</Text>
+      <Text style={s.brandTrip}>Trip</Text>
+    </View>
+  );
+}
+
+export function PdfHeader({
   company,
   runningTitle,
 }: {
   company: ItineraryPDFProps["company"];
   runningTitle: string;
 }) {
-  const websiteLink = websiteFooterLink(company.website);
-  const instagramLink = instagramFooterLink(company.instagram);
+  return (
+    <View fixed style={s.header}>
+      {company.logo ? (
+        // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; nearby text names the brand.
+        <Image src={company.logo} style={s.logo} />
+      ) : (
+        <BrandMark />
+      )}
+      <Text style={s.headerTitle}>{runningTitle}</Text>
+    </View>
+  );
+}
 
+type PdfPageNumber = {
+  pageNumber: number;
+  totalPages: number;
+};
+
+export function PdfFooter({ pageNumber, totalPages }: PdfPageNumber) {
   return (
     <>
-      <View fixed style={s.flowHeader}>
-        {company.logo ? (
-          // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image does not support alt; the surrounding PDF header carries the brand text.
-          <Image src={company.logo} style={s.flowLogo} />
-        ) : (
-          <BrandMark />
-        )}
-        <Text style={s.flowHeaderTitle}>{runningTitle}</Text>
-      </View>
-      <View fixed style={s.flowFooter}>
-        <View style={s.flowFooterLinks}>
-          <Link src={websiteLink.href} style={s.flowFooterLink}>{websiteLink.display}</Link>
-          <Link src={instagramLink.href} style={s.flowFooterLink}>{instagramLink.display}</Link>
+      <View fixed style={s.footer}>
+        <View style={s.footerLinks}>
+          <FooterLink href={PDF_LINKS.website.href} icon="globe">
+            {PDF_LINKS.website.display}
+          </FooterLink>
+          <FooterLink href={PDF_LINKS.instagram.href} icon="instagram">
+            {PDF_LINKS.instagram.display}
+          </FooterLink>
         </View>
       </View>
-      <Text
-        fixed
-        style={s.flowPageNumber}
-        render={({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) => (
-          `${pageNumber}/${totalPages}`
-        )}
-      />
+      <Text fixed style={s.pageNumber}>{pageNumber}/{totalPages}</Text>
     </>
   );
 }
 
-function SectionTitle({ children }: { children: string }) {
+function FooterLink({
+  href,
+  icon,
+  children,
+}: {
+  href: string;
+  icon: PdfIconName;
+  children: string;
+}) {
   return (
-    <View wrap={false}>
-      <Text style={s.flowSectionTitle}>{children}</Text>
+    <Link src={href} style={s.footerLinkGroup}>
+      <PdfIcon icon={icon} />
+      <Text style={s.footerLinkText}>{children}</Text>
+    </Link>
+  );
+}
+
+function PdfPage({
+  company,
+  runningTitle,
+  children,
+  cover = false,
+  wrap = true,
+  pageNumber,
+  totalPages,
+}: {
+  company: ItineraryPDFProps["company"];
+  runningTitle: string;
+  children: ReactNode;
+  cover?: boolean;
+  wrap?: boolean;
+} & PdfPageNumber) {
+  return (
+    <Page size={A4_PORTRAIT} style={cover ? s.coverPage : s.page} wrap={wrap}>
+      <PdfHeader company={company} runningTitle={runningTitle} />
+      {children}
+      <PdfFooter pageNumber={pageNumber} totalPages={totalPages} />
+    </Page>
+  );
+}
+
+function SectionShell({
+  title,
+  children,
+  card = true,
+}: {
+  title: string;
+  children: ReactNode;
+  card?: boolean;
+}) {
+  return (
+    <View style={s.sectionBlock}>
+      <View style={s.sectionTitleRow} wrap={false}>
+        <Text style={s.sectionTitle}>{title}</Text>
+      </View>
+      {card ? <View style={s.sectionCard}>{children}</View> : children}
     </View>
   );
 }
 
-function FlowLinkedText({ text }: { text: string }) {
-  const displayText = formatPdfListText(text);
-  const parts = linkedTextParts(displayText);
-  if (!parts) return <Text style={s.flowListText}>{displayText}</Text>;
+function RouteChips({ tour }: { tour: ItineraryPDFProps["tour"] }) {
+  const chips = destinationChips(tour);
+  if (chips.length === 0) return null;
 
   return (
-    <Text style={s.flowListText}>
-      {parts.before}
-      <Link src={VISA_URL} style={s.flowLink}>{parts.linked}</Link>
-      {parts.after}
-    </Text>
-  );
-}
-
-function FlowBullet({ text }: { text: string }) {
-  return (
-    <View style={s.flowListItem}>
-      <Text style={s.flowBullet}>-</Text>
-      <FlowLinkedText text={text} />
+    <View style={s.chipRow}>
+      {chips.map((chip) => (
+        <View key={chip} style={s.chip} wrap={false}>
+          <Text style={s.chipText}>{chip}</Text>
+        </View>
+      ))}
     </View>
   );
 }
 
-function splitNormalPriceLabel(value?: string | null) {
-  const label = cleanText(value);
-  if (!label) return null;
-
-  const match = label.match(/^(.+?)\s*[-\u2013\u2014]\s*hemat\s+(.+)$/i);
-  if (!match) return { normalLabel: label, savingsLabel: null };
-
-  return {
-    normalLabel: match[1].trim(),
-    savingsLabel: `hemat ${match[2].trim()}`,
-  };
-}
-
-function FlowPriceSummary({
+export function OverviewCards({
+  tour,
   priceLabel,
   priceCoretLabel,
+  landTourLabel,
 }: {
+  tour: ItineraryPDFProps["tour"];
   priceLabel: string;
   priceCoretLabel?: string | null;
+  landTourLabel?: string | null;
 }) {
   const normalPrice = splitNormalPriceLabel(priceCoretLabel);
+  const cards = [
+    { label: "Durasi", value: tour.duration || "Mengikuti program" },
+    { label: "Keberangkatan", value: tour.tripDateLabel || "Tanggal mengikuti jadwal" },
+    { label: "Harga Paket Utama", value: priceLabel, price: true },
+    { label: "Land tour", value: landTourLabel || `Hubungi tim ${BRAND_DISPLAY}` },
+  ];
 
   return (
-    <Text style={[s.flowCell, s.flowPriceValue, { flex: 1 }]}>
-      <Text style={s.flowPriceValue}>{priceLabel}</Text>
-      {normalPrice ? (
-        <>
-          <Text style={s.flowSummaryValue}>  normal </Text>
-          <Text style={s.flowPriceNormal}>{normalPrice.normalLabel}</Text>
-          {normalPrice.savingsLabel ? <Text style={s.flowPriceSavings}>  {normalPrice.savingsLabel}</Text> : null}
-        </>
-      ) : null}
-    </Text>
+    <View style={s.overviewGrid}>
+      {cards.map((card, index) => {
+        const cardStyle = index % 2 === 1
+          ? [s.overviewCard, s.overviewCardRight]
+          : s.overviewCard;
+
+        return (
+          <View key={card.label} style={cardStyle} wrap={false}>
+            <Text style={s.overviewLabel}>{card.label}</Text>
+            <Text style={card.price ? s.overviewPrice : s.overviewValue}>{card.value}</Text>
+            {card.price && normalPrice ? (
+              <Text style={s.priceSubline}>
+                Normal {normalPrice.normalLabel}
+                {normalPrice.savingsLabel ? ` - ${normalPrice.savingsLabel}` : ""}
+              </Text>
+            ) : null}
+          </View>
+        );
+      })}
+    </View>
   );
 }
 
-function FlowSummaryValue({
-  label,
-  value,
-  priceCoretLabel,
-}: {
-  label: string;
-  value: string;
-  priceCoretLabel?: string | null;
-}) {
-  if (label === "HARGA PER ORANG") {
-    return <FlowPriceSummary priceLabel={value} priceCoretLabel={priceCoretLabel} />;
-  }
+function PdfIcon({ icon }: { icon: PdfIconName }) {
+  const paths: Record<PdfIconName, string> = {
+    bed: "M4 12V6 M4 12h16 M20 12v6 M4 18v-6 M7 12V9h8c1.7 0 3 1.3 3 3",
+    calendar: "M7 3v4 M17 3v4 M4 9h16 M6 5h12c1.1 0 2 .9 2 2v12H4V7c0-1.1.9-2 2-2Z",
+    clock: "M12 6v6l4 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+    creditCard: "M3 6h18v12H3V6Z M3 10h18 M7 15h4",
+    globe: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M3 12h18 M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21c-2.3-2.5-3.5-5.5-3.5-9S9.7 5.5 12 3Z",
+    instagram: "M7 3h10c2.2 0 4 1.8 4 4v10c0 2.2-1.8 4-4 4H7c-2.2 0-4-1.8-4-4V7c0-2.2 1.8-4 4-4Z M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z M17.5 6.5h.01",
+    mail: "M4 6h16v12H4V6Z M4 7l8 6 8-6",
+    mapPin: "M12 21s7-4.8 7-11a7 7 0 1 0-14 0c0 6.2 7 11 7 11Z M12 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+    meal: "M7 3v8 M4 3v8 M10 3v8 M4 7h6 M7 11v10 M17 3c2 2 2 6 0 8v10",
+    note: "M6 4h9l3 3v13H6V4Z M15 4v4h4 M9 12h6 M9 16h6",
+    phone: "M5 4l4 3-2 3c1.5 3 4 5.5 7 7l3-2 3 4c-1 1.3-2.5 2-4 2C9.5 21 3 14.5 3 8c0-1.5.7-3 2-4Z",
+    plane: "M3 11.5 21 4l-7.5 17-3-7-7.5-2.5Z M10.5 14 21 4",
+    route: "M5 19c3-8 11-6 14-14 M5 19h4 M5 19v-4 M19 5h-4 M19 5v4",
+    train: "M7 3h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2Z M8 7h8 M8 17l-2 3 M16 17l2 3 M8.5 13h.01 M15.5 13h.01",
+    transfer: "M4 7h12l4 5v5h-2 M6 17H4V7 M8 17h8 M8 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z M20 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z",
+  };
 
   return (
-    <Text style={[
-      s.flowCell,
-      /HARGA|LAND TOUR/.test(label) ? s.flowPriceValue : s.flowSummaryValue,
-      { flex: 1 },
-    ]}>
-      {value}
-    </Text>
-  );
-}
-
-function uniqueCommaList(value: string) {
-  const items: string[] = [];
-
-  cleanText(value)
-    .split(/\s*,\s*/)
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .forEach((item) => {
-      if (!items.some((existing) => existing.toLowerCase() === item.toLowerCase())) {
-        items.push(item);
-      }
-    });
-
-  return items.join(", ");
-}
-
-function translateMealInsight(value: string) {
-  return uniqueCommaList(value
-    .replace(/\bBreakfast\b/gi, "Sarapan")
-    .replace(/\bLunch\b/gi, "Makan siang")
-    .replace(/\bDinner\b/gi, "Makan malam")
-    .replace(/\bNo meals? included\b/gi, "Belum termasuk")
-    .replace(/\s+dan\s+/gi, ", ")
-    .replace(/\s*,\s*/g, ", ")
-    .trim());
-}
-
-function translateTransportInsight(value: string) {
-  return uniqueCommaList(value
-    .replace(/\bKapal\/Boat\/Cruise\b/gi, "Kapal/cruise")
-    .replace(/\bKapal\/Boat\b/gi, "Kapal")
-    .replace(/\bKapal\/Kapal\/cruise\b/gi, "Kapal/cruise")
-    .replace(/\bFlights?\b/gi, "Penerbangan")
-    .replace(/\bTrains?\b/gi, "Kereta api")
-    .replace(/\bBoat\/Cruise\b/gi, "Kapal/cruise")
-    .replace(/\bBoat\b/gi, "Kapal")
-    .replace(/\bCruise\b/gi, "Kapal/cruise")
-    .replace(/\bKapal\/Kapal\/cruise\b/gi, "Kapal/cruise")
-    .replace(/\s*,\s*/g, ", ")
-    .trim());
-}
-
-function translateStayInsight(value: string) {
-  const cleaned = cleanText(value);
-  if (/^(?:overnight stay|meng?inap)$/i.test(cleaned)) return "Menginap";
-  return cleaned
-    .replace(/\bOvernight\b/gi, "Bermalam")
-    .replace(/\bYurt Camp\b/gi, "Yurt Camp")
-    .trim();
-}
-
-function pdfInsightDisplay(insight: ItineraryInsight) {
-  if (insight.kind === "meals") return { label: "Makan", value: translateMealInsight(insight.value) };
-  if (insight.kind === "transport") return { label: "Transportasi", value: translateTransportInsight(insight.value) };
-  if (insight.kind === "stay") return { label: "Bermalam", value: translateStayInsight(insight.value) };
-  if (insight.kind === "time") return { label: "Waktu", value: insight.value };
-  if (insight.kind === "distance") return { label: "Jarak", value: insight.value };
-  if (insight.kind === "ascent") return { label: "Pendakian", value: insight.value };
-  return { label: insight.label, value: insight.value };
-}
-
-type PremiumInsightKind = Extract<ItineraryInsight["kind"], "meals" | "transport" | "stay">;
-
-function isPremiumInsightKind(kind: ItineraryInsight["kind"]): kind is PremiumInsightKind {
-  return kind === "meals" || kind === "transport" || kind === "stay";
-}
-
-function FlowInsightIcon({ kind }: { kind: PremiumInsightKind }) {
-  return (
-    <Svg viewBox="0 0 24 24" style={s.flowInsightIcon}>
-      <Circle cx={12} cy={12} r={10.5} fill={TEAL} stroke={CHARCOAL} strokeWidth={0.9} />
-      {kind === "meals" && (
-        <>
-          <Circle cx={10} cy={12} r={3.5} fill="none" stroke={CHARCOAL} strokeWidth={1.3} />
-          <Path d="M15 7.5v9" stroke={CHARCOAL} strokeWidth={1.3} strokeLinecap="round" />
-          <Path d="M17.2 7.5v9" stroke={CHARCOAL} strokeWidth={1.3} strokeLinecap="round" />
-        </>
-      )}
-      {kind === "transport" && (
-        <Path
-          d="M6 13.5l12-6-3.2 10-3-3-3.8 2 1.5-3.2L6 13.5z"
-          fill="none"
-          stroke={CHARCOAL}
-          strokeWidth={1.25}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-      )}
-      {kind === "stay" && (
-        <>
-          <Rect x={6.2} y={10.4} width={11.6} height={5.4} rx={1.1} fill="none" stroke={CHARCOAL} strokeWidth={1.3} />
-          <Line x1={6.2} y1={13.2} x2={17.8} y2={13.2} stroke={CHARCOAL} strokeWidth={1.15} />
-          <Line x1={7.2} y1={15.8} x2={7.2} y2={17.2} stroke={CHARCOAL} strokeWidth={1.15} strokeLinecap="round" />
-          <Line x1={16.8} y1={15.8} x2={16.8} y2={17.2} stroke={CHARCOAL} strokeWidth={1.15} strokeLinecap="round" />
-        </>
-      )}
+    <Svg style={s.metaIcon} viewBox="0 0 24 24">
+      <Path d={paths[icon]} fill="none" stroke="#087A7D" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   );
 }
 
-function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
-  if (insights.length === 0) return null;
+function MetaInlineItem({ label, value, icon }: DayMetaItem) {
+  return (
+    <View style={s.metaItem} wrap={false}>
+      <PdfIcon icon={icon} />
+      <Text style={s.metaText}>
+        <Text style={s.metaLabel}>{label}: </Text>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function MetaSeparator() {
+  return <Text style={s.metaSeparator}>•</Text>;
+}
+
+function ContactInlineItem({
+  icon,
+  label,
+  children,
+}: {
+  icon: PdfIconName;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <View style={s.contactInlineItem} wrap={false}>
+      <PdfIcon icon={icon} />
+      <Text style={s.contactInlineLabel}>{label}</Text>
+      {children}
+    </View>
+  );
+}
+
+export function ItineraryTimeline({
+  tour,
+  itinerary,
+  offset = 0,
+  compact = false,
+}: {
+  tour: Pick<ItineraryPDFProps["tour"], "duration" | "inclusions" | "itinerary">;
+  itinerary: ItineraryDay[];
+  offset?: number;
+  compact?: boolean;
+}) {
+  const displayDays = itinerary.map(buildItineraryDisplay);
 
   return (
-    <View style={s.flowInsightGrid}>
-      {insights.map((insight) => {
-        const display = pdfInsightDisplay(insight);
+    <View style={compact ? [s.timeline, s.timelineCompact] : s.timeline}>
+      {displayDays.map((displayDay, index) => {
+        const sourceDay = itinerary[index];
+        const globalIndex = offset + index;
+        const rawTitle = displayDay.title || sourceDay.title;
+        const description = ensureSentencePunctuation(polishItineraryDescription(rawTitle, displayDay.description || sourceDay.description));
+        const inferredMeta = displayDay.insights.map(insightDisplay);
+        const meta = deriveItineraryMeta(sourceDay, globalIndex, tour.itinerary, tour, inferredMeta);
+        const closing = isClosingItineraryRow(sourceDay, globalIndex, tour.itinerary);
+        const rowStyle = [
+          s.timelineItem,
+          compact ? s.timelineItemCompact : {},
+          closing ? s.timelineItemClosing : {},
+          index === displayDays.length - 1 ? s.timelineItemLast : {},
+        ];
 
         return (
-          <View key={`${insight.kind}-${insight.value}`} style={s.flowInsightItem}>
-            {isPremiumInsightKind(insight.kind) && <FlowInsightIcon kind={insight.kind} />}
-            <View style={s.flowInsightCopy}>
-              <Text style={s.flowInsightLabel}>{display.label}</Text>
-              <Text style={s.flowInsightValue}>
-                {display.value}
-              </Text>
+          <View key={`${displayDay.day}-${index}`} style={rowStyle} wrap={false}>
+            <View style={compact ? [s.timelineRail, s.timelineRailCompact] : s.timelineRail}>
+              <View style={compact ? [s.dayBadge, s.dayBadgeCompact] : s.dayBadge}>
+                <Text style={s.dayBadgeText}>H{displayDay.day}</Text>
+              </View>
+            </View>
+            <View style={s.dayContent}>
+              <Text style={compact ? [s.dayTitle, s.dayTitleCompact] : s.dayTitle}>{polishItineraryTitle(rawTitle)}</Text>
+              {description ? <Text style={compact ? [s.dayDescription, s.dayDescriptionCompact] : s.dayDescription}>{description}</Text> : null}
+              {meta.length > 0 ? (
+                <View style={compact ? [s.metaRow, s.metaRowCompact] : s.metaRow}>
+                  {meta.slice(0, 5).map((item, metaIndex) => (
+                    <Fragment key={`${item.label}-${item.value}`}>
+                      {metaIndex > 0 ? <MetaSeparator /> : null}
+                      <MetaInlineItem {...item} />
+                    </Fragment>
+                  ))}
+                </View>
+              ) : null}
             </View>
           </View>
         );
@@ -1331,544 +874,455 @@ function FlowInsightGrid({ insights }: { insights: ItineraryInsight[] }) {
   );
 }
 
-const DESTINATION_HIGHLIGHT_PATTERNS: Array<{ label: string; pattern: RegExp }> = [
-  { label: "Jakarta", pattern: /\b(?:jakarta|soekarno|indonesia)\b/i },
-  { label: "Metro Moscow", pattern: /\b(?:metro\s+moscow|metro\s+moskow)\b/i },
-  { label: "Red Square", pattern: /\b(?:red square|lapangan merah)\b/i },
-  { label: "Arbat", pattern: /\barbat\b/i },
-  { label: "Izmailovo", pattern: /\b(?:izmailovo|ismailovo)\b/i },
-  { label: "Moscow", pattern: /\b(?:moscow|moskow)\b/i },
-  { label: "Murmansk", pattern: /\bmurmansk\b/i },
-  { label: "Teriberka", pattern: /\bteriberka\b/i },
-  { label: "Icebreaker Lenin", pattern: /\b(?:icebreaker lenin|pemecah es lenin)\b/i },
-  { label: "Aurora Hunting", pattern: /\b(?:aurora hunting|aurora hunt|perburuan aurora|berburu aurora)\b/i },
-  { label: "Sami Village", pattern: /\b(?:sami village|desa sami)\b/i },
-  { label: "Husky & Reindeer", pattern: /\b(?:husky|reindeer|rusa kutub)\b/i },
-  { label: "Hermitage", pattern: /\bhermitage\b/i },
-  { label: "Nevsky Prospect", pattern: /\b(?:nevsky|nevski)\b/i },
-  { label: "Kazan Cathedral", pattern: /\bkazan\b/i },
-  { label: "St Isaac", pattern: /\b(?:st\.?\s*isaac|isaac)\b/i },
-  { label: "Church of Savior", pattern: /\b(?:savior|saviour|spilled blood)\b/i },
-  { label: "Masjid St Petersburg", pattern: /\b(?:mosque|masjid)\b/i },
-  { label: "Sapsan", pattern: /\bsapsan\b/i },
-  { label: "St Petersburg", pattern: /\b(?:st\.?\s*petersburg|saint petersburg|petersburg)\b/i },
-  { label: "Mausoleum Ho Chi Minh", pattern: /\b(?:mausoleum ho chi minh|ho chi minh mausoleum)\b/i },
-  { label: "Pagoda Satu Pilar", pattern: /\b(?:pagoda satu pilar|one pillar pagoda)\b/i },
-  { label: "Pagoda Tran Quoc", pattern: /\btran quoc\b/i },
-  { label: "Train Street", pattern: /\b(?:train street|jalan kereta)\b/i },
-  { label: "Old Quarter", pattern: /\b(?:old quarter|kawasan tua|36 jalan)\b/i },
-  { label: "Danau Hoan Kiem", pattern: /\bhoan kiem\b/i },
-  { label: "Pasar Dong Xuan", pattern: /\bdong xuan\b/i },
-  { label: "Hanoi", pattern: /\b(?:hanoi|ha noi)\b/i },
-  { label: "Sung Sot Cave", pattern: /\bsung sot\b/i },
-  { label: "Titop Island", pattern: /\b(?:titop|ti top)\b/i },
-  { label: "Luon Cave", pattern: /\bluon\b/i },
-  { label: "Teluk Halong", pattern: /\b(?:halong|ha long|teluk halong)\b/i },
-  { label: "Ninh Binh", pattern: /\bninh binh\b/i },
-  { label: "Hoa Lu", pattern: /\bhoa lu\b/i },
-  { label: "Tam Coc", pattern: /\btam coc\b/i },
-  { label: "Trang An", pattern: /\btrang an\b/i },
-  { label: "Sapa", pattern: /\b(?:sapa|sa pa)\b/i },
-  { label: "Fansipan", pattern: /\bfansipan\b/i },
-  { label: "Cat Cat Village", pattern: /\bcat cat\b/i },
-  { label: "Da Nang", pattern: /\b(?:da nang|danang)\b/i },
-  { label: "Ba Na Hills", pattern: /\bba na\b/i },
-  { label: "Golden Bridge", pattern: /\bgolden bridge\b/i },
-  { label: "Hoi An", pattern: /\b(?:hoi an|hoian)\b/i },
-  { label: "Cam Thanh Coconut Jungle", pattern: /\bcam thanh\b/i },
-  { label: "Hue", pattern: /\bhue\b/i },
-  { label: "Ho Chi Minh City", pattern: /\b(?:ho chi minh city|hcmc|saigon|sai gon|kota ho chi minh)\b/i },
-  { label: "Cu Chi Tunnels", pattern: /\bcu chi\b/i },
-  { label: "Mekong", pattern: /\bmekong\b/i },
-  { label: "Phu Quoc", pattern: /\bphu quoc\b/i },
-  { label: "Grand World", pattern: /\bgrand world\b/i },
-];
+function LinkedListText({ text }: { text: string }) {
+  const normalized = normalizeListText(text);
+  const match = /visa/i.exec(normalized);
 
-const BROAD_DESTINATION_GROUPS: Array<{ city: string; details: string[] }> = [
-  { city: "Moscow", details: ["Metro Moscow", "Red Square", "Arbat", "Izmailovo"] },
-  { city: "St Petersburg", details: ["Hermitage", "Nevsky Prospect", "Kazan Cathedral", "St Isaac", "Church of Savior", "Masjid St Petersburg"] },
-  { city: "Hanoi", details: ["Mausoleum Ho Chi Minh", "Pagoda Satu Pilar", "Pagoda Tran Quoc", "Train Street", "Old Quarter", "Danau Hoan Kiem", "Pasar Dong Xuan"] },
-  { city: "Teluk Halong", details: ["Sung Sot Cave", "Titop Island", "Luon Cave"] },
-  { city: "Da Nang", details: ["Ba Na Hills", "Golden Bridge"] },
-  { city: "Hoi An", details: ["Cam Thanh Coconut Jungle"] },
-];
+  if (!match) return <Text style={s.listText}>{normalized}</Text>;
 
-function pushUniqueHighlight(items: string[], value: string) {
-  const cleaned = cleanText(value)
-    .replace(/\([^)]*(?:sarapan|makan|breakfast|lunch|dinner|brunch|b|l|d)[^)]*\)/gi, "")
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/^(?:tur kota|city tour|tur privat|private tour|tur sore|tur pagi|full day|sehari penuh)\s+/i, "")
-    .replace(/^(?:bus shuttle|shuttle|transfer(?: privat)?|penerbangan|flight|kereta cepat|train|tiba|arrive)\s+(?:ke|to|di|in)?\s*/i, "")
-    .replace(/^(?:bermalam|overnight)\s+(?:di|in)?\s*/i, "")
-    .replace(/\s+(?:transfer|check-?in|check\s*out|hotel|bandara|airport|tanpa|with|dengan)\b.*$/i, "")
-    .replace(/^(?:ke|to|di|in)\s+/i, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/^moskow$/i, "Moscow")
-    .replace(/^ha noi$/i, "Hanoi")
-    .replace(/^danang$/i, "Da Nang")
-    .replace(/^hoian$/i, "Hoi An");
-
-  if (!cleaned || cleaned.length < 3 || cleaned.length > 42) return;
-  if (/^(?:makan|sarapan|breakfast|lunch|dinner|brunch|check|hotel|waktu bebas|free time)$/i.test(cleaned)) return;
-  if (!items.some((item) => item.toLowerCase() === cleaned.toLowerCase())) items.push(cleaned);
-}
-
-function destinationHighlightsForDay(day: Pick<ItineraryDay, "title" | "description">) {
-  const source = cleanText(`${day.title} ${day.description}`);
-  const highlights: string[] = [];
-
-  DESTINATION_HIGHLIGHT_PATTERNS
-    .map(({ label, pattern }) => {
-      const match = source.match(pattern);
-      return match?.index === undefined ? null : { label, index: match.index };
-    })
-    .filter((item): item is { label: string; index: number } => Boolean(item))
-    .sort((a, b) => a.index - b.index)
-    .forEach(({ label }) => pushUniqueHighlight(highlights, label));
-
-  if (highlights.length === 0) {
-    cleanText(day.title)
-      .replace(/\([^)]*\)/g, "")
-      .split(/\s+(?:-|\u2013|\u2014)\s+|\/|\||,|\u2022/g)
-      .forEach((part) => pushUniqueHighlight(highlights, part));
-  }
-
-  if (highlights.length === 0) pushUniqueHighlight(highlights, cleanText(day.title));
-  if (highlights.length === 0) pushUniqueHighlight(highlights, placeForDay(day));
-
-  const compacted = highlights.filter((item) => {
-    const group = BROAD_DESTINATION_GROUPS.find((entry) => entry.city === item);
-    return !group || !group.details.some((detail) => highlights.includes(detail));
-  });
-
-  return (compacted.length > 0 ? compacted : highlights).slice(0, 6);
-}
-
-function cleanBriefSegment(value: string) {
-  return cleanText(value)
-    .replace(/^["']+|["']+$/g, "")
-    .replace(/\s*[•|]\s*/g, ", ")
-    .replace(/\s+(?:-|--|\u2013|\u2014)\s+/g, " - ")
-    .replace(/\((opsional|optional)\)/gi, "$1")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function finishSentence(value: string) {
-  if (!value) return "";
-  return /[.!?]$/.test(value) ? value : `${value}.`;
-}
-
-const DANGLING_BRIEF_END_WORDS = new Set([
-  "dan",
-  "atau",
-  "lalu",
-  "kemudian",
-  "serta",
-  "dengan",
-  "untuk",
-  "ke",
-  "di",
-  "dari",
-  "menuju",
-  "yang",
-  "sebagai",
-  "agar",
-  "karena",
-  "jika",
-  "bila",
-  "sambil",
-  "sebelum",
-  "sesudah",
-  "setelah",
-  "termasuk",
-  "melalui",
-  "hingga",
-  "sampai",
-  "pada",
-  "dalam",
-  "tanpa",
-]);
-
-function stripDanglingBriefEnding(value: string) {
-  let text = value.replace(/[\s,;:()/-]+$/g, "").trim();
-  let words = text.split(/\s+/).filter(Boolean);
-
-  while (words.length > 1) {
-    const lastWord = words[words.length - 1].toLowerCase().replace(/[^a-z0-9]+/g, "");
-    if (!DANGLING_BRIEF_END_WORDS.has(lastWord)) break;
-    words = words.slice(0, -1);
-  }
-
-  text = words.join(" ").replace(/[\s,;:()/-]+$/g, "").trim();
-  return text;
-}
-
-function lastBoundaryIndex(value: string, pattern: RegExp, minLength: number) {
-  let index = -1;
-  let match: RegExpExecArray | null;
-  pattern.lastIndex = 0;
-
-  while ((match = pattern.exec(value))) {
-    const boundary = match.index + match[0].length;
-    if (boundary >= minLength) index = boundary;
-  }
-
-  return index;
-}
-
-function shortenAtWord(value: string, maxLength: number) {
-  const text = cleanBriefSegment(value);
-  if (text.length <= maxLength) return text;
-
-  const minLength = Math.max(90, Math.floor(maxLength * 0.58));
-  const minSentenceLength = 70;
-  const window = text.slice(0, maxLength);
-  const sentenceBoundary = lastBoundaryIndex(window, /[.!?](?=\s|$)/g, minSentenceLength);
-  if (sentenceBoundary > -1) return stripDanglingBriefEnding(window.slice(0, sentenceBoundary));
-
-  const clauseBoundary = lastBoundaryIndex(window, /[,;:](?=\s|$)/g, minLength);
-  const clipped = clauseBoundary > -1
-    ? window.slice(0, clauseBoundary)
-    : window.replace(/\s+\S*$/, "");
-  const cleanClip = stripDanglingBriefEnding(clipped);
-  return cleanClip ? `${cleanClip}...` : `${stripDanglingBriefEnding(window)}...`;
-}
-
-function formatPdfBriefText(value: string) {
-  return cleanBriefSegment(value)
-    .replace(/\bBreakfast at (?:the )?hotel\b/gi, "Sarapan di hotel")
-    .replace(/\bBreakfast\b/gi, "Sarapan")
-    .replace(/\bLunch\b/gi, "Makan siang")
-    .replace(/\bDinner\b/gi, "Makan malam")
-    .replace(/\bReturn flight to\b/gi, "Penerbangan kembali menuju")
-    .replace(/\bFlight to\b/gi, "Penerbangan menuju")
-    .replace(/\bFlights?\b/gi, "Penerbangan")
-    .replace(/\bPrivate transfer\b/gi, "Transfer privat")
-    .replace(/\bSarapan dan\b/gi, "Sarapan,")
-    .replace(/\bTransportasi private\b/gi, "Transfer privat")
-    .replace(/\bTransportasi\b\s*:?\s*/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function formatPdfListText(value: string) {
-  return cleanText(value)
-    .replace(/\bFlights?\b/gi, "Penerbangan")
-    .replace(/\bIncluding baggage\b/gi, "Termasuk bagasi")
-    .replace(/\bBreakfast at (?:the )?hotel\b/gi, "Sarapan di hotel")
-    .replace(/\bBreakfasts?\b/gi, "Sarapan")
-    .replace(/\bLunches?\b/gi, "Makan siang")
-    .replace(/\bDinners?\b/gi, "Makan malam")
-    .replace(/\bMeals outside the program\b/gi, "Makan di luar program")
-    .replace(/\bMeals?\b/gi, "Makan")
-    .replace(/\bTransportasi\b\s*:?\s*/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function isBriefMetadataLine(value: string) {
-  return /^(?:makan|bermalam|overnight|meal|meals)\s*:/i.test(value)
-    || /^(?:makan|meals)\s+(?:belum|di luar|diluar|dengan|with)\b/i.test(value)
-    || /^termasuk\s+(?:sarapan|makan|breakfast|lunch|dinner)\b/i.test(value);
-}
-
-function firstBriefSentence(value: string) {
-  const lines = stripItineraryMarkup(value)
-    .split(/\n+/)
-    .map(cleanBriefSegment)
-    .filter(Boolean);
-  const firstNarrativeLine = lines.find((line) => (
-    line.length >= 18 && !isBriefMetadataLine(line)
-  ));
-
-  if (firstNarrativeLine) return firstNarrativeLine;
-
-  const cleaned = cleanBriefSegment(value);
-  const sentences = cleaned.match(/[^.!?]+[.!?]?/g) ?? [];
-
-  return cleanBriefSegment(
-    sentences
-      .map((sentence) => sentence.trim())
-      .find((sentence) => sentence.length >= 18 && !/^makan\b|^bermalam\b/i.test(sentence))
-      ?? "",
+  return (
+    <Text style={s.listText}>
+      {normalized.slice(0, match.index)}
+      <Link src={PDF_LINKS.visa.href} style={s.link}>{normalized.slice(match.index, match.index + match[0].length)}</Link>
+      {normalized.slice(match.index + match[0].length)}
+    </Text>
   );
 }
 
-function itineraryBriefForDay(
-  day: Pick<ItineraryDay, "title" | "description">,
-  highlights: string[],
-) {
-  const title = cleanBriefSegment(day.title);
-  const sentence = firstBriefSentence(day.description);
-  const compactSentence = sentence && !title.toLowerCase().includes(sentence.slice(0, 24).toLowerCase())
-    ? shortenAtWord(sentence, MAX_ITINERARY_BRIEF_LENGTH)
-    : "";
-
-  if (compactSentence) return finishSentence(formatPdfBriefText(compactSentence));
-  if (title) return finishSentence(shortenAtWord(`Rute utama: ${title}`, MAX_ITINERARY_BRIEF_LENGTH));
-  if (highlights.length > 0) return finishSentence(shortenAtWord(`Rute utama: ${highlights.join(", ")}`, MAX_ITINERARY_BRIEF_LENGTH));
-  return "";
-}
-
-function BrandMark() {
+function ListItem({
+  text,
+  icon,
+  muted = false,
+}: {
+  text: string;
+  icon: string;
+  muted?: boolean;
+}) {
   return (
-    <View style={s.proposalBrand}>
-      <Text style={s.proposalBrandName}>Sundaf</Text>
-      <Text style={s.proposalBrandTrip}>Trip</Text>
+    <View style={s.listItem} wrap={false}>
+      <Text style={muted ? [s.listIcon, s.listIconMuted] : s.listIcon}>{icon}</Text>
+      <LinkedListText text={text} />
     </View>
   );
 }
 
-function placeForDay(day: Pick<ItineraryDay, "title" | "description">) {
-  const text = `${day.title} ${day.description}`.toLowerCase();
-  if (/ninh binh|hoa lu|tam coc|trang an/.test(text)) return "Ninh Binh";
-  if (/halong|ha long|teluk halong|tuan chau|bo hon|sung sot|titop|luon/.test(text)) return "Teluk Halong";
-  if (/sapa|sa pa|fansipan|cat cat|lao cai/.test(text)) return "Sapa";
-  if (/da nang|danang|ba na|golden bridge/.test(text)) return "Da Nang";
-  if (/hue|imperial city|perfume river/.test(text)) return "Hue";
-  if (/hoi an|hoian|ancient town/.test(text)) return "Hoi An";
-  if (/ho chi minh|saigon|cu chi/.test(text)) return "Ho Chi Minh";
-  if (/mekong|my tho|can tho|ben tre/.test(text)) return "Mekong";
-  if (/phu quoc/.test(text)) return "Phu Quoc";
-  if (/hanoi|hoan kiem|old quarter|train street|noi bai/.test(text)) return "Hanoi";
-  if (/ismailovo|izmailovo|moscow|moskow|red square|arbat|metro/.test(text)) return "Moscow";
-  if (/murmansk|aurora|sami|husky|reindeer|snow/.test(text)) return "Murmansk";
-  if (/petersburg|nevski|nevsky|kazan|isaac|hermitage|spilled|mosque/.test(text)) return "St Petersburg";
-  if (/jakarta|indonesia/.test(text)) return "Indonesia";
-  return "";
-}
-
-export function ItineraryPDF({
-  tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl, paymentPlan,
-}: ItineraryPDFProps) {
-  const faqDisplay = faqUrl ? faqUrl.replace(/^https?:\/\//, "") : "";
-  const meta = [
-    tour.duration ? ["DURASI", tour.duration] : null,
-    tour.tripDateLabel ? ["KEBERANGKATAN", tour.tripDateLabel] : null,
-    ["DESTINASI", tour.cityHighlight || tour.country],
-  ].filter(Boolean) as [string, string][];
-  const addOns = tour.addOns ?? [];
-  const dateLabel = tour.tripDateLabel || "Tanggal mengikuti jadwal";
-  const displayItinerary = tour.itinerary.map(buildItineraryDisplay);
-  const runningTitle = `Rencana Perjalanan ${tour.title}`;
-  const infoRows = [
-    ...meta,
-    ["HARGA PER ORANG", priceLabel],
-    landTourLabel ? ["LAND TOUR", landTourLabel] : null,
-  ].filter(Boolean) as [string, string][];
-  const subtitleParts = [
-    `Disiapkan oleh ${company.name || "Sundaf Trip"}`,
-    tour.duration,
-    dateLabel,
-  ].filter(Boolean);
-  const notesCopy = cleanText(tour.notes) || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan.";
-  const visaCopy = cleanText(tour.visaInfo)
-    || "Visa dapat dibantu melalui sundaftrip.com/visa. Hubungi WhatsApp untuk ketersediaan kursi dan proses pendaftaran.";
-  const paymentTermColumns = [
-    PAYMENT_TERMS.filter((_, index) => index % 2 === 0),
-    PAYMENT_TERMS.filter((_, index) => index % 2 === 1),
-  ];
-  const galleryImages = uniquePdfGalleryImages(tour.gallery).slice(0, 7);
-  const leadGalleryImage = galleryImages[0];
-  const sideGalleryImages = galleryImages.slice(1, 3);
-  const gridGalleryImages = galleryImages.slice(3, 7);
+export function InclusionExclusionSection({
+  inclusions,
+  exclusions,
+}: {
+  inclusions: string[];
+  exclusions: string[];
+}) {
+  if (inclusions.length === 0 && exclusions.length === 0) return null;
 
   return (
-    <Document title={`Rencana Perjalanan ${tour.title}`} author={company.name || "Sundaf Trip"}>
-      <Page size="A4" style={s.flowPage} wrap>
-        <FixedChrome company={company} runningTitle={runningTitle} />
-
-        <View style={s.flowTitleBlock}>
-          <Text style={s.flowTitle}>{runningTitle}</Text>
-          <Text style={s.flowSubtitle}>{subtitleParts.join(" - ")}</Text>
+    <SectionShell title="Sudah Termasuk / Belum Termasuk" card={false}>
+      <View style={s.twoColumn}>
+        <View style={[s.sectionCard, s.columnLeft]}>
+          <Text style={s.listTitle}>Sudah Termasuk</Text>
+          {inclusions.map((item, index) => <ListItem key={`${item}-${index}`} text={item} icon="+" />)}
         </View>
+        <View style={[s.sectionCard, s.columnRight]}>
+          <Text style={s.listTitle}>Belum Termasuk</Text>
+          {exclusions.map((item, index) => <ListItem key={`${item}-${index}`} text={item} icon="-" muted />)}
+        </View>
+      </View>
+    </SectionShell>
+  );
+}
 
-        <View style={s.flowSection}>
-          <SectionTitle>Ringkasan Perjalanan</SectionTitle>
-          <View style={s.flowTable}>
-            {infoRows.map(([label, value]) => (
-              <View key={label} style={s.flowTableRow}>
-                <Text style={[s.flowCellBold, s.flowSummaryLabel, s.flowInfoLabel]}>{label}</Text>
-                <FlowSummaryValue label={label} value={value} priceCoretLabel={priceCoretLabel} />
+export function AddOnList({ addOns }: { addOns: PdfAddOn[] }) {
+  if (addOns.length === 0) return null;
+
+  return (
+    <SectionShell title="Add-on Opsional">
+      {addOns.map((item, index) => (
+        <View key={`${item.name}-${index}`} style={index === 0 ? undefined : s.addOnRow} wrap={false}>
+          <View style={s.addOnTop}>
+            <Text style={s.addOnName}>{normalizeListText(item.name)}</Text>
+            <Text style={s.addOnPrice}>{item.priceLabel}</Text>
+          </View>
+          {item.desc ? <Text style={s.addOnDesc}>{normalizeListText(item.desc)}</Text> : null}
+          {item.tag === "recommended" ? <Text style={s.recommendedBadge}>Rekomendasi</Text> : null}
+        </View>
+      ))}
+    </SectionShell>
+  );
+}
+
+export function PaymentSection({
+  paymentPlan,
+  basePriceLabel,
+}: {
+  paymentPlan?: TourPaymentPlan | null;
+  basePriceLabel: string;
+}) {
+  const totalHeading = formatPaymentTotalHeading(paymentPlan?.totalLabel, basePriceLabel);
+  const hasAddOnTotal = paymentPlan?.totalLabel && normalizePriceText(paymentPlan.totalLabel) !== normalizePriceText(basePriceLabel);
+
+  return (
+    <SectionShell title="Settlement & Pembayaran">
+      {paymentPlan && paymentPlan.steps.length > 0 ? (
+        <>
+          <View style={s.paymentIntroRow}>
+            <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.intro)}</Text>
+            <Text style={s.paymentIntro}>{professionalizePaymentText(paymentPlan.paymentMethodsLabel)}</Text>
+          </View>
+          <View style={s.paymentTotalBox} wrap={false}>
+            <Text style={s.paymentTotalLabel}>{totalHeading}</Text>
+            <Text style={s.paymentTotalValue}>{paymentPlan.totalLabel} / orang</Text>
+            {hasAddOnTotal ? (
+              <Text style={s.paymentTotalNote}>
+                Harga paket utama: {basePriceLabel} / orang. Total settlement mencakup komponen wajib atau add-on terpilih sesuai invoice.
+              </Text>
+            ) : null}
+          </View>
+          <View style={s.paymentTable}>
+            <View style={[s.paymentRow, s.paymentHeader]} wrap={false}>
+              <Text style={[s.paymentCell, s.paymentCellBold, s.paymentStage]}>Tahap</Text>
+              <Text style={[s.paymentCell, s.paymentCellBold, s.paymentDue]}>Jatuh Tempo</Text>
+              <Text style={[s.paymentCell, s.paymentCellBold, s.paymentAmount]}>Nominal</Text>
+            </View>
+            {paymentPlan.steps.map((step) => (
+              <View key={step.label} style={s.paymentRow} wrap={false}>
+                <Text style={[s.paymentCell, s.paymentCellBold, s.paymentStage]}>{step.label}</Text>
+                <Text style={[s.paymentCell, s.paymentDue]}>{step.dueDateLabel}</Text>
+                <Text style={[s.paymentCell, s.paymentCellBold, s.paymentAmount]}>{step.amountLabel}</Text>
               </View>
             ))}
           </View>
-        </View>
-
-        <View style={s.flowSection}>
-          <SectionTitle>Rencana Perjalanan</SectionTitle>
-          <View style={s.flowTable}>
-            <View style={s.flowTableHead}>
-              <Text style={[s.flowCellBold, s.flowDayCell]}>Hari</Text>
-              <Text style={[s.flowCellBold, s.flowAgendaCell]}>Agenda</Text>
-            </View>
-            {displayItinerary.map((day, idx) => {
-              const highlights = destinationHighlightsForDay(day);
-              const brief = itineraryBriefForDay(day, highlights);
-
-              return (
-                <View key={`${day.day}-${idx}`} style={[s.flowTableRow, s.flowItineraryRow]} wrap={false}>
-                  <Text style={[s.flowCellBold, s.flowDayCell, s.flowItineraryDay]}>{day.day}</Text>
-                  <View style={[s.flowCell, s.flowAgendaCell]}>
-                    <Text style={s.flowItineraryTitle}>{cleanText(day.title)}</Text>
-                    {!!brief && <Text style={s.flowBriefText}>{brief}</Text>}
-                    <FlowInsightGrid insights={day.insights} />
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-          <Text style={[s.flowFootnote, { marginTop: 7 }]}>
-            *Detail aktivitas mengikuti itinerary website dan dapat berubah sesuai kondisi cuaca serta operasional di lapangan.
-          </Text>
-        </View>
-
-        {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
-          <View style={s.flowSection}>
-            <SectionTitle>Harga Sudah / Belum Termasuk</SectionTitle>
-            <View style={s.flowTwoCol}>
-              <View style={s.flowCol}>
-                <Text style={s.flowListHead}>Sudah Termasuk</Text>
-                {tour.inclusions.map((item, i) => <FlowBullet key={i} text={item} />)}
-              </View>
-              <View style={s.flowCol}>
-                <Text style={s.flowListHead}>Belum Termasuk</Text>
-                {tour.exclusions.map((item, i) => <FlowBullet key={i} text={item} />)}
-              </View>
-            </View>
-          </View>
-        )}
-
-        {!!addOns.length && (
-          <View style={s.flowSection}>
-            <SectionTitle>Add-on Opsional</SectionTitle>
-            <View style={s.flowTable}>
-              <View style={s.flowTableHead}>
-                <Text style={[s.flowCellBold, s.flowAddOnName]}>Layanan</Text>
-                <Text style={[s.flowCellBold, s.flowAddOnPrice]}>Harga/orang</Text>
-              </View>
-              {addOns.map((item, i) => (
-                <View key={i} style={s.flowTableRow}>
-                  <Text style={[s.flowCell, s.flowAddOnName]}>
-                    {item.name}{item.tag === "recommended" ? " (rekomendasi)" : ""}
-                  </Text>
-                  <Text style={[s.flowCellBold, s.flowAddOnPrice]}>{item.priceLabel}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        <View style={s.flowSection}>
-          <SectionTitle>Settlement & Pembayaran</SectionTitle>
-          {!!paymentPlan && paymentPlan.steps.length > 0 ? (
-            <>
-              <Text style={s.flowBodyText}>{paymentPlan.intro}</Text>
-              <Text style={[s.flowBodyText, { marginTop: 4 }]}>({paymentPlan.paymentMethodsLabel})</Text>
-              <Text style={[s.flowPriceValue, { marginTop: 4 }]}>Total skema: {paymentPlan.totalLabel} / orang</Text>
-              <View style={[s.flowTable, { marginTop: 8 }]}>
-                <View style={s.flowTableHead}>
-                  <Text style={[s.flowCellBold, s.flowPaymentStage]}>Tahap</Text>
-                  <Text style={[s.flowCellBold, s.flowPaymentDue]}>Jatuh Tempo</Text>
-                  <Text style={[s.flowCellBold, s.flowPaymentAmount]}>Nominal</Text>
-                </View>
-                {paymentPlan.steps.map((step) => (
-                  <View key={step.label} style={s.flowTableRow}>
-                    <Text style={[s.flowCellBold, s.flowPaymentStage]}>{step.label}</Text>
-                    <Text style={[s.flowCell, s.flowPaymentDue]}>{step.dueDateLabel}</Text>
-                    <Text style={[s.flowCellBold, s.flowPaymentAmount, s.flowPriceValue]}>{step.amountLabel}</Text>
-                  </View>
-                ))}
-              </View>
-              {paymentPlan.finePrint ? <Text style={[s.flowBodyText, { marginTop: 6 }]}>{paymentPlan.finePrint}</Text> : null}
-            </>
-          ) : (
-            <Text style={s.flowBodyText}>
-              Jadwal pembayaran mengikuti invoice resmi Sundaf Trip dan konfirmasi administrasi terbaru.
-            </Text>
-          )}
-
-          <Text style={[s.flowListHead, { marginTop: 12 }]}>Term Pembayaran</Text>
-          <View style={s.flowTwoCol}>
-            {paymentTermColumns.map((column, colIndex) => (
-              <View key={colIndex} style={s.flowCol}>
-                {column.map((item, i) => <FlowBullet key={i} text={item} />)}
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={s.flowSection}>
-          <SectionTitle>Catatan Penting</SectionTitle>
-          <Text style={s.flowBodyText}>{notesCopy}</Text>
-        </View>
-
-        <View style={s.flowSection}>
-          <SectionTitle>Visa & Pendaftaran</SectionTitle>
-          <Text style={s.flowBodyText}>
-            {visaCopy} <Link src={VISA_URL} style={s.flowLink}>sundaftrip.com/visa</Link>
-          </Text>
-        </View>
-
-        <View style={s.flowSection}>
-          <SectionTitle>Kontak</SectionTitle>
-          {company.whatsapp && (
-            <Text style={s.flowBodyText}>
-              WhatsApp: <Link src={waLink(company.whatsapp)} style={s.flowLink}>{company.whatsapp}</Link>
-            </Text>
-          )}
-          {company.phone && <Text style={s.flowBodyText}>Telepon: {company.phone}</Text>}
-          {company.email && <Text style={s.flowBodyText}>Email: {company.email}</Text>}
-          {company.website && <Text style={s.flowBodyText}>Website: {company.website}</Text>}
-          {!!faqUrl && (
-            <Text style={s.flowBodyText}>
-              FAQ: <Link src={faqUrl} style={s.flowLink}>{faqDisplay}</Link>
-            </Text>
-          )}
-        </View>
-
-        <View style={s.flowSection}>
-          <SectionTitle>Profil Sundaf Trip</SectionTitle>
-          <Text style={s.flowBodyText}>{profileText(company)}</Text>
-        </View>
-      </Page>
-
-      {!!leadGalleryImage && (
-        <Page size="A4" style={s.flowPage} wrap={false}>
-          <FixedChrome company={company} runningTitle={runningTitle} />
-
-          <View style={s.flowTitleBlock}>
-            <Text style={s.flowTitle}>Dokumentasi Perjalanan Sundaf</Text>
-            <Text style={s.flowSubtitle}>
-              Foto dipilih dari galeri paket ini dan dokumentasi perjalanan Sundaf Trip.
-            </Text>
-          </View>
-
-          <View style={s.galleryLeadRow}>
-            <PdfImage src={leadGalleryImage} style={s.galleryLeadImage} />
-            <View style={s.gallerySideStack}>
-              {sideGalleryImages.map((image, index) => (
-                <PdfImage key={`side-${index}`} src={image} style={s.gallerySideImage} />
-              ))}
-            </View>
-          </View>
-
-          {gridGalleryImages.length > 0 && (
-            <View style={s.galleryGrid}>
-              {gridGalleryImages.map((image, index) => (
-                <PdfImage key={`grid-${index}`} src={image} style={s.galleryGridImage} />
-              ))}
-            </View>
-          )}
-
-          <Text style={s.galleryNote}>
-            Foto bersifat dokumentasi perjalanan. Susunan aktivitas, cuaca, dan kondisi lapangan mengikuti jadwal final serta arahan operasional setempat.
-          </Text>
-        </Page>
+          {paymentPlan.finePrint ? <Text style={[s.galleryNote, { marginTop: 8 }]}>{professionalizePaymentText(paymentPlan.finePrint)}</Text> : null}
+        </>
+      ) : (
+        <Text style={s.paymentIntro}>
+          Jadwal pembayaran mengikuti invoice resmi {BRAND_DISPLAY} dan konfirmasi administrasi terbaru.
+        </Text>
       )}
+
+      <View style={s.termGrid}>
+        {PAYMENT_TERMS.map((term, index) => (
+          <View key={term} style={index % 2 === 1 ? [s.termCard, s.termCardRight] : s.termCard}>
+            <Text style={s.termText}>{term}</Text>
+          </View>
+        ))}
+      </View>
+    </SectionShell>
+  );
+}
+
+function OperationsContactSection({
+  company,
+  notes,
+}: {
+  company: ItineraryPDFProps["company"];
+  notes?: string | null;
+}) {
+  const phoneDisplay = cleanText(company.phone) || PDF_LINKS.whatsapp.display;
+  const whatsappDisplay = cleanText(company.whatsapp) || PDF_LINKS.whatsapp.display;
+  const noteItems = buildImportantNotes(notes);
+
+  return (
+    <SectionShell title="Catatan, Visa & Kontak" card={false}>
+      <View style={s.operationsGrid}>
+        <View style={[s.operationsPanel, s.columnLeft]}>
+          <Text style={s.compactTitle}>Catatan Penting</Text>
+          {noteItems.map((note) => (
+            <View key={note} style={s.compactNoteRow} wrap={false}>
+              <PdfIcon icon="note" />
+              <Text style={[s.compactBody, s.compactNoteText]}>{note}</Text>
+            </View>
+          ))}
+
+          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Profil {BRAND_DISPLAY}</Text>
+          <Text style={s.compactBody}>{profileText(company)}</Text>
+        </View>
+
+        <View style={[s.operationsPanel, s.columnRight]}>
+          <Text style={s.compactTitle}>Visa & Registrasi</Text>
+          <Text style={s.compactBody}>
+            {BRAND_DISPLAY} membantu arahan dan persiapan dokumen visa sesuai kebutuhan destinasi. Keputusan akhir mengikuti ketentuan kedutaan/imigrasi negara tujuan.
+          </Text>
+          <View style={s.compactLinkRow}>
+            <ContactInlineItem icon="globe" label="Visa">
+              <Link src={PDF_LINKS.visa.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.visa.display}</Link>
+            </ContactInlineItem>
+            <ContactInlineItem icon="note" label="FAQ">
+              <Link src={PDF_LINKS.faq.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.faq.display}</Link>
+            </ContactInlineItem>
+          </View>
+
+          <Text style={[s.compactTitle, s.compactTitleSpacing]}>Kontak {BRAND_DISPLAY}</Text>
+          <ContactInlineItem icon="phone" label="WA">
+            <Link src={PDF_LINKS.whatsapp.href} style={[s.contactInlineValue, s.link]}>{whatsappDisplay}</Link>
+          </ContactInlineItem>
+          <ContactInlineItem icon="phone" label="Tel">
+            <Text style={s.contactInlineValue}>{phoneDisplay}</Text>
+          </ContactInlineItem>
+          <ContactInlineItem icon="mail" label="Email">
+            <Link src={PDF_LINKS.email.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.email.display}</Link>
+          </ContactInlineItem>
+          <ContactInlineItem icon="globe" label="Web">
+            <Link src={PDF_LINKS.website.href} style={[s.contactInlineValue, s.link]}>{PDF_LINKS.website.display}</Link>
+          </ContactInlineItem>
+          <ContactInlineItem icon="instagram" label="IG">
+            <Link src={PDF_LINKS.instagram.href} style={[s.contactInlineValue, s.link]}>@sundaf.trip</Link>
+          </ContactInlineItem>
+        </View>
+      </View>
+    </SectionShell>
+  );
+}
+
+export function GallerySection({ images }: { images: string[] }) {
+  const galleryImages = uniquePdfGalleryImages(images).slice(0, 6);
+  const leadGalleryImage = galleryImages[0];
+  const sideGalleryImages = galleryImages.slice(1, 3);
+  const gridGalleryImages = galleryImages.slice(3, 6);
+
+  if (!leadGalleryImage) return null;
+
+  if (galleryImages.length === 1) {
+    return (
+      <>
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; the page title identifies the gallery. */}
+        <Image src={leadGalleryImage} style={s.gallerySingleImage} />
+        <Text style={s.galleryNote}>
+          Foto bersifat dokumentasi perjalanan; kondisi destinasi mengikuti cuaca, jadwal final, dan arahan operasional setempat.
+        </Text>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <View style={s.galleryLeadRow}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; the page title identifies the gallery. */}
+        <Image src={leadGalleryImage} style={s.galleryLeadImage} />
+        {sideGalleryImages.length > 0 ? (
+          <View style={s.gallerySideStack}>
+            {sideGalleryImages.map((image, index) => (
+              // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support.
+              <Image key={`side-${index}`} src={image} style={s.gallerySideImage} />
+            ))}
+          </View>
+        ) : null}
+      </View>
+
+      {gridGalleryImages.length > 0 ? (
+        <View style={s.galleryGrid}>
+          {gridGalleryImages.map((image, index) => (
+            // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support.
+            <Image
+              key={`grid-${index}`}
+              src={image}
+              style={index === 2 ? [s.galleryGridImage, s.galleryGridImageRight] : s.galleryGridImage}
+            />
+          ))}
+        </View>
+      ) : null}
+
+      <Text style={s.galleryNote}>
+        Foto bersifat dokumentasi perjalanan; kondisi destinasi mengikuti cuaca, jadwal final, dan arahan operasional setempat.
+      </Text>
+    </>
+  );
+}
+
+function CoverPage({
+  tour,
+  priceLabel,
+  priceCoretLabel,
+  landTourLabel,
+  company,
+  runningTitle,
+  pageNumber,
+  totalPages,
+}: {
+  tour: ItineraryPDFProps["tour"];
+  priceLabel: string;
+  priceCoretLabel?: string | null;
+  landTourLabel?: string | null;
+  company: ItineraryPDFProps["company"];
+  runningTitle: string;
+} & PdfPageNumber) {
+  const subtitle = [
+    tour.duration,
+    tour.tripDateLabel ? `Keberangkatan ${tour.tripDateLabel}` : "Tanggal mengikuti jadwal",
+  ].filter(Boolean).join(" - ");
+
+  return (
+    <PdfPage company={company} runningTitle={runningTitle} pageNumber={pageNumber} totalPages={totalPages} cover>
+      <View style={s.coverIntro}>
+        <View style={s.coverCopy}>
+          <Text style={s.label}>SUNDAF ITINERARY</Text>
+          <Text style={s.title}>{runningTitle}</Text>
+          <Text style={s.subtitle}>{subtitle}</Text>
+          <RouteChips tour={tour} />
+        </View>
+        {tour.heroImg ? (
+          <View style={s.heroWrap}>
+            {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt support; adjacent title describes the tour. */}
+            <Image src={tour.heroImg} style={s.heroImage} />
+          </View>
+        ) : (
+          <View style={s.heroFallback}>
+            <Text style={s.heroFallbackText}>{companyTagline(company)}</Text>
+          </View>
+        )}
+      </View>
+
+      <OverviewCards
+        tour={tour}
+        priceLabel={priceLabel}
+        priceCoretLabel={priceCoretLabel}
+        landTourLabel={landTourLabel}
+      />
+
+      <View style={s.trustNote}>
+        <Text style={s.trustText}>
+          Dokumen ini disusun berdasarkan informasi paket yang tersedia di sundaftrip.com. Detail akhir mengikuti kondisi operasional, cuaca, dan konfirmasi layanan.
+        </Text>
+      </View>
+    </PdfPage>
+  );
+}
+
+type PdfPageDescriptor = {
+  key: string;
+  render: (pageNumber: number, totalPages: number) => ReactNode;
+};
+
+export function ItineraryPDF({
+  tour,
+  priceLabel,
+  priceCoretLabel,
+  landTourLabel,
+  company,
+  paymentPlan,
+}: ItineraryPDFProps) {
+  const runningTitle = cleanText(tour.title) || "Itinerary SUNDAF";
+  const documentTitle = `Itinerary SUNDAF - ${runningTitle}`;
+  const addOns = tour.addOns ?? [];
+  const itineraryPages = splitItineraryPages(tour.itinerary, { tour });
+  const itineraryPageEntries = itineraryPages.reduce<Array<{ days: ItineraryDay[]; offset: number }>>((entries, days) => {
+    const offset = entries.reduce((sum, entry) => sum + entry.days.length, 0);
+    return [...entries, { days, offset }];
+  }, []);
+  const denseItinerary = itineraryNeedsCompactMode(tour.itinerary);
+  const lastItineraryEntry = itineraryPageEntries[itineraryPageEntries.length - 1];
+  const lastItineraryUnits = lastItineraryEntry
+    ? pageUnitTotal(lastItineraryEntry.days, lastItineraryEntry.offset, tour.itinerary, tour)
+    : 0;
+  const inclusionItemCount = tour.inclusions.length + tour.exclusions.length + addOns.length;
+  const inlineInclusionsWithLastItinerary = itineraryPageEntries.length > 1
+    && Boolean(lastItineraryEntry)
+    && lastItineraryUnits <= 4.2
+    && inclusionItemCount <= 18;
+  const galleryImages = uniquePdfGalleryImages([tour.heroImg ?? "", ...(tour.gallery ?? [])]);
+  const galleryPages = splitGalleryPages(galleryImages);
+  const pages: PdfPageDescriptor[] = [
+    {
+      key: "cover",
+      render: (pageNumber, totalPages) => (
+        <CoverPage
+          tour={tour}
+          priceLabel={priceLabel}
+          priceCoretLabel={priceCoretLabel}
+          landTourLabel={landTourLabel}
+          company={company}
+          runningTitle={runningTitle}
+          pageNumber={pageNumber}
+          totalPages={totalPages}
+        />
+      ),
+    },
+    ...itineraryPageEntries.map<PdfPageDescriptor>(({ days, offset }, index) => {
+      const isLastItineraryPage = index === itineraryPageEntries.length - 1;
+
+      return {
+        key: `itinerary-${index}`,
+        render: (pageNumber, totalPages) => (
+          <PdfPage
+            company={company}
+            runningTitle={runningTitle}
+            pageNumber={pageNumber}
+            totalPages={totalPages}
+          >
+            <SectionShell title={index === 0 ? "Alur Perjalanan" : "Alur Perjalanan Lanjutan"} card={false}>
+              <ItineraryTimeline tour={tour} itinerary={days} offset={offset} compact={denseItinerary} />
+            </SectionShell>
+            {inlineInclusionsWithLastItinerary && isLastItineraryPage ? (
+              <>
+                <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
+                <AddOnList addOns={addOns} />
+              </>
+            ) : null}
+          </PdfPage>
+        ),
+      };
+    }),
+  ];
+
+  if (!inlineInclusionsWithLastItinerary) {
+    pages.push({
+      key: "inclusions",
+      render: (pageNumber, totalPages) => (
+        <PdfPage
+          company={company}
+          runningTitle={runningTitle}
+          pageNumber={pageNumber}
+          totalPages={totalPages}
+        >
+          <InclusionExclusionSection inclusions={tour.inclusions} exclusions={tour.exclusions} />
+          <AddOnList addOns={addOns} />
+        </PdfPage>
+      ),
+    });
+  }
+
+  pages.push({
+    key: "operations",
+    render: (pageNumber, totalPages) => (
+      <PdfPage
+        company={company}
+        runningTitle={runningTitle}
+        pageNumber={pageNumber}
+        totalPages={totalPages}
+      >
+        <PaymentSection paymentPlan={paymentPlan} basePriceLabel={priceLabel} />
+        <OperationsContactSection company={company} notes={tour.notes} />
+      </PdfPage>
+    ),
+  });
+
+  pages.push(
+    ...galleryPages.map<PdfPageDescriptor>((pageImages, index) => ({
+      key: `gallery-${index}`,
+      render: (pageNumber, totalPages) => (
+        <PdfPage
+          company={company}
+          runningTitle={runningTitle}
+          pageNumber={pageNumber}
+          totalPages={totalPages}
+        >
+          <SectionShell title="Dokumentasi Perjalanan" card>
+            <Text style={[s.subtitle, { marginBottom: 10 }]}>
+              Beberapa dokumentasi perjalanan SUNDAF Trip sebagai gambaran suasana destinasi.
+            </Text>
+            <GallerySection images={pageImages} />
+          </SectionShell>
+        </PdfPage>
+      ),
+    })),
+  );
+
+  return (
+    <Document title={documentTitle} author="Sundaf Trip">
+      {pages.map((page, index) => (
+        <Fragment key={page.key}>
+          {page.render(index + 1, pages.length)}
+        </Fragment>
+      ))}
     </Document>
   );
 }
-/* Legacy compact portrait styles are intentionally kept above for reuse in older generated variants. */

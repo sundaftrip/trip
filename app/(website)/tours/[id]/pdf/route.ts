@@ -1,4 +1,5 @@
-/* GET /tours/[id]/pdf, generates a branded itinerary PDF on the fly
+/* GET /tours/[id]/pdf, where [id] may be a tour id or slug.
+   Generates a branded itinerary PDF on the fly
    from the Tour record and streams it back as a one-click download. */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -125,7 +126,7 @@ export async function GET(
   const { id } = await params;
 
   const [tour, companyRows] = await Promise.all([
-    prisma.tour.findUnique({ where: { id } }),
+    prisma.tour.findFirst({ where: { OR: [{ id }, { slug: id }] } }),
     prisma.companyInfo.findMany({
       where: { key: { in: [
         "company_name", "company_logo", "company_whatsapp", "company_phone",
