@@ -1121,6 +1121,15 @@
 
 .detailSummary h2 { max-width: 14ch; margin-bottom: 24px; }
 
+.detailSummaryTitleLong {
+  max-width: 24ch !important;
+  font-size: clamp(28px, 3vw, 38px) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.008em !important;
+  line-height: 1.2 !important;
+  text-wrap: pretty !important;
+}
+
 .detailSummary p,
 .detailSectionLede,
 .detailRelatedHeading p {
@@ -1825,6 +1834,12 @@
   .detailSummaryIndex { padding-top: 0; }
   .detailSummary h2,
   .detailSectionTitle { font-size: 30px; }
+  .detailSummary h2.detailSummaryTitleLong {
+    max-width: none !important;
+    margin-bottom: 20px;
+    font-size: clamp(23px, 6.2vw, 27px) !important;
+    line-height: 1.24 !important;
+  }
   .detailRouteLine { grid-template-columns: 1fr; gap: 5px; }
   .detailDay summary { min-height: 92px; grid-template-columns: 44px minmax(0, 1fr) 28px; gap: 12px; }
   .detailDayNumber { font-size: 19px; }

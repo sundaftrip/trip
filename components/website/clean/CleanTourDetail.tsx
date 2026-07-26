@@ -349,7 +349,12 @@ export default function CleanTourDetail({
             <div className={styles.detailSummary}>
               <span className={styles.detailSummaryIndex}>01 / RINGKASAN</span>
               <div>
-                <h2 id="ringkasan-title">{copy.summaryTitle}</h2>
+                <h2
+                  id="ringkasan-title"
+                  className={copy.summaryTitle.length > 68 ? styles.detailSummaryTitleLong : undefined}
+                >
+                  {copy.summaryTitle}
+                </h2>
                 {summaryParagraphs.length > 0 ? summaryParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>) : (
                   <p>{copy.heroSupport}</p>
                 )}
