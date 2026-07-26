@@ -6,8 +6,12 @@ import {
   Compass,
   FileCheck,
   MessageCircle,
-  Phone,
 } from "lucide-react";
+import {
+  HOME_COPY,
+  LEGACY_HOME_COPY,
+  replaceLegacyHomepageCopy,
+} from "@/lib/home-copy";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
 import type { CleanTour } from "./CleanTourCard";
@@ -180,27 +184,27 @@ function fallbackFaqs(nib: string, legalName: string): CleanHomeFaq[] {
   return [
     {
       question: "Apakah Sundaf Trip resmi dan aman?",
-      answer: `Sundaf Trip dikelola oleh ${legalName} dengan NIB ${nib}. Sebelum membayar, pastikan kamu menerima rincian jadwal, fasilitas, biaya, dan ketentuan perjalanan secara tertulis.`,
+      answer: `Sundaf Trip dioperasikan oleh ${legalName} dan tercatat dengan NIB ${nib}. Sebelum pembayaran, tim akan mengonfirmasi jadwal, harga, serta ketersediaan terbaru untuk perjalanan yang kamu pilih.`,
     },
     {
       question: "Bagaimana cara booking?",
       answer:
-        "Pilih perjalanan yang kamu minati, lalu hubungi tim melalui WhatsApp untuk mengecek ketersediaan dan langkah booking. Percakapan awal belum otomatis mengunci kursi; ikuti konfirmasi dan instruksi pembayaran tertulis dari tim.",
+        "Pilih perjalanan, cek itinerary dan rincian biaya, lalu kirim permintaan melalui WhatsApp. Tim kami akan mengonfirmasi ketersediaan kursi dan menjelaskan tahap pembayaran sebelum booking diproses.",
     },
     {
       question: "Apakah visa dan dokumen dibantu?",
       answer:
-        "Bantuan visa dan dokumen mengikuti kebutuhan setiap perjalanan. Tim dapat membantu menjelaskan alur dan mengecek kelengkapan, tetapi keputusan visa tetap menjadi kewenangan kedutaan atau otoritas terkait.",
+        "Untuk rute yang memerlukan visa, tim membantu menjelaskan dokumen, alur pengajuan, serta hal yang perlu disiapkan. Status akhir visa tetap mengikuti ketentuan otoritas yang menerbitkan.",
     },
     {
-      question: "Berapa jumlah peserta dalam satu grup?",
+      question: "Apakah harga yang tampil sudah final?",
       answer:
-        "Jumlah peserta berbeda untuk setiap keberangkatan. Tim akan menyampaikan ukuran grup dan status keberangkatan yang tersedia sebelum kamu melanjutkan booking.",
+        "Periksa bagian harga paket, biaya wajib, dan biaya opsional di halaman tour. Tim akan mengonfirmasi rincian terakhir sebelum kamu melakukan pembayaran.",
     },
     {
       question: "Bagaimana jika jadwal belum cocok?",
       answer:
-        "Kamu bisa menunggu jadwal open trip berikutnya atau mengajukan private trip dengan tanggal, jumlah peserta, durasi, dan kisaran budget sendiri.",
+        "Ceritakan tujuan, tanggal, jumlah peserta, dan kisaran budgetmu. Kami akan membantu melihat jadwal lain atau merancang opsi private trip yang lebih sesuai.",
     },
   ];
 }
@@ -209,7 +213,7 @@ const FAQ_MATCHERS = [
   /resmi|legal|aman/i,
   /booking|pesan|daftar/i,
   /visa|dokumen/i,
-  /jumlah peserta|satu grup|rombongan/i,
+  /harga|biaya|total/i,
   /jadwal|tanggal.*cocok/i,
 ];
 
@@ -246,7 +250,6 @@ export default function CleanHome({
   const nib = company.company_nib || "1601260060842";
   const legalName = company.company_legal_name || "CV Sundaf Holiday Group";
   const whatsappNumber = company.company_whatsapp || "+62 817-7520-2759";
-  const phone = company.company_phone || "021-22321146";
   const waHref =
     buildWhatsAppHref(
       whatsappNumber,
@@ -255,17 +258,21 @@ export default function CleanHome({
   const resolvedFaqs = resolveFaqs(faqs, nib, legalName);
   const journalPosts = posts.slice(0, 3);
 
-  const heroEyebrow = readText(
-    texts,
-    ["home_hero_eyebrow"],
-    "#SPESIALIS RUSIA, ASIA TENGAH & AURORA",
+  const heroEyebrow = replaceLegacyHomepageCopy(
+    readText(texts, ["home_hero_eyebrow"], HOME_COPY.heroEyebrow),
+    LEGACY_HOME_COPY.heroEyebrow,
+    HOME_COPY.heroEyebrow,
   );
-  const heroTitle = readText(texts, ["home_hero_title"], "Pergi jauh, tanpa repot.");
-  const heroBody = readText(
-    texts,
-    ["home_hero_body", "home_hero_subtitle"],
-    "Rute, visa, dan koordinasi perjalanan kami siapkan sejak awal, kamu tinggal menikmati.",
-  ).replace(/\s*[—–]\s*/g, ", ");
+  const heroTitle = replaceLegacyHomepageCopy(
+    readText(texts, ["home_hero_title"], HOME_COPY.heroTitle),
+    LEGACY_HOME_COPY.heroTitle,
+    HOME_COPY.heroTitle,
+  );
+  const heroBody = replaceLegacyHomepageCopy(
+    readText(texts, ["home_hero_body", "home_hero_subtitle"], HOME_COPY.heroBody),
+    LEGACY_HOME_COPY.heroBody,
+    HOME_COPY.heroBody,
+  );
   const resolvedHeroImage = getTourProductImage({
     title: "Sundaf Trip Aurora",
     country: "Rusia",
@@ -329,7 +336,7 @@ export default function CleanHome({
                 data-analytics-placement="home-search"
               >
                 <MessageCircle aria-hidden="true" />
-                <span>Belum yakin? Konsultasi gratis via WhatsApp.</span>
+                <span>Belum yakin? Tanya rute via WhatsApp.</span>
               </a>
               <Link href="/legalitas-dan-keamanan" className={styles.legalProof}>
                 <FileCheck aria-hidden="true" />
@@ -345,12 +352,12 @@ export default function CleanHome({
           <div className={styles.shell}>
             <div className={styles.headingRow}>
               <div className={styles.sectionHeading}>
-                <p className={styles.eyebrow}>JADWAL PILIHAN SUNDAF</p>
-                <h2 id="active-tours-title">Perjalanan yang siap berangkat</h2>
-                <p>Tanggal, rute, kursi, dan harga ditampilkan sejak awal.</p>
+                <p className={styles.eyebrow}>JADWAL TERDEKAT</p>
+                <h2 id="active-tours-title">Rute yang siap kamu ceritakan sepulangnya.</h2>
+                <p>Pilih perjalanan yang sudah memiliki tanggal, itinerary, dan gambaran biaya yang jelas.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
-                Lihat semua perjalanan <ArrowRight aria-hidden="true" />
+                Lihat semua jadwal <ArrowRight aria-hidden="true" />
               </Link>
             </div>
 
@@ -364,7 +371,7 @@ export default function CleanHome({
             )}
 
             <Link className={styles.mobileSectionLink} href="/tours">
-              Lihat semua perjalanan <ArrowRight aria-hidden="true" />
+              Lihat semua jadwal <ArrowRight aria-hidden="true" />
             </Link>
           </div>
         </section>
@@ -375,7 +382,8 @@ export default function CleanHome({
         >
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <h2 id="destinations-title">Pilih perjalanan berikutnya</h2>
+              <h2 id="destinations-title">Pilih rute yang tidak biasa.</h2>
+              <p>Dari langit malam Murmansk sampai kota-kota Jalur Sutra, setiap rute kami siapkan untuk traveler Indonesia.</p>
             </div>
 
             <div className={styles.destinationMosaic}>
@@ -389,7 +397,7 @@ export default function CleanHome({
                 <span className={styles.destinationShade} aria-hidden="true" />
                 <span className={styles.destinationLabel}>
                   <strong>Rusia &amp; Aurora</strong>
-                  <small>Lihat perjalanan</small>
+                  <small>Lihat rute Rusia</small>
                 </span>
               </Link>
 
@@ -403,7 +411,7 @@ export default function CleanHome({
                 <span className={styles.destinationShade} aria-hidden="true" />
                 <span className={styles.destinationLabel}>
                   <strong>Asia Tengah</strong>
-                  <small>Jelajahi rute</small>
+                  <small>Jelajahi Asia Tengah</small>
                 </span>
               </Link>
 
@@ -417,7 +425,7 @@ export default function CleanHome({
                 <span className={styles.destinationShade} aria-hidden="true" />
                 <span className={styles.destinationLabel}>
                   <strong>Vietnam</strong>
-                  <small>Lihat perjalanan</small>
+                  <small>Lihat rute Vietnam</small>
                 </span>
               </Link>
 
@@ -431,7 +439,7 @@ export default function CleanHome({
                 <span className={styles.destinationShade} aria-hidden="true" />
                 <span className={styles.destinationLabel}>
                   <strong>Private &amp; Custom Trip</strong>
-                  <small>Rancang sesuai kebutuhanmu</small>
+                  <small>Rancang perjalanan privat</small>
                 </span>
               </Link>
             </div>
@@ -442,7 +450,7 @@ export default function CleanHome({
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
               <p className={styles.eyebrow}>CARA KERJA SUNDAF</p>
-              <h2 id="benefits-title">Yang rumit kami urus. Kamu tinggal berangkat.</h2>
+              <h2 id="benefits-title">Kami urus yang rumit. Kamu nikmati yang penting.</h2>
             </div>
 
             <div className={styles.benefitGrid}>
@@ -451,28 +459,28 @@ export default function CleanHome({
                   <FileCheck aria-hidden="true" />
                   <h3>Visa &amp; dokumen dibantu</h3>
                 </div>
-                <p>Alur dan berkas dicek sebelum pengajuan.</p>
+                <p>Kami cek kebutuhan dokumen dan menjelaskan alurnya sebelum pengajuan dimulai.</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
                   <Clock aria-hidden="true" />
-                  <h3>Itinerary realistis</h3>
+                  <h3>Itinerary punya ruang bernapas</h3>
                 </div>
-                <p>Rute memberi waktu untuk menikmati tiap kota.</p>
+                <p>Rute disusun agar kamu tidak hanya datang, foto, lalu bergegas pindah kota.</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
                   <MessageCircle aria-hidden="true" />
-                  <h3>Koordinasi dari awal</h3>
+                  <h3>Persiapan dari awal</h3>
                 </div>
-                <p>Info keberangkatan disiapkan sejak awal.</p>
+                <p>Info keberangkatan, kebutuhan cuaca, dan detail pertemuan dibagikan sebelum hari H.</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
                   <Compass aria-hidden="true" />
-                  <h3>Tour leader berpengalaman</h3>
+                  <h3>Didampingi selama perjalanan</h3>
                 </div>
-                <p>Koordinasi grup dibantu selama perjalanan.</p>
+                <p>Tour leader membantu koordinasi grup, supaya kamu bisa fokus pada pengalaman di perjalanan.</p>
               </article>
             </div>
           </div>
@@ -486,9 +494,9 @@ export default function CleanHome({
         >
           <div className={`${styles.shell} ${styles.faqLayout}`}>
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>SEBELUM BERANGKAT</p>
-              <h2 id="faq-title">Yang sering ditanyakan</h2>
-              <p>Informasi ringkas sebelum kamu memilih jadwal dan menghubungi tim.</p>
+              <p className={styles.eyebrow}>SEBELUM KAMU BERANGKAT</p>
+              <h2 id="faq-title">Hal yang wajar kamu tanyakan sebelum memutuskan.</h2>
+              <p>Jawaban ringkas untuk membantu kamu memahami kesiapan perjalanan, biaya, dan langkah booking.</p>
             </div>
             <HomeFaqs items={resolvedFaqs} />
           </div>
@@ -499,17 +507,17 @@ export default function CleanHome({
             <div className={styles.privatePanel}>
               <div>
                 <p className={styles.eyebrowLight}>PRIVATE &amp; CUSTOM TRIP</p>
-                <h2 id="private-trip-title">Punya tanggal sendiri? Kita rancang rutenya.</h2>
+                <h2 id="private-trip-title">Punya tanggal sendiri? Kita rancang rutenya bersama.</h2>
                 <p>
-                  Kirim tujuan, jumlah peserta, durasi, dan kisaran budget. Tim Sundaf akan
-                  menyusun pilihan yang masuk akal.
+                  Kirim tujuan, jumlah peserta, durasi, dan kisaran budget. Kami akan
+                  menyiapkan pilihan rute yang masuk akal untuk cara kamu bepergian.
                 </p>
               </div>
               <Link
                 href="/custom-trip"
                 data-analytics-event="custom_trip_start"
               >
-                Rancang private trip <ArrowRight aria-hidden="true" />
+                Rancang perjalanan privat <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -520,12 +528,12 @@ export default function CleanHome({
             <div className={styles.shell}>
               <div className={styles.headingRow}>
                 <div className={styles.sectionHeading}>
-                  <p className={styles.eyebrow}>JURNAL SUNDAF</p>
-                  <h2 id="journal-title">Bekal sebelum pergi</h2>
-                  <p>Panduan destinasi, visa, dan persiapan perjalanan dari tim Sundaf.</p>
+                  <p className={styles.eyebrow}>BEKAL SEBELUM PERGI</p>
+                  <h2 id="journal-title">Baca dulu. Berangkat lebih siap.</h2>
+                  <p>Panduan destinasi, visa, cuaca, dan persiapan praktis untuk traveler Indonesia.</p>
                 </div>
                 <Link className={styles.desktopSectionLink} href="/blog">
-                  Lihat semua artikel <ArrowRight aria-hidden="true" />
+                  Baca semua panduan <ArrowRight aria-hidden="true" />
                 </Link>
               </div>
 
@@ -560,7 +568,7 @@ export default function CleanHome({
                         <div className={styles.journalFooter}>
                           {formattedDate ? <time dateTime={new Date(post.date).toISOString()}>{formattedDate}</time> : <span />}
                           <Link href={`/blog/${post.slug}`}>
-                            Baca artikel <ArrowRight aria-hidden="true" />
+                            Baca panduan <ArrowRight aria-hidden="true" />
                           </Link>
                         </div>
                       </div>
@@ -570,7 +578,7 @@ export default function CleanHome({
               </div>
 
               <Link className={styles.mobileSectionLink} href="/blog">
-                Lihat semua artikel <ArrowRight aria-hidden="true" />
+                Baca semua panduan <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </section>
@@ -579,11 +587,11 @@ export default function CleanHome({
         <section className={styles.finalSection} aria-labelledby="final-cta-title">
           <div className={`${styles.shell} ${styles.finalLayout}`}>
             <div>
-              <p className={styles.eyebrow}>MASIH BINGUNG PILIH TOUR?</p>
-              <h2 id="final-cta-title">Ceritakan rencanamu. Kami bantu pilihkan.</h2>
+              <p className={styles.eyebrow}>MASIH MENENTUKAN RUTE?</p>
+              <h2 id="final-cta-title">Ceritakan rencanamu. Kami bantu melihat jalan yang paling masuk akal.</h2>
               <p>
-                Sampaikan destinasi, waktu, dan jumlah peserta. Konsultasi awal tidak
-                dipungut biaya.
+                Sampaikan destinasi, waktu berangkat, jumlah peserta, dan kisaran budget. Kamu
+                akan mendapat arahan awal sebelum memutuskan.
               </p>
             </div>
             <div className={styles.finalActions}>
@@ -593,12 +601,11 @@ export default function CleanHome({
                 data-analytics-placement="home-final"
               >
                 <MessageCircle aria-hidden="true" />
-                Konsultasi via WhatsApp
+                Konsultasi rute via WhatsApp
               </a>
-              <a className={styles.secondaryAction} href={`tel:${phone.replace(/\D/g, "")}`}>
-                <Phone aria-hidden="true" />
-                {phone}
-              </a>
+              <Link className={styles.secondaryAction} href="/tours">
+                Lihat jadwal &amp; biaya <ArrowRight aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>

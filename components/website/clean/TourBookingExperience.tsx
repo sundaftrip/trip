@@ -22,6 +22,7 @@ type TourBookingExperienceProps = {
   tourId: string;
   tourName: string;
   priceLabel: string;
+  priceCaption: string;
   availabilityLabel: string;
   mode: BookingMode;
   departures: BookingDeparture[];
@@ -38,6 +39,7 @@ export default function TourBookingExperience({
   tourId,
   tourName,
   priceLabel,
+  priceCaption,
   availabilityLabel,
   mode,
   departures,
@@ -166,7 +168,7 @@ export default function TourBookingExperience({
       : mode === "flexible"
         ? "Rancang tanggal"
         : selectedId
-          ? "Tanya & booking"
+          ? "Cek ketersediaan"
           : "Lihat jadwal";
 
   return (
@@ -182,7 +184,7 @@ export default function TourBookingExperience({
       )}
       <div className={styles.mobileBookingBar} role="region" aria-label="Pemesanan cepat">
         <div>
-          <span>{mode === "sold_out" ? "Kapasitas" : "Mulai dari"}</span>
+          <span>{mode === "sold_out" ? "Kapasitas" : priceCaption}</span>
           <strong>{mode === "sold_out" ? availabilityLabel : priceLabel}</strong>
         </div>
         <button type="button" onClick={(event) => showSheet(event.currentTarget)}>
@@ -217,6 +219,7 @@ export default function TourBookingExperience({
           opener={opener}
           phoneInputRef={phoneInputRef}
           priceLabel={priceLabel}
+          priceCaption={priceCaption}
           room={room}
           selectedDeparture={selectedDeparture}
           selectedId={selectedId}

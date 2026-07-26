@@ -237,6 +237,7 @@ export default function CleanTourDetail({
   const unavailable = ["completed", "sold_out", "waitlist"].includes(commerceStatus);
   const displayPrice = tour.promoPrice ?? tour.price;
   const hasPrice = displayPrice > 0;
+  const priceCaption = mandatoryAddOns.length > 0 ? "Total wajib" : "Harga paket";
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
   const sectionTabs = [
@@ -293,7 +294,7 @@ export default function CleanTourDetail({
     {
       question: "Apakah harga sudah memasukkan seluruh biaya wajib?",
       answer: mandatoryAddOns.length
-        ? `Estimasi total mulai ${formatCurrency(startingTotal)} per orang sudah menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal.`
+        ? `Total wajib saat ini ${formatCurrency(startingTotal)} per orang sudah menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal.`
         : "Tidak ada biaya tambahan berlabel wajib pada data tour ini. Tim tetap mengonfirmasi rincian final sebelum pembayaran.",
     },
     {
@@ -440,7 +441,7 @@ export default function CleanTourDetail({
               {isFlexibleDate ? "Rancang tanggal perjalanan" : "Pilih tanggal keberangkatan"}
             </h2>
             <p className={styles.detailSectionLede}>
-              Harga, biaya wajib, dan status ditampilkan sebelum kamu mengirim permintaan ketersediaan.
+              Harga paket, biaya wajib di luar paket, dan status ditampilkan sebelum kamu mengirim permintaan ketersediaan.
             </p>
             <div className={interactiveStyles.dateGrid}>
               <article className={interactiveStyles.dateCard} data-unavailable={unavailable}>
@@ -454,7 +455,7 @@ export default function CleanTourDetail({
                     <div key={item.name}><dt>{item.name} <small>WAJIB</small></dt><dd>+{formatCurrency(item.price)}</dd></div>
                   ))}
                   <div className={interactiveStyles.dateTotal}>
-                    <dt>Estimasi total wajib</dt>
+                    <dt>Total wajib</dt>
                     <dd>{hasPrice ? formatCurrency(startingTotal) : "Dikonfirmasi tim"}</dd>
                   </div>
                   {paymentPlan?.steps[0] && (
@@ -466,6 +467,7 @@ export default function CleanTourDetail({
                   tourId={tour.id}
                   tourName={tour.title}
                   priceLabel={priceLabel}
+                  priceCaption={priceCaption}
                   availabilityLabel={status}
                   mode={bookingMode}
                   departures={bookingDepartures}
@@ -645,16 +647,16 @@ export default function CleanTourDetail({
         <aside className={styles.detailBookingSidebar} aria-label="Informasi pemesanan">
           <div className={styles.detailBookingCard}>
             <span className={`${styles.detailStock} ${unavailable ? styles.detailStockUnavailable : ""}`}>{status}</span>
-            <p className={styles.detailBookingLabel}>Harga per orang</p>
+            <p className={styles.detailBookingLabel}>Harga paket per orang</p>
             <p className={styles.detailBookingPrice}>{hasPrice ? formatCurrency(displayPrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}</p>
-            {tour.promoPrice && <p className={styles.detailOriginalPrice}>{formatCurrency(tour.price)}</p>}
-            {tour.priceLandTour && <p className={styles.detailLandPrice}>Land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
+            {tour.promoPrice && <p className={styles.detailOriginalPrice}>Harga normal <s>{formatCurrency(tour.price)}</s></p>}
+            {tour.priceLandTour && <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
 
             {mandatoryAddOns.length > 0 && (
               <div className={styles.detailPriceBreakdown}>
-                <div><span>Paket</span><strong>{formatCurrency(basePrice)}</strong></div>
+                <div><span>Harga paket</span><strong>{formatCurrency(basePrice)}</strong></div>
                 {mandatoryAddOns.map((item) => <div key={item.name}><span>{item.name} <small>WAJIB</small></span><strong>+{formatCurrency(item.price)}</strong></div>)}
-                <div className={styles.detailPriceTotal}><span>Total mulai</span><strong>{formatCurrency(startingTotal)}</strong></div>
+                <div className={styles.detailPriceTotal}><span>Total wajib</span><strong>{formatCurrency(startingTotal)}</strong></div>
               </div>
             )}
 

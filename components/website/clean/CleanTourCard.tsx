@@ -106,7 +106,7 @@ export default function CleanTourCard({
         <div className={styles.priceRow}>
           <div>
             <span className={styles.priceLabel}>
-              {price > 0 ? (mandatoryTotal > 0 ? "Total mulai" : "Mulai dari") : "Harga"}
+              {price > 0 ? (mandatoryTotal > 0 ? "Total wajib" : "Harga paket") : "Harga"}
             </span>
             <span className={styles.price}>
               {price > 0 ? (
@@ -117,6 +117,11 @@ export default function CleanTourCard({
                 "Hubungi tim"
               )}
             </span>
+            {mandatoryTotal > 0 ? (
+              <small className={styles.priceNote}>
+                Termasuk {formatCurrency(mandatoryTotal)} biaya wajib
+              </small>
+            ) : null}
           </div>
           <span className={styles.cardArrow} aria-hidden="true">→</span>
         </div>

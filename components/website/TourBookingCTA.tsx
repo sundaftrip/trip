@@ -102,7 +102,7 @@ export default function TourBookingCTA({
         className={buttonClassName}
         style={buttonStyle}
       >
-        <MessageCircle size={18} /> {submitting ? "Memproses…" : "Pesan via WhatsApp"}
+        <MessageCircle size={18} /> {submitting ? "Memproses…" : "Cek ketersediaan"}
       </button>
     </form>
   );

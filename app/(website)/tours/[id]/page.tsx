@@ -1065,25 +1065,25 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               <div className="mb-5">
                 {isOutlined ? (
                   <div className="mb-3">
-                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga per orang</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga paket per orang</p>
                     <span className={`${pfx}-pill font-black`} style={{ background: tMint, color: tText, fontSize: "1.5rem", padding: "8px 20px" }}>
                       {formatCurrency(tour.promoPrice ?? tour.price)}
                     </span>
                     {tour.promoPrice && (
-                      <p className="text-sm text-gray-400 line-through mt-2">{formatCurrency(tour.price)}</p>
+                      <p className="text-sm text-gray-400 mt-2">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>
                     )}
                     {tour.priceLandTour && (
                       <p className="text-xs mt-1">
-                        <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Land Tour: {formatCurrency(tour.priceLandTour)}</span>
+                        <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</span>
                       </p>
                     )}
                   </div>
                 ) : (
                   <div className="mb-4">
-                    <p className="text-xs text-gray-400 mb-1">Harga per orang</p>
+                    <p className="text-xs text-gray-400 mb-1">Harga paket per orang</p>
                     <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-                    {tour.promoPrice && <p className="text-sm text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
-                    {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Land Tour: {formatCurrency(tour.priceLandTour)}</p>}
+                    {tour.promoPrice && <p className="text-sm text-gray-400">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>}
+                    {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
                   </div>
                 )}
               </div>
@@ -1107,7 +1107,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   ))}
                   <div className={`flex justify-between mt-2 pt-2 font-black text-gray-900 dark:text-white ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-200 dark:border-gray-700"}`}
                     style={isOutlined ? { borderColor: tBdr } : undefined}>
-                    <span>Total mulai</span>
+                    <span>Total wajib</span>
                     <span>{formatCurrency(startingTotal)}</span>
                   </div>
                   <p className="mt-1 text-[10px] text-gray-400">Sudah termasuk item wajib di atas, per orang.</p>
@@ -1178,7 +1178,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
 
-              {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total mulai di atas) */}
+              {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total wajib di atas) */}
               {optionalAddOns.length > 0 && (
                 <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
                   style={isOutlined ? { borderColor: tBdr } : undefined}>

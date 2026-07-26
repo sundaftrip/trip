@@ -37,7 +37,9 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
       <div className={styles.shell}>
         <div className={styles.reviewHeading}>
           <div className={styles.sectionHeading}>
-            <h2 id="stories-title">Cerita dari yang sudah pulang</h2>
+            <p className={styles.eyebrow}>CERITA PESERTA</p>
+            <h2 id="stories-title">Bukan hanya sampai. Ini yang mereka bawa pulang.</h2>
+            <p>Cerita dari traveler yang sudah berangkat bersama Sundaf—tentang rute, rasa aman, dan momen yang paling mereka ingat.</p>
           </div>
         </div>
 
@@ -111,7 +113,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
         </div>
 
         <Link className={styles.reviewLink} href="/reviews">
-          Lihat semua testimoni <ArrowRight aria-hidden="true" />
+          Baca semua cerita peserta <ArrowRight aria-hidden="true" />
         </Link>
       </div>
     </section>

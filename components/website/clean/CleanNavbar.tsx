@@ -193,7 +193,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
               </Link>
             ))}
           </nav>
-          <Link className={styles.desktopAction} href="/tours">Lihat Jadwal Tour</Link>
+          <Link className={styles.desktopAction} href="/tours">Lihat jadwal &amp; biaya</Link>
         </div>
 
         <div className={styles.headerActions}>
@@ -256,7 +256,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
                 aria-current={isActive("/tours") ? "page" : undefined}
                 onClick={closeDrawer}
               >
-                Lihat Jadwal Tour
+                Lihat jadwal &amp; biaya
               </Link>
               <button
                 className={`${styles.destinationToggle} ${destinationsOpen ? styles.destinationToggleOpen : ""}`}
@@ -296,7 +296,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
             </nav>
 
             <Link className={styles.drawerWhatsApp} href={consultationHref} onClick={closeDrawer}>
-              Konsultasi WhatsApp
+              Tanya rute via WhatsApp
             </Link>
             <p className={styles.drawerNote}>Konsultasi awal tidak mengonfirmasi kursi atau pembayaran.</p>
           </div>

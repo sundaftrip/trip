@@ -40,7 +40,7 @@ const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
 export async function generateMetadata(): Promise<Metadata> {
   const description =
-    "Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
+    "Jelajahi Rusia, Asia Tengah, dan aurora bersama Sundaf Trip. Lihat jadwal, itinerary, biaya, visa, dan konsultasi perjalanan.";
 
   return {
     metadataBase: new URL(siteUrl),

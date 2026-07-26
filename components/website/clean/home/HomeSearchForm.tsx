@@ -44,7 +44,7 @@ export default function HomeSearchForm({
       action="/tours"
       method="get"
       onSubmit={submitSearch}
-      aria-label="Cari perjalanan Sundaf"
+      aria-label="Cari rute yang pas"
     >
       <label className={styles.finderField}>
         <MapPin aria-hidden="true" />
@@ -78,7 +78,7 @@ export default function HomeSearchForm({
 
       <button type="submit">
         <Search aria-hidden="true" />
-        Cari perjalanan
+        Lihat perjalanan
       </button>
     </form>
   );

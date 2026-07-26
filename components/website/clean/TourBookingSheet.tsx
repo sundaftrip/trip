@@ -42,6 +42,7 @@ export type TourBookingSheetProps = {
   opener: HTMLElement | null;
   phoneInputRef: RefObject<HTMLInputElement | null>;
   priceLabel: string;
+  priceCaption: string;
   room: string;
   selectedDeparture?: BookingDeparture;
   selectedId: string;
@@ -82,6 +83,7 @@ export default function TourBookingSheet({
   opener,
   phoneInputRef,
   priceLabel,
+  priceCaption,
   room,
   selectedDeparture,
   selectedId,
@@ -168,7 +170,7 @@ export default function TourBookingSheet({
         <div className={styles.sheetHandle} aria-hidden="true" />
         <header className={styles.bookingSheetHeader}>
           <div>
-            <p>{mode === "sold_out" ? "DAFTAR TUNGGU" : "TANYA & BOOKING"}</p>
+            <p>{mode === "sold_out" ? "DAFTAR TUNGGU" : mode === "flexible" ? "RANCANG PERJALANAN" : "CEK KETERSEDIAAN"}</p>
             <h2 id="booking-sheet-title">{tourName}</h2>
           </div>
           <button
@@ -215,7 +217,7 @@ export default function TourBookingSheet({
                   <CalendarDays aria-hidden="true" />
                   <span>
                     <strong>{departure.label}</strong>
-                    <small>{departure.availabilityLabel} · {departure.priceLabel}/orang</small>
+                    <small>{departure.availabilityLabel} · {priceCaption} {departure.priceLabel}/orang</small>
                   </span>
                   <Check className={styles.optionCheck} aria-hidden="true" />
                 </label>
@@ -290,7 +292,7 @@ export default function TourBookingSheet({
             <div><dt>Perjalanan</dt><dd>{tourName}</dd></div>
             <div><dt>Tanggal</dt><dd>{selectedDeparture?.label || "Fleksibel"}</dd></div>
             <div><dt>Peserta</dt><dd>{adults} dewasa{childCount ? `, ${childCount} anak` : ""}</dd></div>
-            <div><dt>Harga mulai</dt><dd>{selectedDeparture?.priceLabel || priceLabel}/orang</dd></div>
+            <div><dt>{priceCaption}</dt><dd>{selectedDeparture?.priceLabel || priceLabel}/orang</dd></div>
           </dl>
         </div>
 

@@ -126,7 +126,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                   <span>{departureLabel(tour)}</span>
                 </p>
                 <div className={styles.tourPrice}>
-                  <span>{price > 0 ? (mandatoryTotal > 0 ? "Total mulai" : "Mulai dari") : "Harga"}</span>
+                  <span>{price > 0 ? (mandatoryTotal > 0 ? "Total wajib" : "Harga paket") : "Harga"}</span>
                   <strong>
                     {price > 0 ? (
                       <>
