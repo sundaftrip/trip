@@ -760,7 +760,7 @@
 .reviewTopline {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   color: var(--home-muted);
   font-size: 11px;
   font-weight: 690;
@@ -769,13 +769,17 @@
 .reviewRating {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
   color: var(--home-primary-strong);
 }
 
 .reviewRating svg {
   width: 15px;
   height: 15px;
+  fill: none;
+}
+
+.reviewRating svg[data-filled="true"] {
   fill: currentColor;
 }
 
@@ -1397,7 +1401,7 @@
   }
 
   .section {
-    padding-block: 76px;
+    padding-block: 56px;
   }
 
   .sectionHeading h2,
@@ -1428,7 +1432,17 @@
   }
 
   .tourSection {
-    padding-top: 68px;
+    padding-top: 60px;
+    padding-bottom: 28px;
+  }
+
+  .destinationSection {
+    padding-top: 0;
+  }
+
+  .destinationSection .shell {
+    padding-top: 38px;
+    border-top: 1px solid var(--home-line);
   }
 
   .railStage {
@@ -1449,6 +1463,10 @@
   .tourRail {
     grid-auto-columns: 82vw;
     gap: 14px;
+  }
+
+  .tourCard {
+    border-radius: 14px !important;
   }
 
   .tourBody {
@@ -1473,7 +1491,7 @@
 
   .destinationMosaic > a {
     min-height: 0;
-    border-radius: 18px;
+    border-radius: 14px !important;
   }
 
   .destinationLead,
@@ -1501,15 +1519,15 @@
   }
 
   .benefitGrid {
-    margin-top: 30px;
+    margin-top: 26px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .benefitGrid article,
   .benefitGrid article:first-child,
   .benefitGrid article:nth-child(3) {
-    min-height: 188px;
-    padding: 22px 15px 20px;
+    min-height: 0;
+    padding: 18px 13px 16px;
   }
 
   .benefitGrid article:nth-child(odd) {
@@ -1526,15 +1544,24 @@
   }
 
   .benefitGrid h3 {
-    margin-top: 17px;
+    margin-top: 15px;
     font-size: 15px;
     line-height: 1.28;
   }
 
   .benefitGrid p {
-    margin-top: 7px;
+    margin-top: 6px;
     font-size: 12px;
     line-height: 1.48;
+  }
+
+  .benefitSection {
+    padding-bottom: 34px;
+  }
+
+  .reviewSection {
+    padding-top: 44px;
+    padding-bottom: 30px;
   }
 
   .reviewHeading {
@@ -1542,30 +1569,62 @@
   }
 
   .reviewHeading .railControls {
-    margin-top: 18px;
+    margin-top: 14px;
     justify-content: flex-start;
   }
 
   .reviewRail {
     grid-auto-columns: 86vw;
     gap: 12px;
-    margin-top: 22px;
+    margin-top: 18px;
   }
 
   .reviewCard {
-    min-height: 390px;
-    padding: 24px 22px;
-    gap: 24px;
-    border-radius: 17px;
+    min-height: 0;
+    padding: 20px 18px;
+    align-self: start;
+    justify-content: flex-start;
+    gap: 16px;
+    border-color: #ddd7cb;
+    border-radius: 24px !important;
   }
 
   .reviewCard blockquote {
-    font-size: 20px;
-    line-height: 1.52;
+    font-size: 17px;
+    font-weight: 450;
+    line-height: 1.5;
+    letter-spacing: -0.006em;
+  }
+
+  .reviewer {
+    padding-top: 14px;
+    gap: 10px;
+  }
+
+  .reviewerAvatar {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    border-radius: 50% !important;
+    font-size: 11px;
+  }
+
+  .reviewer strong {
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  .reviewer small {
+    margin-top: 2px;
+    font-size: 10.5px;
   }
 
   .reviewLink {
-    margin-top: 12px;
+    margin-top: 10px;
+  }
+
+  .faqSection {
+    padding-top: 38px;
   }
 
   .faqLayout {

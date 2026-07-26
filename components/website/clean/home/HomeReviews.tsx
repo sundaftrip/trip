@@ -143,15 +143,17 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
                       role="img"
                       aria-label={`Rating ${item.rating} dari 5`}
                     >
-                      <Star aria-hidden="true" />
-                      {item.rating}/5
+                      {Array.from({ length: 5 }, (_, starIndex) => (
+                        <Star
+                          aria-hidden="true"
+                          data-filled={starIndex < Math.round(item.rating)}
+                          key={starIndex}
+                        />
+                      ))}
                     </span>
                   ) : (
                     <span />
                   )}
-                  <span aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
-                  </span>
                 </div>
 
                 <div>
@@ -170,6 +172,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
                       onClick={() => setExpanded(isExpanded ? null : item.id)}
                     >
                       {isExpanded ? "Tampilkan ringkas" : "Baca selengkapnya"}
+                      <span aria-hidden="true">{isExpanded ? " ↑" : " →"}</span>
                     </button>
                   ) : null}
                 </div>

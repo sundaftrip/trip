@@ -368,7 +368,10 @@ export default function CleanHome({
           </div>
         </section>
 
-        <section className={styles.section} aria-labelledby="destinations-title">
+        <section
+          className={`${styles.section} ${styles.destinationSection}`}
+          aria-labelledby="destinations-title"
+        >
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
               <p className={styles.eyebrow}>MULAI DARI DESTINASI</p>
@@ -469,7 +472,10 @@ export default function CleanHome({
 
         <HomeReviews items={testimonials} />
 
-        <section className={styles.section} aria-labelledby="faq-title">
+        <section
+          className={`${styles.section} ${styles.faqSection}`}
+          aria-labelledby="faq-title"
+        >
           <div className={`${styles.shell} ${styles.faqLayout}`}>
             <div className={styles.sectionHeading}>
               <p className={styles.eyebrow}>SEBELUM BERANGKAT</p>
