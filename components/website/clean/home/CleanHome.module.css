@@ -1244,6 +1244,10 @@
 }
 
 @media (min-width: 760px) {
+  .finderZone .shell {
+    width: min(860px, calc(100% - 64px));
+  }
+
   .destinationMosaic {
     grid-template-columns: 1.18fr 0.82fr 0.82fr;
   }
