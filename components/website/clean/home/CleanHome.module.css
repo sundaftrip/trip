@@ -755,7 +755,7 @@
 }
 
 .reviewRail {
-  grid-auto-columns: min(660px, 62vw);
+  grid-auto-columns: min(500px, 52vw);
   gap: 16px;
   margin-top: 38px;
   padding: 2px 2px 18px;
@@ -763,12 +763,13 @@
 }
 
 .reviewCard {
-  min-height: 410px;
-  padding: 32px;
+  height: 320px;
+  min-height: 320px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 30px;
+  gap: 16px;
   scroll-snap-align: start;
   border: 1px solid #e5dfd2;
   border-radius: 24px !important;
@@ -804,7 +805,7 @@
 .reviewCard blockquote {
   margin: 0;
   color: var(--home-ink);
-  font-size: clamp(20px, 2.1vw, 25px);
+  font-size: clamp(18px, 1.8vw, 22px);
   font-weight: 550;
   line-height: 1.52;
   letter-spacing: -0.015em;
@@ -818,7 +819,7 @@
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 3;
 }
 
 .reviewMore {

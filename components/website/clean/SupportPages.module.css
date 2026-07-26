@@ -185,9 +185,9 @@
 }
 
 .aboutTitleHighlight {
-  padding: 0.01em 0.07em 0.06em;
-  border-radius: 0.09em;
-  background: #0c4d56;
+  padding: 0.01em 0.025em 0.04em;
+  border-radius: 0.06em;
+  background: rgb(12 77 86 / 60%);
   color: #fff;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
