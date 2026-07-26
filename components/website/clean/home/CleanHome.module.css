@@ -1588,13 +1588,18 @@
   }
 
   .benefitGrid svg {
-    width: 20px;
-    height: 20px;
+    width: 17px;
+    height: 17px;
   }
 
   .benefitTitle {
-    min-height: 34px;
-    gap: 8px;
+    min-height: 38px;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .benefitTitle svg {
+    margin-top: 0;
   }
 
   .benefitGrid h3 {
