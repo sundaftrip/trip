@@ -14,6 +14,7 @@ import {
   resolveSearchIntent,
   unavailableTourNotice,
 } from "@/lib/search-intent";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,7 @@ async function doSearch(q: string): Promise<SearchResults> {
     prisma.tour.findMany({
       where: {
         AND: [
-          { status: { in: ["ACTIVE", "FULL"] } },
+          publicTourVisibilityWhere(),
           { OR: [{ tripDate: null }, { tripDate: { gte: now } }] },
           {
             OR: terms.flatMap((searchTerm) => [

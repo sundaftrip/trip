@@ -7,6 +7,7 @@ import {
   resolveSearchIntent,
   unavailableTourNotice,
 } from "@/lib/search-intent";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
 /* Pencarian global untuk modal search di navbar.
 	   Hasil terkelompok: pilihan utama, tour, visa, halaman, artikel, dan FAQ.
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
 
   const [allTours, allVisa, faqs, articles, pages] = await Promise.all([
     prisma.tour.findMany({
-      where: { status: { not: "DRAFT" } },
+      where: publicTourVisibilityWhere(),
       select: {
         id: true, slug: true, title: true, country: true, cityHighlight: true,
         duration: true, description: true, itinerary: true, status: true, tripDate: true,
