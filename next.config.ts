@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
     formats: ["image/avif", "image/webp"],
-    qualities: [60, 75],
+    qualities: [60, 75, 90],
     minimumCacheTTL: 31536000,
   },
   compress: true,

@@ -236,7 +236,7 @@ export default function CleanHome({
   company,
   faqs,
   texts,
-  heroImage = "/images/home/murmansk-aurora-group.webp",
+  heroImage = "/images/home/murmansk-aurora-group.png",
 }: CleanHomeProps) {
   const scheduledTours = tours
     .filter((tour) => tour.state === "bookable" || tour.state === "sold")
@@ -303,6 +303,7 @@ export default function CleanHome({
             fill
             priority
             fetchPriority="high"
+            quality={90}
             sizes="100vw"
             className={styles.heroImage}
           />

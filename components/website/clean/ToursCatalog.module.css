@@ -739,7 +739,7 @@
   }
 
   .hero {
-    padding: 28px 0 0;
+    padding: 24px 0 14px;
   }
 
   .breadcrumb {
@@ -748,7 +748,7 @@
   }
 
   .heroLayout {
-    gap: 28px;
+    gap: 18px;
   }
 
   .hero h1 {
@@ -762,22 +762,50 @@
     line-height: 1.58;
   }
 
-  .trustCounts a {
-    min-width: 0;
-    min-height: 58px;
-    padding: 5px 8px;
+  .trustCounts {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    border-top: 0;
+    scrollbar-width: none;
+  }
+
+  .trustCounts::-webkit-scrollbar {
+    display: none;
+  }
+
+  .trustCounts a,
+  .trustCounts a[aria-current="page"] {
+    min-width: max-content;
+    min-height: 38px;
+    padding: 0 12px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ccd7d8;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--catalog-muted);
+  }
+
+  .trustCounts a[aria-current="page"] {
+    border-color: var(--catalog-primary);
+    background: var(--catalog-primary);
+    color: #fff;
   }
 
   .trustCounts span {
-    min-height: 2.5em;
-    display: block;
-    font-size: 10px;
-    line-height: 1.25;
+    min-height: 0;
+    display: inline;
+    font-size: 11px;
+    line-height: 1;
   }
 
   .trustCounts strong {
-    margin-top: 2px;
-    font-size: 20px;
+    display: inline;
+    margin-top: 0;
+    font-size: 15px;
   }
 
   .resultsSection {
