@@ -401,7 +401,7 @@
   flex-direction: column;
   scroll-snap-align: start;
   border: 1px solid var(--home-line);
-  border-radius: 18px;
+  border-radius: 20px;
   background: var(--home-white);
   transition:
     border-color 180ms ease,
@@ -616,7 +616,7 @@
   position: relative;
   min-height: 220px;
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: 24px;
   isolation: isolate;
   background: var(--home-primary-strong);
 }
@@ -1298,7 +1298,13 @@
   }
 
   .reviewRail {
-    grid-auto-columns: min(620px, 76vw);
+    grid-auto-columns: min(490px, 62vw);
+  }
+
+  .reviewCard {
+    min-height: 340px;
+    padding: 26px;
+    gap: 22px;
   }
 
   .privatePanel {
@@ -1492,7 +1498,7 @@
   }
 
   .tourCard {
-    border-radius: 14px !important;
+    border-radius: 18px !important;
   }
 
   .tourBody {
@@ -1520,7 +1526,7 @@
 
   .destinationMosaic > a {
     min-height: 0;
-    border-radius: 14px !important;
+    border-radius: 18px !important;
   }
 
   .destinationLead,
@@ -1602,17 +1608,17 @@
   }
 
   .reviewRail {
-    grid-auto-columns: 86vw;
+    grid-auto-columns: 80vw;
     gap: 12px;
     margin-top: 18px;
   }
 
   .reviewCard {
-    height: 270px;
-    min-height: 270px;
-    padding: 20px 18px;
+    height: 250px;
+    min-height: 250px;
+    padding: 18px 16px;
     justify-content: flex-start;
-    gap: 16px;
+    gap: 10px;
     border-color: #ddd7cb;
     border-radius: 24px !important;
   }
@@ -1629,12 +1635,12 @@
   }
 
   .reviewBody {
-    height: 127.5px;
-    flex: 0 0 127.5px;
+    height: 122px;
+    flex: 0 0 122px;
   }
 
   .reviewer {
-    padding-top: 14px;
+    padding-top: 12px;
     gap: 10px;
   }
 
