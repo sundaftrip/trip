@@ -1795,8 +1795,27 @@
   .detailBreadcrumb { margin-bottom: 30px; }
   .detailHero h1 { font-size: clamp(38px, 11.5vw, 48px); }
   .detailHeroIntro strong { font-size: 20px; }
-  .detailHeroFacts { display: grid; grid-template-columns: 1fr 1fr; }
-  .detailHeroFacts > span { padding: 0 12px 0 0; border-right: 0; font-size: 12px; }
+  .detailHeroFacts {
+    margin-top: 32px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+  }
+  .detailHeroFacts > span {
+    min-height: 76px;
+    padding: 14px 12px;
+    align-items: center;
+    gap: 9px;
+    border-right: 0;
+    font-size: 12px;
+    line-height: 1.42;
+  }
+  .detailHeroFacts > span:nth-child(odd) { border-right: 1px solid #cfd8d9; }
+  .detailHeroFacts > span:nth-child(-n + 2) { border-bottom: 1px solid #cfd8d9; }
+  .detailHeroFacts > span:first-child,
+  .detailHeroFacts > span:last-child { padding-inline: 12px; }
+  .detailHeroFacts svg { flex: 0 0 16px; width: 16px; height: 16px; }
   .detailHeroPhoto { aspect-ratio: 1.25 / 1; }
   .detailHeroPhoto figcaption { display: none; }
   .detailSectionNav > div { gap: 24px; }

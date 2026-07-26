@@ -414,9 +414,9 @@
 }
 
 .directoryToolbar {
-  position: relative;
-  top: auto;
-  z-index: 25;
+  position: sticky;
+  top: 68px;
+  z-index: 30;
   margin-top: 28px;
   padding: 16px;
   border: 1px solid var(--visa-line);
