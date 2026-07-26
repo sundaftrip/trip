@@ -474,7 +474,7 @@
   padding: 6px 10px;
   display: inline-flex;
   align-items: center;
-  border-radius: 999px;
+  border-radius: 999px !important;
   border: 1px solid rgba(255, 255, 255, 0.58);
   background: rgba(255, 255, 255, 0.76);
   color: var(--home-primary-strong);
