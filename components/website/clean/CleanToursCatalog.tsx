@@ -17,6 +17,7 @@ import {
   filterCatalogTours,
   getCatalogDestination,
   getCatalogTripType,
+  getUpcomingDepartureMonths,
   parseCatalogFilters,
   serializeCatalogFilters,
   type CatalogAvailability,
@@ -143,15 +144,8 @@ export default function CleanToursCatalog({
   }, [tours]);
 
   const months = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          tours
-            .map((tour) => tour.tripDate?.slice(0, 7))
-            .filter((month): month is string => Boolean(month && /^\d{4}-\d{2}$/.test(month))),
-        ),
-      ).sort(),
-    [tours],
+    () => getUpcomingDepartureMonths(tours, now),
+    [now, tours],
   );
 
   const categoryCounts = useMemo(

@@ -199,6 +199,26 @@ function dateTime(value?: string | Date | null) {
   return Number.isFinite(time) ? time : null;
 }
 
+export function getUpcomingDepartureMonths<T extends CatalogFilterTour>(
+  tours: T[],
+  now = new Date(),
+) {
+  const nowTime = now.getTime();
+  return Array.from(
+    new Set(
+      tours.flatMap((tour) => {
+        const departureTime = dateTime(tour.tripDate);
+        if (departureTime === null || departureTime < nowTime) return [];
+
+        const month = tour.tripDate instanceof Date
+          ? tour.tripDate.toISOString().slice(0, 7)
+          : String(tour.tripDate).slice(0, 7);
+        return /^\d{4}-(0[1-9]|1[0-2])$/.test(month) ? [month] : [];
+      }),
+    ),
+  ).sort();
+}
+
 export function filterCatalogTours<T extends CatalogFilterTour>(
   tours: T[],
   filters: CatalogFilterState,

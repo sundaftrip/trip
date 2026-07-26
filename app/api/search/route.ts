@@ -193,13 +193,20 @@ export async function GET(req: NextRequest) {
 
   const tours = toursPrepared
     .filter(({ hayStr, hayWords, isActive }) => {
-      const rawMatch = contentTokens.length === 0 || contentTokens.every((tok) => {
+      const exactRawMatch = contentTokens.length === 0
+        || contentTokens.every((tok) => hayStr.includes(tok));
+      const fuzzyRawMatch = contentTokens.length === 0 || contentTokens.every((tok) => {
         if (hayStr.includes(tok)) return true;
         const m = matchToken(hayWords, tok);
         return m === 1 || m >= FUZZY;
       });
       const intentMatch = intentTerms.some((term) => hayStr.includes(term));
-      const textMatch = rawMatch || intentMatch;
+      // Jika query sudah dikenali sebagai negara/kota, jangan biarkan fuzzy
+      // matching negara lain masuk (contoh "Astana" mirip secara ejaan dengan
+      // "Selatan" dan sebelumnya memunculkan tour Vietnam Selatan).
+      const textMatch = intent
+        ? exactRawMatch || intentMatch
+        : fuzzyRawMatch;
       if (wantActive) return isActive && textMatch;
       return textMatch;
     })

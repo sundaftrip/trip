@@ -4,6 +4,7 @@ import {
   DEFAULT_CATALOG_FILTERS,
   filterCatalogTours,
   getCatalogTripType,
+  getUpcomingDepartureMonths,
   parseCatalogFilters,
   serializeCatalogFilters,
 } from "../lib/tour-filters";
@@ -77,6 +78,10 @@ test("keeps future sold-out departures in open trip and past records in archive"
     filterCatalogTours(tours, DEFAULT_CATALOG_FILTERS, NOW).map((tour) => tour.id),
     ["open", "sold-future"],
   );
+});
+
+test("lists only upcoming departure months in the catalog filter", () => {
+  assert.deepEqual(getUpcomingDepartureMonths(tours, NOW), ["2026-12"]);
 });
 
 test("applies destination, month, duration, price, availability, and sort filters", () => {

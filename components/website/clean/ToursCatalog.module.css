@@ -720,7 +720,8 @@
 
   .trustCounts a {
     min-width: 0;
-    padding: 12px 8px;
+    min-height: 58px;
+    padding: 5px 8px;
   }
 
   .trustCounts span {
@@ -731,7 +732,8 @@
   }
 
   .trustCounts strong {
-    font-size: 23px;
+    margin-top: 2px;
+    font-size: 20px;
   }
 
   .resultsSection {
@@ -759,7 +761,7 @@
   }
 
   .resultsToolbar {
-    min-height: 68px;
+    min-height: 54px;
   }
 
   .headingRow {
