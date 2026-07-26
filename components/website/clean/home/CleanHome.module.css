@@ -165,7 +165,7 @@
   gap: 12px;
   align-items: stretch;
   border: 1px solid rgba(232, 237, 236, 0.96);
-  border-radius: 22px;
+  border-radius: 22px !important;
   background: #fff;
   box-shadow: 0 14px 40px rgba(12, 42, 46, 0.09);
 }
@@ -179,7 +179,7 @@
   gap: 12px;
   align-items: center;
   border: 1px solid #e8edec;
-  border-radius: 14px;
+  border-radius: 14px !important;
   color: #47777d;
   cursor: pointer;
 }
@@ -229,7 +229,7 @@
   gap: 9px;
   align-self: center;
   border: 0;
-  border-radius: 14px;
+  border-radius: 14px !important;
   background: var(--home-primary);
   color: var(--home-white);
   font-size: 15px;
@@ -1399,14 +1399,14 @@
     padding: 16px;
     grid-template-columns: 1fr;
     gap: 10px;
-    border-radius: 26px;
+    border-radius: 26px !important;
     box-shadow: 0 12px 32px rgba(12, 42, 46, 0.09);
   }
 
   .finderField {
     min-height: 64px;
     padding: 8px 12px;
-    border-radius: 16px;
+    border-radius: 16px !important;
   }
 
   .finderField select {
@@ -1418,7 +1418,7 @@
     min-width: 0;
     min-height: 50px;
     grid-column: auto;
-    border-radius: 16px;
+    border-radius: 16px !important;
     font-weight: 550;
   }
 
