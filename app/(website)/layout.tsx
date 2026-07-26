@@ -91,9 +91,10 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     // Aksen aman-kontras untuk dipakai sebagai teks (light = aksen apa adanya)
     ` --site-accent-ink: ${accent};` +
     ` --site-font-family: ${fontFamily};` +
-    // Background bernuansa lembut dari warna aksen, ikut berubah saat skema diganti
-    ` --site-bg: color-mix(in srgb, ${accent} 5%, #ffffff);` +
-    ` --site-bg-soft: color-mix(in srgb, ${accent} 9%, #ffffff);`;
+    // Dasar seluruh halaman publik selalu putih murni; aksen tetap dipakai
+    // untuk kontrol dan konten, bukan sebagai warna kanvas halaman.
+    ` --site-bg: #FFFFFF;` +
+    ` --site-bg-soft: #FFFFFF;`;
 
   const styleBlock = (
     <style>{`

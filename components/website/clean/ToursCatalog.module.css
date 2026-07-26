@@ -3,7 +3,7 @@
   --catalog-navy: #202934;
   --catalog-muted: #606b72;
   --catalog-line: #e1e7e6;
-  --catalog-soft: #f3f6f6;
+  --catalog-soft: #FFFFFF;
   --catalog-primary: #0c4d56;
   min-width: 0;
   padding-top: 68px;
@@ -446,7 +446,7 @@
   --catalog-navy: #202934;
   --catalog-muted: #606b72;
   --catalog-line: #e1e7e6;
-  --catalog-soft: #f3f6f6;
+  --catalog-soft: #FFFFFF;
   --catalog-primary: #0c4d56;
   position: fixed;
   inset: 0;

@@ -1172,7 +1172,7 @@
 
 .finalSection {
   padding-block: clamp(78px, 9vw, 116px);
-  background: var(--home-ice);
+  background: var(--home-white);
 }
 
 .finalLayout {
