@@ -251,12 +251,7 @@ export default function CleanToursCatalog({
         <div className={styles.shell}>
           <div className={styles.heroLayout}>
             <div>
-              <p className={styles.eyebrow}>JADWAL &amp; PILIHAN PERJALANAN</p>
               <h1 id="catalog-page-title">Pilih cara perjalananmu.</h1>
-              <p>
-                Pisahkan open trip bertanggal, land tour privat yang fleksibel, dan
-                dokumentasi perjalanan terdahulu sejak awal.
-              </p>
             </div>
             <nav className={styles.trustCounts} aria-label="Pilih jenis perjalanan">
               {categoryTabs.map((tab) => (
