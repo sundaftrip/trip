@@ -1334,21 +1334,6 @@
     min-height: 456px;
   }
 
-  .hero::before {
-    position: absolute;
-    inset: 0 0 auto;
-    z-index: 0;
-    height: 34px;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.34) 0%,
-      rgba(12, 77, 86, 0.16) 46%,
-      rgba(12, 77, 86, 0) 100%
-    );
-    content: "";
-    pointer-events: none;
-  }
-
   .heroImage {
     object-position: 58% 50%;
   }
@@ -1392,12 +1377,13 @@
   }
 
   .finderZone {
-    margin-top: -58px;
+    margin-top: 0;
     background: #FFFFFF;
   }
 
   .finderCard {
     min-height: 0;
+    margin-top: -58px;
     padding: 16px;
     grid-template-columns: 1fr;
     gap: 10px;
