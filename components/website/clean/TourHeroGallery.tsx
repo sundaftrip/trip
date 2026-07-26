@@ -75,14 +75,14 @@ export default function TourHeroGallery({
               }}
             >
               <Image
-                src={cldOptimize(image, 1000)}
+                src={cldOptimize(image, 1800)}
                 alt={`${title}, gambar destinasi ${index + 1}`}
                 fill
                 priority={index === 0}
                 fetchPriority={index === 0 ? "high" : "auto"}
                 loading={index === 0 ? "eager" : "lazy"}
-                quality={60}
-                sizes="(max-width: 760px) 100vw, 1280px"
+                quality={75}
+                sizes="(max-width: 760px) 200vw, 1280px"
               />
             </button>
           </figure>

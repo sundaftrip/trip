@@ -742,7 +742,7 @@
 
   .resultsSection .shell {
     overflow: clip;
-    border: 1px solid var(--catalog-line);
+    border: 0 !important;
     border-radius: 18px !important;
   }
 

@@ -356,7 +356,7 @@
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--clean-line);
-  border-radius: var(--clean-radius);
+  border-radius: var(--clean-radius) !important;
   background: #fff;
   color: var(--clean-ink);
   transition: border-color .2s ease, transform .2s ease, filter .2s ease;
@@ -370,12 +370,17 @@
   aspect-ratio: 1.28 / 1;
   display: block;
   overflow: hidden;
+  border-radius: calc(var(--clean-radius) - 2px) calc(var(--clean-radius) - 2px) 0 0 !important;
   background: #dce5e6;
 }
 
 .tourCardCompact .tourPhoto { aspect-ratio: 1.72 / 1; }
 
-.tourImage { object-fit: cover; transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.tourImage {
+  border-radius: inherit !important;
+  object-fit: cover;
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1);
+}
 .tourCard:hover .tourImage { transform: scale(1.025); }
 
 .tourStatus {
@@ -1602,7 +1607,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(8px, 2.8vw, 12px);
   }
-  .tourCard { border-radius: 16px; }
+  .tourCard { border-radius: 16px !important; }
+  .tourPhoto { border-radius: 14px 14px 0 0 !important; }
   .tourPhoto,
   .tourCardCompact .tourPhoto { aspect-ratio: 1.36 / 1; }
   .tourStatus {

@@ -504,7 +504,7 @@
 
 @media (max-width: 700px) {
   .heroGallery {
-    margin: 8px 0 30px;
+    margin: 0 0 12px;
   }
 
   .dateCard {

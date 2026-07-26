@@ -183,21 +183,13 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                   fill
                   sizes="(max-width: 699px) 82vw, (max-width: 1199px) 44vw, 360px"
                 />
+                <span className={styles.tourMediaShade} aria-hidden="true" />
                 <span className={styles.tourBadge}>{statusLabel(tour)}</span>
+                <h3 className={styles.tourMediaTitle}>{tour.title}</h3>
               </Link>
 
               <div className={styles.tourBody}>
                 <p className={styles.tourMeta}>{tripMeta(tour)}</p>
-                <h3>
-                  <Link
-                    href={href}
-                    data-analytics-event="tour_card_click"
-                    data-tour-id={tour.id}
-                    onClick={(event) => preserveCampaign(event, href)}
-                  >
-                    {tour.title}
-                  </Link>
-                </h3>
                 <p className={styles.routeLine}>
                   <MapPin aria-hidden="true" />
                   <span>{routeHighlight(tour.cityHighlight || tour.country)}</span>
