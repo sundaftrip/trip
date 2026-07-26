@@ -251,6 +251,14 @@
   color: var(--shell-white);
 }
 
+.drawerPrimary {
+  border-radius: 12px !important;
+}
+
+.desktopAction {
+  display: none;
+}
+
 .drawerPrimary:hover,
 .desktopAction:hover {
   border-color: var(--shell-primary-strong);
@@ -338,13 +346,6 @@
 .mobileLink {
   justify-content: space-between;
   transition: color 180ms ease;
-}
-
-.mobileLink::after {
-  color: var(--shell-muted);
-  content: "→";
-  font-size: 15px;
-  font-weight: 500;
 }
 
 .mobileLink:hover,
