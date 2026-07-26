@@ -18,7 +18,7 @@ import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
-import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
+import { normalizeItineraryDisplayTitle, replaceEditorialDashes } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
 import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -226,12 +226,13 @@ export default function CleanTourDetail({
   isFlexibleDate,
 }: CleanTourDetailProps) {
   const copy = detailCopy(tour, isFlexibleDate);
-  const summaryParagraphs = cleanParagraphs(tour.description);
-  const visaParagraphs = cleanParagraphs(tour.visaInfo);
-  const noteParagraphs = cleanParagraphs(tour.notes);
+  const summaryTitle = replaceEditorialDashes(copy.summaryTitle);
+  const summaryParagraphs = cleanParagraphs(tour.description).map((paragraph) => replaceEditorialDashes(paragraph));
+  const visaParagraphs = cleanParagraphs(tour.visaInfo).map((paragraph) => replaceEditorialDashes(paragraph));
+  const noteParagraphs = cleanParagraphs(tour.notes).map((paragraph) => replaceEditorialDashes(paragraph));
   const heroImage = tour.heroImg || tour.gallery[0] || "/about-gallery-md/01-aurora.webp";
   const heroImages = [heroImage, ...tour.gallery];
-  const route = tour.cityHighlight || tour.country;
+  const route = replaceEditorialDashes(tour.cityHighlight || tour.country, " · ");
   const commerceStatus = isExpired ? "completed" : getCommerceTourStatus(tour);
   const status = bookingStatus(tour, commerceStatus);
   const unavailable = ["completed", "sold_out", "waitlist"].includes(commerceStatus);
@@ -270,9 +271,9 @@ export default function CleanTourDetail({
       }]
     : [];
   const experienceItems = itinerary.slice(0, 6).map((item, index) => ({
-    title: normalizeItineraryDisplayTitle(item.title) || `Hari ke-${item.day}`,
+    title: replaceEditorialDashes(normalizeItineraryDisplayTitle(item.title)) || `Hari ke-${item.day}`,
     description:
-      cleanParagraphs(item.description)[0]
+      replaceEditorialDashes(cleanParagraphs(item.description)[0] || "")
       || `Lihat aktivitas dan perpindahan untuk hari ke-${item.day}.`,
     image: heroImages[index % heroImages.length],
   }));
@@ -351,9 +352,9 @@ export default function CleanTourDetail({
               <div>
                 <h2
                   id="ringkasan-title"
-                  className={copy.summaryTitle.length > 68 ? styles.detailSummaryTitleLong : undefined}
+                  className={summaryTitle.length > 68 ? styles.detailSummaryTitleLong : undefined}
                 >
-                  {copy.summaryTitle}
+                  {summaryTitle}
                 </h2>
                 {summaryParagraphs.length > 0 ? summaryParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>) : (
                   <p>{copy.heroSupport}</p>

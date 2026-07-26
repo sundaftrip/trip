@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { localizePdfText } from "../lib/itinerary-pdf-localization";
-import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle } from "../lib/tour-display";
+import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle, replaceEditorialDashes } from "../lib/tour-display";
 
 test("normalizes an all-lowercase imported tour title", () => {
   assert.equal(
@@ -21,6 +21,18 @@ test("preserves intentional mixed case and product acronyms", () => {
   assert.equal(
     normalizeTourDisplayTitle("Asia Tengah 4-TAN"),
     "Asia Tengah 4-TAN",
+  );
+});
+
+test("replaces editorial dashes without changing structural hyphens", () => {
+  assert.equal(
+    replaceEditorialDashes("Hanoi – Ninh Binh — Hoa Lu - Tam Coc"),
+    "Hanoi, Ninh Binh, Hoa Lu, Tam Coc",
+  );
+  assert.equal(replaceEditorialDashes("Asia Tengah 4-TAN"), "Asia Tengah 4-TAN");
+  assert.equal(
+    replaceEditorialDashes("Hanoi – Ninh Binh", " · "),
+    "Hanoi · Ninh Binh",
   );
 });
 

@@ -35,6 +35,19 @@ export function normalizeTourDisplayTitle(value: string) {
     .join("");
 }
 
+/**
+ * Replaces editorial dashes used as separators in visitor-facing copy while
+ * preserving structural hyphens inside names, codes, and slugs (for example
+ * "4-TAN" and "central-asia").
+ */
+export function replaceEditorialDashes(value: string, separator = ", ") {
+  return value
+    .replace(/\s*[–—]\s*/g, separator)
+    .replace(/\s+-\s+/g, separator)
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 const MONTH_NAME = [
   "januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus",
   "september", "oktober", "november", "desember", "january", "february", "march",
