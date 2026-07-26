@@ -34,7 +34,7 @@ const SEARCH_INTENTS: SearchIntentDefinition[] = [
   {
     countryLabel: "Kazakhstan",
     aliases: ["kazakhstan", "kazakstan", "astana", "almaty", "shymkent"],
-    countryTerms: ["Kazakhstan", "Kazakstan"],
+    countryTerms: ["Kazakhstan", "Kazakstan", "Asia Tengah", "Central Asia", "Almaty"],
     tourHref: "/tours?destination=asia-tengah",
   },
   {

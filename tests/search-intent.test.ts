@@ -15,7 +15,13 @@ test("maps Astana to Kazakhstan tour and visa search terms", () => {
   const intent = resolveSearchIntent("astana");
   assert.equal(intent?.countryLabel, "Kazakhstan");
   assert.equal(intent?.tourHref, "/tours?destination=asia-tengah");
-  assert.deepEqual(intent?.countryTerms, ["Kazakhstan", "Kazakstan"]);
+  assert.deepEqual(intent?.countryTerms, [
+    "Kazakhstan",
+    "Kazakstan",
+    "Asia Tengah",
+    "Central Asia",
+    "Almaty",
+  ]);
 });
 
 test("recognizes aliases inside natural-language queries", () => {
@@ -24,7 +30,14 @@ test("recognizes aliases inside natural-language queries", () => {
 });
 
 test("expands city searches without dropping the original query", () => {
-  assert.deepEqual(expandedSearchTerms("Astana"), ["Astana", "Kazakhstan", "Kazakstan"]);
+  assert.deepEqual(expandedSearchTerms("Astana"), [
+    "Astana",
+    "Kazakhstan",
+    "Kazakstan",
+    "Asia Tengah",
+    "Central Asia",
+    "Almaty",
+  ]);
 });
 
 test("explains when a recognized country has no current tour", () => {
