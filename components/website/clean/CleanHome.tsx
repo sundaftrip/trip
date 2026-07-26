@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
+import { getCatalogTripType } from "@/lib/tour-filters";
 import type { CleanTour } from "./CleanTourCard";
 import HomeFaqs from "./home/HomeFaqs";
 import HomeReviews from "./home/HomeReviews";
@@ -238,9 +239,29 @@ export default function CleanHome({
   texts,
   heroImage = "/images/home/murmansk-aurora-group.png",
 }: CleanHomeProps) {
-  const scheduledTours = tours
-    .filter((tour) => tour.state === "bookable" || tour.state === "sold")
-    .slice(0, 6);
+  const catalogGroups = [
+    {
+      id: "open-trip",
+      label: "Open trip",
+      href: "/tours",
+      description: "Keberangkatan terjadwal yang siap dipilih.",
+      tours: tours.filter((tour) => getCatalogTripType(tour) === "open"),
+    },
+    {
+      id: "land-tour-pribadi",
+      label: "Land tour privat",
+      href: "/tours?type=land-tour",
+      description: "Perjalanan fleksibel yang dirancang sesuai kebutuhan.",
+      tours: tours.filter((tour) => getCatalogTripType(tour) === "private"),
+    },
+    {
+      id: "trip-terdahulu",
+      label: "Trip terdahulu",
+      href: "/tours?type=archive",
+      description: "Dokumentasi perjalanan yang telah selesai.",
+      tours: tours.filter((tour) => getCatalogTripType(tour) === "archive"),
+    },
+  ];
   const destinationOptions = getDestinationOptions(tours);
   const monthOptions = getMonthOptions(tours);
   const nib = company.company_nib || "1601260060842";
@@ -345,27 +366,45 @@ export default function CleanHome({
           <div className={styles.shell}>
             <div className={styles.headingRow}>
               <div className={styles.sectionHeading}>
-                <p className={styles.eyebrow}>JADWAL PILIHAN SUNDAF</p>
-                <h2 id="active-tours-title">Perjalanan yang siap berangkat</h2>
-                <p>Tanggal, rute, kursi, dan harga ditampilkan sejak awal.</p>
+                <p className={styles.eyebrow}>KATALOG PERJALANAN SUNDAF</p>
+                <h2 id="active-tours-title">Pilih perjalanan secara visual</h2>
+                <p>Seluruh open trip, land tour privat, dan perjalanan terdahulu tersedia di sini.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
-                Lihat semua perjalanan <ArrowRight aria-hidden="true" />
+                Buka katalog <ArrowRight aria-hidden="true" />
               </Link>
             </div>
 
-            {scheduledTours.length ? (
-              <HomeTourRail tours={scheduledTours} />
-            ) : (
-              <div className={styles.emptyState}>
-                <p>Jadwal open trip baru sedang disiapkan.</p>
-                <Link href="/custom-trip">Lihat pilihan private trip</Link>
-              </div>
-            )}
+            <nav className={styles.catalogNav} aria-label="Jenis katalog perjalanan">
+              {catalogGroups.map((group) => (
+                <Link key={group.id} href={group.href}>
+                  <span>{group.label}</span>
+                  <strong>{group.tours.length}</strong>
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              ))}
+            </nav>
 
-            <Link className={styles.mobileSectionLink} href="/tours">
-              Lihat semua perjalanan <ArrowRight aria-hidden="true" />
-            </Link>
+            {catalogGroups.map((group) => (
+              <section className={styles.catalogGroup} key={group.id} aria-labelledby={`${group.id}-title`}>
+                <div className={styles.catalogGroupHeading}>
+                  <div>
+                    <h3 id={`${group.id}-title`}>{group.label}</h3>
+                    <p>{group.description}</p>
+                  </div>
+                  <Link href={group.href}>
+                    Lihat kategori <ArrowRight aria-hidden="true" />
+                  </Link>
+                </div>
+                {group.tours.length ? (
+                  <HomeTourRail tours={group.tours} layout="grid" />
+                ) : (
+                  <div className={styles.emptyState}>
+                    <p>Perjalanan untuk kategori ini sedang disiapkan.</p>
+                  </div>
+                )}
+              </section>
+            ))}
           </div>
         </section>
 

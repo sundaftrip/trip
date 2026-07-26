@@ -30,6 +30,8 @@ function validDate(value: string | null) {
 }
 
 function statusLabel(tour: CleanTour) {
+  if (tour.state === "completed") return "Trip terdahulu";
+  if (tour.state === "flexible") return "Tanggal fleksibel";
   if (tour.state === "sold") return "Penuh";
   if (/confirmed|terkonfirmasi/i.test(tour.badge || "")) return "Terkonfirmasi";
   if (tour.seatsLeft > 0 && tour.seatsLeft <= 3) return "Kursi terakhir";
@@ -62,7 +64,13 @@ function routeHighlight(value: string) {
   ));
 }
 
-export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
+export default function HomeTourRail({
+  tours,
+  layout = "rail",
+}: {
+  tours: CleanTour[];
+  layout?: "rail" | "grid";
+}) {
   function preserveCampaign(
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -74,13 +82,13 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
   }
 
   return (
-    <div className={styles.railStage}>
+    <div className={layout === "rail" ? styles.railStage : styles.catalogStage}>
       <div
-        className={styles.tourRail}
-        role="region"
-        aria-roledescription="carousel"
+        className={layout === "rail" ? styles.tourRail : styles.tourGrid}
+        role={layout === "rail" ? "region" : undefined}
+        aria-roledescription={layout === "rail" ? "carousel" : undefined}
         aria-label="Daftar kartu perjalanan Sundaf"
-        tabIndex={0}
+        tabIndex={layout === "rail" ? 0 : undefined}
       >
         {tours.map((tour, index) => {
           const href = `/tours/${tour.slug || tour.id}`;

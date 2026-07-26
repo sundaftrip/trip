@@ -7,7 +7,7 @@ import { unstable_cache } from "next/cache";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
-import { compareFeaturedTourOrder, getPublicTourState } from "@/lib/tour-order";
+import { comparePublicTourCatalogOrder, getPublicTourState } from "@/lib/tour-order";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import HeroSection from "@/components/website/HeroSection";
 import WhyGallery from "@/components/website/WhyGallery";
@@ -26,21 +26,15 @@ const getData = unstable_cache(async () => {
     // gallery, itinerary, inclusions, exclusions, hotel, visaInfo, addOns,
     // notes (long), description (long, di-excerpt di card). Hemat JSON
     // payload yang dikirim ke client hydration (ToursCatalog).
-    // Homepage menampilkan katalog publik bertanggal mendatang/fleksibel.
-    // FULL tetap boleh muncul sebagai social proof, tetapi seluruh kartunya
-    // menjadi monokrom lewat state `sold`.
+    // Beranda menampilkan katalog publik lengkap agar pilihan perjalanan
+    // dapat langsung dibandingkan secara visual, termasuk trip terdahulu.
     prisma.tour.findMany({
-      where: {
-        AND: [
-          publicTourVisibilityWhere(),
-          { OR: [{ tripDate: null }, { tripDate: { gte: new Date() } }] },
-        ],
-      },
+      where: publicTourVisibilityWhere(),
       orderBy: { tripDate: "asc" },
       select: {
         id: true, slug: true, title: true, country: true, cityHighlight: true,
         price: true, promoPrice: true, seatsLeft: true,
-        tripDate: true, duration: true, heroImg: true, badge: true,
+        tripDate: true, createdAt: true, duration: true, heroImg: true, badge: true,
         status: true, pinned: true, addOns: true,
       },
     }),
@@ -79,16 +73,14 @@ const getData = unstable_cache(async () => {
       select: { id: true, question: true, answer: true },
     }),
   ]);
-  // Sudah difilter di query, tinggal urut: pinned + niche utama
-  // (Rusia/Asia Tengah/Aurora) dulu, lalu tanggal terdekat.
-  const tours = [...toursRaw].sort(compareFeaturedTourOrder).slice(0, 9);
+  const tours = [...toursRaw].sort((a, b) => comparePublicTourCatalogOrder(a, b));
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
   return { texts: t, tours, posts, company, companyRows, testimonials, faqs };
 // tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
-}, ["home-page-data", "home-payload-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
+}, ["home-page-data", "home-payload-v2"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   // Title, description, keywords, OG & Twitter card — semuanya diwarisi dari
@@ -131,6 +123,7 @@ export default async function HomePage() {
         ...tourFields,
         title: normalizeTourDisplayTitle(tour.title),
         tripDate: toIsoDateString(tour.tripDate),
+        createdAt: toIsoDateString(tour.createdAt),
         mandatoryTotal: mandatoryAddOnsTotal(addOns),
         state: getPublicTourState(tour, now),
       };
