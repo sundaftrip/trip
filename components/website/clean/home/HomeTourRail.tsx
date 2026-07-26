@@ -33,7 +33,7 @@ function statusLabel(tour: CleanTour) {
   if (tour.state === "sold") return "Penuh";
   if (/confirmed|terkonfirmasi/i.test(tour.badge || "")) return "Terkonfirmasi";
   if (tour.seatsLeft > 0 && tour.seatsLeft <= 3) return "Kursi terakhir";
-  if (tour.seatsLeft > 0) return "Tersedia · konfirmasi tim";
+  if (tour.seatsLeft > 0) return "Tersedia";
   return "Tanya ketersediaan";
 }
 

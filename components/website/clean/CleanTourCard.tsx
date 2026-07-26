@@ -45,7 +45,7 @@ function statusLabel(tour: CleanTour) {
   if (status === "confirmed") return "Pasti berangkat";
   if (status === "last_seats") return "Kursi terakhir";
   if (status === "flexible") return "Tanggal fleksibel";
-  if (tour.seatsLeft > 0) return "Tersedia · konfirmasi tim";
+  if (tour.seatsLeft > 0) return "Tersedia";
   return tour.badge || "Cek ketersediaan";
 }
 
