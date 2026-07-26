@@ -56,6 +56,7 @@ async function doSearch(q: string): Promise<SearchResults> {
   const term = q.trim();
   if (!term) return { destinations: [], tours: [], blogs: [], visas: [] };
   const terms = expandedSearchTerms(term).slice(0, 4);
+  const now = new Date();
   const destinations = Array.from(
     new Map(
       terms
@@ -70,6 +71,7 @@ async function doSearch(q: string): Promise<SearchResults> {
       where: {
         AND: [
           { status: { in: ["ACTIVE", "FULL"] } },
+          { OR: [{ tripDate: null }, { tripDate: { gte: now } }] },
           {
             OR: terms.flatMap((searchTerm) => [
               { title: { contains: searchTerm, mode: "insensitive" as const } },
@@ -197,35 +199,6 @@ export default async function SearchPage({
           <NoResults q={q} />
         )}
 
-        {/* ── Destinations ── */}
-        {destinations.length > 0 && (
-          <Section
-            icon={<Compass size={16} />}
-            title="Destinasi"
-            count={destinations.length}
-          >
-            <div className="grid sm:grid-cols-2 gap-3">
-              {destinations.map((d) => (
-                <Link
-                  key={d.href}
-                  href={d.href}
-                  className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
-                >
-                  <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
-                    {d.region}
-                  </div>
-                  <div className="font-semibold text-gray-900 dark:text-white text-sm leading-snug mb-2">
-                    {d.name}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                    {d.description}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </Section>
-        )}
-
         {/* ── Tours ── */}
         {tours.length > 0 && (
           <Section
@@ -255,6 +228,65 @@ export default async function SearchPage({
                       {formatCurrency(t.promoPrice ?? t.price)}
                     </span>
                   </div>
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {/* ── Visa ── */}
+        {visas.length > 0 && (
+          <Section
+            icon={<FileCheck size={16} />}
+            title="Info Visa"
+            count={visas.length}
+          >
+            <div className="flex flex-wrap gap-2">
+              {visas.map((v) => (
+                <Link
+                  key={v.en}
+                  href={`/visa/${visaSlug(v.en)}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+                >
+                  {v.name}
+                  <ArrowRight size={12} className="text-gray-400" />
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {notice ? (
+          <Section icon={<MapPin size={16} />} title="Paket Tour" count={0}>
+            <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm leading-relaxed text-gray-500 dark:bg-gray-900 dark:text-gray-400">
+              {notice}
+            </p>
+          </Section>
+        ) : null}
+
+        {/* ── Related subpages ── */}
+        {destinations.length > 0 && (
+          <Section
+            icon={<Compass size={16} />}
+            title="Subhalaman terkait"
+            count={destinations.length}
+          >
+            <div className="grid sm:grid-cols-2 gap-3">
+              {destinations.map((d) => (
+                <Link
+                  key={d.href}
+                  href={d.href}
+                  className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+                >
+                  <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
+                    {d.region}
+                  </div>
+                  <div className="font-semibold text-gray-900 dark:text-white text-sm leading-snug mb-2">
+                    {d.name}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                    {d.description}
+                  </p>
                 </Link>
               ))}
             </div>
@@ -297,34 +329,6 @@ export default async function SearchPage({
             </div>
           </Section>
         )}
-
-        {/* ── Visa ── */}
-        {visas.length > 0 && (
-          <Section
-            icon={<FileCheck size={16} />}
-            title="Info Visa"
-            count={visas.length}
-          >
-            <div className="flex flex-wrap gap-2">
-              {visas.map((v) => (
-                <Link
-                  key={v.en}
-                  href={`/visa/${visaSlug(v.en)}`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
-                >
-                  {v.name}
-                  <ArrowRight size={12} className="text-gray-400" />
-                </Link>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {notice ? (
-          <p className="mt-8 rounded-xl bg-gray-100 px-4 py-3 text-sm leading-relaxed text-gray-500 dark:bg-gray-900 dark:text-gray-400">
-            {notice}
-          </p>
-        ) : null}
       </div>
     </div>
   );

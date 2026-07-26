@@ -184,6 +184,15 @@
   text-wrap: balance;
 }
 
+.aboutTitleHighlight {
+  padding: 0.02em 0.12em 0.08em;
+  border-radius: 0.12em;
+  background: #0c4d56;
+  color: #fff;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 .aboutLede {
   max-width: 720px;
   color: var(--support-ink-soft);

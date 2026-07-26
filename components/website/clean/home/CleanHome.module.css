@@ -154,6 +154,7 @@
   position: relative;
   z-index: 3;
   margin-top: -78px;
+  background: #fff;
 }
 
 .finderCard {
@@ -165,7 +166,7 @@
   align-items: stretch;
   border: 1px solid rgba(232, 237, 236, 0.96);
   border-radius: 22px;
-  background: var(--home-white);
+  background: #fff;
   box-shadow: 0 14px 40px rgba(12, 42, 46, 0.09);
 }
 
@@ -362,6 +363,7 @@
 
 .tourSection {
   padding-top: 74px;
+  background: #fff;
 }
 
 .railStage {
@@ -508,6 +510,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  background: #fff;
 }
 
 .tourMeta {
@@ -631,6 +634,10 @@
   gap: 14px;
 }
 
+.destinationSection {
+  background: #fff;
+}
+
 .destinationMosaic > a {
   position: relative;
   min-height: 220px;
@@ -685,7 +692,7 @@
 }
 
 .benefitSection {
-  background: var(--home-ice);
+  background: #fff;
 }
 
 .benefitSection .sectionHeading {

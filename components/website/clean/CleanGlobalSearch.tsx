@@ -313,7 +313,7 @@ export default function CleanGlobalSearch() {
               </SearchGroup>
             ) : null}
 
-            {results.tours.length ? (
+            {results.tours.length && !results.notice ? (
               <SearchGroup label="Produk tour">
                 {results.tours.map((item) => (
                   <SearchResultButton
@@ -338,6 +338,12 @@ export default function CleanGlobalSearch() {
                     onClick={() => go(item.href)}
                   />
                 ))}
+              </SearchGroup>
+            ) : null}
+
+            {results.notice ? (
+              <SearchGroup label="Produk tour">
+                <p className={styles.searchNotice}>{results.notice}</p>
               </SearchGroup>
             ) : null}
 
@@ -392,9 +398,6 @@ export default function CleanGlobalSearch() {
               </SearchGroup>
             ) : null}
 
-            {results.notice ? (
-              <p className={styles.searchNotice}>{results.notice}</p>
-            ) : null}
           </div>
 
           {hasQuery && total > 0 ? (

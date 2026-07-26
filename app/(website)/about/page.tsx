@@ -184,7 +184,11 @@ export default async function AboutPage() {
             id="about-page-title"
             className={`${isAtlas ? supportStyles.aboutTitle : "text-4xl lg:text-5xl"} font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Jalan ke Rusia, Asia Tengah, sampai aurora, tanpa drama yang gak perlu
+            Jalan ke{" "}
+            <span className={supportStyles.aboutTitleHighlight}>
+              Rusia, Asia Tengah, sampai aurora,
+            </span>{" "}
+            tanpa drama yang gak perlu
           </h1>
 
           <p
