@@ -28,6 +28,8 @@ import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
 import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
+import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
+import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -332,22 +334,31 @@ export async function generateMetadata({
         promoPrice: true,
         tripDate: true,
         status: true,
+        gallery: true,
+        itinerary: true,
+        inclusions: true,
       },
     }),
     prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
   ]);
-  if (!tour) return {};
+  if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) {
+    notFound();
+  }
 
   const companyName = companyRow?.value ?? "Sundaftrip";
   const title = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const description = buildTourMetadataDescription(tour, companyName);
   const productImage = getAbsoluteTourProductImage(tour, siteUrl);
 
-  const canonicalPath = `/tours/${tour.slug ?? tour.id}`;
+  const canonicalPath = canonicalTourPath(tour);
+  const indexable = isSubstantialArchivedTour(tour);
   return {
     title,
     description,
     alternates: { canonical: `${siteUrl}${canonicalPath}` },
+    robots: indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
     openGraph: {
       title,
       description,
@@ -396,6 +407,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         price: true, promoPrice: true, seatsLeft: true, tripDate: true,
         duration: true, heroImg: true, badge: true, status: true,
         notes: true, description: true,
+        addOns: true,
       },
     }),
   ]);
@@ -415,13 +427,20 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const now = new Date();
   // Trip yang tanggalnya sudah lewat TIDAK lagi dialihkan, tetap dibuka dalam
   // mode "Trip Selesai" (read-only) supaya ulasan + rating tetap tampil & terindeks.
-  const isExpired = !!tour.tripDate && tour.tripDate < now;
+  const commerceStatus = getCommerceTourStatus(tour, now);
+  const isExpired = commerceStatus === "completed";
   const isFlexibleDate = !tour.tripDate && tour.status === "ACTIVE";
   const departureLabel = tour.tripDate ? formatDate(tour.tripDate) : isFlexibleDate ? "Tanggal fleksibel" : null;
   const capacityLabel = isExpired
     ? "Trip selesai"
-    : tour.status === "FULL"
+    : commerceStatus === "sold_out"
       ? "Penuh"
+      : commerceStatus === "waitlist"
+        ? "Daftar tunggu"
+        : commerceStatus === "confirmed"
+          ? "Pasti berangkat"
+          : commerceStatus === "last_seats"
+            ? "Kursi terakhir"
       : isFlexibleDate
         ? "Privat / sesuai permintaan"
         : tour.seatsLeft > 0
@@ -430,7 +449,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  const waNumber = toWaNumber(company["company_whatsapp"]);
+  const waNumber = toWaNumber(company["company_whatsapp"]) || "6281775202759";
   const companyName = company["company_name"] || "";
   const rawSiteTheme = company["site_theme"] ?? "classic";
   const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme;
@@ -516,6 +535,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     heroImg: getTourProductImage(item),
     badge: item.badge ?? null,
     status: item.status,
+    mandatoryTotal: mandatoryAddOnsTotal(item.addOns),
     state: getPublicTourState(item, now),
   }));
 
@@ -533,7 +553,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const optionalAddOns = addOns.filter((a) => a.tag !== "wajib");
   const mandatoryTotal = mandatoryAddOns.reduce((sum, a) => sum + (Number(a.price) || 0), 0);
   const startingTotal = basePrice + mandatoryTotal;
-  const paymentPlan = tour.status === "ACTIVE" && !isExpired
+  const isPurchasable = ["available", "last_seats", "confirmed", "flexible"].includes(
+    commerceStatus,
+  );
+  const paymentPlan = isPublicTourVisible(tour) && tour.status !== "CANCELLED" && isPurchasable
     ? buildTourPaymentPlan({
         totalAmount: startingTotal,
         departureDate: tour.tripDate,
@@ -602,11 +625,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ...((tour.promoPrice ?? tour.price) > 0 ? {
       offers: {
         "@type": "Offer",
-        price: String(tour.promoPrice ?? tour.price),
+        price: String(startingTotal),
         priceCurrency: "IDR",
-        availability: (isExpired || tour.status === "FULL")
-          ? "https://schema.org/SoldOut"
-          : "https://schema.org/InStock",
+        availability: isPurchasable
+          ? "https://schema.org/InStock"
+          : "https://schema.org/SoldOut",
         url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
       },
     } : {}),
@@ -632,9 +655,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ...((tour.promoPrice ?? tour.price) > 0 ? {
       offers: {
         "@type": "Offer",
-        price: String(tour.promoPrice ?? tour.price),
+        price: String(startingTotal),
         priceCurrency: "IDR",
-        availability: (isExpired || tour.status === "FULL") ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+        availability: isPurchasable ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
         url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
       },
     } : {}),
@@ -686,6 +709,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             visaInfo: displayVisaInfo ?? null,
             notes: displayNotes ?? null,
             heroImg: productHeroImage,
+            badge: displayBadge ?? null,
             gallery: tour.gallery,
             inclusions: displayInclusions,
             exclusions: displayExclusions,
@@ -713,6 +737,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             rating: review.rating,
           }))}
           ratingValue={ratingValue}
+          bookingPhone={waNumber}
           bookingWaHref={bookingWaHref}
           bookingSummary={waSummary}
           basePrice={basePrice}
@@ -1040,25 +1065,25 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               <div className="mb-5">
                 {isOutlined ? (
                   <div className="mb-3">
-                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga per orang</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga paket per orang</p>
                     <span className={`${pfx}-pill font-black`} style={{ background: tMint, color: tText, fontSize: "1.5rem", padding: "8px 20px" }}>
                       {formatCurrency(tour.promoPrice ?? tour.price)}
                     </span>
                     {tour.promoPrice && (
-                      <p className="text-sm text-gray-400 line-through mt-2">{formatCurrency(tour.price)}</p>
+                      <p className="text-sm text-gray-400 mt-2">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>
                     )}
                     {tour.priceLandTour && (
                       <p className="text-xs mt-1">
-                        <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Land Tour: {formatCurrency(tour.priceLandTour)}</span>
+                        <span className={`${pfx}-pill`} style={{ background: tSun, color: tText }}>Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</span>
                       </p>
                     )}
                   </div>
                 ) : (
                   <div className="mb-4">
-                    <p className="text-xs text-gray-400 mb-1">Harga per orang</p>
+                    <p className="text-xs text-gray-400 mb-1">Harga paket per orang</p>
                     <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-                    {tour.promoPrice && <p className="text-sm text-gray-400 line-through">{formatCurrency(tour.price)}</p>}
-                    {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Land Tour: {formatCurrency(tour.priceLandTour)}</p>}
+                    {tour.promoPrice && <p className="text-sm text-gray-400">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>}
+                    {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
                   </div>
                 )}
               </div>
@@ -1082,7 +1107,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   ))}
                   <div className={`flex justify-between mt-2 pt-2 font-black text-gray-900 dark:text-white ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-200 dark:border-gray-700"}`}
                     style={isOutlined ? { borderColor: tBdr } : undefined}>
-                    <span>Total mulai</span>
+                    <span>Total wajib</span>
                     <span>{formatCurrency(startingTotal)}</span>
                   </div>
                   <p className="mt-1 text-[10px] text-gray-400">Sudah termasuk item wajib di atas, per orang.</p>
@@ -1112,6 +1137,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
               {/* Download itinerary PDF */}
               <a href={`/tours/${tour.id}/pdf`}
+                data-analytics-event="itinerary_pdf_download"
+                data-tour-id={tour.id}
                 className={`w-full flex items-center justify-center gap-2 py-3 font-bold mb-3 transition ${isOutlined ? `${pfx}-card` : "border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"}`}
                 style={isOutlined ? { background: tCard, color: tText } : undefined}>
                 <Download size={16} /> Unduh Rencana Perjalanan PDF
@@ -1151,7 +1178,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
 
-              {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total mulai di atas) */}
+              {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total wajib di atas) */}
               {optionalAddOns.length > 0 && (
                 <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
                   style={isOutlined ? { borderColor: tBdr } : undefined}>

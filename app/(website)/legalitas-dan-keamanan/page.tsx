@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
@@ -174,7 +175,7 @@ export default async function LegalitasKeamananPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className={`${supportStyles.atlasPage} min-h-screen`} style={{ backgroundColor: "var(--at-bg)" }}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -183,14 +184,14 @@ export default async function LegalitasKeamananPage() {
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(legalSchema) }} />
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <section className={supportStyles.hero} aria-labelledby="legal-page-title">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
           Verifikasi Resmi
         </span>
-        <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
+        <h1 id="legal-page-title" className={supportStyles.title} style={{ color: "var(--at-text)" }}>
           Legalitas dan Keamanan Sundaf Trip
         </h1>
-        <p className="mt-6 max-w-3xl text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+        <p className={`${supportStyles.lede} mt-6`} style={{ color: "var(--at-subtext)" }}>
           Gunakan halaman ini untuk memeriksa identitas resmi Sundaf Trip, kanal komunikasi yang valid, dan langkah aman sebelum mengirim data atau melakukan pembayaran.
         </p>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
@@ -198,11 +199,12 @@ export default async function LegalitasKeamananPage() {
         </p>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className={supportStyles.section} aria-labelledby="legal-facts-title">
+        <h2 id="legal-facts-title" className="sr-only">Identitas dan kanal resmi Sundaf Trip</h2>
+        <div className={`${supportStyles.factsGrid} grid gap-4 md:grid-cols-2 xl:grid-cols-3`}>
           {facts.map(({ icon: Icon, label, value, href }) => (
             <div key={label} className="at-card p-5">
-              <Icon size={20} style={{ color: "var(--site-accent)" }} />
+              <Icon aria-hidden="true" size={20} style={{ color: "var(--site-accent)" }} />
               <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>{label}</p>
               {href ? (
                 <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>
@@ -219,15 +221,15 @@ export default async function LegalitasKeamananPage() {
         </p>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="booking-safety-title">
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="at-card p-6 lg:p-8">
-            <AlertTriangle size={24} style={{ color: "var(--site-accent)" }} />
-            <h2 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Cek sebelum transfer atau kirim dokumen</h2>
+            <AlertTriangle aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
+            <h2 id="booking-safety-title" className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Cek sebelum transfer atau kirim dokumen</h2>
             <ul className="mt-5 space-y-3">
               {safeSteps.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
+                  <CheckCircle2 aria-hidden="true" size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
                   <span>{item}</span>
                 </li>
               ))}
@@ -242,7 +244,7 @@ export default async function LegalitasKeamananPage() {
                   <h3 className="mt-2 text-lg font-black" style={{ color: "var(--at-text)" }}>WhatsApp resmi</h3>
                   <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{phone}</p>
                 </div>
-                <ArrowRight size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                <ArrowRight aria-hidden="true" size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
               </div>
             </a>
             <a href={igUrl} target="_blank" rel="noreferrer" className="at-card p-5 transition hover:opacity-80">
@@ -252,17 +254,17 @@ export default async function LegalitasKeamananPage() {
                   <h3 className="mt-2 text-lg font-black" style={{ color: "var(--at-text)" }}>Instagram resmi</h3>
                   <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>@sundaf.trip</p>
                 </div>
-                <ArrowRight size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                <ArrowRight aria-hidden="true" size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
               </div>
             </a>
           </div>
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="official-references-title">
         <div className="mb-5 flex items-center gap-3">
-          <ExternalLink size={22} style={{ color: "var(--site-accent)" }} />
-          <h2 className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Rujukan resmi yang dicatat</h2>
+          <ExternalLink aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
+          <h2 id="official-references-title" className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Rujukan resmi yang dicatat</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {references.map((item) => (
@@ -272,7 +274,7 @@ export default async function LegalitasKeamananPage() {
               </p>
               <div className="flex items-start justify-between gap-4">
                 <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
-                <ExternalLink size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                <ExternalLink aria-hidden="true" size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
               </div>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>
             </a>
@@ -280,17 +282,17 @@ export default async function LegalitasKeamananPage() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <section className={supportStyles.section} aria-labelledby="official-support-pages-title">
         <div className="mb-5 flex items-center gap-3">
-          <ShieldCheck size={22} style={{ color: "var(--site-accent)" }} />
-          <h2 className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Halaman pendukung resmi</h2>
+          <ShieldCheck aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
+          <h2 id="official-support-pages-title" className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Halaman pendukung resmi</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {officialPages.map((item) => (
             <Link key={item.href} href={item.href} className="at-card p-5 transition hover:opacity-80">
               <div className="flex items-start justify-between gap-4">
                 <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
-                <ArrowRight size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                <ArrowRight aria-hidden="true" size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
               </div>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>
             </Link>

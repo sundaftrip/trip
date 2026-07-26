@@ -6,6 +6,7 @@ import { unstable_cache } from "next/cache";
 import { ArrowRight, MessageSquareQuote, ShieldCheck, Star } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
 
@@ -116,7 +117,7 @@ export default async function ReviewsPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className={`${supportStyles.atlasPage} min-h-screen`} style={{ backgroundColor: "var(--at-bg)" }}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -125,21 +126,25 @@ export default async function ReviewsPage() {
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewsSchema) }} />
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <section className={supportStyles.hero} aria-labelledby="reviews-page-title">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
           Review Publik
         </span>
         <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
-            <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
-              Review Sundaf Trip dari Traveler Indonesia
+            <h1 id="reviews-page-title" className={supportStyles.title} style={{ color: "var(--at-text)" }}>
+              Review{" "}
+              <span className={supportStyles.reviewTitleHighlight}>
+                Sundaf Trip
+              </span>{" "}
+              dari Traveler Indonesia
             </h1>
-            <p className="mt-6 max-w-3xl text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+            <p className={`${supportStyles.lede} mt-6`} style={{ color: "var(--at-subtext)" }}>
               Halaman ini mengumpulkan testimonial yang sudah dipublikasikan untuk membantu calon traveler, partner, dan mesin pencari memahami bukti sosial Sundaf Trip secara lebih terbuka.
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <div className={`${supportStyles.summaryGrid} grid gap-3`}>
             <div className="at-card p-5">
               <p className="text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Total review</p>
               <p className="mt-2 text-3xl font-black" style={{ color: "var(--at-text)" }}>{reviewCount}</p>
@@ -158,52 +163,57 @@ export default async function ReviewsPage() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="published-reviews-title">
         {testimonials.length ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {testimonials.map((item) => {
-              const rating = Math.min(5, Math.max(1, item.rating || 5));
-              return (
-                <article key={item.id} className="at-card p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-black" style={{ color: "var(--at-text)" }}>{item.name}</p>
-                      {item.role && <p className="mt-1 text-xs" style={{ color: "var(--at-subtext)" }}>{item.role}</p>}
+          <>
+            <h2 id="published-reviews-title" className="sr-only">Review yang dipublikasikan</h2>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {testimonials.map((item) => {
+                const rating = Math.min(5, Math.max(1, item.rating || 5));
+                const createdAt = asDate(item.createdAt);
+                return (
+                  <article key={item.id} className={`${supportStyles.reviewCard} at-card p-5`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="font-black" style={{ color: "var(--at-text)" }}>{item.name}</h3>
+                        {item.role && <p className="mt-1 text-xs" style={{ color: "var(--at-subtext)" }}>{item.role}</p>}
+                      </div>
+                      <span className="at-pill shrink-0 text-[11px]" style={{ color: "var(--at-subtext)" }}>
+                        {categoryLabel(item.category)}
+                      </span>
                     </div>
-                    <span className="at-pill shrink-0 text-[11px]" style={{ color: "var(--at-subtext)" }}>
-                      {categoryLabel(item.category)}
-                    </span>
-                  </div>
 
-                  <div className="mt-4 flex items-center gap-1" aria-label={`Rating ${rating} dari 5`}>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <Star
-                        key={index}
-                        size={16}
-                        fill={index < rating ? "var(--site-accent)" : "none"}
-                        style={{ color: "var(--site-accent)" }}
-                      />
-                    ))}
-                  </div>
+                    <div className="mt-4 flex items-center gap-1" role="img" aria-label={`Rating ${rating} dari 5`}>
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star
+                          key={index}
+                          aria-hidden="true"
+                          size={16}
+                          fill={index < rating ? "#fbbc04" : "none"}
+                          style={{ color: "#fbbc04" }}
+                        />
+                      ))}
+                    </div>
 
-                  <div className="mt-5 flex gap-3">
-                    <MessageSquareQuote size={18} className="mt-1 shrink-0" style={{ color: "var(--site-accent)" }} />
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                      {item.content}
+                    <div className={`${supportStyles.reviewBody} mt-5 flex gap-3`}>
+                      <MessageSquareQuote aria-hidden="true" size={18} className="mt-1 shrink-0" style={{ color: "var(--site-accent)" }} />
+                      <p className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+                        {item.content}
+                      </p>
+                    </div>
+
+                    <p className={`${supportStyles.reviewDate} text-xs`} style={{ color: "var(--at-subtext)" }}>
+                      Dipublikasikan <time dateTime={createdAt.toISOString()}>{dateFmt.format(createdAt)}</time>
                     </p>
-                  </div>
-
-                  <p className="mt-5 text-xs" style={{ color: "var(--at-subtext)" }}>
-                    Dipublikasikan {dateFmt.format(asDate(item.createdAt))}
-                  </p>
-                </article>
-              );
-            })}
-          </div>
+                  </article>
+                );
+              })}
+            </div>
+          </>
         ) : (
           <div className="at-card p-8">
-            <ShieldCheck size={28} style={{ color: "var(--site-accent)" }} />
-            <h2 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>
+            <ShieldCheck aria-hidden="true" size={28} style={{ color: "var(--site-accent)" }} />
+            <h2 id="published-reviews-title" className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>
               Belum ada review publik
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
@@ -213,7 +223,8 @@ export default async function ReviewsPage() {
         )}
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="review-supporting-pages-title">
+        <h2 id="review-supporting-pages-title" className="sr-only">Halaman pendukung Sundaf Trip</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {[
             { label: "Profil resmi", href: "/sundaf-trip" },
@@ -222,7 +233,7 @@ export default async function ReviewsPage() {
           ].map((item) => (
             <Link key={item.href} href={item.href} className="at-card p-5 flex items-center justify-between gap-4 transition hover:opacity-80">
               <span className="text-sm font-black" style={{ color: "var(--at-text)" }}>{item.label}</span>
-              <ArrowRight size={17} style={{ color: "var(--site-accent)" }} />
+              <ArrowRight aria-hidden="true" size={17} style={{ color: "var(--site-accent)" }} />
             </Link>
           ))}
         </div>

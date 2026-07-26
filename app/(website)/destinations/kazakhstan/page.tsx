@@ -165,7 +165,7 @@ export default async function KazakhstanPage() {
                     : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                     : isGlobe    ? { background: "var(--gl-border)", color: "#111827" }
                     : isMap      ? { background: "var(--mp-accent)", color: "var(--mp-on-accent)" }
-                    : isAtlas    ? { background: "var(--site-accent,#2d6a4f)", color: "#111827" }
+                    : isAtlas    ? { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }
                     : { background: "var(--site-accent,#2d6a4f)", color: "#111827" };
 
   const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
@@ -406,7 +406,7 @@ export default async function KazakhstanPage() {
               <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>Rp 20 – 38 juta / orang</span>
             </div>
           </div>
-          <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-400 dark:text-gray-600" : ""}`} style={{ color: subClr, opacity: 0.7 }}>
+          <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-600 dark:text-gray-300" : ""}`} style={{ color: subClr }}>
             * Estimasi 7–10 hari. Dengan paket tur Sundaftrip, biasanya lebih hemat karena sudah bundled dan group sharing.
           </p>
         </section>

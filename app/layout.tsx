@@ -11,7 +11,7 @@ import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadat
    - Preload is disabled so mobile LCP is not competing with non-critical font
      files; font-display: swap keeps text visible while the chosen font loads.
 */
-const jost         = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap", preload: false });
+const jost         = Jost({ weight: ["300", "400", "500"], subsets: ["latin"], variable: "--font-jost", display: "swap", preload: false });
 const anonymousPro = Anonymous_Pro({ weight: ["400","700"], subsets: ["latin"], variable: "--font-anonymous-pro", display: "swap", preload: false });
 const plusJakarta  = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap", preload: false });
 const dmSans       = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap", preload: false });
@@ -40,7 +40,7 @@ const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
 
 export async function generateMetadata(): Promise<Metadata> {
   const description =
-    "Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
+    "Jelajahi Rusia, Asia Tengah, dan aurora bersama Sundaf Trip. Lihat jadwal, itinerary, biaya, visa, dan konsultasi perjalanan.";
 
   return {
     metadataBase: new URL(siteUrl),

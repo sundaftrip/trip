@@ -116,6 +116,8 @@ export default function CleanReviews({ items }: { items: Review[] }) {
             ref={track}
             className={styles.reviewTrack}
             tabIndex={0}
+            role="region"
+            aria-roledescription="carousel"
             aria-label="Testimoni peserta Sundaf Trip"
           >
             {items.map((item, index) => {
@@ -128,6 +130,7 @@ export default function CleanReviews({ items }: { items: Review[] }) {
                   <div className={styles.reviewCardMeta}>
                     <span
                       className={styles.reviewRating}
+                      role="img"
                       aria-label={`Rating ${item.rating} dari 5`}
                     >
                       {item.rating.toFixed(1)} <small>/ 5</small>

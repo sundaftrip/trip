@@ -11,7 +11,7 @@ mark { background: rgba(0, 173, 181, 0.32); color: #041417; text-shadow: none; }
 .dark mark { background: rgba(242, 251, 252, 0.88); color: #052024; }
 
 @theme {
-  --font-jost: "Jost", sans-serif;
+  --font-jost: "Jost", "Helvetica Neue", Arial, sans-serif;
 
   --color-forest-50:  #f0f7f3;
   --color-forest-100: #d6ece2;
@@ -96,7 +96,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   /* --site-font-family diinjeksi oleh website layout berdasarkan pilihan admin */
-  font-family: var(--site-font-family, var(--font-jost, ui-sans-serif, sans-serif));
+  font-family: var(--site-font-family, var(--font-jost, "Helvetica Neue", Arial, sans-serif));
   max-width: 100%;
   overflow-x: clip;
 }
@@ -2633,6 +2633,33 @@ main[data-theme] :where(.ring-blue-600\/30, .ring-blue-400\/30, .dark\:ring-blue
 .destination-light-surface .dark\:border-slate-800,
 .destination-light-surface .dark\:border-slate-700 {
   border-color: #e5e7eb !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  .destination-light-surface *,
+  .destination-light-surface *::before,
+  .destination-light-surface *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .destination-light-surface [class*="hover:-translate"],
+  .destination-light-surface [class*="hover:scale"],
+  .destination-light-surface [class*="group-hover:scale"] {
+    transform: none !important;
+  }
 }
 
 .destination-light-surface .dark\:text-white {

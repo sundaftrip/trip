@@ -46,7 +46,7 @@ const PAYMENT_TERMS = [
   "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
   "DP mengunci seat dan nominalnya mengikuti invoice awal.",
   "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
-  "Add-on opsional, visa, dan layanan tambahan dibayar terpisah setelah dikonfirmasi.",
+  "Add-on opsional dan layanan yang tidak ditandai wajib dibayar terpisah setelah dikonfirmasi.",
   "Bukti transfer wajib dikirim untuk verifikasi administrasi.",
   "Keterlambatan pembayaran dapat memengaruhi ketersediaan tiket, hotel, dan layanan.",
 ];
@@ -86,6 +86,9 @@ export interface ItineraryPDFProps {
   };
   priceLabel: string;
   priceCoretLabel?: string | null;
+  mandatoryAddOns?: PdfAddOn[];
+  inclusivePriceLabel: string;
+  inclusivePriceCoretLabel?: string | null;
   landTourLabel?: string | null;
   company: {
     name?: string;
@@ -1192,7 +1195,7 @@ function FlowSummaryValue({
   value: string;
   priceCoretLabel?: string | null;
 }) {
-  if (label === "HARGA PER ORANG") {
+  if (label === "TOTAL WAJIB PER ORANG") {
     return <FlowPriceSummary priceLabel={value} priceCoretLabel={priceCoretLabel} />;
   }
 
@@ -1641,7 +1644,16 @@ function placeForDay(day: Pick<ItineraryDay, "title" | "description">) {
 }
 
 export function ItineraryPDF({
-  tour, priceLabel, priceCoretLabel, landTourLabel, company, faqUrl, paymentPlan,
+  tour,
+  priceLabel,
+  priceCoretLabel,
+  mandatoryAddOns = [],
+  inclusivePriceLabel,
+  inclusivePriceCoretLabel,
+  landTourLabel,
+  company,
+  faqUrl,
+  paymentPlan,
 }: ItineraryPDFProps) {
   const faqDisplay = faqUrl ? faqUrl.replace(/^https?:\/\//, "") : "";
   const meta = [
@@ -1655,7 +1667,7 @@ export function ItineraryPDF({
   const runningTitle = `Rencana Perjalanan ${tour.title}`;
   const infoRows = [
     ...meta,
-    ["HARGA PER ORANG", priceLabel],
+    ["TOTAL WAJIB PER ORANG", inclusivePriceLabel],
     landTourLabel ? ["LAND TOUR", landTourLabel] : null,
   ].filter(Boolean) as [string, string][];
   const subtitleParts = [
@@ -1691,10 +1703,44 @@ export function ItineraryPDF({
             {infoRows.map(([label, value]) => (
               <View key={label} style={s.flowTableRow}>
                 <Text style={[s.flowCellBold, s.flowSummaryLabel, s.flowInfoLabel]}>{label}</Text>
-                <FlowSummaryValue label={label} value={value} priceCoretLabel={priceCoretLabel} />
+                <FlowSummaryValue
+                  label={label}
+                  value={value}
+                  priceCoretLabel={inclusivePriceCoretLabel}
+                />
               </View>
             ))}
           </View>
+        </View>
+
+        <View style={s.flowSection}>
+          <SectionTitle>Rincian Harga Wajib</SectionTitle>
+          <View style={s.flowTable}>
+            <View style={s.flowTableRow}>
+              <Text style={[s.flowCellBold, s.flowSummaryLabel, s.flowInfoLabel]}>PAKET DASAR</Text>
+              <FlowPriceSummary priceLabel={priceLabel} priceCoretLabel={priceCoretLabel} />
+            </View>
+            {mandatoryAddOns.map((item, index) => (
+              <View key={`${item.name}-${index}`} style={s.flowTableRow}>
+                <Text style={[s.flowCell, s.flowAddOnName]}>
+                  {item.name} (wajib)
+                </Text>
+                <Text style={[s.flowCellBold, s.flowAddOnPrice]}>{item.priceLabel}</Text>
+              </View>
+            ))}
+            <View style={s.flowTableRow}>
+              <Text style={[s.flowCellBold, s.flowSummaryLabel, s.flowInfoLabel]}>
+                TOTAL WAJIB PER ORANG
+              </Text>
+              <FlowPriceSummary
+                priceLabel={inclusivePriceLabel}
+                priceCoretLabel={inclusivePriceCoretLabel}
+              />
+            </View>
+          </View>
+          <Text style={[s.flowFootnote, { marginTop: 7 }]}>
+            Total wajib mencakup paket dasar dan seluruh add-on wajib. Add-on opsional ditampilkan terpisah.
+          </Text>
         </View>
 
         <View style={s.flowSection}>

@@ -1,139 +1,612 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  ArrowRight,
+  Clock,
+  Compass,
+  FileCheck,
+  MessageCircle,
+} from "lucide-react";
+import {
+  HOME_COPY,
+  LEGACY_HOME_COPY,
+  replaceLegacyHomepageCopy,
+} from "@/lib/home-copy";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
-import { buildWhatsAppHref } from "@/lib/utils";
-import CleanTourCard, { type CleanTour } from "./CleanTourCard";
-import CleanReviews from "./CleanReviews";
-import styles from "./CleanSite.module.css";
+import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
+import type { CleanTour } from "./CleanTourCard";
+import HomeFaqs from "./home/HomeFaqs";
+import HomeReviews from "./home/HomeReviews";
+import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
+import HomeTourRail from "./home/HomeTourRail";
+import styles from "./home/CleanHome.module.css";
 
-type Testimonial = {
+export type CleanHomeTestimonial = {
   id: string;
   name: string;
   role: string | null;
   content: string;
   rating: number;
+  date?: Date | string | null;
 };
 
-function destinationImage(tours: CleanTour[], pattern: RegExp, fallback: string) {
-  const match = tours.find((tour) => pattern.test(`${tour.country} ${tour.title}`));
-  return match ? getTourProductImage(match) : fallback;
+export type CleanHomePost = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  cover: string | null;
+  category: string | null;
+  date: Date | string;
+  author: string | null;
+  readTime: string | null;
+};
+
+export type CleanHomeFaq = {
+  id?: string;
+  question: string;
+  answer: string;
+};
+
+export type CleanHomeTextValue =
+  | string
+  | {
+      id?: string;
+      valueId?: string;
+      en?: string;
+    };
+
+export type CleanHomeProps = {
+  tours: CleanTour[];
+  testimonials: CleanHomeTestimonial[];
+  posts: CleanHomePost[];
+  company: Record<string, string>;
+  faqs?: CleanHomeFaq[];
+  texts?: Record<string, CleanHomeTextValue | undefined>;
+  heroImage?: string;
+};
+
+type DestinationOption = HomeSearchOption & {
+  image?: string;
+};
+
+const MONTH_FORMATTER = new Intl.DateTimeFormat("id-ID", {
+  month: "long",
+  year: "numeric",
+  timeZone: "Asia/Jakarta",
+});
+
+const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Asia/Jakarta",
+});
+
+function readText(
+  texts: CleanHomeProps["texts"],
+  keys: string[],
+  fallback: string,
+) {
+  for (const key of keys) {
+    const value = texts?.[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (value && typeof value === "object") {
+      const localizedValue = value.id ?? value.valueId;
+      if (localizedValue?.trim()) return localizedValue.trim();
+    }
+  }
+  return fallback;
+}
+
+function plainText(value: string) {
+  return value
+    .replace(/<\s*br\s*\/?>/gi, "\n")
+    .replace(/<\s*\/p\s*>/gi, "\n")
+    .replace(/<\s*\/li\s*>/gi, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function destinationForTour(tour: CleanTour): DestinationOption {
+  const haystack = `${tour.country} ${tour.cityHighlight ?? ""} ${tour.title}`.toLocaleLowerCase("id-ID");
+
+  if (/russia|rusia|aurora|murmansk|moscow|moskow|petersburg/.test(haystack)) {
+    return { value: "rusia", label: "Rusia & Aurora", image: getTourProductImage(tour) };
+  }
+  if (/asia tengah|central asia|4[- ]?tan|kazakh|kyrgyz|uzbek|tajik|turkmen/.test(haystack)) {
+    return { value: "asia-tengah", label: "Asia Tengah", image: getTourProductImage(tour) };
+  }
+  if (/vietnam|hanoi|sapa|halong|ha long|ninh binh|hoi an|da nang|phu quoc/.test(haystack)) {
+    return { value: "vietnam", label: "Vietnam", image: getTourProductImage(tour) };
+  }
+  if (/japan|jepang|hokkaido|tokyo|sapporo|otaru/.test(haystack)) {
+    return { value: "jepang", label: "Jepang", image: getTourProductImage(tour) };
+  }
+
+  const label = tour.country.trim() || "Destinasi lainnya";
+  const value = label
+    .toLocaleLowerCase("id-ID")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return {
+    value: value || "lainnya",
+    label,
+    image: getTourProductImage(tour),
+  };
+}
+
+function getDestinationOptions(tours: CleanTour[]) {
+  const options = new Map<string, DestinationOption>();
+
+  tours
+    .filter((tour) => tour.state === "bookable")
+    .forEach((tour) => {
+      const option = destinationForTour(tour);
+      if (!options.has(option.value)) options.set(option.value, option);
+    });
+
+  return Array.from(options.values());
+}
+
+function destinationImage(
+  destinations: DestinationOption[],
+  value: string,
+  fallback: string,
+) {
+  return destinations.find((destination) => destination.value === value)?.image || fallback;
+}
+
+function getMonthOptions(tours: CleanTour[]): HomeSearchOption[] {
+  return Array.from(
+    new Set(
+      tours
+        .filter((tour) => tour.state === "bookable" && tour.tripDate)
+        .map((tour) => tour.tripDate!.slice(0, 7)),
+    ),
+  )
+    .sort()
+    .map((month) => ({
+      value: month,
+      label: MONTH_FORMATTER.format(new Date(`${month}-02T00:00:00+07:00`)),
+    }));
+}
+
+function fallbackFaqs(nib: string, legalName: string): CleanHomeFaq[] {
+  return [
+    {
+      question: "Apakah Sundaf Trip resmi dan aman?",
+      answer: `Sundaf Trip dioperasikan oleh ${legalName} dan tercatat dengan NIB ${nib}. Sebelum pembayaran, tim akan mengonfirmasi jadwal, harga, serta ketersediaan terbaru untuk perjalanan yang kamu pilih.`,
+    },
+    {
+      question: "Bagaimana cara booking?",
+      answer:
+        "Pilih perjalanan, cek itinerary dan rincian biaya, lalu kirim permintaan melalui WhatsApp. Tim kami akan mengonfirmasi ketersediaan kursi dan menjelaskan tahap pembayaran sebelum booking diproses.",
+    },
+    {
+      question: "Apakah visa dan dokumen dibantu?",
+      answer:
+        "Untuk rute yang memerlukan visa, tim membantu menjelaskan dokumen, alur pengajuan, serta hal yang perlu disiapkan. Status akhir visa tetap mengikuti ketentuan otoritas yang menerbitkan.",
+    },
+    {
+      question: "Apakah harga yang tampil sudah final?",
+      answer:
+        "Periksa bagian harga paket, biaya wajib, dan biaya opsional di halaman tour. Tim akan mengonfirmasi rincian terakhir sebelum kamu melakukan pembayaran.",
+    },
+    {
+      question: "Bagaimana jika jadwal belum cocok?",
+      answer:
+        "Ceritakan tujuan, tanggal, jumlah peserta, dan kisaran budgetmu. Kami akan membantu melihat jadwal lain atau merancang opsi private trip yang lebih sesuai.",
+    },
+  ];
+}
+
+const FAQ_MATCHERS = [
+  /resmi|legal|aman/i,
+  /booking|pesan|daftar/i,
+  /visa|dokumen/i,
+  /harga|biaya|total/i,
+  /jadwal|tanggal.*cocok/i,
+];
+
+function resolveFaqs(faqs: CleanHomeFaq[] | undefined, nib: string, legalName: string) {
+  const defaults = fallbackFaqs(nib, legalName);
+  if (!faqs?.length) return defaults;
+
+  return defaults.map((fallback, index) => {
+    const approved = faqs.find((faq) => FAQ_MATCHERS[index].test(faq.question));
+    const answer = approved ? plainText(approved.answer) : fallback.answer;
+    return { ...fallback, id: approved?.id, answer: answer || fallback.answer };
+  });
+}
+
+function formatPostDate(value: Date | string) {
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : DATE_FORMATTER.format(date);
 }
 
 export default function CleanHome({
   tours,
   testimonials,
+  posts,
   company,
-}: {
-  tours: CleanTour[];
-  testimonials: Testimonial[];
-  company: Record<string, string>;
-}) {
-  const featured = tours.slice(0, 3);
-  const heroImage = "/about-gallery/01-aurora.webp";
-  const waHref = buildWhatsAppHref(company.company_whatsapp, "Halo, saya ingin konsultasi perjalanan bersama Sundaf Trip.") || "/contact";
+  faqs,
+  texts,
+  heroImage = "/images/home/murmansk-aurora-group.png",
+}: CleanHomeProps) {
+  const scheduledTours = tours
+    .filter((tour) => tour.state === "bookable" || tour.state === "sold")
+    .slice(0, 6);
+  const destinationOptions = getDestinationOptions(tours);
+  const monthOptions = getMonthOptions(tours);
   const nib = company.company_nib || "1601260060842";
-  const datedMonths = Array.from(new Set(tours.filter((tour) => tour.tripDate).map((tour) => tour.tripDate!.slice(0, 7)))).slice(0, 8);
-  const russiaImage = destinationImage(tours, /russia|rusia|aurora|murmansk/i, PEXELS_TOUR_IMAGES.russiaAuroraSea);
-  const centralAsiaImage = destinationImage(tours, /kazakh|kyrgyz|uzbek|tajik|asia tengah|central asia/i, PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake);
+  const legalName = company.company_legal_name || "CV Sundaf Holiday Group";
+  const whatsappNumber = company.company_whatsapp || "+62 817-7520-2759";
+  const waHref =
+    buildWhatsAppHref(
+      whatsappNumber,
+      "Halo Sundaf Trip, saya ingin konsultasi untuk memilih perjalanan yang sesuai.",
+    ) || "/contact";
+  const resolvedFaqs = resolveFaqs(faqs, nib, legalName);
+  const journalPosts = posts.slice(0, 3);
+
+  const heroEyebrow = replaceLegacyHomepageCopy(
+    readText(texts, ["home_hero_eyebrow"], HOME_COPY.heroEyebrow),
+    LEGACY_HOME_COPY.heroEyebrow,
+    HOME_COPY.heroEyebrow,
+  );
+  const heroTitle = replaceLegacyHomepageCopy(
+    readText(texts, ["home_hero_title"], HOME_COPY.heroTitle),
+    LEGACY_HOME_COPY.heroTitle,
+    HOME_COPY.heroTitle,
+  );
+  const heroBody = replaceLegacyHomepageCopy(
+    readText(texts, ["home_hero_body", "home_hero_subtitle"], HOME_COPY.heroBody),
+    LEGACY_HOME_COPY.heroBody,
+    HOME_COPY.heroBody,
+  );
+  const resolvedHeroImage = getTourProductImage({
+    title: "Sundaf Trip Aurora",
+    country: "Rusia",
+    heroImg: readText(texts, ["home_hero_image", "home_hero_img"], heroImage),
+  });
+  const resolvedHeroAlt = readText(
+    texts,
+    ["home_hero_image_alt"],
+    "Rombongan Sundaf Trip menyaksikan Aurora di Murmansk",
+  );
+
+  const russiaImage = destinationImage(
+    destinationOptions,
+    "rusia",
+    PEXELS_TOUR_IMAGES.russiaAuroraSea,
+  );
+  const centralAsiaImage = destinationImage(
+    destinationOptions,
+    "asia-tengah",
+    PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake,
+  );
+  const vietnamImage = destinationImage(
+    destinationOptions,
+    "vietnam",
+    PEXELS_TOUR_IMAGES.vietnamNinhBinh,
+  );
 
   return (
     <div className={styles.home}>
-      <a className={styles.skipLink} href="#main-content">Langsung ke konten utama</a>
-      <div id="main-content">
-        <section className={styles.hero} aria-labelledby="hero-title">
-          <Image src={heroImage} alt="Peserta Sundaf Trip di bawah aurora yang terang" fill priority sizes="100vw" className={styles.heroImage} />
-          <div className={styles.heroShade} aria-hidden="true" />
-          <div className={styles.shell}>
-            <div className={styles.heroContent}>
-              <p className={styles.heroEyebrow}>#Spesialis Trip Russia</p>
-              <h1 id="hero-title">Tour Rusia, Asia Tengah &amp; Aurora</h1>
-              <p className={styles.heroLede}>Pergi lebih jauh tanpa mengurus semuanya sendiri. Visa, itinerary, dan koordinasi di destinasi disiapkan dari awal.</p>
-
-              <form className={styles.tourFinder} action="/tours" method="get">
-                <div className={styles.finderField}>
-                  <label htmlFor="clean-region">Tujuan</label>
-                  <select id="clean-region" name="region" defaultValue="all">
-                    <option value="all">Semua destinasi</option>
-                    <option value="rusia">Rusia</option>
-                    <option value="asia-tengah">Asia Tengah</option>
-                    <option value="asia">Asia lainnya</option>
-                    <option value="eropa">Eropa</option>
-                  </select>
-                </div>
-                <div className={styles.finderField}>
-                  <label htmlFor="clean-month">Waktu berangkat</label>
-                  <select id="clean-month" name="month" defaultValue="all">
-                    <option value="all">Semua bulan</option>
-                    {datedMonths.map((month) => <option key={month} value={month}>{new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric", timeZone: "Asia/Jakarta" }).format(new Date(`${month}-02T00:00:00+07:00`))}</option>)}
-                  </select>
-                </div>
-                <button className={styles.finderSubmit} type="submit">Cari jadwal</button>
-              </form>
-              <p className={styles.heroNote}>Konsultasi awal gratis, dibantu langsung oleh tim Sundaf Trip.</p>
+      <div id="main-content" tabIndex={-1}>
+        <section className={styles.hero} aria-labelledby="home-hero-title">
+          <Image
+            src={resolvedHeroImage}
+            alt={resolvedHeroAlt}
+            fill
+            priority
+            fetchPriority="high"
+            quality={90}
+            sizes="100vw"
+            className={styles.heroImage}
+          />
+          <div className={styles.heroOverlay} aria-hidden="true" />
+          <div className={`${styles.shell} ${styles.heroShell}`}>
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrowLight}>{heroEyebrow}</p>
+              <h1 id="home-hero-title">{heroTitle}</h1>
+              <p>{heroBody}</p>
             </div>
           </div>
         </section>
 
-        <section className={styles.trust} aria-label="Bukti kepercayaan">
-          <div className={`${styles.shell} ${styles.trustGrid}`}>
-            <div className={styles.trustItem}><strong>1.500+</strong><span>traveler Indonesia<br />sudah didampingi</span></div>
-            <div className={styles.trustItem}><strong>20 grup</strong><span>dioperasikan<br />sepanjang 2025</span></div>
-            <div className={styles.trustItem}><strong>NIB</strong><span>{nib}<br />terdaftar resmi</span></div>
+        <div className={styles.finderZone}>
+          <div className={styles.shell}>
+            <HomeSearchForm
+              destinations={destinationOptions}
+              months={monthOptions}
+            />
+            <div className={styles.finderMeta}>
+              <a
+                href={waHref}
+                data-analytics-placement="home-search"
+              >
+                <MessageCircle aria-hidden="true" />
+                <span>Belum yakin? Tanya rute via WhatsApp.</span>
+              </a>
+              <Link href="/legalitas-dan-keamanan" className={styles.legalProof}>
+                <FileCheck aria-hidden="true" />
+                <span>
+                  Legalitas usaha <strong>NIB {nib}</strong>
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <section className={`${styles.section} ${styles.tourSection}`} aria-labelledby="active-tours-title">
+          <div className={styles.shell}>
+            <div className={styles.headingRow}>
+              <div className={styles.sectionHeading}>
+                <p className={styles.eyebrow}>JADWAL TERDEKAT</p>
+                <h2 id="active-tours-title">Rute yang siap kamu ceritakan sepulangnya.</h2>
+                <p>Pilih perjalanan yang sudah memiliki tanggal, itinerary, dan gambaran biaya yang jelas.</p>
+              </div>
+              <Link className={styles.desktopSectionLink} href="/tours">
+                Lihat semua jadwal <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+
+            {scheduledTours.length ? (
+              <HomeTourRail tours={scheduledTours} />
+            ) : (
+              <div className={styles.emptyState}>
+                <p>Jadwal open trip baru sedang disiapkan.</p>
+                <Link href="/custom-trip">Lihat pilihan private trip</Link>
+              </div>
+            )}
+
+            <Link className={styles.mobileSectionLink} href="/tours">
+              Lihat semua jadwal <ArrowRight aria-hidden="true" />
+            </Link>
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.toursSection}`} id="tours" aria-labelledby="featured-tours-title">
+        <section
+          className={`${styles.section} ${styles.destinationSection}`}
+          aria-labelledby="destinations-title"
+        >
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <p className={styles.sectionKicker}>Jadwal pilihan Sundaf</p>
-              <h2 id="featured-tours-title">Tour yang bisa dipesan sekarang</h2>
-              <p>Tanggal, rute, dan harga tampil di depan. Buka detail tour untuk melihat itinerary, fasilitas, dan sisa kursi.</p>
+              <h2 id="destinations-title">Pilih rute yang tidak biasa.</h2>
+              <p>Dari langit malam Murmansk sampai kota-kota Jalur Sutra, setiap rute kami siapkan untuk traveler Indonesia.</p>
             </div>
-            {featured.length ? (
-              <div className={styles.tourTrack}>{featured.map((tour) => <CleanTourCard key={tour.id} tour={tour} />)}</div>
-            ) : (
-              <p className={styles.empty}>Jadwal baru sedang disiapkan. Hubungi tim untuk private trip.</p>
-            )}
-            <Link className={styles.sectionLink} href="/tours">Lihat semua jadwal dan dokumentasi <span>→</span></Link>
+
+            <div className={styles.destinationMosaic}>
+              <Link className={styles.destinationLead} href="/tours?destination=rusia">
+                <Image
+                  src={russiaImage}
+                  alt="Aurora di langit malam Rusia"
+                  fill
+                  sizes="(max-width: 759px) calc(100vw - 40px), 58vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Rusia &amp; Aurora</strong>
+                  <small>Lihat rute Rusia</small>
+                </span>
+              </Link>
+
+              <Link href="/tours?destination=asia-tengah">
+                <Image
+                  src={centralAsiaImage}
+                  alt="Pegunungan dan danau di Asia Tengah"
+                  fill
+                  sizes="(max-width: 759px) calc(50vw - 25px), 27vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Asia Tengah</strong>
+                  <small>Jelajahi Asia Tengah</small>
+                </span>
+              </Link>
+
+              <Link href="/tours?destination=vietnam">
+                <Image
+                  src={vietnamImage}
+                  alt="Lanskap hijau Ninh Binh, Vietnam"
+                  fill
+                  sizes="(max-width: 759px) calc(50vw - 25px), 27vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Vietnam</strong>
+                  <small>Lihat rute Vietnam</small>
+                </span>
+              </Link>
+
+              <Link className={styles.destinationPrivate} href="/custom-trip">
+                <Image
+                  src={PEXELS_TOUR_IMAGES.vietnamGoldenBridge}
+                  alt="Pemandangan pegunungan untuk inspirasi private trip"
+                  fill
+                  sizes="(max-width: 759px) calc(100vw - 40px), 58vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Private &amp; Custom Trip</strong>
+                  <small>Rancang perjalanan privat</small>
+                </span>
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.why}`} aria-labelledby="why-title">
-          <div className={`${styles.shell} ${styles.whyLayout}`}>
-            <div>
-              <p className={styles.sectionKicker}>Cara kerja Sundaf</p>
-              <h2 id="why-title">Yang rumit kami urus, supaya Anda <em>lebih tenang.</em></h2>
-              <p className={styles.sectionCopy}>Informasi penting disampaikan sejak awal dan kebutuhan perjalanan dikoordinasikan sampai di destinasi.</p>
-            </div>
-            <div className={styles.reasons}>
-              <article><span>01</span><h3>Visa &amp; dokumen dibantu</h3><p>Tim membantu mengecek dokumen dan alur pengajuan sebelum perjalanan dikunci.</p></article>
-              <article><span>02</span><h3>Itinerary realistis</h3><p>Rute disusun agar destinasi tetap dinikmati, bukan sekadar mengejar jumlah kota.</p></article>
-              <article><span>03</span><h3>Koordinasi dari awal</h3><p>Informasi keberangkatan, kebutuhan di destinasi, dan komunikasi grup ditangani end-to-end.</p></article>
-              <article><span>04</span><h3>Visual destinasi terkurasi</h3><p>Foto destinasi dipilih agar rute dan suasana perjalanan lebih mudah dibayangkan.</p></article>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.section} aria-labelledby="destinations-title">
+        <section className={`${styles.section} ${styles.benefitSection}`} aria-labelledby="benefits-title">
           <div className={styles.shell}>
-            <p className={styles.sectionKicker}>Mulai dari destinasi</p>
-            <h2 id="destinations-title">Pilih perjalanan berikutnya</h2>
-            <p className={styles.sectionCopy}>Tiga jenis perjalanan yang paling sering dirancang oleh tim Sundaf.</p>
-            <div className={styles.destinationGrid}>
-              <Link href="/tours?region=rusia"><Image src={russiaImage} alt="Aurora di Rusia" fill sizes="(max-width: 760px) 100vw, 42vw" /><span><strong>Rusia &amp; Aurora</strong><small>Lihat jadwal →</small></span></Link>
-              <Link href="/tours?region=asia-tengah"><Image src={centralAsiaImage} alt="Perjalanan Asia Tengah" fill sizes="(max-width: 760px) 100vw, 28vw" /><span><strong>Asia Tengah</strong><small>Lihat tour →</small></span></Link>
-              <Link href="/custom-trip"><Image src={PEXELS_TOUR_IMAGES.vietnamNinhBinh} alt="Lanskap Ninh Binh, Vietnam" fill sizes="(max-width: 760px) 100vw, 28vw" /><span><strong>Vietnam Privat</strong><small>Rancang perjalanan →</small></span></Link>
-              <Link href="/custom-trip"><Image src={PEXELS_TOUR_IMAGES.vietnamGoldenBridge} alt="Golden Bridge di Vietnam" fill sizes="(max-width: 760px) 100vw, 56vw" /><span><strong>Private &amp; Custom Trip</strong><small>Mulai konsultasi →</small></span></Link>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>CARA KERJA SUNDAF</p>
+              <h2 id="benefits-title">Kami urus yang rumit. Kamu nikmati yang penting.</h2>
+            </div>
+
+            <div className={styles.benefitGrid}>
+              <article>
+                <div className={styles.benefitTitle}>
+                  <FileCheck aria-hidden="true" />
+                  <h3>Visa &amp; dokumen dibantu</h3>
+                </div>
+                <p>Kami cek kebutuhan dokumen dan menjelaskan alurnya sebelum pengajuan dimulai.</p>
+              </article>
+              <article>
+                <div className={styles.benefitTitle}>
+                  <Clock aria-hidden="true" />
+                  <h3>Itinerary punya ruang bernapas</h3>
+                </div>
+                <p>Rute disusun agar kamu tidak hanya datang, foto, lalu bergegas pindah kota.</p>
+              </article>
+              <article>
+                <div className={styles.benefitTitle}>
+                  <MessageCircle aria-hidden="true" />
+                  <h3>Persiapan dari awal</h3>
+                </div>
+                <p>Info keberangkatan, kebutuhan cuaca, dan detail pertemuan dibagikan sebelum hari H.</p>
+              </article>
+              <article>
+                <div className={styles.benefitTitle}>
+                  <Compass aria-hidden="true" />
+                  <h3>Didampingi selama perjalanan</h3>
+                </div>
+                <p>Tour leader membantu koordinasi grup, supaya kamu bisa fokus pada pengalaman di perjalanan.</p>
+              </article>
             </div>
           </div>
         </section>
 
-        <CleanReviews items={testimonials} />
+        <HomeReviews items={testimonials} />
 
-        <section className={styles.finalCta}>
-          <div className={`${styles.shell} ${styles.ctaPanel}`}>
-            <div><h2>Punya tanggal, tapi belum punya rute?</h2><p>Kirim tujuan, jumlah peserta, dan budget. Tim Sundaf akan membantu menyaring pilihan yang masuk akal.</p></div>
-            <a href={waHref}>Konsultasi via WhatsApp</a>
+        <section
+          className={`${styles.section} ${styles.faqSection}`}
+          aria-labelledby="faq-title"
+        >
+          <div className={`${styles.shell} ${styles.faqLayout}`}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>SEBELUM KAMU BERANGKAT</p>
+              <h2 id="faq-title">Hal yang wajar kamu tanyakan sebelum memutuskan.</h2>
+              <p>Jawaban ringkas untuk membantu kamu memahami kesiapan perjalanan, biaya, dan langkah booking.</p>
+            </div>
+            <HomeFaqs items={resolvedFaqs} />
+          </div>
+        </section>
+
+        <section className={styles.privateSection} aria-labelledby="private-trip-title">
+          <div className={styles.shell}>
+            <div className={styles.privatePanel}>
+              <div>
+                <p className={styles.eyebrowLight}>PRIVATE &amp; CUSTOM TRIP</p>
+                <h2 id="private-trip-title">Punya tanggal sendiri? Kita rancang rutenya bersama.</h2>
+                <p>
+                  Kirim tujuan, jumlah peserta, durasi, dan kisaran budget. Kami akan
+                  menyiapkan pilihan rute yang masuk akal untuk cara kamu bepergian.
+                </p>
+              </div>
+              <Link
+                href="/custom-trip"
+                data-analytics-event="custom_trip_start"
+              >
+                Rancang perjalanan privat <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {journalPosts.length ? (
+          <section className={`${styles.section} ${styles.journalSection}`} aria-labelledby="journal-title">
+            <div className={styles.shell}>
+              <div className={styles.headingRow}>
+                <div className={styles.sectionHeading}>
+                  <p className={styles.eyebrow}>BEKAL SEBELUM PERGI</p>
+                  <h2 id="journal-title">Baca dulu. Berangkat lebih siap.</h2>
+                  <p>Panduan destinasi, visa, cuaca, dan persiapan praktis untuk traveler Indonesia.</p>
+                </div>
+                <Link className={styles.desktopSectionLink} href="/blog">
+                  Baca semua panduan <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
+
+              <div className={styles.journalGrid}>
+                {journalPosts.map((post) => {
+                  const formattedDate = formatPostDate(post.date);
+                  return (
+                    <article className={styles.journalCard} key={post.id}>
+                      <Link href={`/blog/${post.slug}`} className={styles.journalMedia} tabIndex={-1}>
+                        {post.cover ? (
+                          <Image
+                            src={cldOptimize(post.cover, 760)}
+                            alt={`Sampul artikel ${post.title}`}
+                            fill
+                            sizes="(max-width: 759px) calc(100vw - 40px), (max-width: 1100px) 46vw, 31vw"
+                          />
+                        ) : (
+                          <span className={styles.journalPlaceholder} aria-hidden="true">
+                            <Compass />
+                          </span>
+                        )}
+                      </Link>
+                      <div className={styles.journalBody}>
+                        <div className={styles.journalMeta}>
+                          <span>{post.category || "Jurnal"}</span>
+                          {post.readTime ? <span>{post.readTime}</span> : null}
+                        </div>
+                        <h3>
+                          <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                        </h3>
+                        {post.excerpt ? <p>{post.excerpt}</p> : null}
+                        <div className={styles.journalFooter}>
+                          {formattedDate ? <time dateTime={new Date(post.date).toISOString()}>{formattedDate}</time> : <span />}
+                          <Link href={`/blog/${post.slug}`}>
+                            Baca panduan <ArrowRight aria-hidden="true" />
+                          </Link>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <Link className={styles.mobileSectionLink} href="/blog">
+                Baca semua panduan <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
+        <section className={styles.finalSection} aria-labelledby="final-cta-title">
+          <div className={`${styles.shell} ${styles.finalLayout}`}>
+            <div>
+              <p className={styles.eyebrow}>MASIH MENENTUKAN RUTE?</p>
+              <h2 id="final-cta-title">Ceritakan rencanamu. Kami bantu melihat jalan yang paling masuk akal.</h2>
+              <p>
+                Sampaikan destinasi, waktu berangkat, jumlah peserta, dan kisaran budget. Kamu
+                akan mendapat arahan awal sebelum memutuskan.
+              </p>
+            </div>
+            <div className={styles.finalActions}>
+              <a
+                className={styles.primaryAction}
+                href={waHref}
+                data-analytics-placement="home-final"
+              >
+                <MessageCircle aria-hidden="true" />
+                Konsultasi rute via WhatsApp
+              </a>
+              <Link className={styles.secondaryAction} href="/tours">
+                Lihat jadwal &amp; biaya <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </section>
       </div>

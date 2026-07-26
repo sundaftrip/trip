@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
@@ -126,7 +127,7 @@ export default async function PrivacyPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className={`${supportStyles.atlasPage} ${supportStyles.readingPage} min-h-screen`} style={{ backgroundColor: "var(--at-bg)" }}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -135,14 +136,14 @@ export default async function PrivacyPage() {
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(privacySchema) }} />
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <section className={supportStyles.hero} aria-labelledby="privacy-page-title">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
           Privasi Data
         </span>
-        <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
+        <h1 id="privacy-page-title" className={supportStyles.title} style={{ color: "var(--at-text)" }}>
           Kebijakan Privasi Sundaf Trip
         </h1>
-        <p className="mt-6 max-w-3xl text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+        <p className={`${supportStyles.lede} mt-6`} style={{ color: "var(--at-subtext)" }}>
           Halaman ini menjelaskan bagaimana Sundaf Trip mengumpulkan, menggunakan, menyimpan, dan melindungi data pribadi calon traveler, peserta trip, partner, dan pengguna situs.
         </p>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
@@ -150,36 +151,38 @@ export default async function PrivacyPage() {
         </p>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="privacy-contact-title">
+        <h2 id="privacy-contact-title" className="sr-only">Kontak pengelola data</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="at-card p-5">
-            <ShieldCheck size={22} style={{ color: "var(--site-accent)" }} />
+            <ShieldCheck aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
             <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Pengelola data</p>
             <p className="mt-2 text-sm font-black" style={{ color: "var(--at-text)" }}>{legalName}</p>
             <p className="mt-1 text-xs" style={{ color: "var(--at-subtext)" }}>NIB {nib}</p>
           </div>
           <div className="at-card p-5">
-            <Mail size={22} style={{ color: "var(--site-accent)" }} />
+            <Mail aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
             <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Email resmi</p>
             <a href={`mailto:${email}`} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>{email}</a>
           </div>
           <div className="at-card p-5">
-            <Phone size={22} style={{ color: "var(--site-accent)" }} />
+            <Phone aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
             <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>WhatsApp resmi</p>
             <a href={waHref || undefined} target={waHref ? "_blank" : undefined} rel={waHref ? "noreferrer" : undefined} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>{phone}</a>
           </div>
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="privacy-practices-title">
+        <h2 id="privacy-practices-title" className="sr-only">Data dan tujuan penggunaan</h2>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="at-card p-6">
-            <Database size={24} style={{ color: "var(--site-accent)" }} />
-            <h2 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Data yang dapat kami kumpulkan</h2>
+            <Database aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
+            <h3 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Data yang dapat kami kumpulkan</h3>
             <ul className="mt-5 space-y-3">
               {dataItems.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
+                  <CheckCircle2 aria-hidden="true" size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
                   <span>{item}</span>
                 </li>
               ))}
@@ -187,12 +190,12 @@ export default async function PrivacyPage() {
           </div>
 
           <div className="at-card p-6">
-            <LockKeyhole size={24} style={{ color: "var(--site-accent)" }} />
-            <h2 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Tujuan penggunaan data</h2>
+            <LockKeyhole aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
+            <h3 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Tujuan penggunaan data</h3>
             <ul className="mt-5 space-y-3">
               {useItems.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
+                  <CheckCircle2 aria-hidden="true" size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
                   <span>{item}</span>
                 </li>
               ))}
@@ -201,10 +204,10 @@ export default async function PrivacyPage() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="privacy-sharing-title">
         <div className="at-card p-6 lg:p-8">
-          <FileText size={24} style={{ color: "var(--site-accent)" }} />
-          <h2 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Pembagian data kepada pihak terkait</h2>
+          <FileText aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
+          <h2 id="privacy-sharing-title" className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Pembagian data kepada pihak terkait</h2>
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
             Sundaf Trip tidak menjual data pribadi. Data hanya dibagikan sejauh diperlukan untuk menjalankan layanan yang diminta, menjaga keamanan, atau memenuhi kewajiban hukum.
           </p>
@@ -218,16 +221,17 @@ export default async function PrivacyPage() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className={supportStyles.section} aria-labelledby="privacy-storage-rights-title">
+        <h2 id="privacy-storage-rights-title" className="sr-only">Penyimpanan data dan hak pengguna</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="at-card p-6">
-            <h2 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Penyimpanan dan keamanan</h2>
+            <h3 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Penyimpanan dan keamanan</h3>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
               Data disimpan selama diperlukan untuk layanan, administrasi, pembukuan, penyelesaian sengketa, dan kewajiban hukum. Akses dibatasi pada tim atau penyedia layanan yang memerlukannya untuk menjalankan tugas.
             </p>
           </div>
           <div className="at-card p-6">
-            <h2 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Hak dan permintaan pengguna</h2>
+            <h3 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Hak dan permintaan pengguna</h3>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
               Pengguna dapat meminta akses, koreksi, atau penghapusan data yang tidak lagi diperlukan, sepanjang permintaan tersebut tidak bertentangan dengan kewajiban hukum, administrasi, atau keamanan layanan.
             </p>
@@ -235,18 +239,18 @@ export default async function PrivacyPage() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <section className={supportStyles.section} aria-labelledby="privacy-legal-reference-title">
         <div className="at-card p-6">
-          <h2 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Rujukan hukum</h2>
+          <h2 id="privacy-legal-reference-title" className="text-xl font-black" style={{ color: "var(--at-text)" }}>Rujukan hukum</h2>
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
             Kebijakan ini disusun dengan memperhatikan prinsip pelindungan data pribadi di Indonesia, termasuk UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4" style={{ color: "var(--at-text)" }}>
-              UU PDP - BPK RI <ExternalLink size={14} />
+              UU PDP - BPK RI <ExternalLink aria-hidden="true" size={14} />
             </a>
             <a href="https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B202" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4" style={{ color: "var(--at-text)" }}>
-              UU PDP - JDIH Komdigi <ExternalLink size={14} />
+              UU PDP - JDIH Komdigi <ExternalLink aria-hidden="true" size={14} />
             </a>
           </div>
         </div>

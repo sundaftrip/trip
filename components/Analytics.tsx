@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
+import {
+  trackSundafEvent,
+  type SundafAnalyticsEvent,
+} from "@/lib/analytics-events";
 
 /**
  * Analytics ringan, opt-in via environment variables:
@@ -76,18 +80,28 @@ export default function Analytics() {
 
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
-      const link = target?.closest?.('a[href*="wa.me"], a[href*="api.whatsapp.com"]');
-      if (!link) return;
-      try {
-        window.gtag?.("event", "whatsapp_click", {
-          event_category: "engagement",
-          event_label: (link as HTMLAnchorElement).href,
+      const eventTarget = target?.closest?.<HTMLElement>("[data-analytics-event]");
+      const link = target?.closest?.<HTMLAnchorElement>(
+        'a[href*="wa.me"], a[href*="api.whatsapp.com"]',
+      );
+      const validatedLink = link?.dataset.analyticsValidated === "true";
+
+      if (eventTarget?.dataset.analyticsEvent) {
+        trackSundafEvent(
+          eventTarget.dataset.analyticsEvent as SundafAnalyticsEvent,
+          {
+            tour_id: eventTarget.dataset.tourId,
+            departure_id: eventTarget.dataset.departureId,
+            destination: eventTarget.dataset.destination,
+          },
+        );
+      } else if (link && !validatedLink) {
+        trackSundafEvent("whatsapp_consultation_click", {
+          placement: link.dataset.analyticsPlacement || "site",
         });
-        window.fbq?.("track", "Contact");
-      } catch {
-        /* no-op */
       }
-      loadVendors();
+
+      if (eventTarget || (link && !validatedLink)) loadVendors();
     };
 
     const onFirstInteraction = () => loadVendors();

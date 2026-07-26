@@ -9,6 +9,8 @@ import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanToursCatalog from "@/components/website/clean/CleanToursCatalog";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
+import { buildWhatsAppHref } from "@/lib/utils";
+import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 
 export const revalidate = 60;
 
@@ -48,15 +50,23 @@ const getData = unstable_cache(
           id: true, slug: true, title: true, country: true, cityHighlight: true,
           price: true, promoPrice: true, seatsLeft: true,
           tripDate: true, duration: true, heroImg: true, badge: true,
-          status: true, pinned: true,
+          status: true, pinned: true, addOns: true, createdAt: true,
         },
       }),
-      prisma.companyInfo.findMany({ where: { key: "site_theme" } }),
+      prisma.companyInfo.findMany({
+        where: { key: { in: ["site_theme", "company_whatsapp"] } },
+      }),
     ]);
     const now = new Date();
     const tours = [...toursRaw].sort((a, b) => comparePublicTourCatalogOrder(a, b, now));
     const themeRow = companyRows.find((r) => r.key === "site_theme");
-    return { tours, theme: themeRow?.value || "classic", generatedAt: now.toISOString() };
+    const whatsapp = companyRows.find((r) => r.key === "company_whatsapp")?.value || "";
+    return {
+      tours,
+      theme: themeRow?.value || "classic",
+      whatsapp,
+      generatedAt: now.toISOString(),
+    };
   },
   ["all-tours-page"],
   { revalidate: 300, tags: ["home-data", "site-colors"] },
@@ -67,23 +77,40 @@ function toIsoDateString(value: Date | string | null | undefined) {
   return value instanceof Date ? value.toISOString() : value;
 }
 
+type TourPageSearchParams = Record<string, string | string[] | undefined>;
+
+function serializeSearchParams(searchParams: TourPageSearchParams) {
+  const params = new URLSearchParams();
+  Object.entries(searchParams).forEach(([key, value]) => {
+    if (Array.isArray(value)) value.forEach((item) => params.append(key, item));
+    else if (value !== undefined) params.set(key, value);
+  });
+  return params.toString();
+}
+
 export default async function ToursPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; month?: string }>;
+  searchParams: Promise<TourPageSearchParams>;
 }) {
-  const [{ tours, theme: rawTheme, generatedAt }, params] = await Promise.all([getData(), searchParams]);
+  const [{ tours, theme: rawTheme, whatsapp, generatedAt }, resolvedSearchParams] =
+    await Promise.all([getData(), searchParams]);
   const theme = (rawTheme === "console" ? "atlas" : rawTheme) as
     | "classic" | "tropical" | "kawaii" | "pixel" | "globe" | "map" | "atlas" | "fumayo";
 
   if (theme === "atlas") {
     const now = new Date(generatedAt);
-    const cleanTours = tours.map((tour) => ({
-      ...tour,
-      title: normalizeTourDisplayTitle(tour.title),
-      tripDate: toIsoDateString(tour.tripDate),
-      state: getPublicTourState(tour, now),
-    }));
+    const cleanTours = tours.map((tour) => {
+      const { addOns, ...tourFields } = tour;
+      return {
+        ...tourFields,
+        title: normalizeTourDisplayTitle(tour.title),
+        tripDate: toIsoDateString(tour.tripDate),
+        createdAt: toIsoDateString(tour.createdAt),
+        mandatoryTotal: mandatoryAddOnsTotal(addOns),
+        state: getPublicTourState(tour, now),
+      };
+    });
     return (
       <>
         <BreadcrumbSchema
@@ -92,7 +119,17 @@ export default async function ToursPage({
             { name: "Jadwal Tour & Dokumentasi", url: "/tours" },
           ]}
         />
-        <CleanToursCatalog tours={cleanTours} initialRegion={params.region} initialMonth={params.month} />
+        <CleanToursCatalog
+          tours={cleanTours}
+          generatedAt={generatedAt}
+          initialSearch={serializeSearchParams(resolvedSearchParams)}
+          consultationHref={
+            buildWhatsAppHref(
+              whatsapp,
+              "Halo Sundaf Trip, saya ingin dibantu memilih jadwal perjalanan.",
+            ) || "/contact"
+          }
+        />
       </>
     );
   }

@@ -13,6 +13,7 @@ interface GeoPageProps {
   title: string;
   eyebrow: string;
   description: string;
+  descriptionHighlights?: string[];
   canonicalPath: string;
   primaryCta: { href: string; label: string };
   secondaryCta?: { href: string; label: string };
@@ -58,10 +59,42 @@ function LinkedText({ text }: { text: string }) {
   return <>{nodes}</>;
 }
 
+function SelectiveHighlights({ text, phrases }: { text: string; phrases: string[] }) {
+  const matches = phrases
+    .map((phrase) => ({ phrase, start: text.indexOf(phrase) }))
+    .filter((match) => match.phrase && match.start >= 0)
+    .sort((a, b) => a.start - b.start);
+
+  if (!matches.length) return <LinkedText text={text} />;
+
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+
+  matches.forEach(({ phrase, start }, index) => {
+    if (start < cursor) return;
+    if (start > cursor) {
+      nodes.push(<LinkedText key={`plain-${index}`} text={text.slice(cursor, start)} />);
+    }
+    nodes.push(
+      <span className="stabilo" key={`highlight-${index}`}>
+        <LinkedText text={phrase} />
+      </span>
+    );
+    cursor = start + phrase.length;
+  });
+
+  if (cursor < text.length) {
+    nodes.push(<LinkedText key="plain-final" text={text.slice(cursor)} />);
+  }
+
+  return <>{nodes}</>;
+}
+
 export default function GeoPage({
   title,
   eyebrow,
   description,
+  descriptionHighlights,
   canonicalPath,
   primaryCta,
   secondaryCta,
@@ -110,9 +143,13 @@ export default function GeoPage({
         </h1>
         <div className="mt-6 max-w-3xl">
           <p className="text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-            <span className="stabilo">
-              <LinkedText text={description} />
-            </span>
+            {descriptionHighlights?.length ? (
+              <SelectiveHighlights text={description} phrases={descriptionHighlights} />
+            ) : (
+              <span className="stabilo">
+                <LinkedText text={description} />
+              </span>
+            )}
           </p>
         </div>
         <div className="mt-8 flex flex-col sm:flex-row gap-3">

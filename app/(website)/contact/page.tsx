@@ -6,6 +6,7 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import ContactSection from "@/components/website/ContactSection";
+import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const CONTACT_TITLE = "Kontak Sundaf Trip";
 const CONTACT_DESC =
@@ -110,24 +111,37 @@ export default async function ContactPage() {
   const { texts, company } = await getData();
   const theme = normalizeTheme(company["site_theme"]);
   const surface = pageSurface(theme);
+  const isAtlas = theme === "atlas";
+  const pageClassName = isAtlas
+    ? `${supportStyles.atlasPage} ${supportStyles.contactPage} min-h-screen${surface.className ? ` ${surface.className}` : ""}`
+    : `min-h-screen pt-24${surface.className ? ` ${surface.className}` : ""}`;
 
   return (
-    <div className={`min-h-screen pt-24${surface.className ? ` ${surface.className}` : ""}`} style={surface.style}>
+    <div className={pageClassName} style={surface.style}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
           { name: CONTACT_TITLE, url: "/contact" },
         ]}
       />
-      <section className="px-4 pt-12 sm:px-6 lg:px-8" aria-labelledby="contact-page-title">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: "var(--site-accent,#00ADB5)" }}>
+      <section className={isAtlas ? supportStyles.hero : "px-4 pt-12 sm:px-6 lg:px-8"} aria-labelledby="contact-page-title">
+        <div className={isAtlas ? "" : "mx-auto max-w-7xl"}>
+          <p
+            className={isAtlas ? "at-pill mb-5 inline-flex" : "text-xs font-bold uppercase tracking-[0.22em]"}
+            style={{ color: isAtlas ? "var(--at-subtext)" : "var(--site-accent,#00ADB5)" }}
+          >
             Kontak resmi
           </p>
-          <h1 id="contact-page-title" className="mt-3 max-w-4xl text-4xl font-black leading-tight sm:text-6xl" style={{ color: "var(--site-heading,#222831)" }}>
+          <h1
+            id="contact-page-title"
+            className={isAtlas ? supportStyles.title : "mt-3 max-w-4xl text-4xl font-black leading-tight sm:text-6xl"}
+            style={{ color: isAtlas ? "var(--at-text)" : "var(--site-heading,#222831)" }}
+          >
             Hubungi Sundaf Trip
           </h1>
-          <p className="mt-5 max-w-2xl text-sm leading-7 text-gray-600 dark:text-gray-300">
+          <p
+            className={isAtlas ? `${supportStyles.lede} mt-5` : "mt-5 max-w-2xl text-sm leading-7 text-gray-600 dark:text-gray-300"}
+          >
             Konsultasi paket tour, custom trip, dokumen visa, dan kebutuhan perjalanan lain lewat kanal resmi Sundaf Trip.
           </p>
         </div>

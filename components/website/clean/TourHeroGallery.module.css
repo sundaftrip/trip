@@ -1,0 +1,224 @@
+.gallery {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0 0 24px 24px;
+  background: #e7ecec;
+}
+
+.track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  position: relative;
+  min-width: 100%;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.slide > button {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border: 0;
+  background: #dbe2e1;
+  cursor: zoom-in;
+}
+
+@media (max-width: 760px) {
+  .slide > button {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.slide img {
+  object-fit: cover;
+}
+
+.lightboxArrow,
+.lightboxTop button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(255 255 255 / 48%);
+  border-radius: 50%;
+  background: rgb(10 34 38 / 68%);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.controls {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3;
+  min-height: 40px;
+  padding: 3px 4px 3px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 999px;
+  background: rgb(7 29 32 / 72%);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(3 18 21 / 20%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.counter {
+  min-width: 29px;
+  color: rgb(255 255 255 / 94%);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.controlDivider {
+  width: 1px;
+  height: 18px;
+  background: rgb(255 255 255 / 26%);
+}
+
+.controlButtons {
+  display: inline-flex;
+  align-items: center;
+}
+
+.controlButtons button {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.controlButtons button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 14%);
+}
+
+.controlButtons button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.controlButtons svg,
+.lightboxArrow svg,
+.lightboxTop svg {
+  width: 17px;
+  height: 17px;
+}
+
+.liveStatus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.lightboxBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  background: rgb(3 12 14 / 94%);
+}
+
+.lightbox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.lightboxTop {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 13px;
+}
+
+.lightboxMedia {
+  position: relative;
+  width: min(100%, 1200px);
+  height: min(82dvh, 900px);
+}
+
+.lightboxMedia img {
+  object-fit: contain;
+}
+
+.lightboxArrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+}
+
+.lightboxPrevious {
+  left: 0;
+}
+
+.lightboxNext {
+  right: 0;
+}
+
+@media (max-width: 700px) {
+  .gallery {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+  }
+
+  .slide > button {
+    aspect-ratio: 4 / 5;
+  }
+
+  .controls {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .lightboxBackdrop {
+    padding: 10px;
+  }
+
+  .lightboxArrow {
+    top: auto;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery *,
+  .lightboxBackdrop * {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

@@ -11,6 +11,8 @@ import { Users, ShieldCheck, Heart, CloudSun, MapPin, MessageCircle, Award, Arro
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import InquiryForm from "@/components/website/InquiryForm";
+import supportStyles from "@/components/website/clean/SupportPages.module.css";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
 /* Daftar foto galeri: nama file dibaca dari /public/about-gallery, tapi yang
    DISAJIKAN versi medium ber-watermark (/about-gallery-md, maks 1366px) supaya
@@ -64,7 +66,7 @@ const DEFAULT_STORY = [
   "Sundaftrip berawal dari rasa penasaran sama tempat-tempat yang jarang masuk daftar liburan orang Indonesia. Bukan cuma Paris, Tokyo, atau Korea, tapi Rusia saat musim dingin, kota tua di Asia Tengah, dan negeri-negeri bekas Uni Soviet yang ceritanya panjang banget.",
   "Dari perjalanan kecil, kami belajar satu hal: destinasi terbaik sering bukan yang paling ramai di timeline, tapi yang bikin kamu pulang bawa cerita berbeda.",
   "Lama-lama rutenya makin serius. Moskow dan St. Petersburg. Murmansk buat berburu aurora. Kazakhstan dengan danau birunya. Uzbekistan dengan Samarkand yang megah. Kyrgyzstan yang alamnya masih liar. Tajikistan dengan jalan Pamir yang legend banget.",
-  "Sekarang 1500+ traveler Indonesia sudah kami bantu berangkat. Ada yang pertama kali ke Rusia, ada yang deg-degan urus visa, ada juga yang pulang-pulang malah ngajak keluarga dan teman buat ikut batch berikutnya.",
+  "Sekarang kami fokus membantu traveler Indonesia memahami rute, persiapan visa, dan keputusan perjalanan sejak sebelum berangkat sampai perjalanan selesai.",
 ];
 
 async function getData() {
@@ -73,7 +75,7 @@ async function getData() {
       prisma.companyInfo.findFirst({ where: { key: "site_theme" } }),
       prisma.companyInfo.findMany({ where: { key: { startsWith: "company_" } } }),
       prisma.companyInfo.findMany({ where: { key: { startsWith: "about_" } } }),
-      prisma.tour.count({ where: { status: { not: "DRAFT" } } }),
+      prisma.tour.count({ where: publicTourVisibilityWhere() }),
       prisma.blog.count({ where: { published: true } }),
     ]);
     const rawTheme = themeRow?.value ?? "classic";
@@ -101,7 +103,7 @@ async function getData() {
 }
 
 export default async function AboutPage() {
-  const { theme, company, blogCount, story, values, destinations, tagline } = await getData();
+  const { theme, company, tourCount, blogCount, story, values, destinations, tagline } = await getData();
   const gallery = getGalleryImages();
 
   const isKawaii   = theme === "kawaii";
@@ -124,10 +126,7 @@ export default async function AboutPage() {
   const bdrClr  = isFumayo ? "var(--fb-border)"  : isAtlas ? "var(--at-border)"   : isTropical ? "var(--tr-border)"   : isKawaii ? "var(--kw-border)"   : isPixel ? "var(--px-border)"   : undefined;
   const mintClr = isFumayo ? "var(--fb-mint)"    : isAtlas ? "var(--at-muted)"    : isTropical ? "var(--tr-mint)"     : isKawaii ? "var(--kw-mint)"     : isPixel ? "var(--px-cyan)"     : undefined;
 
-  const pixelGrid = isAtlas ? {
-    backgroundImage: "linear-gradient(var(--at-grid) 1px,transparent 1px),linear-gradient(90deg,var(--at-grid) 1px,transparent 1px)",
-    backgroundSize: "32px 32px",
-  } : isPixel ? {
+  const pixelGrid = isPixel ? {
     backgroundImage: "linear-gradient(var(--px-grid) 1px,transparent 1px),linear-gradient(90deg,var(--px-grid) 1px,transparent 1px)",
     backgroundSize: "24px 24px",
   } : isFumayo ? {
@@ -149,15 +148,15 @@ export default async function AboutPage() {
     : "border-t border-gray-200 dark:border-gray-800 my-12";
 
   const STATS = [
-    { value: "1500+", label: "Traveler Indonesia sudah kami dampingi" },
-    { value: "1000+", label: "Pemohon visa kami bantu" },
-    { value: "99%", label: "Approval rate pengurusan visa" },
-    { value: `${blogCount || "10"}+`, label: "Artikel perjalanan dari tim kami" },
+    { value: String(tourCount), label: "Program perjalanan yang tampil di katalog" },
+    { value: String(destinations.length), label: "Destinasi utama dalam cakupan layanan" },
+    { value: String(blogCount), label: "Artikel perjalanan yang sudah dipublikasikan" },
+    { value: String(values.length), label: "Prinsip layanan yang kami jelaskan terbuka" },
   ];
 
   return (
     <div
-      className={`min-h-screen pt-24 ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`}
+      className={`${isAtlas ? supportStyles.atlasPage : "pt-24"} min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`}
       style={wrapperStyle}
     >
       <BreadcrumbSchema
@@ -166,10 +165,10 @@ export default async function AboutPage() {
           { name: "Tentang Kami", url: "/about" },
         ]}
       />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className={isAtlas ? supportStyles.aboutShell : "max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"}>
 
         {/* ── Hero ───────────────────────────────────────────────── */}
-        <div className="mb-12">
+        <header className={`${isAtlas ? supportStyles.aboutHero : ""} mb-12`} aria-labelledby="about-page-title">
           {isOutlined ? (
             <span className={`${pfx}-pill mb-4 inline-flex text-xs uppercase tracking-widest font-black`}
               style={{ color: subClr }}>
@@ -182,13 +181,19 @@ export default async function AboutPage() {
           )}
 
           <h1
-            className={`text-4xl lg:text-5xl font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            id="about-page-title"
+            className={`${isAtlas ? supportStyles.aboutTitle : "text-4xl lg:text-5xl"} font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
-            Jalan ke Rusia, Asia Tengah, sampai aurora, tanpa drama yang gak perlu
+            Jalan ke{" "}
+            <span className={supportStyles.aboutTitleHighlight}>Rusia</span>,{" "}
+            <span className={supportStyles.aboutTitleHighlight}>Asia Tengah</span>,{" "}
+            sampai{" "}
+            <span className={supportStyles.aboutTitleHighlight}>aurora</span>,{" "}
+            tanpa drama yang gak perlu
           </h1>
 
           <p
-            className={`text-lg leading-relaxed max-w-2xl ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
+            className={`${isAtlas ? supportStyles.aboutLede : "text-lg leading-relaxed max-w-2xl"} ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
             style={isOutlined ? { color: subClr } : undefined}>
             {tagline || `Visa, bahasa, cuaca, rute, sampai pertanyaan "ini aman gak sih?" sering bikin maju-mundur duluan. Sundaf bantu beresin bagian ribetnya, supaya kamu bisa fokus berangkat dan menikmati perjalanannya.`}
           </p>
@@ -196,12 +201,12 @@ export default async function AboutPage() {
           {nib && (
             <p className="mt-3 text-xs flex items-center gap-1.5"
               style={isOutlined ? { color: subClr } : { color: "#9ca3af" }}>
-              <Award size={12} /> Terdaftar resmi · NIB {nib}
+              <Award aria-hidden="true" size={12} /> Terdaftar resmi · NIB {nib}
             </p>
           )}
 
           <div
-            className={`mt-8 p-5 ${isOutlined ? "border-2" : "rounded-2xl border border-blue-100 bg-blue-50/70 dark:border-blue-900/50 dark:bg-blue-950/30"}`}
+            className={`${isAtlas ? supportStyles.softSurface : ""} mt-8 p-5 ${isOutlined ? "border-2" : "rounded-2xl border border-blue-100 bg-blue-50/70 dark:border-blue-900/50 dark:bg-blue-950/30"}`}
             style={isOutlined ? { background: cardBg, borderColor: bdrClr } : undefined}>
             <p
               className={`text-xs font-black uppercase mb-2 ${!isOutlined ? "text-blue-700 dark:text-blue-300" : ""}`}
@@ -218,14 +223,14 @@ export default async function AboutPage() {
               className={`inline-flex items-center justify-center gap-2 px-4 py-2 font-black text-sm transition ${
                 isOutlined ? `${pfx}-btn` : "rounded-xl bg-blue-600 text-white hover:bg-blue-700"
               }`}>
-              Buka profil resmi <ArrowRight size={15} />
+              Buka profil resmi <ArrowRight aria-hidden="true" size={15} />
             </Link>
           </div>
-        </div>
+        </header>
 
         {/* ── Stats ──────────────────────────────────────────────── */}
         <div
-          className={`grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 mb-2 ${isOutlined ? "border-2" : "rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800"}`}
+          className={`${isAtlas ? supportStyles.surface : ""} grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 mb-2 ${isOutlined ? "border-2" : "rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800"}`}
           style={isOutlined ? { background: cardBg, borderColor: bdrClr } : undefined}>
           {STATS.map(({ value, label }) => (
             <div key={label} className="text-center">
@@ -243,12 +248,12 @@ export default async function AboutPage() {
         </div>
 
         {/* ── Divider ────────────────────────────────────────────── */}
-        <div className={divCls} style={divStyle} />
+        <hr className={`${isAtlas ? supportStyles.divider : ""} ${divCls}`} style={divStyle} />
 
         {/* ── Cerita kami ────────────────────────────────────────── */}
         <div className="mb-12">
           <h2
-            className={`text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Awalnya dari rasa penasaran
           </h2>
@@ -263,10 +268,10 @@ export default async function AboutPage() {
         {/* ── Galeri ─────────────────────────────────────────────── */}
         {gallery.length > 0 && (
           <>
-            <div className={divCls} style={divStyle} />
+            <hr className={`${isAtlas ? supportStyles.divider : ""} ${divCls}`} style={divStyle} />
             <div className="mb-12">
               <h2
-                className={`text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+                className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
                 style={isOutlined ? { color: headClr } : undefined}>
                 Bukti jalan, bukan cuma cerita
               </h2>
@@ -280,12 +285,12 @@ export default async function AboutPage() {
         )}
 
         {/* ── Divider ────────────────────────────────────────────── */}
-        <div className={divCls} style={divStyle} />
+        <hr className={`${isAtlas ? supportStyles.divider : ""} ${divCls}`} style={divStyle} />
 
         {/* ── Destinasi ──────────────────────────────────────────── */}
         <div className="mb-12">
           <h2
-            className={`text-2xl font-black mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Rute yang sering bikin traveler penasaran
           </h2>
@@ -293,9 +298,9 @@ export default async function AboutPage() {
             {destinations.map(({ label, sub }: { label: string; sub: string }) => (
               <div
                 key={label}
-                className={`flex items-start gap-3 p-4 ${isOutlined ? "border-2" : "rounded-xl border border-gray-100 dark:border-gray-800"}`}
+                className={`${isAtlas ? supportStyles.surface : ""} flex items-start gap-3 p-4 ${isOutlined ? "border-2" : "rounded-xl border border-gray-100 dark:border-gray-800"}`}
                 style={isOutlined ? { background: cardBg, borderColor: bdrClr } : undefined}>
-                <MapPin size={15} className="mt-0.5 shrink-0"
+                <MapPin aria-hidden="true" size={15} className="mt-0.5 shrink-0"
                   style={{ color: isOutlined ? bdrClr : "#9ca3af" }} />
                 <div>
                   <p className={`font-black text-sm ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
@@ -313,12 +318,12 @@ export default async function AboutPage() {
         </div>
 
         {/* ── Divider ────────────────────────────────────────────── */}
-        <div className={divCls} style={divStyle} />
+        <hr className={`${isAtlas ? supportStyles.divider : ""} ${divCls}`} style={divStyle} />
 
         {/* ── Nilai kami ─────────────────────────────────────────── */}
         <div className="mb-12">
           <h2
-            className={`text-2xl font-black mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-6 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Cara kami bikin trip tetap waras
           </h2>
@@ -326,9 +331,9 @@ export default async function AboutPage() {
             {values.map(({ Icon, title, desc }: { Icon: React.ElementType; title: string; desc: string }) => (
               <div key={title} className="flex gap-4">
                 <div
-                  className={`w-10 h-10 shrink-0 flex items-center justify-center ${isOutlined ? "border-2" : "rounded-xl bg-gray-100 dark:bg-gray-800"}`}
+                  className={`${isAtlas ? supportStyles.iconTile : ""} w-10 h-10 shrink-0 flex items-center justify-center ${isOutlined ? "border-2" : "rounded-xl bg-gray-100 dark:bg-gray-800"}`}
                   style={isOutlined ? { background: mintClr ?? cardBg, borderColor: bdrClr } : undefined}>
-                  <Icon size={18}
+                  <Icon aria-hidden="true" size={18}
                     style={{ color: isOutlined ? headClr : "#374151" }} />
                 </div>
                 <div>
@@ -349,7 +354,7 @@ export default async function AboutPage() {
         {/* ── Company information ───────────────────────────────── */}
         <div className="mb-12">
           <h2
-            className={`text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Company Information
           </h2>
@@ -364,12 +369,12 @@ export default async function AboutPage() {
         </div>
 
         {/* ── Divider ────────────────────────────────────────────── */}
-        <div className={divCls} style={divStyle} />
+        <hr className={`${isAtlas ? supportStyles.divider : ""} ${divCls}`} style={divStyle} />
 
         {/* ── Form Konsultasi ────────────────────────────────────── */}
         <div className="mb-12">
           <h2
-            className={`text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Cerita dulu rencana kamu
           </h2>
@@ -381,12 +386,12 @@ export default async function AboutPage() {
         </div>
 
         {/* ── Divider ────────────────────────────────────────────── */}
-        <div className={divCls} style={divStyle} />
+        <hr className={`${isAtlas ? supportStyles.divider : ""} ${divCls}`} style={divStyle} />
 
         {/* ── CTA ────────────────────────────────────────────────── */}
         <div className="text-center py-4">
           <h2
-            className={`text-2xl font-black mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Mau coba rute yang beda dari orang-orang?
           </h2>
@@ -394,7 +399,7 @@ export default async function AboutPage() {
             style={isOutlined ? { color: subClr } : { color: "#6b7280" }}>
             Ceritakan rencana, budget, dan tanggal kamu. Kami bantu lihat rute yang paling masuk akal.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className={`${isAtlas ? supportStyles.actions : ""} flex flex-col sm:flex-row gap-3 justify-center`}>
             <a
               href={waLink}
               target="_blank"
@@ -403,7 +408,7 @@ export default async function AboutPage() {
                 isOutlined ? `${pfx}-btn` : "bg-green-500 hover:bg-green-600 text-white rounded-xl"
               }`}
               style={isOutlined ? { background: "var(--site-accent)", color: "#fff" } : undefined}>
-              <MessageCircle size={16} /> Konsultasi via WhatsApp
+              <MessageCircle aria-hidden="true" size={16} /> Konsultasi via WhatsApp
             </a>
             <Link
               href="/tours"

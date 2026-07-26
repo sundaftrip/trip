@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { getOrCreateReferralVisitorId } from "@/lib/referral-visitor";
+import { captureCampaignAttribution } from "@/lib/campaign-attribution";
 
 const REFERRAL_KEY = "sundaf_ref";
 
@@ -17,6 +18,7 @@ function storeReferral(code: string) {
 export default function ReferralCapture() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    captureCampaignAttribution(window.location.search);
     const ref = params.get("ref")?.trim().toUpperCase();
     if (!ref) return;
 

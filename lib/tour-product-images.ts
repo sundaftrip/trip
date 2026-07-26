@@ -96,6 +96,31 @@ function choose(seed: string, images: readonly string[]) {
   return images[stableIndex(seed, images.length)];
 }
 
+function controlledCmsImage(value?: string | null) {
+  const source = value?.trim();
+  if (!source) return null;
+  if (/^\/(?!\/)/.test(source)) return source;
+
+  try {
+    const url = new URL(source);
+    const allowedHost =
+      url.protocol === "https:"
+      && (
+        url.hostname === "res.cloudinary.com"
+        || url.hostname === "images.unsplash.com"
+        || url.hostname === "picsum.photos"
+        || url.hostname === "fastly.picsum.photos"
+        || url.hostname === "images.pexels.com"
+        || url.hostname === "upload.wikimedia.org"
+        || url.hostname.endsWith(".pexels.com")
+        || url.hostname.endsWith(".rbth.com")
+      );
+    return allowedHost ? source : null;
+  } catch {
+    return null;
+  }
+}
+
 const VIETNAM_MIXED = [
   PEXELS_TOUR_IMAGES.vietnamNinhBinh,
   PEXELS_TOUR_IMAGES.vietnamHaLong,
@@ -143,6 +168,9 @@ const GENERIC_TRAVEL = [
 ] as const;
 
 export function getTourProductImage(tour: TourProductImageInput) {
+  const suppliedHero = controlledCmsImage(tour.heroImg);
+  if (suppliedHero) return suppliedHero;
+
   const seed = imageSeed(tour);
   const normalizedSlug = tour.slug?.trim().toLocaleLowerCase("id-ID");
   const vietnamSlugImage = normalizedSlug

@@ -157,7 +157,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
   });
 
-  if (!partner) return {};
+  if (!partner || !partner.campaigns[0]) notFound();
   const campaign = partner.campaigns[0];
 
   return {

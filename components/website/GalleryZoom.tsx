@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cldOptimize } from "@/lib/utils";
@@ -9,6 +10,11 @@ import { cldOptimize } from "@/lib/utils";
    apa adanya) → original full-res tak pernah ikut ke browser. */
 const grid = (u: string) => cldOptimize(u, 1100);
 const big = (u: string) => cldOptimize(u, 1366);
+const focusableSelector = [
+  "button:not([disabled])",
+  "a[href]",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
 
 export default function GalleryZoom({
   images,
@@ -18,6 +24,10 @@ export default function GalleryZoom({
   altPrefix?: string;
 }) {
   const [active, setActive] = useState<number | null>(null);
+  const isOpen = active !== null;
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLButtonElement | null>(null);
   const altFor = useCallback((index: number) => `${altPrefix} ${index + 1}`, [altPrefix]);
 
   const prev = useCallback(() => {
@@ -28,21 +38,81 @@ export default function GalleryZoom({
     setActive((i) => (i !== null ? (i + 1) % images.length : null));
   }, [images.length]);
 
-  /* keyboard + scroll-lock */
+  const openAt = useCallback((index: number, opener: HTMLButtonElement) => {
+    openerRef.current = opener;
+    setActive(index);
+  }, []);
+
+  /* Keyboard, focus trap, focus restoration, and scroll lock. */
   useEffect(() => {
-    if (active === null) return;
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const layer = dialogRef.current;
+    const backgroundTargets = Array.from(document.body.children).filter(
+      (element): element is HTMLElement =>
+        element instanceof HTMLElement
+        && element !== layer
+        && element.tagName !== "SCRIPT"
+        && element.tagName !== "STYLE",
+    );
+    const backgroundState = backgroundTargets.map((target) => ({
+      target,
+      inert: target.inert,
+      ariaHidden: target.getAttribute("aria-hidden"),
+    }));
+    const focusFrame = window.requestAnimationFrame(() => closeRef.current?.focus());
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") prev();
-      else if (e.key === "ArrowRight") next();
-      else if (e.key === "Escape") setActive(null);
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setActive(null);
+      } else if (e.key === "Tab" && dialogRef.current) {
+        const controls = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector),
+        ).filter((element) => element.getClientRects().length > 0);
+        if (!controls.length) {
+          e.preventDefault();
+          dialogRef.current.focus();
+          return;
+        }
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        const current = document.activeElement;
+        if (!dialogRef.current.contains(current)) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        } else if (e.shiftKey && current === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && current === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", handler);
     document.body.style.overflow = "hidden";
+    backgroundTargets.forEach((target) => {
+      target.inert = true;
+      target.setAttribute("aria-hidden", "true");
+    });
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       window.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      backgroundState.forEach(({ target, inert, ariaHidden }) => {
+        target.inert = inert;
+        if (ariaHidden === null) target.removeAttribute("aria-hidden");
+        else target.setAttribute("aria-hidden", ariaHidden);
+      });
+      window.requestAnimationFrame(() => openerRef.current?.focus({ preventScroll: true }));
     };
-  }, [active, prev, next]);
+  }, [isOpen, prev, next]);
 
   /* ── GRID ── */
   const gridCount = Math.min(images.length, 5);
@@ -55,21 +125,21 @@ export default function GalleryZoom({
       <div onContextMenu={(e) => e.preventDefault()} className="select-none">
       {images.length === 1 && (
         <button
-          onClick={() => setActive(0)}
+          onClick={(event) => openAt(0, event.currentTarget)}
           aria-label="Buka dokumentasi foto 1"
           className="relative w-full h-72 sm:h-96 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group block"
         >
-          <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+          <Image src={grid(images[0])} alt={altFor(0)} fill sizes="(max-width: 700px) calc(100vw - 40px), 1100px" draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
         </button>
       )}
 
       {images.length === 2 && (
         <div className="grid grid-cols-2 gap-2 h-64 sm:h-80">
           {images.map((url, i) => (
-            <button key={i} onClick={() => setActive(i)}
+            <button key={i} onClick={(event) => openAt(i, event.currentTarget)}
               aria-label={`Buka dokumentasi foto ${i + 1}`}
               className="relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-              <Image src={grid(url)} alt={altFor(i)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+              <Image src={grid(url)} alt={altFor(i)} fill sizes="(max-width: 700px) 50vw, 550px" draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             </button>
           ))}
         </div>
@@ -78,10 +148,10 @@ export default function GalleryZoom({
       {images.length >= 3 && (
         <div className="grid grid-cols-3 grid-rows-2 gap-2 h-64 sm:h-80">
           {/* Hero, 2 cols × 2 rows */}
-          <button onClick={() => setActive(0)}
+          <button onClick={(event) => openAt(0, event.currentTarget)}
             aria-label="Buka dokumentasi foto 1"
             className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-            <Image src={grid(images[0])} alt={altFor(0)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+            <Image src={grid(images[0])} alt={altFor(0)} fill sizes="(max-width: 700px) 66vw, 730px" draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center bg-black/10" />
           </button>
 
@@ -90,12 +160,12 @@ export default function GalleryZoom({
             const idx = i + 1;
             const isLast = i === 1 && extras > 0;
             return (
-              <button key={idx} onClick={() => setActive(idx)}
+              <button key={idx} onClick={(event) => openAt(idx, event.currentTarget)}
                 aria-label={`Buka dokumentasi foto ${idx + 1}`}
                 className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-zoom-in group">
-                <Image src={grid(url)} alt={altFor(idx)} fill draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
+                <Image src={grid(url)} alt={altFor(idx)} fill sizes="(max-width: 700px) 33vw, 365px" draggable={false} className="object-cover pointer-events-none group-hover:scale-105 transition duration-500" />
                 {isLast && (
-                  <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
                     <span className="text-white font-bold text-base">+{extras + 1}</span>
                   </div>
                 )}
@@ -107,10 +177,17 @@ export default function GalleryZoom({
       </div>
 
       {/* ── LIGHTBOX ── */}
-      {active !== null && (
+      {active !== null && createPortal((
         <div
-          className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex flex-col items-center justify-center select-none"
-          onClick={() => setActive(null)}
+          ref={dialogRef}
+          className="fixed inset-0 z-[120] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center select-none"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Galeri layar penuh, foto ${active + 1} dari ${images.length}`}
+          tabIndex={-1}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setActive(null);
+          }}
           onContextMenu={(e) => e.preventDefault()}
         >
           {/* Top bar */}
@@ -119,9 +196,10 @@ export default function GalleryZoom({
               {active + 1} / {images.length}
             </span>
             <button
+              ref={closeRef}
               onClick={() => setActive(null)}
               aria-label="Tutup galeri"
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition"
+              className="w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition"
             >
               <X size={18} />
             </button>
@@ -129,27 +207,19 @@ export default function GalleryZoom({
 
           {/* Image, adapts to any aspect ratio */}
           <div
-            className="relative flex items-center justify-center px-16"
-            style={{ width: "100%", height: "calc(100vh - 130px)" }}
+            className="relative flex items-center justify-center px-14 sm:px-16"
+            style={{ width: "100%", height: "calc(100dvh - 130px)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               key={active}
               src={big(images[active])}
               alt={altFor(active)}
+              fill
+              sizes="100vw"
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-                borderRadius: "14px",
-                display: "block",
-                userSelect: "none",
-                WebkitUserSelect: "none",
-                WebkitTouchCallout: "none",
-              }}
+              className="object-contain rounded-[14px] select-none"
             />
           </div>
 
@@ -189,20 +259,20 @@ export default function GalleryZoom({
                   onClick={() => setActive(i)}
                   type="button"
                   aria-label={`Lihat foto ke-${i + 1}`}
+                  aria-pressed={i === active}
                   className={`relative shrink-0 w-14 h-10 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                     i === active
                       ? "border-white opacity-100 scale-105"
                       : "border-transparent opacity-40 hover:opacity-70"
                   }`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={cldOptimize(url,160)} alt={altFor(i)} draggable={false} className="w-full h-full object-cover pointer-events-none" />
+                  <Image src={cldOptimize(url,160)} alt={altFor(i)} fill sizes="56px" draggable={false} className="object-cover pointer-events-none" />
                 </button>
               ))}
             </div>
           )}
         </div>
-      )}
+      ), document.body)}
     </>
   );
 }

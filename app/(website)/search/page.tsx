@@ -9,6 +9,12 @@ import { visaSlug } from "@/lib/visa-slug";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { findSearchDestinations } from "@/lib/search-destinations";
+import {
+  expandedSearchTerms,
+  resolveSearchIntent,
+  unavailableTourNotice,
+} from "@/lib/search-intent";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
 export const dynamic = "force-dynamic";
 
@@ -50,21 +56,30 @@ type SearchResults = {
 async function doSearch(q: string): Promise<SearchResults> {
   const term = q.trim();
   if (!term) return { destinations: [], tours: [], blogs: [], visas: [] };
-  const destinations = findSearchDestinations(term);
+  const terms = expandedSearchTerms(term).slice(0, 4);
+  const now = new Date();
+  const destinations = Array.from(
+    new Map(
+      terms
+        .flatMap((searchTerm) => findSearchDestinations(searchTerm))
+        .map((destination) => [destination.href, destination]),
+    ).values(),
+  );
 
   // Case-insensitive search across multiple fields per entity.
   const [tours, blogs, visas] = await Promise.all([
     prisma.tour.findMany({
       where: {
         AND: [
-          { status: { in: ["ACTIVE", "FULL"] } },
+          publicTourVisibilityWhere(),
+          { OR: [{ tripDate: null }, { tripDate: { gte: now } }] },
           {
-            OR: [
-              { title: { contains: term, mode: "insensitive" } },
-              { country: { contains: term, mode: "insensitive" } },
-              { cityHighlight: { contains: term, mode: "insensitive" } },
-              { description: { contains: term, mode: "insensitive" } },
-            ],
+            OR: terms.flatMap((searchTerm) => [
+              { title: { contains: searchTerm, mode: "insensitive" as const } },
+              { country: { contains: searchTerm, mode: "insensitive" as const } },
+              { cityHighlight: { contains: searchTerm, mode: "insensitive" as const } },
+              { description: { contains: searchTerm, mode: "insensitive" as const } },
+            ]),
           },
         ],
       },
@@ -80,11 +95,11 @@ async function doSearch(q: string): Promise<SearchResults> {
         AND: [
           { published: true },
           {
-            OR: [
-              { title: { contains: term, mode: "insensitive" } },
-              { excerpt: { contains: term, mode: "insensitive" } },
-              { body: { contains: term, mode: "insensitive" } },
-            ],
+            OR: terms.flatMap((searchTerm) => [
+              { title: { contains: searchTerm, mode: "insensitive" as const } },
+              { excerpt: { contains: searchTerm, mode: "insensitive" as const } },
+              { body: { contains: searchTerm, mode: "insensitive" as const } },
+            ]),
           },
         ],
       },
@@ -94,10 +109,10 @@ async function doSearch(q: string): Promise<SearchResults> {
     }),
     prisma.countryVisa.findMany({
       where: {
-        OR: [
-          { name: { contains: term, mode: "insensitive" } },
-          { en: { contains: term, mode: "insensitive" } },
-        ],
+        OR: terms.flatMap((searchTerm) => [
+          { name: { contains: searchTerm, mode: "insensitive" as const } },
+          { en: { contains: searchTerm, mode: "insensitive" as const } },
+        ]),
       },
       select: { en: true, name: true },
       orderBy: { name: "asc" },
@@ -118,6 +133,10 @@ export default async function SearchPage({
   const { destinations, tours, blogs, visas } = await doSearch(q);
   const total = destinations.length + tours.length + blogs.length + visas.length;
   const hasQuery = q.trim().length > 0;
+  const notice = unavailableTourNotice(
+    resolveSearchIntent(q)?.countryLabel || null,
+    tours.length > 0,
+  );
 
   return (
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
@@ -181,35 +200,6 @@ export default async function SearchPage({
           <NoResults q={q} />
         )}
 
-        {/* ── Destinations ── */}
-        {destinations.length > 0 && (
-          <Section
-            icon={<Compass size={16} />}
-            title="Destinasi"
-            count={destinations.length}
-          >
-            <div className="grid sm:grid-cols-2 gap-3">
-              {destinations.map((d) => (
-                <Link
-                  key={d.href}
-                  href={d.href}
-                  className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
-                >
-                  <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
-                    {d.region}
-                  </div>
-                  <div className="font-semibold text-gray-900 dark:text-white text-sm leading-snug mb-2">
-                    {d.name}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                    {d.description}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </Section>
-        )}
-
         {/* ── Tours ── */}
         {tours.length > 0 && (
           <Section
@@ -239,6 +229,65 @@ export default async function SearchPage({
                       {formatCurrency(t.promoPrice ?? t.price)}
                     </span>
                   </div>
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {/* ── Visa ── */}
+        {visas.length > 0 && (
+          <Section
+            icon={<FileCheck size={16} />}
+            title="Info Visa"
+            count={visas.length}
+          >
+            <div className="flex flex-wrap gap-2">
+              {visas.map((v) => (
+                <Link
+                  key={v.en}
+                  href={`/visa/${visaSlug(v.en)}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+                >
+                  {v.name}
+                  <ArrowRight size={12} className="text-gray-400" />
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {notice ? (
+          <Section icon={<MapPin size={16} />} title="Paket Tour" count={0}>
+            <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm leading-relaxed text-gray-500 dark:bg-gray-900 dark:text-gray-400">
+              {notice}
+            </p>
+          </Section>
+        ) : null}
+
+        {/* ── Related subpages ── */}
+        {destinations.length > 0 && (
+          <Section
+            icon={<Compass size={16} />}
+            title="Subhalaman terkait"
+            count={destinations.length}
+          >
+            <div className="grid sm:grid-cols-2 gap-3">
+              {destinations.map((d) => (
+                <Link
+                  key={d.href}
+                  href={d.href}
+                  className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+                >
+                  <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
+                    {d.region}
+                  </div>
+                  <div className="font-semibold text-gray-900 dark:text-white text-sm leading-snug mb-2">
+                    {d.name}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                    {d.description}
+                  </p>
                 </Link>
               ))}
             </div>
@@ -276,28 +325,6 @@ export default async function SearchPage({
                     size={16}
                     className="shrink-0 text-gray-400 group-hover:translate-x-1 transition-transform mt-1"
                   />
-                </Link>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {/* ── Visa ── */}
-        {visas.length > 0 && (
-          <Section
-            icon={<FileCheck size={16} />}
-            title="Info Visa"
-            count={visas.length}
-          >
-            <div className="flex flex-wrap gap-2">
-              {visas.map((v) => (
-                <Link
-                  key={v.en}
-                  href={`/visa/${visaSlug(v.en)}`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
-                >
-                  {v.name}
-                  <ArrowRight size={12} className="text-gray-400" />
                 </Link>
               ))}
             </div>
