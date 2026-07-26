@@ -799,6 +799,15 @@
     color: #fff;
   }
 
+  .trustCounts a[aria-current="page"] span,
+  .trustCounts a[aria-current="page"] strong {
+    color: #fff;
+  }
+
+  .trustCounts a[aria-current="page"] span {
+    font-weight: 500;
+  }
+
   .trustCounts span {
     min-height: 0;
     display: inline;
