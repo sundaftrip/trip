@@ -695,7 +695,7 @@
   }
 
   .hero {
-    padding: 34px 0 38px;
+    padding: 28px 0 0;
   }
 
   .breadcrumb {
@@ -737,7 +737,13 @@
   }
 
   .resultsSection {
-    padding: 34px 0 64px;
+    padding: 0 0 64px;
+  }
+
+  .resultsSection .shell {
+    overflow: clip;
+    border: 1px solid var(--catalog-line);
+    border-radius: 18px;
   }
 
   .tabs {
@@ -762,10 +768,11 @@
 
   .resultsToolbar {
     min-height: 54px;
+    padding-inline: 12px;
   }
 
   .headingRow {
-    margin-top: 38px;
+    margin: 38px 12px 0;
     display: grid;
     gap: 13px;
   }
@@ -780,7 +787,7 @@
   }
 
   .grid {
-    margin-top: 24px;
+    margin: 24px 12px 12px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }

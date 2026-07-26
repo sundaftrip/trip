@@ -249,11 +249,6 @@ export default function CleanToursCatalog({
     <div className={`${base.catalogPage} ${styles.page}`} id="main-content">
       <section className={styles.hero} aria-labelledby="catalog-page-title">
         <div className={styles.shell}>
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link href="/">Beranda</Link>
-            <span aria-hidden="true">/</span>
-            <span>Jadwal Tour</span>
-          </nav>
           <div className={styles.heroLayout}>
             <div>
               <p className={styles.eyebrow}>JADWAL &amp; PILIHAN PERJALANAN</p>

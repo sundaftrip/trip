@@ -63,12 +63,12 @@ export default async function CustomTripPage() {
         <section className={styles.aftercare} aria-labelledby="custom-process-title">
           <div>
             <p>CARA KERJANYA</p>
-            <h2 id="custom-process-title">Brief masuk, lalu tim mengecek rute yang realistis.</h2>
+            <h2 id="custom-process-title">Ceritakan rencanamu, kami bantu merangkainya.</h2>
           </div>
           <ol>
-            <li><strong>01</strong><span><b>Brief dipelajari</b>Kami mengecek tanggal, musim, rute, visa, dan kebutuhan peserta.</span></li>
-            <li><strong>02</strong><span><b>Opsi disusun</b>Kamu menerima arah itinerary dan estimasi sebelum keputusan booking.</span></li>
-            <li><strong>03</strong><span><b>Detail dikunci</b>Harga final mengikuti ketersediaan aktual dan baru diproses setelah disetujui.</span></li>
+            <li><strong>01</strong><span><b>Kami dengarkan kebutuhanmu</b>Ceritakan tujuan, waktu, gaya perjalanan, dan siapa saja yang ikut.</span></li>
+            <li><strong>02</strong><span><b>Pilihan kami siapkan</b>Kami susun rute dan estimasi biaya yang realistis untuk dibahas bersama.</span></li>
+            <li><strong>03</strong><span><b>Kamu tetap pegang keputusan</b>Detail dan harga dikonfirmasi lebih dulu. Booking baru diproses setelah kamu setuju.</span></li>
           </ol>
         </section>
       </div>

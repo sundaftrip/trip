@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { PublicTourState } from "@/lib/tour-order";
@@ -91,9 +91,6 @@ export default function CleanTourCard({
       </Link>
 
       <div className={styles.tourBody}>
-        <p className={styles.tourMeta}>
-          {tour.duration || "Durasi fleksibel"} · {formatTripDate(tour.tripDate)}
-        </p>
         <h3 className={styles.tourTitle}>
           <Link
             href={href}
@@ -105,8 +102,10 @@ export default function CleanTourCard({
         </h3>
         <div className={styles.tourFacts}>
           <div className={styles.tourFact}><MapPin size={16} aria-hidden="true" /><span>{tour.cityHighlight || tour.country}</span></div>
-          <div className={styles.tourFact}><Navigation size={16} aria-hidden="true" /><span>{tour.state === "flexible" ? "Land tour privat" : "Open trip dari Indonesia"}</span></div>
         </div>
+        <p className={styles.tourMeta}>
+          {tour.duration || "Durasi fleksibel"} · {formatTripDate(tour.tripDate)}
+        </p>
         <div className={styles.priceRow}>
           <div>
             <span className={styles.priceLabel}>
@@ -121,11 +120,6 @@ export default function CleanTourCard({
                 "Hubungi tim"
               )}
             </span>
-            {mandatoryTotal > 0 ? (
-              <small className={styles.mandatoryPriceNote}>
-                Termasuk {formatCurrency(mandatoryTotal)} biaya wajib
-              </small>
-            ) : null}
           </div>
           <span className={styles.cardArrow} aria-hidden="true">→</span>
         </div>
