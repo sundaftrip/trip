@@ -112,32 +112,6 @@ html {
   overflow-x: clip;
 }
 
-/* Atlas uses a deliberately all-white surface system. Interactive controls
-   retain contrast through ink and borders rather than coloured fills. */
-main[data-theme="atlas"] :where(button, input[type="submit"], input[type="button"], input[type="reset"]),
-main[data-theme="atlas"] :where(button, input[type="submit"], input[type="button"], input[type="reset"]):hover,
-main[data-theme="atlas"] :where(button, input[type="submit"], input[type="button"], input[type="reset"]):focus-visible,
-main[data-theme="atlas"] :where(a[class*="Action"], a[class*="action"], a[class*="Button"], a[class*="button"], a[class*="Cta"], a[class*="cta"], a[class*="Submit"], a[class*="submit"]),
-main[data-theme="atlas"] :where(a[class*="Action"], a[class*="action"], a[class*="Button"], a[class*="button"], a[class*="Cta"], a[class*="cta"], a[class*="Submit"], a[class*="submit"]):hover,
-[data-sticky-whatsapp] > a,
-[class*="CleanShell_desktopAction"],
-[class*="CleanShell_drawerPrimary"],
-[class*="CleanShell_drawerWhatsApp"] {
-  border: 1px solid #0c4d56 !important;
-  background: #FFFFFF !important;
-  color: #0c4d56 !important;
-}
-
-main[data-theme="atlas"] :where([class*="Badge"], [class*="badge"], [class*="Avatar"], [class*="avatar"], [class*="Status"], [class*="status"], [class*="Pill"], [class*="pill"], [class*="Alert"], [class*="alert"], [class*="Unavailable"], [class*="unavailable"]) {
-  border-color: #0c4d56 !important;
-  background: #FFFFFF !important;
-  color: #0c4d56 !important;
-}
-
-main[data-theme="atlas"] :where([class*="Placeholder"], [class*="placeholder"], [class*="Media"], [class*="media"]) {
-  background-color: #FFFFFF !important;
-}
-
 main[data-theme] {
   min-width: 0;
   max-width: 100%;
