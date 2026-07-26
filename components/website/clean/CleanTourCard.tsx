@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { PublicTourState } from "@/lib/tour-order";
@@ -87,25 +87,22 @@ export default function CleanTourCard({
           sizes="(max-width: 370px) calc(100vw - 24px), (max-width: 700px) calc(50vw - 17px), (max-width: 1100px) 50vw, 33vw"
           className={styles.tourImage}
         />
+        <span className={styles.tourPhotoShade} aria-hidden="true" />
         <span className={styles.tourStatus}>{statusLabel(tour)}</span>
+        <h3 className={styles.tourTitle}>{tour.title}</h3>
       </Link>
 
       <div className={styles.tourBody}>
-        <h3 className={styles.tourTitle}>
-          <Link
-            href={href}
-            data-analytics-event="tour_card_click"
-            data-tour-id={tour.id}
-          >
-            {tour.title}
-          </Link>
-        </h3>
         <div className={styles.tourFacts}>
           <div className={styles.tourFact}><MapPin size={16} aria-hidden="true" /><span>{tour.cityHighlight || tour.country}</span></div>
         </div>
-        <p className={styles.tourMeta}>
-          {tour.duration || "Durasi fleksibel"} · {formatTripDate(tour.tripDate)}
-        </p>
+        <div className={styles.tourMeta}>
+          <Calendar size={16} aria-hidden="true" />
+          <span>
+            {tour.duration || "Durasi fleksibel"}
+            <small>{formatTripDate(tour.tripDate)}</small>
+          </span>
+        </div>
         <div className={styles.priceRow}>
           <div>
             <span className={styles.priceLabel}>

@@ -383,43 +383,77 @@
 }
 .tourCard:hover .tourImage { transform: scale(1.025); }
 
+.tourPhotoShade {
+  position: absolute;
+  inset: 32% 0 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, transparent, rgba(5, 25, 29, .78));
+  pointer-events: none;
+}
+
 .tourStatus {
   position: absolute;
   top: 14px;
   left: 14px;
-  z-index: 1;
+  z-index: 3;
   padding: 7px 10px;
   border-radius: 999px;
-  background: #fff;
+  background: rgba(255, 255, 255, .94);
   color: var(--clean-navy);
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
+  font-weight: 650;
+  letter-spacing: .055em;
   text-transform: uppercase;
 }
 
 .tourBody { min-width: 0; }
 
 .tourMeta {
-  margin: 8px 18px 0;
-  color: var(--clean-teal-dark);
-  font-size: 11px;
-  font-weight: 780;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  min-height: 42px;
+  margin: 12px 18px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: var(--clean-muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.tourMeta svg {
+  flex: 0 0 16px;
+  margin-top: 1px;
+}
+
+.tourMeta span {
+  min-width: 0;
+}
+
+.tourMeta small {
+  display: block;
+  margin-top: 2px;
+  color: var(--clean-muted);
+  font-size: 12px;
+  font-weight: 450;
 }
 
 .tourTitle {
-  min-height: 2.45em;
-  margin: 20px 18px 0;
-  color: var(--clean-ink);
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  left: 16px;
+  z-index: 2;
+  margin: 0;
+  color: #fff;
   font-size: clamp(19px, 1.6vw, 23px);
-  font-weight: 740;
+  font-weight: 700;
   letter-spacing: -.025em;
   line-height: 1.22;
+  text-align: left;
+  text-shadow: 0 2px 12px rgba(4, 20, 23, .44);
+  text-wrap: balance;
 }
-
-.tourTitle a:hover { color: var(--clean-teal-dark); }
 
 .tourFacts {
   min-height: 46px;
@@ -1615,33 +1649,45 @@
     top: 8px;
     left: 8px;
     max-width: calc(100% - 16px);
-    padding: 4px 6px;
-    border-radius: 6px;
-    font-size: 9px;
+    padding: 4px 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 600;
     line-height: 1.15;
-    letter-spacing: .045em;
+    letter-spacing: .035em;
     white-space: normal;
   }
   .tourMeta {
-    min-height: 2.4em;
-    margin: 6px 10px 0;
+    min-height: 35px;
+    margin: 9px 10px 0;
+    gap: 5px;
     overflow: hidden;
-    display: -webkit-box;
-    font-size: 9px;
-    line-height: 1.2;
-    letter-spacing: .055em;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.25;
   }
   .tourTitle {
-    min-height: 2.45em;
-    margin: 10px 10px 0;
+    right: 10px;
+    bottom: 9px;
+    left: 10px;
+    margin: 0;
     overflow: hidden;
     display: -webkit-box;
     font-size: 14px;
     line-height: 1.22;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  }
+  .tourMeta svg {
+    width: 12px;
+    height: 12px;
+    flex-basis: 12px;
+    margin-top: 1px;
+  }
+  .tourMeta small {
+    margin-top: 1px;
+    font-size: 9.5px;
+    line-height: 1.2;
   }
   .tourFacts,
   .tourCardCompact .tourFacts {
