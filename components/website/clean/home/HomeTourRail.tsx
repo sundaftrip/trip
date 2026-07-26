@@ -1,6 +1,6 @@
 "use client";
 
-import { type MouseEvent, useEffect, useId, useRef, useState } from "react";
+import { Fragment, type MouseEvent, useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Calendar, MapPin } from "lucide-react";
@@ -46,6 +46,20 @@ function tripMeta(tour: CleanTour) {
 function departureLabel(tour: CleanTour) {
   const date = validDate(tour.tripDate);
   return date ? DATE_FORMATTER.format(date) : "Tanggal akan diumumkan";
+}
+
+function routeHighlight(value: string) {
+  return value.split(/\s*•\s*/).map((part, index) => (
+    <Fragment key={`${part}-${index}`}>
+      {index > 0 ? (
+        <>
+          <span className={styles.routeSeparator} aria-hidden="true">•</span>
+          <span className="sr-only">, </span>
+        </>
+      ) : null}
+      {part}
+    </Fragment>
+  ));
 }
 
 export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
@@ -186,7 +200,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                 </h3>
                 <p className={styles.routeLine}>
                   <MapPin aria-hidden="true" />
-                  <span>{tour.cityHighlight || tour.country}</span>
+                  <span>{routeHighlight(tour.cityHighlight || tour.country)}</span>
                 </p>
                 <p className={styles.departureLine}>
                   <Calendar aria-hidden="true" />

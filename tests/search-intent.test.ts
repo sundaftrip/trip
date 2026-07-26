@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { expandedSearchTerms, resolveSearchIntent } from "../lib/search-intent";
+import {
+  expandedSearchTerms,
+  resolveSearchIntent,
+  unavailableTourNotice,
+} from "../lib/search-intent";
 
 test("maps Indonesian and English country aliases to the same intent", () => {
   assert.deepEqual(resolveSearchIntent("kanada"), resolveSearchIntent("Canada"));
@@ -21,4 +25,12 @@ test("recognizes aliases inside natural-language queries", () => {
 
 test("expands city searches without dropping the original query", () => {
   assert.deepEqual(expandedSearchTerms("Astana"), ["Astana", "Kazakhstan", "Kazakstan"]);
+});
+
+test("explains when a recognized country has no current tour", () => {
+  assert.equal(
+    unavailableTourNotice("Kanada", false),
+    "Maaf, tour ke Kanada saat ini belum dibuka.",
+  );
+  assert.equal(unavailableTourNotice("Kanada", true), null);
 });

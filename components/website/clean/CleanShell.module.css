@@ -365,6 +365,20 @@
   gap: 8px !important;
 }
 
+.searchPrimaryGrid > :only-child {
+  grid-column: 1 / -1;
+}
+
+.searchNotice {
+  margin: 12px 10px 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f4f7f7;
+  color: var(--shell-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .searchResultButton {
   width: 100%;
   min-height: 58px;

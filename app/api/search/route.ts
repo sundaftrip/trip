@@ -5,6 +5,7 @@ import { SEARCH_DESTINATIONS, destinationSearchText, findSearchDestinations } fr
 import {
   expandedSearchTerms,
   resolveSearchIntent,
+  unavailableTourNotice,
 } from "@/lib/search-intent";
 
 /* Pencarian global untuk modal search di navbar.
@@ -46,6 +47,7 @@ export async function GET(req: NextRequest) {
         pages: [],
         articles: [],
         faqs: [],
+        notice: null,
         suggestion: null,
       });
 	  }
@@ -253,14 +255,19 @@ export async function GET(req: NextRequest) {
       norm(candidate.name) === q || norm(candidate.en) === q
     ))?.name
     || null;
+  const hasCurrentTour = tours.some(
+    (tour) => tour.statusLabel !== "Selesai" && tour.statusLabel !== "Dibatalkan",
+  );
   const primary = inferredCountry
     ? [
-        {
-          kind: "tour" as const,
-          title: `Tour ${inferredCountry}`,
-          description: `Paket perjalanan dan jadwal terkait ${inferredCountry}.`,
-          href: intent?.tourHref || `/tours?destination=${slugify(inferredCountry)}`,
-        },
+        ...(hasCurrentTour
+          ? [{
+              kind: "tour" as const,
+              title: `Tour ${inferredCountry}`,
+              description: `Paket perjalanan dan jadwal terkait ${inferredCountry}.`,
+              href: intent?.tourHref || `/tours?destination=${slugify(inferredCountry)}`,
+            }]
+          : []),
         {
           kind: "visa" as const,
           title: `Visa ${inferredCountry}`,
@@ -290,8 +297,9 @@ export async function GET(req: NextRequest) {
         description: article.excerpt,
         href: `/blog/${article.slug}`,
       })),
-    faqs: faqs.map((f) => ({ question: f.question, section: f.section, href: `/faq` })),
-    suggestion: totalExact > 0 && !anyTypo ? null : suggestion,
+      faqs: faqs.map((f) => ({ question: f.question, section: f.section, href: `/faq` })),
+      notice: unavailableTourNotice(inferredCountry, hasCurrentTour),
+      suggestion: totalExact > 0 && !anyTypo ? null : suggestion,
   }, {
     // Cache di CDN: query sama dalam 60 dtk dilayani tanpa menyentuh DB
     headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },

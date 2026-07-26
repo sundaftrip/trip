@@ -549,6 +549,14 @@
   margin-top: 8px;
 }
 
+.routeSeparator {
+  margin-inline: 0.4em;
+  display: inline-block;
+  font-size: 0.45em;
+  line-height: 1;
+  vertical-align: 0.22em;
+}
+
 .routeLine svg,
 .departureLine svg {
   width: 16px;

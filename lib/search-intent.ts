@@ -102,3 +102,9 @@ export function expandedSearchTerms(value: string) {
     ...(intent?.countryTerms ?? []),
   ].filter(Boolean)));
 }
+
+export function unavailableTourNotice(countryLabel: string | null, hasCurrentTour: boolean) {
+  return countryLabel && !hasCurrentTour
+    ? `Maaf, tour ke ${countryLabel} saat ini belum dibuka.`
+    : null;
+}

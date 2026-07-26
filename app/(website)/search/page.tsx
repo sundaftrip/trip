@@ -9,7 +9,11 @@ import { visaSlug } from "@/lib/visa-slug";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { findSearchDestinations } from "@/lib/search-destinations";
-import { expandedSearchTerms } from "@/lib/search-intent";
+import {
+  expandedSearchTerms,
+  resolveSearchIntent,
+  unavailableTourNotice,
+} from "@/lib/search-intent";
 
 export const dynamic = "force-dynamic";
 
@@ -126,6 +130,10 @@ export default async function SearchPage({
   const { destinations, tours, blogs, visas } = await doSearch(q);
   const total = destinations.length + tours.length + blogs.length + visas.length;
   const hasQuery = q.trim().length > 0;
+  const notice = unavailableTourNotice(
+    resolveSearchIntent(q)?.countryLabel || null,
+    tours.length > 0,
+  );
 
   return (
     <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
@@ -311,6 +319,12 @@ export default async function SearchPage({
             </div>
           </Section>
         )}
+
+        {notice ? (
+          <p className="mt-8 rounded-xl bg-gray-100 px-4 py-3 text-sm leading-relaxed text-gray-500 dark:bg-gray-900 dark:text-gray-400">
+            {notice}
+          </p>
+        ) : null}
       </div>
     </div>
   );

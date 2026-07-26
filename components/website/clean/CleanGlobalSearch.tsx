@@ -41,6 +41,7 @@ type SearchResults = {
   pages: Array<SearchRow & { label: string }>;
   articles: Array<SearchRow & { label: string }>;
   faqs: Array<{ question: string; section: string; href: string }>;
+  notice?: string | null;
   suggestion?: string | null;
 };
 
@@ -52,6 +53,7 @@ const EMPTY_RESULTS: SearchResults = {
   pages: [],
   articles: [],
   faqs: [],
+  notice: null,
   suggestion: null,
 };
 
@@ -388,6 +390,10 @@ export default function CleanGlobalSearch() {
                   />
                 ))}
               </SearchGroup>
+            ) : null}
+
+            {results.notice ? (
+              <p className={styles.searchNotice}>{results.notice}</p>
             ) : null}
           </div>
 
