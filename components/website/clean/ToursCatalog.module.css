@@ -743,7 +743,7 @@
   .resultsSection .shell {
     overflow: clip;
     border: 1px solid var(--catalog-line);
-    border-radius: 18px;
+    border-radius: 18px !important;
   }
 
   .tabs {
