@@ -2,14 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { visaSlug, similarity } from "@/lib/visa-slug";
 import { SEARCH_DESTINATIONS, destinationSearchText, findSearchDestinations } from "@/lib/search-destinations";
+import {
+  expandedSearchTerms,
+  resolveSearchIntent,
+} from "@/lib/search-intent";
 
 /* Pencarian global untuk modal search di navbar.
-	   Hasil terkelompok: destinasi, tour, layanan visa, pertanyaan (FAQ).
+	   Hasil terkelompok: pilihan utama, tour, visa, halaman, artikel, dan FAQ.
    - Tour cocok via judul/negara/kota/deskripsi DAN isi itinerary
    - Kata intent ("tersedia/aktif/upcoming") -> tampilkan tour aktif
    - Toleran typo (fuzzy) + saran "mungkin maksud Anda" ala Google */
 
 const ACTIVE_WORDS = ["tersedia", "aktif", "available", "active", "upcoming", "ada"];
+const GENERIC_WORDS = [
+  "artikel",
+  "cari",
+  "info",
+  "paket",
+  "trip",
+  "tour",
+  "untuk",
+  "visa",
+];
 const FUZZY = 0.8; // ambang kemiripan untuk toleransi typo
 
 function norm(s: string) {
@@ -22,19 +36,34 @@ function words(s: string) {
 const dateFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" });
 
 export async function GET(req: NextRequest) {
-	  const raw = (req.nextUrl.searchParams.get("q") ?? "").trim();
+	  const raw = (req.nextUrl.searchParams.get("q") ?? "").trim().slice(0, 120);
 	  if (raw.length < 2) {
-	    return NextResponse.json({ destinations: [], tours: [], visa: [], faqs: [], suggestion: null });
+	    return NextResponse.json({
+        primary: [],
+        destinations: [],
+        tours: [],
+        visa: [],
+        pages: [],
+        articles: [],
+        faqs: [],
+        suggestion: null,
+      });
 	  }
 
   const q = norm(raw);
   const tokens = q.split(/\s+/).filter(Boolean);
   const wantActive = tokens.some((t) => ACTIVE_WORDS.includes(t));
-  const contentTokens = tokens.filter((t) => !ACTIVE_WORDS.includes(t));
-  const like = { contains: raw, mode: "insensitive" as const };
+  const contentTokens = tokens.filter(
+    (t) => !ACTIVE_WORDS.includes(t) && !GENERIC_WORDS.includes(t),
+  );
+  const intent = resolveSearchIntent(raw);
+  const searchTerms = expandedSearchTerms(raw).slice(0, 4);
+  const intentTerms = (intent?.countryTerms ?? []).map(norm);
+  const textConditions = (field: "question" | "answer") =>
+    searchTerms.map((term) => ({ [field]: { contains: term, mode: "insensitive" as const } }));
   const now = new Date();
 
-  const [allTours, allVisa, faqs] = await Promise.all([
+  const [allTours, allVisa, faqs, articles, pages] = await Promise.all([
     prisma.tour.findMany({
       where: { status: { not: "DRAFT" } },
       select: {
@@ -51,9 +80,47 @@ export async function GET(req: NextRequest) {
       take: 200,
     }),
     prisma.faq.findMany({
-      where: { active: true, OR: [{ question: like }, { answer: like }] },
+      where: {
+        active: true,
+        OR: [
+          ...textConditions("question"),
+          ...textConditions("answer"),
+        ],
+      },
       select: { id: true, question: true, section: true },
       orderBy: [{ section: "asc" }, { order: "asc" }],
+      take: 6,
+    }),
+    prisma.blog.findMany({
+      where: {
+        published: true,
+        OR: searchTerms.flatMap((term) => [
+          { title: { contains: term, mode: "insensitive" as const } },
+          { excerpt: { contains: term, mode: "insensitive" as const } },
+          { body: { contains: term, mode: "insensitive" as const } },
+        ]),
+      },
+      select: { slug: true, title: true, excerpt: true, category: true },
+      orderBy: { date: "desc" },
+      take: 6,
+    }),
+    prisma.geoPage.findMany({
+      where: {
+        published: true,
+        OR: searchTerms.flatMap((term) => [
+          { title: { contains: term, mode: "insensitive" as const } },
+          { eyebrow: { contains: term, mode: "insensitive" as const } },
+          { answer: { contains: term, mode: "insensitive" as const } },
+          { metaDescription: { contains: term, mode: "insensitive" as const } },
+        ]),
+      },
+      select: {
+        routePath: true,
+        title: true,
+        eyebrow: true,
+        metaDescription: true,
+      },
+      orderBy: { order: "asc" },
       take: 6,
     }),
   ]);
@@ -94,7 +161,13 @@ export async function GET(req: NextRequest) {
   });
 	  allVisa.forEach((v) => { addVocab(v.name); addVocab(v.en); });
 	  SEARCH_DESTINATIONS.forEach((d) => addVocab(destinationSearchText(d)));
-	  const destinations = findSearchDestinations(raw);
+	  const destinations = Array.from(
+      new Map(
+        searchTerms
+          .flatMap((term) => findSearchDestinations(term))
+          .map((destination) => [destination.href, destination]),
+      ).values(),
+    ).slice(0, 6);
 
   // Apakah tiap token cocok (substring/fuzzy) di seluruh korpus? Untuk deteksi typo.
   let anyTypo = false;
@@ -120,11 +193,13 @@ export async function GET(req: NextRequest) {
 
   const tours = toursPrepared
     .filter(({ hayStr, hayWords, isActive }) => {
-      const textMatch = contentTokens.length === 0 || contentTokens.every((tok) => {
+      const rawMatch = contentTokens.length === 0 || contentTokens.every((tok) => {
         if (hayStr.includes(tok)) return true;
         const m = matchToken(hayWords, tok);
         return m === 1 || m >= FUZZY;
       });
+      const intentMatch = intentTerms.some((term) => hayStr.includes(term));
+      const textMatch = rawMatch || intentMatch;
       if (wantActive) return isActive && textMatch;
       return textMatch;
     })
@@ -151,8 +226,13 @@ export async function GET(req: NextRequest) {
     .map((v) => {
       const nn = norm(v.name), ne = norm(v.en);
       let score = 0;
-      if (nn.includes(q) || ne.includes(q)) score = 1;
-      else score = Math.max(similarity(q, nn), similarity(q, ne));
+      const queries = Array.from(new Set([q, ...intentTerms]));
+      if (queries.some((query) => nn.includes(query) || ne.includes(query))) score = 1;
+      else {
+        score = Math.max(
+          ...queries.flatMap((query) => [similarity(query, nn), similarity(query, ne)]),
+        );
+      }
       return { v, score };
     })
     .filter((x) => x.score >= FUZZY)
@@ -160,12 +240,49 @@ export async function GET(req: NextRequest) {
     .slice(0, 6)
     .map(({ v }) => ({ name: v.name, en: v.en, href: `/visa/${visaSlug(v.en)}` }));
 
+  const exactVisa = visa[0] ?? null;
+  const inferredCountry = intent?.countryLabel
+    || allVisa.find((candidate) => (
+      norm(candidate.name) === q || norm(candidate.en) === q
+    ))?.name
+    || null;
+  const primary = inferredCountry
+    ? [
+        {
+          kind: "tour" as const,
+          title: `Tour ${inferredCountry}`,
+          description: `Paket perjalanan dan jadwal terkait ${inferredCountry}.`,
+          href: intent?.tourHref || `/tours?destination=${slugify(inferredCountry)}`,
+        },
+        {
+          kind: "visa" as const,
+          title: `Visa ${inferredCountry}`,
+          description: `Persyaratan dan layanan pengurusan visa ${inferredCountry}.`,
+          href: exactVisa?.href || `/visa/${visaSlug(intent?.countryTerms[0] || inferredCountry)}`,
+        },
+      ]
+    : [];
+
   // Saran hanya relevan kalau hasil eksak kosong tapi typo terdeteksi
-	  const totalExact = destinations.length + tours.length + visa.length;
+	  const totalExact = primary.length + destinations.length + tours.length + visa.length
+      + pages.length + articles.length + faqs.length;
 	  return NextResponse.json({
+      primary,
 	    destinations,
 	    tours,
 	    visa,
+      pages: pages.map((page) => ({
+        title: page.title,
+        label: page.eyebrow || "Halaman",
+        description: page.metaDescription,
+        href: page.routePath.startsWith("/") ? page.routePath : `/${page.routePath}`,
+      })),
+      articles: articles.map((article) => ({
+        title: article.title,
+        label: article.category || "Artikel",
+        description: article.excerpt,
+        href: `/blog/${article.slug}`,
+      })),
     faqs: faqs.map((f) => ({ question: f.question, section: f.section, href: `/faq` })),
     suggestion: totalExact > 0 && !anyTypo ? null : suggestion,
   }, {
@@ -176,4 +293,10 @@ export async function GET(req: NextRequest) {
 
 function capitalize(w: string) {
   return w ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+}
+
+function slugify(value: string) {
+  return norm(value)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }

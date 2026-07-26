@@ -269,40 +269,25 @@ export default function CleanToursCatalog({
                 dokumentasi perjalanan terdahulu sejak awal.
               </p>
             </div>
-            <dl className={styles.trustCounts} aria-label="Ringkasan katalog saat ini">
-              <div>
-                <dt>Open trip</dt>
-                <dd>{categoryCounts.open}</dd>
-              </div>
-              <div>
-                <dt>Land tour privat</dt>
-                <dd>{categoryCounts.private}</dd>
-              </div>
-              <div>
-                <dt>Trip terdahulu</dt>
-                <dd>{categoryCounts.archive}</dd>
-              </div>
-            </dl>
+            <nav className={styles.trustCounts} aria-label="Pilih jenis perjalanan">
+              {categoryTabs.map((tab) => (
+                <Link
+                  key={tab.value}
+                  href={queryHref(pathname, { ...filters, type: tab.value }, campaignQuery)}
+                  aria-current={filters.type === tab.value ? "page" : undefined}
+                  scroll={false}
+                >
+                  <span>{tab.label}</span>
+                  <strong>{categoryCounts[tab.value]}</strong>
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </section>
 
       <section className={styles.resultsSection} aria-labelledby="catalog-results-title">
         <div className={styles.shell}>
-          <nav className={styles.tabs} aria-label="Jenis perjalanan">
-            {categoryTabs.map((tab) => (
-              <Link
-                key={tab.value}
-                href={queryHref(pathname, { ...filters, type: tab.value }, campaignQuery)}
-                aria-current={filters.type === tab.value ? "page" : undefined}
-                scroll={false}
-              >
-                <span>{tab.label}</span>
-                <small>{categoryCounts[tab.value]}</small>
-              </Link>
-            ))}
-          </nav>
-
           <div className={styles.resultsToolbar}>
             <div aria-live="polite" aria-atomic="true">
               <strong>{results.length}</strong> perjalanan ditemukan
@@ -344,26 +329,14 @@ export default function CleanToursCatalog({
 
           <div className={styles.headingRow}>
             <div>
-              <p className={styles.eyebrow}>
-                {filters.type === "open"
-                  ? "KEBERANGKATAN TERJADWAL"
-                  : filters.type === "private"
-                    ? "TANGGAL FLEKSIBEL"
-                    : "DOKUMENTASI PERJALANAN"}
-              </p>
               <h2 id="catalog-results-title">
                 {filters.type === "open"
                   ? "Open trip yang dapat dipilih"
                   : filters.type === "private"
                     ? "Land tour privat"
-                    : "Trip yang telah selesai"}
+                  : "Trip yang telah selesai"}
               </h2>
             </div>
-            <p>
-              {filters.type === "archive"
-                ? "Arsip dipertahankan sebagai dokumentasi, bukan jadwal yang sedang dijual."
-                : "Buka detail untuk melihat tanggal, harga, fasilitas, dan status terbaru."}
-            </p>
           </div>
 
           {displayedTours.length ? (

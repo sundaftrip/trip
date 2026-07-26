@@ -9,6 +9,7 @@ import { visaSlug } from "@/lib/visa-slug";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { findSearchDestinations } from "@/lib/search-destinations";
+import { expandedSearchTerms } from "@/lib/search-intent";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,14 @@ type SearchResults = {
 async function doSearch(q: string): Promise<SearchResults> {
   const term = q.trim();
   if (!term) return { destinations: [], tours: [], blogs: [], visas: [] };
-  const destinations = findSearchDestinations(term);
+  const terms = expandedSearchTerms(term).slice(0, 4);
+  const destinations = Array.from(
+    new Map(
+      terms
+        .flatMap((searchTerm) => findSearchDestinations(searchTerm))
+        .map((destination) => [destination.href, destination]),
+    ).values(),
+  );
 
   // Case-insensitive search across multiple fields per entity.
   const [tours, blogs, visas] = await Promise.all([
@@ -59,12 +67,12 @@ async function doSearch(q: string): Promise<SearchResults> {
         AND: [
           { status: { in: ["ACTIVE", "FULL"] } },
           {
-            OR: [
-              { title: { contains: term, mode: "insensitive" } },
-              { country: { contains: term, mode: "insensitive" } },
-              { cityHighlight: { contains: term, mode: "insensitive" } },
-              { description: { contains: term, mode: "insensitive" } },
-            ],
+            OR: terms.flatMap((searchTerm) => [
+              { title: { contains: searchTerm, mode: "insensitive" as const } },
+              { country: { contains: searchTerm, mode: "insensitive" as const } },
+              { cityHighlight: { contains: searchTerm, mode: "insensitive" as const } },
+              { description: { contains: searchTerm, mode: "insensitive" as const } },
+            ]),
           },
         ],
       },
@@ -80,11 +88,11 @@ async function doSearch(q: string): Promise<SearchResults> {
         AND: [
           { published: true },
           {
-            OR: [
-              { title: { contains: term, mode: "insensitive" } },
-              { excerpt: { contains: term, mode: "insensitive" } },
-              { body: { contains: term, mode: "insensitive" } },
-            ],
+            OR: terms.flatMap((searchTerm) => [
+              { title: { contains: searchTerm, mode: "insensitive" as const } },
+              { excerpt: { contains: searchTerm, mode: "insensitive" as const } },
+              { body: { contains: searchTerm, mode: "insensitive" as const } },
+            ]),
           },
         ],
       },
@@ -94,10 +102,10 @@ async function doSearch(q: string): Promise<SearchResults> {
     }),
     prisma.countryVisa.findMany({
       where: {
-        OR: [
-          { name: { contains: term, mode: "insensitive" } },
-          { en: { contains: term, mode: "insensitive" } },
-        ],
+        OR: terms.flatMap((searchTerm) => [
+          { name: { contains: searchTerm, mode: "insensitive" as const } },
+          { en: { contains: searchTerm, mode: "insensitive" as const } },
+        ]),
       },
       select: { en: true, name: true },
       orderBy: { name: "asc" },

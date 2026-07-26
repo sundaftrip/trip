@@ -559,8 +559,8 @@
 }
 
 .tourPrice {
-  margin-top: auto;
-  padding-top: 18px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--home-line);
 }
 

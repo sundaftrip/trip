@@ -1609,7 +1609,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(8px, 2.8vw, 12px);
   }
-  .tourCard { border-radius: 10px; }
+  .tourCard { border-radius: 16px; }
   .tourPhoto,
   .tourCardCompact .tourPhoto { aspect-ratio: 1.36 / 1; }
   .tourStatus {

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
+import CleanGlobalSearch from "./CleanGlobalSearch";
 import styles from "./CleanShell.module.css";
 
 const destinationLinks = [
@@ -195,17 +196,20 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
           <Link className={styles.desktopAction} href="/tours">Lihat Jadwal Tour</Link>
         </div>
 
-        <button
-          ref={menuButtonRef}
-          className={styles.menuButton}
-          type="button"
-          aria-expanded={open}
-          aria-controls="clean-mobile-drawer"
-          aria-label="Buka menu"
-          onClick={() => setOpen(true)}
-        >
-          <Menu aria-hidden="true" />
-        </button>
+        <div className={styles.headerActions}>
+          <CleanGlobalSearch />
+          <button
+            ref={menuButtonRef}
+            className={styles.menuButton}
+            type="button"
+            aria-expanded={open}
+            aria-controls="clean-mobile-drawer"
+            aria-label="Buka menu"
+            onClick={() => setOpen(true)}
+          >
+            <Menu aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
       <div
@@ -245,11 +249,15 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
           </div>
 
           <div className={styles.drawerBody}>
-            <Link className={styles.drawerPrimary} href="/tours" onClick={closeDrawer}>
-              Lihat Jadwal Tour
-            </Link>
-
             <nav className={styles.mobileNav} aria-label="Navigasi mobile">
+              <Link
+                className={styles.mobileLink}
+                href="/tours"
+                aria-current={isActive("/tours") ? "page" : undefined}
+                onClick={closeDrawer}
+              >
+                Lihat Jadwal Tour
+              </Link>
               <button
                 className={`${styles.destinationToggle} ${destinationsOpen ? styles.destinationToggleOpen : ""}`}
                 type="button"
