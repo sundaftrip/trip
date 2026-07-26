@@ -1377,6 +1377,7 @@
   }
 
   .finderZone {
+    display: flow-root;
     margin-top: 0;
     background: #FFFFFF;
   }
