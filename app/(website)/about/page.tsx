@@ -185,9 +185,10 @@ export default async function AboutPage() {
             className={`${isAtlas ? supportStyles.aboutTitle : "text-4xl lg:text-5xl"} font-black leading-tight mb-5 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
             style={isOutlined ? { color: headClr } : undefined}>
             Jalan ke{" "}
-            <span className={supportStyles.aboutTitleHighlight}>
-              Rusia, Asia Tengah, sampai aurora,
-            </span>{" "}
+            <span className={supportStyles.aboutTitleHighlight}>Rusia</span>,{" "}
+            <span className={supportStyles.aboutTitleHighlight}>Asia Tengah</span>,{" "}
+            sampai{" "}
+            <span className={supportStyles.aboutTitleHighlight}>aurora</span>,{" "}
             tanpa drama yang gak perlu
           </h1>
 

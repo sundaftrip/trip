@@ -133,7 +133,11 @@ export default async function ReviewsPage() {
         <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <h1 id="reviews-page-title" className={supportStyles.title} style={{ color: "var(--at-text)" }}>
-              Review Sundaf Trip dari Traveler Indonesia
+              Review{" "}
+              <span className={supportStyles.reviewTitleHighlight}>
+                Sundaf Trip
+              </span>{" "}
+              dari Traveler Indonesia
             </h1>
             <p className={`${supportStyles.lede} mt-6`} style={{ color: "var(--at-subtext)" }}>
               Halaman ini mengumpulkan testimonial yang sudah dipublikasikan untuk membantu calon traveler, partner, dan mesin pencari memahami bukti sosial Sundaf Trip secara lebih terbuka.
@@ -185,8 +189,8 @@ export default async function ReviewsPage() {
                           key={index}
                           aria-hidden="true"
                           size={16}
-                          fill={index < rating ? "var(--site-accent)" : "none"}
-                          style={{ color: "var(--site-accent)" }}
+                          fill={index < rating ? "#fbbc04" : "none"}
+                          style={{ color: "#fbbc04" }}
                         />
                       ))}
                     </div>

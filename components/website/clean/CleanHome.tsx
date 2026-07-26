@@ -446,23 +446,31 @@ export default function CleanHome({
 
             <div className={styles.benefitGrid}>
               <article>
-                <FileCheck aria-hidden="true" />
-                <h3>Visa &amp; dokumen dibantu</h3>
+                <div className={styles.benefitTitle}>
+                  <FileCheck aria-hidden="true" />
+                  <h3>Visa &amp; dokumen dibantu</h3>
+                </div>
                 <p>Alur dan berkas dicek sebelum pengajuan.</p>
               </article>
               <article>
-                <Clock aria-hidden="true" />
-                <h3>Itinerary realistis</h3>
+                <div className={styles.benefitTitle}>
+                  <Clock aria-hidden="true" />
+                  <h3>Itinerary realistis</h3>
+                </div>
                 <p>Rute memberi waktu untuk menikmati tiap kota.</p>
               </article>
               <article>
-                <MessageCircle aria-hidden="true" />
-                <h3>Koordinasi dari awal</h3>
+                <div className={styles.benefitTitle}>
+                  <MessageCircle aria-hidden="true" />
+                  <h3>Koordinasi dari awal</h3>
+                </div>
                 <p>Info keberangkatan disiapkan sejak awal.</p>
               </article>
               <article>
-                <Compass aria-hidden="true" />
-                <h3>Tour leader berpengalaman</h3>
+                <div className={styles.benefitTitle}>
+                  <Compass aria-hidden="true" />
+                  <h3>Tour leader berpengalaman</h3>
+                </div>
                 <p>Koordinasi grup dibantu selama perjalanan.</p>
               </article>
             </div>

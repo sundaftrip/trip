@@ -729,12 +729,27 @@
   stroke-width: 1.65;
 }
 
+.benefitTitle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.benefitTitle svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
 .benefitGrid h3 {
   margin: 22px 0 0;
   color: var(--home-ink);
   font-size: 17px;
   font-weight: 740;
   line-height: 1.32;
+}
+
+.benefitGrid .benefitTitle h3 {
+  margin: 0;
 }
 
 .benefitGrid p {
