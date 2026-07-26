@@ -264,8 +264,8 @@ export default function CleanHome({
   const heroBody = readText(
     texts,
     ["home_hero_body", "home_hero_subtitle"],
-    "Rute, visa, dan koordinasi perjalanan kami siapkan sejak awal—kamu tinggal menikmati.",
-  );
+    "Rute, visa, dan koordinasi perjalanan kami siapkan sejak awal, kamu tinggal menikmati.",
+  ).replace(/\s*[—–]\s*/g, ", ");
   const resolvedHeroImage = getTourProductImage({
     title: "Sundaf Trip Aurora",
     country: "Rusia",
