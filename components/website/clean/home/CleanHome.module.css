@@ -88,7 +88,7 @@
 .heroImage {
   z-index: -2;
   object-fit: cover;
-  object-position: 58% 52%;
+  object-position: 50% 52%;
 }
 
 .heroOverlay {

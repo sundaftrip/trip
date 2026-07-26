@@ -236,7 +236,7 @@ export default function CleanHome({
   company,
   faqs,
   texts,
-  heroImage = "/about-gallery/01-aurora.webp",
+  heroImage = "/images/home/murmansk-aurora-group.webp",
 }: CleanHomeProps) {
   const scheduledTours = tours
     .filter((tour) => tour.state === "bookable" || tour.state === "sold")
@@ -274,7 +274,7 @@ export default function CleanHome({
   const resolvedHeroAlt = readText(
     texts,
     ["home_hero_image_alt"],
-    "Dokumentasi perjalanan Aurora Sundaf Trip",
+    "Rombongan Sundaf Trip menyaksikan Aurora di Murmansk",
   );
 
   const russiaImage = destinationImage(
