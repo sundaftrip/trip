@@ -25,6 +25,10 @@ function testimonialDate(value: CleanHomeTestimonial["date"]) {
   return Number.isNaN(date.getTime()) ? null : DATE_FORMATTER.format(date);
 }
 
+function withoutLongDash(value: string) {
+  return value.replace(/\s*[—–]\s*/g, ", ");
+}
+
 export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }) {
   if (!items.length) return null;
 
@@ -33,7 +37,6 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
       <div className={styles.shell}>
         <div className={styles.reviewHeading}>
           <div className={styles.sectionHeading}>
-            <p className={styles.eyebrow}>CERITA PESERTA</p>
             <h2 id="stories-title">Cerita dari yang sudah pulang</h2>
           </div>
         </div>
@@ -79,7 +82,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
 
                 <div className={styles.reviewBody}>
                   <blockquote className={styles.reviewExcerpt}>
-                    “{item.content}”
+                    “{withoutLongDash(item.content)}”
                   </blockquote>
                   <Link
                     className={styles.reviewMore}

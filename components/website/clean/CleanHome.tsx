@@ -374,7 +374,6 @@ export default function CleanHome({
         >
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>MULAI DARI DESTINASI</p>
               <h2 id="destinations-title">Pilih perjalanan berikutnya</h2>
             </div>
 
