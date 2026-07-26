@@ -24,19 +24,6 @@ const COLOR_DEFAULTS: Record<string, string> = {
 
 const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
 
-/* Map font key → CSS variable (loaded in root layout via next/font) */
-const FONT_CSS_VAR: Record<string, string> = {
-  jost:          "var(--font-jost)",
-  "plus-jakarta": "var(--font-plus-jakarta)",
-  "dm-sans":     "var(--font-dm-sans)",
-  outfit:        "var(--font-outfit)",
-  nunito:        "var(--font-nunito)",
-  playfair:      "var(--font-playfair)",
-  raleway:       "var(--font-raleway)",
-  poppins:       "var(--font-poppins)",
-  caveat:        "var(--font-caveat)",
-};
-
 const getSiteConfig = unstable_cache(
   async () => {
     try {
@@ -76,12 +63,15 @@ const getSiteConfig = unstable_cache(
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
   const config = await getSiteConfig();
-  const { colors, logo, font, theme, whatsapp, company } = config;
+  const { colors, logo, theme, whatsapp, company } = config;
   // Preview-theme via cookie sengaja dihilangkan dari server layout karena
   // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
 
-  const fontFamily = FONT_CSS_VAR[font] ?? FONT_CSS_VAR["jost"];
+  // Identitas editorial Sundaf memakai satu keluarga huruf agar heading,
+  // navigasi, dan kartu terasa konsisten. Pengaturan font CMS tetap disimpan
+  // untuk kompatibilitas data, tetapi tidak lagi mengganti tipografi publik.
+  const fontFamily = 'var(--font-jost), "Helvetica Neue", Arial, sans-serif';
   const accent = colors["color_accent"] ?? "#00ADB5";
   const cssVars =
     Object.entries(colors)

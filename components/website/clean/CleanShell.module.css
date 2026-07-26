@@ -10,12 +10,13 @@
   --shell-line: #e1e7e6;
   --shell-white: #fff;
   color: var(--shell-ink);
+  font-weight: 400;
+  letter-spacing: 0.01em;
   font-family: var(
     --site-font-family,
-    "Plus Jakarta Sans",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
+    var(--font-jost),
+    "Helvetica Neue",
+    Arial,
     sans-serif
   );
 }
@@ -214,17 +215,17 @@
   margin: 0 0 5px;
   color: var(--shell-primary);
   font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.14em;
+  font-weight: 500;
+  letter-spacing: 0.16em;
 }
 
 .searchDialogHeader h2 {
   margin: 0;
   color: var(--shell-ink);
   font-size: 24px;
-  font-weight: 670;
+  font-weight: 300;
   line-height: 1.2;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.016em;
 }
 
 .searchClose {

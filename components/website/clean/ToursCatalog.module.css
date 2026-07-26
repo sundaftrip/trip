@@ -10,6 +10,8 @@
   overflow-x: clip;
   background: #fff;
   color: var(--catalog-ink);
+  font-weight: 300;
+  letter-spacing: 0.012em;
 }
 
 .shell {
@@ -46,8 +48,8 @@
   margin: 0 0 12px;
   color: var(--catalog-primary);
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  font-weight: 500;
+  letter-spacing: 0.18em;
 }
 
 .hero h1,
@@ -56,8 +58,8 @@
 .consultation h2 {
   margin: 0;
   color: var(--catalog-navy);
-  font-weight: 760;
-  letter-spacing: -0.045em;
+  font-weight: 300;
+  letter-spacing: 0.018em;
   line-height: 1.05;
   text-wrap: balance;
 }
@@ -73,6 +75,8 @@
   margin: 20px 0 0;
   color: var(--catalog-muted);
   font-size: 17px;
+  font-weight: 300;
+  letter-spacing: 0.012em;
   line-height: 1.65;
 }
 
@@ -116,8 +120,8 @@
 .trustCounts strong {
   color: inherit;
   font-size: 29px;
-  font-weight: 760;
-  letter-spacing: -0.04em;
+  font-weight: 400;
+  letter-spacing: 0.012em;
 }
 
 .resultsSection {
@@ -143,8 +147,8 @@
   margin: 0;
   color: var(--catalog-navy);
   font-size: clamp(34px, 4vw, 54px);
-  font-weight: 760;
-  letter-spacing: -0.045em;
+  font-weight: 300;
+  letter-spacing: 0.018em;
   line-height: 1.05;
 }
 
