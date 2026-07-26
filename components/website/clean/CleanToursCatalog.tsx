@@ -163,6 +163,15 @@ export default function CleanToursCatalog({
     () => filterCatalogTours(tours, filters, now),
     [filters, now, tours],
   );
+  const privatePreviewTours = useMemo(
+    () =>
+      filterCatalogTours(
+        tours,
+        { ...DEFAULT_CATALOG_FILTERS, type: "private" },
+        now,
+      ).slice(0, 3),
+    [now, tours],
+  );
   const draftCount = useMemo(
     () => filterCatalogTours(tours, draft, now).length,
     [draft, now, tours],
@@ -207,6 +216,12 @@ export default function CleanToursCatalog({
     }
     return chips;
   }, [destinations, filters]);
+  const showPrivatePreview = filters.type === "open" && activeFilters.length === 0;
+  const privateCatalogHref = queryHref(
+    pathname,
+    { ...DEFAULT_CATALOG_FILTERS, type: "private" },
+    campaignQuery,
+  );
 
   function navigate(next: CatalogFilterState) {
     router.push(queryHref(pathname, next, campaignQuery), { scroll: false });
@@ -270,7 +285,10 @@ export default function CleanToursCatalog({
         </div>
       </section>
 
-      <section className={styles.resultsSection} aria-labelledby="catalog-results-title">
+      <section
+        className={`${styles.resultsSection} ${showPrivatePreview ? styles.resultsWithPrivatePreview : ""}`}
+        aria-labelledby="catalog-results-title"
+      >
         <div className={styles.shell}>
           <div className={styles.resultsToolbar}>
             <div aria-live="polite" aria-atomic="true">
@@ -371,6 +389,32 @@ export default function CleanToursCatalog({
           )}
         </div>
       </section>
+
+      {showPrivatePreview && privatePreviewTours.length ? (
+        <section className={styles.privatePreview} aria-labelledby="private-preview-title">
+          <div className={styles.shell}>
+            <div className={styles.privatePreviewHeading}>
+              <div>
+                <p className={styles.eyebrow}>PILIH TANGGAL SENDIRI</p>
+                <h2 id="private-preview-title">Land tour privat</h2>
+              </div>
+              <Link href={privateCatalogHref} className={styles.privatePreviewLink}>
+                Lihat semua land tour privat
+              </Link>
+            </div>
+            <div className={styles.grid}>
+              {privatePreviewTours.map((tour) => (
+                <CleanTourCard
+                  key={tour.id}
+                  tour={tour}
+                  compact
+                  campaignQuery={campaignQuery}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className={styles.faqSection} aria-labelledby="catalog-faq-title">
         <div className={`${styles.shell} ${styles.faqLayout}`}>
