@@ -17,6 +17,12 @@ export default async function SundafTripBrandPage() {
       title={content.title}
       canonicalPath={content.routePath}
       description={content.answer}
+      descriptionHighlights={[
+        "brand perjalanan Indonesia",
+        "CV Sundaf Holiday Group",
+        "tour Rusia, aurora borealis, Asia Tengah",
+        "bantuan pengurusan visa",
+      ]}
       primaryCta={{ href: content.primaryCtaHref || "/tours", label: content.primaryCtaLabel || "Lihat Paket Tour" }}
       secondaryCta={
         content.secondaryCtaHref && content.secondaryCtaLabel
