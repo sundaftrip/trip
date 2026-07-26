@@ -84,9 +84,9 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
                   <Link
                     className={styles.reviewMore}
                     href="/reviews"
-                    aria-label={`Lihat ulasan lengkap dari ${item.name}`}
+                    aria-label={`Lihat selengkapnya ulasan dari ${item.name}`}
                   >
-                    Lihat ulasan
+                    Lihat selengkapnya
                     <span aria-hidden="true"> →</span>
                   </Link>
                 </div>
