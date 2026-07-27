@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { localizePdfText } from "../lib/itinerary-pdf-localization";
-import { buildItineraryDisplay } from "../lib/itinerary-insights";
+import { addInferredMiddleHotelStay, buildItineraryDisplay } from "../lib/itinerary-insights";
 import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle, replaceEditorialDashes } from "../lib/tour-display";
 
 test("normalizes an all-lowercase imported tour title", () => {
@@ -97,4 +97,11 @@ test("classifies only explicit itinerary transport and keeps special transport a
     }).insights.some((insight) => insight.value === "Kereta api"),
     false,
   );
+});
+
+test("adds a hotel stay only for eligible middle itinerary days", () => {
+  const baseDay = buildItineraryDisplay({ day: 3, title: "Eksplorasi kota", description: "Tur kota dan waktu bebas." });
+  assert.equal(addInferredMiddleHotelStay(baseDay, 1, 5, "Tur kota dan waktu bebas.").insights.at(-1)?.value, "Hotel");
+  assert.equal(addInferredMiddleHotelStay(baseDay, 0, 5, "Tur kota dan waktu bebas.").insights.some((item) => item.kind === "stay"), false);
+  assert.equal(addInferredMiddleHotelStay(baseDay, 1, 5, "Menginap di yurt camp.").insights.some((item) => item.kind === "stay"), false);
 });

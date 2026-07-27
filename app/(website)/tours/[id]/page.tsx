@@ -22,7 +22,7 @@ import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanTourDetail from "@/components/website/clean/CleanTourDetail";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
-import { buildItineraryDisplay, type ItineraryDisplayDay, type ItineraryInsight } from "@/lib/itinerary-insights";
+import { addInferredMiddleHotelStay, buildItineraryDisplay, type ItineraryDisplayDay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
@@ -495,14 +495,20 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const displayBadge = localizePdfText(tour.badge);
   const displayInclusions = tour.inclusions.map((item) => localizePdfText(item) ?? item);
   const displayExclusions = tour.exclusions.map((item) => localizePdfText(item) ?? item);
-  const itinerary = rawItinerary.map((item) => {
-    const localizedItem = {
-      ...item,
-      title: localizePdfText(item.title) ?? item.title,
-      description: localizePdfText(item.description) ?? item.description,
-    };
-    return addImpliedStayInsight(
+  const localizedItinerary = rawItinerary.map((item) => ({
+    ...item,
+    title: localizePdfText(item.title) ?? item.title,
+    description: localizePdfText(item.description) ?? item.description,
+  }));
+  const itinerary = localizedItinerary.map((localizedItem, index) => {
+    const withExplicitStay = addImpliedStayInsight(
       buildItineraryDisplay(localizedItem),
+      `${localizedItem.title}\n${localizedItem.description}`,
+    );
+    return addInferredMiddleHotelStay(
+      withExplicitStay,
+      index,
+      localizedItinerary.length,
       `${localizedItem.title}\n${localizedItem.description}`,
     );
   });

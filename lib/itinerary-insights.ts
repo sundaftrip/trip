@@ -249,3 +249,22 @@ export function buildItineraryDisplay(day: SourceItineraryDay): ItineraryDisplay
     insights,
   };
 }
+
+export function addInferredMiddleHotelStay(
+  day: ItineraryDisplayDay,
+  index: number,
+  totalDays: number,
+  source: string,
+): ItineraryDisplayDay {
+  if (index === 0 || index === totalDays - 1 || day.insights.some((insight) => insight.kind === "stay")) {
+    return day;
+  }
+
+  const hasAlternativeOvernight = /\b(?:yurt|yurta|camp|tenda|cruise|kapal|ferry|kereta\s+malam|night\s+train|penerbangan\s+malam|overnight\s+flight)\b/i.test(source);
+  if (hasAlternativeOvernight) return day;
+
+  return {
+    ...day,
+    insights: [...day.insights, { kind: "stay", label: "Bermalam", value: "Hotel" }],
+  };
+}
