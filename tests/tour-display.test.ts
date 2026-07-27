@@ -81,9 +81,17 @@ test("classifies only explicit itinerary transport and keeps special transport a
     }).insights,
     [{ kind: "transport", label: "Transportasi", value: "Kereta anjing" }],
   );
-  assert.equal(
+  assert.deepEqual(
     buildItineraryDisplay({
       day: 5,
+      title: "Aktivitas musim dingin",
+      description: "Menikmati kereta rusa di area bersalju.",
+    }).insights,
+    [{ kind: "transport", label: "Transportasi", value: "Kereta rusa" }],
+  );
+  assert.equal(
+    buildItineraryDisplay({
+      day: 6,
       title: "Kota Rusia",
       description: "Menikmati kereta Rusia dan berjalan santai di pusat kota.",
     }).insights.some((insight) => insight.value === "Kereta api"),

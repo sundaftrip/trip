@@ -88,7 +88,8 @@ function inferTransport(source: string): string | null {
   const textForTrain = source
     .replace(/\btrain\s+street\b/gi, "")
     .replace(/\b(?:kereta\s+gantung|cable\s*car|gondola|chairlift|ski\s*lift)\b/gi, "")
-    .replace(/\b(?:kereta\s+(?:anjing|rusa)|dog\s*sled(?:ding)?|husky\s*sled(?:ding)?)\b/gi, "");
+    .replace(/\b(?:kereta\s+anjing|dog\s*sled(?:ding)?|husky\s*sled(?:ding)?)\b/gi, "")
+    .replace(/\b(?:kereta\s+rusa|reindeer\s*sled(?:ding)?)\b/gi, "");
   const textForWaterTransport = source
     .replace(/\bbanana\s+boat(?:\s+aurora)?\b/gi, "")
     .replace(/\b(?:skate\s*board|skateboard|snowboard|wakeboard|surfboard)\b/gi, "");
@@ -97,8 +98,11 @@ function inferTransport(source: string): string | null {
   if (/\b(?:kereta\s+gantung|cable\s*car|gondola|chairlift|ski\s*lift)\b/i.test(source)) {
     pushUnique(transports, "Kereta gantung");
   }
-  if (/\b(?:kereta\s+(?:anjing|rusa)|dog\s*sled(?:ding)?|husky\s*sled(?:ding)?)\b/i.test(source)) {
+  if (/\b(?:kereta\s+anjing|dog\s*sled(?:ding)?|husky\s*sled(?:ding)?)\b/i.test(source)) {
     pushUnique(transports, "Kereta anjing");
+  }
+  if (/\b(?:kereta\s+rusa|reindeer\s*sled(?:ding)?)\b/i.test(source)) {
+    pushUnique(transports, "Kereta rusa");
   }
   if (/\b(penerbangan|flight|flights|fly|airport|bandara|pesawat)\b/i.test(source)) {
     pushUnique(transports, "Penerbangan");

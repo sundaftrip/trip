@@ -16,6 +16,7 @@ import {
   Plane,
   Route,
   Ship,
+  Snowflake,
   Star,
   TrainFront,
   Utensils,
@@ -209,6 +210,7 @@ function itineraryInsightIcon(insight: ItineraryDisplayDay["insights"][number]) 
   if (insight.kind === "distance" || insight.kind === "ascent") return <Route {...iconProps} />;
   if (insight.value.includes("Kereta gantung")) return <CableCar {...iconProps} />;
   if (insight.value.includes("Kereta anjing")) return <Dog {...iconProps} />;
+  if (insight.value.includes("Kereta rusa")) return <Snowflake {...iconProps} />;
   if (insight.value.includes("Penerbangan")) return <Plane {...iconProps} />;
   if (insight.value.includes("Kereta api")) return <TrainFront {...iconProps} />;
   if (insight.value.includes("Bus")) return <Bus {...iconProps} />;
