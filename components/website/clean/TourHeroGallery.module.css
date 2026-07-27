@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: 0 0 24px 24px;
+  border-radius: 24px;
   background: #e7ecec;
 }
 
@@ -193,6 +193,7 @@
   .gallery {
     width: calc(100% + 40px);
     margin-left: -20px;
+    border-radius: 18px;
   }
 
   .slide > button {
