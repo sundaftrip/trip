@@ -85,14 +85,25 @@ function inferMeals(source: string): string | null {
 }
 
 function inferTransport(source: string): string | null {
-  const textForTrain = source.replace(/\btrain\s+street\b/gi, "");
-  const textForWaterTransport = source.replace(/\bbanana\s+boat(?:\s+aurora)?\b/gi, "");
+  const textForTrain = source
+    .replace(/\btrain\s+street\b/gi, "")
+    .replace(/\b(?:kereta\s+gantung|cable\s*car|gondola|chairlift|ski\s*lift)\b/gi, "")
+    .replace(/\b(?:kereta\s+(?:anjing|rusa)|dog\s*sled(?:ding)?|husky\s*sled(?:ding)?)\b/gi, "");
+  const textForWaterTransport = source
+    .replace(/\bbanana\s+boat(?:\s+aurora)?\b/gi, "")
+    .replace(/\b(?:skate\s*board|skateboard|snowboard|wakeboard|surfboard)\b/gi, "");
   const transports: string[] = [];
 
+  if (/\b(?:kereta\s+gantung|cable\s*car|gondola|chairlift|ski\s*lift)\b/i.test(source)) {
+    pushUnique(transports, "Kereta gantung");
+  }
+  if (/\b(?:kereta\s+(?:anjing|rusa)|dog\s*sled(?:ding)?|husky\s*sled(?:ding)?)\b/i.test(source)) {
+    pushUnique(transports, "Kereta anjing");
+  }
   if (/\b(penerbangan|flight|flights|fly|airport|bandara|pesawat)\b/i.test(source)) {
     pushUnique(transports, "Penerbangan");
   }
-  if (/\b(kereta(?:\s+api)?|by\s+train|train\s+transfer|journey[^.]{0,50}train|sancaka|railway|rail)\b/i.test(textForTrain)) {
+  if (/\b(?:kereta\s+api|by\s+train|train\s+transfer|journey[^.]{0,50}train|sancaka|railway|rail)\b/i.test(textForTrain)) {
     pushUnique(transports, "Kereta api");
   }
   if (/\b(bus|shuttle|coach)\b/i.test(source)) {

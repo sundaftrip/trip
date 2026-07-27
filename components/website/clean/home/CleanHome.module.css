@@ -1654,9 +1654,10 @@
   }
 
   .tourGrid .tourMeta {
+    text-align: left;
     font-size: 9.5px;
     line-height: 1.38;
-    letter-spacing: 0.055em;
+    letter-spacing: 0.025em;
   }
 
   .tourGrid .routeLine,

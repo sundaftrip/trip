@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { localizePdfText } from "../lib/itinerary-pdf-localization";
+import { buildItineraryDisplay } from "../lib/itinerary-insights";
 import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle, replaceEditorialDashes } from "../lib/tour-display";
 
 test("normalizes an all-lowercase imported tour title", () => {
@@ -60,5 +61,32 @@ test("localizes mixed imported Vietnam itinerary phrasing", () => {
   assert.equal(
     localizePdfText("Begin your exploration of Hanoi dengan a relaxing one-hour cyclo ride through the charming Hanoi Old Quarter."),
     "Mulai eksplorasi Hanoi dengan cyclo ride santai selama satu jam melalui Hanoi Old Quarter.",
+  );
+});
+
+test("classifies only explicit itinerary transport and keeps special transport accurate", () => {
+  assert.deepEqual(
+    buildItineraryDisplay({
+      day: 3,
+      title: "Almaty menuju Bishkek",
+      description: "Menikmati kereta gantung Shymbulak lalu transfer privat menuju Bishkek.",
+    }).insights,
+    [{ kind: "transport", label: "Transportasi", value: "Kereta gantung" }],
+  );
+  assert.deepEqual(
+    buildItineraryDisplay({
+      day: 4,
+      title: "Aktivitas musim dingin",
+      description: "Pengalaman kereta anjing dan skateboard di area resort.",
+    }).insights,
+    [{ kind: "transport", label: "Transportasi", value: "Kereta anjing" }],
+  );
+  assert.equal(
+    buildItineraryDisplay({
+      day: 5,
+      title: "Kota Rusia",
+      description: "Menikmati kereta Rusia dan berjalan santai di pusat kota.",
+    }).insights.some((insight) => insight.value === "Kereta api"),
+    false,
   );
 });

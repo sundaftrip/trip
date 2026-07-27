@@ -17,12 +17,6 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
   timeZone: "Asia/Jakarta",
 });
 
-const MONTH_FORMATTER = new Intl.DateTimeFormat("id-ID", {
-  month: "long",
-  year: "numeric",
-  timeZone: "Asia/Jakarta",
-});
-
 function validDate(value: string | null) {
   if (!value) return null;
   const date = new Date(value);
@@ -40,9 +34,7 @@ function statusLabel(tour: CleanTour) {
 }
 
 function tripMeta(tour: CleanTour) {
-  const date = validDate(tour.tripDate);
-  const month = date ? MONTH_FORMATTER.format(date) : "Jadwal menyusul";
-  return [tour.duration, month].filter(Boolean).join(" · ");
+  return tour.duration || (tour.tripDate ? "Jadwal keberangkatan" : "Tanggal fleksibel");
 }
 
 function departureLabel(tour: CleanTour) {

@@ -2,14 +2,23 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Calendar,
+  Bus,
+  CableCar,
+  Car,
   Check,
   Clock,
+  Dog,
   Download,
   FileText,
   Hotel,
   MapPin,
   Package,
+  Plane,
+  Route,
+  Ship,
   Star,
+  TrainFront,
+  Utensils,
   Users,
   X,
 } from "lucide-react";
@@ -190,6 +199,33 @@ function itineraryDate(tripDate: Date | null, day: number) {
       timeZone: "Asia/Jakarta",
     }).format(date),
   };
+}
+
+function itineraryInsightIcon(insight: ItineraryDisplayDay["insights"][number]) {
+  const iconProps = { size: 18, strokeWidth: 1.45, "aria-hidden": true } as const;
+  if (insight.kind === "meals") return <Utensils {...iconProps} />;
+  if (insight.kind === "stay") return <Hotel {...iconProps} />;
+  if (insight.kind === "time") return <Clock {...iconProps} />;
+  if (insight.kind === "distance" || insight.kind === "ascent") return <Route {...iconProps} />;
+  if (insight.value.includes("Kereta gantung")) return <CableCar {...iconProps} />;
+  if (insight.value.includes("Kereta anjing")) return <Dog {...iconProps} />;
+  if (insight.value.includes("Penerbangan")) return <Plane {...iconProps} />;
+  if (insight.value.includes("Kereta api")) return <TrainFront {...iconProps} />;
+  if (insight.value.includes("Bus")) return <Bus {...iconProps} />;
+  if (insight.value.includes("Kapal")) return <Ship {...iconProps} />;
+  return <Car {...iconProps} />;
+}
+
+function itineraryInsightValue(insight: ItineraryDisplayDay["insights"][number]) {
+  if (insight.kind !== "meals") return insight.value;
+
+  const codes: string[] = [];
+  if (/\b(?:sarapan|breakfast)\b/i.test(insight.value)) codes.push("B");
+  if (/\bbrunch\b/i.test(insight.value)) codes.push("BR");
+  if (/\b(?:makan\s+siang|lunch)\b/i.test(insight.value)) codes.push("L");
+  if (/\b(?:makan\s+malam|dinner)\b/i.test(insight.value)) codes.push("D");
+
+  return codes.length ? codes.join(" / ") : insight.value;
 }
 
 function bookingStatus(
@@ -429,7 +465,12 @@ export default function CleanTourDetail({
                         {paragraphs.map((paragraph, paragraphIndex) => <p key={`${paragraph.slice(0, 32)}-${paragraphIndex}`}>{paragraph}</p>)}
                         {item.insights.length > 0 && (
                           <div className={styles.detailDayTags}>
-                            {item.insights.map((insight) => <span key={`${insight.kind}-${insight.value}`}>{insight.value}</span>)}
+                            {item.insights.map((insight) => (
+                              <span className={styles.detailDayTag} key={`${insight.kind}-${insight.value}`}>
+                                {itineraryInsightIcon(insight)}
+                                <span>{itineraryInsightValue(insight)}</span>
+                              </span>
+                            ))}
                           </div>
                         )}
                       </div>
