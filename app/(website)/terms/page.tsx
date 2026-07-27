@@ -7,8 +7,41 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
-const LEGAL_ENTITY_STATEMENT =
-  "This website is owned and operated by CV Sundaf Holiday Group, operating under the Sundaf Trip brand.";
+
+type TermsSection = {
+  id: string;
+  title: string;
+};
+
+function getTermsSections(html?: string | null) {
+  const sections: TermsSection[] = [];
+  if (!html) return sections;
+
+  let index = 0;
+  html.replace(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gi, (_match, content: string) => {
+    const title = content
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (title) {
+      index += 1;
+      sections.push({ id: `terms-section-${index}`, title });
+    }
+    return _match;
+  });
+
+  return sections;
+}
+
+function addTermsSectionAnchors(html: string) {
+  let index = 0;
+  return html.replace(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gi, (_match, content: string) => {
+    index += 1;
+    return `<h2 id="terms-section-${index}">${content}</h2>`;
+  });
+}
 
 export const metadata: Metadata = {
   title: "Syarat & Ketentuan",
@@ -56,6 +89,46 @@ export default async function TermsPage({
   const lang   = params.lang === "en" ? "en" : "id";
   const body   = lang === "en" ? (tc?.bodyEn ?? tc?.bodyId) : tc?.bodyId;
   const hasEn  = !!tc?.bodyEn;
+  const termsSections = getTermsSections(body);
+  const anchoredBody = body ? addTermsSectionAnchors(body) : null;
+  const updatedLabel = tc?.updatedAt
+    ? new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(tc.updatedAt)
+    : null;
+  const legalCopy = lang === "en"
+    ? {
+        entity: "This website is owned and operated by CV Sundaf Holiday Group under the Sundaf Trip brand.",
+        lede: "Read this document before confirming a booking. It explains the terms that apply when a trip changes or cannot proceed as planned.",
+        updated: "Last updated",
+        guideLabel: "READ THIS FIRST",
+        guideTitle: "Key points before you book",
+        guideLede: "This is a reading guide. The complete terms below remain the binding reference.",
+        summaries: [
+          ["Payment commitment", "After registration is confirmed, the booking fee and deposits paid are non-refundable."],
+          ["Cancellation and changes", "Cancellation within 30 calendar days of departure is charged at 100% of the package price. Changes require organiser approval and supplier availability."],
+          ["Visa and force majeure", "Visa decisions are made by the relevant authority. In exceptional circumstances, the itinerary may change and additional operational costs may be borne by the participant."],
+        ],
+        contents: "In this document",
+        fullTerms: "Complete terms",
+      }
+    : {
+        entity: "Website ini dimiliki dan dioperasikan oleh CV Sundaf Holiday Group dengan merek Sundaf Trip.",
+        lede: "Baca dokumen ini sebelum mengonfirmasi pemesanan. Isinya menjelaskan ketentuan ketika perjalanan berubah atau tidak dapat berjalan sesuai rencana.",
+        updated: "Terakhir diperbarui",
+        guideLabel: "BACA SEBELUM BOOKING",
+        guideTitle: "Hal penting sebelum memesan",
+        guideLede: "Ini adalah panduan membaca. Ketentuan lengkap di bawah tetap menjadi rujukan yang berlaku.",
+        summaries: [
+          ["Komitmen pembayaran", "Setelah pendaftaran dikonfirmasi, booking fee dan deposit yang telah dibayarkan tidak dapat dikembalikan."],
+          ["Pembatalan dan perubahan", "Pembatalan dalam 30 hari kalender sebelum keberangkatan dikenakan 100% dari harga paket. Perubahan memerlukan persetujuan penyelenggara dan ketersediaan vendor."],
+          ["Visa dan keadaan kahar", "Keputusan visa berada pada otoritas terkait. Dalam keadaan luar biasa, itinerary dapat berubah dan biaya operasional tambahan dapat menjadi tanggung jawab peserta."],
+        ],
+        contents: "Dalam dokumen ini",
+        fullTerms: "Ketentuan lengkap",
+      };
 
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
@@ -116,9 +189,18 @@ export default async function TermsPage({
       />
       <div className={isAtlas ? supportStyles.termsShell : "max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12"}>
 
-        {isOutlined ? (
+        {isAtlas ? (
+          <header className={supportStyles.termsHero}>
+            <span className="at-pill inline-flex">DOKUMEN LEGAL</span>
+            <h1 className={supportStyles.termsTitle}>Syarat &amp; Ketentuan</h1>
+            <p className={supportStyles.termsLede}>{legalCopy.lede}</p>
+            <div className={supportStyles.termsMeta}>
+              <span>CV Sundaf Holiday Group</span>
+              {updatedLabel && <span>{legalCopy.updated} {updatedLabel}</span>}
+            </div>
+          </header>
+        ) : isOutlined ? (
           <>
-            {isAtlas    && <span className="at-pill mb-4 inline-flex">Legal</span>}
             {isKawaii   && <span className="kw-pill mb-4 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>♡ Legal</span>}
             {isTropical && <span className="tr-pill mb-4 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>📋 Legal</span>}
             {isPixel    && <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► LEGAL</span>}
@@ -137,9 +219,9 @@ export default async function TermsPage({
         )}
 
         <div
-          className={`${isAtlas ? supportStyles.softSurface : ""} mb-8 ${isOutlined ? "border-2 p-4" : "rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/60"}`}
+          className={`${isAtlas ? supportStyles.termsNotice : ""} mb-8 ${isOutlined ? "border-2 p-4" : "rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/60"}`}
           style={isOutlined ? { background: cardBg, borderColor: bdrClr, color: subClr } : undefined}>
-          <p className="text-sm leading-relaxed">{LEGAL_ENTITY_STATEMENT}</p>
+          <p className="text-sm leading-relaxed">{legalCopy.entity}</p>
         </div>
 
         {/* Language toggle, only shown when English content exists */}
@@ -158,6 +240,23 @@ export default async function TermsPage({
           </nav>
         )}
 
+        {isAtlas && body && (
+          <section className={supportStyles.termsGuide} aria-labelledby="terms-guide-title">
+            <p className={supportStyles.termsGuideLabel}>{legalCopy.guideLabel}</p>
+            <h2 id="terms-guide-title">{legalCopy.guideTitle}</h2>
+            <p className={supportStyles.termsGuideLede}>{legalCopy.guideLede}</p>
+            <div className={supportStyles.termsSummaryGrid}>
+              {legalCopy.summaries.map(([title, description], index) => (
+                <article className={supportStyles.termsSummaryCard} key={title}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
         {body ? (
           isGlobe ? (
             <div className="gl-card p-8 prose dark:prose-invert max-w-none"
@@ -165,9 +264,25 @@ export default async function TermsPage({
               <div dangerouslySetInnerHTML={{ __html: body }} />
             </div>
           ) : isAtlas ? (
-            <article className={supportStyles.proseCard} lang={lang}>
-              <div className={supportStyles.proseContent} dangerouslySetInnerHTML={{ __html: body }} />
-            </article>
+            <div className={supportStyles.termsReadingLayout}>
+              {termsSections.length > 0 && (
+                <aside className={supportStyles.termsToc} aria-label={legalCopy.contents}>
+                  <p>{legalCopy.contents}</p>
+                  <nav>
+                    {termsSections.map((section, index) => (
+                      <a href={`#${section.id}`} key={section.id}>
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        {section.title}
+                      </a>
+                    ))}
+                  </nav>
+                </aside>
+              )}
+              <article className={supportStyles.proseCard} lang={lang}>
+                <p className={supportStyles.termsDocumentLabel}>{legalCopy.fullTerms}</p>
+                <div className={supportStyles.proseContent} dangerouslySetInnerHTML={{ __html: anchoredBody ?? body }} />
+              </article>
+            </div>
           ) : isOutlined ? (
             <div className={`border-2 p-8 prose max-w-none ${isPixel ? "font-mono" : ""}`}
               style={{ background: cardBg, borderColor: bdrClr, color: headClr, boxShadow: `4px 4px 0 0 ${bdrClr}` }}>
