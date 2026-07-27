@@ -344,21 +344,6 @@ export default function CleanHome({
               destinations={destinationOptions}
               months={monthOptions}
             />
-            <div className={styles.finderMeta}>
-              <a
-                href={waHref}
-                data-analytics-placement="home-search"
-              >
-                <MessageCircle aria-hidden="true" />
-                <span>Belum yakin? Konsultasi gratis via WhatsApp.</span>
-              </a>
-              <Link href="/legalitas-dan-keamanan" className={styles.legalProof}>
-                <FileCheck aria-hidden="true" />
-                <span>
-                  Legalitas usaha <strong>NIB {nib}</strong>
-                </span>
-              </Link>
-            </div>
           </div>
         </div>
 

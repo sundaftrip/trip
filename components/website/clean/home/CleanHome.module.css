@@ -252,46 +252,6 @@
   transform: translateY(-1px);
 }
 
-.finderMeta {
-  min-height: 72px;
-  padding: 17px 4px 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  color: var(--home-ink-soft);
-  font-size: 13px;
-}
-
-.finderMeta > a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: inherit;
-  line-height: 1.45;
-}
-
-.finderMeta svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
-  color: var(--home-primary);
-}
-
-.finderMeta > a:first-child {
-  font-weight: 680;
-  text-decoration: underline;
-  text-decoration-color: rgba(12, 77, 86, 0.35);
-  text-underline-offset: 4px;
-}
-
-.legalProof strong {
-  margin-left: 3px;
-  color: var(--home-ink);
-  font-weight: 750;
-}
-
 .section {
   padding-block: clamp(76px, 8vw, 104px);
 }
@@ -1393,7 +1353,7 @@
   }
 
   .tourGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .benefitGrid {
@@ -1545,22 +1505,6 @@
     grid-column: auto;
     border-radius: 16px !important;
     font-weight: 550;
-  }
-
-  .finderMeta {
-    min-height: 0;
-    padding: 12px 0 0;
-    display: grid;
-    gap: 0;
-    font-size: 12px;
-  }
-
-  .finderMeta > a {
-    min-height: 46px;
-  }
-
-  .legalProof {
-    border-top: 1px solid var(--home-line);
   }
 
   .section {
