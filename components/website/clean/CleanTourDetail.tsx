@@ -366,7 +366,7 @@ export default function CleanTourDetail({
           <div className={styles.detailHeroHeading}>
             <div>
               <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
-              <h1 id="tour-title">{tour.title}</h1>
+              <h1 id="tour-title" className="aurora-text">{tour.title}</h1>
             </div>
             <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
           </div>
