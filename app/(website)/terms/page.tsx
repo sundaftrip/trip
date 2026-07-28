@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
+import { termsBodyEn, termsBodyId } from "@/lib/legal/terms-content";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
@@ -80,24 +81,21 @@ export default async function TermsPage({
 }: {
   searchParams: Promise<{ lang?: string }>;
 }) {
-  const [params, tc, theme] = await Promise.all([
+  const [params, theme] = await Promise.all([
     searchParams,
-    prisma.termsCondition.findFirst().catch(() => null),
     getSiteTheme(),
   ]);
 
   const lang   = params.lang === "en" ? "en" : "id";
-  const body   = lang === "en" ? (tc?.bodyEn ?? tc?.bodyId) : tc?.bodyId;
-  const hasEn  = !!tc?.bodyEn;
+  const body   = lang === "en" ? termsBodyEn : termsBodyId;
+  const hasEn  = true;
   const termsSections = getTermsSections(body);
   const anchoredBody = body ? addTermsSectionAnchors(body) : null;
-  const updatedLabel = tc?.updatedAt
-    ? new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }).format(tc.updatedAt)
-    : null;
+  const updatedLabel = new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date("2026-07-28T00:00:00.000Z"));
   const legalCopy = lang === "en"
     ? {
         entity: "This website is owned and operated by CV Sundaf Holiday Group under the Sundaf Trip brand.",
