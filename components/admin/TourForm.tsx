@@ -373,7 +373,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         setExclusionInput(typeof draft.exclusionInput === "string" ? draft.exclusionInput : "");
         setEditingInclusionIdx(readNumberOrNull(draft.editingInclusionIdx));
         setEditingExclusionIdx(readNumberOrNull(draft.editingExclusionIdx));
-        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description
+        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description || draft.itineraryItem?.image
           ? {
               day: Number(draft.itineraryItem.day) || getNextItineraryDay(restoredForm.itinerary),
               title: draft.itineraryItem.title ?? "",
@@ -1357,18 +1357,20 @@ function ItineraryItemFields({
   const SubmitIcon = submitTone === "add" ? Plus : Check;
 
   return (
-    <div data-itinerary-fields className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
+    <div data-itinerary-fields className="grid grid-cols-1 gap-3 sm:grid-cols-[5rem_minmax(0,1fr)]">
       <input
         type="number"
         min={1}
         placeholder="Hari"
-        className="input text-center"
+        aria-label="Nomor hari"
+        className="input w-[5rem] justify-self-start text-center tabular-nums sm:w-full"
         value={item.day}
         onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
       />
       <input
         placeholder="Judul"
-        className="input"
+        aria-label="Judul itinerary"
+        className="input min-w-0"
         value={item.title}
         onChange={(e) => onChange({ ...item, title: e.target.value })}
         onKeyDown={(e) => {
@@ -1376,31 +1378,27 @@ function ItineraryItemFields({
             e.preventDefault();
             const descriptionInput = e.currentTarget
               .closest("[data-itinerary-fields]")
-              ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
+              ?.querySelector<HTMLTextAreaElement>("[data-itinerary-description]");
             descriptionInput?.focus();
           }
         }}
       />
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <input
+      <div className="grid gap-2 sm:col-span-2">
+        <textarea
           data-itinerary-description
           placeholder="Deskripsi"
-          className="input min-w-0 flex-1"
+          aria-label="Deskripsi itinerary"
+          rows={4}
+          className="input min-h-28 w-full resize-y leading-relaxed"
           value={item.description}
           onChange={(e) => onChange({ ...item, description: e.target.value })}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              onSubmit();
-            }
-          }}
         />
-        <div className="flex gap-2 sm:shrink-0">
+        <div className="flex flex-wrap justify-end gap-2">
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 sm:flex-none">
+              className="inline-flex min-h-10 min-w-28 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 sm:flex-none">
               <X size={15} />
               {submitTone === "save" ? "Batal" : "Reset"}
             </button>
@@ -1408,7 +1406,7 @@ function ItineraryItemFields({
           <button
             type="button"
             onClick={onSubmit}
-            className={`inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition-colors sm:flex-none ${
+            className={`inline-flex min-h-10 min-w-28 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition-colors sm:flex-none ${
               submitTone === "add" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
             }`}>
             <SubmitIcon size={15} />
@@ -1416,7 +1414,7 @@ function ItineraryItemFields({
           </button>
         </div>
       </div>
-      <div className="rounded-lg border border-dashed border-gray-300 bg-white/70 p-3 dark:border-gray-600 dark:bg-gray-800/70 md:col-span-3">
+      <div className="rounded-lg border border-dashed border-gray-300 bg-white/70 p-3 dark:border-gray-600 dark:bg-gray-800/70 sm:col-span-2">
         <p className="mb-1 text-xs font-semibold text-gray-700 dark:text-gray-200">
           Gambar Sorotan Pengalaman <span className="font-normal text-gray-400">(opsional)</span>
         </p>

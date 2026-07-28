@@ -124,7 +124,7 @@ export default function AdminShell({ role, user, logo, children }: Props) {
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-40 flex">
           <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="admin-sidebar relative z-50 w-[19rem] max-w-[88vw] flex flex-col h-full shadow-2xl">
+          <aside className="admin-sidebar relative z-50 w-[19rem] max-w-[88vw] flex h-full flex-col">
             <div className="admin-brand flex items-center justify-between px-6 border-b">
               <Image src={logo || "/logo.png"} alt="Logo Sundaf Trip" width={112} height={34} className="h-8 w-auto object-contain dark:brightness-0 dark:invert" />
               <button onClick={() => setSidebarOpen(false)} className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
