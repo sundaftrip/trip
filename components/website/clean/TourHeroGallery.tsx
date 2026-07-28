@@ -95,7 +95,6 @@ export default function TourHeroGallery({
             <span className={styles.counter} aria-hidden="true">
               {active + 1} / {usableImages.length}
             </span>
-            <span className={styles.controlDivider} aria-hidden="true" />
             <div className={styles.controlButtons}>
               <button
                 type="button"
