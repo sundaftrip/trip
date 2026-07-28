@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, MessageCircle, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import CleanGlobalSearch from "./CleanGlobalSearch";
@@ -249,9 +249,10 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
           </div>
 
           <div className={styles.drawerBody}>
+            <p className={styles.drawerEyebrow}>Jelajahi Sundaf</p>
             <nav className={styles.mobileNav} aria-label="Navigasi mobile">
               <Link
-                className={styles.mobileLink}
+                className={`${styles.mobileLink} ${styles.mobileScheduleLink}`}
                 href="/tours"
                 aria-current={isActive("/tours") ? "page" : undefined}
                 onClick={closeDrawer}
@@ -296,6 +297,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
             </nav>
 
             <Link className={styles.drawerWhatsApp} href={consultationHref} onClick={closeDrawer}>
+              <MessageCircle aria-hidden="true" />
               Konsultasi WhatsApp
             </Link>
             <p className={styles.drawerNote}>Konsultasi awal tidak mengonfirmasi kursi atau pembayaran.</p>

@@ -537,7 +537,7 @@
 }
 
 .drawerHeader {
-  min-height: 68px;
+  min-height: 76px;
   padding:
     max(8px, env(safe-area-inset-top))
     14px
@@ -561,11 +561,21 @@
 }
 
 .drawerBody {
-  min-height: calc(100dvh - 68px);
-  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  min-height: calc(100dvh - 76px);
+  padding: 28px 28px calc(24px + env(safe-area-inset-bottom));
   display: flex;
   flex: 1 0 auto;
   flex-direction: column;
+}
+
+.drawerEyebrow {
+  margin: 0 0 16px;
+  color: var(--shell-primary);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .drawerPrimary,
@@ -612,28 +622,48 @@
 
 .mobileNav {
   margin-top: 0;
+  counter-reset: drawer-link;
+  border-top: 1px solid var(--shell-line);
 }
 
 .destinationToggle,
 .mobileLink {
   width: 100%;
-  min-height: 52px;
-  display: flex;
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  column-gap: 10px;
   align-items: center;
   border-bottom: 1px solid var(--shell-line);
   color: var(--shell-ink);
-  font-size: 17px;
-  font-weight: 680;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   text-align: left;
+}
+
+.destinationToggle::before,
+.mobileLink::before {
+  grid-column: 1;
+  color: var(--shell-muted);
+  content: counter(drawer-link, decimal-leading-zero);
+  counter-increment: drawer-link;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
 }
 
 .destinationToggle {
   padding: 0;
-  justify-content: space-between;
   background: transparent;
 }
 
+.destinationToggle > span {
+  grid-column: 2;
+}
+
 .destinationToggle svg {
+  grid-column: 3;
   width: 19px;
   height: 19px;
   color: var(--shell-muted);
@@ -688,8 +718,12 @@
 }
 
 .mobileLink {
-  justify-content: space-between;
   transition: color 180ms ease;
+}
+
+.mobileScheduleLink {
+  color: var(--shell-primary);
+  font-weight: 500;
 }
 
 .mobileLink:hover,
@@ -699,15 +733,24 @@
 
 .drawerWhatsApp {
   margin-top: auto;
+  gap: 10px;
   border: 1px solid var(--shell-primary);
-  background: var(--shell-white);
-  color: var(--shell-primary);
+  border-radius: 12px;
+  background: var(--shell-primary);
+  color: var(--shell-white);
+  font-weight: 500;
+}
+
+.drawerWhatsApp svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.4;
 }
 
 .drawerWhatsApp:hover {
-  background: var(--shell-ice);
+  background: var(--shell-primary-strong);
   border-color: var(--shell-primary-strong);
-  color: var(--shell-primary-strong);
+  color: var(--shell-white);
   transform: translateY(-1px);
 }
 

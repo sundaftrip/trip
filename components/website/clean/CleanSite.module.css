@@ -1164,7 +1164,11 @@
 }
 .detailDestinationLink:hover { text-decoration: underline; text-underline-offset: 4px; }
 .detailSectionLede { max-width: 680px; margin: 18px 0 0; }
-.detailGallery { margin-top: 34px; }
+.detailGallery {
+  margin-top: 34px;
+  overflow: hidden;
+  border-radius: 24px;
+}
 
 .detailHighlightRail {
   margin: 32px calc((100vw - min(1280px, 100vw - 80px)) / -2) 0 0;
