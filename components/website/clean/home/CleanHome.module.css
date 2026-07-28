@@ -576,6 +576,11 @@
   background: #fff;
 }
 
+/* Archive cards that require an enquiry need less vertical room than priced trips. */
+.tourCard[data-pricing="enquiry"] .tourBody {
+  min-height: 190px;
+}
+
 .tourMeta {
   min-height: 18px;
   margin: 0;

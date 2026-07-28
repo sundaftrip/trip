@@ -91,6 +91,7 @@ export default function HomeTourRail({
             <article
               className={styles.tourCard}
               data-state={tour.state}
+              data-pricing={price > 0 ? "priced" : "enquiry"}
               key={tour.id}
             >
               <span className="sr-only">
