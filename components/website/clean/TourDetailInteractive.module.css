@@ -209,7 +209,7 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: 999px;
+  border-radius: 999px !important;
   background: #0c4d56;
   color: #fff;
   font: inherit;
@@ -503,6 +503,33 @@
 }
 
 @media (max-width: 700px) {
+  .tabBar {
+    padding-block: 8px;
+  }
+
+  .tabBar > div {
+    gap: 8px;
+  }
+
+  .tabBar a {
+    min-height: 38px;
+    padding-inline: 14px;
+    border-radius: 999px !important;
+    background: #f1f5f4;
+    color: #52616a;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .tabBar a::after {
+    display: none;
+  }
+
+  .tabBar a[aria-current="location"] {
+    background: #0c4d56;
+    color: #fff;
+  }
+
   .heroGallery {
     margin: 0 0 12px;
   }
