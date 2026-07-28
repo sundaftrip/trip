@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackSundafEvent } from "@/lib/analytics-events";
 import styles from "./TourDetailInteractive.module.css";
 
@@ -16,7 +16,12 @@ export default function TourDetailTabs({
   tabs: TourDetailTab[];
   tourId: string;
 }) {
-  const [activeId, setActiveId] = useState(tabs[0]?.id || "");
+  const [activeId, setActiveId] = useState(() => {
+    const hashId = typeof window === "undefined" ? "" : window.location.hash.slice(1);
+    return tabs.some((tab) => tab.id === hashId) ? hashId : tabs[0]?.id || "";
+  });
+  const navigationIntentRef = useRef<string | null>(null);
+  const navigationTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     trackSundafEvent("tour_view", { tour_id: tourId });
@@ -30,6 +35,16 @@ export default function TourDetailTabs({
 
     const observer = new IntersectionObserver(
       (entries) => {
+        const pendingId = navigationIntentRef.current;
+        if (pendingId) {
+          const pendingEntry = entries.find((entry) => entry.target.id === pendingId);
+          if (pendingEntry?.isIntersecting) {
+            navigationIntentRef.current = null;
+            setActiveId(pendingId);
+          }
+          return;
+        }
+
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
@@ -41,13 +56,23 @@ export default function TourDetailTabs({
     return () => observer.disconnect();
   }, [tabs]);
 
+  useEffect(() => () => {
+    if (navigationTimeoutRef.current) window.clearTimeout(navigationTimeoutRef.current);
+  }, []);
+
   function navigateTo(id: string, label: string) {
     const section = document.getElementById(id);
     if (!section) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (navigationTimeoutRef.current) window.clearTimeout(navigationTimeoutRef.current);
+    navigationIntentRef.current = id;
     section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
     window.history.replaceState(null, "", `#${id}`);
     setActiveId(id);
+    navigationTimeoutRef.current = window.setTimeout(() => {
+      if (navigationIntentRef.current === id) navigationIntentRef.current = null;
+    }, reduceMotion ? 0 : 900);
     trackSundafEvent("tour_tab_click", { tab: label });
   }
 

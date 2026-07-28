@@ -516,18 +516,41 @@
     padding-inline: 14px;
     border-radius: 999px !important;
     background: #f1f5f4;
+    background-size: 180% 100%;
     color: #52616a;
     font-size: 12px;
     font-weight: 500;
+    isolation: isolate;
+    overflow: hidden;
+    transition: background-color 360ms cubic-bezier(.22, 1, .36, 1), background-position 520ms cubic-bezier(.22, 1, .36, 1), box-shadow 360ms cubic-bezier(.22, 1, .36, 1), color 240ms ease;
   }
 
   .tabBar a::after {
     display: none;
   }
 
+  .tabBar a::before {
+    position: absolute;
+    z-index: -1;
+    inset: -50% -38%;
+    border-radius: inherit !important;
+    background: linear-gradient(105deg, transparent 36%, rgb(255 255 255 / 26%) 50%, transparent 64%);
+    content: "";
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-82%) skewX(-18deg);
+  }
+
   .tabBar a[aria-current="location"] {
-    background: #0c4d56;
+    background-color: #0c4d56;
+    background-image: linear-gradient(110deg, #0c4d56 0%, #126570 48%, #0c4d56 100%);
+    background-position: 100% 50%;
+    box-shadow: 0 5px 14px rgb(12 77 86 / 18%);
     color: #fff;
+  }
+
+  .tabBar a[aria-current="location"]::before {
+    animation: tab-fluid-sheen 620ms cubic-bezier(.22, 1, .36, 1) both;
   }
 
   .heroGallery {
@@ -553,6 +576,12 @@
   .mobileBookingBar {
     display: grid;
   }
+}
+
+@keyframes tab-fluid-sheen {
+  0% { opacity: 0; transform: translateX(-82%) skewX(-18deg); }
+  22% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(82%) skewX(-18deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
