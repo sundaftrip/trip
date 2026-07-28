@@ -509,48 +509,57 @@
 
   .tabBar > div {
     gap: 8px;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .tabBar > div::before,
+  .tabBar > div::after {
+    position: absolute;
+    top: 0;
+    left: var(--tab-pill-left, 0px);
+    width: var(--tab-pill-width, 0px);
+    height: 38px;
+    border-radius: 999px !important;
+    content: "";
+    opacity: var(--tab-pill-opacity, 0);
+    pointer-events: none;
+    transition: left 620ms cubic-bezier(.22, 1, .36, 1), width 620ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease;
+  }
+
+  .tabBar > div::before {
+    z-index: 0;
+    background: linear-gradient(110deg, #0c4d56 0%, #18727a 47%, #0c4d56 100%);
+    box-shadow: 0 5px 14px rgb(12 77 86 / 18%);
+  }
+
+  .tabBar > div::after {
+    z-index: -1;
+    width: calc(var(--tab-pill-width, 0px) + 18px);
+    margin-left: -9px;
+    background: radial-gradient(ellipse at center, rgb(33 129 137 / 36%), transparent 68%);
+    filter: blur(5px);
   }
 
   .tabBar a {
     min-height: 38px;
     padding-inline: 14px;
     border-radius: 999px !important;
+    z-index: 1;
     background: #f1f5f4;
-    background-size: 180% 100%;
     color: #52616a;
     font-size: 12px;
     font-weight: 500;
-    isolation: isolate;
-    overflow: hidden;
-    transition: background-color 360ms cubic-bezier(.22, 1, .36, 1), background-position 520ms cubic-bezier(.22, 1, .36, 1), box-shadow 360ms cubic-bezier(.22, 1, .36, 1), color 240ms ease;
+    transition: background-color 300ms ease, color 240ms ease;
   }
 
   .tabBar a::after {
     display: none;
   }
 
-  .tabBar a::before {
-    position: absolute;
-    z-index: -1;
-    inset: -50% -38%;
-    border-radius: inherit !important;
-    background: linear-gradient(105deg, transparent 36%, rgb(255 255 255 / 26%) 50%, transparent 64%);
-    content: "";
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-82%) skewX(-18deg);
-  }
-
   .tabBar a[aria-current="location"] {
-    background-color: #0c4d56;
-    background-image: linear-gradient(110deg, #0c4d56 0%, #126570 48%, #0c4d56 100%);
-    background-position: 100% 50%;
-    box-shadow: 0 5px 14px rgb(12 77 86 / 18%);
+    background-color: transparent;
     color: #fff;
-  }
-
-  .tabBar a[aria-current="location"]::before {
-    animation: tab-fluid-sheen 620ms cubic-bezier(.22, 1, .36, 1) both;
   }
 
   .heroGallery {
@@ -576,12 +585,6 @@
   .mobileBookingBar {
     display: grid;
   }
-}
-
-@keyframes tab-fluid-sheen {
-  0% { opacity: 0; transform: translateX(-82%) skewX(-18deg); }
-  22% { opacity: 1; }
-  100% { opacity: 0; transform: translateX(82%) skewX(-18deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
