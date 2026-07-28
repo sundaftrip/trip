@@ -30,6 +30,7 @@ import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle, replaceEditorialDashes } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
+import { selectTourExperienceHighlights } from "@/lib/tour-experience-highlights";
 import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
@@ -308,7 +309,8 @@ export default function CleanTourDetail({
         availabilityLabel: status,
       }]
     : [];
-  const experienceItems = itinerary.slice(0, 6).map((item, index) => ({
+  const experienceItems = selectTourExperienceHighlights(itinerary).map((item, index) => ({
+    day: item.day,
     title: replaceEditorialDashes(normalizeItineraryDisplayTitle(item.title)) || `Hari ke-${item.day}`,
     description:
       replaceEditorialDashes(cleanParagraphs(item.description)[0] || "")
@@ -405,7 +407,7 @@ export default function CleanTourDetail({
             </div>
           </section>
 
-          {experienceItems.length > 1 && (
+          {experienceItems.length > 0 && (
             <section className={styles.detailContentSection} aria-labelledby="highlights-title">
               <p className={styles.detailSectionKicker}>Sorotan pengalaman</p>
               <h2 className={styles.detailSectionTitle} id="highlights-title">Yang akan ditemui di perjalanan</h2>
@@ -426,7 +428,7 @@ export default function CleanTourDetail({
                         sizes="(max-width: 700px) 78vw, 320px"
                       />
                     </div>
-                    <span>Hari {itinerary[index]?.day || index + 1}</span>
+                    <span>Hari {item.day || index + 1}</span>
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                   </article>
