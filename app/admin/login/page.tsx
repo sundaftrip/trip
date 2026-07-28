@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,20 @@ export default function LoginPage() {
   const [logo, setLogo] = useState("");
 
   useEffect(() => {
-    fetch("/api/settings").then((r) => r.json()).then((d) => setLogo(d.company_logo || ""));
+    const controller = new AbortController();
+    fetch("/api/settings", { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : {})
+      .then((data: unknown) => {
+        const companyLogo =
+          data && typeof data === "object" && "company_logo" in data
+            ? (data as { company_logo?: unknown }).company_logo
+            : "";
+        setLogo(typeof companyLogo === "string" ? companyLogo : "");
+      })
+      .catch(() => {
+        // Logo bawaan tetap dipakai bila pengaturan belum dapat dimuat.
+      });
+    return () => controller.abort();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -35,19 +49,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-        <div className="flex justify-center mb-8">
-          <Image src={logo || "/logo.png"} alt="Logo" width={160} height={48} className="h-12 w-auto" />
+    <div className="admin-login min-h-screen flex items-center justify-center p-4 sm:p-8">
+      <div className="admin-login-card w-full max-w-md bg-white/95 p-6 backdrop-blur-xl dark:bg-gray-900/95 sm:p-9">
+        <div className="mb-8 flex items-center justify-between">
+          <Image src={logo || "/logo.png"} alt="Logo Sundaf Trip" width={150} height={46} className="h-11 w-auto dark:brightness-0 dark:invert" />
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300">
+            <ShieldCheck size={19} strokeWidth={1.7} />
+          </span>
         </div>
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
-          Masuk ke CMS
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-teal-700 dark:text-teal-300">
+          Sundaf Content OS
+        </p>
+        <h1 className="text-3xl font-medium tracking-[-0.02em] text-gray-900 dark:text-white">
+          Kelola perjalanan dengan tenang.
         </h1>
-        <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-8">
-          Admin Panel
+        <p className="mb-8 mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+          Masuk untuk memperbarui katalog, itinerary, visa, artikel, dan informasi operasional Sundaf.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email
@@ -57,7 +77,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-600/30 focus:border-teal-700 outline-none transition"
               placeholder="admin@email.com"
             />
           </div>
@@ -70,7 +90,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-600/30 focus:border-teal-700 outline-none transition"
               placeholder="••••••••"
             />
           </div>
@@ -84,11 +104,15 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg transition"
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-teal-800 px-4 py-3 text-white font-semibold transition hover:bg-teal-900 disabled:opacity-60"
           >
-            {loading ? "Memproses..." : "Masuk"}
+            {loading ? "Memproses..." : "Masuk ke CMS"}
+            {!loading && <ArrowRight size={16} strokeWidth={1.8} />}
           </button>
         </form>
+        <p className="mt-7 border-t border-gray-200 pt-5 text-center text-xs text-gray-400 dark:border-gray-700">
+          Akses internal Sundaf Trip
+        </p>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, ArrowUpDown, Plus, Pencil, Search, Upload, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, ExternalLink, Plus, Pencil, Search, Upload, X } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 import TourPinButton from "@/components/admin/TourPinButton";
@@ -217,23 +217,24 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tour</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">Katalog publik</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white sm:text-3xl">Tour</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {tours.length} dari {allTours.length} tour tampil · {pinnedCount}/5 tour dipin · Urutan: {activeSortLabel}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
           <Link
             href="/admin/tours/import"
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium rounded-lg transition"
+            className="flex items-center justify-center gap-2 px-3 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium rounded-lg transition sm:px-4 sm:py-2"
           >
             <Upload size={16} /> Import Massal
           </Link>
           <Link
             href="/admin/tours/new"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
+            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-teal-800 hover:bg-teal-900 text-white text-sm font-medium rounded-lg transition sm:px-4 sm:py-2"
           >
             <Plus size={16} /> Tambah Tour
           </Link>
@@ -296,7 +297,74 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
           </div>
         </form>
 
-        <div className="overflow-x-auto">
+        <div className="grid gap-3 p-3 md:hidden">
+          {tours.length === 0 && (
+            <div className="rounded-xl border border-dashed border-gray-300 px-4 py-10 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+              {hasFilter ? (
+                <>Tidak ada tour yang cocok. <Link href="/admin/tours" className="font-semibold text-teal-700">Reset filter</Link></>
+              ) : (
+                <>Belum ada tour. <Link href="/admin/tours/new" className="font-semibold text-teal-700">Tambah sekarang</Link></>
+              )}
+            </div>
+          )}
+          {tours.map((tour) => {
+            const status = displayStatus(tour);
+            return (
+              <article key={tour.id} className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="mb-2 flex flex-wrap gap-1.5">
+                      <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${
+                        status === "ACTIVE" ? "bg-emerald-100 text-emerald-800" :
+                        status === "FULL" ? "bg-red-100 text-red-700" :
+                        status === "DRAFT" ? "bg-amber-100 text-amber-800" :
+                        "bg-slate-100 text-slate-600"
+                      }`}>
+                        {displayStatusLabel(status)}
+                      </span>
+                      {tour.pinned && <span className="rounded-full bg-teal-50 px-2 py-1 text-[10px] font-semibold text-teal-800">PIN</span>}
+                    </div>
+                    <h2 className="text-base font-semibold leading-snug text-gray-900 dark:text-white">{tour.title}</h2>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{tour.country} · {displayDate(tour)}</p>
+                  </div>
+                  <p className="shrink-0 text-right text-sm font-semibold text-gray-900 dark:text-white">
+                    {formatCurrency(tour.promoPrice ?? tour.price)}
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{displaySeats(tour)}</p>
+                  <div className="flex items-center gap-1.5">
+                    <a
+                      href={`/tours/${tour.slug?.trim() || tour.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Lihat halaman publik"
+                      className="rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-700"
+                    >
+                      <ExternalLink size={15} />
+                    </a>
+                    <Link
+                      href={`/admin/tours/${tour.id}?returnTo=${encodeURIComponent(currentListHref)}`}
+                      title="Edit tour"
+                      className="rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-700"
+                    >
+                      <Pencil size={15} />
+                    </Link>
+                    <TourPinButton
+                      key={`${tour.id}-mobile-${tour.pinned ? "pinned" : "unpinned"}`}
+                      id={tour.id}
+                      pinned={tour.pinned}
+                      disabled={!tour.pinned && pinnedCount >= MAX_PINNED_TOURS}
+                    />
+                    <DeleteButton id={tour.id} endpoint="/api/tours" label="tour" />
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[980px] text-sm">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
@@ -365,9 +433,18 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
+                      <a
+                        href={`/tours/${tour.slug?.trim() || tour.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Lihat halaman publik"
+                        className="p-1.5 text-gray-500 hover:text-teal-700 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded transition"
+                      >
+                        <ExternalLink size={15} />
+                      </a>
                       <Link
                         href={`/admin/tours/${tour.id}?returnTo=${encodeURIComponent(currentListHref)}`}
-                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition"
+                        className="p-1.5 text-gray-500 hover:text-teal-700 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded transition"
                       >
                         <Pencil size={15} />
                       </Link>

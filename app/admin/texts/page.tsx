@@ -2,7 +2,20 @@ import { prisma } from "@/lib/prisma";
 import TextsForm from "@/components/admin/TextsForm";
 
 const TEXT_KEYS = [
-  { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"] },
+  {
+    section: "Beranda Utama",
+    keys: [
+      "home_hero_eyebrow",
+      "home_hero_title",
+      "home_hero_body",
+      "home_hero_image",
+      "home_hero_image_alt",
+    ],
+  },
+  {
+    section: "Hero Tema Alternatif",
+    keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"],
+  },
   // Kartu "Mengapa Kami?" (WhySection) — sebelumnya tak bisa diedit dari admin.
   { section: "Keunggulan (Mengapa Kami)", keys: [
     "why_1_title", "why_1_desc",

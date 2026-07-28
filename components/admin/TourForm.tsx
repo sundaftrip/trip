@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Check, CircleCheck, ExternalLink, Hotel, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
 
 type ItineraryItem = { day: number; title: string; description: string };
 type AddOnTag = "" | "wajib" | "recommended";
 type AddOnDraft = { name: string; price: string | number; desc: string };
+export type TourHotelEntry = { label: string; value: string };
 type PaymentPlanMode = "auto" | "manual" | "hidden";
 type PaymentPlanStepDraft = { label: string; dueDate: string; amount: string | number };
 export type PaymentPlanFormConfig = {
@@ -23,6 +24,7 @@ export type PaymentPlanFormConfig = {
 
 export interface TourData {
   id?: string;
+  slug?: string;
   title?: string;
   country?: string;
   cityHighlight?: string;
@@ -37,6 +39,7 @@ export interface TourData {
   inclusions?: string[];
   exclusions?: string[];
   gallery?: string[];
+  hotel?: TourHotelEntry[];
   heroImg?: string;
   badge?: string;
   notes?: string;
@@ -62,6 +65,7 @@ interface TourFormDraft {
 
 function buildInitialForm(tour?: TourData): TourData {
   return {
+    slug: tour?.slug ?? "",
     title: tour?.title ?? "",
     country: tour?.country ?? "",
     cityHighlight: tour?.cityHighlight ?? "",
@@ -76,6 +80,7 @@ function buildInitialForm(tour?: TourData): TourData {
     inclusions: tour?.inclusions ?? [],
     exclusions: tour?.exclusions ?? [],
     gallery: tour?.gallery ?? [],
+    hotel: normalizeHotelEntries(tour?.hotel),
     heroImg: tour?.heroImg ?? "",
     badge: tour?.badge ?? "",
     notes: tour?.notes ?? "",
@@ -101,6 +106,37 @@ function emptyAddOnItem(): AddOnDraft {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function normalizeHotelEntries(value: unknown): TourHotelEntry[] {
+  if (Array.isArray(value)) {
+    return value.flatMap((entry) => {
+      if (!isRecord(entry)) return [];
+      const label = typeof entry.label === "string" ? entry.label : "";
+      const itemValue =
+        typeof entry.value === "string" || typeof entry.value === "number"
+          ? String(entry.value)
+          : "";
+      return [{ label, value: itemValue }];
+    });
+  }
+
+  if (!isRecord(value)) return [];
+  return Object.entries(value).flatMap(([label, itemValue]) =>
+    typeof itemValue === "string" || typeof itemValue === "number"
+      ? [{ label, value: String(itemValue) }]
+      : [],
+  );
+}
+
+function slugFromTitle(value: string) {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("id-ID")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
 }
 
 function dateInputValue(value: unknown) {
@@ -326,6 +362,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         restoredForm.inclusions = Array.isArray(restoredForm.inclusions) ? restoredForm.inclusions : [];
         restoredForm.exclusions = Array.isArray(restoredForm.exclusions) ? restoredForm.exclusions : [];
         restoredForm.gallery = Array.isArray(restoredForm.gallery) ? restoredForm.gallery : [];
+        restoredForm.hotel = normalizeHotelEntries(restoredForm.hotel);
         restoredForm.itinerary = Array.isArray(restoredForm.itinerary) ? sortItinerary(restoredForm.itinerary) : [];
         restoredForm.addOns = Array.isArray(restoredForm.addOns) ? restoredForm.addOns : [];
         restoredForm.paymentPlan = normalizePaymentPlanConfig(restoredForm.paymentPlan);
@@ -490,6 +527,16 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   }
 
   const paymentPlan = normalizePaymentPlanConfig(form.paymentPlan);
+  const publishChecks = [
+    { label: "Identitas", ok: Boolean(form.title?.trim() && form.country?.trim()) },
+    { label: "URL", ok: Boolean(form.slug?.trim() || !isEdit) },
+    { label: "Gambar", ok: Boolean(form.heroImg?.trim()) },
+    { label: "Galeri", ok: (form.gallery?.length ?? 0) > 0 },
+    { label: "Itinerary", ok: (form.itinerary?.length ?? 0) > 0 },
+    { label: "Detail paket", ok: (form.inclusions?.length ?? 0) > 0 && (form.exclusions?.length ?? 0) > 0 },
+  ];
+  const publishReadyCount = publishChecks.filter((item) => item.ok).length;
+  const publicHref = isEdit ? `/tours/${form.slug?.trim() || tour?.id}` : null;
 
   function setPaymentPlan(partial: Partial<PaymentPlanFormConfig>) {
     set("paymentPlan", { ...paymentPlan, ...partial });
@@ -542,15 +589,45 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       setError(paymentPlanForSubmit.error);
       return;
     }
-    const payload = {
+    const hotelRows = normalizeHotelEntries(form.hotel);
+    const normalizedHotel: Record<string, string> = {};
+    for (const row of hotelRows) {
+      const label = row.label.trim();
+      const value = row.value.trim();
+      if (!label && !value) continue;
+      if (!label || !value) {
+        setLoading(false);
+        setError("Setiap baris hotel wajib memiliki label dan isi.");
+        return;
+      }
+      if (normalizedHotel[label] !== undefined) {
+        setLoading(false);
+        setError(`Label hotel "${label}" digunakan lebih dari sekali.`);
+        return;
+      }
+      normalizedHotel[label] = value;
+    }
+    const payload: Record<string, unknown> = {
       ...form,
       price: Number(form.price),
       promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
       priceLandTour: form.priceLandTour ? Number(form.priceLandTour) : null,
       seatsLeft: Number(form.seatsLeft),
       tripDate: form.tripDate ? new Date(form.tripDate).toISOString() : null,
+      hotel: Object.keys(normalizedHotel).length > 0 ? normalizedHotel : null,
       paymentPlan: paymentPlanForSubmit.value,
     };
+    const originalHotel = Object.fromEntries(
+      normalizeHotelEntries(initialForm.hotel)
+        .map((row) => [row.label.trim(), row.value.trim()])
+        .filter(([label, value]) => label && value),
+    );
+    if (isEdit && JSON.stringify(normalizedHotel) === JSON.stringify(originalHotel)) {
+      delete payload.hotel;
+    }
+    const submittedSlug = form.slug?.trim() ?? "";
+    const originalSlug = initialForm.slug?.trim() ?? "";
+    if (!submittedSlug || (isEdit && submittedSlug === originalSlug)) delete payload.slug;
     const res = await fetch(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
       method: isEdit ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -599,12 +676,71 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
           )}
         </div>
       )}
+      <div className="admin-integration-card border border-teal-200/80 bg-teal-50/70 p-4 dark:border-teal-900 dark:bg-teal-950/30 sm:p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">
+              Sinkronisasi website
+            </p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+              {publishReadyCount}/{publishChecks.length} komponen publik sudah lengkap.
+              Perubahan tersimpan akan menghapus cache halaman publik secara otomatis.
+            </p>
+          </div>
+          {publicHref && (
+            <a
+              href={publicHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-teal-700/25 bg-white px-3 py-2 text-sm font-semibold text-teal-800 transition hover:border-teal-700 hover:bg-teal-50 dark:bg-gray-900 dark:text-teal-200"
+            >
+              Lihat halaman publik <ExternalLink size={15} />
+            </a>
+          )}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {publishChecks.map((item) => (
+            <span
+              key={item.label}
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
+                item.ok
+                  ? "bg-white text-teal-800 dark:bg-teal-950 dark:text-teal-200"
+                  : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200"
+              }`}
+            >
+              {item.ok ? <CircleCheck size={13} /> : <span aria-hidden="true">•</span>}
+              {item.label}
+            </span>
+          ))}
+        </div>
+      </div>
       {/* Basic Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Informasi Dasar</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Judul Tour *">
             <input required className="input" value={form.title} onChange={(e) => set("title", e.target.value)} />
+          </Field>
+          <Field label="Slug URL">
+            <div className="flex gap-2">
+              <input
+                className="input font-mono text-xs"
+                value={form.slug}
+                onChange={(e) => set("slug", e.target.value)}
+                placeholder={isEdit ? "central-asia-4-tan" : "Dibuat otomatis saat disimpan"}
+              />
+              <button
+                type="button"
+                onClick={() => set("slug", slugFromTitle(form.title ?? ""))}
+                disabled={!form.title?.trim()}
+                className="shrink-0 rounded-lg border border-gray-300 px-3 text-xs font-semibold text-gray-600 transition hover:border-teal-600 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-600 dark:text-gray-300"
+              >
+                Buat
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              URL publik. Jangan diubah setelah dibagikan kecuali memang perlu.
+            </p>
           </Field>
           <Field label="Negara *">
             <input required className="input" value={form.country} onChange={(e) => set("country", e.target.value)} />
@@ -840,6 +976,69 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                 className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">×</button>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Hotel */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
+              <Hotel size={18} className="text-teal-700 dark:text-teal-300" />
+              Informasi Hotel
+            </h2>
+            <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+              Data ini tampil sebagai tabel hotel di halaman detail tour. Kosongkan bila akomodasi belum ditentukan.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => set("hotel", [...(form.hotel ?? []), { label: "", value: "" }])}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-teal-700/25 px-3 py-2 text-xs font-semibold text-teal-800 transition hover:bg-teal-50 dark:text-teal-200 dark:hover:bg-teal-950"
+          >
+            <Plus size={14} /> Tambah baris
+          </button>
+        </div>
+        <div className="space-y-3">
+          {(form.hotel ?? []).map((row, index) => (
+            <div key={index} className="grid gap-2 sm:grid-cols-[minmax(140px,0.8fr)_minmax(0,1.6fr)_2.5rem]">
+              <input
+                className="input"
+                value={row.label}
+                onChange={(e) => set(
+                  "hotel",
+                  (form.hotel ?? []).map((item, itemIndex) =>
+                    itemIndex === index ? { ...item, label: e.target.value } : item,
+                  ),
+                )}
+                placeholder="Label, mis. Hotel Almaty"
+              />
+              <input
+                className="input"
+                value={row.value}
+                onChange={(e) => set(
+                  "hotel",
+                  (form.hotel ?? []).map((item, itemIndex) =>
+                    itemIndex === index ? { ...item, value: e.target.value } : item,
+                  ),
+                )}
+                placeholder="Nama hotel, kategori, atau keterangan kamar"
+              />
+              <button
+                type="button"
+                title="Hapus baris hotel"
+                onClick={() => set("hotel", (form.hotel ?? []).filter((_, itemIndex) => itemIndex !== index))}
+                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-red-200 text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/40"
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+          ))}
+          {(form.hotel ?? []).length === 0 && (
+            <div className="rounded-lg border border-dashed border-gray-300 px-4 py-5 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+              Belum ada informasi hotel khusus.
+            </div>
+          )}
         </div>
       </div>
 

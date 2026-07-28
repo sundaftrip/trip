@@ -16,6 +16,15 @@ function safeReturnHref(value?: string | string[]) {
   return "/admin/tours";
 }
 
+function hotelEntries(value: unknown): NonNullable<TourData["hotel"]> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return [];
+  return Object.entries(value).flatMap(([label, itemValue]) =>
+    typeof itemValue === "string" || typeof itemValue === "number"
+      ? [{ label, value: String(itemValue) }]
+      : [],
+  );
+}
+
 export default async function EditTourPage({
   params,
   searchParams,
@@ -36,6 +45,7 @@ export default async function EditTourPage({
       </div>
       <TourForm returnHref={returnHref} tour={{
         id: tour.id,
+        slug: tour.slug ?? undefined,
         title: tour.title,
         country: tour.country,
         cityHighlight: tour.cityHighlight ?? undefined,
@@ -50,6 +60,7 @@ export default async function EditTourPage({
         inclusions: tour.inclusions,
         exclusions: tour.exclusions,
         gallery: tour.gallery,
+        hotel: hotelEntries(tour.hotel),
         heroImg: tour.heroImg ?? undefined,
         badge: tour.badge ?? undefined,
         notes: tour.notes ?? undefined,

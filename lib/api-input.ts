@@ -74,6 +74,68 @@ export function normalizeTourPaymentPlanInput(value: unknown): { ok: true; value
   };
 }
 
+export function normalizeTourSlugInput(
+  value: unknown
+): { ok: true; value: string } | { ok: false; error: string } {
+  if (typeof value !== "string") {
+    return { ok: false, error: "Slug tour harus berupa teks." };
+  }
+
+  const slug = value.trim().toLocaleLowerCase("id-ID");
+  if (!slug) return { ok: false, error: "Slug tour tidak boleh kosong." };
+  if (slug.length > 120) return { ok: false, error: "Slug tour maksimal 120 karakter." };
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    return {
+      ok: false,
+      error: "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung.",
+    };
+  }
+
+  return { ok: true, value: slug };
+}
+
+export function normalizeTourHotelInput(
+  value: unknown
+): { ok: true; value: Record<string, string> | null } | { ok: false; error: string } {
+  if (value === undefined || value === null) return { ok: true, value: null };
+  if (!isRecord(value)) return { ok: false, error: "Informasi hotel tidak valid." };
+
+  const entries = Object.entries(value);
+  if (entries.length > 24) {
+    return { ok: false, error: "Informasi hotel maksimal 24 baris." };
+  }
+
+  const normalized: Record<string, string> = {};
+  for (const [rawLabel, rawValue] of entries) {
+    const label = rawLabel.trim();
+    const text =
+      typeof rawValue === "string" || typeof rawValue === "number"
+        ? String(rawValue).trim()
+        : "";
+
+    if (!label && !text) continue;
+    if (!label || !text) {
+      return { ok: false, error: "Setiap baris hotel wajib memiliki label dan isi." };
+    }
+    if (label.length > 60) {
+      return { ok: false, error: "Label informasi hotel maksimal 60 karakter." };
+    }
+    if (text.length > 240) {
+      return { ok: false, error: "Isi informasi hotel maksimal 240 karakter per baris." };
+    }
+    if (label in normalized) {
+      return { ok: false, error: `Label hotel "${label}" digunakan lebih dari sekali.` };
+    }
+
+    normalized[label] = text;
+  }
+
+  return {
+    ok: true,
+    value: Object.keys(normalized).length > 0 ? normalized : null,
+  };
+}
+
 type ReceiptPricingItemInput = {
   name: string;
   quantity: number;

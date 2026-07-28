@@ -4,7 +4,15 @@ import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
-import { pickInput, badNumber, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
+import {
+  pickInput,
+  badNumber,
+  normalizeTourHotelInput,
+  normalizeTourPaymentPlanInput,
+  normalizeTourSlugInput,
+  TOUR_INPUT_FIELDS,
+  VALID_TOUR_STATUSES,
+} from "@/lib/api-input";
 import { apiError } from "@/lib/api-error";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
@@ -39,6 +47,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const data = pickInput(body, TOUR_INPUT_FIELDS);
 
   // Validasi ringan (update parsial — hanya field yang dikirim yang dicek)
+  if (data.title !== undefined && (typeof data.title !== "string" || !data.title.trim()))
+    return NextResponse.json({ error: "Judul tour wajib diisi." }, { status: 422 });
+  if (data.country !== undefined && (typeof data.country !== "string" || !data.country.trim()))
+    return NextResponse.json({ error: "Negara wajib diisi." }, { status: 422 });
   if (badNumber(data.price) || badNumber(data.promoPrice) || badNumber(data.priceLandTour) || badNumber(data.seatsLeft))
     return NextResponse.json({ error: "Harga/kursi harus berupa angka dan tidak boleh negatif." }, { status: 422 });
   if (data.status !== undefined && !VALID_TOUR_STATUSES.includes(data.status as (typeof VALID_TOUR_STATUSES)[number]))
@@ -51,6 +63,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const paymentPlan = normalizeTourPaymentPlanInput(data.paymentPlan);
     if (!paymentPlan.ok) return NextResponse.json({ error: paymentPlan.error }, { status: 422 });
     data.paymentPlan = paymentPlan.value;
+  }
+  if ("hotel" in data) {
+    const hotel = normalizeTourHotelInput(data.hotel);
+    if (!hotel.ok) return NextResponse.json({ error: hotel.error }, { status: 422 });
+    data.hotel = hotel.value;
+  }
+  if ("slug" in data) {
+    const slug = normalizeTourSlugInput(data.slug);
+    if (!slug.ok) return NextResponse.json({ error: slug.error }, { status: 422 });
+    data.slug = slug.value;
   }
 
   try {
