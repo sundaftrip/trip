@@ -1167,7 +1167,7 @@
 .detailGallery {
   margin-top: 34px;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 24px !important;
 }
 
 .detailHighlightRail {

@@ -735,7 +735,7 @@
   margin-top: auto;
   gap: 10px;
   border: 1px solid var(--shell-primary);
-  border-radius: 12px;
+  border-radius: 12px !important;
   background: var(--shell-primary);
   color: var(--shell-white);
   font-weight: 500;
