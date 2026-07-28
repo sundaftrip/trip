@@ -8,6 +8,7 @@ import {
   pickInput,
   badNumber,
   normalizeTourHotelInput,
+  normalizeTourItineraryInput,
   normalizeTourPaymentPlanInput,
   normalizeTourSlugInput,
   TOUR_INPUT_FIELDS,
@@ -81,6 +82,11 @@ export async function POST(req: NextRequest) {
     const hotel = normalizeTourHotelInput(data.hotel);
     if (!hotel.ok) return NextResponse.json({ error: hotel.error }, { status: 422 });
     data.hotel = hotel.value;
+  }
+  if ("itinerary" in data) {
+    const itinerary = normalizeTourItineraryInput(data.itinerary);
+    if (!itinerary.ok) return NextResponse.json({ error: itinerary.error }, { status: 422 });
+    data.itinerary = itinerary.value;
   }
   if (data.slug !== undefined && data.slug !== null && data.slug !== "") {
     const slug = normalizeTourSlugInput(data.slug);

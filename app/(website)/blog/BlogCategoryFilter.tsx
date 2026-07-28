@@ -27,6 +27,7 @@ export default function BlogCategoryFilter({
   children,
 }: BlogCategoryFilterProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const filterId = useId();
   const resultsId = useId();
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -50,55 +51,38 @@ export default function BlogCategoryFilter({
     <>
       {categories.length > 0 && (
         <section
-          className={`${styles.atlasPanel} ${styles.filterPanel}`}
-          aria-labelledby="blog-category-filter-title"
+          className={styles.filterPanel}
+          aria-labelledby={`${filterId}-label`}
         >
-          <div className={styles.filterHeader}>
-            <div>
-              <p className={styles.eyebrow}>Indeks jurnal</p>
-              <h2 id="blog-category-filter-title" className={styles.filterTitle}>
-                Pilih kategori
-              </h2>
-            </div>
+          <div className={styles.filterControls}>
+            <label
+              id={`${filterId}-label`}
+              htmlFor={filterId}
+              className={styles.filterLabel}
+            >
+              Kategori artikel
+            </label>
+            <span className={styles.filterSelectWrap}>
+              <select
+                id={filterId}
+                value={selectedCategory ?? ""}
+                aria-controls={resultsId}
+                className={styles.filterSelect}
+                onChange={(event) =>
+                  setSelectedCategory(event.target.value || null)
+                }
+              >
+                <option value="">Semua kategori · {totalCount}</option>
+                {categories.map((category) => (
+                  <option key={category.name} value={category.name}>
+                    {category.name} · {category.count}
+                  </option>
+                ))}
+              </select>
+            </span>
             <p className={styles.resultCount} aria-live="polite" aria-atomic="true">
               {visibleCount} artikel
             </p>
-          </div>
-
-          <div
-            className={styles.filterScroller}
-            role="group"
-            aria-label="Filter kategori artikel"
-          >
-            <div className={styles.filterList}>
-              <button
-                type="button"
-                aria-pressed={selectedCategory === null}
-                aria-controls={resultsId}
-                className={styles.filterLink}
-                onClick={() => setSelectedCategory(null)}
-              >
-                Semua
-                <span className={styles.filterCount} aria-hidden="true">
-                  {totalCount}
-                </span>
-              </button>
-              {categories.map((category) => (
-                <button
-                  key={category.name}
-                  type="button"
-                  aria-pressed={selectedCategory === category.name}
-                  aria-controls={resultsId}
-                  className={styles.filterLink}
-                  onClick={() => setSelectedCategory(category.name)}
-                >
-                  {category.name}
-                  <span className={styles.filterCount} aria-hidden="true">
-                    {category.count}
-                  </span>
-                </button>
-              ))}
-            </div>
           </div>
         </section>
       )}

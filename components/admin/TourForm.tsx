@@ -6,7 +6,7 @@ import { Check, CircleCheck, ExternalLink, Hotel, Pencil, Plus, Trash2, X } from
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
 
-type ItineraryItem = { day: number; title: string; description: string };
+type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
 type AddOnDraft = { name: string; price: string | number; desc: string };
 export type TourHotelEntry = { label: string; value: string };
@@ -97,7 +97,7 @@ function getNextItineraryDay(items?: ItineraryItem[]) {
 }
 
 function emptyItineraryItem(items?: ItineraryItem[]): ItineraryItem {
-  return { day: getNextItineraryDay(items), title: "", description: "" };
+  return { day: getNextItineraryDay(items), title: "", description: "", image: "" };
 }
 
 function emptyAddOnItem(): AddOnDraft {
@@ -270,6 +270,7 @@ function hasDraftWork(draft: TourFormDraft, initialForm: TourData) {
     draft.exclusionInput.trim() !== "" ||
     draft.itineraryItem.title.trim() !== "" ||
     draft.itineraryItem.description.trim() !== "" ||
+    (draft.itineraryItem.image ?? "").trim() !== "" ||
     draft.addOnItem.name.trim() !== "" ||
     draft.addOnItem.desc.trim() !== "" ||
     String(draft.addOnItem.price).trim() !== ""
@@ -377,6 +378,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
               day: Number(draft.itineraryItem.day) || getNextItineraryDay(restoredForm.itinerary),
               title: draft.itineraryItem.title ?? "",
               description: draft.itineraryItem.description ?? "",
+              image: draft.itineraryItem.image ?? "",
             }
           : emptyItineraryItem(restoredForm.itinerary)
         );
@@ -566,6 +568,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       day: Number(itineraryItem.day) || getNextItineraryDay(form.itinerary),
       title: itineraryItem.title.trim(),
       description: itineraryItem.description.trim(),
+      image: itineraryItem.image?.trim() || undefined,
     };
     if (!item.title) return;
 
@@ -955,12 +958,20 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       {/* Hero Image */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Gambar Hero</h2>
-        <ImageUpload value={form.heroImg ?? ""} onChange={(url) => set("heroImg", url)} folder="tours/hero" />
+        <ImageUpload
+          value={form.heroImg ?? ""}
+          onChange={(url) => set("heroImg", url)}
+          folder="tours/hero"
+          buttonLabel="Upload gambar hero"
+        />
       </div>
 
       {/* Gallery */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Galeri</h2>
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Galeri</h2>
+        <p className="mb-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+          Galeri dipakai untuk carousel utama. Gambar kartu Sorotan Pengalaman diatur per hari pada bagian Itinerary.
+        </p>
         <ImageUpload
           value=""
           onChange={(url) => setForm((p) => ({ ...p, gallery: [...(p.gallery ?? []), url] }))}
@@ -1115,7 +1126,10 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
 
       {/* Itinerary */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Itinerary</h2>
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Itinerary &amp; Sorotan Pengalaman</h2>
+        <p className="mb-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+          Tambahkan gambar khusus pada tiap hari untuk mengatur kartu Sorotan Pengalaman. Jika kosong, website tetap memakai gambar hero atau galeri sebagai fallback.
+        </p>
 
         {editingItineraryIdx === null && (
           <div className="mb-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/40">
@@ -1167,13 +1181,35 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.title}</p>
                   {item.description && <p className="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{item.description}</p>}
+                  {item.image ? (
+                    <div className="mt-2 flex items-center gap-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="h-10 w-14 rounded-md border border-gray-200 object-cover dark:border-gray-600"
+                      />
+                      <span className="text-[11px] font-medium text-teal-700 dark:text-teal-300">
+                        Gambar sorotan khusus
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-300">
+                      Gambar sorotan masih mengikuti hero/galeri.
+                    </p>
+                  )}
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   <button
                     type="button"
                     title="Edit"
                     onClick={() => {
-                      setItineraryItem({ day: item.day, title: item.title, description: item.description });
+                      setItineraryItem({
+                        day: item.day,
+                        title: item.title,
+                        description: item.description,
+                        image: item.image ?? "",
+                      });
                       setEditingItineraryIdx(i);
                     }}
                     className="inline-flex h-9 w-9 items-center justify-center rounded text-blue-500 transition-colors hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30">
@@ -1379,6 +1415,20 @@ function ItineraryItemFields({
             {submitLabel}
           </button>
         </div>
+      </div>
+      <div className="rounded-lg border border-dashed border-gray-300 bg-white/70 p-3 dark:border-gray-600 dark:bg-gray-800/70 md:col-span-3">
+        <p className="mb-1 text-xs font-semibold text-gray-700 dark:text-gray-200">
+          Gambar Sorotan Pengalaman <span className="font-normal text-gray-400">(opsional)</span>
+        </p>
+        <p className="mb-3 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
+          Gambar ini mewakili aktivitas hari tersebut pada kartu Sorotan di halaman publik.
+        </p>
+        <ImageUpload
+          value={item.image ?? ""}
+          onChange={(url) => onChange({ ...item, image: url })}
+          folder="tours/itinerary"
+          buttonLabel="Upload gambar hari"
+        />
       </div>
     </div>
   );

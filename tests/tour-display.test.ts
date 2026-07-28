@@ -105,3 +105,14 @@ test("adds a hotel stay only for eligible middle itinerary days", () => {
   assert.equal(addInferredMiddleHotelStay(baseDay, 0, 5, "Tur kota dan waktu bebas.").insights.some((item) => item.kind === "stay"), false);
   assert.equal(addInferredMiddleHotelStay(baseDay, 1, 5, "Menginap di yurt camp.").insights.some((item) => item.kind === "stay"), false);
 });
+
+test("preserves a CMS-managed itinerary highlight image for the public experience cards", () => {
+  const day = buildItineraryDisplay({
+    day: 2,
+    title: "Tur Kota Tokyo",
+    description: "Kunjungan ke Asakusa.",
+    image: "https://res.cloudinary.com/example/tokyo.jpg",
+  });
+
+  assert.equal(day.image, "https://res.cloudinary.com/example/tokyo.jpg");
+});

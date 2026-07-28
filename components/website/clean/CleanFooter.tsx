@@ -1,7 +1,33 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  ContactRound,
+  Mail,
+  MessageCircle,
+  Phone,
+  type LucideIcon,
+} from "lucide-react";
+import type { SVGProps } from "react";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import styles from "./CleanShell.module.css";
+
+function InstagramIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect width="18" height="18" x="3" y="3" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.6" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 export default function CleanFooter({ logo, company }: { logo?: string; company: Record<string, string> }) {
   const logoSrc = cldFit(logo || "/logo.png", 320);
@@ -19,11 +45,21 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
     .replace(/[/?#].*$/, "")
     .trim();
   const contactLinks = [
-    whatsapp && { href: whatsapp, label: `WhatsApp ${whatsappDisplay}`, external: true },
-    email && { href: `mailto:${email}`, label: email, external: false },
-    phoneHref && { href: phoneHref, label: `Telepon ${phone}`, external: false },
-    igUser && { href: `https://www.instagram.com/${igUser}`, label: `Instagram @${igUser}`, external: true },
-  ].filter(Boolean) as Array<{ href: string; label: string; external: boolean }>;
+    whatsapp && { href: whatsapp, label: `WhatsApp ${whatsappDisplay}`, external: true, Icon: MessageCircle },
+    email && { href: `mailto:${email}`, label: email, external: false, Icon: Mail },
+    phoneHref && { href: phoneHref, label: `Telepon ${phone}`, external: false, Icon: Phone },
+    igUser && {
+      href: `https://www.instagram.com/${igUser}`,
+      label: `Instagram @${igUser}`,
+      external: true,
+      Icon: InstagramIcon,
+    },
+  ].filter(Boolean) as Array<{
+    href: string;
+    label: string;
+    external: boolean;
+    Icon: LucideIcon | typeof InstagramIcon;
+  }>;
 
   return (
     <footer className={styles.footer} data-clean-footer>
@@ -69,17 +105,25 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <section className={styles.footerGroup}>
               <h2>Hubungi</h2>
               <nav aria-label="Tautan kontak">
-                {contactLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    aria-label={link.external ? `${link.label} (buka di tab baru)` : undefined}
-                    {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                <Link href="/contact">Halaman kontak</Link>
+                {contactLinks.map((link) => {
+                  const Icon = link.Icon;
+
+                  return (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      aria-label={link.external ? `${link.label} (buka di tab baru)` : undefined}
+                      {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                    >
+                      <Icon className={styles.footerLinkIcon} aria-hidden="true" focusable="false" />
+                      <span>{link.label}</span>
+                    </a>
+                  );
+                })}
+                <Link href="/contact">
+                  <ContactRound className={styles.footerLinkIcon} aria-hidden="true" focusable="false" />
+                  <span>Halaman kontak</span>
+                </Link>
               </nav>
             </section>
           </div>

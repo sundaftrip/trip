@@ -827,7 +827,7 @@
 }
 
 .footerGroup h2 {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   color: var(--shell-ink);
   font-size: 13px;
   font-weight: 780;
@@ -838,7 +838,7 @@
 
 .footerGroup nav {
   display: grid;
-  gap: 2px;
+  gap: 0;
 }
 
 .footerGroup:last-child nav {
@@ -848,9 +848,10 @@
 
 .footerGroup a {
   width: fit-content;
-  min-height: 44px;
+  min-height: 36px;
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   color: var(--shell-muted);
   font-size: 13px;
   line-height: 1.5;
@@ -860,6 +861,14 @@
 
 .footerGroup a:hover {
   color: var(--shell-primary);
+}
+
+.footerLinkIcon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  color: var(--shell-primary);
+  stroke-width: 1.4;
 }
 
 .footerBottom {
@@ -977,6 +986,10 @@
 
   .footerGroup:last-child nav {
     grid-template-columns: 1fr;
+  }
+
+  .footerGroup a {
+    min-height: 34px;
   }
 
   .footerBottom {

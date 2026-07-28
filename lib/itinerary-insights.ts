@@ -16,6 +16,7 @@ export interface ItineraryDisplayDay {
   day: number;
   title: string;
   description: string;
+  image?: string;
   insights: ItineraryInsight[];
 }
 
@@ -23,6 +24,7 @@ interface SourceItineraryDay {
   day: number;
   title: string;
   description: string;
+  image?: string;
 }
 
 const MEAL_CODES: Record<string, string> = {
@@ -246,6 +248,7 @@ export function buildItineraryDisplay(day: SourceItineraryDay): ItineraryDisplay
     day: day.day,
     title: removeMealCodeSuffix(day.title),
     description: stripLeadingItineraryMeta(day.description),
+    image: day.image,
     insights,
   };
 }

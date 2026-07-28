@@ -24,7 +24,7 @@ function validDate(value: string | null) {
 }
 
 function statusLabel(tour: CleanTour) {
-  if (tour.state === "completed") return "Trip terdahulu";
+  if (tour.state === "completed") return "Selesai";
   if (tour.state === "flexible") return "Tanggal fleksibel";
   if (tour.state === "sold") return "Penuh";
   if (/confirmed|terkonfirmasi/i.test(tour.badge || "")) return "Terkonfirmasi";
@@ -39,7 +39,7 @@ function tripMeta(tour: CleanTour) {
 
 function departureLabel(tour: CleanTour) {
   const date = validDate(tour.tripDate);
-  return date ? DATE_FORMATTER.format(date) : "Tanggal akan diumumkan";
+  return date ? DATE_FORMATTER.format(date) : "Kapan pun Anda mau";
 }
 
 function routeHighlight(value: string) {

@@ -136,6 +136,63 @@ export function normalizeTourHotelInput(
   };
 }
 
+export type NormalizedTourItineraryItem = {
+  day: number;
+  title: string;
+  description: string;
+  image?: string;
+};
+
+export function normalizeTourItineraryInput(
+  value: unknown
+): { ok: true; value: NormalizedTourItineraryItem[] } | { ok: false; error: string } {
+  if (value === undefined || value === null) return { ok: true, value: [] };
+  if (!Array.isArray(value)) return { ok: false, error: "Itinerary tour tidak valid." };
+  if (value.length > 60) return { ok: false, error: "Itinerary maksimal 60 hari." };
+
+  const normalized: NormalizedTourItineraryItem[] = [];
+  const usedDays = new Set<number>();
+
+  for (const entry of value) {
+    if (!isRecord(entry)) return { ok: false, error: "Setiap hari itinerary harus berupa data yang valid." };
+
+    const day = Number(entry.day);
+    const title = typeof entry.title === "string" ? entry.title.trim() : "";
+    const description = typeof entry.description === "string" ? entry.description.trim() : "";
+    const image = typeof entry.image === "string" ? entry.image.trim() : "";
+
+    if (!Number.isInteger(day) || day < 1 || day > 365) {
+      return { ok: false, error: "Nomor hari itinerary harus berupa bilangan 1–365." };
+    }
+    if (usedDays.has(day)) {
+      return { ok: false, error: `Hari ke-${day} digunakan lebih dari sekali.` };
+    }
+    if (title.length > 180) {
+      return { ok: false, error: `Judul itinerary hari ke-${day} maksimal 180 karakter.` };
+    }
+    if (description.length > 12_000) {
+      return { ok: false, error: `Deskripsi itinerary hari ke-${day} terlalu panjang.` };
+    }
+    if (image.length > 2_048) {
+      return { ok: false, error: `URL gambar itinerary hari ke-${day} terlalu panjang.` };
+    }
+    if (image && !/^https?:\/\//i.test(image) && !image.startsWith("/")) {
+      return { ok: false, error: `Gambar itinerary hari ke-${day} harus berupa URL atau path website.` };
+    }
+
+    usedDays.add(day);
+    normalized.push({
+      day,
+      title,
+      description,
+      ...(image ? { image } : {}),
+    });
+  }
+
+  normalized.sort((a, b) => a.day - b.day);
+  return { ok: true, value: normalized };
+}
+
 type ReceiptPricingItemInput = {
   name: string;
   quantity: number;
