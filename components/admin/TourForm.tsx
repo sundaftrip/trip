@@ -957,7 +957,10 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
 
       {/* Hero Image */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Gambar Hero</h2>
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Gambar Hero</h2>
+        <p className="mb-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+          Dipakai pada gambar utama halaman detail dan kartu katalog. Simpan Perubahan untuk menerbitkan pilihan ini.
+        </p>
         <ImageUpload
           value={form.heroImg ?? ""}
           onChange={(url) => set("heroImg", url)}
@@ -970,7 +973,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Galeri</h2>
         <p className="mb-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-          Galeri dipakai untuk carousel utama. Gambar kartu Sorotan Pengalaman diatur per hari pada bagian Itinerary.
+          Galeri muncul pada carousel utama dan bagian Visual Perjalanan setelah Simpan Perubahan. Gambar kartu Sorotan Pengalaman diatur per hari pada bagian Itinerary.
         </p>
         <ImageUpload
           value=""
@@ -1128,7 +1131,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Itinerary &amp; Sorotan Pengalaman</h2>
         <p className="mb-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-          Tambahkan gambar khusus pada tiap hari untuk mengatur kartu Sorotan Pengalaman. Jika kosong, website tetap memakai gambar hero atau galeri sebagai fallback.
+          Tambahkan gambar khusus pada tiap hari untuk mengatur kartu Sorotan Pengalaman. Setelah Simpan Perubahan, gambar tersebut tampil di kartu hari terkait; jika kosong, website memakai gambar hero atau galeri sebagai fallback.
         </p>
 
         {editingItineraryIdx === null && (
@@ -1419,7 +1422,7 @@ function ItineraryItemFields({
           Gambar Sorotan Pengalaman <span className="font-normal text-gray-400">(opsional)</span>
         </p>
         <p className="mb-3 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
-          Gambar ini mewakili aktivitas hari tersebut pada kartu Sorotan di halaman publik.
+          Gambar ini mewakili aktivitas hari tersebut pada kartu Sorotan di halaman publik setelah Simpan Perubahan.
         </p>
         <ImageUpload
           value={item.image ?? ""}

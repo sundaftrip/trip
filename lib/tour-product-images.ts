@@ -96,7 +96,14 @@ function choose(seed: string, images: readonly string[]) {
   return images[stableIndex(seed, images.length)];
 }
 
-function controlledCmsImage(value?: string | null) {
+/**
+ * Returns media that can safely be rendered on public tour surfaces.
+ *
+ * Keep this allow-list aligned with `next.config.ts`. CMS editors may paste
+ * trusted delivery URLs as well as upload through Cloudinary, so rejecting a
+ * valid provider here silently caused the public catalog to use its fallback.
+ */
+export function getPublicTourMediaUrl(value?: string | null) {
   const source = value?.trim();
   if (!source) return null;
   if (/^\/(?!\/)/.test(source)) return source;
@@ -108,6 +115,7 @@ function controlledCmsImage(value?: string | null) {
       && (
         url.hostname === "res.cloudinary.com"
         || url.hostname === "images.unsplash.com"
+        || url.hostname === "plus.unsplash.com"
         || url.hostname === "picsum.photos"
         || url.hostname === "fastly.picsum.photos"
         || url.hostname === "images.pexels.com"
@@ -168,7 +176,7 @@ const GENERIC_TRAVEL = [
 ] as const;
 
 export function getTourProductImage(tour: TourProductImageInput) {
-  const suppliedHero = controlledCmsImage(tour.heroImg);
+  const suppliedHero = getPublicTourMediaUrl(tour.heroImg);
   if (suppliedHero) return suppliedHero;
 
   const seed = imageSeed(tour);

@@ -27,7 +27,11 @@ import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
-import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
+import {
+  getAbsoluteTourProductImage,
+  getPublicTourMediaUrl,
+  getTourProductImage,
+} from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 
@@ -476,6 +480,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     WebkitBoxDecorationBreak: "clone",
   };
 
+  const tourGallery = tour.gallery
+    .map((image) => getPublicTourMediaUrl(image))
+    .filter((image): image is string => Boolean(image));
   const rawItinerary = (tour.itinerary as {
     day: number;
     title: string;
@@ -504,6 +511,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     ...item,
     title: localizePdfText(item.title) ?? item.title,
     description: localizePdfText(item.description) ?? item.description,
+    image: getPublicTourMediaUrl(item.image) ?? undefined,
   }));
   const itinerary = localizedItinerary.map((localizedItem, index) => {
     const withExplicitStay = addImpliedStayInsight(
@@ -721,7 +729,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             notes: displayNotes ?? null,
             heroImg: productHeroImage,
             badge: displayBadge ?? null,
-            gallery: tour.gallery,
+            gallery: tourGallery,
             inclusions: displayInclusions,
             exclusions: displayExclusions,
             hotel: hotelInfo,
@@ -846,12 +854,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Gallery */}
-            {tour.gallery.length > 0 && (
+            {tourGallery.length > 0 && (
               <div>
                 <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
                   {isOutlined && <Camera size={18} />} Galeri
                 </h2>
-                <GalleryZoom images={tour.gallery} altPrefix={`${displayTitle} - dokumentasi`} />
+                <GalleryZoom images={tourGallery} altPrefix={`${displayTitle} - dokumentasi`} />
               </div>
             )}
 

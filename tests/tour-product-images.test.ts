@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   getAbsoluteTourProductImage,
+  getPublicTourMediaUrl,
   getTourProductImage,
   PEXELS_TOUR_IMAGES,
   VIETNAM_PRODUCT_IMAGE_BY_SLUG,
@@ -183,6 +184,19 @@ test("preserves a valid CMS-selected hero and falls back safely when it is absen
       title: "Untrusted external image",
       heroImg: "https://cdn.example.com/tours/untrusted.webp",
     })),
+  );
+});
+
+test("keeps trusted Unsplash Plus media on every public tour surface", () => {
+  const suppliedHero = "https://plus.unsplash.com/premium_photo-1661947436461-a9ab4ecdd37a?auto=format&fit=crop";
+
+  assert.equal(getPublicTourMediaUrl(suppliedHero), suppliedHero);
+  assert.equal(
+    getTourProductImage({
+      title: "Musim Dingin Hokkaido + Tokyo",
+      heroImg: suppliedHero,
+    }),
+    suppliedHero,
   );
 });
 
