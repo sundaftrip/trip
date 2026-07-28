@@ -35,7 +35,6 @@ import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import TourBookingExperience from "./TourBookingExperience";
 import TourDetailTabs from "./TourDetailTabs";
-import TourDetailQuickActions from "./TourDetailQuickActions";
 import TourHeroGallery from "./TourHeroGallery";
 import styles from "./CleanSite.module.css";
 import interactiveStyles from "./TourDetailInteractive.module.css";
@@ -384,7 +383,6 @@ export default function CleanTourDetail({
       <TourDetailTabs tabs={sectionTabs} tourId={tour.id} />
 
       <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
-        <TourDetailQuickActions tourTitle={tour.title} tourId={tour.id} pdfHref={`/tours/${tour.id}/pdf`} />
         <div className={styles.detailContentMain}>
           <section className={styles.detailContentSection} id="ringkasan" aria-labelledby="ringkasan-title">
             <div className={styles.detailSummary}>

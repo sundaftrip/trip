@@ -1091,62 +1091,6 @@
 
 .detailContentMain { min-width: 0; }
 
-.detailQuickActions {
-  position: fixed;
-  top: 50%;
-  left: max(4px, calc((100vw - 1360px) / 2 - 52px));
-  z-index: 28;
-  display: grid;
-  gap: 7px;
-  transform: translateY(-50%);
-}
-
-.detailQuickActions > button,
-.detailQuickActions > a {
-  width: 32px;
-  min-height: 76px;
-  padding: 8px 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border: 1px solid rgb(12 77 86 / 28%);
-  border-radius: 999px !important;
-  background: rgb(255 255 255 / 62%);
-  box-shadow: 0 8px 22px rgb(19 34 39 / 8%);
-  color: #0c4d56;
-  backdrop-filter: blur(10px);
-  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
-}
-
-.detailQuickActions > button:hover,
-.detailQuickActions > button:focus-visible,
-.detailQuickActions > a:hover,
-.detailQuickActions > a:focus-visible {
-  border-color: #0c4d56;
-  background: rgb(255 255 255 / 88%);
-  box-shadow: 0 10px 24px rgb(12 77 86 / 14%);
-  outline: 0;
-  transform: translateX(2px);
-}
-
-.detailQuickActions svg {
-  width: 14px;
-  height: 14px;
-  flex: 0 0 auto;
-  stroke-width: 1.35;
-}
-
-.detailQuickActions span {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .08em;
-  line-height: 1;
-  text-transform: uppercase;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-}
-
 .detailContentSection {
   margin-bottom: clamp(76px, 8vw, 112px);
   scroll-margin-top: 175px;
@@ -1911,11 +1855,6 @@
   .detailHeroPhoto figcaption { display: none; }
   .detailSectionNav > div { gap: 24px; }
   .detailContentLayout { padding-top: 46px; padding-bottom: 64px; gap: 54px; }
-  .detailQuickActions { left: 3px; }
-  .detailQuickActions > button,
-  .detailQuickActions > a { width: 28px; min-height: 68px; padding: 7px 4px; }
-  .detailQuickActions svg { width: 13px; height: 13px; }
-  .detailQuickActions span { font-size: 8px; }
   .detailContentSection { scroll-margin-top: 145px; }
   .detailSummary { grid-template-columns: 1fr; gap: 18px; }
   .detailSummaryIndex { padding-top: 0; }
