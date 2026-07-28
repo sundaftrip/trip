@@ -972,6 +972,12 @@
   text-wrap: balance;
 }
 
+/* Aurora-gradient text needs a little more room for Jost descenders such as “g”. */
+.detailHero h1:global(.aurora-text) {
+  line-height: 1.06;
+  padding-block-end: .06em;
+}
+
 .detailHeroIntro {
   max-width: 480px;
   margin: 0 0 5px;
