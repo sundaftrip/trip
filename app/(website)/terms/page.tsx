@@ -24,6 +24,7 @@ function getTermsSections(html?: string | null) {
       .replace(/<[^>]+>/g, " ")
       .replace(/&nbsp;/gi, " ")
       .replace(/\s+/g, " ")
+      .replace(/^\d+\.\s*/, "")
       .trim();
 
     if (title) {
@@ -105,7 +106,7 @@ export default async function TermsPage({
         guideTitle: "Key points before you book",
         guideLede: "This is a reading guide. The complete terms below remain the binding reference.",
         summaries: [
-          ["Payment commitment", "After registration is confirmed, the booking fee and deposits paid are non-refundable."],
+          ["Payment commitment", "Booking fees and deposits are not refundable to the extent they have been used or cannot be recovered from the relevant vendor."],
           ["Cancellation and changes", "Cancellation within 30 calendar days of departure is charged at 100% of the package price. Changes require organiser approval and supplier availability."],
           ["Visa and force majeure", "Visa decisions are made by the relevant authority. In exceptional circumstances, the itinerary may change and additional operational costs may be borne by the participant."],
         ],
@@ -120,7 +121,7 @@ export default async function TermsPage({
         guideTitle: "Hal penting sebelum memesan",
         guideLede: "Ini adalah panduan membaca. Ketentuan lengkap di bawah tetap menjadi rujukan yang berlaku.",
         summaries: [
-          ["Komitmen pembayaran", "Setelah pendaftaran dikonfirmasi, booking fee dan deposit yang telah dibayarkan tidak dapat dikembalikan."],
+          ["Komitmen pembayaran", "Booking fee dan deposit tidak dapat dikembalikan sejauh biaya telah digunakan atau tidak dapat dipulihkan dari vendor terkait."],
           ["Pembatalan dan perubahan", "Pembatalan dalam 30 hari kalender sebelum keberangkatan dikenakan 100% dari harga paket. Perubahan memerlukan persetujuan penyelenggara dan ketersediaan vendor."],
           ["Visa dan keadaan kahar", "Keputusan visa berada pada otoritas terkait. Dalam keadaan luar biasa, itinerary dapat berubah dan biaya operasional tambahan dapat menjadi tanggung jawab peserta."],
         ],
