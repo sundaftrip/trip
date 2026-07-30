@@ -819,6 +819,20 @@
   color: var(--shell-primary);
 }
 
+.footerGroup .footerContactIcon {
+  width: 44px;
+  min-height: 44px;
+  justify-content: center;
+  border: 1px solid var(--shell-line);
+  border-radius: 50%;
+  color: var(--shell-primary);
+  background: var(--shell-white);
+}
+
+.footerGroup .footerContactIcon:hover {
+  background: var(--shell-ice);
+}
+
 .footerBottom {
   padding-top: 20px;
   display: grid;

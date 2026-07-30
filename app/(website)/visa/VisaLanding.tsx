@@ -218,7 +218,6 @@ export default function VisaLanding({
                         <span className={styles.flag}>
                           <FlagIcon
                             flag={country.flag}
-                            rounded
                             label={`Bendera ${country.name}`}
                             width={42}
                           />

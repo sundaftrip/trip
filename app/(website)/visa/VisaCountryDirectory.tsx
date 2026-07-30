@@ -194,7 +194,6 @@ export default function VisaCountryDirectory({ entries }: { entries: VisaCountry
                       <span className={styles.flag}>
                         <FlagIcon
                           flag={country.flag}
-                          rounded
                           label={`Bendera ${country.name}`}
                           width={34}
                         />

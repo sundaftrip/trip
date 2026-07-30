@@ -20,8 +20,6 @@ export function emojiToIso(flag: string): string | null {
 interface FlagIconProps {
   flag: string;
   className?: string;
-  /** Sudut tumpul + shadow halus untuk konteks hero/kartu. */
-  rounded?: boolean;
   /** ARIA label. Kalau tidak diset, dianggap dekoratif (aria-hidden). */
   label?: string;
   /** Lebar piksel — WAJIB diisi karena `.fi` default 1.333em menang atas
@@ -34,14 +32,13 @@ interface FlagIconProps {
 export function FlagIcon({
   flag,
   className = "",
-  rounded,
   label,
   width = 24,
   height,
 }: FlagIconProps) {
   const iso = emojiToIso(flag);
   const ariaProps = label ? { role: "img", "aria-label": label } : { "aria-hidden": true };
-  const decoClass = rounded ? "rounded-[2px] shadow-sm" : "";
+  const decoClass = "shadow-sm";
   // Inline style menang atas `.fi { width: 1.333em }` dari flag-icons
   // (unlayered CSS di Tailwind v4) dan apa pun di className utility.
   const sizeStyle = {
@@ -49,6 +46,7 @@ export function FlagIcon({
     height: `${height ?? Math.round((width * 3) / 4)}px`,
     display: "inline-block",
     flexShrink: 0,
+    borderRadius: 0,
   } as const;
 
   if (!iso) {
