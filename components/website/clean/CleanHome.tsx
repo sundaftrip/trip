@@ -351,12 +351,12 @@ export default function CleanHome({
           <div className={styles.shell}>
             <div className={styles.headingRow}>
               <div className={styles.sectionHeading}>
-                <p className={styles.eyebrow}>KATALOG PERJALANAN SUNDAF</p>
-                <h2 id="active-tours-title">Pilih perjalanan secara visual</h2>
-                <p>Seluruh open trip, land tour privat, dan perjalanan terdahulu tersedia di sini.</p>
+                <p className={styles.eyebrow}>PILIH TRIP VERSI KAMU</p>
+                <h2 id="active-tours-title">Yuk, cari perjalanan yang paling kamu banget.</h2>
+                <p>Mau ikut open trip, jalan privat, atau intip keseruan trip sebelumnya? Semua pilihannya ada di sini.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
-                Buka katalog <ArrowRight aria-hidden="true" />
+                Lihat semua trip <ArrowRight aria-hidden="true" />
               </Link>
             </div>
 
