@@ -20,6 +20,7 @@ import { FlagIcon } from "@/lib/flag-icon";
 import TestimonialSection from "@/components/website/TestimonialSection";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import VisaConsultationForm from "../VisaConsultationForm";
+import VisaDetailTabs from "../VisaDetailTabs";
 import styles from "../VisaPages.module.css";
 
 // ISR 5 menit: konten visa jarang berubah, force-dynamic bikin TTFB lambat
@@ -223,7 +224,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
       : null;
 
   return (
-    <article className={styles.page}>
+    <article className={`${styles.page} ${styles.detailPage}`}>
       <a className={styles.skipLink} href="#visa-detail-content">
         Lewati ke informasi visa
       </a>
@@ -256,7 +257,6 @@ export default async function VisaDetailPage({ params }: PageProps) {
           <div className={styles.detailHeroGrid}>
             <FlagIcon
               flag={country.flag}
-              rounded
               label={`Bendera ${country.name}`}
               width={112}
               className={styles.detailFlag}
@@ -308,30 +308,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
       </section>
 
       {/* ─── ANCHOR NAV ─── */}
-      <nav className={styles.detailNav} aria-label="Bagian informasi visa">
-        <div className={styles.shell}>
-          <ul className={styles.detailNavList}>
-            {[
-              ["#overview", "Ringkasan"],
-              ["#eligibility", "Kelayakan"],
-              ["#dokumen", "Dokumen"],
-              ["#layanan", "Harga"],
-              ["#protection", "Visa Protection"],
-              ["#proses", "Proses"],
-              ["#faq", "FAQ"],
-            ].map(([href, label]) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className={styles.detailNavLink}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
+      <VisaDetailTabs />
 
       {/* ─── CONTENT + STICKY PRICING ─── */}
       <div className={`${styles.shell} ${styles.detailGrid}`} id="visa-detail-content" tabIndex={-1}>

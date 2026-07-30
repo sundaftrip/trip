@@ -1,7 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Contact, MessageCircle, Phone, type LucideIcon } from "lucide-react";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import styles from "./CleanShell.module.css";
+
+type FooterContactLink = {
+  href: string;
+  label: string;
+  external: boolean;
+  icon?: LucideIcon;
+  iconOnly?: boolean;
+};
 
 export default function CleanFooter({ logo, company }: { logo?: string; company: Record<string, string> }) {
   const logoSrc = cldFit(logo || "/logo.png", 320);
@@ -18,12 +27,34 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
     .replace(/^@/, "")
     .replace(/[/?#].*$/, "")
     .trim();
-  const contactLinks = [
-    whatsapp && { href: whatsapp, label: `WhatsApp ${whatsappDisplay}`, external: true },
-    email && { href: `mailto:${email}`, label: email, external: false },
-    phoneHref && { href: phoneHref, label: `Telepon ${phone}`, external: false },
-    igUser && { href: `https://www.instagram.com/${igUser}`, label: `Instagram @${igUser}`, external: true },
-  ].filter(Boolean) as Array<{ href: string; label: string; external: boolean }>;
+  const contactLinks: Array<FooterContactLink | null> = [
+    whatsapp
+      ? {
+          href: whatsapp,
+          label: "WhatsApp Sundaf Trip",
+          external: true,
+          icon: MessageCircle,
+          iconOnly: true,
+        }
+      : null,
+    email ? { href: `mailto:${email}`, label: email, external: false } : null,
+    phoneHref
+      ? {
+          href: phoneHref,
+          label: "Telepon Sundaf Trip",
+          external: false,
+          icon: Phone,
+          iconOnly: true,
+        }
+      : null,
+    igUser
+      ? { href: `https://www.instagram.com/${igUser}`, label: `Instagram @${igUser}`, external: true }
+      : null,
+    { href: "/contact", label: "Halaman kontak", external: false, icon: Contact, iconOnly: true },
+  ];
+  const visibleContactLinks = contactLinks.filter(
+    (link): link is FooterContactLink => Boolean(link),
+  );
 
   return (
     <footer className={styles.footer} data-clean-footer>
@@ -69,17 +100,23 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <section className={styles.footerGroup}>
               <h2>Hubungi</h2>
               <nav aria-label="Tautan kontak">
-                {contactLinks.map((link) => (
+                {visibleContactLinks.map(({ icon: Icon, iconOnly, ...link }) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    aria-label={link.external ? `${link.label} (buka di tab baru)` : undefined}
+                    className={iconOnly ? styles.footerContactIcon : undefined}
+                    aria-label={
+                      iconOnly || link.external
+                        ? `${link.label}${link.external ? " (buka di tab baru)" : ""}`
+                        : undefined
+                    }
+                    title={iconOnly ? link.label : undefined}
                     {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
                   >
-                    {link.label}
+                    {Icon ? <Icon aria-hidden="true" size={20} strokeWidth={1.8} /> : link.label}
+                    {iconOnly && <span className="sr-only">{link.label}</span>}
                   </a>
                 ))}
-                <Link href="/contact">Halaman kontak</Link>
               </nav>
             </section>
           </div>

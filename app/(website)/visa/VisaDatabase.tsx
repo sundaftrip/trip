@@ -182,7 +182,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
             >
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <FlagIcon flag={c.flag} rounded label={c.name} width={32} />
+                  <FlagIcon flag={c.flag} label={c.name} width={32} />
                   <div className="min-w-0">
                     <div className="font-semibold text-gray-900 dark:text-white truncate">
                       {c.name}
@@ -303,7 +303,7 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
-                      <FlagIcon flag={c.flag} rounded label={c.name} width={28} />
+                      <FlagIcon flag={c.flag} label={c.name} width={28} />
                       <div>
                         <div className="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
                           <span className="relative inline-block">
