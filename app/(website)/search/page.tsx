@@ -225,7 +225,7 @@ export default async function SearchPage({
                     <span className="text-gray-500 dark:text-gray-400">
                       {t.tripDate ? formatDate(t.tripDate) : "Tanggal menyusul"}
                     </span>
-                    <span className="font-semibold" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
+                    <span className="font-extrabold" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
                       {formatCurrency(t.promoPrice ?? t.price)}
                     </span>
                   </div>

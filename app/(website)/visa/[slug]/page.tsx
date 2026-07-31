@@ -529,7 +529,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                     <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-600">
                       Biaya resmi
                     </dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+                    <dd className="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">
                       {officialFee}
                     </dd>
                   </div>
@@ -539,7 +539,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                     <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-600">
                       Harga layanan Sundaf
                     </dt>
-                    <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+                    <dd className="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">
                       {servicePrice}
                     </dd>
                   </div>
@@ -573,7 +573,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                           )}
                         </div>
                         <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                          <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-white whitespace-nowrap">
+                          <span className="font-extrabold text-sm sm:text-base text-gray-900 dark:text-white whitespace-nowrap">
                             {priceLabel}
                           </span>
                           {variantWa && (

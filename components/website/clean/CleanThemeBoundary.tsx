@@ -26,5 +26,5 @@ export default function CleanThemeBoundary({ children }: { children: React.React
     };
   }, []);
 
-  return children;
+  return <div className="public-site-shell">{children}</div>;
 }

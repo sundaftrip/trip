@@ -118,7 +118,7 @@ export default function VisaOrderForm({
         {hasVariants ? (subtotal ? "Subtotal" : "Mulai dari") : fallbackIsFree ? "Biaya" : "Mulai dari"}
       </p>
       <p
-        className={`text-3xl font-bold mb-1 ${
+        className={`text-3xl font-extrabold mb-1 ${
           fallbackIsFree && !hasVariants
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-gray-900 dark:text-white"
@@ -163,7 +163,7 @@ export default function VisaOrderForm({
                         </p>
                       )}
                     </div>
-                    <span className="font-bold text-sm text-gray-900 dark:text-white whitespace-nowrap">
+                    <span className="font-extrabold text-sm text-gray-900 dark:text-white whitespace-nowrap">
                       {v.priceIDR ? formatRp(v.priceIDR) : "Tanya Harga"}
                     </span>
                   </div>
