@@ -2,6 +2,7 @@
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
 export const revalidate = 300;
 import type { Metadata } from "next";
+import { cleanMetadataText, toAbsoluteMetadataTitle, toMetaDescription, toPageMetadataTitle } from "@/lib/metadata-text";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -17,9 +18,8 @@ import BlogArticleToc, {
 } from "../BlogArticleToc";
 import blogStyles from "../BlogSupporting.module.css";
 
-// Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
-// canonical/OG/JSON-LD jangan sampai menunjuk localhost.
-const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
+// Canonical/OG URLs always identify the public site, including in previews.
+const siteUrl = "https://sundaftrip.com";
 
 async function getSiteInfo() {
   try {
@@ -188,24 +188,29 @@ export async function generateMetadata({
   });
   if (!post) notFound();
 
+  const displayTitle = cleanMetadataText(post.title);
+  const title = toPageMetadataTitle(displayTitle);
+  const socialTitle = toAbsoluteMetadataTitle(displayTitle);
+  const description = post.excerpt ? toMetaDescription(post.excerpt) : undefined;
+
   return {
-    title: post.title,
-    description: post.excerpt ?? undefined,
+    title,
+    description,
     alternates: { canonical: `${siteUrl}/blog/${slug}` },
     openGraph: {
-      title: post.title,
-      description: post.excerpt ?? undefined,
+      title: socialTitle,
+      description,
       url: `${siteUrl}/blog/${slug}`,
       type: "article",
       publishedTime: post.date.toISOString(),
       ...(post.cover
-        ? { images: [{ url: post.cover, width: 1200, height: 630, alt: post.title }] }
+        ? { images: [{ url: post.cover, width: 1200, height: 630, alt: displayTitle }] }
         : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt ?? undefined,
+      title: socialTitle,
+      description,
       ...(post.cover ? { images: [post.cover] } : {}),
     },
   };

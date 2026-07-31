@@ -7,16 +7,16 @@ import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import { getTourProductImage } from "@/lib/tour-product-images";
 
 export const metadata: Metadata = {
-  title: "Wisata Kazakhstan dari Indonesia, Almaty, Astana & Alam Liar, Sundaftrip",
+  title: "Wisata Kazakhstan: Almaty, Astana & Alam",
   description:
-    "Panduan lengkap wisata Kazakhstan untuk traveler Indonesia: visa, penerbangan dari Jakarta, Almaty, Astana, Danau Kaindy, Charyn Canyon, estimasi budget rupiah, dan paket tur tersedia.",
+    "Panduan wisata Kazakhstan untuk traveler Indonesia: visa, penerbangan dari Jakarta, Almaty, Astana, Danau Kaindy, Charyn Canyon, biaya, dan paket tur.",
   keywords: [
     "wisata kazakhstan", "paket tour kazakhstan indonesia", "almaty wisata",
     "astana nur sultan wisata", "danau kaindy", "charyn canyon", "visa kazakhstan indonesia",
     "tour asia tengah", "sundaftrip kazakhstan",
   ],
   openGraph: {
-    title: "Wisata Kazakhstan, Almaty, Astana & Alam Liar, Sundaftrip",
+    title: "Wisata Kazakhstan: Almaty, Astana & Alam",
     description: "Panduan wisata Kazakhstan untuk traveler Indonesia. Visa gratis 30 hari, alam epik, dan kota modern.",
     type: "article",
     images: [{ url: "https://picsum.photos/seed/kazakhstan-almaty/1200/630", width: 1200, height: 630 }],

@@ -30,29 +30,40 @@ import { getPublicTourState } from "@/lib/tour-order";
 import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import {
+  cleanMetadataText,
+  toAbsoluteMetadataTitle,
+  toContextualMetaDescription,
+  toMetaDescription,
+  toPageMetadataTitle,
+  toQualifiedAbsoluteMetadataTitle,
+  toQualifiedPageMetadataTitle,
+} from "@/lib/metadata-text";
 
-// Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
-// canonical/OG/JSON-LD jangan sampai menunjuk localhost.
-const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
+// Canonical/OG URLs always identify the public site, including in previews.
+const siteUrl = "https://sundaftrip.com";
 
-function cleanMetadataText(value?: string | null) {
+function localizedMetadataText(value?: string | null) {
   const localized = localizePdfText(value);
   const text = typeof localized === "string" ? localized : value ?? "";
-  return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return cleanMetadataText(text);
 }
 
 function firstMetadataText(...values: Array<string | null | undefined>) {
   for (const value of values) {
-    const text = cleanMetadataText(value);
+    const text = localizedMetadataText(value);
     if (text) return text;
   }
   return "";
 }
 
-function truncateMetadataText(text: string, maxLength = 165) {
-  if (text.length <= maxLength) return text;
-  const shortened = text.slice(0, maxLength - 1).replace(/\s+\S*$/, "").replace(/[,.:\s]+$/, "");
-  return `${shortened}.`;
+function formatMetadataDate(date: Date) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Asia/Jakarta",
+  }).format(date);
 }
 
 function buildTourMetadataDescription(tour: {
@@ -68,27 +79,32 @@ function buildTourMetadataDescription(tour: {
   tripDate?: Date | null;
   status?: string;
 }, companyName: string) {
+  const title = localizedMetadataText(tour.title) || tour.title;
   const explicitDescription = firstMetadataText(tour.description, tour.notes, tour.visaInfo);
-  if (explicitDescription) return truncateMetadataText(explicitDescription);
+  const isPastTrip = !!tour.tripDate && tour.tripDate.getTime() < Date.now();
+  const departureContext = tour.tripDate
+    ? `${isPastTrip ? "Arsip keberangkatan" : "Keberangkatan"} ${formatMetadataDate(tour.tripDate)}: ${title}`
+    : title;
+  const meaningfulDescription = explicitDescription.toLocaleLowerCase("id-ID") !== title.toLocaleLowerCase("id-ID");
+  if (explicitDescription && meaningfulDescription) {
+    return toContextualMetaDescription(departureContext, explicitDescription);
+  }
 
-  const title = cleanMetadataText(tour.title) || tour.title;
-  const country = cleanMetadataText(tour.country) || tour.country;
-  const city = cleanMetadataText(tour.cityHighlight);
-  const duration = cleanMetadataText(tour.duration);
+  const country = localizedMetadataText(tour.country) || tour.country;
+  const city = localizedMetadataText(tour.cityHighlight);
+  const duration = localizedMetadataText(tour.duration);
   const route = [country, city].filter(Boolean).join(" - ");
   const price = Number(tour.promoPrice ?? tour.price);
-  const isPastTrip = !!tour.tripDate && tour.tripDate.getTime() < Date.now();
   const pricePart = price > 0 ? `mulai ${formatCurrency(price)}/orang` : "";
-  const datePart = tour.tripDate
-    ? `${isPastTrip ? "arsip keberangkatan" : "berangkat"} ${formatDate(tour.tripDate)}`
-    : tour.status === "ACTIVE"
-      ? "tanggal fleksibel"
-      : "";
+  const datePart = !tour.tripDate && tour.status === "ACTIVE" ? "tanggal fleksibel" : "";
   const facts = [duration, datePart, isPastTrip ? "" : pricePart].filter(Boolean).join(", ");
   const pageKind = isPastTrip ? "dokumentasi paket tour" : "paket tour";
+  const datedLead = tour.tripDate
+    ? `${isPastTrip ? "Arsip" : "Keberangkatan"} ${formatMetadataDate(tour.tripDate)}: `
+    : "";
 
-  return truncateMetadataText(
-    `${title}: ${pageKind} ${route || country} bersama ${companyName || "Sundaf Trip"}${facts ? ` (${facts})` : ""}.`
+  return toMetaDescription(
+    `${datedLead}${title}: ${pageKind} ${route || country} bersama ${companyName || "Sundaf Trip"}${facts ? ` (${facts})` : ""}.`
   );
 }
 
@@ -346,7 +362,15 @@ export async function generateMetadata({
   }
 
   const companyName = companyRow?.value ?? "Sundaftrip";
-  const title = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
+  const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
+  const isPastTrip = !!tour.tripDate && tour.tripDate.getTime() < Date.now();
+  const departureQualifier = isPastTrip && tour.tripDate ? formatMetadataDate(tour.tripDate) : undefined;
+  const title = departureQualifier
+    ? toQualifiedPageMetadataTitle(displayTitle, departureQualifier)
+    : toPageMetadataTitle(displayTitle);
+  const socialTitle = departureQualifier
+    ? toQualifiedAbsoluteMetadataTitle(displayTitle, departureQualifier)
+    : toAbsoluteMetadataTitle(displayTitle);
   const description = buildTourMetadataDescription(tour, companyName);
   const productImage = getAbsoluteTourProductImage(tour, siteUrl);
 
@@ -360,16 +384,16 @@ export async function generateMetadata({
       ? { index: true, follow: true }
       : { index: false, follow: true },
     openGraph: {
-      title,
+      title: socialTitle,
       description,
       url: `${siteUrl}${canonicalPath}`,
       type: "website",
       siteName: companyName,
-      images: [{ url: productImage, width: 1200, height: 630, alt: title }],
+      images: [{ url: productImage, width: 1200, height: 630, alt: displayTitle }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
       images: [productImage],
     },

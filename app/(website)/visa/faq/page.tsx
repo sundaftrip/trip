@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 300; // segarkan tiap 5 menit setelah edit di CMS
 
 export const metadata: Metadata = {
-  title: "FAQ Teknis Visa Schengen untuk Paspor Indonesia",
+  title: "FAQ Visa Schengen untuk Paspor Indonesia",
   description:
     "Kasus teknis Schengen yang sering bikin reject: cerai, anak di bawah 18, apostille Spanyol, sponsor pasangan, rekening kecil, apply dari negara lain.",
   alternates: { canonical: "https://sundaftrip.com/visa/faq" },

@@ -28,7 +28,9 @@ const ALL_FONT_VARS = [
   anonymousPro.variable, caveat.variable,
 ].join(" ");
 
-const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
+// Canonical metadata must stay on the public site even when auth or preview
+// environments use a localhost/deployment-specific NEXTAUTH_URL.
+const siteUrl = "https://sundaftrip.com";
 const enableSpeedInsights = process.env.VERCEL === "1";
 
 // Brand-forward, hardcode "Sundaf Trip" sebagai brand consumer-facing.
@@ -36,7 +38,7 @@ const enableSpeedInsights = process.env.VERCEL === "1";
 // via company_name di DB. Tapi title/meta pakai brand simpel agar Google
 // jelas paham "Sundaf Trip" itu entity utama, bukan typo "sunday trip".
 const BRAND_NAME = "Sundaf Trip";
-const BRAND_TAGLINE = "Spesialis Perjalanan Rusia, Asia Tengah & Aurora";
+const BRAND_TAGLINE = "Rusia, Asia Tengah & Aurora";
 
 export async function generateMetadata(): Promise<Metadata> {
   const description =
@@ -46,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(siteUrl),
     title: {
       // Homepage default title, brand-forward
-      default: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
+      default: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
       // Child pages: "{page title} · Sundaf Trip", brand SELALU di belakang
       template: `%s · ${BRAND_NAME}`,
     },
@@ -75,7 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "jasa urus visa terpercaya",
     ],
     openGraph: {
-      title: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
+      title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
       description,
       url: siteUrl,
       siteName: BRAND_NAME,
@@ -85,7 +87,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${BRAND_NAME}, ${BRAND_TAGLINE}`,
+      title: `${BRAND_NAME} — ${BRAND_TAGLINE}`,
       description,
       images: defaultTwitterImages(),
     },

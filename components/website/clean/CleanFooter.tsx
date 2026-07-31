@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
+import { normalizeGoogleBusinessUrl } from "@/lib/google-business";
 import styles from "./CleanShell.module.css";
 
 export default function CleanFooter({ logo, company }: { logo?: string; company: Record<string, string> }) {
@@ -13,6 +14,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
   const address = company.company_address?.trim();
   const nib = company.company_nib?.trim();
   const legalName = company.company_legal_name?.trim();
+  const googleBusinessUrl = normalizeGoogleBusinessUrl(company.company_google_business);
   const igUser = (company.company_instagram || "")
     .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
     .replace(/^@/, "")
@@ -23,6 +25,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
     email && { href: `mailto:${email}`, label: email, external: false },
     phoneHref && { href: phoneHref, label: `Telepon ${phone}`, external: false },
     igUser && { href: `https://www.instagram.com/${igUser}`, label: `Instagram @${igUser}`, external: true },
+    googleBusinessUrl && { href: googleBusinessUrl, label: "Profil Google Business", external: true },
   ].filter(Boolean) as Array<{ href: string; label: string; external: boolean }>;
 
   return (

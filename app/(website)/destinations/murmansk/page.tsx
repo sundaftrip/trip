@@ -7,6 +7,7 @@ import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, C
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import { toAbsoluteMetadataTitle, toMetaDescription, toPageMetadataTitle } from "@/lib/metadata-text";
 
 const ROUTE_PATH = "/destinations/murmansk";
 const DEFAULT_META_DESCRIPTION =
@@ -22,8 +23,9 @@ const QUICK_FACT_ICONS = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const geoContent = await getGeoPageContent(ROUTE_PATH);
-  const title = geoContent.metaTitle || "Wisata Murmansk & Aurora Borealis dari Indonesia, Sundaftrip";
-  const description = geoContent.metaDescription || DEFAULT_META_DESCRIPTION;
+  const rawTitle = geoContent.metaTitle || "Wisata Murmansk & Aurora Borealis dari Indonesia";
+  const title = toPageMetadataTitle(rawTitle);
+  const description = toMetaDescription(geoContent.metaDescription || DEFAULT_META_DESCRIPTION);
 
   return {
     title,
@@ -34,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "aurora borealis indonesia", "tur rusia murmansk", "sundaftrip rusia",
     ],
     openGraph: {
-      title,
+      title: toAbsoluteMetadataTitle(rawTitle),
       description,
       type: "article",
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Aurora borealis di Murmansk, Rusia bersama Sundaf Trip" }],

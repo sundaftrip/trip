@@ -6,6 +6,7 @@ import FooterContactList, { type FooterContact } from "./FooterContactList";
 import FooterTagline from "./FooterTagline";
 import { footerNav } from "@/lib/nav";
 import { unstable_cache } from "next/cache";
+import { normalizeGoogleBusinessUrl } from "@/lib/google-business";
 
 const getFooterData = unstable_cache(
   async () => {
@@ -57,6 +58,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const phone    = c["company_phone"] || "";
   const whatsapp = toWaNumber(c["company_whatsapp"]);
   const email    = c["company_email"] || "";
+  const googleBusinessUrl = normalizeGoogleBusinessUrl(c["company_google_business"]);
   const hours    = "Senin-Jumat 09:00-17:00 WIB";
   const igUser   = (c["company_instagram"] || "")
     .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
@@ -71,6 +73,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     email    && { kind: "email", label: "Email", value: email, href: `mailto:${email}` },
     hours    && { kind: "hours", label: "Jam layanan", value: hours, href: null },
     igUser   && { kind: "instagram", label: "Instagram", value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
+    googleBusinessUrl && { kind: "googleBusiness", label: "Profil Google Business", value: "Lihat profil bisnis", href: googleBusinessUrl },
   ].filter(Boolean) as FooterContact[];
 
   /* ── FUMAYO ── */

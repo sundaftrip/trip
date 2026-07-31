@@ -1,6 +1,7 @@
 /* Country-specific visa detail. Content remains CMS-driven while the
    presentation follows the public Atlas shell and mobile accessibility rules. */
 import type { Metadata } from "next";
+import { toAbsoluteMetadataTitle, toMetaDescription, toPageMetadataTitle } from "@/lib/metadata-text";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight, ShieldCheck } from "lucide-react";
@@ -61,11 +62,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
   const country = findBySlug(countries, slug);
   if (!country) notFound();
-  const summary = country.notes.replace(/^Layanan kami:\s*/i, "").slice(0, 140);
+  const summary = country.notes.replace(/^Layanan kami:\s*/i, "");
   // Suffix "· Sundaf Trip" TIDAK ditulis manual — root layout sudah punya
   // title template `%s · Sundaf Trip` (kalau ditulis lagi jadi dobel).
-  const title = `Visa ${country.name} untuk WNI, Layanan Pengurusan`;
-  const description = `Informasi & layanan pengurusan visa ${country.name} (${country.en}) untuk pemegang paspor Indonesia. ${summary}`;
+  const rawTitle = `Visa ${country.name} untuk WNI, Layanan Pengurusan`;
+  const title = toPageMetadataTitle(rawTitle);
+  const socialTitle = toAbsoluteMetadataTitle(rawTitle);
+  const description = toMetaDescription(`Informasi & layanan pengurusan visa ${country.name} (${country.en}) untuk pemegang paspor Indonesia. ${summary}`);
   const pageUrl = `https://sundaftrip.com/visa/${slug}`;
   return {
     title,
@@ -74,7 +77,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // Override OG agar share ke WhatsApp/IG menampilkan judul halaman ini,
     // bukan preview beranda (pola sama dengan /tours).
     openGraph: {
-      title: `${title} · Sundaf Trip`,
+      title: socialTitle,
       description,
       url: pageUrl,
       siteName: "Sundaf Trip",
@@ -84,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} · Sundaf Trip`,
+      title: socialTitle,
       description,
       images: defaultTwitterImages(),
     },

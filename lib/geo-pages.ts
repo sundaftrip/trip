@@ -1,5 +1,6 @@
 import "server-only";
 import type { Metadata } from "next";
+import { toAbsoluteMetadataTitle, toMetaDescription, toPageMetadataTitle } from "@/lib/metadata-text";
 import { unstable_cache } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
@@ -1213,24 +1214,27 @@ export const getGeoPageContent = unstable_cache(
 
 export function geoMetadata(content: GeoPageContent): Metadata {
   const url = `${SITE_URL}${content.routePath}`;
-  const title = content.metaTitle || content.title;
+  const rawTitle = content.metaTitle || content.title;
+  const title = toPageMetadataTitle(rawTitle);
+  const socialTitle = toAbsoluteMetadataTitle(rawTitle);
+  const description = toMetaDescription(content.metaDescription);
   return {
     title,
-    description: content.metaDescription,
+    description,
     alternates: { canonical: url },
     openGraph: {
-      title: `${title} · Sundaf Trip`,
-      description: content.metaDescription,
+      title: socialTitle,
+      description,
       url,
       siteName: "Sundaf Trip",
       locale: "id_ID",
       type: "website",
-      images: defaultOpenGraphImages(title),
+      images: defaultOpenGraphImages(rawTitle),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} · Sundaf Trip`,
-      description: content.metaDescription,
+      title: socialTitle,
+      description,
       images: defaultTwitterImages(),
     },
   };

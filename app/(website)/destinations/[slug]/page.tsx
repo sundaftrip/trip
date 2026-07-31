@@ -12,6 +12,7 @@ import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanTourCard from "@/components/website/clean/CleanTourCard";
 import styles from "@/components/website/clean/DestinationHub.module.css";
+import { toAbsoluteMetadataTitle, toMetaDescription, toPageMetadataTitle } from "@/lib/metadata-text";
 
 export const revalidate = 300;
 
@@ -113,14 +114,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const destination = DESTINATIONS[slug];
   if (!destination) notFound();
-  const title = `${destination.name} · Destinasi Sundaf Trip`;
+  const rawTitle = `${destination.name} · Destinasi`;
+  const title = toPageMetadataTitle(rawTitle);
+  const description = toMetaDescription(destination.intro);
   return {
     title,
-    description: destination.intro,
+    description,
     alternates: { canonical: `https://sundaftrip.com/destinations/${slug}` },
     openGraph: {
-      title,
-      description: destination.intro,
+      title: toAbsoluteMetadataTitle(rawTitle),
+      description,
       url: `https://sundaftrip.com/destinations/${slug}`,
       siteName: "Sundaf Trip",
       locale: "id_ID",

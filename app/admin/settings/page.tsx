@@ -6,7 +6,13 @@ import { COLOR_SCHEMES } from "@/lib/color-schemes";
 import { Lock } from "lucide-react";
 import StickyFormActions from "@/components/admin/StickyFormActions";
 
-const INFO_FIELDS = [
+const INFO_FIELDS: Array<{
+  key: string;
+  label: string;
+  type?: "text" | "url";
+  placeholder?: string;
+  help?: string;
+}> = [
   { key: "company_name", label: "Nama Perusahaan" },
   { key: "company_nib", label: "NIB" },
   { key: "company_address", label: "Alamat" },
@@ -20,7 +26,13 @@ const INFO_FIELDS = [
   { key: "company_facebook", label: "Facebook (URL halaman atau username)" },
   { key: "company_twitter", label: "X / Twitter (username, mis. sundaftrip)" },
   { key: "company_linkedin", label: "LinkedIn (URL halaman perusahaan)" },
-  { key: "company_google_business", label: "Google Business / Maps (URL profil)" },
+  {
+    key: "company_google_business",
+    label: "Google Business Profile (URL Bagikan profil)",
+    type: "url",
+    placeholder: "https://maps.app.goo.gl/…",
+    help: "Hanya menautkan website ke profil yang sudah ada. Tidak mengubah nama, alamat, area layanan, atau status verifikasi di Google.",
+  },
 ];
 
 const FONTS = [
@@ -142,11 +154,12 @@ export default function SettingsPage() {
       {/* Company Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 dark:text-white">Informasi Perusahaan</h2>
-        {INFO_FIELDS.map(({ key, label }) => (
+        {INFO_FIELDS.map(({ key, label, type = "text", placeholder, help }) => (
           <div key={key}>
             <label className="label">{label}</label>
-            <input className="input" value={data[key] ?? ""}
+            <input className="input" type={type} placeholder={placeholder} value={data[key] ?? ""}
               onChange={(e) => setData({ ...data, [key]: e.target.value })} />
+            {help && <p className="mt-1.5 text-xs leading-relaxed text-gray-500 dark:text-gray-400">{help}</p>}
           </div>
         ))}
       </div>
