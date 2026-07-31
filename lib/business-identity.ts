@@ -3,3 +3,11 @@ export const APPOINTMENT_ONLY_OFFICE_ADDRESS =
 
 export const APPOINTMENT_ONLY_LABEL = "Appointment only";
 
+export function appointmentOnlyOfficeAddress(configuredAddress?: string) {
+  const address = configuredAddress?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
+
+  return address
+    .replace(/^office\s*\(\s*by\s+appointment\s+only\s*\)\s*/i, "")
+    .replace(/^(?:by\s+)?appointment\s+only\s*[:,-]?\s*/i, "")
+    .trim();
+}

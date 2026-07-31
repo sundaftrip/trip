@@ -22,7 +22,7 @@ import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import {
   APPOINTMENT_ONLY_LABEL,
-  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+  appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
@@ -113,7 +113,7 @@ export default async function LegalitasKeamananPage() {
   const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const waHref = whatsappUrl(phoneRaw);
   const igUrl = instagramUrl(company.company_instagram);
-  const officeAddress = company.company_address?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
+  const officeAddress = appointmentOnlyOfficeAddress(company.company_address);
 
   const legalSchema = {
     "@context": "https://schema.org",

@@ -3,6 +3,10 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import {
+  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+  appointmentOnlyOfficeAddress,
+} from "../lib/business-identity";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -125,4 +129,15 @@ test("public contact surfaces show an appointment-only office without adding it 
   const organizationSchema = readSource("components/website/OrganizationSchema.tsx");
   assert.doesNotMatch(organizationSchema, /APPOINTMENT_ONLY_OFFICE_ADDRESS/);
   assert.doesNotMatch(organizationSchema, /company_address/);
+});
+
+test("appointment-only office address removes a legacy label without changing the location", () => {
+  const legacy =
+    "Office (By appointment only) Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lantai 5 Unit A501";
+
+  assert.equal(
+    appointmentOnlyOfficeAddress(legacy),
+    "Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lantai 5 Unit A501",
+  );
+  assert.equal(appointmentOnlyOfficeAddress(""), APPOINTMENT_ONLY_OFFICE_ADDRESS);
 });
