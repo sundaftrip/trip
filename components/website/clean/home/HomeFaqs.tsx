@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import type { CleanHomeFaq } from "../CleanHome";
+import type { HomeFaqItem } from "@/lib/home-faqs";
 import styles from "./CleanHome.module.css";
 
-export default function HomeFaqs({ items }: { items: CleanHomeFaq[] }) {
+export default function HomeFaqs({ items }: { items: HomeFaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
