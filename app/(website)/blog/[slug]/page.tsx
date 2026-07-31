@@ -300,7 +300,7 @@ export default async function BlogDetailPage({
 
   const divider = (
     <div
-      className={isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-200 dark:border-gray-800"}
+      className={isOutlined ? "border-t-2 border-solid" : "border-t border-gray-200 dark:border-gray-800"}
       style={isOutlined ? { borderColor: bdrClr } : undefined}
     />
   );

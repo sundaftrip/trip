@@ -292,7 +292,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
               style={{ background: active ? "var(--fb-paper)" : "var(--fb-card)", fontFamily: "var(--fb-font)" }}>
               <Stars rating={item.rating} />
               <ExpandableQuote text={item.content} color={"var(--fb-subink)"} {...quotePreviewProps(item)} />
-              <div className="flex items-center gap-2.5 mt-4 pt-3" style={{ borderTop: "2px dashed var(--fb-line)" }}>
+              <div className="flex items-center gap-2.5 mt-4 pt-3" style={{ borderTop: "2px solid var(--fb-line)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
                   <p className="text-[13px] leading-tight font-bold" style={{ color: "var(--fb-ink)" }}>{item.name}</p>
@@ -319,7 +319,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
             <div className={`teri-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-60"}`}>
               <Stars rating={item.rating} />
               <ExpandableQuote text={item.content} color={"var(--teri-sub)"} {...quotePreviewProps(item)} />
-              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-[2.5px] border-dashed" style={{ borderColor: "var(--teri-line)" }}>
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-[2.5px] border-solid" style={{ borderColor: "var(--teri-line)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
                   <p className="text-[13px] leading-tight font-extrabold" style={{ color: "var(--teri-ink)" }}>{item.name}</p>
@@ -469,7 +469,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
               style={{ background: active ? "var(--kw-peach)" : "var(--kw-card)" }}>
               <Stars rating={item.rating} />
               <ExpandableQuote text={item.content} color={"var(--kw-subtext)"} {...quotePreviewProps(item)} />
-              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-dashed"
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-solid"
                 style={{ borderColor: "var(--kw-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>
@@ -498,7 +498,7 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
               style={{ background: active ? "var(--tr-mint)" : "var(--tr-card)" }}>
               <Stars rating={item.rating} />
               <ExpandableQuote text={item.content} color={"var(--tr-subtext)"} {...quotePreviewProps(item)} />
-              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-dashed"
+              <div className="flex items-center gap-2.5 mt-4 pt-3 border-t-2 border-solid"
                 style={{ borderColor: "var(--tr-border)" }}>
                 <Avatar avatar={item.avatar} name={item.name} />
                 <div>

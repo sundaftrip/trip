@@ -6,7 +6,7 @@ import Link from "next/link";
 export const dynamic = "force-static";
 
 export const metadata = {
-  title: "Offline — Sundaf Trip",
+  title: "Offline | Sundaf Trip",
   description: "Koneksi internet bermasalah. Halaman utama akan kembali saat kamu online.",
 };
 

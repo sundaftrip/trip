@@ -241,7 +241,7 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
             Klaim {campaign.discountLabel} dari {partner.partnerName}. Kode otomatis masuk ke pesan WhatsApp.
           </p>
 
-          <div className="relative mt-4 overflow-hidden rounded-lg border border-dashed border-teal-300 bg-teal-50 p-3">
+          <div className="relative mt-4 overflow-hidden rounded-lg border border-solid border-teal-300 bg-teal-50 p-3">
             <span className="absolute -left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-white" />
             <span className="absolute -right-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-white" />
             <div className="flex items-center gap-3">

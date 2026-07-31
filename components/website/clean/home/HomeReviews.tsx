@@ -39,7 +39,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
           <div className={styles.sectionHeading}>
             <p className={styles.eyebrow}>CERITA PESERTA</p>
             <h2 id="stories-title">Bukan hanya sampai. Ini yang mereka bawa pulang.</h2>
-            <p>Cerita dari traveler yang sudah berangkat bersama Sundaf—tentang rute, rasa aman, dan momen yang paling mereka ingat.</p>
+            <p>Cerita dari traveler yang sudah berangkat bersama Sundaf, tentang rute, rasa aman, dan momen yang paling mereka ingat.</p>
           </div>
         </div>
 

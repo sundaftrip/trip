@@ -129,7 +129,7 @@
 
 /* foto uploader */
 .lapor-photo {
-  border: 2px dashed var(--line);
+  border: 2px solid var(--line);
   border-radius: 12px;
   padding: 22px 14px;
   text-align: center;

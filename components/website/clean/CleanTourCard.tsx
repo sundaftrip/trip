@@ -76,7 +76,7 @@ export default function CleanTourCard({
       <Link
         className={styles.tourPhoto}
         href={href}
-        aria-label={`${tour.title} — ${statusLabel(tour)}`}
+        aria-label={`${tour.title}, ${statusLabel(tour)}`}
         data-analytics-event="tour_card_click"
         data-tour-id={tour.id}
       >

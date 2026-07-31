@@ -87,7 +87,7 @@ function CtaBlock({
         compact
           ? "mt-5 p-5 sm:p-6"
           : "mt-12 p-6 sm:p-8"
-      } ${theme.isOutlined ? "border-2 border-dashed" : "rounded-lg border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"}`}
+      } ${theme.isOutlined ? "border-2 border-solid" : "rounded-lg border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"}`}
       style={style}
     >
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -230,7 +230,7 @@ export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }
 
       {filteredSections.length === 0 ? (
         <div
-          className={`border p-8 text-center ${theme.isOutlined ? "border-2 border-dashed" : "rounded-lg border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"}`}
+          className={`border p-8 text-center ${theme.isOutlined ? "border-2 border-solid" : "rounded-lg border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"}`}
           style={theme.isOutlined ? { background: theme.cardBg, borderColor: theme.bdrClr, color: theme.subClr } : undefined}
         >
           <p className="text-sm font-semibold">Tidak ada FAQ yang cocok.</p>
@@ -310,7 +310,7 @@ export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }
                           hidden={!isOpen}
                           className={`border-t px-5 pb-5 pt-4 text-sm leading-relaxed ${
                             theme.isOutlined
-                              ? "border-dashed"
+                              ? "border-solid"
                               : "border-gray-100 text-gray-600 dark:border-gray-800 dark:text-gray-300"
                           }`}
                           style={theme.isOutlined ? { color: theme.subClr, borderColor: theme.bdrClr } : undefined}

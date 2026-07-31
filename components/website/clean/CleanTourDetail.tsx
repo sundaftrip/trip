@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowRight,
   Calendar,
   Check,
   Clock,
@@ -321,23 +322,41 @@ export default function CleanTourDetail({
             <span aria-current="page">{tour.title}</span>
           </nav>
 
-          <div className={interactiveStyles.heroGallery}>
-            <TourHeroGallery images={heroImages} title={tour.title} />
-          </div>
-
-          <div className={styles.detailHeroHeading}>
-            <div>
-              <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
-              <h1 id="tour-title">{tour.title}</h1>
+          <div className={styles.detailHeroStage}>
+            <div className={interactiveStyles.heroGallery}>
+              <TourHeroGallery images={heroImages} title={tour.title} variant="immersive" />
             </div>
-            <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
-          </div>
+            <div className={styles.detailHeroShade} aria-hidden="true" />
 
-          <div className={styles.detailHeroFacts} role="group" aria-label="Ringkasan perjalanan">
-            <span><MapPin aria-hidden="true" />{route}</span>
-            {tour.duration && <span><Clock aria-hidden="true" />{tour.duration}</span>}
-            {departureLabel && <span><Calendar aria-hidden="true" />{departureLabel}</span>}
-            <span><Users aria-hidden="true" />{capacityLabel}</span>
+            <div className={styles.detailHeroOverlay}>
+              <div className={styles.detailHeroHeading}>
+                <div>
+                  <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
+                  <h1 id="tour-title">{tour.title}</h1>
+                </div>
+                <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
+              </div>
+
+              <div className={styles.detailHeroCommerce}>
+                <div className={styles.detailHeroPriceBlock}>
+                  <span>{status}</span>
+                  <small>{hasPrice ? "Mulai dari" : "Harga"}</small>
+                  <strong>{priceLabel}</strong>
+                  {hasPrice && <small>per orang</small>}
+                </div>
+                <a className={styles.detailHeroCta} href="#harga-tanggal">
+                  {unavailable ? "Lihat detail perjalanan" : "Lihat harga & tanggal"}
+                  <ArrowRight aria-hidden="true" />
+                </a>
+              </div>
+
+              <div className={styles.detailHeroFacts} role="group" aria-label="Ringkasan perjalanan">
+                <span><MapPin aria-hidden="true" />{route}</span>
+                {tour.duration && <span><Clock aria-hidden="true" />{tour.duration}</span>}
+                {departureLabel && <span><Calendar aria-hidden="true" />{departureLabel}</span>}
+                <span><Users aria-hidden="true" />{capacityLabel}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

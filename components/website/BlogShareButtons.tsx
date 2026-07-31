@@ -44,7 +44,7 @@ export default function BlogShareButtons({
   /* ── Atlas ─────────────────────────────── */
   if (isAtlas) {
     return (
-      <div className="mt-10 pt-6 border-t-2 border-dashed" style={{ borderColor: bdrClr }}>
+      <div className="mt-10 pt-6 border-t-2 border-solid" style={{ borderColor: bdrClr }}>
         <p className="text-xs uppercase tracking-widest mb-3 font-black" style={{ color: subClr }}>
           Bagikan Artikel Ini
         </p>
@@ -73,7 +73,7 @@ export default function BlogShareButtons({
   /* ── Other outlined themes ─────────────── */
   if (isOutlined) {
     return (
-      <div className="mt-10 pt-6 border-t-2 border-dashed" style={{ borderColor: bdrClr }}>
+      <div className="mt-10 pt-6 border-t-2 border-solid" style={{ borderColor: bdrClr }}>
         <p className="text-xs uppercase tracking-wider mb-3 font-black" style={{ color: subClr }}>
           Bagikan Artikel Ini
         </p>

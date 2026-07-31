@@ -79,7 +79,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="fb-frame p-8 sm:p-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10"
-            style={{ borderBottom: "2px dashed var(--fb-line)" }}>
+            style={{ borderBottom: "2px solid var(--fb-line)" }}>
             <div className="md:col-span-2">
               <span className="inline-flex items-center rounded-xl px-3 py-1.5 mb-4"
                 style={{ border: "2px solid var(--fb-line)", background: "var(--fb-yellow)", boxShadow: "0 3px 0 0 var(--fb-line)" }}>
@@ -135,7 +135,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
       <span className="absolute top-12 left-[40%] text-2xl pointer-events-none kw-float-2 select-none" style={{ color: "var(--kw-border)", opacity: 0.18 }}>★</span>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--kw-border)" }}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-solid" style={{ borderColor: "var(--kw-border)" }}>
           <div className="md:col-span-2">
             <Image src={logoSrc} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             <FooterTagline tagline={tagline} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--kw-subtext)" }} />
@@ -328,7 +328,7 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     <footer className="border-t-2"
       style={{ background: "var(--tr-bg)", borderColor: "var(--tr-border)", boxShadow: "0 -4px 0 0 var(--tr-shadow)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-dashed" style={{ borderColor: "var(--tr-border)" }}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-solid" style={{ borderColor: "var(--tr-border)" }}>
           <div className="md:col-span-2">
             <Image src={logoSrc} alt={name} width={176} height={54} className="logo-theme" style={{ height: 40, width: "auto", marginBottom: 16 }} />
             <FooterTagline tagline={tagline} className="text-sm leading-relaxed max-w-xs" style={{ color: "var(--tr-subtext)" }} />

@@ -156,7 +156,7 @@ function TropicalCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
           <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
         )}
         {!isDimmed && (
-          <div className="pt-3 border-t-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div className="pt-3 border-t-2 border-solid border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <span className="text-xs font-black" style={{ color: "var(--tr-subtext)" }}>Lihat detail →</span>
           </div>
         )}
@@ -215,7 +215,7 @@ function KawaiiCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         {strikePrice(tour) && (
           <p className="text-[11px] text-gray-400 line-through mb-1">{strikePrice(tour)}</p>
         )}
-        <div className="pt-3 border-t-2 border-dashed flex items-center justify-between"
+        <div className="pt-3 border-t-2 border-solid flex items-center justify-between"
           style={{ borderColor: "var(--kw-border)" }}>
           <p className="font-black text-base" style={{ color: "var(--kw-border)" }}>
             {priceText(tour)}
@@ -604,7 +604,7 @@ function FumayoCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         )}
         {!isDimmed && (
           <div className={`pt-3 flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
-            style={{ borderTop: "2px dashed var(--fb-line)" }}>
+            style={{ borderTop: "2px solid var(--fb-line)" }}>
             <span className="text-xs font-bold" style={{ color: "var(--fb-accent)" }}>Lihat detail →</span>
           </div>
         )}
@@ -677,7 +677,7 @@ function TeriCard({ tour, isDimmed }: { tour: Tour; isDimmed: boolean }) {
         </div>
         {strikePrice(tour) && <p className="text-[11px] text-gray-400 line-through mb-1 mt-auto">{strikePrice(tour)}</p>}
         {!isDimmed && (
-          <div className={`pt-3 border-t-[2.5px] border-dashed flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
+          <div className={`pt-3 border-t-[2.5px] border-solid flex items-center justify-between ${tour.promoPrice ? "" : "mt-auto"}`}
             style={{ borderColor: "var(--teri-line)" }}>
             <span className="text-xs font-extrabold inline-flex items-center gap-1" style={{ color: "var(--teri-accent)" }}>Lihat detail <ArrowRight size={12} /></span>
           </div>

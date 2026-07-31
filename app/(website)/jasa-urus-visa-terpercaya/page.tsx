@@ -137,7 +137,7 @@ export default function JasaUrusVisaTerpercayaPage() {
         },
         {
           title: "Negara dan layanan yang tersedia",
-          body: "Mulai dari database visa untuk memilih negara tujuan. Layanan Eropa/Schengen, Amerika Serikat, Canada, Rusia, dan negara lain dikonfirmasi berdasarkan jalur visa serta kapasitas layanan saat kamu berkonsultasi—bukan diasumsikan tersedia untuk semua kasus.",
+          body: "Mulai dari database visa untuk memilih negara tujuan. Layanan Eropa/Schengen, Amerika Serikat, Canada, Rusia, dan negara lain dikonfirmasi berdasarkan jalur visa serta kapasitas layanan saat kamu berkonsultasi, bukan diasumsikan tersedia untuk semua kasus.",
         },
         {
           title: "Alur tanpa tebak-tebakan",
@@ -153,7 +153,7 @@ export default function JasaUrusVisaTerpercayaPage() {
           items: [
             "Biaya resmi dibayarkan kepada otoritas atau pusat aplikasi sesuai ketentuan negara.",
             "Biaya jasa Sundaf Trip mengikuti ruang lingkup bantuan yang disepakati.",
-            "Biaya pihak ketiga—seperti penerjemahan, kurir, atau asuransi—hanya berlaku bila memang dibutuhkan.",
+            "Biaya pihak ketiga seperti penerjemahan, kurir, atau asuransi hanya berlaku bila memang dibutuhkan.",
           ],
         },
         {

@@ -58,7 +58,7 @@ export default function TourShareButtons({
   if (isAtlas) {
     return (
       <div
-        className="mt-4 pt-4 border-t-2 border-dashed"
+        className="mt-4 pt-4 border-t-2 border-solid"
         style={{ borderColor: tBdr }}
       >
         <p
@@ -113,7 +113,7 @@ export default function TourShareButtons({
   if (isOutlined) {
     return (
       <div
-        className="mt-4 pt-4 border-t-2 border-dashed"
+        className="mt-4 pt-4 border-t-2 border-solid"
         style={{ borderColor: tBdr }}
       >
         <p

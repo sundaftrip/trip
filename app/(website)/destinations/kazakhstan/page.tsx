@@ -474,7 +474,7 @@ export default async function KazakhstanPage() {
                   <ChevronRight size={15} className="shrink-0 transition-transform duration-200 group-open:rotate-90"
                     style={{ color: isOutlined ? bdrClr : "#9ca3af" }} />
                 </summary>
-                <div className={`px-6 pb-5 text-sm leading-relaxed border-t ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-slate-800 text-gray-600 dark:text-gray-400"}`}
+                <div className={`px-6 pb-5 text-sm leading-relaxed border-t ${isOutlined ? "border-solid" : "border-gray-100 dark:border-slate-800 text-gray-600 dark:text-gray-400"}`}
                   style={isOutlined ? { color: subClr, borderColor: bdrClr } : undefined}>
                   <p className="pt-4">{a}</p>
                 </div>

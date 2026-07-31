@@ -144,7 +144,7 @@ export default async function AboutPage() {
     ? { borderColor: bdrClr }
     : undefined;
   const divCls = isOutlined
-    ? "border-t-2 border-dashed my-12"
+    ? "border-t-2 border-solid my-12"
     : "border-t border-gray-200 dark:border-gray-800 my-12";
 
   const STATS = [

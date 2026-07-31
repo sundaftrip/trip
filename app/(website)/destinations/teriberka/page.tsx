@@ -485,7 +485,7 @@ export default async function TeriberkaPage() {
             </>
           ) : (
             /* Fallback: belum ada paket aktif → arahkan ke halaman tour */
-            <div className={`${isOutlined ? cardClass : "bg-gray-50 dark:bg-slate-900 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700"} p-8 text-center`}
+            <div className={`${isOutlined ? cardClass : "bg-gray-50 dark:bg-slate-900 rounded-2xl border border-solid border-gray-200 dark:border-slate-700"} p-8 text-center`}
               style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
               <div className="text-4xl mb-3">{destination.emptyTours.icon}</div>
               <h3 className={`font-bold mb-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>
