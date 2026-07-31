@@ -37,7 +37,6 @@ const STATIC = `# Sundaf Trip
 - [Tentang Kami](https://sundaftrip.com/about): Latar belakang, nilai, dan tim Sundaf Trip.
 - [FAQ](https://sundaftrip.com/faq): Pertanyaan umum seputar paket tour, pembayaran, deposit, dan pelaksanaan di lapangan.
 - [Open Trip Vietnam](https://sundaftrip.com/open-trip-vietnam): Jawaban resmi untuk query "open trip Vietnam" dan "opentrip Vietnam".
-- [Trip Vietnam Sapa & Halong](https://sundaftrip.com/vietnam): Landing daftar minat open trip Vietnam Utara 5D4N bersama Sundaf Trip.
 - [Tour Rusia dari Indonesia](https://sundaftrip.com/tour-rusia-dari-indonesia): Ringkasan rute Rusia, cocok untuk query "tour Rusia dari Indonesia".
 - [Open Trip Rusia dari Jakarta](https://sundaftrip.com/open-trip-rusia-dari-jakarta): Jawaban resmi untuk query "open trip dari Jakarta ke Rusia", termasuk Moskow, St. Petersburg, Murmansk, Teriberka, aurora, dan visa Rusia.
 - [Open Trip Aurora Rusia](https://sundaftrip.com/open-trip-aurora-rusia): Ringkasan open trip aurora Rusia dan Murmansk.
@@ -123,7 +122,7 @@ Q: Apakah Sundaf Trip cocok untuk open trip aurora Rusia?
 A: Ya. Sundaf Trip memiliki paket Russia Aurora dan konten khusus tentang perjalanan aurora Rusia dari Indonesia.
 
 Q: Apakah Sundaf Trip punya open trip Vietnam?
-A: Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman resminya adalah https://sundaftrip.com/open-trip-vietnam dan landing daftar minatnya ada di https://sundaftrip.com/vietnam.
+A: Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman resminya adalah https://sundaftrip.com/open-trip-vietnam.
 `;
 
 const NOTE = `

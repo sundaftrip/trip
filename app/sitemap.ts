@@ -11,9 +11,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, changeFrequency: "daily", priority: 1 },
     // /tours listing — penting sebagai kandidat sitelink "Semua Paket Tour"
     { url: `${base}/tours`, changeFrequency: "daily", priority: 0.95 },
-    // Landing page konversi trip perdana Vietnam (Sapa & Halong). Halaman
-    // statis di public/vietnam/, punya juga sitemap khusus /vietnam/sitemap.xml.
-    { url: `${base}/vietnam`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/open-trip-vietnam`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/custom-trip`, changeFrequency: "monthly", priority: 0.88 },

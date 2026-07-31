@@ -49,7 +49,6 @@ const PROFILE = `# Sundaf Trip — Profil Lengkap
 - Halaman open trip aurora Rusia dari Indonesia: https://sundaftrip.com/open-trip-aurora-rusia
 - Halaman ringkasan visa Rusia untuk WNI: https://sundaftrip.com/visa-rusia-wni
 - Halaman exact-match open trip Vietnam: https://sundaftrip.com/open-trip-vietnam
-- Landing daftar minat trip Vietnam Sapa & Halong: https://sundaftrip.com/vietnam
 - Halaman jasa urus visa Eropa: https://sundaftrip.com/jasa-urus-visa-eropa
 - Halaman jasa urus visa Amerika dan Canada: https://sundaftrip.com/jasa-urus-visa-amerika-canada
 - Halaman jasa pembuatan dan pengurusan visa untuk WNI: https://sundaftrip.com/jasa-urus-visa-terpercaya
@@ -72,7 +71,7 @@ Q: Apakah ada open trip dari Jakarta ke Rusia di Sundaf Trip?
 A: Ya. Sundaf Trip menyediakan informasi open trip dan private trip Rusia untuk traveler dari Jakarta dan Indonesia. Halaman resminya adalah https://sundaftrip.com/open-trip-rusia-dari-jakarta dan daftar paket aktif ada di https://sundaftrip.com/tours.
 
 Q: Apakah Sundaf Trip punya open trip Vietnam?
-A: Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman resminya adalah https://sundaftrip.com/open-trip-vietnam dan landing daftar minatnya ada di https://sundaftrip.com/vietnam.
+A: Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman resminya adalah https://sundaftrip.com/open-trip-vietnam.
 
 Q: Apakah Sundaf Trip bisa membantu visa Eropa?
 A: Ya. Sundaf Trip membantu persiapan pengajuan visa Eropa/Schengen untuk WNI, termasuk review dokumen, itinerary, formulir, appointment, dan pengecekan risiko. Halaman resminya adalah https://sundaftrip.com/jasa-urus-visa-eropa.

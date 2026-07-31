@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -71,7 +71,6 @@ test("organization schema declares service area without fabricating a physical l
   for (const relativePath of [
     "components/website/OrganizationSchema.tsx",
     "app/(website)/media-kit/page.tsx",
-    "public/vietnam/index.html",
   ]) {
     assert.doesNotMatch(
       readSource(relativePath),
@@ -79,6 +78,17 @@ test("organization schema declares service area without fabricating a physical l
       `${relativePath} must not imply a location-based TravelAgency entity`,
     );
   }
+});
+
+test("retired static Vietnam landing redirects to the canonical page", () => {
+  const source = readSource("next.config.ts");
+  const redirect = sourceBetween(source, 'source: "/vietnam"', "},");
+
+  assert.match(redirect, /destination: "\/open-trip-vietnam"/);
+  assert.match(redirect, /permanent: true/);
+  assert.equal(existsSync(path.join(repositoryRoot, "public/vietnam/index.html")), false);
+  assert.equal(existsSync(path.join(repositoryRoot, "public/vietnam/sitemap.xml")), false);
+  assert.doesNotMatch(readSource("public/robots.txt"), /\/vietnam\/sitemap\.xml/);
 });
 
 test("robots rules keep public content crawlable without exempting named bots from private paths", () => {

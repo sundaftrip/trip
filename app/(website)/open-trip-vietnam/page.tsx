@@ -17,7 +17,7 @@ export default async function OpenTripVietnamPage() {
       title={content.title}
       canonicalPath={content.routePath}
       description={content.answer}
-      primaryCta={{ href: content.primaryCtaHref || "/vietnam", label: content.primaryCtaLabel || "Buka Landing Vietnam" }}
+      primaryCta={{ href: content.primaryCtaHref || "/tours", label: content.primaryCtaLabel || "Lihat Paket Tour" }}
       secondaryCta={
         content.secondaryCtaHref && content.secondaryCtaLabel
           ? { href: content.secondaryCtaHref, label: content.secondaryCtaLabel }

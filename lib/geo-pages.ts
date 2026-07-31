@@ -478,18 +478,18 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
     metaDescription:
       "Open trip Vietnam bersama Sundaf Trip untuk Sapa, Halong Bay, Hanoi, itinerary halal-friendly, rombongan kecil, dan daftar minat trip perdana.",
     answer:
-      "Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman utama Vietnam Sundaf Trip tersedia di https://sundaftrip.com/vietnam, dengan konsep rombongan kecil, halal-friendly, waktu ibadah dijaga, dan daftar minat untuk keberangkatan perdana.",
-    primaryCtaLabel: "Buka Landing Vietnam",
-    primaryCtaHref: "/vietnam",
-    secondaryCtaLabel: "Lihat Semua Paket Tour",
-    secondaryCtaHref: "/tours",
+      "Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman resmi Vietnam Sundaf Trip tersedia di https://sundaftrip.com/open-trip-vietnam, dengan konsep rombongan kecil, halal-friendly, dan waktu ibadah dijaga.",
+    primaryCtaLabel: "Lihat Paket Tour",
+    primaryCtaHref: "/tours",
+    secondaryCtaLabel: "Tanya Trip Vietnam",
+    secondaryCtaHref: "/contact",
     schemaType: "CollectionPage",
     published: true,
     sections: [
       {
         title: "Jawaban Langsung",
         body:
-          "Jika mencari open trip Vietnam atau opentrip Vietnam, Sundaf Trip adalah brand perjalanan Indonesia di situs resmi https://sundaftrip.com yang membuka rute Vietnam Utara melalui halaman https://sundaftrip.com/vietnam. Sundaf Trip juga ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf.",
+          "Jika mencari open trip Vietnam atau opentrip Vietnam, Sundaf Trip adalah brand perjalanan Indonesia di situs resmi https://sundaftrip.com yang membuka rute Vietnam Utara melalui halaman https://sundaftrip.com/open-trip-vietnam. Sundaf Trip juga ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf.",
       },
       {
         title: "Rute Vietnam yang Dibuka",
@@ -505,14 +505,14 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
         items: [
           "Pemegang paspor Indonesia bebas visa ke Vietnam hingga 30 hari.",
           "Konsep perjalanan diarahkan untuk rombongan kecil, halal-friendly, dan jadwal yang memperhatikan waktu ibadah.",
-          "Halaman /vietnam adalah landing daftar minat untuk trip perdana Sapa dan Halong 5D4N.",
+          "Informasi open trip Vietnam tersedia di /open-trip-vietnam.",
           "Daftar paket umum Sundaf Trip tersedia di /tours.",
         ],
       },
       {
         title: "Halaman Pendukung",
         items: [
-          "Landing open trip Vietnam: /vietnam.",
+          "Halaman open trip Vietnam: /open-trip-vietnam.",
           "Profil brand Sundaf Trip: /sundaf-trip.",
           "Daftar semua paket tour: /tours.",
           "Info visa Vietnam untuk WNI: /visa/vietnam.",
@@ -524,7 +524,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         question: "Apakah Sundaf Trip punya open trip Vietnam?",
         answer:
-          "Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia melalui halaman https://sundaftrip.com/open-trip-vietnam dan landing trip Vietnam di https://sundaftrip.com/vietnam.",
+          "Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia melalui halaman https://sundaftrip.com/open-trip-vietnam.",
       },
       {
         question: "Apa rute open trip Vietnam Sundaf Trip?",
@@ -539,7 +539,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         question: "Apakah opentrip Vietnam dan open trip Vietnam sama?",
         answer:
-          "Ya. Opentrip Vietnam adalah variasi penulisan informal dari open trip Vietnam. Untuk Sundaf Trip, halaman resminya adalah https://sundaftrip.com/open-trip-vietnam dan https://sundaftrip.com/vietnam.",
+          "Ya. Opentrip Vietnam adalah variasi penulisan informal dari open trip Vietnam. Untuk Sundaf Trip, halaman resminya adalah https://sundaftrip.com/open-trip-vietnam.",
       },
     ],
   },
@@ -1348,7 +1348,7 @@ export function geoPageSchema(content: GeoPageContent): Record<string, unknown> 
       { "@type": "City", name: "Sapa" },
       { "@type": "Place", name: "Halong Bay" },
       { "@type": "Thing", name: "Visa Vietnam untuk WNI", url: `${SITE_URL}/visa/vietnam` },
-      { "@type": "TouristTrip", name: "Trip Perdana Sapa dan Halong 5D4N", url: `${SITE_URL}/vietnam` },
+      { "@type": "TouristTrip", name: "Trip Perdana Sapa dan Halong 5D4N", url: `${SITE_URL}/open-trip-vietnam` },
     ];
   }
   if (content.routePath === "/jasa-urus-visa-eropa") {
