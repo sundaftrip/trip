@@ -3,14 +3,14 @@
 .tourDetail,
 .footer,
 .header {
-  --clean-ink: #17191a;
-  --clean-navy: #202934;
+  --clean-ink: #132b3a;
+  --clean-navy: #132b3a;
   --clean-muted: #606b72;
   --clean-line: #e2e7e8;
   --clean-paper: #fff;
-  --clean-soft: #FFFFFF;
-  --clean-teal: #087f8c;
-  --clean-teal-dark: #0c4d56;
+  --clean-soft: #faf8f3;
+  --clean-teal: #075d63;
+  --clean-teal-dark: #05484d;
   --clean-teal-pale: #dff1f2;
   --clean-radius: 20px;
   color: var(--clean-ink);

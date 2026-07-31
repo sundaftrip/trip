@@ -424,8 +424,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
               {" "}<span
                 className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
                 style={{
-                  background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
-                  color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                  background: "color-mix(in srgb, var(--site-accent,#075d63) 10%, #fff)",
+                  color: "color-mix(in srgb, var(--site-accent,#075d63) 62%, #000)",
                 }}
               ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
              , seperti formulir, itinerary, dan booking akomodasi, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
@@ -452,8 +452,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
                             style={{
-                              background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
-                              color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                              background: "color-mix(in srgb, var(--site-accent,#075d63) 10%, #fff)",
+                              color: "color-mix(in srgb, var(--site-accent,#075d63) 62%, #000)",
                             }}
                           >
                             <CheckCircle2 size={10} /> Kami bantu
@@ -479,15 +479,15 @@ export default async function VisaDetailPage({ params }: PageProps) {
               href="/visa/faq"
               className="group mt-4 flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               style={{
-                background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 12%, transparent)",
-                border: "1.5px solid color-mix(in srgb, var(--site-accent,#2d6a4f) 55%, transparent)",
+                background: "color-mix(in srgb, var(--site-accent,#075d63) 12%, transparent)",
+                border: "1.5px solid color-mix(in srgb, var(--site-accent,#075d63) 55%, transparent)",
               }}
             >
               <span
                 className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{
-                  background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
-                  color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                  background: "color-mix(in srgb, var(--site-accent,#075d63) 10%, #fff)",
+                  color: "color-mix(in srgb, var(--site-accent,#075d63) 62%, #000)",
                 }}
               >
                 <HelpCircle size={18} />
@@ -503,8 +503,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
               <span
                 className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"
                 style={{
-                  background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 10%, #fff)",
-                  color: "color-mix(in srgb, var(--site-accent,#2d6a4f) 62%, #000)",
+                  background: "color-mix(in srgb, var(--site-accent,#075d63) 10%, #fff)",
+                  color: "color-mix(in srgb, var(--site-accent,#075d63) 62%, #000)",
                 }}
               >
                 Buka
@@ -637,7 +637,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                     <Link
                       href={VISA_PROTECTION_PATH}
                       className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition hover:opacity-90"
-                      style={{ background: "var(--site-accent,#2d6a4f)" }}
+                      style={{ background: "var(--site-accent,#075d63)" }}
                     >
                       Pelajari Visa Protection <ArrowRight size={15} aria-hidden />
                     </Link>

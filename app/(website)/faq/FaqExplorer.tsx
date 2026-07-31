@@ -327,7 +327,7 @@ export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }
                                     <Link
                                       href={link.href}
                                       className="underline underline-offset-4 hover:opacity-75"
-                                      style={{ color: "var(--site-accent-ink,#2d6a4f)" }}
+                                      style={{ color: "var(--site-accent-ink,#075d63)" }}
                                     >
                                       {link.label}
                                     </Link>

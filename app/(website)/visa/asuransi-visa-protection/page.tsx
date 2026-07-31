@@ -244,7 +244,7 @@ export default async function VisaProtectionPage() {
                   target={wa ? "_blank" : undefined}
                   rel={wa ? "noreferrer" : undefined}
                   className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold text-white transition hover:opacity-90"
-                  style={{ background: "var(--site-accent,#2d6a4f)" }}
+                  style={{ background: "var(--site-accent,#075d63)" }}
                 >
                   <MessageCircle size={17} aria-hidden />
                   Cek kecocokan polis

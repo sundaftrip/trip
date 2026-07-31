@@ -165,8 +165,8 @@ export default async function KazakhstanPage() {
                     : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                     : isGlobe    ? { background: "var(--gl-border)", color: "#111827" }
                     : isMap      ? { background: "var(--mp-accent)", color: "var(--mp-on-accent)" }
-                    : isAtlas    ? { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }
-                    : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" };
+                    : isAtlas    ? { background: "var(--site-accent,#075d63)", color: "#ffffff" }
+                    : { background: "var(--site-accent,#075d63)", color: "#ffffff" };
 
   const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                      : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
@@ -174,7 +174,7 @@ export default async function KazakhstanPage() {
                      : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
                      : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
                      : isAtlas    ? { background: "transparent", color: "var(--at-subtext)", borderColor: "var(--at-border)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff", opacity: 0.95 };
+                     : { background: "var(--site-accent,#075d63)", color: "#ffffff", opacity: 0.95 };
 
   const pillClass = isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isPixel ? "px-pill" : isGlobe ? "gl-pill" : isMap ? "mp-pill" : isAtlas ? "at-pill" : "rounded-full px-3 py-1 text-xs font-medium";
   const cardClass = isKawaii ? "kw-card" : isTropical ? "tr-card" : isPixel ? "px-card" : isGlobe ? "gl-card" : isMap ? "mp-card" : isAtlas ? "at-card"
@@ -184,7 +184,7 @@ export default async function KazakhstanPage() {
   const waUrl = wa ? `https://wa.me/${wa}?text=${waMsg}` : "#";
 
   return (
-    <div className={`destination-light-surface min-h-screen ${!isOutlined ? "bg-white" : ""}`} style={wrapperStyle}>
+    <div className="destination-light-surface min-h-screen" style={wrapperStyle}>
 
       {/* ── HERO ── */}
       <div className="relative h-[65vh] min-h-[440px] flex items-end pt-24">
@@ -253,7 +253,7 @@ export default async function KazakhstanPage() {
           {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
             <div key={label} className={`${cardClass} p-4`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
               <div className="flex items-start gap-3">
-                <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
+                <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#075d63)" }} />
                 <div>
                   <p className={`text-[11px] font-medium mb-0.5 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{label}</p>
                   <p className={`text-sm font-bold leading-tight ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>{value}</p>
@@ -286,8 +286,8 @@ export default async function KazakhstanPage() {
         <section className={`${isOutlined ? "" : "rounded-3xl"} p-8 lg:p-12`}
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
-            : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
-          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+            : { background: "color-mix(in srgb, var(--site-accent,#075d63) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
             {isPixel ? "► TIPS ALAM" : "Tips Menjelajah Alam"}
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900" : ""}`}
@@ -403,7 +403,7 @@ export default async function KazakhstanPage() {
             ))}
             <div className="flex items-center justify-between gap-4 pt-4">
               <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>Total Estimasi</span>
-              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>Rp 20 – 38 juta / orang</span>
+              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#075d63)" }}>Rp 20 – 38 juta / orang</span>
             </div>
           </div>
           <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-600 dark:text-gray-300" : ""}`} style={{ color: subClr }}>
@@ -440,7 +440,7 @@ export default async function KazakhstanPage() {
                     </p>
                     <h3 className={`font-bold text-sm leading-tight mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
                       style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{tour.title}</h3>
-                    <p className="font-black" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
+                    <p className="font-black" style={{ color: "var(--site-accent-ink,#075d63)" }}>
                       {(tour.promoPrice ?? tour.price) > 0 ? formatCurrency(tour.promoPrice ?? tour.price) : "Tanya Harga"}
                     </p>
                   </div>
@@ -449,7 +449,7 @@ export default async function KazakhstanPage() {
             </div>
             <div className="mt-4 text-center">
               <Link href="/tours" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
+                style={{ color: "var(--site-accent-ink,#075d63)" }}>
                 Lihat semua paket tour <ChevronRight size={16} />
               </Link>
             </div>
@@ -521,7 +521,7 @@ export default async function KazakhstanPage() {
           <section className={`${isOutlined ? "" : "rounded-3xl"} p-10 text-center`}
             style={isOutlined
               ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `6px 6px 0 0 ${bdrClr}` : undefined }
-              : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
+              : { background: "color-mix(in srgb, var(--site-accent,#075d63) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
             <h2 className={`text-3xl font-black mb-3 ${!isOutlined ? "text-gray-900" : ""}`}
               style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
               {isPixel ? "> SIAP KE KAZAKHSTAN?" : "Siap Menjelajah Kazakhstan?"}
@@ -531,7 +531,7 @@ export default async function KazakhstanPage() {
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full hover:opacity-90"}`}
-              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+              style={isOutlined ? accentStyle : { background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
               <MessageCircle size={18} />
               {isPixel ? "[ CHAT WHATSAPP ]" : "Chat WhatsApp Sekarang"}
             </a>

@@ -13,12 +13,12 @@ export default function WebsiteError({
       style={{
         minHeight: "70vh",
         padding: "124px 20px 80px",
-        background: "#fff",
-        color: "#172029",
+        background: "#faf8f3",
+        color: "#132b3a",
       }}
     >
       <div style={{ width: "min(100%, 660px)", margin: "0 auto" }}>
-        <p style={{ color: "#0c4d56", fontSize: 12, fontWeight: 800, letterSpacing: ".14em" }}>
+        <p style={{ color: "#075d63", fontSize: 12, fontWeight: 800, letterSpacing: ".14em" }}>
           HALAMAN BELUM DAPAT DIMUAT
         </p>
         <h1 style={{ margin: "14px 0", fontSize: "clamp(34px, 8vw, 58px)", lineHeight: 1.05 }}>
@@ -37,7 +37,7 @@ export default function WebsiteError({
               padding: "0 20px",
               border: 0,
               borderRadius: 999,
-              background: "#0c4d56",
+              background: "#075d63",
               color: "#fff",
               font: "inherit",
               fontWeight: 750,
@@ -55,7 +55,7 @@ export default function WebsiteError({
               alignItems: "center",
               border: "1px solid #cbd5d5",
               borderRadius: 999,
-              color: "#202934",
+              color: "#132b3a",
               fontWeight: 750,
             }}
           >

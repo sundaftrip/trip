@@ -1,8 +1,8 @@
 .page {
   min-height: 100vh;
   padding: 108px 0 84px;
-  background: #f3f6f6;
-  color: #172029;
+  background: #faf8f3;
+  color: #132b3a;
   font-family: var(--site-font-family), "Plus Jakarta Sans", sans-serif;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .breadcrumb a {
-  color: #0c4d56;
+  color: #075d63;
 }
 
 .hero {
@@ -31,7 +31,7 @@
 .hero > p,
 .aftercare > div > p {
   margin: 0 0 12px;
-  color: #0c4d56;
+  color: #075d63;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: .16em;
@@ -40,7 +40,7 @@
 .hero h1,
 .aftercare h2 {
   margin: 0;
-  color: #172029;
+  color: #132b3a;
   font-size: clamp(38px, 6vw, 66px);
   font-weight: 790;
   letter-spacing: -.045em;
@@ -83,7 +83,7 @@
 .progressHeader strong {
   display: block;
   margin-top: 3px;
-  color: #172029;
+  color: #132b3a;
   font-size: 16px;
 }
 
@@ -95,7 +95,7 @@
 .progressTrack span {
   height: 100%;
   display: block;
-  background: #149b86;
+  background: #20b8b5;
   transition: width 240ms cubic-bezier(.22, 1, .36, 1);
 }
 
@@ -106,7 +106,7 @@
 
 .stepBody h2 {
   margin: 0;
-  color: #172029;
+  color: #132b3a;
   font-size: clamp(27px, 4vw, 36px);
   letter-spacing: -.035em;
   line-height: 1.1;
@@ -145,9 +145,9 @@
 }
 
 .choiceGrid label[data-selected="true"] {
-  border-color: #0c4d56;
-  background: #f3f6f6;
-  color: #0c4d56;
+  border-color: #075d63;
+  background: #f3f5f2;
+  color: #075d63;
 }
 
 .choiceGrid input {
@@ -193,7 +193,7 @@
   border: 1px solid #cdd8d7;
   border-radius: 11px;
   background: #fff;
-  color: #172029;
+  color: #132b3a;
   font: inherit;
   font-size: 16px;
 }
@@ -240,7 +240,7 @@
   display: grid;
   gap: 9px;
   border-radius: 13px;
-  background: #f3f6f6;
+  background: #f3f5f2;
 }
 
 .summary div {
@@ -260,7 +260,7 @@
 }
 
 .summary dd {
-  color: #172029;
+  color: #132b3a;
   font-weight: 700;
 }
 
@@ -283,7 +283,7 @@
   border: 1px solid #d7e0df;
   border-radius: 999px;
   background: #fff;
-  color: #172029;
+  color: #132b3a;
   font: inherit;
   font-size: 13px;
   font-weight: 760;
@@ -291,8 +291,8 @@
 
 .wizardFooter button:last-child,
 .wizardFooter a {
-  border-color: #0c4d56;
-  background: #0c4d56;
+  border-color: #075d63;
+  background: #075d63;
   color: #fff;
 }
 
@@ -338,7 +338,7 @@
 }
 
 .aftercare li > strong {
-  color: #0c4d56;
+  color: #075d63;
   font-size: 13px;
 }
 
@@ -351,7 +351,7 @@
 .aftercare li b {
   display: block;
   margin-bottom: 4px;
-  color: #172029;
+  color: #132b3a;
 }
 
 .srOnly {

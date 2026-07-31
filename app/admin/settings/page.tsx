@@ -55,7 +55,7 @@ const THEMES = [
   { key: "pixel",    label: "Pixel Art", desc: "Retro 8-bit. Sharp corners, pixel shadow, pixel float blocks.",          feature: "theme_pixel" },
   { key: "globe",    label: "Boarding Pass", desc: "Tiket pesawat asli. IATA 3-letter code monospace (MMK · LED · SVO), perforasi dashed, half-circle notch, barcode di stub, font Anonymous Pro. Travel-native, brutalist info design.", feature: "theme_globe" },
   { key: "map",      label: "Atlas Map", desc: "Peta dunia klasik. Animasi CSS murni, parchment, grid atlas, pin & kompas.", feature: "theme_map" },
-  { key: "atlas",    label: "Atlas",     desc: "Grid bersih hitam-putih. Tipis, elegan, tanpa warna.",                    feature: "theme_atlas" },
+  { key: "atlas",    label: "Atlas",     desc: "Tampilan publik Sundaf dengan petrol teal, midnight navy, dan warm ivory.", feature: "theme_atlas" },
   { key: "fumayo",   label: "Fumayo",    desc: "Buku tulis kotak-kotak anak. Bingkai rounded, font mesin tik, tombol hijau, doodle.", feature: null },
   { key: "console",  label: "Console",   desc: "Layout dashboard ala panel. Sidebar kiri navigasi, konten grid tipis Atlas.", feature: null },
 ];
@@ -70,7 +70,7 @@ export default function SettingsPage() {
   useEffect(() => {
     fetch("/api/settings").then((r) => r.json()).then((d) => {
       setData(d);
-      setActiveScheme(d["color_scheme"] ?? "forest");
+      setActiveScheme((d["site_theme"] ?? "classic") === "atlas" ? "sundaf" : (d["color_scheme"] ?? "sundaf"));
     });
     // Plan diresolusi dari MASTER lewat /api/plan
     fetch("/api/plan").then((r) => r.json()).then((d) => {
@@ -121,9 +121,10 @@ export default function SettingsPage() {
     setData((d) => ({ ...d, favicon_logo: url }));
   }
 
-  const currentAccent = data["color_accent"] ?? "#2d6a4f";
-  const currentHero = data["color_hero"] ?? "#0d2018";
-  const currentEyebrow = data["color_eyebrow"] ?? "#6b7280";
+  const atlasBrandLocked = (data["site_theme"] ?? "classic") === "atlas";
+  const currentAccent = atlasBrandLocked ? "#075D63" : (data["color_accent"] ?? "#075D63");
+  const currentHero = atlasBrandLocked ? "#132B3A" : (data["color_hero"] ?? "#132B3A");
+  const currentEyebrow = atlasBrandLocked ? "#075D63" : (data["color_eyebrow"] ?? "#075D63");
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -203,7 +204,11 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="font-semibold text-gray-900 dark:text-white">Skema Warna</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Pilih satu skema — semua warna website berubah sekaligus.</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {atlasBrandLocked
+                ? "Tema Atlas memakai palet resmi Sundaf agar warna publik selalu konsisten."
+                : "Pilih satu skema — semua warna website berubah sekaligus."}
+            </p>
           </div>
           <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
             isFeatureEnabled("color_schemes")
@@ -223,12 +228,12 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 ${!isFeatureEnabled("color_schemes") ? "opacity-50 pointer-events-none select-none" : ""}`}>
+        <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 ${!isFeatureEnabled("color_schemes") || atlasBrandLocked ? "opacity-50 pointer-events-none select-none" : ""}`}>
           {COLOR_SCHEMES.map((scheme) => {
             const isActive = activeScheme === scheme.id;
             return (
               <button key={scheme.id} type="button" onClick={() => applyScheme(scheme.id)}
-                disabled={!isFeatureEnabled("color_schemes")}
+                disabled={!isFeatureEnabled("color_schemes") || atlasBrandLocked}
                 className={`text-left rounded-xl border-2 overflow-hidden transition-all duration-200 ${
                   isActive
                     ? "border-blue-500 shadow-md shadow-blue-100 dark:shadow-none scale-[1.02]"

@@ -1,13 +1,14 @@
 .header,
 .footer {
-  --shell-ink: #172029;
+  --shell-ink: #132b3a;
   --shell-ink-soft: #42515a;
   --shell-muted: #66737a;
-  --shell-primary: #0c4d56;
-  --shell-primary-strong: #073b43;
-  --shell-aurora: #149b86;
-  --shell-ice: #f3f6f6;
+  --shell-primary: #075d63;
+  --shell-primary-strong: #05484d;
+  --shell-aurora: #20b8b5;
+  --shell-ice: #f3f5f2;
   --shell-line: #e1e7e6;
+  --shell-paper: #faf8f3;
   --shell-white: #fff;
   color: var(--shell-ink);
   font-weight: 400;
@@ -28,7 +29,7 @@
   z-index: 500;
   padding: 11px 15px;
   border-radius: 8px;
-  background: #073b43;
+  background: #05484d;
   color: #fff;
   font-size: 13px;
   font-weight: 750;
@@ -746,7 +747,7 @@
 .footer {
   padding: 60px 0 22px;
   border-top: 1px solid var(--shell-line);
-  background: #FFFFFF;
+  background: var(--shell-paper);
 }
 
 .footerContent {

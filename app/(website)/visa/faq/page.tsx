@@ -108,7 +108,7 @@ export default async function VisaFaqPage() {
         </Link>
 
         <div className="flex items-center gap-2 mb-2">
-          <HelpCircle size={20} style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
+          <HelpCircle size={20} style={{ color: "var(--site-accent-ink,#075d63)" }} />
           <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
             FAQ Teknis Visa
           </span>
@@ -141,12 +141,12 @@ export default async function VisaFaqPage() {
         <div
           className="mb-12 p-6 sm:p-8 border"
           style={{
-            background: "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 8%, transparent)",
-            borderColor: "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 25%, transparent)",
+            background: "color-mix(in srgb, var(--site-accent-ink,#075d63) 8%, transparent)",
+            borderColor: "color-mix(in srgb, var(--site-accent-ink,#075d63) 25%, transparent)",
           }}
         >
           <div className="flex items-start gap-3 mb-3">
-            <MessageCircle size={20} className="shrink-0 mt-0.5" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
+            <MessageCircle size={20} className="shrink-0 mt-0.5" style={{ color: "var(--site-accent-ink,#075d63)" }} />
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-1">
                 Punya kasus yang tidak ada di sini?

@@ -109,7 +109,7 @@
 .filterLink:focus-visible,
 .tocLink:focus-visible,
 .tocSummary:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--site-accent, #00adb5) 68%, transparent);
+  outline: 3px solid color-mix(in srgb, var(--site-accent, #075d63) 68%, transparent);
   outline-offset: 3px;
 }
 
@@ -254,7 +254,7 @@
 .articleBody :global(h2[id]:target),
 .articleBody :global(h3[id]:target) {
   text-decoration-line: underline;
-  text-decoration-color: var(--site-accent, #00adb5);
+  text-decoration-color: var(--site-accent, #075d63);
   text-decoration-thickness: 0.12em;
   text-underline-offset: 0.2em;
 }

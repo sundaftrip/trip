@@ -128,7 +128,7 @@ export default async function ContactPage() {
         <div className={isAtlas ? "" : "mx-auto max-w-7xl"}>
           <p
             className={isAtlas ? "at-pill mb-5 inline-flex" : "text-xs font-bold uppercase tracking-[0.22em]"}
-            style={{ color: isAtlas ? "var(--at-subtext)" : "var(--site-accent,#00ADB5)" }}
+            style={{ color: isAtlas ? "var(--at-subtext)" : "var(--site-accent,#075D63)" }}
           >
             Kontak resmi
           </p>

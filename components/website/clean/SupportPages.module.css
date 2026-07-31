@@ -1,27 +1,28 @@
 .atlasPage {
-  --support-ink: #172029;
+  --support-ink: #132b3a;
   --support-ink-soft: #42515a;
   --support-muted: #5d6b72;
-  --support-primary: #0c4d56;
-  --support-primary-strong: #073b43;
-  --support-aurora: #128879;
+  --support-primary: #075d63;
+  --support-primary-strong: #05484d;
+  --support-aurora: #20b8b5;
   --support-line: #dde5e4;
   --support-soft: #f2f6f5;
   --support-paper: #ffffff;
-  --at-bg: var(--support-paper);
+  --support-canvas: #faf8f3;
+  --at-bg: var(--support-canvas);
   --at-card: var(--support-paper);
   --at-border: var(--support-line);
   --at-text: var(--support-ink);
   --at-subtext: var(--support-ink-soft);
   --at-grid: transparent;
   --at-muted: var(--support-soft);
-  --at-shadow: rgba(12, 77, 86, 0.08);
+  --at-shadow: rgba(7, 93, 99, 0.08);
   --site-accent: var(--support-primary);
   --site-accent-ink: var(--support-primary);
   min-height: 100%;
   padding-top: 68px;
   overflow-x: clip;
-  background: var(--support-paper) !important;
+  background: var(--support-canvas) !important;
   background-image: none !important;
   color: var(--support-ink);
   font-weight: 300;
@@ -80,7 +81,7 @@
 
 .atlasPage :global(a.at-card:hover) {
   border-color: color-mix(in srgb, var(--support-primary) 48%, var(--support-line));
-  box-shadow: 0 12px 28px rgba(7, 59, 67, 0.08);
+  box-shadow: 0 12px 28px rgba(5, 72, 77, 0.08);
   transform: translateY(-2px);
 }
 
@@ -203,7 +204,7 @@
   z-index: -1;
   width: 102%;
   border-radius: 0.06em;
-  background: rgb(12 77 86 / 90%);
+  background: rgb(7 93 99 / 90%);
   content: "";
 }
 
@@ -223,7 +224,7 @@
   z-index: -1;
   width: 110%;
   border-radius: 0.09em;
-  background: #0c4d56;
+  background: #075d63;
   content: "";
 }
 

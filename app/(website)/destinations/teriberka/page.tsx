@@ -126,14 +126,14 @@ export default async function TeriberkaPage() {
                     : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                     : isGlobe    ? { background: "var(--gl-border)", color: "#111827" }
                     : isMap      ? { background: "var(--mp-accent)", color: "var(--mp-on-accent)" }
-                    : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" };
+                    : { background: "var(--site-accent,#075d63)", color: "#ffffff" };
 
   const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                      : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
                      : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                      : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
                      : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff", opacity: 0.95 };
+                     : { background: "var(--site-accent,#075d63)", color: "#ffffff", opacity: 0.95 };
 
   const pillClass = isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isPixel ? "px-pill" : isGlobe ? "gl-pill" : isMap ? "mp-pill" : "rounded-full px-3 py-1 text-xs font-medium";
 
@@ -146,7 +146,7 @@ export default async function TeriberkaPage() {
   const geoFaq = geoContent.faqs.map((faq) => ({ q: faq.question, a: faq.answer }));
 
   return (
-    <div className={`destination-light-surface min-h-screen ${!isOutlined ? "bg-white" : ""}`} style={wrapperStyle}>
+    <div className="destination-light-surface min-h-screen" style={wrapperStyle}>
 
       {/* ── SEO: structured data (Article + Breadcrumb + FAQ) ── */}
       <script
@@ -242,14 +242,14 @@ export default async function TeriberkaPage() {
             {tours.length > 0 ? (
               <a href="#paket-tour"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+                style={{ background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
                 <Star size={15} />
                 {destination.hero.primaryCtaLabel}
               </a>
             ) : (
               <Link href="/tours"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+                style={{ background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
                 <Star size={15} />
                 {destination.hero.allToursCtaLabel}
               </Link>
@@ -274,7 +274,7 @@ export default async function TeriberkaPage() {
             return (
             <div key={label} className={`${cardClass} p-4`} style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
               <div className="flex items-start gap-3">
-                <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
+                <Icon size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#075d63)" }} />
                 <div>
                   <p className={`text-[11px] font-medium mb-0.5 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{label}</p>
                   <p className={`text-sm font-bold leading-tight ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>{value}</p>
@@ -308,7 +308,7 @@ export default async function TeriberkaPage() {
               )}
               {geoContent.secondaryCtaLabel && geoContent.secondaryCtaHref && (
                 <Link href={geoContent.secondaryCtaHref} className={`inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm transition ${isOutlined ? pillClass : "rounded-full border"}`}
-                  style={isOutlined ? eyebrowStyle : { borderColor: "var(--site-accent,#2d6a4f)", color: "var(--site-accent-ink,#2d6a4f)" }}>
+                  style={isOutlined ? eyebrowStyle : { borderColor: "var(--site-accent,#075d63)", color: "var(--site-accent-ink,#075d63)" }}>
                   {geoContent.secondaryCtaLabel}
                 </Link>
               )}
@@ -339,8 +339,8 @@ export default async function TeriberkaPage() {
         <section className={`${isOutlined ? "" : "rounded-3xl"} p-8 lg:p-12`}
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
-            : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
-          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+            : { background: "color-mix(in srgb, var(--site-accent,#075d63) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
             {isPixel ? `► ${destination.guide.eyebrow.toUpperCase()}` : destination.guide.eyebrow}
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900" : ""}`}
@@ -438,7 +438,7 @@ export default async function TeriberkaPage() {
             ))}
             <div className="flex items-center justify-between gap-4 pt-4">
               <span className={`font-black ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr }}>{destination.budget.totalLabel}</span>
-              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>{destination.budget.totalValue}</span>
+              <span className="font-black text-lg" style={{ color: "var(--site-accent-ink,#075d63)" }}>{destination.budget.totalValue}</span>
             </div>
           </div>
           <p className={`text-xs mt-4 ${!isOutlined ? "text-gray-400 dark:text-gray-600" : ""}`} style={{ color: subClr, opacity: 0.7 }}>
@@ -470,7 +470,7 @@ export default async function TeriberkaPage() {
                     <div className="p-4">
                       <p className={`text-xs mb-1 ${!isOutlined ? "text-gray-500 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{tour.country} · {tour.duration}</p>
                       <h3 className={`font-bold text-sm leading-tight mb-3 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>{tour.title}</h3>
-                      <p className="font-black" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
+                      <p className="font-black" style={{ color: "var(--site-accent-ink,#075d63)" }}>
                         {(tour.promoPrice ?? tour.price) > 0 ? formatCurrency(tour.promoPrice ?? tour.price) : "Tanya Harga"}
                       </p>
                     </div>
@@ -478,7 +478,7 @@ export default async function TeriberkaPage() {
                 ))}
               </div>
               <div className="mt-4 text-center">
-                <Link href="/tours" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
+                <Link href="/tours" className="inline-flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--site-accent-ink,#075d63)" }}>
                   Lihat semua paket tour <ChevronRight size={16} />
                 </Link>
               </div>
@@ -496,7 +496,7 @@ export default async function TeriberkaPage() {
               </p>
               <Link href={destination.emptyTours.ctaHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+                style={{ background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
                 {destination.emptyTours.ctaLabel} <ChevronRight size={14} />
               </Link>
             </div>
@@ -517,7 +517,7 @@ export default async function TeriberkaPage() {
               <div key={q} className={`${isOutlined ? cardClass : "border border-gray-200 dark:border-slate-800 rounded-2xl"} p-6`}
                 style={cardBg ? { background: cardBg, borderColor: bdrClr, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `3px 3px 0 0 ${bdrClr}` : undefined } : {}}>
                 <h3 className={`font-bold mb-3 flex items-start gap-2 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
-                  <Star size={14} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
+                  <Star size={14} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent-ink,#075d63)" }} />
                   {q}
                 </h3>
                 <p className={`text-sm leading-relaxed pl-5 ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`} style={{ color: subClr }}>{a}</p>
@@ -563,7 +563,7 @@ export default async function TeriberkaPage() {
           <section className={`${isOutlined ? "" : "rounded-3xl"} p-10 text-center`}
             style={isOutlined
               ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: (isPixel || isMap || isKawaii || isTropical) ? `6px 6px 0 0 ${bdrClr}` : undefined }
-              : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
+              : { background: "color-mix(in srgb, var(--site-accent,#075d63) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
             <h2 className={`text-3xl font-black mb-3 ${!isOutlined ? "text-gray-900" : ""}`}
               style={{ color: isOutlined ? headClr : undefined, fontFamily: isPixel ? "monospace" : undefined }}>
               {isPixel ? `> ${destination.finalCta.title.toUpperCase()}` : destination.finalCta.title}
@@ -573,7 +573,7 @@ export default async function TeriberkaPage() {
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full hover:opacity-90"}`}
-              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
+              style={isOutlined ? accentStyle : { background: "var(--site-accent,#075d63)", color: "#ffffff" }}>
               <MessageCircle size={18} />
               {isPixel ? `[ ${destination.finalCta.buttonLabel.toUpperCase()} ]` : destination.finalCta.buttonLabel}
             </a>
