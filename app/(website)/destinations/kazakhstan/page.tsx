@@ -166,7 +166,7 @@ export default async function KazakhstanPage() {
                     : isGlobe    ? { background: "var(--gl-border)", color: "#111827" }
                     : isMap      ? { background: "var(--mp-accent)", color: "var(--mp-on-accent)" }
                     : isAtlas    ? { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }
-                    : { background: "var(--site-accent,#2d6a4f)", color: "#111827" };
+                    : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" };
 
   const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                      : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
@@ -174,7 +174,7 @@ export default async function KazakhstanPage() {
                      : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
                      : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
                      : isAtlas    ? { background: "transparent", color: "var(--at-subtext)", borderColor: "var(--at-border)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#111827", opacity: 0.95 };
+                     : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff", opacity: 0.95 };
 
   const pillClass = isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isPixel ? "px-pill" : isGlobe ? "gl-pill" : isMap ? "mp-pill" : isAtlas ? "at-pill" : "rounded-full px-3 py-1 text-xs font-medium";
   const cardClass = isKawaii ? "kw-card" : isTropical ? "tr-card" : isPixel ? "px-card" : isGlobe ? "gl-card" : isMap ? "mp-card" : isAtlas ? "at-card"
@@ -287,7 +287,7 @@ export default async function KazakhstanPage() {
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
             : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
-          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
             {isPixel ? "► TIPS ALAM" : "Tips Menjelajah Alam"}
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900" : ""}`}
@@ -531,7 +531,7 @@ export default async function KazakhstanPage() {
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full hover:opacity-90"}`}
-              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
               <MessageCircle size={18} />
               {isPixel ? "[ CHAT WHATSAPP ]" : "Chat WhatsApp Sekarang"}
             </a>

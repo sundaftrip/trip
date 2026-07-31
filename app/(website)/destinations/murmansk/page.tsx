@@ -119,14 +119,14 @@ export default async function MurmanskPage() {
                     : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                     : isGlobe    ? { background: "var(--gl-border)", color: "#111827" }
                     : isMap      ? { background: "var(--mp-accent)", color: "var(--mp-on-accent)" }
-                    : { background: "var(--site-accent,#2d6a4f)", color: "#111827" };
+                    : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" };
 
   const eyebrowStyle = isKawaii   ? { background: "var(--kw-peach)", color: "var(--kw-text)" }
                      : isTropical ? { background: "var(--tr-mint)", color: "var(--tr-text)" }
                      : isPixel    ? { background: "var(--px-cyan)", color: "var(--px-on-cyan)" }
                      : isGlobe    ? { background: "var(--gl-sky)", color: "var(--gl-on-sky)", borderColor: "transparent" }
                      : isMap      ? { background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }
-                     : { background: "var(--site-accent,#2d6a4f)", color: "#111827", opacity: 0.95 };
+                     : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff", opacity: 0.95 };
 
   const pillClass = isKawaii ? "kw-pill" : isTropical ? "tr-pill" : isPixel ? "px-pill" : isGlobe ? "gl-pill" : isMap ? "mp-pill" : "rounded-full px-3 py-1 text-xs font-medium";
 
@@ -234,14 +234,14 @@ export default async function MurmanskPage() {
             {tours.length > 0 ? (
               <a href="#paket-tour"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
                 <Star size={15} />
                 {destination.hero.primaryCtaLabel}
               </a>
             ) : (
               <Link href="/tours"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:scale-105"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
                 <Star size={15} />
                 {destination.hero.allToursCtaLabel}
               </Link>
@@ -332,7 +332,7 @@ export default async function MurmanskPage() {
           style={isOutlined
             ? { background: cardBg, border: `2px solid ${bdrClr}`, boxShadow: isPixel || isMap || isKawaii || isTropical ? `4px 4px 0 0 ${bdrClr}` : isGlobe ? "0 8px 32px var(--gl-shadow)" : undefined }
             : { background: "color-mix(in srgb, var(--site-accent,#2d6a4f) 14%, #ffffff)", border: "1px solid #e5e7eb" }}>
-          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+          <span className={`${pillClass} inline-flex mb-3 text-xs font-bold`} style={isOutlined ? eyebrowStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
             {isPixel ? `► ${destination.guide.eyebrow.toUpperCase()}` : destination.guide.eyebrow}
           </span>
           <h2 className={`text-2xl sm:text-3xl font-black mt-3 mb-8 ${!isOutlined ? "text-gray-900" : ""}`}
@@ -488,7 +488,7 @@ export default async function MurmanskPage() {
               </p>
               <Link href={destination.emptyTours.ctaHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition hover:opacity-90"
-                style={{ background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+                style={{ background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
                 {destination.emptyTours.ctaLabel} <ChevronRight size={14} />
               </Link>
             </div>
@@ -565,7 +565,7 @@ export default async function MurmanskPage() {
             </p>
             <a href={waUrl} target="_blank" rel="noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 font-black text-sm transition ${isOutlined ? pillClass : "rounded-full hover:opacity-90"}`}
-              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#111827" }}>
+              style={isOutlined ? accentStyle : { background: "var(--site-accent,#2d6a4f)", color: "#ffffff" }}>
               <MessageCircle size={18} />
               {isPixel ? `[ ${destination.finalCta.buttonLabel.toUpperCase()} ]` : destination.finalCta.buttonLabel}
             </a>
