@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { resetDocumentScroll } from "@/lib/navigation-scroll";
 import { Search, ChevronRight } from "lucide-react";
 import { visaSlug } from "@/lib/visa-slug";
 import { FlagIcon } from "@/lib/flag-icon";
@@ -292,10 +293,14 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                   role="link"
                   tabIndex={0}
                   aria-label={`Detail visa ${c.name}`}
-                  onClick={() => router.push(href)}
+                  onClick={() => {
+                    resetDocumentScroll();
+                    router.push(href);
+                  }}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
+                      resetDocumentScroll();
                       router.push(href);
                     }
                   }}

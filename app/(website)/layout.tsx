@@ -5,6 +5,7 @@ import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import OrganizationSchema from "@/components/website/OrganizationSchema";
 import AutoTranslate from "@/components/website/AutoTranslate";
 import ReferralCapture from "@/components/website/ReferralCapture";
+import RouteScrollReset from "@/components/website/RouteScrollReset";
 import CleanNavbar from "@/components/website/clean/CleanNavbar";
 import CleanFooter from "@/components/website/clean/CleanFooter";
 import CleanThemeBoundary from "@/components/website/clean/CleanThemeBoundary";
@@ -108,6 +109,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     return (
       <>
         {styleBlock}
+        <RouteScrollReset />
         <OrganizationSchema />
         <div className="flex flex-1 min-h-screen" style={{ background: "var(--at-bg)" }}>
           <ConsoleSidebar logo={logo} />
@@ -128,6 +130,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     return (
       <CleanThemeBoundary>
         {styleBlock}
+        <RouteScrollReset />
         <OrganizationSchema />
         <a className={cleanShellStyles.skipLink} href="#website-main">
           Langsung ke konten utama
@@ -148,6 +151,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   return (
     <>
       {styleBlock}
+      <RouteScrollReset />
       <OrganizationSchema />
       <Navbar logo={logo} theme={theme} />
       <main className={`flex-1 ${isTeri ? "teri-bg" : ""}`} data-theme={theme}>{children}</main>

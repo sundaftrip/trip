@@ -21,6 +21,7 @@ import {
   useState,
 } from "react";
 import styles from "./CleanShell.module.css";
+import { resetDocumentScroll } from "@/lib/navigation-scroll";
 
 type SearchRow = {
   title: string;
@@ -177,6 +178,7 @@ export default function CleanGlobalSearch() {
 
   const go = useCallback((href: string) => {
     setOpen(false);
+    resetDocumentScroll();
     router.push(href);
   }, [router]);
 
