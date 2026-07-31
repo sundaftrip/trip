@@ -2,10 +2,10 @@
 @plugin "@tailwindcss/typography";
 @variant dark (&:where(.dark, .dark *));
 
-/* Highlight/seleksi teks — Sundaf teal/white, font selalu gelap untuk kontras. */
-::selection { background: rgba(0, 173, 181, 0.62); color: #041417; text-shadow: none; }
-::-moz-selection { background: rgba(0, 173, 181, 0.62); color: #041417; text-shadow: none; }
-mark { background: rgba(0, 173, 181, 0.32); color: #041417; text-shadow: none; }
+/* Highlight/seleksi teks — aurora cyan dengan midnight navy. */
+::selection { background: rgba(32, 184, 181, 0.62); color: #041417; text-shadow: none; }
+::-moz-selection { background: rgba(32, 184, 181, 0.62); color: #041417; text-shadow: none; }
+mark { background: rgba(32, 184, 181, 0.32); color: #041417; text-shadow: none; }
 .dark ::selection { background: rgba(242, 251, 252, 0.92); color: #052024; }
 .dark ::-moz-selection { background: rgba(242, 251, 252, 0.92); color: #052024; }
 .dark mark { background: rgba(242, 251, 252, 0.88); color: #052024; }
@@ -27,9 +27,9 @@ mark { background: rgba(0, 173, 181, 0.32); color: #041417; text-shadow: none; }
 }
 
 :root {
-  /* REBRAND 2026-05-31 — SUNDAF charcoal/teal. Light bg, charcoal ink. */
-  --background: #ffffff;
-  --foreground: #222831;
+  /* SUNDAF public identity: warm ivory canvas, midnight navy ink. */
+  --background: #faf8f3;
+  --foreground: #132b3a;
 
   /* ── Tropical vars ── border/shadow/bg follow color scheme accent ── */
   --tr-bg:      color-mix(in srgb, var(--site-accent, #2d6a4f) 6%, #fffdf7);
@@ -60,7 +60,7 @@ mark { background: rgba(0, 173, 181, 0.32); color: #041417; text-shadow: none; }
 }
 
 .dark {
-  /* REBRAND 2026-05-31 — teal-dark preview from Sundaf logo #00ADB5. */
+  /* Night preview with aurora-cyan accents. */
   --background: #0b2024;
   --foreground: #f3fbfb;
 
@@ -1599,28 +1599,27 @@ a.gl-pill:has(svg:only-child) {
   .mp-terrain-1, .mp-terrain-2, .mp-terrain-3 { animation: none; }
 }
 
-/* ─── ATLAS THEME — SIANG: original putih/charcoal/teal · MALAM: teal-dark ─── */
+/* ─── ATLAS THEME — palet publik Sundaf ─── */
 :root {
-  /* LIGHT (mode siang) — original, diturunkan dari --site-accent (teal) */
-  --at-bg:      color-mix(in srgb, var(--site-accent, #00ADB5) 4%,  #ffffff);
-  --at-card:    color-mix(in srgb, var(--site-accent, #00ADB5) 2.5%, #ffffff);
-  --at-border:  color-mix(in srgb, var(--site-accent, #00ADB5) 55%, #1a1a1a);
-  --at-text:    #111827;
-  --at-subtext: #374151;
-  --at-grid:    color-mix(in srgb, var(--site-accent, #00ADB5) 11%, transparent);
+  --at-bg:      #faf8f3;
+  --at-card:    #ffffff;
+  --at-border:  color-mix(in srgb, var(--site-accent, #075d63) 18%, #d9dedb);
+  --at-text:    #132b3a;
+  --at-subtext: #42515a;
+  --at-grid:    color-mix(in srgb, var(--site-accent, #075d63) 8%, transparent);
   --at-shadow:  rgba(0,0,0,0.07);
   --at-muted:   #f3f4f6;
 }
 .dark {
   /* NIGHT (mode malam) — charcoal base with balanced Sundaf teal accents. */
-  --at-bg:      color-mix(in srgb, var(--site-accent, #00ADB5) 8%, #0b2024);
-  --at-card:    color-mix(in srgb, var(--site-accent, #00ADB5) 8%, #112a2d);
-  --at-border:  color-mix(in srgb, var(--site-accent, #00ADB5) 30%, rgba(255,255,255,0.18));
+  --at-bg:      color-mix(in srgb, var(--site-accent, #20b8b5) 8%, #0b2024);
+  --at-card:    color-mix(in srgb, var(--site-accent, #20b8b5) 8%, #112a2d);
+  --at-border:  color-mix(in srgb, var(--site-accent, #20b8b5) 30%, rgba(255,255,255,0.18));
   --at-text:    #F5FCFC;
-  --at-subtext: color-mix(in srgb, var(--site-accent, #00ADB5) 10%, rgba(255,255,255,0.74));
-  --at-grid:    color-mix(in srgb, var(--site-accent, #00ADB5) 16%, transparent);
+  --at-subtext: color-mix(in srgb, var(--site-accent, #20b8b5) 10%, rgba(255,255,255,0.74));
+  --at-grid:    color-mix(in srgb, var(--site-accent, #20b8b5) 16%, transparent);
   --at-shadow:  rgba(0,0,0,0.44);
-  --at-muted:   color-mix(in srgb, var(--site-accent, #00ADB5) 10%, rgba(255,255,255,0.08));
+  --at-muted:   color-mix(in srgb, var(--site-accent, #20b8b5) 10%, rgba(255,255,255,0.08));
 }
 .at-card {
   border: 1px solid var(--at-border);
@@ -2592,13 +2591,13 @@ html.public-site-active {
 
 /* Destination pages must stay readable even when the global site theme is dark. */
 .destination-light-surface {
-  --site-accent-ink: #111827;
-  --tr-bg: color-mix(in srgb, var(--site-accent, #00adb5) 4%, #ffffff);
+  --site-accent-ink: #075d63;
+  --tr-bg: color-mix(in srgb, var(--site-accent, #075d63) 4%, #faf8f3);
   --tr-card: #ffffff;
   --tr-border: #d1d5db;
   --tr-text: #111827;
   --tr-subtext: #374151;
-  --kw-bg: color-mix(in srgb, var(--site-accent, #00adb5) 4%, #ffffff);
+  --kw-bg: color-mix(in srgb, var(--site-accent, #075d63) 4%, #faf8f3);
   --kw-card: #ffffff;
   --kw-border: #d1d5db;
   --kw-text: #111827;
@@ -2624,9 +2623,9 @@ html.public-site-active {
   --mp-subtext: #374151;
   --mp-land: #f9fafb;
   --mp-accent: var(--site-accent, #00adb5);
-  --mp-on-accent: #111827;
+  --mp-on-accent: #ffffff;
   --mp-grid: rgba(17, 24, 39, 0.07);
-  --at-bg: #ffffff;
+  --at-bg: #faf8f3;
   --at-card: #ffffff;
   --at-border: #d1d5db;
   --at-text: #111827;
@@ -2640,8 +2639,8 @@ html.public-site-active {
   --fb-text: #111827;
   --fb-subtext: #374151;
   --fb-grid: rgba(17, 24, 39, 0.07);
-  background-color: #ffffff;
-  color: #111827;
+  background-color: #faf8f3;
+  color: #132b3a;
 }
 
 .destination-light-surface.dark\:bg-slate-950,

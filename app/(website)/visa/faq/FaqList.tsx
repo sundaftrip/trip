@@ -154,7 +154,7 @@ export function FaqList({
                   className="mt-4 pt-3 border-t"
                   style={{
                     borderColor:
-                      "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 18%, transparent)",
+                      "color-mix(in srgb, var(--site-accent-ink,#075d63) 18%, transparent)",
                   }}
                 >
                   {showInlinePreview ? (
@@ -164,7 +164,7 @@ export function FaqList({
                         onClick={() => toggle(i)}
                         aria-expanded={isOpen}
                         className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold hover:underline cursor-pointer"
-                        style={{ color: "var(--site-accent-ink,#2d6a4f)" }}
+                        style={{ color: "var(--site-accent-ink,#075d63)" }}
                       >
                         <span
                           aria-hidden="true"
@@ -181,7 +181,7 @@ export function FaqList({
                           className="mt-4 p-4 sm:p-5 rounded-lg border bg-gray-50 dark:bg-gray-800/60 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200"
                           style={{
                             borderColor:
-                              "color-mix(in srgb, var(--site-accent-ink,#2d6a4f) 28%, transparent)",
+                              "color-mix(in srgb, var(--site-accent-ink,#075d63) 28%, transparent)",
                           }}
                         >
                           <div className="mb-1 text-[11px] font-bold uppercase tracking-wider">
@@ -195,7 +195,7 @@ export function FaqList({
                     <a
                       href="#layanan-pendukung"
                       className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold hover:underline"
-                      style={{ color: "var(--site-accent-ink,#2d6a4f)" }}
+                      style={{ color: "var(--site-accent-ink,#075d63)" }}
                     >
                       <span aria-hidden="true">→</span>
                       <span>{ctaText}</span>

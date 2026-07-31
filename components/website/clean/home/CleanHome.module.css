@@ -1,13 +1,14 @@
 .home {
-  --home-ink: #172029;
+  --home-ink: #132b3a;
   --home-ink-soft: #42515a;
   --home-muted: #66737a;
-  --home-primary: #0c4d56;
-  --home-primary-strong: #073b43;
-  --home-accent: #0a6570;
-  --home-aurora: #149b86;
-  --home-ice: #f3f6f6;
-  --home-sand: #f6f1e8;
+  --home-primary: #075d63;
+  --home-primary-strong: #05484d;
+  --home-accent: #075d63;
+  --home-aurora: #20b8b5;
+  --home-ice: #f3f5f2;
+  --home-sand: #f3efe7;
+  --home-paper: #faf8f3;
   --home-white: #ffffff;
   --home-line: #e1e7e6;
   --home-success: #16794f;
@@ -17,7 +18,7 @@
   padding-top: 94px;
   contain: paint;
   overflow-x: hidden;
-  background: var(--home-white);
+  background: var(--home-paper);
   color: var(--home-ink);
   font-weight: 300;
   letter-spacing: 0.012em;
@@ -155,7 +156,7 @@
   position: relative;
   z-index: 3;
   margin-top: -78px;
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .finderCard {
@@ -283,7 +284,7 @@
 .finderMeta > a:first-child {
   font-weight: 540;
   text-decoration: underline;
-  text-decoration-color: rgba(12, 77, 86, 0.35);
+  text-decoration-color: rgba(7, 93, 99, 0.35);
   text-underline-offset: 4px;
 }
 
@@ -368,7 +369,7 @@
 
 .tourSection {
   padding-top: 74px;
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .railStage {
@@ -483,7 +484,7 @@
 }
 
 .tourCard[data-state="sold"] .tourBadge {
-  background: #172029;
+  background: #132b3a;
   color: var(--home-white);
 }
 
@@ -607,7 +608,7 @@
 }
 
 .destinationSection {
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .destinationMosaic > a {
@@ -662,7 +663,7 @@
 }
 
 .benefitSection {
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .benefitSection .sectionHeading {
@@ -740,11 +741,11 @@
 }
 
 .reviewSection {
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .faqSection {
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .reviewHeading .sectionHeading {
@@ -975,7 +976,7 @@
 
 .privateSection {
   padding-block: clamp(40px, 5vw, 60px);
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .privatePanel {
@@ -1036,7 +1037,7 @@
 
 .journalSection {
   padding-top: 78px;
-  background: #FFFFFF;
+  background: var(--home-paper);
 }
 
 .journalGrid {
@@ -1253,7 +1254,7 @@
   }
 
   .desktopSectionLink:hover {
-    color: var(--home-aurora);
+    color: var(--home-primary);
   }
 
   .tourCard:hover .tourMediaTitle,
@@ -1460,7 +1461,7 @@
   .finderZone {
     display: flow-root;
     margin-top: 0;
-    background: #FFFFFF;
+    background: var(--home-paper);
   }
 
   .finderCard {

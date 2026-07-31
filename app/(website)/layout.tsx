@@ -13,14 +13,14 @@ import cleanShellStyles from "@/components/website/clean/CleanShell.module.css";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
-// REBRAND 2026-05-31, SUNDAF charcoal/teal defaults (was forest green).
+// SUNDAF public identity: petrol teal, midnight navy, and warm ivory.
 const COLOR_DEFAULTS: Record<string, string> = {
-  color_hero: "#222831",
-  color_heading: "#222831",
-  color_tour_title: "#222831",
-  color_blog_title: "#222831",
-  color_accent: "#00ADB5",
-  color_eyebrow: "#00ADB5",
+  color_hero: "#132B3A",
+  color_heading: "#132B3A",
+  color_tour_title: "#132B3A",
+  color_blog_title: "#132B3A",
+  color_accent: "#075D63",
+  color_eyebrow: "#075D63",
 };
 
 const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
@@ -58,7 +58,7 @@ const getSiteConfig = unstable_cache(
       return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "atlas", font: "plus-jakarta", whatsapp: "", company: {} as Record<string, string> };
     }
   },
-  ["site-config-v4"],
+  ["site-config-v5"],
   { revalidate: 3600, tags: ["site-colors"] }
 );
 
@@ -73,30 +73,37 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // navigasi, dan kartu terasa konsisten. Pengaturan font CMS tetap disimpan
   // untuk kompatibilitas data, tetapi tidak lagi mengganti tipografi publik.
   const fontFamily = 'var(--font-jost), "Helvetica Neue", Arial, sans-serif';
-  const accent = colors["color_accent"] ?? "#00ADB5";
+  // Atlas is the canonical public brand. Lock its palette here so an older
+  // saved CMS preset (for example forest green or electric blue) cannot leak
+  // back into the live website. Other preview themes remain configurable.
+  const publicColors = theme === "atlas" ? { ...colors, ...COLOR_DEFAULTS } : colors;
+  const accent = publicColors["color_accent"] ?? "#075D63";
   const cssVars =
-    Object.entries(colors)
+    Object.entries(publicColors)
       .map(([k, v]) => `--${k.replace("color_", "site-")}: ${v};`)
       .join(" ") +
     ` --site-accent: ${accent};` +
     // Aksen aman-kontras untuk dipakai sebagai teks (light = aksen apa adanya)
     ` --site-accent-ink: ${accent};` +
+    ` --site-aurora: #20B8B5;` +
+    ` --site-warm-accent: #E58A68;` +
     ` --site-font-family: ${fontFamily};` +
-    // Dasar seluruh halaman publik selalu putih murni; aksen tetap dipakai
-    // untuk kontrol dan konten, bukan sebagai warna kanvas halaman.
-    ` --site-bg: #FFFFFF;` +
-    ` --site-bg-soft: #FFFFFF;`;
+    ` --background: #FAF8F3;` +
+    ` --foreground: #132B3A;` +
+    ` --site-bg: #FAF8F3;` +
+    ` --site-bg-soft: #F3EFE7;` +
+    ` --site-surface: #FFFFFF;`;
 
   const styleBlock = (
     <style>{`
       :root { ${cssVars} }
       .dark {
-        --site-accent: #00ADB5;
+        --site-accent: #20B8B5;
         --site-hero: #ffffff;
         --site-heading: #f9fafb;
         --site-tour-title: #f3f4f6;
         --site-blog-title: #f3f4f6;
-        --site-eyebrow: #7EEBF0;
+        --site-eyebrow: #8DE5DF;
         --site-bg: color-mix(in srgb, var(--site-accent) 10%, #0b2024);
         --site-bg-soft: color-mix(in srgb, var(--site-accent) 14%, #102a2e);
         --site-accent-ink: #8EF4F2;

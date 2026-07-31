@@ -151,7 +151,7 @@ export default async function HomePage() {
               href="/tours"
               prefetch={false}
               className="tours-cta group inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-semibold tracking-wide"
-              style={{ color: "var(--site-accent,#2d6a4f)" }}
+              style={{ color: "var(--site-accent,#075d63)" }}
             >
               <span>Lihat semua jadwal &amp; dokumentasi</span>
               <ArrowRight size={16} aria-hidden="true" className="tours-cta-arrow" />

@@ -1,14 +1,14 @@
 .page {
-  --catalog-ink: #172029;
+  --catalog-ink: #132b3a;
   --catalog-navy: #202934;
   --catalog-muted: #606b72;
   --catalog-line: #e1e7e6;
-  --catalog-soft: #FFFFFF;
-  --catalog-primary: #0c4d56;
+  --catalog-soft: #faf8f3;
+  --catalog-primary: #075d63;
   min-width: 0;
   padding-top: 68px;
   overflow-x: clip;
-  background: #fff;
+  background: var(--catalog-soft);
   color: var(--catalog-ink);
   font-weight: 300;
   letter-spacing: 0.012em;
@@ -485,12 +485,12 @@
 }
 
 .sheetLayer {
-  --catalog-ink: #172029;
+  --catalog-ink: #132b3a;
   --catalog-navy: #202934;
   --catalog-muted: #606b72;
   --catalog-line: #e1e7e6;
   --catalog-soft: #FFFFFF;
-  --catalog-primary: #0c4d56;
+  --catalog-primary: #075d63;
   position: fixed;
   inset: 0;
   z-index: 300;

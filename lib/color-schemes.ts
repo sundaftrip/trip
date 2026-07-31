@@ -17,12 +17,12 @@ export const COLOR_SCHEMES: ColorScheme[] = [
   {
     id: "sundaf",
     name: "SUNDAF",
-    desc: "Wajah baru SUNDAF — charcoal & teal",
-    swatch: ["#222831", "#393E46", "#00ADB5", "#EEEEEE"],
+    desc: "Petrol teal, midnight navy, dan warm ivory",
+    swatch: ["#132B3A", "#075D63", "#20B8B5", "#FAF8F3"],
     colors: {
-      color_hero: "#222831", color_heading: "#222831",
-      color_tour_title: "#222831", color_blog_title: "#222831",
-      color_accent: "#00ADB5", color_eyebrow: "#00ADB5",
+      color_hero: "#132B3A", color_heading: "#132B3A",
+      color_tour_title: "#132B3A", color_blog_title: "#132B3A",
+      color_accent: "#075D63", color_eyebrow: "#075D63",
     },
   },
   {

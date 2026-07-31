@@ -7,8 +7,8 @@ export default function WebsiteLoading() {
         minHeight: "100svh",
         boxSizing: "border-box",
         padding: "116px 20px 72px",
-        background: "#fff",
-        color: "#172029",
+        background: "#faf8f3",
+        color: "#132b3a",
       }}
     >
       <div style={{ width: "min(100%, 760px)", margin: "0 auto" }}>
@@ -16,7 +16,7 @@ export default function WebsiteLoading() {
           role="status"
           style={{
             margin: "0 0 18px",
-            color: "#0c4d56",
+            color: "#075d63",
             fontSize: 12,
             fontWeight: 800,
             letterSpacing: ".14em",

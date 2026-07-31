@@ -150,7 +150,7 @@ export default async function SearchPage({
         {/* ── Header + Form ── */}
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-2">
-            <SearchIcon size={20} style={{ color: "var(--site-accent-ink,#2d6a4f)" }} />
+            <SearchIcon size={20} style={{ color: "var(--site-accent-ink,#075d63)" }} />
             <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
               Pencarian
             </span>
@@ -183,7 +183,7 @@ export default async function SearchPage({
             <button
               type="submit"
               className="px-5 py-3 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+              style={{ background: "var(--site-accent-ink,#075d63)" }}
             >
               Cari
             </button>
@@ -225,7 +225,7 @@ export default async function SearchPage({
                     <span className="text-gray-500 dark:text-gray-400">
                       {t.tripDate ? formatDate(t.tripDate) : "Tanggal menyusul"}
                     </span>
-                    <span className="font-extrabold" style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>
+                    <span className="font-extrabold" style={{ color: "var(--site-accent-ink,#075d63)" }}>
                       {formatCurrency(t.promoPrice ?? t.price)}
                     </span>
                   </div>
@@ -346,7 +346,7 @@ function Section({
   return (
     <section className="mb-10">
       <div className="flex items-center gap-2 mb-4">
-        <span style={{ color: "var(--site-accent-ink,#2d6a4f)" }}>{icon}</span>
+        <span style={{ color: "var(--site-accent-ink,#075d63)" }}>{icon}</span>
         <h2 className="text-lg font-bold text-gray-900 dark:text-white">{title}</h2>
         <span className="text-xs text-gray-400">({count})</span>
       </div>
@@ -394,7 +394,7 @@ function NoResults({ q }: { q: string }) {
         <Link
           href="/tours"
           className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-white"
-          style={{ background: "var(--site-accent-ink,#2d6a4f)" }}
+          style={{ background: "var(--site-accent-ink,#075d63)" }}
         >
           Semua Paket Tour <ArrowRight size={12} />
         </Link>

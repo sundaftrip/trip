@@ -1,16 +1,16 @@
 .page {
-  --destination-ink: #172029;
+  --destination-ink: #132b3a;
   --destination-copy: #536169;
   --destination-muted: #6f7b81;
-  --destination-primary: #0c4d56;
-  --destination-primary-strong: #073b43;
+  --destination-primary: #075d63;
+  --destination-primary-strong: #05484d;
   --destination-line: #dfe7e6;
   --destination-mist: #f2f6f5;
-  --destination-sand: #f6f1e8;
+  --destination-sand: #f3efe7;
   min-height: 100vh;
   padding-top: 68px;
   overflow: clip;
-  background: #fff;
+  background: #faf8f3;
   color: var(--destination-ink);
   font-family:
     var(--site-font-family),
@@ -109,7 +109,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 9px;
-  border: 1px solid rgb(12 77 86 / 13%);
+  border: 1px solid rgb(7 93 99 / 13%);
   border-radius: 28px;
   background: rgb(255 255 255 / 74%);
   box-shadow: 0 24px 60px rgb(9 54 60 / 12%);
