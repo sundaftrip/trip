@@ -3,7 +3,8 @@ import type { Prisma } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { checkPermission } from "@/lib/permissions";
+import { checkPermissions, hasPersistedUser } from "@/lib/permissions";
+import { getPublicationCreatePolicy } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
@@ -56,15 +57,20 @@ function validate(data: Record<string, unknown>): string | null {
 }
 
 export async function GET() {
-  const pages = await prisma.geoPage.findMany({ orderBy: [{ order: "asc" }, { updatedAt: "desc" }] });
-  return NextResponse.json(pages);
+  const session = await auth();
+  const canReadDrafts = await hasPersistedUser(session);
+  const pages = await prisma.geoPage.findMany({
+    where: canReadDrafts ? undefined : { published: true },
+    orderBy: [{ order: "asc" }, { updatedAt: "desc" }],
+  });
+  const response = NextResponse.json(pages);
+  if (canReadDrafts) response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!await checkPermission(session, "geo_create"))
-    return NextResponse.json({ error: "Tidak memiliki izin untuk membuat halaman GEO" }, { status: 403 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch {
@@ -72,6 +78,17 @@ export async function POST(req: NextRequest) {
   }
 
   const data = pickGeoInput(body);
+  if (data.published !== undefined && typeof data.published !== "boolean")
+    return NextResponse.json({ error: "Status publish harus bernilai benar/salah." }, { status: 422 });
+  const publicationPolicy = getPublicationCreatePolicy(
+    data.published,
+    "geo_create",
+    "geo_publish",
+  );
+  data.published = publicationPolicy.published;
+  if (!await checkPermissions(session, publicationPolicy.requiredPermissions))
+    return NextResponse.json({ error: "Tidak memiliki izin untuk membuat atau mempublish halaman GEO" }, { status: 403 });
+
   const error = validate(data);
   if (error) return NextResponse.json({ error }, { status: 422 });
 

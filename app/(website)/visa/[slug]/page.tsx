@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight, ShieldCheck } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { toWaNumber } from "@/lib/utils";
 import { findBySlug } from "@/lib/visa-slug";
@@ -237,13 +238,13 @@ export default async function VisaDetailPage({ params }: PageProps) {
       {faqSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
         />
       )}
       {serviceSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(serviceSchema) }}
         />
       )}
       {/* ─── HERO ─── */}
@@ -674,7 +675,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
               {[
                 "Konsultasi via WhatsApp, pilih jenis layanan sesuai kebutuhan",
                 "Kirim dokumen scan via WhatsApp atau email",
-                "Untuk visa yang butuh paspor fisik (mis. Eropa & Amerika): antar paspor ke kantor kami, atau cukup kirim via Gojek, tim kami yang terima",
+                "Untuk visa yang membutuhkan paspor fisik (mis. Eropa & Amerika), penyerahan dan pengembalian dokumen diatur lebih dulu bersama tim melalui kurir tepercaya",
                 "Tim kami review dokumen & ajukan ke konsulat/sistem online",
                 processTime
                   ? `Pantau hasil permohonan dengan estimasi proses ${processTime}`

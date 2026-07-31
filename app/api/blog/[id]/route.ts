@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkPermission } from "@/lib/permissions";
+import { checkPermission, checkPermissions, hasPersistedUser } from "@/lib/permissions";
+import { requiredPermissionsForMutation } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { pickInput, BLOG_INPUT_FIELDS } from "@/lib/api-input";
@@ -10,14 +11,23 @@ import type { Prisma } from "@prisma/client";
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const post = await prisma.blog.findFirst({ where: { OR: [{ id }, { slug: id }] } });
+  const session = await auth();
+  const canReadDrafts = await hasPersistedUser(session);
+  const post = await prisma.blog.findFirst({
+    where: {
+      OR: [{ id }, { slug: id }],
+      ...(!canReadDrafts ? { published: true } : {}),
+    },
+  });
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(post);
+  const response = NextResponse.json(post);
+  if (canReadDrafts) response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
   let body: Record<string, unknown>;
@@ -25,13 +35,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  const isPublishOnly = "published" in body && Object.keys(body).length === 1;
-  const permKey = isPublishOnly ? "blog_publish" : "blog_edit";
-  if (!await checkPermission(session, permKey))
-    return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
-
   // Whitelist field — hanya kolom Blog yang sah yang diteruskan ke Prisma
   const data = pickInput(body, BLOG_INPUT_FIELDS);
+  const isPublishOnly = "published" in data && Object.keys(data).length === 1;
+  const requiredPermissions = requiredPermissionsForMutation(
+    data,
+    "blog_edit",
+    { published: "blog_publish" },
+  );
+  if (!await checkPermissions(session, requiredPermissions))
+    return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
+
+  if (data.published !== undefined && typeof data.published !== "boolean")
+    return NextResponse.json({ error: "Status publish harus bernilai benar/salah." }, { status: 422 });
 
   try {
     const post = await prisma.blog.update({
@@ -55,7 +71,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!await checkPermission(session, "blog_delete"))
     return NextResponse.json({ error: "Tidak memiliki izin untuk menghapus post" }, { status: 403 });
 

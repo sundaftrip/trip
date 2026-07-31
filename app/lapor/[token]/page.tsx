@@ -34,8 +34,8 @@ export default async function LaporPage({
             <h1>{expired ? "Link sudah kedaluwarsa" : "Link tidak valid"}</h1>
             <p>
               {expired
-                ? "Masa berlaku link pelaporan ini sudah habis (14 hari setelah trip berangkat). Hubungi kantor Sundaf Trip untuk link baru."
-                : "Link pelaporan ini tidak ditemukan atau sudah dicabut kantor. Hubungi kantor Sundaf Trip untuk mendapatkan link terbaru."}
+                ? "Masa berlaku link pelaporan ini sudah habis (14 hari setelah trip berangkat). Hubungi tim Sundaf Trip untuk link baru."
+                : "Link pelaporan ini tidak ditemukan atau sudah dicabut. Hubungi tim Sundaf Trip untuk mendapatkan link terbaru."}
             </p>
           </div>
         </div>

@@ -16,6 +16,7 @@ import {
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { getProofPhotos } from "@/lib/b2bGallery";
 import { lora } from "@/lib/fonts";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 
 const PAGE_URL = "https://sundaftrip.com/partnership-relation";
@@ -128,7 +129,7 @@ export default function SupplierRelationsPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(webPageSchema) }}
       />
 
       <section className="relative overflow-hidden border-b border-gray-100 dark:border-gray-800">

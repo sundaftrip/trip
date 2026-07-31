@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkPermission } from "@/lib/permissions";
+import { checkPermissions, hasPersistedUser } from "@/lib/permissions";
+import { getPublicationCreatePolicy } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { pickInput, BLOG_INPUT_FIELDS } from "@/lib/api-input";
@@ -12,18 +13,21 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const published = searchParams.get("published");
 
+  const session = await auth();
+  const canReadDrafts = await hasPersistedUser(session);
+
   const where: Record<string, unknown> = {};
-  if (published === "true") where.published = true;
+  if (!canReadDrafts || published === "true") where.published = true;
 
   const posts = await prisma.blog.findMany({ where, orderBy: { date: "desc" } });
-  return NextResponse.json(posts);
+  const response = NextResponse.json(posts);
+  if (canReadDrafts) response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!await checkPermission(session, "blog_create"))
-    return NextResponse.json({ error: "Tidak memiliki izin untuk membuat post" }, { status: 403 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch {
@@ -32,6 +36,17 @@ export async function POST(req: NextRequest) {
 
   // Whitelist field — hanya kolom Blog yang sah yang diteruskan ke Prisma
   const data = pickInput(body, BLOG_INPUT_FIELDS);
+
+  if (data.published !== undefined && typeof data.published !== "boolean")
+    return NextResponse.json({ error: "Status publish harus bernilai benar/salah." }, { status: 422 });
+  const publicationPolicy = getPublicationCreatePolicy(
+    data.published,
+    "blog_create",
+    "blog_publish",
+  );
+  data.published = publicationPolicy.published;
+  if (!await checkPermissions(session, publicationPolicy.requiredPermissions))
+    return NextResponse.json({ error: "Tidak memiliki izin untuk membuat atau mempublish post" }, { status: 403 });
 
   if (typeof data.title !== "string" || !data.title.trim())
     return NextResponse.json({ error: "Judul post wajib diisi." }, { status: 422 });

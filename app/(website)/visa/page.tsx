@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { buildWhatsAppHref } from "@/lib/utils";
 import VisaLanding from "./VisaLanding";
@@ -98,7 +99,7 @@ export default async function VisaPage() {
       {faqSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
         />
       )}
       <VisaLanding

@@ -1,3 +1,5 @@
+import { serializeJsonLd } from "@/lib/safe-json-ld";
+
 const SITE_URL = "https://sundaftrip.com";
 
 export type Crumb = { name: string; url: string };
@@ -33,7 +35,7 @@ export default function BreadcrumbSchema({ crumbs }: { crumbs: Crumb[] }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(json) }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(json) }}
     />
   );
 }

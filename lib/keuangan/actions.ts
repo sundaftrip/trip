@@ -5,14 +5,17 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
 import { isTokenActive } from "@/lib/keuangan/calc";
 
 export type ActionState = { ok: boolean; error?: string };
 
 async function guard() {
   const session = await auth();
-  if (!session?.user) throw new Error("Sesi tidak valid — silakan login ulang.");
-  return session.user;
+  if (!session?.user?.id) throw new Error("Sesi tidak valid — silakan login ulang.");
+  if (!await checkPermission(session, "finance_edit"))
+    throw new Error("Tidak memiliki izin untuk mengubah data keuangan.");
+  return { ...session.user, id: session.user.id };
 }
 
 function revalidate() {
@@ -391,7 +394,11 @@ export async function resetKeuangan(
 ): Promise<ActionState> {
   return run(async () => {
     const user = await guard();
-    if (user.role !== "SUPERADMIN")
+    const currentUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
+    if (currentUser?.role !== "SUPERADMIN")
       throw new Error("Hanya Super Admin yang boleh mereset data keuangan.");
 
     // Password reset disimpan ter-hash (bcrypt) di CompanyInfo —

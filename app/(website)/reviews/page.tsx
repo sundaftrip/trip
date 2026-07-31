@@ -5,6 +5,7 @@ import Link from "next/link";
 import { unstable_cache } from "next/cache";
 import { ArrowRight, MessageSquareQuote, ShieldCheck, Star } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
@@ -124,7 +125,7 @@ export default async function ReviewsPage() {
           { name: "Review", url: "/reviews" },
         ]}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewsSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(reviewsSchema) }} />
 
       <section className={supportStyles.hero} aria-labelledby="reviews-page-title">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>

@@ -1,8 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ReceiptForm from "@/components/admin/ReceiptForm";
+import { auth } from "@/lib/auth";
+import { checkPermissions } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 export default async function EditReceiptPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user) redirect("/admin/login");
+  if (!await checkPermissions(session, ["receipt_view", "receipt_edit"])) redirect("/admin");
+
   const { id } = await params;
   const [receipt, tours] = await Promise.all([
     prisma.receipt.findUnique({ where: { id } }),

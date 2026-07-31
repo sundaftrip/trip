@@ -154,6 +154,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/jasa-pembuatan-visa",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
         source: "/jasa-urus-visa-murah",
         destination: "/jasa-urus-visa-terpercaya",
         permanent: true,

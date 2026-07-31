@@ -5,6 +5,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import FaqExplorer from "./FaqExplorer";
 import { FAQ_BOTTOM_CTA, FAQ_SECTIONS, faqAnswerText } from "@/lib/faq-content";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { toWaNumber } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -177,7 +178,7 @@ export default async function FaqPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
 
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">

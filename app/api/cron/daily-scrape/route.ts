@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import crypto from "crypto";
 import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
@@ -9,6 +10,19 @@ import { chooseSourceGroundedImageKeywords, injectImagesIntoBody } from "@/lib/s
 
 const DESTINATIONS = ["russia", "kazakhstan", "kyrgyzstan", "uzbekistan", "tajikistan"];
 const SUBREDDITS = ["travel", "solotravel", "backpacking"];
+
+function isAuthorizedCronRequest(authHeader: string | null, configuredSecret: string | undefined) {
+  if (!configuredSecret || !configuredSecret.trim()) return false;
+  if (!authHeader?.startsWith("Bearer ")) return false;
+
+  const providedToken = authHeader.slice("Bearer ".length);
+  if (!providedToken) return false;
+
+  // Hash first so timingSafeEqual always receives equal-length buffers.
+  const providedDigest = crypto.createHash("sha256").update(providedToken, "utf8").digest();
+  const expectedDigest = crypto.createHash("sha256").update(configuredSecret, "utf8").digest();
+  return crypto.timingSafeEqual(providedDigest, expectedDigest);
+}
 
 const REDDIT_HEADERS = {
   "User-Agent": "Mozilla/5.0 (compatible; sundaftrip-bot/1.0; +https://sundaftrip.com)",
@@ -147,7 +161,7 @@ async function rewriteArticle(title: string, content: string, destinationFacts: 
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!isAuthorizedCronRequest(authHeader, process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!process.env.ANTHROPIC_API_KEY) {

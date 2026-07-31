@@ -1,8 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ReceiptPrint from "@/components/admin/ReceiptPrint";
+import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 export default async function PrintReceiptPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user) redirect("/admin/login");
+  if (!await checkPermission(session, "receipt_view")) redirect("/admin");
+
   const { id } = await params;
   const [receipt, companyRows] = await Promise.all([
     prisma.receipt.findUnique({ where: { id } }),

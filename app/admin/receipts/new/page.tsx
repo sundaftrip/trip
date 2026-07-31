@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import ReceiptForm from "@/components/admin/ReceiptForm";
+import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 export default async function NewReceiptPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/admin/login");
+  if (!await checkPermission(session, "receipt_create")) redirect("/admin");
+
   const tours = await prisma.tour.findMany({
     where: { status: "ACTIVE" },
     select: { id: true, title: true, price: true, promoPrice: true, tripDate: true },

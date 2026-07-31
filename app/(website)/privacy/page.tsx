@@ -13,6 +13,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
@@ -134,7 +135,7 @@ export default async function PrivacyPage() {
           { name: "Kebijakan Privasi", url: "/privacy" },
         ]}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(privacySchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(privacySchema) }} />
 
       <section className={supportStyles.hero} aria-labelledby="privacy-page-title">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>

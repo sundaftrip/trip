@@ -4,6 +4,8 @@ import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
 import { FaqList, type FaqItem } from "./FaqList";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { prisma } from "@/lib/prisma";
+import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 export const revalidate = 300; // segarkan tiap 5 menit setelah edit di CMS
 
@@ -40,13 +42,13 @@ type Row = { question: string; answer: string; service: string | null };
 function toItem(row: Row): FaqItem {
   return {
     q: row.question,
-    a: <div className="space-y-3" dangerouslySetInnerHTML={{ __html: row.answer }} />,
+    a: <div className="space-y-3" dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(row.answer) }} />,
     layanan: row.service === null ? undefined : row.service === "__NONE__" ? null : row.service,
   };
 }
 
 function htmlToText(html: string): string {
-  return html
+  return sanitizeRichHtml(html)
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&lsquo;/g, "'").replace(/&nbsp;/g, " ")
@@ -94,7 +96,7 @@ export default async function VisaFaqPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(VISA_FAQ_SCHEMA) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(VISA_FAQ_SCHEMA) }}
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
         <Link

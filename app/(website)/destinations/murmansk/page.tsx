@@ -7,6 +7,7 @@ import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, C
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 const ROUTE_PATH = "/destinations/murmansk";
 const DEFAULT_META_DESCRIPTION =
@@ -143,7 +144,7 @@ export default async function MurmanskPage() {
       {/* ── SEO: structured data (Article + Breadcrumb + FAQ) ── */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd({
           "@context": "https://schema.org",
           "@graph": [
             {

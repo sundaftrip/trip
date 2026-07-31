@@ -157,16 +157,10 @@ export default function VisaLanding({
                 <Search size={17} aria-hidden="true" />
                 Cari negara tujuan
               </a>
-              <a
-                className={styles.secondaryAction}
-                href={consultationHref}
-                target={consultationTarget}
-                rel={consultationRel}
-              >
+              <Link className={styles.secondaryAction} href="/jasa-urus-visa-terpercaya">
                 <MessageCircle size={17} aria-hidden="true" />
-                Konsultasi visa
-                {whatsappHref && <span className="sr-only">, membuka tab baru</span>}
-              </a>
+                Jasa pembuatan visa
+              </Link>
             </div>
           </div>
 

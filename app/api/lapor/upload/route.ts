@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/cloudinary";
 import { isTokenActive } from "@/lib/keuangan/calc";
+import {
+  ImageUploadValidationError,
+  MAX_FIELD_EXPENSE_IMAGE_BYTES,
+  MAX_IMAGE_UPLOAD_REQUEST_BYTES,
+  parseStrictImageDataUrl,
+  readBoundedRequestBody,
+} from "@/lib/image-upload";
 
 // Upload foto bukti pengeluaran lapangan. PUBLIK tapi divalidasi token
 // trip — bukan sesi login. Hanya bisa upload kalau token valid.
@@ -14,15 +21,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Upload foto belum dikonfigurasi." }, { status: 500 });
   }
 
-  let body: { token?: string; image?: string };
+  let body: Record<string, unknown>;
   try {
-    body = await req.json();
-  } catch {
+    const requestBody = await readBoundedRequestBody(req, MAX_IMAGE_UPLOAD_REQUEST_BYTES);
+    const decoded = new TextDecoder("utf-8", { fatal: true }).decode(requestBody);
+    const parsed: unknown = JSON.parse(decoded);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      throw new ImageUploadValidationError("Permintaan tidak valid.");
+    }
+    body = parsed as Record<string, unknown>;
+  } catch (error) {
+    if (error instanceof ImageUploadValidationError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     return NextResponse.json({ error: "Permintaan tidak valid." }, { status: 400 });
   }
 
-  const token = String(body.token ?? "");
-  const image = String(body.image ?? "");
+  const token = typeof body.token === "string" ? body.token : "";
+  const image = typeof body.image === "string" ? body.image : "";
   if (!token || !image) {
     return NextResponse.json({ error: "Data tidak lengkap." }, { status: 400 });
   }
@@ -39,9 +55,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const url = await uploadImage(image, "sundaftrip/field-expense");
+    const validated = parseStrictImageDataUrl(image, MAX_FIELD_EXPENSE_IMAGE_BYTES);
+    const url = await uploadImage(validated.dataUrl, "sundaftrip/field-expense");
     return NextResponse.json({ url });
   } catch (err) {
+    if (err instanceof ImageUploadValidationError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     console.error("Field expense upload error:", err);
     return NextResponse.json({ error: "Gagal mengunggah foto." }, { status: 500 });
   }

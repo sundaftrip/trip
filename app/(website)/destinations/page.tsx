@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight, Compass, MapPin } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import styles from "@/components/website/clean/DestinationIndex.module.css";
 
@@ -123,7 +124,7 @@ export default function DestinationsPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(destinationSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(destinationSchema) }}
       />
 
       <section className={styles.hero} aria-labelledby="destinations-title">
