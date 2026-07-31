@@ -146,7 +146,7 @@ export default function LaporForm({
         </div>
         <div className="lapor-title">Lapor Pengeluaran Trip</div>
         <div className="lapor-trip">
-          {tripTitle} — {tripInfo}
+          {tripTitle}, {tripInfo}
         </div>
         <div className="lapor-head-note">
           Foto setiap struk/nota, lalu catat di sini. Laporan masuk antrian
@@ -212,7 +212,7 @@ export default function LaporForm({
           </label>
           <select className="lapor-select" name="category" defaultValue="" required>
             <option value="" disabled>
-              — Pilih kategori —
+              Pilih kategori
             </option>
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>

@@ -8,7 +8,7 @@ import LaporForm from "@/components/lapor/LaporForm";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Lapor Pengeluaran Trip — Sundaf Trip",
+  title: "Lapor Pengeluaran Trip | Sundaf Trip",
   robots: { index: false, follow: false },
 };
 

@@ -23,7 +23,7 @@ const VISA_LABEL: Record<string, string> = {
   conditional: "Bersyarat",
 };
 
-const PROFILE = `# Sundaf Trip — Profil Lengkap
+const PROFILE = `# Sundaf Trip: Profil Lengkap
 
 > Sundaf Trip adalah brand perjalanan asal Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan berspesialisasi pada perjalanan ke **Rusia, Asia Tengah, perburuan aurora borealis (cahaya utara), dan open trip Vietnam Utara** untuk traveler Indonesia. Layanan mencakup paket open trip & private trip, pengurusan visa, hingga perancangan itinerary lengkap. Layanan dilakukan secara online untuk pelanggan dari seluruh Indonesia dalam bahasa Indonesia dan Inggris; Sundaf Trip bukan kantor walk-in. Situs resmi: https://sundaftrip.com
 > Versi ringkas dokumen ini: https://sundaftrip.com/llms.txt
@@ -176,7 +176,7 @@ export async function GET() {
         const label = VISA_LABEL[c.visa] ?? c.visa;
         const cost = c.servicePrice?.trim() || c.officialFee?.trim() || c.cost?.trim();
         const facts = [label, `maks. tinggal ${c.stay}`, cost ? `biaya ${cost}` : null]
-          .filter(Boolean).join(" — ");
+          .filter(Boolean).join(", ");
         return `- [${c.name}](https://sundaftrip.com/visa/${visaSlug(c.en)}): ${facts}`;
       });
       sections.push(

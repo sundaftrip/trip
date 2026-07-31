@@ -14,9 +14,11 @@ const TourGalleryLightbox = dynamic(() => import("./TourGalleryLightbox"), {
 export default function TourHeroGallery({
   images,
   title,
+  variant = "default",
 }: {
   images: string[];
   title: string;
+  variant?: "default" | "immersive";
 }) {
   const usableImages = [...new Set(images.filter(Boolean))].slice(0, 8);
   const [active, setActive] = useState(0);
@@ -58,6 +60,7 @@ export default function TourHeroGallery({
   return (
     <div
       className={styles.gallery}
+      data-variant={variant}
       role="region"
       aria-roledescription="carousel"
       aria-label={`Galeri ${title}`}

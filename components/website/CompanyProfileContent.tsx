@@ -110,8 +110,8 @@ const DESTINATIONS: { label: Bi; detail: Bi }[] = [
 
 const WHY: Bi[] = [
   {
-    en: "A proven track record — 50+ groups and 1500+ travelers operated on the ground over several years.",
-    ru: "Подтверждённый опыт — 50+ групп и 1500+ путешественников за несколько лет.",
+    en: "A proven track record. More than 50 groups and 1500 travelers operated on the ground over several years.",
+    ru: "Подтверждённый опыт: более 50 групп и 1500 путешественников за несколько лет.",
   },
   {
     en: "Small group specialists, 10–20 pax, for focused and well-coordinated operations.",

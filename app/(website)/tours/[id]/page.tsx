@@ -154,7 +154,7 @@ function ItineraryInsightGrid({
   return (
     <>
       <div
-        className={`mt-3 flex min-w-0 max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-1.5 border-t pt-3 sm:hidden ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+        className={`mt-3 flex min-w-0 max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-1.5 border-t pt-3 sm:hidden ${isOutlined ? "border-solid" : "border-gray-100 dark:border-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}
       >
         {insights.map((insight) => (
@@ -175,7 +175,7 @@ function ItineraryInsightGrid({
       </div>
 
       <div
-        className={`mt-4 hidden grid-cols-1 gap-x-5 gap-y-3 border-t pt-4 sm:grid sm:grid-cols-2 ${isOutlined ? "border-dashed" : "border-gray-100 dark:border-gray-800"}`}
+        className={`mt-4 hidden grid-cols-1 gap-x-5 gap-y-3 border-t pt-4 sm:grid sm:grid-cols-2 ${isOutlined ? "border-solid" : "border-gray-100 dark:border-gray-800"}`}
         style={isOutlined ? { borderColor: tBdr } : undefined}
       >
         {insights.map((insight) => (
@@ -1021,7 +1021,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </h2>
                 <div className={isOutlined ? `${pfx}-card p-4` : "bg-gray-50 dark:bg-gray-800 rounded-xl p-4"}>
                   {Object.entries(hotelInfo).map(([k, v]) => (
-                    <div key={k} className="flex justify-between py-2 border-b border-dashed border-gray-200 dark:border-gray-700 last:border-0 text-sm">
+                    <div key={k} className="flex justify-between py-2 border-b border-solid border-gray-200 dark:border-gray-700 last:border-0 text-sm">
                       <span className="text-gray-500 capitalize">{k}</span>
                       <span className={`font-${isOutlined ? "black" : "medium"} text-gray-900 dark:text-white`}
                         style={isOutlined ? { color: tText } : undefined}>{v}</span>
@@ -1106,7 +1106,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                       <span className="shrink-0">+{formatCurrency(a.price)}</span>
                     </div>
                   ))}
-                  <div className={`flex justify-between mt-2 pt-2 font-black text-gray-900 dark:text-white ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-200 dark:border-gray-700"}`}
+                  <div className={`flex justify-between mt-2 pt-2 font-black text-gray-900 dark:text-white ${isOutlined ? "border-t-2 border-solid" : "border-t border-gray-200 dark:border-gray-700"}`}
                     style={isOutlined ? { borderColor: tBdr } : undefined}>
                     <span>Total wajib</span>
                     <span>{formatCurrency(startingTotal)}</span>
@@ -1150,7 +1150,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
 
               {/* Tour details grid */}
-              <div className={`space-y-2 text-sm pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
+              <div className={`space-y-2 text-sm pt-4 ${isOutlined ? "border-t-2 border-solid" : "border-t border-gray-100 dark:border-gray-800"}`}
                 style={isOutlined ? { borderColor: tBdr } : undefined}>
                 {departureLabel && (
                   <div className="flex justify-between">
@@ -1181,7 +1181,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
               {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total wajib di atas) */}
               {optionalAddOns.length > 0 && (
-                <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-dashed" : "border-t border-gray-100 dark:border-gray-800"}`}
+                <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-solid" : "border-t border-gray-100 dark:border-gray-800"}`}
                   style={isOutlined ? { borderColor: tBdr } : undefined}>
                   <p className={`text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 ${isOutlined ? "font-black" : "font-semibold text-gray-500"}`}
                     style={isOutlined ? { color: tSub } : undefined}>
@@ -1205,11 +1205,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         {resolveVisaHref(item.name) && (
                           <>
                             <p className="mt-0.5 text-[11px] leading-snug text-emerald-600 dark:text-emerald-400 break-words">
-                              Harga bundling paket — lebih hemat dari urus visa terpisah.
+                              Harga bundling paket lebih hemat dari urus visa terpisah.
                             </p>
                             <Link href={resolveVisaHref(item.name)!}
                               className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
-                              Bisa dibantu — cek info visa
+                              Bisa dibantu, cek info visa
                               <ArrowRight size={11} />
                             </Link>
                           </>
@@ -1297,7 +1297,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     Total: {paymentPlan.totalLabel} / orang
                   </p>
                 </div>
-                <div className={`overflow-hidden border ${isOutlined ? "border-dashed" : "rounded-xl border-gray-200 dark:border-gray-800"}`} style={isOutlined ? { borderColor: tBdr } : undefined}>
+                <div className={`overflow-hidden border ${isOutlined ? "border-solid" : "rounded-xl border-gray-200 dark:border-gray-800"}`} style={isOutlined ? { borderColor: tBdr } : undefined}>
                   <table className="w-full table-fixed text-left text-[11px] sm:text-sm">
                     <thead className={isOutlined ? "" : "bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-200"}>
                       <tr>

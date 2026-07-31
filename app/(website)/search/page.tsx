@@ -382,7 +382,7 @@ function EmptyState() {
 
 function NoResults({ q }: { q: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 p-8 text-center">
+    <div className="rounded-2xl border border-solid border-gray-300 dark:border-gray-700 p-8 text-center">
       <SearchIcon size={32} className="mx-auto mb-3 text-gray-400" />
       <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
         Tidak ada hasil untuk &quot;{q}&quot;

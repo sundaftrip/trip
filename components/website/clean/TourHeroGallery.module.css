@@ -6,6 +6,26 @@
   background: #e7ecec;
 }
 
+.gallery[data-variant="immersive"] {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.gallery[data-variant="immersive"] .track,
+.gallery[data-variant="immersive"] .slide,
+.gallery[data-variant="immersive"] .slide > button {
+  height: 100%;
+}
+
+.gallery[data-variant="immersive"] .slide > button {
+  aspect-ratio: auto;
+}
+
+.gallery[data-variant="immersive"] .controls {
+  top: 16px;
+  bottom: auto;
+}
+
 .track {
   display: flex;
   overflow-x: auto;
@@ -195,13 +215,27 @@
     margin-left: -20px;
   }
 
+  .gallery[data-variant="immersive"] {
+    width: 100%;
+    margin-left: 0;
+  }
+
   .slide > button {
     aspect-ratio: 4 / 5;
+  }
+
+  .gallery[data-variant="immersive"] .slide > button {
+    aspect-ratio: auto;
   }
 
   .controls {
     right: 12px;
     bottom: 12px;
+  }
+
+  .gallery[data-variant="immersive"] .controls {
+    top: 12px;
+    bottom: auto;
   }
 
   .lightboxBackdrop {

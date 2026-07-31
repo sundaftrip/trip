@@ -171,7 +171,7 @@ export default function B2BLandTour({ withCofounder = false }: { withCofounder?:
         {/* ── Real departures ── */}
         <h2 className={`mt-12 mb-1 ${head}`}>Keberangkatan Nyata</h2>
         <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-          Sebagian grup yang telah kami operasikan di Rusia, Asia Tengah, dan sekitarnya — peserta nyata, bukan foto stok.
+          Sebagian grup yang telah kami operasikan di Rusia, Asia Tengah, dan sekitarnya, dengan peserta nyata, bukan foto stok.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
           {proofPhotos.map((src, i) => (

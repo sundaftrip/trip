@@ -645,7 +645,7 @@
 .emptyState {
   margin-top: 16px;
   padding: 34px 20px;
-  border: 1px dashed var(--visa-line);
+  border: 1px solid var(--visa-line);
   border-radius: 16px;
   color: var(--visa-ink-soft);
   background: var(--visa-surface);
