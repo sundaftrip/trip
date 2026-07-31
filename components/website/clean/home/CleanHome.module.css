@@ -1305,6 +1305,29 @@
   }
 }
 
+@media (min-width: 921px) {
+  .hero {
+    height: clamp(640px, 76svh, 780px);
+    min-height: 640px;
+  }
+
+  .heroImage {
+    object-position: 50% 64%;
+  }
+
+  .heroShell {
+    align-items: center;
+  }
+
+  .heroCopy {
+    padding: 40px 0 96px;
+  }
+
+  .heroCopy h1 {
+    max-width: 15ch;
+  }
+}
+
 @media (max-width: 1040px) {
   .shell {
     width: min(100% - 48px, 900px);
