@@ -1,5 +1,9 @@
 import type { ComponentType, SVGProps } from "react";
-import { Clock, Mail, MessageCircle, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import {
+  APPOINTMENT_ONLY_LABEL,
+  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+} from "@/lib/business-identity";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 
 interface Props {
@@ -62,17 +66,20 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const email   = company["company_email"] || "";
   const phone   = company["company_phone"] || "";
   const igUser  = instagramUser(company["company_instagram"]);
+  const officeAddress = company["company_address"]?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
 
   const contacts = [
     phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
+    { Icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress, href: null },
   ].filter(Boolean) as ContactItem[];
   const atlasContacts = [
     phone   && { Icon: Phone,         label: "Telepon",     value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: Phone,         label: "WhatsApp",    value: "WhatsApp", href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",       value: email,   href: `mailto:${email}` },
     { Icon: Clock, label: "Jam layanan", value: OPENING_HOURS, href: null },
+    { Icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress, href: null },
     igUser  && { Icon: InstagramIcon, label: "Instagram",   value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
   ].filter(Boolean) as ContactItem[];
 

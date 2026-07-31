@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { APPOINTMENT_ONLY_OFFICE_ADDRESS } from "@/lib/business-identity";
 import { formatCurrency } from "@/lib/utils";
 
 /* /llms.txt — ringkasan situs untuk asisten AI (GEO/AEO).
@@ -23,7 +24,8 @@ const STATIC = `# Sundaf Trip
 - Operator tangan pertama (DMC lokal) untuk Rusia; melayani juga kerja sama B2B dengan travel agent
 - Wilayah layanan: Indonesia (pelanggan), destinasi Rusia & Asia Tengah
 - Bahasa: Indonesia, Inggris
-- Model layanan: online untuk pelanggan di Indonesia; bukan kantor walk-in
+- Model layanan: online untuk pelanggan di Indonesia; kunjungan kantor hanya dengan janji temu (appointment only), bukan walk-in
+- Alamat kantor (appointment only): ${APPOINTMENT_ONLY_OFFICE_ADDRESS}
 
 ## Halaman Utama
 - [Beranda](https://sundaftrip.com): Profil dan etalase utama Sundaf Trip.

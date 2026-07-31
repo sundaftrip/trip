@@ -103,17 +103,26 @@ test("robots rules keep public content crawlable without exempting named bots fr
   }
 });
 
-test("public footer and contact components do not render the configured office address", () => {
+test("public contact surfaces show an appointment-only office without adding it to organization schema", () => {
+  const identity = readSource("lib/business-identity.ts");
+  assert.match(identity, /Epiwalk Office Suite Lt\. 5 Unit A501/);
+  assert.match(identity, /APPOINTMENT_ONLY_LABEL = "Appointment only"/);
+
   for (const relativePath of [
-    "components/website/Footer.tsx",
     "components/website/ContactSection.tsx",
     "components/website/clean/CleanFooter.tsx",
+    "app/(website)/legalitas-dan-keamanan/page.tsx",
+    "app/(website)/media-kit/page.tsx",
   ]) {
     const source = readSource(relativePath);
-    assert.doesNotMatch(
+    assert.match(
       source,
-      /company_address/,
-      `${relativePath} must not expose company_address on the public site`,
+      /APPOINTMENT_ONLY_(?:LABEL|OFFICE_ADDRESS)/,
+      `${relativePath} must expose the appointment-only office information`,
     );
   }
+
+  const organizationSchema = readSource("components/website/OrganizationSchema.tsx");
+  assert.doesNotMatch(organizationSchema, /APPOINTMENT_ONLY_OFFICE_ADDRESS/);
+  assert.doesNotMatch(organizationSchema, /company_address/);
 });
