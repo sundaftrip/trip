@@ -27,12 +27,14 @@ const CORPORATE_IDENTITY_DESCRIPTION =
   "Sundaf Trip Group is the corporate-facing identity of Sundaf Trip, a travel and tour operations brand operated by CV Sundaf Holiday Group, an Indonesian limited partnership.";
 
 export const metadata: Metadata = {
-  title: "Sundaf Trip Group - Travel Operations & Supplier Relations",
+  title: {
+    absolute: "Sundaf Trip Group: Supplier Relations",
+  },
   description:
     "Sundaf Trip Group supplier relations page for suppliers, DMCs, hotels, transportation providers, guides, restaurants, and operational partners.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "Sundaf Trip Group - Travel Operations & Supplier Relations",
+    title: "Sundaf Trip Group: Supplier Relations",
     description:
       "Official corporate-facing supplier relations page for Sundaf Trip travel operations and partner coordination.",
     url: PAGE_URL,
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sundaf Trip Group - Travel Operations & Supplier Relations",
+    title: "Sundaf Trip Group: Supplier Relations",
     description:
       "Official corporate-facing supplier relations page for Sundaf Trip travel operations and partner coordination.",
     images: defaultTwitterImages(),

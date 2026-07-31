@@ -7,6 +7,7 @@ import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, C
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import { toAbsoluteMetadataTitle, toMetaDescription, toPageMetadataTitle } from "@/lib/metadata-text";
 
 // CATATAN FOTO: Aurora (foto) + Whale Watching & Kuburan Kapal (video) sudah sesuai.
 // MASIH perlu foto Teriberka yang BENAR untuk: Pantai Telur Naga (kini foto king
@@ -27,8 +28,9 @@ const QUICK_FACT_ICONS = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const geoContent = await getGeoPageContent(ROUTE_PATH);
-  const title = geoContent.metaTitle || "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip";
-  const description = geoContent.metaDescription || DEFAULT_META_DESCRIPTION;
+  const rawTitle = geoContent.metaTitle || "Wisata Teriberka & Laut Barents";
+  const title = toPageMetadataTitle(rawTitle);
+  const description = toMetaDescription(geoContent.metaDescription || DEFAULT_META_DESCRIPTION);
 
   return {
     title,
@@ -39,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "paket tour teriberka indonesia", "wisata rusia dari jakarta", "sundaftrip rusia",
     ],
     openGraph: {
-      title,
+      title: toAbsoluteMetadataTitle(rawTitle),
       description,
       type: "article",
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Teriberka di tepi Laut Barents, Rusia bersama Sundaf Trip" }],

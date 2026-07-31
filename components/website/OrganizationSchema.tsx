@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
+import { normalizeGoogleBusinessUrl } from "@/lib/google-business";
 
 const SITE_URL = "https://sundaftrip.com";
 const DEFAULT_NAME = "Sundaf Trip";
@@ -116,6 +117,7 @@ export default async function OrganizationSchema() {
   const phoneE164 = toE164(c["company_phone"]);
   const waE164 = toE164(c["company_whatsapp"]);
   const igUrl = toInstagramUrl(c["company_instagram"]);
+  const googleBusinessUrl = normalizeGoogleBusinessUrl(c["company_google_business"]);
   const description =
     c["company_description"] ||
     "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
@@ -130,15 +132,18 @@ export default async function OrganizationSchema() {
     toSocialUrl(c["company_facebook"], "https://www.facebook.com/"),
     toSocialUrl(c["company_twitter"], "https://x.com/"),
     toSocialUrl(c["company_linkedin"], "https://www.linkedin.com/company/"),
-    toSocialUrl(c["company_google_business"], "https://"),
+    googleBusinessUrl,
   ];
   // Dedup & buang yang kosong.
   const sameAs: string[] = [...new Set(sameAsCandidates.filter((u): u is string => !!u))];
 
-  // ── Organization + TravelAgency JSON-LD ──
+  // ── Organization JSON-LD ──
+  // Sundaf Trip beroperasi sebagai service-area business tanpa kantor walk-in.
+  // Organization memberi sinyal entitas, layanan, dan profil resmi tanpa
+  // menerbitkan lokasi fisik atau memaksakan persyaratan LocalBusiness.
   const organization: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": ["Organization", "TravelAgency"],
+    "@type": "Organization",
     "@id": `${SITE_URL}#organization`,
     name,
     alternateName: ["Sundaf Trip", "Sundaftrip", "SundaFTrip", "Trip Sundaf", "sundaftrip", "sundaftrip.com", "Sundaf", "Sundaf Holiday Group", DEFAULT_LEGAL],
@@ -186,44 +191,15 @@ export default async function OrganizationSchema() {
     ],
   };
 
-  // Service Area Business: tidak ada kantor walk-in, jadi schema TIDAK
-  // menyebut alamat jalan (streetAddress/postalCode). Cukup kota + negara +
-  // areaServed, supaya jujur & sesuai pedoman Google untuk SAB.
-  organization.address = {
-    "@type": "PostalAddress",
-    addressLocality: "Jakarta",
-    addressRegion: "DKI Jakarta",
-    addressCountry: "ID",
-  };
+  // Service-area business: gunakan areaServed saja. Jangan menerbitkan alamat
+  // atau koordinat karena lokasi ini bukan kantor walk-in untuk pelanggan.
 
-  // LocalBusiness butuh `telephone` di top-level Organization (bukan cuma
-  // di contactPoint array). Pakai nomor WhatsApp Sundaf sebagai primary.
+  // Pakai nomor WhatsApp Sundaf sebagai nomor utama jika tersedia.
   if (waE164) {
     organization.telephone = waE164;
   } else if (phoneE164) {
     organization.telephone = phoneE164;
   }
-
-  // Koordinat approximate Rasuna Epicentrum, Kuningan, bantu Knowledge
-  // Panel render map embed.
-  organization.geo = {
-    "@type": "GeoCoordinates",
-    latitude: -6.2236,
-    longitude: 106.8333,
-  };
-
-  // Price range, bantu Google paham positioning Sundaf Trip
-  organization.priceRange = "Rp 10.000.000 - Rp 50.000.000";
-
-  // Jam operasional kantor (Senin-Jumat 09:00-17:00 WIB)
-  organization.openingHoursSpecification = [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "17:00",
-    },
-  ];
 
   const contactPoints: Record<string, unknown>[] = [];
   if (phoneE164) {

@@ -22,12 +22,12 @@ const SITE_URL = "https://sundaftrip.com";
 const CANONICAL = `${SITE_URL}/visa/asuransi-visa-protection`;
 
 export const metadata: Metadata = {
-  title: "Asuransi Visa Protection untuk Risiko Visa Ditolak",
+  title: "Asuransi Visa Protection saat Visa Ditolak",
   description:
-    "Screening dan pembelian Asuransi Visa Protection untuk membantu mengurangi risiko biaya saat visa ditolak. Premi terpisah, klaim dibantu, dan manfaat mengikuti polis.",
+    "Screening Asuransi Visa Protection untuk membantu mengurangi risiko biaya saat visa ditolak. Premi terpisah, klaim dibantu, dan manfaat mengikuti polis.",
   alternates: { canonical: CANONICAL },
   openGraph: {
-    title: "Asuransi Visa Protection untuk Risiko Visa Ditolak · Sundaf Trip",
+    title: "Asuransi Visa Protection saat Visa Ditolak · Sundaf Trip",
     description:
       "Pelajari manfaat, batasan, syarat klaim, pembelian polis, dan bantuan klaim Visa Protection sebelum pengajuan visa.",
     url: CANONICAL,
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Asuransi Visa Protection untuk Risiko Visa Ditolak · Sundaf Trip",
+    title: "Asuransi Visa Protection saat Visa Ditolak · Sundaf Trip",
     description:
       "Pelajari manfaat, batasan, syarat klaim, pembelian polis, dan bantuan klaim Visa Protection sebelum pengajuan visa.",
     images: defaultTwitterImages(),

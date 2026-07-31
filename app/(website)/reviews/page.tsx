@@ -13,7 +13,7 @@ const SITE_URL = "https://sundaftrip.com";
 export const metadata: Metadata = {
   title: "Review Sundaf Trip dari Traveler Indonesia",
   description:
-    "Review publik Sundaf Trip dari traveler Indonesia untuk perjalanan Rusia, aurora, Asia Tengah, dan layanan visa. Data diambil dari testimonial yang dipublikasikan.",
+    "Review Sundaf Trip dari traveler Indonesia tentang perjalanan Rusia, aurora, Asia Tengah, dan layanan visa berdasarkan testimonial yang dipublikasikan.",
   alternates: { canonical: `${SITE_URL}/reviews` },
 };
 

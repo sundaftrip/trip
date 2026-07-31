@@ -9,10 +9,10 @@ import { toWaNumber } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "FAQ Sundaf Trip | Tour, Visa, Pembayaran, Refund & Keberangkatan",
+    absolute: "FAQ Sundaf Trip: Tour, Visa & Keberangkatan",
   },
   description:
-    "Temukan jawaban seputar paket tour Sundaf Trip, bantuan visa, pembayaran, deposit, refund, keamanan perjalanan, tour leader, private trip, dan keberangkatan grup.",
+    "Jawaban seputar tour Sundaf Trip, bantuan visa, pembayaran, deposit, refund, keamanan perjalanan, tour leader, private trip, dan keberangkatan grup.",
   alternates: { canonical: "https://sundaftrip.com/faq" },
 };
 

@@ -1,6 +1,7 @@
 import type { ComponentType, SVGProps } from "react";
-import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { BadgeCheck, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
+import { normalizeGoogleBusinessUrl } from "@/lib/google-business";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -63,12 +64,14 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const phone   = company["company_phone"] || "";
   const address = company["company_address"] || "";
   const igUser  = instagramUser(company["company_instagram"]);
+  const googleBusinessUrl = normalizeGoogleBusinessUrl(company["company_google_business"]);
 
   const contacts = [
     address && { Icon: MapPin,        label: "Alamat",    value: address, href: null },
     phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
+    googleBusinessUrl && { Icon: BadgeCheck, label: "Profil Google Business", value: "Lihat profil bisnis", href: googleBusinessUrl },
   ].filter(Boolean) as ContactItem[];
   const atlasContacts = [
     address && { Icon: MapPin,        label: "Alamat",      value: address, href: null },
@@ -77,6 +80,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     email   && { Icon: Mail,          label: "Email",       value: email,   href: `mailto:${email}` },
     { Icon: Clock, label: "Jam layanan", value: OPENING_HOURS, href: null },
     igUser  && { Icon: InstagramIcon, label: "Instagram",   value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
+    googleBusinessUrl && { Icon: BadgeCheck, label: "Profil Google Business", value: "Lihat profil bisnis", href: googleBusinessUrl },
   ].filter(Boolean) as ContactItem[];
 
   const headLabel = "Hubungi Kami";
