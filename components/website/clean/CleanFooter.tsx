@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   APPOINTMENT_ONLY_LABEL,
-  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+  appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import styles from "./CleanShell.module.css";
@@ -16,7 +16,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
   const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : "";
   const nib = company.company_nib?.trim();
   const legalName = company.company_legal_name?.trim();
-  const officeAddress = company.company_address?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
+  const officeAddress = appointmentOnlyOfficeAddress(company.company_address);
   const igUser = (company.company_instagram || "")
     .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
     .replace(/^@/, "")

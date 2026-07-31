@@ -2,7 +2,7 @@ import type { ComponentType, SVGProps } from "react";
 import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import {
   APPOINTMENT_ONLY_LABEL,
-  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+  appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 
@@ -66,7 +66,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const email   = company["company_email"] || "";
   const phone   = company["company_phone"] || "";
   const igUser  = instagramUser(company["company_instagram"]);
-  const officeAddress = company["company_address"]?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
+  const officeAddress = appointmentOnlyOfficeAddress(company["company_address"]);
 
   const contacts = [
     phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },

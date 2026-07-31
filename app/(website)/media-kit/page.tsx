@@ -22,7 +22,7 @@ import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import {
   APPOINTMENT_ONLY_LABEL,
-  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+  appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -111,7 +111,7 @@ export default async function MediaKitPage() {
   const email = company.company_email || "info@sundaftrip.com";
   const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const igUrl = instagramUrl(company.company_instagram);
-  const officeAddress = company.company_address?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
+  const officeAddress = appointmentOnlyOfficeAddress(company.company_address);
   const description =
     company.company_description ||
     "Sundaf Trip adalah biro perjalanan Indonesia yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan bantuan visa untuk traveler Indonesia.";
