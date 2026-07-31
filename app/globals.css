@@ -2187,31 +2187,32 @@ main[data-theme] :where(.ring-blue-600\/30, .ring-blue-400\/30, .dark\:ring-blue
   .daun-btn, .daun-btn-ghost, .daun-card, .daun-card:hover, .daun-pill { transition: none; transform: none; }
 }
 
-/* ──────────────────────────────────────────────────────────────
-   SHARP-EDGES OVERRIDE
-   Menghapus semua border-radius supaya tampilan tidak terbaca
-   sebagai "AI-generated rounded-card aesthetic". Berlaku untuk
-   SEMUA tema (classic, jojo, teri, kawaii, console, fumayo, dst).
-
-   Pengecualian (tetap bulat) via class .keep-radius / .is-round.
-   ────────────────────────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  border-radius: 0 !important;
+/* ── Sistem visual hangat untuk website publik ────────────────── */
+.public-site-shell {
+  --warm-radius-control: 14px;
+  --warm-radius-card: 20px;
+  --warm-radius-panel: 24px;
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Opt-in: kembalikan sudut bulat untuk elemen tertentu */
-.keep-radius,
-.keep-radius * {
-  border-radius: revert !important;
+.public-site-shell :where(h1, h2, h3, h4, h5, h6) {
+  font-weight: 750;
+  letter-spacing: -0.025em;
 }
+
+.public-site-shell :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea, button) {
+  border-radius: var(--warm-radius-control);
+}
+
 .is-round {
   border-radius: 9999px !important;
 }
 
-/* Daun theme — re-allow rounded radii setelah sharp-edges override.
-   Tema "daun" memang didesain rounded (IsDB-inspired). */
+/* Daun theme mempertahankan bentuk pill khasnya. */
 [data-theme="daun"] .daun-btn,
 [data-theme="daun"] .daun-btn-ghost,
 [data-theme="daun"] .daun-pill,

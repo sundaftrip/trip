@@ -135,7 +135,7 @@
   max-width: 10ch;
   margin: 0;
   font-size: clamp(52px, 6.2vw, 76px);
-  font-weight: 300;
+  font-weight: 780;
   line-height: 1.01;
   letter-spacing: 0.018em;
   text-wrap: balance;
@@ -143,7 +143,7 @@
 
 .heroCopy > p:last-child {
   max-width: 580px;
-  margin: 24px 0 0;
+  margin: 18px 0 0;
   color: rgba(255, 255, 255, 0.9);
   font-size: 17px;
   font-weight: 300;
@@ -293,7 +293,7 @@
 }
 
 .section {
-  padding-block: clamp(76px, 8vw, 104px);
+  padding-block: clamp(60px, 6.5vw, 84px);
 }
 
 .sectionHeading {
@@ -306,15 +306,15 @@
   margin: 0;
   color: var(--home-ink);
   font-size: clamp(31px, 4.1vw, 49px);
-  font-weight: 300;
-  line-height: 1.1;
-  letter-spacing: 0.018em;
+  font-weight: 760;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
 .sectionHeading > p:last-child {
   max-width: 620px;
-  margin: 18px 0 0;
+  margin: 12px 0 0;
   color: var(--home-ink-soft);
   font-size: 16px;
   font-weight: 300;
@@ -564,6 +564,7 @@
   display: block;
   color: var(--home-ink);
   font-size: 20px;
+  font-weight: 800;
   line-height: 1.25;
 }
 
@@ -681,12 +682,12 @@
 }
 
 .benefitSection .sectionHeading h2 {
-  font-weight: 300;
-  letter-spacing: 0.018em;
+  font-weight: 760;
+  letter-spacing: -0.025em;
 }
 
 .benefitGrid {
-  margin-top: 42px;
+  margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   border-top: 1px solid #d6dedc;
@@ -730,7 +731,7 @@
   margin: 22px 0 0;
   color: var(--home-ink);
   font-size: 17px;
-  font-weight: 400;
+  font-weight: 720;
   letter-spacing: 0.01em;
   line-height: 1.32;
 }
@@ -761,7 +762,7 @@
 .reviewRail {
   grid-auto-columns: min(500px, 52vw);
   gap: 16px;
-  margin-top: 38px;
+  margin-top: 28px;
   padding: 2px 2px 18px;
   scroll-padding-inline: 2px;
 }
@@ -981,7 +982,7 @@
 }
 
 .privateSection {
-  padding-block: clamp(46px, 6vw, 72px);
+  padding-block: clamp(40px, 5vw, 60px);
   background: #FFFFFF;
 }
 
@@ -1175,7 +1176,7 @@
 }
 
 .finalSection {
-  padding-block: clamp(78px, 9vw, 116px);
+  padding-block: clamp(60px, 7vw, 88px);
   background: var(--home-white);
 }
 
@@ -1192,7 +1193,7 @@
 
 .finalLayout > div:first-child > p:last-child {
   max-width: 600px;
-  margin: 20px 0 0;
+  margin: 14px 0 0;
   color: var(--home-ink-soft);
   font-size: 15px;
   line-height: 1.65;
