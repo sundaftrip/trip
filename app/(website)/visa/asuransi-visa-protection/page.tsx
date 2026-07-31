@@ -13,6 +13,7 @@ import {
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { toWaNumber } from "@/lib/utils";
 
@@ -209,11 +210,11 @@ export default async function VisaProtectionPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(serviceSchema) }}
       />
 
       <section className="border-b border-gray-200 bg-white px-4 py-12 dark:border-gray-800 dark:bg-gray-950 sm:px-6 lg:px-8">

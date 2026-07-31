@@ -7,6 +7,7 @@ import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, C
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 // CATATAN FOTO: Aurora (foto) + Whale Watching & Kuburan Kapal (video) sudah sesuai.
 // MASIH perlu foto Teriberka yang BENAR untuk: Pantai Telur Naga (kini foto king
@@ -150,7 +151,7 @@ export default async function TeriberkaPage() {
       {/* ── SEO: structured data (Article + Breadcrumb + FAQ) ── */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd({
           "@context": "https://schema.org",
           "@graph": [
             {

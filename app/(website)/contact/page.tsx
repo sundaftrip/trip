@@ -10,7 +10,7 @@ import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const CONTACT_TITLE = "Kontak Sundaf Trip";
 const CONTACT_DESC =
-  "Hubungi WhatsApp, email, atau kantor Sundaf Trip untuk konsultasi tour Rusia, Asia Tengah, aurora, custom trip, dan layanan visa.";
+  "Hubungi Sundaf Trip lewat WhatsApp atau email untuk konsultasi tour Rusia, Asia Tengah, aurora, custom trip, dan layanan visa.";
 
 export const metadata: Metadata = {
   title: "Kontak",

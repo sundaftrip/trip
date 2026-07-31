@@ -10,7 +10,6 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
   const email = company.company_email?.trim();
   const phone = company.company_phone?.trim();
   const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : "";
-  const address = company.company_address?.trim();
   const nib = company.company_nib?.trim();
   const legalName = company.company_legal_name?.trim();
   const igUser = (company.company_instagram || "")
@@ -37,10 +36,9 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <p className={styles.footerDescription}>
               Perjalanan Rusia, Asia Tengah, aurora, dan private trip yang dirancang untuk traveler Indonesia.
             </p>
-            {(legalName || address) && (
+            {legalName && (
               <div className={styles.companyBlock}>
-                {legalName && <strong>{legalName}</strong>}
-                {address && <address>{address}</address>}
+                <strong>{legalName}</strong>
               </div>
             )}
           </section>

@@ -8,11 +8,75 @@ import { PLAN_FEATURES } from "@/lib/plan";
 import { getPlan } from "@/lib/license";
 import { apiError } from "@/lib/api-error";
 
+const PUBLIC_SETTING_KEYS = [
+  "about_destinations",
+  "about_story",
+  "about_tagline",
+  "about_values",
+  "color_accent",
+  "color_blog_title",
+  "color_eyebrow",
+  "color_heading",
+  "color_hero",
+  "color_scheme",
+  "color_tour_title",
+  "company_description",
+  "company_email",
+  "company_facebook",
+  "company_google_business",
+  "company_instagram",
+  "company_legal_name",
+  "company_linkedin",
+  "company_logo",
+  "company_name",
+  "company_nib",
+  "company_phone",
+  "company_tiktok",
+  "company_twitter",
+  "company_website",
+  "company_whatsapp",
+  "company_youtube",
+  "favicon_logo",
+  "site_font",
+  "site_theme",
+] as const;
+
+const PUBLIC_SETTING_KEY_SET = new Set<string>(PUBLIC_SETTING_KEYS);
+const SECRET_SETTING_KEY_PATTERN = /(?:^|[_-])(?:api[_-]?key|credential|hash|password|passwd|private[_-]?key|reset|salt|secret|token)(?:[_-]|$)/i;
+
+function isSecretSettingKey(key: string) {
+  return SECRET_SETTING_KEY_PATTERN.test(key);
+}
+
+async function hasPersistedAuthenticatedSession() {
+  try {
+    const userId = (await auth())?.user?.id;
+    if (!userId) return false;
+
+    return Boolean(await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    }));
+  } catch {
+    return false;
+  }
+}
+
 export async function GET() {
-  const items = await prisma.companyInfo.findMany();
+  const authenticated = await hasPersistedAuthenticatedSession();
+  const items = await prisma.companyInfo.findMany({
+    ...(authenticated ? {} : { where: { key: { in: [...PUBLIC_SETTING_KEYS] } } }),
+    select: { key: true, value: true },
+  });
   const result: Record<string, string> = {};
-  items.forEach((i) => { result[i.key] = i.value; });
-  return NextResponse.json(result);
+  items.forEach((item) => {
+    if (isSecretSettingKey(item.key)) return;
+    if (!authenticated && !PUBLIC_SETTING_KEY_SET.has(item.key)) return;
+    result[item.key] = item.value;
+  });
+  const response = NextResponse.json(result);
+  if (authenticated) response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
 
 export async function PUT(req: NextRequest) {

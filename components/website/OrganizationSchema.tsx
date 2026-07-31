@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { unstable_cache } from "next/cache";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -19,7 +20,6 @@ const getOrgData = unstable_cache(
             in: [
               "company_name",
               "company_logo",
-              "company_address",
               "company_email",
               "company_phone",
               "company_whatsapp",
@@ -135,10 +135,11 @@ export default async function OrganizationSchema() {
   // Dedup & buang yang kosong.
   const sameAs: string[] = [...new Set(sameAsCandidates.filter((u): u is string => !!u))];
 
-  // ── Organization + TravelAgency JSON-LD ──
+  // Gunakan Organization, bukan subtype LocalBusiness, karena Sundaf melayani
+  // secara online dan tidak memiliki lokasi walk-in yang ditampilkan.
   const organization: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": ["Organization", "TravelAgency"],
+    "@type": "Organization",
     "@id": `${SITE_URL}#organization`,
     name,
     alternateName: ["Sundaf Trip", "Sundaftrip", "SundaFTrip", "Trip Sundaf", "sundaftrip", "sundaftrip.com", "Sundaf", "Sundaf Holiday Group", DEFAULT_LEGAL],
@@ -181,49 +182,19 @@ export default async function OrganizationSchema() {
       "Jasa urus visa Amerika",
       "Jasa urus visa Canada",
       "Jasa urus visa terpercaya",
+      "Jasa pembuatan visa untuk WNI",
       "Review dokumen visa",
       "Itinerary perjalanan internasional",
     ],
   };
 
-  // Service Area Business: tidak ada kantor walk-in, jadi schema TIDAK
-  // menyebut alamat jalan (streetAddress/postalCode). Cukup kota + negara +
-  // areaServed, supaya jujur & sesuai pedoman Google untuk SAB.
-  organization.address = {
-    "@type": "PostalAddress",
-    addressLocality: "Jakarta",
-    addressRegion: "DKI Jakarta",
-    addressCountry: "ID",
-  };
-
-  // LocalBusiness butuh `telephone` di top-level Organization (bukan cuma
-  // di contactPoint array). Pakai nomor WhatsApp Sundaf sebagai primary.
+  // Sundaf melayani pelanggan secara online dan bukan kantor walk-in.
+  // Karena itu schema hanya menyatakan area layanan, tanpa alamat atau geo.
   if (waE164) {
     organization.telephone = waE164;
   } else if (phoneE164) {
     organization.telephone = phoneE164;
   }
-
-  // Koordinat approximate Rasuna Epicentrum, Kuningan, bantu Knowledge
-  // Panel render map embed.
-  organization.geo = {
-    "@type": "GeoCoordinates",
-    latitude: -6.2236,
-    longitude: 106.8333,
-  };
-
-  // Price range, bantu Google paham positioning Sundaf Trip
-  organization.priceRange = "Rp 10.000.000 - Rp 50.000.000";
-
-  // Jam operasional kantor (Senin-Jumat 09:00-17:00 WIB)
-  organization.openingHoursSpecification = [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "17:00",
-    },
-  ];
 
   const contactPoints: Record<string, unknown>[] = [];
   if (phoneE164) {
@@ -292,11 +263,11 @@ export default async function OrganizationSchema() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(organization) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(website) }}
       />
     </>
   );

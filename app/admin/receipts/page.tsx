@@ -3,8 +3,20 @@ import Link from "next/link";
 import { Plus, Pencil, Printer } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
+import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 export default async function ReceiptsPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/admin/login");
+  if (!await checkPermission(session, "receipt_view")) redirect("/admin");
+
+  const [canCreate, canEdit, canDelete] = await Promise.all([
+    checkPermission(session, "receipt_create"),
+    checkPermission(session, "receipt_edit"),
+    checkPermission(session, "receipt_delete"),
+  ]);
   const receipts = await prisma.receipt.findMany({
     orderBy: { createdAt: "desc" },
     include: { createdBy: { select: { name: true } } },
@@ -17,9 +29,11 @@ export default async function ReceiptsPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Receipt</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">{receipts.length} receipt</p>
         </div>
-        <Link href="/admin/receipts/new" className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">
-          <Plus size={16} /> Buat Receipt
-        </Link>
+        {canCreate && (
+          <Link href="/admin/receipts/new" className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">
+            <Plus size={16} /> Buat Receipt
+          </Link>
+        )}
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -39,7 +53,7 @@ export default async function ReceiptsPage() {
             <tbody>
               {receipts.length === 0 && (
                 <tr><td colSpan={7} className="text-center py-12 text-gray-400">
-                  Belum ada receipt. <Link href="/admin/receipts/new" className="text-blue-600">Buat sekarang</Link>
+                  Belum ada receipt.{canCreate && <> <Link href="/admin/receipts/new" className="text-blue-600">Buat sekarang</Link></>}
                 </td></tr>
               )}
               {receipts.map((r) => (
@@ -59,13 +73,15 @@ export default async function ReceiptsPage() {
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{formatDate(r.createdAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={`/admin/receipts/${r.id}`} className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition" title="Edit">
-                        <Pencil size={15} />
-                      </Link>
+                      {canEdit && (
+                        <Link href={`/admin/receipts/${r.id}`} className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition" title="Edit">
+                          <Pencil size={15} />
+                        </Link>
+                      )}
                       <Link href={`/admin/receipts/${r.id}/print`} className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition" title="Print PDF">
                         <Printer size={15} />
                       </Link>
-                      <DeleteButton id={r.id} endpoint="/api/receipts" label="receipt" />
+                      {canDelete && <DeleteButton id={r.id} endpoint="/api/receipts" label="receipt" />}
                     </div>
                   </td>
                 </tr>

@@ -3,7 +3,8 @@ import type { Prisma } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { checkPermission } from "@/lib/permissions";
+import { checkPermission, checkPermissions, hasPersistedUser } from "@/lib/permissions";
+import { requiredPermissionsForMutation } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
@@ -57,14 +58,23 @@ function validate(data: Record<string, unknown>): string | null {
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const page = await prisma.geoPage.findFirst({ where: { OR: [{ id }, { routePath: id.startsWith("/") ? id : `/${id}` }] } });
+  const session = await auth();
+  const canReadDrafts = await hasPersistedUser(session);
+  const page = await prisma.geoPage.findFirst({
+    where: {
+      OR: [{ id }, { routePath: id.startsWith("/") ? id : `/${id}` }],
+      ...(!canReadDrafts ? { published: true } : {}),
+    },
+  });
   if (!page) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(page);
+  const response = NextResponse.json(page);
+  if (canReadDrafts) response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
   let body: Record<string, unknown>;
@@ -72,12 +82,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  const isPublishOnly = "published" in body && Object.keys(body).length === 1;
-  const permKey = isPublishOnly ? "geo_publish" : "geo_edit";
-  if (!await checkPermission(session, permKey))
+  const data = pickGeoInput(body);
+  const isPublishOnly = "published" in data && Object.keys(data).length === 1;
+  const requiredPermissions = requiredPermissionsForMutation(
+    data,
+    "geo_edit",
+    { published: "geo_publish" },
+  );
+  if (!await checkPermissions(session, requiredPermissions))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
-  const data = pickGeoInput(body);
+  if (data.published !== undefined && typeof data.published !== "boolean")
+    return NextResponse.json({ error: "Status publish harus bernilai benar/salah." }, { status: 422 });
+
   const error = validate(data);
   if (error) return NextResponse.json({ error }, { status: 422 });
 
@@ -105,7 +122,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!await checkPermission(session, "geo_delete"))
     return NextResponse.json({ error: "Tidak memiliki izin untuk menghapus halaman GEO" }, { status: 403 });
 

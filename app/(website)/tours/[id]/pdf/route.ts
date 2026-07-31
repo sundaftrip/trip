@@ -1,11 +1,17 @@
 /* GET /tours/[id]/pdf, generates a branded itinerary PDF on the fly
    from the Tour record and streams it back as a one-click download. */
-import { readFile } from "node:fs/promises";
+import { readFile, realpath, stat } from "node:fs/promises";
 import path from "node:path";
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { prisma } from "@/lib/prisma";
 import { isPublicTourVisible } from "@/lib/public-tours";
+import {
+  fetchPdfImageDataUrl,
+  PDF_IMAGE_MAX_BYTES,
+  pdfImageBytesToDataUrl,
+  validatePdfImageDataUrl,
+} from "@/lib/safe-image-url";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -25,6 +31,7 @@ const PDF_GALLERY_FALLBACKS = [
   "/trip-photos/cp-1.jpg",
   "/trip-photos/cp-2.jpg",
 ];
+const MAX_PDF_GALLERY_IMAGES = 7;
 
 function slugify(s: string) {
   return s.normalize("NFKD").replace(/[^\w\s-]/g, "").trim()
@@ -56,27 +63,59 @@ function mimeForFile(filePath: string) {
 }
 
 function toPdfRemoteImageSrc(src: string) {
-  if (!src.includes("res.cloudinary.com") || !src.includes("/image/upload/")) return src;
+  try {
+    const url = new URL(src);
+    if (
+      url.hostname.toLowerCase().replace(/\.$/, "") !== "res.cloudinary.com"
+      || !url.pathname.includes("/image/upload/")
+    ) {
+      return src;
+    }
 
-  return src.replace("/image/upload/", "/image/upload/w_1400,c_fill,g_auto,q_auto:good,f_jpg/");
+    url.pathname = url.pathname.replace(
+      "/image/upload/",
+      "/image/upload/w_1400,c_fill,g_auto,q_auto:good,f_jpg/",
+    );
+    return url.href;
+  } catch {
+    return src;
+  }
 }
 
 async function toPdfImageSrc(src?: string | null) {
   if (!src) return null;
-  if (/^data:image\/(?:png|jpe?g);base64,/i.test(src)) return src;
-  if (/^https?:\/\//i.test(src)) return toPdfRemoteImageSrc(src);
+  if (/^data:/i.test(src)) {
+    try {
+      return validatePdfImageDataUrl(src);
+    } catch {
+      return null;
+    }
+  }
+  if (/^https?:\/\//i.test(src)) {
+    try {
+      return await fetchPdfImageDataUrl(toPdfRemoteImageSrc(src));
+    } catch {
+      return null;
+    }
+  }
   if (!src.startsWith("/")) return null;
 
-  const publicDir = path.resolve(process.cwd(), "public");
-  const filePath = path.resolve(publicDir, src.replace(/^\/+/, ""));
-  if (!filePath.startsWith(`${publicDir}${path.sep}`)) return null;
-
-  const mime = mimeForFile(filePath);
-  if (!mime) return null;
-
   try {
+    const publicDir = await realpath(path.resolve(process.cwd(), "public"));
+    const requestedPath = path.resolve(publicDir, src.replace(/^\/+/, ""));
+    if (!requestedPath.startsWith(`${publicDir}${path.sep}`)) return null;
+
+    const filePath = await realpath(requestedPath);
+    if (!filePath.startsWith(`${publicDir}${path.sep}`)) return null;
+
+    const mime = mimeForFile(filePath);
+    if (!mime) return null;
+
+    const fileStats = await stat(filePath);
+    if (!fileStats.isFile() || fileStats.size > PDF_IMAGE_MAX_BYTES) return null;
+
     const bytes = await readFile(filePath);
-    return `data:${mime};base64,${Buffer.from(bytes).toString("base64")}`;
+    return pdfImageBytesToDataUrl(bytes, mime);
   } catch {
     return null;
   }
@@ -130,7 +169,7 @@ export async function GET(
     prisma.companyInfo.findMany({
       where: { key: { in: [
         "company_name", "company_logo", "company_whatsapp", "company_phone",
-        "company_email", "company_website", "company_address", "company_nib",
+        "company_email", "company_website", "company_nib",
         "company_instagram", "about_tagline", "about_story",
       ] } },
     }),
@@ -172,18 +211,36 @@ export async function GET(
         paymentPlanConfig: tour.paymentPlan,
       })
     : null;
-  const rawHero = tour.heroImg || fallbackHeroForTour(tour);
-  const rawGallery = uniqueImages([
+  const fallbackHero = fallbackHeroForTour(tour);
+  const rawHero = tour.heroImg || fallbackHero;
+  const storedGallery = uniqueImages([
     rawHero,
     ...tour.gallery,
-    fallbackHeroForTour(tour),
+  ]).slice(0, MAX_PDF_GALLERY_IMAGES);
+  const fallbackGallery = uniqueImages([
+    fallbackHero,
     ...PDF_GALLERY_FALLBACKS,
+  ]).filter((image) => !storedGallery.includes(image));
+  const imageCache = new Map<string, Promise<string | null>>();
+  const resolveImage = (src?: string | null) => {
+    if (!src) return Promise.resolve(null);
+    const cached = imageCache.get(src);
+    if (cached) return cached;
+    const pending = toPdfImageSrc(src);
+    imageCache.set(src, pending);
+    return pending;
+  };
+  const [resolvedHero, storedImages, logo] = await Promise.all([
+    resolveImage(rawHero),
+    Promise.all(storedGallery.map(resolveImage)),
+    resolveImage(ci["company_logo"]),
   ]);
-  const [heroImg, gallery, logo] = await Promise.all([
-    toPdfImageSrc(rawHero),
-    Promise.all(rawGallery.map((img) => toPdfImageSrc(img))),
-    toPdfImageSrc(ci["company_logo"]),
-  ]);
+  const heroImg = resolvedHero || await resolveImage(fallbackHero);
+  let gallery = uniqueImages(storedImages);
+  if (gallery.length < MAX_PDF_GALLERY_IMAGES) {
+    const fallbackImages = await Promise.all(fallbackGallery.map(resolveImage));
+    gallery = uniqueImages([...gallery, ...fallbackImages]).slice(0, MAX_PDF_GALLERY_IMAGES);
+  }
   const pdfTour = localizePdfTour({
     title: tour.title,
     country: tour.country,
@@ -226,7 +283,6 @@ export async function GET(
         logo,
         tagline: ci["about_tagline"],
         story: parseStory(ci["about_story"]),
-        address: ci["company_address"],
         phone: ci["company_phone"],
         whatsapp: ci["company_whatsapp"],
         email: ci["company_email"],

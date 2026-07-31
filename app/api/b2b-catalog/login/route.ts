@@ -52,6 +52,9 @@ export async function POST(req: NextRequest) {
 
   if (!matchedId) return loginFailed(req, wantsJson);
 
+  // Fail before mutating lastUsedAt when the signing secret is unavailable.
+  const accessToken = signCatalogAccessToken(matchedId);
+
   await prisma.b2bCatalogPassword.update({
     where: { id: matchedId },
     data: { lastUsedAt: new Date() },
@@ -63,7 +66,7 @@ export async function POST(req: NextRequest) {
 
   response.cookies.set(
     B2B_CATALOG_ACCESS_COOKIE,
-    signCatalogAccessToken(matchedId),
+    accessToken,
     catalogCookieOptions(),
   );
 

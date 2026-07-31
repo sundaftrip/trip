@@ -17,6 +17,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
@@ -41,7 +42,6 @@ const getCompany = unstable_cache(
               "company_name",
               "company_legal_name",
               "company_nib",
-              "company_address",
               "company_phone",
               "company_whatsapp",
               "company_email",
@@ -104,7 +104,6 @@ export default async function LegalitasKeamananPage() {
   const email = company.company_email || "info@sundaftrip.com";
   const phoneRaw = company.company_whatsapp || company.company_phone || "081-775-2027-59";
   const phone = publicPhone(phoneRaw);
-  const address = company.company_address || "Jakarta, DKI Jakarta, Indonesia";
   const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const waHref = whatsappUrl(phoneRaw);
   const igUrl = instagramUrl(company.company_instagram);
@@ -182,7 +181,7 @@ export default async function LegalitasKeamananPage() {
           { name: "Legalitas dan Keamanan", url: "/legalitas-dan-keamanan" },
         ]}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(legalSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(legalSchema) }} />
 
       <section className={supportStyles.hero} aria-labelledby="legal-page-title">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
@@ -217,7 +216,7 @@ export default async function LegalitasKeamananPage() {
           ))}
         </div>
         <p className="mt-4 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-          Basis layanan: {address}. Sundaf Trip melayani pelanggan dari Indonesia melalui kanal online dan komunikasi resmi.
+          Model layanan: online untuk pelanggan di Indonesia, tanpa kantor walk-in. Gunakan kanal resmi di halaman ini sebelum mengirim dokumen atau melakukan pembayaran.
         </p>
       </section>
 

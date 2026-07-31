@@ -30,6 +30,7 @@ import { getPublicTourState } from "@/lib/tour-order";
 import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -689,12 +690,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(tourJsonLd) }}
         />
         {productJsonLd && (
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+            dangerouslySetInnerHTML={{ __html: serializeJsonLd(productJsonLd) }}
           />
         )}
         <CleanTourDetail
@@ -763,12 +764,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(tourJsonLd) }}
       />
       {productJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(productJsonLd) }}
         />
       )}
       {/* Hero */}

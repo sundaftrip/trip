@@ -23,8 +23,8 @@ const HERO = {
     ru: "Зарегистрированная компания · NIB 1601260060842",
   },
   legal2: {
-    en: "Based in Jakarta, Indonesia · B2C + B2B tour operator",
-    ru: "Базируется в Джакарте, Индонезия · Туроператор B2C + B2B",
+    en: "Online service across Indonesia · B2C + B2B tour operator",
+    ru: "Онлайн-обслуживание по всей Индонезии · Туроператор B2C + B2B",
   },
 };
 
@@ -177,7 +177,7 @@ const DMC_STEPS: { n: string; title: Bi; desc: Bi }[] = [
 const SNAPSHOT: { k: Bi; v: Bi }[] = [
   { k: { en: "Legal Entity", ru: "Юридическое лицо" }, v: { en: "CV Sundaf Holiday Group", ru: "CV Sundaf Holiday Group" } },
   { k: { en: "Business License (NIB)", ru: "Лицензия (NIB)" }, v: { en: "1601260060842", ru: "1601260060842" } },
-  { k: { en: "Headquarters", ru: "Главный офис" }, v: { en: "Jakarta, Indonesia", ru: "Джакарта, Индонезия" } },
+  { k: { en: "Service Model", ru: "Формат обслуживания" }, v: { en: "Online across Indonesia · no walk-in office", ru: "Онлайн по всей Индонезии · без офиса для посещений" } },
   { k: { en: "Business Model", ru: "Модель бизнеса" }, v: { en: "B2C + B2B Tour Operator", ru: "Туроператор B2C + B2B" } },
   { k: { en: "Tour Leadership", ru: "Сопровождение" }, v: { en: "Own Indonesian-speaking tour leader", ru: "Собственный турлидер со знанием индонезийского" } },
 ];

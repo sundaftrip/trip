@@ -53,7 +53,6 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
   const logo     = c["company_logo"] || "";
   const logoSrc  = cldFit(logo || "/logo.png", 320);
   const legalBrandLine = FOOTER_LEGAL_BRAND_LINE;
-  const address  = c["company_address"] || "";
   const phone    = c["company_phone"] || "";
   const whatsapp = toWaNumber(c["company_whatsapp"]);
   const email    = c["company_email"] || "";
@@ -65,7 +64,6 @@ export default async function Footer({ theme = "classic" }: { theme?: string }) 
     .trim();
 
   const contacts = [
-    address  && { kind: "address", label: "Alamat", value: address, href: null },
     phone    && { kind: "phone", label: "Telepon", value: phone, href: `tel:${phone.replace(/\D/g,"")}` },
     whatsapp && { kind: "whatsapp", label: "WhatsApp", value: "WhatsApp", href: buildWhatsAppHref(whatsapp, DEFAULT_WHATSAPP_MESSAGE) },
     email    && { kind: "email", label: "Email", value: email, href: `mailto:${email}` },

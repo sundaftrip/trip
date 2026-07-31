@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { fetchFacebookGroupHtml, normalizeFacebookGroupUrl } from "@/lib/facebook-source";
 
 function extractTextBetween(html: string, start: string, end: string): string {
   const si = html.indexOf(start);
@@ -59,34 +60,31 @@ export async function POST(req: NextRequest) {
   }
 
   const { groupUrl } = await req.json();
-  if (!groupUrl) return NextResponse.json({ error: "groupUrl diperlukan" }, { status: 400 });
-
-  // Convert to mbasic (simpler HTML)
-  const mbasicUrl = groupUrl
-    .replace("https://www.facebook.com", "https://mbasic.facebook.com")
-    .replace("https://facebook.com", "https://mbasic.facebook.com");
+  let mbasicUrl: URL;
+  try {
+    mbasicUrl = normalizeFacebookGroupUrl(groupUrl);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "URL grup Facebook tidak valid" },
+      { status: 400 },
+    );
+  }
 
   let html: string;
   try {
-    const res = await fetch(mbasicUrl, {
-      headers: {
-        Cookie: fbCookie,
-        "User-Agent":
-          "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36",
-        Accept: "text/html,application/xhtml+xml",
-        "Accept-Language": "id-ID,id;q=0.9,en;q=0.8",
-      },
-      redirect: "follow",
-    });
+    const res = await fetchFacebookGroupHtml(mbasicUrl, fbCookie);
 
-    if (res.url.includes("login") || res.status === 302) {
+    if (res.url.pathname.includes("login") || res.status === 302) {
       return NextResponse.json(
         { error: "Cookie Facebook tidak valid atau sudah kadaluarsa. Perbarui FACEBOOK_COOKIE di .env" },
         { status: 401 }
       );
     }
 
-    html = await res.text();
+    if (!res.ok) {
+      return NextResponse.json({ error: "Facebook menolak permintaan scraper" }, { status: 502 });
+    }
+    html = res.text;
   } catch {
     return NextResponse.json({ error: "Gagal mengakses Facebook" }, { status: 502 });
   }
@@ -112,7 +110,7 @@ export async function POST(req: NextRequest) {
     const postPath = urlMatch ? urlMatch[1] : "";
     const sourceUrl = postPath
       ? `https://www.facebook.com${postPath.replace(/&amp;/g, "&")}`
-      : groupUrl + "#" + Date.now() + Math.random();
+      : `${mbasicUrl.href}#${Date.now()}${Math.random()}`;
 
     // Extract first line as title
     const firstLine = body.split("\n")[0].slice(0, 120);

@@ -16,6 +16,8 @@ import BlogArticleToc, {
   type BlogArticleHeading,
 } from "../BlogArticleToc";
 import blogStyles from "../BlogSupporting.module.css";
+import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
@@ -293,7 +295,7 @@ export default async function BlogDetailPage({
   const enhancedArticle = post.body
     ? enhanceArticleHtml(post.body, post.title)
     : { html: "", structuredData: [], headings: [] };
-  const articleBody = enhancedArticle.html;
+  const articleBody = sanitizeRichHtml(enhancedArticle.html);
   const showArticleToc = enhancedArticle.headings.length >= 3;
 
   const divider = (
@@ -318,13 +320,13 @@ export default async function BlogDetailPage({
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
       />
       {enhancedArticle.structuredData.map((schema, index) => (
         <script
           key={`cms-jsonld-${index}`}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
         />
       ))}
 

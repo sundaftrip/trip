@@ -18,6 +18,7 @@ import {
   AtSign,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -39,7 +40,6 @@ const getData = unstable_cache(
               "company_name",
               "company_legal_name",
               "company_nib",
-              "company_address",
               "company_phone",
               "company_whatsapp",
               "company_email",
@@ -104,7 +104,6 @@ export default async function MediaKitPage() {
   const phone = publicPhone(phoneRaw);
   const phoneHref = whatsappUrl(phoneRaw);
   const email = company.company_email || "info@sundaftrip.com";
-  const address = company.company_address || "Jakarta, DKI Jakarta, Indonesia";
   const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const igUrl = instagramUrl(company.company_instagram);
   const description =
@@ -116,7 +115,7 @@ export default async function MediaKitPage() {
     { icon: FileText, label: "Nama legal", value: legalName },
     { icon: CheckCircle2, label: "NIB", value: nib },
     { icon: Globe2, label: "Website resmi", value: SITE_URL, href: SITE_URL },
-    { icon: MapPin, label: "Basis layanan", value: address },
+    { icon: MapPin, label: "Model layanan", value: "Online untuk pelanggan di Indonesia; bukan kantor walk-in" },
     { icon: Mail, label: "Email", value: email, href: `mailto:${email}` },
     { icon: Phone, label: "Telepon/WhatsApp", value: phone || "081-775-2027-59", href: phoneHref },
     { icon: Clock, label: "Jam layanan", value: openingHours },
@@ -172,7 +171,7 @@ export default async function MediaKitPage() {
     isPartOf: { "@id": `${SITE_URL}#website` },
     publisher: { "@id": `${SITE_URL}#organization` },
     mainEntity: {
-      "@type": ["Organization", "TravelAgency"],
+      "@type": "Organization",
       "@id": `${SITE_URL}#organization`,
       name: brandName,
       legalName,
@@ -208,7 +207,7 @@ export default async function MediaKitPage() {
           { name: "Media Kit", url: "/media-kit" },
         ]}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(mediaSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(mediaSchema) }} />
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>

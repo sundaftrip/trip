@@ -8,6 +8,7 @@ import { logActivity } from "@/lib/activityLog";
 import { getStyle } from "@/lib/scraper-styles";
 import { assessGeneratedContent, hasUsableSource, qualityErrorMessage } from "@/lib/content-quality";
 import { chooseSourceGroundedImageKeywords, injectImagesIntoBody } from "@/lib/scraper-images";
+import { assertPublicHttpUrl, fetchPublicText } from "@/lib/safe-public-url";
 
 export const maxDuration = 120;
 
@@ -25,16 +26,16 @@ async function generateUniqueSlug(baseSlug: string): Promise<string> {
   return slug;
 }
 
-async function fetchFullArticle(url: string): Promise<string> {
+async function fetchFullArticle(url: URL): Promise<string> {
   try {
     // Wikivoyage: use API for clean text extraction
-    if (url.includes("wikivoyage.org/wiki/")) {
-      const title = decodeURIComponent(url.split("/wiki/")[1] ?? "");
+    if (url.hostname === "en.wikivoyage.org" && url.pathname.startsWith("/wiki/")) {
+      const title = decodeURIComponent(url.pathname.slice("/wiki/".length));
       if (title) {
         const apiUrl = `https://en.wikivoyage.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(title)}&format=json&origin=*`;
-        const apiRes = await fetch(apiUrl, { signal: AbortSignal.timeout(10000) });
+        const apiRes = await fetchPublicText(apiUrl, { timeoutMs: 10_000 });
         if (apiRes.ok) {
-          const json = await apiRes.json();
+          const json = JSON.parse(apiRes.text);
           const pages = json?.query?.pages ?? {};
           const page = Object.values(pages)[0] as { extract?: string } | undefined;
           if (page?.extract) {
@@ -48,12 +49,13 @@ async function fetchFullArticle(url: string): Promise<string> {
       }
     }
 
-    const res = await fetch(url, {
+    const res = await fetchPublicText(url, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
-      signal: AbortSignal.timeout(12000),
+      maxBytes: 2_000_000,
+      timeoutMs: 12_000,
     });
     if (!res.ok) return "";
-    const html = await res.text();
+    const html = res.text;
 
     // Try to extract article body from common content containers
     const containers = [
@@ -143,6 +145,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Topik tanpa sumber nyata ditolak. Ambil konten dari Wikivoyage atau sumber publik yang bisa dicek." }, { status: 422 });
   }
 
+  let verifiedSourceUrl: URL;
+  try {
+    verifiedSourceUrl = await assertPublicHttpUrl(sourceUrl.trim());
+  } catch {
+    return NextResponse.json(
+      { error: "sourceUrl harus mengarah ke situs publik; URL lokal, privat, atau tidak valid ditolak." },
+      { status: 422 },
+    );
+  }
+
   const cleanBody = originalBody
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
@@ -151,7 +163,7 @@ export async function POST(req: NextRequest) {
 
   // Fetch full article and pre-fetch Pexels images in parallel using title as initial keyword
   const [fullArticleText, preFetchedImages] = await Promise.all([
-    sourceUrl ? fetchFullArticle(sourceUrl) : Promise.resolve(""),
+    fetchFullArticle(verifiedSourceUrl),
     fetchPexelsImages(originalTitle, 5),
   ]);
   const sourceContent = fullArticleText.length > 200 ? fullArticleText : cleanBody;

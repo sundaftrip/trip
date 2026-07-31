@@ -104,6 +104,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/vietnam",
+        destination: "/open-trip-vietnam",
+        permanent: true,
+      },
+      {
         source: "/jasa-membuat-visa-eropa",
         destination: "/jasa-urus-visa-eropa",
         permanent: true,
@@ -154,6 +159,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/jasa-pembuatan-visa",
+        destination: "/jasa-urus-visa-terpercaya",
+        permanent: true,
+      },
+      {
         source: "/jasa-urus-visa-murah",
         destination: "/jasa-urus-visa-terpercaya",
         permanent: true,
@@ -183,14 +193,6 @@ const nextConfig: NextConfig = {
         destination: "/jasa-urus-visa-terpercaya",
         permanent: true,
       },
-    ];
-  },
-  async rewrites() {
-    return [
-      // Landing page statis trip perdana Vietnam (file di public/vietnam/).
-      // Sajikan di URL bersih /vietnam tanpa trailing slash; aset & /vietnam/
-      // tetap jalan karena semua path di halaman ini absolut (/vietnam/...).
-      { source: "/vietnam", destination: "/vietnam/index.html" },
     ];
   },
   async headers() {

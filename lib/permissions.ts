@@ -1,31 +1,48 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_PERMISSIONS, ALL_PERMISSION_KEYS } from "@/lib/permission-keys";
+import {
+  checkPermissionsWithLookup,
+  type PermissionSession,
+} from "@/lib/authorization";
 
 export { ALL_PERMISSION_KEYS, DEFAULT_PERMISSIONS, PERMISSION_LABELS } from "@/lib/permission-keys";
 
 export async function checkPermission(
-  session: { user: { id?: string | null; role: string } } | null,
+  session: PermissionSession,
   key: string
 ): Promise<boolean> {
-  if (!session) return false;
-  if (session.user.role === "SUPERADMIN") return true;
+  return checkPermissions(session, [key]);
+}
 
-  if (session.user.id) {
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { permissions: true, role: true },
-    });
-    if (user?.permissions) {
-      const perms = user.permissions as Record<string, boolean>;
-      if (key in perms) return perms[key] === true;
-      return DEFAULT_PERMISSIONS[user.role]?.[key] === true;
-    }
-    // No custom permissions — fall back to role defaults
-    return DEFAULT_PERMISSIONS[user?.role ?? "EDITOR"]?.[key] === true;
-  }
+export async function checkPermissions(
+  session: PermissionSession,
+  keys: readonly string[],
+): Promise<boolean> {
+  return checkPermissionsWithLookup(
+    session,
+    keys,
+    async (id) => prisma.user.findUnique({
+      where: { id },
+      select: { id: true, permissions: true, role: true },
+    }),
+  );
+}
 
-  return DEFAULT_PERMISSIONS[session.user.role]?.[key] === true;
+/**
+ * Confirms that a JWT still belongs to a current database user. Use this for
+ * authenticated read paths that do not require a feature-specific permission.
+ */
+export async function hasPersistedUser(
+  session: PermissionSession,
+): Promise<boolean> {
+  const userId = session?.user?.id;
+  if (!userId) return false;
+
+  return Boolean(await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true },
+  }));
 }
 
 export async function getUsersWithPermissions() {

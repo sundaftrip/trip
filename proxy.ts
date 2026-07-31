@@ -41,9 +41,6 @@ export async function proxy(req: NextRequest) {
     if (!isPublicAuthPage && !isAuthenticated) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
-    if (isLoginPage && isAuthenticated) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
   }
 
   // Preview theme override via ?theme=<key>

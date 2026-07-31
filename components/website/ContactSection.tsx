@@ -1,5 +1,5 @@
 import type { ComponentType, SVGProps } from "react";
-import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Clock, Mail, MessageCircle, Phone } from "lucide-react";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 
 interface Props {
@@ -61,17 +61,14 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   const wa      = toWaNumber(company["company_whatsapp"]);
   const email   = company["company_email"] || "";
   const phone   = company["company_phone"] || "";
-  const address = company["company_address"] || "";
   const igUser  = instagramUser(company["company_instagram"]);
 
   const contacts = [
-    address && { Icon: MapPin,        label: "Alamat",    value: address, href: null },
     phone   && { Icon: Phone,         label: "Telepon",   value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: MessageCircle, label: "WhatsApp",  value: wa.startsWith("62") ? `+${wa}` : wa, href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",     value: email,   href: `mailto:${email}` },
   ].filter(Boolean) as ContactItem[];
   const atlasContacts = [
-    address && { Icon: MapPin,        label: "Alamat",      value: address, href: null },
     phone   && { Icon: Phone,         label: "Telepon",     value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: Phone,         label: "WhatsApp",    value: "WhatsApp", href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",       value: email,   href: `mailto:${email}` },

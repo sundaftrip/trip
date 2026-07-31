@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 export interface GeoFaq {
   question: string;
@@ -116,7 +117,7 @@ export default function GeoPage({
   };
 
   return (
-    <main className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -126,12 +127,12 @@ export default function GeoPage({
       {schema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
         />
       )}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
 
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -210,6 +211,6 @@ export default function GeoPage({
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
+import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
@@ -55,6 +56,7 @@ export default async function TermsPage({
 
   const lang   = params.lang === "en" ? "en" : "id";
   const body   = lang === "en" ? (tc?.bodyEn ?? tc?.bodyId) : tc?.bodyId;
+  const sanitizedBody = body ? sanitizeRichHtml(body) : "";
   const hasEn  = !!tc?.bodyEn;
 
   const isKawaii   = theme === "kawaii";
@@ -158,23 +160,23 @@ export default async function TermsPage({
           </nav>
         )}
 
-        {body ? (
+        {sanitizedBody ? (
           isGlobe ? (
             <div className="gl-card p-8 prose dark:prose-invert max-w-none"
               style={{ background: cardBg, color: headClr }}>
-              <div dangerouslySetInnerHTML={{ __html: body }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
             </div>
           ) : isAtlas ? (
             <article className={supportStyles.proseCard} lang={lang}>
-              <div className={supportStyles.proseContent} dangerouslySetInnerHTML={{ __html: body }} />
+              <div className={supportStyles.proseContent} dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
             </article>
           ) : isOutlined ? (
             <div className={`border-2 p-8 prose max-w-none ${isPixel ? "font-mono" : ""}`}
               style={{ background: cardBg, borderColor: bdrClr, color: headClr, boxShadow: `4px 4px 0 0 ${bdrClr}` }}>
-              <div dangerouslySetInnerHTML={{ __html: body }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
             </div>
           ) : (
-            <div className="prose prose-slate dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: body }} />
+            <div className="prose prose-slate dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
           )
         ) : (
           isGlobe ? (

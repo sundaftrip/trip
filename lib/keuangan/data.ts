@@ -1,7 +1,12 @@
+import "server-only";
+
 // Query layer modul keuangan (basis akrual). Mengambil baris Prisma
 // lalu merakit view-model siap pakai untuk tiap halaman.
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 import {
   aggregateTrip,
   buildPosition,
@@ -17,6 +22,11 @@ import { monthKey } from "./format";
 // ── ambil semua baris sekali jalan ───────────────────────────
 
 async function fetchAll() {
+  // Do not rely on nested layout ordering: reject before any finance query.
+  const session = await auth();
+  if (!session?.user) redirect("/admin/login");
+  if (!await checkPermission(session, "finance_view")) redirect("/admin");
+
   // Query dibatch maksimal 3 paralel — pool koneksi Prisma dibatasi 3
   // (lihat lib/prisma.ts). Menembak 7 query sekaligus bisa memicu
   // P2024 (connection pool timeout) di Neon saat trafik bersamaan.

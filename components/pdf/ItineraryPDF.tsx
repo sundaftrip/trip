@@ -95,7 +95,6 @@ export interface ItineraryPDFProps {
     logo?: string | null;
     tagline?: string;
     story?: string[];
-    address?: string;
     phone?: string;
     whatsapp?: string;
     email?: string;
