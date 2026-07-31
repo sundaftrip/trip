@@ -256,7 +256,7 @@
   align-items: center;
   gap: 11px;
   border: 1px solid #d7e0df;
-  border-radius: 14px;
+  border-radius: 999px;
   background: #fbfcfc;
 }
 
@@ -867,6 +867,10 @@
   border-radius: 6px;
   outline: 3px solid var(--shell-aurora);
   outline-offset: 3px;
+}
+
+.searchForm:focus-within {
+  border-radius: 999px;
 }
 
 @media (max-width: 759px) {
