@@ -12,6 +12,7 @@ import {
   LEGACY_HOME_COPY,
   replaceLegacyHomepageCopy,
 } from "@/lib/home-copy";
+import { getHomeFaqs, type HomeFaqItem } from "@/lib/home-faqs";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
 import type { CleanTour } from "./CleanTourCard";
@@ -42,11 +43,7 @@ export type CleanHomePost = {
   readTime: string | null;
 };
 
-export type CleanHomeFaq = {
-  id?: string;
-  question: string;
-  answer: string;
-};
+export type CleanHomeFaq = HomeFaqItem;
 
 export type CleanHomeTextValue =
   | string
@@ -61,7 +58,6 @@ export type CleanHomeProps = {
   testimonials: CleanHomeTestimonial[];
   posts: CleanHomePost[];
   company: Record<string, string>;
-  faqs?: CleanHomeFaq[];
   texts?: Record<string, CleanHomeTextValue | undefined>;
   heroImage?: string;
 };
@@ -97,20 +93,6 @@ function readText(
     }
   }
   return fallback;
-}
-
-function plainText(value: string) {
-  return value
-    .replace(/<\s*br\s*\/?>/gi, "\n")
-    .replace(/<\s*\/p\s*>/gi, "\n")
-    .replace(/<\s*\/li\s*>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
 }
 
 function destinationForTour(tour: CleanTour): DestinationOption {
@@ -180,54 +162,6 @@ function getMonthOptions(tours: CleanTour[]): HomeSearchOption[] {
     }));
 }
 
-function fallbackFaqs(nib: string, legalName: string): CleanHomeFaq[] {
-  return [
-    {
-      question: "Apakah Sundaf Trip resmi dan aman?",
-      answer: `Sundaf Trip dioperasikan oleh ${legalName} dan tercatat dengan NIB ${nib}. Sebelum pembayaran, tim akan mengonfirmasi jadwal, harga, serta ketersediaan terbaru untuk perjalanan yang kamu pilih.`,
-    },
-    {
-      question: "Bagaimana cara booking?",
-      answer:
-        "Pilih perjalanan, cek itinerary dan rincian biaya, lalu kirim permintaan melalui WhatsApp. Tim kami akan mengonfirmasi ketersediaan kursi dan menjelaskan tahap pembayaran sebelum booking diproses.",
-    },
-    {
-      question: "Apakah visa dan dokumen dibantu?",
-      answer:
-        "Untuk rute yang memerlukan visa, tim membantu menjelaskan dokumen, alur pengajuan, serta hal yang perlu disiapkan. Status akhir visa tetap mengikuti ketentuan otoritas yang menerbitkan.",
-    },
-    {
-      question: "Apakah harga yang tampil sudah final?",
-      answer:
-        "Periksa bagian harga paket, biaya wajib, dan biaya opsional di halaman tour. Tim akan mengonfirmasi rincian terakhir sebelum kamu melakukan pembayaran.",
-    },
-    {
-      question: "Bagaimana jika jadwal belum cocok?",
-      answer:
-        "Ceritakan tujuan, tanggal, jumlah peserta, dan kisaran budgetmu. Kami akan membantu melihat jadwal lain atau merancang opsi private trip yang lebih sesuai.",
-    },
-  ];
-}
-
-const FAQ_MATCHERS = [
-  /resmi|legal|aman/i,
-  /booking|pesan|daftar/i,
-  /visa|dokumen/i,
-  /harga|biaya|total/i,
-  /jadwal|tanggal.*cocok/i,
-];
-
-function resolveFaqs(faqs: CleanHomeFaq[] | undefined, nib: string, legalName: string) {
-  const defaults = fallbackFaqs(nib, legalName);
-  if (!faqs?.length) return defaults;
-
-  return defaults.map((fallback, index) => {
-    const approved = faqs.find((faq) => FAQ_MATCHERS[index].test(faq.question));
-    const answer = approved ? plainText(approved.answer) : fallback.answer;
-    return { ...fallback, id: approved?.id, answer: answer || fallback.answer };
-  });
-}
-
 function formatPostDate(value: Date | string) {
   const date = value instanceof Date ? value : new Date(value);
   return Number.isNaN(date.getTime()) ? null : DATE_FORMATTER.format(date);
@@ -238,7 +172,6 @@ export default function CleanHome({
   testimonials,
   posts,
   company,
-  faqs,
   texts,
   heroImage = "/images/home/murmansk-aurora-group.png",
 }: CleanHomeProps) {
@@ -255,7 +188,7 @@ export default function CleanHome({
       whatsappNumber,
       "Halo Sundaf Trip, saya ingin konsultasi untuk memilih perjalanan yang sesuai.",
     ) || "/contact";
-  const resolvedFaqs = resolveFaqs(faqs, nib, legalName);
+  const resolvedFaqs = getHomeFaqs(nib, legalName);
   const journalPosts = posts.slice(0, 3);
 
   const heroEyebrow = replaceLegacyHomepageCopy(
@@ -494,9 +427,9 @@ export default function CleanHome({
         >
           <div className={`${styles.shell} ${styles.faqLayout}`}>
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>SEBELUM KAMU BERANGKAT</p>
-              <h2 id="faq-title">Hal yang wajar kamu tanyakan sebelum memutuskan.</h2>
-              <p>Jawaban ringkas untuk membantu kamu memahami kesiapan perjalanan, biaya, dan langkah booking.</p>
+              <p className={styles.eyebrow}>BIAR MAKIN YAKIN</p>
+              <h2 id="faq-title">Yang perlu kamu tahu sebelum bilang, “gas”.</h2>
+              <p>Soal legalitas, harga, visa, sampai perubahan rencana, kami jawab terus terang di sini.</p>
             </div>
             <HomeFaqs items={resolvedFaqs} />
           </div>

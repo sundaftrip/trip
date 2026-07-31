@@ -253,34 +253,35 @@
 }
 
 .finderMeta {
-  min-height: 72px;
-  padding: 17px 4px 0;
+  min-height: 58px;
+  padding: 10px 4px 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
   color: var(--home-ink-soft);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 350;
 }
 
 .finderMeta > a {
-  min-height: 44px;
+  min-height: 38px;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
   color: inherit;
   line-height: 1.45;
 }
 
 .finderMeta svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
   color: var(--home-primary);
 }
 
 .finderMeta > a:first-child {
-  font-weight: 680;
+  font-weight: 540;
   text-decoration: underline;
   text-decoration-color: rgba(12, 77, 86, 0.35);
   text-underline-offset: 4px;
@@ -289,7 +290,7 @@
 .legalProof strong {
   margin-left: 3px;
   color: var(--home-ink);
-  font-weight: 750;
+  font-weight: 620;
 }
 
 .section {
@@ -1470,14 +1471,14 @@
 
   .finderMeta {
     min-height: 0;
-    padding: 12px 0 0;
+    padding: 8px 0 0;
     display: grid;
     gap: 0;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .finderMeta > a {
-    min-height: 46px;
+    min-height: 38px;
   }
 
   .legalProof {
