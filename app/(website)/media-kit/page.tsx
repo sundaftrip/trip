@@ -20,6 +20,10 @@ import {
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import {
+  APPOINTMENT_ONLY_LABEL,
+  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+} from "@/lib/business-identity";
 
 const SITE_URL = "https://sundaftrip.com";
 
@@ -45,6 +49,7 @@ const getData = unstable_cache(
               "company_email",
               "company_instagram",
               "company_description",
+              "company_address",
             ],
           },
         },
@@ -106,6 +111,7 @@ export default async function MediaKitPage() {
   const email = company.company_email || "info@sundaftrip.com";
   const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const igUrl = instagramUrl(company.company_instagram);
+  const officeAddress = company.company_address?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
   const description =
     company.company_description ||
     "Sundaf Trip adalah biro perjalanan Indonesia yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan bantuan visa untuk traveler Indonesia.";
@@ -115,7 +121,8 @@ export default async function MediaKitPage() {
     { icon: FileText, label: "Nama legal", value: legalName },
     { icon: CheckCircle2, label: "NIB", value: nib },
     { icon: Globe2, label: "Website resmi", value: SITE_URL, href: SITE_URL },
-    { icon: MapPin, label: "Model layanan", value: "Online untuk pelanggan di Indonesia; bukan kantor walk-in" },
+    { icon: MapPin, label: "Model layanan", value: "Online untuk pelanggan di Indonesia; kunjungan kantor hanya dengan janji temu" },
+    { icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress },
     { icon: Mail, label: "Email", value: email, href: `mailto:${email}` },
     { icon: Phone, label: "Telepon/WhatsApp", value: phone || "081-775-2027-59", href: phoneHref },
     { icon: Clock, label: "Jam layanan", value: openingHours },

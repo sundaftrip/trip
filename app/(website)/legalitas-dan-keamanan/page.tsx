@@ -13,12 +13,17 @@ import {
   FileText,
   Globe2,
   Mail,
+  MapPin,
   Phone,
   ShieldCheck,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import {
+  APPOINTMENT_ONLY_LABEL,
+  APPOINTMENT_ONLY_OFFICE_ADDRESS,
+} from "@/lib/business-identity";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -46,6 +51,7 @@ const getCompany = unstable_cache(
               "company_whatsapp",
               "company_email",
               "company_instagram",
+              "company_address",
             ],
           },
         },
@@ -107,6 +113,7 @@ export default async function LegalitasKeamananPage() {
   const openingHours = "Senin-Jumat 09:00-17:00 WIB";
   const waHref = whatsappUrl(phoneRaw);
   const igUrl = instagramUrl(company.company_instagram);
+  const officeAddress = company.company_address?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
 
   const legalSchema = {
     "@context": "https://schema.org",
@@ -129,6 +136,7 @@ export default async function LegalitasKeamananPage() {
     { icon: Phone, label: "WhatsApp resmi", value: phone, href: waHref },
     { icon: Mail, label: "Email resmi", value: email, href: `mailto:${email}` },
     { icon: Clock, label: "Jam layanan", value: openingHours },
+    { icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress },
   ];
 
   const safeSteps = [
@@ -216,7 +224,7 @@ export default async function LegalitasKeamananPage() {
           ))}
         </div>
         <p className="mt-4 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-          Model layanan: online untuk pelanggan di Indonesia, tanpa kantor walk-in. Gunakan kanal resmi di halaman ini sebelum mengirim dokumen atau melakukan pembayaran.
+          Model layanan: online untuk pelanggan di Indonesia. Kunjungan ke kantor hanya dengan janji temu sebelumnya (appointment only); kami tidak menerima kunjungan walk-in. Gunakan kanal resmi di halaman ini sebelum mengirim dokumen atau melakukan pembayaran.
         </p>
       </section>
 

@@ -8,6 +8,7 @@ import {
   Building2, MapPin, Compass, CheckCircle2, Phone, Mail, Download, ShieldCheck,
 } from "lucide-react";
 import { lora } from "@/lib/fonts";
+import { APPOINTMENT_ONLY_OFFICE_ADDRESS } from "@/lib/business-identity";
 
 type Lang = "en" | "ru";
 type Bi = { en: string; ru: string };
@@ -177,7 +178,8 @@ const DMC_STEPS: { n: string; title: Bi; desc: Bi }[] = [
 const SNAPSHOT: { k: Bi; v: Bi }[] = [
   { k: { en: "Legal Entity", ru: "Юридическое лицо" }, v: { en: "CV Sundaf Holiday Group", ru: "CV Sundaf Holiday Group" } },
   { k: { en: "Business License (NIB)", ru: "Лицензия (NIB)" }, v: { en: "1601260060842", ru: "1601260060842" } },
-  { k: { en: "Service Model", ru: "Формат обслуживания" }, v: { en: "Online across Indonesia · no walk-in office", ru: "Онлайн по всей Индонезии · без офиса для посещений" } },
+  { k: { en: "Service Model", ru: "Формат обслуживания" }, v: { en: "Online across Indonesia · office visits by appointment only", ru: "Онлайн по всей Индонезии · посещение офиса только по предварительной записи" } },
+  { k: { en: "Office · Appointment only", ru: "Офис · только по записи" }, v: { en: APPOINTMENT_ONLY_OFFICE_ADDRESS, ru: APPOINTMENT_ONLY_OFFICE_ADDRESS } },
   { k: { en: "Business Model", ru: "Модель бизнеса" }, v: { en: "B2C + B2B Tour Operator", ru: "Туроператор B2C + B2B" } },
   { k: { en: "Tour Leadership", ru: "Сопровождение" }, v: { en: "Own Indonesian-speaking tour leader", ru: "Собственный турлидер со знанием индонезийского" } },
 ];

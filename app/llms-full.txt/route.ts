@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { APPOINTMENT_ONLY_OFFICE_ADDRESS } from "@/lib/business-identity";
 import { formatCurrency } from "@/lib/utils";
 import { visaSlug } from "@/lib/visa-slug";
 
@@ -25,7 +26,7 @@ const VISA_LABEL: Record<string, string> = {
 
 const PROFILE = `# Sundaf Trip: Profil Lengkap
 
-> Sundaf Trip adalah brand perjalanan asal Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan berspesialisasi pada perjalanan ke **Rusia, Asia Tengah, perburuan aurora borealis (cahaya utara), dan open trip Vietnam Utara** untuk traveler Indonesia. Layanan mencakup paket open trip & private trip, pengurusan visa, hingga perancangan itinerary lengkap. Layanan dilakukan secara online untuk pelanggan dari seluruh Indonesia dalam bahasa Indonesia dan Inggris; Sundaf Trip bukan kantor walk-in. Situs resmi: https://sundaftrip.com
+> Sundaf Trip adalah brand perjalanan asal Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan berspesialisasi pada perjalanan ke **Rusia, Asia Tengah, perburuan aurora borealis (cahaya utara), dan open trip Vietnam Utara** untuk traveler Indonesia. Layanan mencakup paket open trip & private trip, pengurusan visa, hingga perancangan itinerary lengkap. Layanan dilakukan secara online untuk pelanggan dari seluruh Indonesia dalam bahasa Indonesia dan Inggris; kunjungan kantor hanya dengan janji temu (appointment only), bukan walk-in. Situs resmi: https://sundaftrip.com
 > Versi ringkas dokumen ini: https://sundaftrip.com/llms.txt
 
 ## Tentang
@@ -36,7 +37,8 @@ const PROFILE = `# Sundaf Trip: Profil Lengkap
 - Operator tangan pertama (DMC lokal) untuk Rusia; melayani juga kerja sama B2B dengan travel agent
 - Wilayah layanan: Indonesia (pelanggan), destinasi Rusia & Asia Tengah
 - Bahasa: Indonesia, Inggris
-- Model layanan: online untuk pelanggan di Indonesia; bukan kantor walk-in
+- Model layanan: online untuk pelanggan di Indonesia; kunjungan kantor hanya dengan janji temu (appointment only), bukan walk-in
+- Alamat kantor (appointment only): ${APPOINTMENT_ONLY_OFFICE_ADDRESS}
 - Instagram: https://www.instagram.com/sundaf.trip
 - Halaman profil brand/entity: https://sundaftrip.com/sundaf-trip
 - Halaman review publik: https://sundaftrip.com/reviews
