@@ -12,7 +12,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
   const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : "";
   const address = company.company_address?.trim();
   const nib = company.company_nib?.trim();
-  const legalName = company.company_legal_name?.trim();
+  const legalName = company.company_legal_name?.trim().replace(/^CV\s+/i, "");
   const igUser = (company.company_instagram || "")
     .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
     .replace(/^@/, "")
