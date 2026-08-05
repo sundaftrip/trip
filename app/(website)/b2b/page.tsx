@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import B2BLandTour from "@/components/website/B2BLandTour";
+import B2BLandTour, { type B2BLanguage } from "@/components/website/B2BLandTour";
 
 export const metadata: Metadata = {
   title: "Sundaf Trip Group - Travel Operations & Supplier Relations",
@@ -8,6 +8,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function B2BPage() {
-  return <B2BLandTour />;
+type PageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
+};
+
+function parseLanguage(value: string | string[] | undefined): B2BLanguage {
+  const lang = Array.isArray(value) ? value[0] : value;
+  return lang === "en" || lang === "ru" ? lang : "id";
+}
+
+export default async function B2BPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  return <B2BLandTour language={parseLanguage(params.lang)} showLanguageSwitcher />;
 }
