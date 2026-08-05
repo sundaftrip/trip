@@ -392,7 +392,7 @@ export default function B2BLandTour({
         <div className="space-y-3">
           {STEPS.map(({ n, title, desc }) => (
             <div key={n} className="flex items-start gap-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold !text-white">
+              <div className="b2b-contrast-white flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold !text-white">
                 {n}
               </div>
               <div>
@@ -468,7 +468,7 @@ export default function B2BLandTour({
               href={person.whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold !text-white transition hover:bg-blue-700"
+              className="b2b-contrast-white inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold !text-white transition hover:bg-blue-700"
             >
               <Phone size={16} /> {t(TX.wa)}
             </a>
