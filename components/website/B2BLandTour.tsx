@@ -25,9 +25,9 @@ const HERO = {
     ru: "Наземное обслуживание, достойное вашего туристического бренда.",
   },
   intro: {
-    id: "Sundaf Trip menangani operasional land tour untuk travel agent dan mitra terpilih. Fokus kami adalah Rusia, Asia Tengah, dan India: mulai dari desain itinerary dan negosiasi vendor hingga kontrol perjalanan di lapangan.",
-    en: "Sundaf Trip manages ground operations for travel agencies and selected partners. Our core markets are Russia, Central Asia, and India, covering itinerary design, supplier negotiation, and on-ground control.",
-    ru: "Sundaf Trip организует наземное обслуживание для туристических агентств и избранных партнёров. Наши ключевые направления — Россия, Центральная Азия и Индия: от разработки маршрута и переговоров с поставщиками до контроля программы на месте.",
+    id: "Sundaf Trip menangani operasional land tour untuk travel agent dan mitra terpilih. Fokus utama kami saat ini adalah Rusia dan Asia Tengah, mulai dari desain itinerary dan negosiasi vendor hingga kontrol perjalanan di lapangan. Kami sedang membangun kapasitas dan jaringan untuk scale-up ke Skandinavia dan Kanada.",
+    en: "Sundaf Trip manages ground operations for travel agencies and selected partners. Our current core markets are Russia and Central Asia, covering itinerary design, supplier negotiation, and on-ground control. We are building the capacity and supplier network to scale into Scandinavia and Canada.",
+    ru: "Sundaf Trip организует наземное обслуживание для туристических агентств и избранных партнёров. Сейчас наши основные рынки — Россия и Центральная Азия: от разработки маршрута и переговоров с поставщиками до контроля программы на месте. Параллельно мы развиваем мощности и сеть поставщиков для выхода в Скандинавию и Канаду.",
   },
   privateNote: {
     id: "Halaman ini dibagikan langsung kepada pihak yang sedang menilai kapasitas operasional, rekam jejak, dan kecocokan kerja sama kami.",
@@ -134,11 +134,11 @@ const DESTINATIONS: { region: Tri; detail: Tri }[] = [
     },
   },
   {
-    region: { id: "India", en: "India", ru: "Индия" },
+    region: { id: "Scale-up berikutnya", en: "Next scale-up", ru: "Следующий этап роста" },
     detail: {
-      id: "Rute budaya · heritage · perjalanan privat",
-      en: "Cultural routes · heritage · private journeys",
-      ru: "Культурные маршруты · наследие · частные поездки",
+      id: "Skandinavia · Kanada — kapasitas dan jaringan operasional sedang dikembangkan",
+      en: "Scandinavia · Canada — operating capacity and supplier network in development",
+      ru: "Скандинавия · Канада — развиваем операционные мощности и сеть поставщиков",
     },
   },
 ];
@@ -221,7 +221,7 @@ const STEPS: { n: string; title: Tri; desc: Tri }[] = [
 
 const TX = {
   coverageHead: { id: "Scope yang Kami Kendalikan", en: "Scope Under Our Control", ru: "Зона нашего контроля" },
-  destinationsHead: { id: "Pasar Inti", en: "Core Markets", ru: "Ключевые направления" },
+  destinationsHead: { id: "Pasar & Arah Scale-Up", en: "Markets & Next Scale-Up", ru: "Направления и следующий этап роста" },
   whyHead: { id: "Dasar untuk Memilih Sundaf", en: "Reasons to Select Sundaf", ru: "Основания выбрать Sundaf" },
   stepsHead: { id: "Alur Kerja Sama", en: "Engagement Process", ru: "Процесс сотрудничества" },
   photosHead: { id: "Bukti Operasional", en: "Operating Evidence", ru: "Операционные подтверждения" },
@@ -392,7 +392,7 @@ export default function B2BLandTour({
         <div className="space-y-3">
           {STEPS.map(({ n, title, desc }) => (
             <div key={n} className="flex items-start gap-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold !text-white">
                 {n}
               </div>
               <div>
@@ -468,7 +468,7 @@ export default function B2BLandTour({
               href={person.whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold !text-white transition hover:bg-blue-700"
             >
               <Phone size={16} /> {t(TX.wa)}
             </a>
