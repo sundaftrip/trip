@@ -423,42 +423,112 @@ export default function B2BLandTour({
         </div>
 
         <h2 className={`mb-5 mt-12 ${head}`}>{t(TX.b2bLead)}</h2>
-        <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
-          <div className="flex items-center gap-4">
-            {person.photo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={person.photo}
-                alt={person.name}
-                loading="lazy"
-                className="is-round h-20 w-20 shrink-0 object-cover object-top ring-2 ring-blue-600/30 dark:ring-blue-400/30"
-              />
-            ) : (
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
-                {person.initial}
+        <div className="relative">
+          <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
+            <div className="flex items-center gap-4">
+              {person.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={person.photo}
+                  alt={person.name}
+                  loading="lazy"
+                  className="is-round h-20 w-20 shrink-0 object-cover object-top ring-2 ring-blue-600/30 dark:ring-blue-400/30"
+                />
+              ) : (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
+                  {person.initial}
+                </div>
+              )}
+              <div>
+                <p className={`text-lg font-bold leading-tight text-gray-900 dark:text-white ${lora.className}`}>{person.name}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
               </div>
-            )}
-            <div>
-              <p className={`text-lg font-bold leading-tight text-gray-900 dark:text-white ${lora.className}`}>{person.name}</p>
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
             </div>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(person.desc)}</p>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(person.desc)}</p>
+          {!withCofounder ? (
+            <>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="pointer-events-none absolute inset-0 z-10 h-full w-full sm:hidden"
+              >
+                <defs>
+                  <marker id="founder-arrow-mobile" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                    <path d="M 0 0 L 8 4 L 0 8 Z" fill="#0f766e" stroke="#ffffff" strokeWidth="0.8" />
+                  </marker>
+                </defs>
+                <path
+                  d="M 9 5 C 22 11, 5 20, 18 28 S 5 42, 19 50 S 9 62, 26 69 S 47 77, 54 86"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.92)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d="M 9 5 C 22 11, 5 20, 18 28 S 5 42, 19 50 S 9 62, 26 69 S 47 77, 54 86"
+                  fill="none"
+                  stroke="#0f766e"
+                  strokeWidth="2.5"
+                  strokeDasharray="7 9"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  markerEnd="url(#founder-arrow-mobile)"
+                />
+              </svg>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full sm:block"
+              >
+                <defs>
+                  <marker id="founder-arrow-desktop" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                    <path d="M 0 0 L 8 4 L 0 8 Z" fill="#0f766e" stroke="#ffffff" strokeWidth="0.8" />
+                  </marker>
+                </defs>
+                <path
+                  d="M 5 4 C 19 10, 4 19, 17 27 S 4 40, 19 48 S 9 59, 26 66 S 46 74, 53 83"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.92)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d="M 5 4 C 19 10, 4 19, 17 27 S 4 40, 19 48 S 9 59, 26 66 S 46 74, 53 83"
+                  fill="none"
+                  stroke="#0f766e"
+                  strokeWidth="2.5"
+                  strokeDasharray="7 9"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  markerEnd="url(#founder-arrow-desktop)"
+                />
+              </svg>
+              <figure className="relative mt-5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={FERDIANSAH_USA_PROOF.src}
+                  alt={t(FERDIANSAH_USA_PROOF.alt)}
+                  loading="lazy"
+                  className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
+                />
+                <span
+                  aria-hidden="true"
+                  className="b2b-contrast-white pointer-events-none absolute left-[34%] top-[73%] z-20 whitespace-nowrap rounded-full border border-white/70 bg-slate-950/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] shadow-lg backdrop-blur-sm sm:left-[39%] sm:text-xs"
+                >
+                  Ferdiansah · Founder ↘
+                </span>
+                <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                  {t(FERDIANSAH_USA_PROOF.caption)}
+                </figcaption>
+              </figure>
+            </>
+          ) : null}
         </div>
-        {!withCofounder ? (
-          <figure className="mt-5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={FERDIANSAH_USA_PROOF.src}
-              alt={t(FERDIANSAH_USA_PROOF.alt)}
-              loading="lazy"
-              className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
-            />
-            <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-              {t(FERDIANSAH_USA_PROOF.caption)}
-            </figcaption>
-          </figure>
-        ) : null}
 
         <div className="mt-12 rounded-2xl bg-gray-900 p-6 text-center text-white dark:bg-gray-800">
           <h2 className={`mb-2 text-2xl font-bold ${lora.className}`}>{t(TX.ctaHead)}</h2>
