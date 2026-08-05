@@ -1711,6 +1711,9 @@ main[data-theme] :where(.bg-blue-600, .hover\:bg-blue-700:hover) {
 main[data-theme] :where(.bg-blue-600.text-white, .hover\:bg-blue-700:hover.text-white) {
   color: #041417 !important;
 }
+main[data-theme] .b2b-contrast-white {
+  color: #ffffff !important;
+}
 main[data-theme] :where(.bg-blue-50, .bg-blue-100, .dark\:bg-blue-900\/20, .dark\:bg-blue-900\/30, .dark\:bg-blue-900\/40, .dark\:bg-blue-950, .dark\:bg-blue-950\/30, .dark\:bg-blue-950\/40) {
   background-color: color-mix(in srgb, var(--site-accent, #00ADB5) 14%, transparent) !important;
 }

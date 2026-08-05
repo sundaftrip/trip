@@ -25,9 +25,9 @@ const HERO = {
     ru: "Наземное обслуживание, достойное вашего туристического бренда.",
   },
   intro: {
-    id: "Sundaf Trip menangani operasional land tour untuk travel agent dan mitra terpilih. Fokus kami adalah Rusia, Asia Tengah, dan India: mulai dari desain itinerary dan negosiasi vendor hingga kontrol perjalanan di lapangan.",
-    en: "Sundaf Trip manages ground operations for travel agencies and selected partners. Our core markets are Russia, Central Asia, and India, covering itinerary design, supplier negotiation, and on-ground control.",
-    ru: "Sundaf Trip организует наземное обслуживание для туристических агентств и избранных партнёров. Наши ключевые направления — Россия, Центральная Азия и Индия: от разработки маршрута и переговоров с поставщиками до контроля программы на месте.",
+    id: "Sundaf Trip menangani operasional land tour untuk travel agent dan mitra terpilih. Fokus utama kami saat ini adalah Rusia dan Asia Tengah, mulai dari desain itinerary dan negosiasi vendor hingga kontrol perjalanan di lapangan. Kami sedang membangun kapasitas dan jaringan untuk scale-up ke Skandinavia dan Kanada.",
+    en: "Sundaf Trip manages ground operations for travel agencies and selected partners. Our current core markets are Russia and Central Asia, covering itinerary design, supplier negotiation, and on-ground control. We are building the capacity and supplier network to scale into Scandinavia and Canada.",
+    ru: "Sundaf Trip организует наземное обслуживание для туристических агентств и избранных партнёров. Сейчас наши основные рынки — Россия и Центральная Азия: от разработки маршрута и переговоров с поставщиками до контроля программы на месте. Параллельно мы развиваем мощности и сеть поставщиков для выхода в Скандинавию и Канаду.",
   },
   privateNote: {
     id: "Halaman ini dibagikan langsung kepada pihak yang sedang menilai kapasitas operasional, rekam jejak, dan kecocokan kerja sama kami.",
@@ -134,11 +134,11 @@ const DESTINATIONS: { region: Tri; detail: Tri }[] = [
     },
   },
   {
-    region: { id: "India", en: "India", ru: "Индия" },
+    region: { id: "Scale-up berikutnya", en: "Next scale-up", ru: "Следующий этап роста" },
     detail: {
-      id: "Rute budaya · heritage · perjalanan privat",
-      en: "Cultural routes · heritage · private journeys",
-      ru: "Культурные маршруты · наследие · частные поездки",
+      id: "Skandinavia · Kanada — kapasitas dan jaringan operasional sedang dikembangkan",
+      en: "Scandinavia · Canada — operating capacity and supplier network in development",
+      ru: "Скандинавия · Канада — развиваем операционные мощности и сеть поставщиков",
     },
   },
 ];
@@ -221,7 +221,7 @@ const STEPS: { n: string; title: Tri; desc: Tri }[] = [
 
 const TX = {
   coverageHead: { id: "Scope yang Kami Kendalikan", en: "Scope Under Our Control", ru: "Зона нашего контроля" },
-  destinationsHead: { id: "Pasar Inti", en: "Core Markets", ru: "Ключевые направления" },
+  destinationsHead: { id: "Pasar & Arah Scale-Up", en: "Markets & Next Scale-Up", ru: "Направления и следующий этап роста" },
   whyHead: { id: "Dasar untuk Memilih Sundaf", en: "Reasons to Select Sundaf", ru: "Основания выбрать Sundaf" },
   stepsHead: { id: "Alur Kerja Sama", en: "Engagement Process", ru: "Процесс сотрудничества" },
   photosHead: { id: "Bukti Operasional", en: "Operating Evidence", ru: "Операционные подтверждения" },
@@ -392,7 +392,7 @@ export default function B2BLandTour({
         <div className="space-y-3">
           {STEPS.map(({ n, title, desc }) => (
             <div key={n} className="flex items-start gap-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
+              <div className="b2b-contrast-white flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold !text-white">
                 {n}
               </div>
               <div>
@@ -423,42 +423,112 @@ export default function B2BLandTour({
         </div>
 
         <h2 className={`mb-5 mt-12 ${head}`}>{t(TX.b2bLead)}</h2>
-        <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
-          <div className="flex items-center gap-4">
-            {person.photo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={person.photo}
-                alt={person.name}
-                loading="lazy"
-                className="is-round h-20 w-20 shrink-0 object-cover object-top ring-2 ring-blue-600/30 dark:ring-blue-400/30"
-              />
-            ) : (
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
-                {person.initial}
+        <div className="relative">
+          <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
+            <div className="flex items-center gap-4">
+              {person.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={person.photo}
+                  alt={person.name}
+                  loading="lazy"
+                  className="is-round h-20 w-20 shrink-0 object-cover object-top ring-2 ring-blue-600/30 dark:ring-blue-400/30"
+                />
+              ) : (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
+                  {person.initial}
+                </div>
+              )}
+              <div>
+                <p className={`text-lg font-bold leading-tight text-gray-900 dark:text-white ${lora.className}`}>{person.name}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
               </div>
-            )}
-            <div>
-              <p className={`text-lg font-bold leading-tight text-gray-900 dark:text-white ${lora.className}`}>{person.name}</p>
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{person.role}</p>
             </div>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(person.desc)}</p>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(person.desc)}</p>
+          {!withCofounder ? (
+            <>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="pointer-events-none absolute inset-0 z-10 h-full w-full sm:hidden"
+              >
+                <defs>
+                  <marker id="founder-arrow-mobile" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                    <path d="M 0 0 L 8 4 L 0 8 Z" fill="#0f766e" stroke="#ffffff" strokeWidth="0.8" />
+                  </marker>
+                </defs>
+                <path
+                  d="M 9 5 C 22 11, 5 20, 18 28 S 5 42, 19 50 S 9 62, 26 69 S 47 77, 54 86"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.92)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d="M 9 5 C 22 11, 5 20, 18 28 S 5 42, 19 50 S 9 62, 26 69 S 47 77, 54 86"
+                  fill="none"
+                  stroke="#0f766e"
+                  strokeWidth="2.5"
+                  strokeDasharray="7 9"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  markerEnd="url(#founder-arrow-mobile)"
+                />
+              </svg>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full sm:block"
+              >
+                <defs>
+                  <marker id="founder-arrow-desktop" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                    <path d="M 0 0 L 8 4 L 0 8 Z" fill="#0f766e" stroke="#ffffff" strokeWidth="0.8" />
+                  </marker>
+                </defs>
+                <path
+                  d="M 5 4 C 19 10, 4 19, 17 27 S 4 40, 19 48 S 9 59, 26 66 S 46 74, 53 83"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.92)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d="M 5 4 C 19 10, 4 19, 17 27 S 4 40, 19 48 S 9 59, 26 66 S 46 74, 53 83"
+                  fill="none"
+                  stroke="#0f766e"
+                  strokeWidth="2.5"
+                  strokeDasharray="7 9"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  markerEnd="url(#founder-arrow-desktop)"
+                />
+              </svg>
+              <figure className="relative mt-5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={FERDIANSAH_USA_PROOF.src}
+                  alt={t(FERDIANSAH_USA_PROOF.alt)}
+                  loading="lazy"
+                  className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
+                />
+                <span
+                  aria-hidden="true"
+                  className="b2b-contrast-white pointer-events-none absolute left-[34%] top-[73%] z-20 whitespace-nowrap rounded-full border border-white/70 bg-slate-950/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] shadow-lg backdrop-blur-sm sm:left-[39%] sm:text-xs"
+                >
+                  Ferdiansah · Founder ↘
+                </span>
+                <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                  {t(FERDIANSAH_USA_PROOF.caption)}
+                </figcaption>
+              </figure>
+            </>
+          ) : null}
         </div>
-        {!withCofounder ? (
-          <figure className="mt-5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={FERDIANSAH_USA_PROOF.src}
-              alt={t(FERDIANSAH_USA_PROOF.alt)}
-              loading="lazy"
-              className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
-            />
-            <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-              {t(FERDIANSAH_USA_PROOF.caption)}
-            </figcaption>
-          </figure>
-        ) : null}
 
         <div className="mt-12 rounded-2xl bg-gray-900 p-6 text-center text-white dark:bg-gray-800">
           <h2 className={`mb-2 text-2xl font-bold ${lora.className}`}>{t(TX.ctaHead)}</h2>
@@ -468,7 +538,7 @@ export default function B2BLandTour({
               href={person.whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+              className="b2b-contrast-white inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold !text-white transition hover:bg-blue-700"
             >
               <Phone size={16} /> {t(TX.wa)}
             </a>
