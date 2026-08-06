@@ -423,8 +423,8 @@ export default function B2BLandTour({
         </div>
 
         <h2 className={`mb-5 mt-12 ${head}`}>{t(TX.b2bLead)}</h2>
-        <div className="relative">
-          <div className="relative rounded-xl border border-gray-200 p-5 dark:border-gray-800">
+        <div>
+          <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
             <div className="flex items-center gap-4">
               {person.photo ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -445,77 +445,9 @@ export default function B2BLandTour({
               </div>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(person.desc)}</p>
-            {!withCofounder ? (
-              <>
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  className="pointer-events-none absolute inset-0 h-full w-full overflow-visible sm:hidden"
-                >
-                  <path
-                    d="M 0 25 C 9 31, 3 43, 11 52 S 4 69, 12 79 S 8 92, 13 100"
-                    fill="none"
-                    stroke="#0f766e"
-                    strokeWidth="2.5"
-                    strokeDasharray="7 9"
-                    strokeLinecap="butt"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  className="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible sm:block"
-                >
-                  <path
-                    d="M 0 23 C 8 29, 3 42, 10 51 S 4 68, 11 78 S 7 91, 12 100"
-                    fill="none"
-                    stroke="#0f766e"
-                    strokeWidth="2.5"
-                    strokeDasharray="7 9"
-                    strokeLinecap="butt"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-              </>
-            ) : null}
           </div>
           {!withCofounder ? (
-            <figure className="relative mt-5">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 100 20"
-                preserveAspectRatio="none"
-                className="pointer-events-none absolute -top-5 left-0 z-10 h-5 w-full overflow-visible sm:hidden"
-              >
-                <path
-                  d="M 13 0 C 13 7, 16 12, 15 20"
-                  fill="none"
-                  stroke="#0f766e"
-                  strokeWidth="2.5"
-                  strokeDasharray="7 9"
-                  strokeLinecap="butt"
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 100 20"
-                preserveAspectRatio="none"
-                className="pointer-events-none absolute -top-5 left-0 z-10 hidden h-5 w-full overflow-visible sm:block"
-              >
-                <path
-                  d="M 12 0 C 12 7, 14 13, 14 20"
-                  fill="none"
-                  stroke="#0f766e"
-                  strokeWidth="2.5"
-                  strokeDasharray="7 9"
-                  strokeLinecap="butt"
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
+            <figure className="mt-5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={FERDIANSAH_USA_PROOF.src}
@@ -523,50 +455,6 @@ export default function B2BLandTour({
                 loading="lazy"
                 className="block h-auto w-full rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
               />
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="pointer-events-none absolute inset-0 z-10 h-full w-full sm:hidden"
-              >
-                <defs>
-                  <marker id="founder-arrow-mobile" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
-                    <path d="M 1 1 L 7 4.5 L 1 8" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </marker>
-                </defs>
-                <path
-                  d="M 15 0 C 13 12, 20 22, 19 32 S 27 47, 31 58 S 43 72, 52 83"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="2.5"
-                  strokeDasharray="7 9"
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  markerEnd="url(#founder-arrow-mobile)"
-                />
-              </svg>
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full sm:block"
-              >
-                <defs>
-                  <marker id="founder-arrow-desktop" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
-                    <path d="M 1 1 L 7 4.5 L 1 8" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </marker>
-                </defs>
-                <path
-                  d="M 14 0 C 13 12, 18 23, 18 33 S 25 47, 29 58 S 40 71, 49 82"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="2.5"
-                  strokeDasharray="7 9"
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  markerEnd="url(#founder-arrow-desktop)"
-                />
-              </svg>
               <figcaption className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                 {t(FERDIANSAH_USA_PROOF.caption)}
               </figcaption>
