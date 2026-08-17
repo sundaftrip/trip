@@ -7,7 +7,7 @@ export default function WebsiteLoading() {
         minHeight: "100svh",
         boxSizing: "border-box",
         padding: "116px 20px 72px",
-        background: "#faf8f3",
+        background: "#FFFFFF",
         color: "#132b3a",
       }}
     >

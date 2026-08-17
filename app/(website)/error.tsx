@@ -13,7 +13,7 @@ export default function WebsiteError({
       style={{
         minHeight: "70vh",
         padding: "124px 20px 80px",
-        background: "#faf8f3",
+        background: "#FFFFFF",
         color: "#132b3a",
       }}
     >
