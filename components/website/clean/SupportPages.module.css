@@ -8,7 +8,7 @@
   --support-line: #dde5e4;
   --support-soft: #f2f6f5;
   --support-paper: #ffffff;
-  --support-canvas: #faf8f3;
+  --support-canvas: #FFFFFF;
   --at-bg: var(--support-canvas);
   --at-card: var(--support-paper);
   --at-border: var(--support-line);

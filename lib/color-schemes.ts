@@ -18,7 +18,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
     id: "sundaf",
     name: "SUNDAF",
     desc: "Petrol teal, midnight navy, dan warm ivory",
-    swatch: ["#132B3A", "#075D63", "#20B8B5", "#FAF8F3"],
+    swatch: ["#132B3A", "#075D63", "#20B8B5", "#FFFFFF"],
     colors: {
       color_hero: "#132B3A", color_heading: "#132B3A",
       color_tour_title: "#132B3A", color_blog_title: "#132B3A",
