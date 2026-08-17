@@ -169,7 +169,7 @@
   border: 1px solid rgba(232, 237, 236, 0.96);
   border-radius: 22px !important;
   background: #fff;
-  box-shadow: 0 14px 40px rgba(12, 42, 46, 0.09);
+  box-shadow: none;
 }
 
 .finderField {
@@ -1471,7 +1471,7 @@
     grid-template-columns: 1fr;
     gap: 10px;
     border-radius: 26px !important;
-    box-shadow: 0 12px 32px rgba(12, 42, 46, 0.09);
+    box-shadow: none;
   }
 
   .finderField {
