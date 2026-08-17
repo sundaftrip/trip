@@ -28,7 +28,7 @@ mark { background: rgba(32, 184, 181, 0.32); color: #041417; text-shadow: none; 
 
 :root {
   /* SUNDAF public identity: warm ivory canvas, midnight navy ink. */
-  --background: #faf8f3;
+  --background: #ffffff;
   --foreground: #132b3a;
 
   /* ── Tropical vars ── border/shadow/bg follow color scheme accent ── */

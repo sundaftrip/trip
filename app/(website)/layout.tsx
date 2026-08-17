@@ -88,9 +88,9 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     ` --site-aurora: #20B8B5;` +
     ` --site-warm-accent: #E58A68;` +
     ` --site-font-family: ${fontFamily};` +
-    ` --background: #FAF8F3;` +
+    ` --background: #FFFFFF;` +
     ` --foreground: #132B3A;` +
-    ` --site-bg: #FAF8F3;` +
+    ` --site-bg: #FFFFFF;` +
     ` --site-bg-soft: #F3EFE7;` +
     ` --site-surface: #FFFFFF;`;
 
