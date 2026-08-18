@@ -6,7 +6,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Building2, Compass, CheckCircle2, Phone, Mail, Download,
   Hotel, Bus, Utensils, Ticket, UserCheck, Route, MapPin,
-  BadgeCheck, ShieldCheck, FileCheck2,
+  BadgeCheck, ShieldCheck, FileCheck2, ExternalLink,
 } from "lucide-react";
 import { lora } from "@/lib/fonts";
 import { getProofPhotos } from "@/lib/b2bGallery";
@@ -72,24 +72,24 @@ const LEGALITY = {
     ru: "Регистрационные данные, доступные для проверки.",
   },
   desc: {
-    id: "Sundaf Trip dioperasikan oleh CV Sundaf Holiday Group. Ringkasan ini diambil langsung dari dokumen OSS dan Direktorat Jenderal Pajak yang diterbitkan pada Januari 2026.",
-    en: "Sundaf Trip is operated by CV Sundaf Holiday Group. This summary is taken directly from OSS and Directorate General of Taxes documents issued in January 2026.",
-    ru: "Sundaf Trip работает под юридическим лицом CV Sundaf Holiday Group. Эти сведения взяты непосредственно из документов OSS и Главного налогового управления, выданных в январе 2026 года.",
+    id: "Sundaf Trip dioperasikan oleh CV Sundaf Holiday Group. Ringkasan ini merujuk langsung pada dokumen OSS dan Direktorat Jenderal Pajak.",
+    en: "Sundaf Trip is operated by CV Sundaf Holiday Group. This summary refers directly to documents from OSS and the Directorate General of Taxes.",
+    ru: "Sundaf Trip работает под юридическим лицом CV Sundaf Holiday Group. Эти сведения основаны непосредственно на документах OSS и Главного налогового управления Индонезии.",
   },
   disclosure: {
-    id: "Dokumen lengkap tersedia untuk proses due diligence mitra. Ringkasan publik ini tidak menampilkan NPWP, kontak yang tercantum pada dokumen, atau kode verifikasi elektronik.",
-    en: "Full documents are available for partner due diligence. This public summary does not display tax identifiers, contact details printed on the documents, or electronic verification codes.",
-    ru: "Полные документы предоставляются партнёрам для проверки. В этом публичном резюме не показываются налоговый номер, контактные данные из документов и коды электронной проверки.",
+    id: "PDF Registrasi Usaha dapat dibuka langsung. Dokumen perpajakan lengkap tersedia untuk proses due diligence mitra melalui permintaan resmi.",
+    en: "The Business Registration PDF can be opened directly. The complete tax document is available for partner due diligence upon formal request.",
+    ru: "PDF регистрации бизнеса доступен напрямую. Полный налоговый документ предоставляется партнёрам для проверки по официальному запросу.",
   },
   request: {
-    id: "Minta Dokumen Legal Lengkap",
-    en: "Request Full Legal Documents",
-    ru: "Запросить полные юридические документы",
+    id: "Minta Dokumen Perpajakan Lengkap",
+    en: "Request Complete Tax Document",
+    ru: "Запросить полный налоговый документ",
   },
   requestSubject: {
-    id: "Permintaan dokumen legal Sundaf Trip",
-    en: "Sundaf Trip legal document request",
-    ru: "Запрос юридических документов Sundaf Trip",
+    id: "Permintaan dokumen perpajakan Sundaf Trip",
+    en: "Sundaf Trip tax document request",
+    ru: "Запрос налогового документа Sundaf Trip",
   },
 };
 
@@ -98,6 +98,7 @@ const LEGAL_DOCUMENTS: {
   title: Tri;
   issuer: Tri;
   facts: { label: Tri; value: Tri }[];
+  pdf?: { href: string; label: Tri };
 }[] = [
   {
     badge: { id: "Terdaftar OSS", en: "OSS Registered", ru: "Регистрация OSS" },
@@ -120,15 +121,11 @@ const LEGAL_DOCUMENTS: {
           ru: "79111 - Деятельность туристического агентства",
         },
       },
-      {
-        label: { id: "Status penerbitan", en: "Issuance status", ru: "Статус выдачи" },
-        value: { id: "Terbit - Risiko rendah", en: "Issued - Low risk", ru: "Выдано - Низкий риск" },
-      },
-      {
-        label: { id: "Tanggal terbit", en: "Issue date", ru: "Дата выдачи" },
-        value: { id: "16 Januari 2026", en: "16 January 2026", ru: "16 января 2026" },
-      },
     ],
+    pdf: {
+      href: "/legal/nib-cv-sundaf-holiday-group.pdf",
+      label: { id: "Buka PDF NIB", en: "Open NIB PDF", ru: "Открыть PDF NIB" },
+    },
   },
   {
     badge: { id: "Terdaftar DJP", en: "Registered with DJP", ru: "Регистрация в DJP" },
@@ -146,10 +143,6 @@ const LEGAL_DOCUMENTS: {
       {
         label: { id: "Jenis wajib pajak", en: "Taxpayer type", ru: "Тип налогоплательщика" },
         value: { id: "Badan", en: "Corporate entity", ru: "Юридическое лицо" },
-      },
-      {
-        label: { id: "Terdaftar sejak", en: "Registered since", ru: "Дата регистрации" },
-        value: { id: "10 Januari 2026", en: "10 January 2026", ru: "10 января 2026" },
       },
       {
         label: { id: "Nomor SKT", en: "Certificate reference", ru: "Номер справки" },
@@ -498,6 +491,17 @@ export default function B2BLandTour({
                         </div>
                       ))}
                     </dl>
+
+                    {document.pdf ? (
+                      <a
+                        href={document.pdf.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-auto inline-flex items-center justify-center gap-2 pt-5 text-sm font-bold text-blue-700 transition hover:text-blue-900 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600 dark:text-blue-300 dark:hover:text-blue-100"
+                      >
+                        <ExternalLink size={16} aria-hidden="true" /> {t(document.pdf.label)}
+                      </a>
+                    ) : null}
                   </article>
                 ))}
               </div>

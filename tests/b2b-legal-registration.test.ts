@@ -16,7 +16,9 @@ test("B2B page presents verified OSS and DJP registration summaries", () => {
   assert.match(source, /1601260060842/);
   assert.match(source, /79111 - Aktivitas Agen Perjalanan Wisata/);
   assert.match(source, /S-00268\/SKT-WP-CT\/KPP\.0401\/2026/);
-  assert.match(source, /10 Januari 2026/);
+  assert.doesNotMatch(source, /Status penerbitan|Terbit - Risiko rendah/);
+  assert.doesNotMatch(source, /Tanggal terbit|16 Januari 2026/);
+  assert.doesNotMatch(source, /Terdaftar sejak|10 Januari 2026/);
 });
 
 test("legal registration section is limited to B2B and excluded from partner", () => {
@@ -29,13 +31,14 @@ test("legal registration section is limited to B2B and excluded from partner", (
   assert.match(partnerPage, /<B2BLandTour withCofounder \/>/);
 });
 
-test("raw legal documents are not shipped as public assets", () => {
-  for (const fileName of [
-    "nib-cv-sundaf-holiday-group.pdf",
-    "skt-sundaf-holiday-group.pdf",
-  ]) {
-    assert.equal(existsSync(path.join(repositoryRoot, "public/legal", fileName)), false);
-  }
+test("only the NIB business-registration PDF is publicly accessible", () => {
+  const source = readSource("components/website/B2BLandTour.tsx");
+  const nibPdf = path.join(repositoryRoot, "public/legal/nib-cv-sundaf-holiday-group.pdf");
 
-  assert.doesNotMatch(readSource("components/website/B2BLandTour.tsx"), /\/legal\/(?:nib|skt)[^"']*\.pdf/i);
+  assert.equal(existsSync(nibPdf), true);
+  assert.equal(readFileSync(nibPdf).subarray(0, 5).toString(), "%PDF-");
+  assert.match(source, /\/legal\/nib-cv-sundaf-holiday-group\.pdf/);
+
+  assert.equal(existsSync(path.join(repositoryRoot, "public/legal/skt-sundaf-holiday-group.pdf")), false);
+  assert.doesNotMatch(source, /\/legal\/skt[^"']*\.pdf/i);
 });
