@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
   images: {
+    // Preserve Next's default no-query rule for ordinary local assets, while
+    // allowing the content-hash query used to invalidate the B2B gallery cache.
+    localPatterns: [
+      { pathname: "/b2b-gallery/**" },
+      { pathname: "/**", search: "" },
+    ],
     // Next generates viewport-aware srcset candidates for local and remote
     // assets. Cloudinary URLs may still carry source-level quality transforms,
     // while the browser receives only the size selected for its viewport/DPR.
