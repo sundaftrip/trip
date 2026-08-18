@@ -6,6 +6,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Building2, Compass, CheckCircle2, Phone, Mail, Download,
   Hotel, Bus, Utensils, Ticket, UserCheck, Route, MapPin,
+  BadgeCheck, ShieldCheck, FileCheck2,
 } from "lucide-react";
 import { lora } from "@/lib/fonts";
 import { getProofPhotos } from "@/lib/b2bGallery";
@@ -58,6 +59,109 @@ const POSITIONING = {
     ru: "До выезда мы фиксируем объём услуг, расчёт, поставщиков и порядок эскалации. Все неподтверждённые позиции обозначаются заранее и не скрываются внутри пакета.",
   },
 };
+
+const LEGALITY = {
+  eyebrow: {
+    id: "Registrasi Usaha & Pajak",
+    en: "Business & Tax Registration",
+    ru: "Юридическая и налоговая регистрация",
+  },
+  title: {
+    id: "Identitas usaha yang dapat diverifikasi.",
+    en: "A verifiable business identity.",
+    ru: "Регистрационные данные, доступные для проверки.",
+  },
+  desc: {
+    id: "Sundaf Trip dioperasikan oleh CV Sundaf Holiday Group. Ringkasan ini diambil langsung dari dokumen OSS dan Direktorat Jenderal Pajak yang diterbitkan pada Januari 2026.",
+    en: "Sundaf Trip is operated by CV Sundaf Holiday Group. This summary is taken directly from OSS and Directorate General of Taxes documents issued in January 2026.",
+    ru: "Sundaf Trip работает под юридическим лицом CV Sundaf Holiday Group. Эти сведения взяты непосредственно из документов OSS и Главного налогового управления, выданных в январе 2026 года.",
+  },
+  disclosure: {
+    id: "Dokumen lengkap tersedia untuk proses due diligence mitra. Ringkasan publik ini tidak menampilkan NPWP, kontak yang tercantum pada dokumen, atau kode verifikasi elektronik.",
+    en: "Full documents are available for partner due diligence. This public summary does not display tax identifiers, contact details printed on the documents, or electronic verification codes.",
+    ru: "Полные документы предоставляются партнёрам для проверки. В этом публичном резюме не показываются налоговый номер, контактные данные из документов и коды электронной проверки.",
+  },
+  request: {
+    id: "Minta Dokumen Legal Lengkap",
+    en: "Request Full Legal Documents",
+    ru: "Запросить полные юридические документы",
+  },
+  requestSubject: {
+    id: "Permintaan dokumen legal Sundaf Trip",
+    en: "Sundaf Trip legal document request",
+    ru: "Запрос юридических документов Sundaf Trip",
+  },
+};
+
+const LEGAL_DOCUMENTS: {
+  badge: Tri;
+  title: Tri;
+  issuer: Tri;
+  facts: { label: Tri; value: Tri }[];
+}[] = [
+  {
+    badge: { id: "Terdaftar OSS", en: "OSS Registered", ru: "Регистрация OSS" },
+    title: { id: "Registrasi Usaha", en: "Business Registration", ru: "Регистрация бизнеса" },
+    issuer: { id: "OSS Republik Indonesia", en: "Indonesia OSS", ru: "OSS Республики Индонезия" },
+    facts: [
+      {
+        label: { id: "Nama legal", en: "Legal name", ru: "Юридическое название" },
+        value: { id: "CV SUNDAF HOLIDAY GROUP", en: "CV SUNDAF HOLIDAY GROUP", ru: "CV SUNDAF HOLIDAY GROUP" },
+      },
+      {
+        label: { id: "NIB", en: "Business ID (NIB)", ru: "Регистрационный номер NIB" },
+        value: { id: "1601260060842", en: "1601260060842", ru: "1601260060842" },
+      },
+      {
+        label: { id: "KBLI", en: "Classification (KBLI)", ru: "Классификация (KBLI)" },
+        value: {
+          id: "79111 - Aktivitas Agen Perjalanan Wisata",
+          en: "79111 - Travel Agency Activities",
+          ru: "79111 - Деятельность туристического агентства",
+        },
+      },
+      {
+        label: { id: "Status penerbitan", en: "Issuance status", ru: "Статус выдачи" },
+        value: { id: "Terbit - Risiko rendah", en: "Issued - Low risk", ru: "Выдано - Низкий риск" },
+      },
+      {
+        label: { id: "Tanggal terbit", en: "Issue date", ru: "Дата выдачи" },
+        value: { id: "16 Januari 2026", en: "16 January 2026", ru: "16 января 2026" },
+      },
+    ],
+  },
+  {
+    badge: { id: "Terdaftar DJP", en: "Registered with DJP", ru: "Регистрация в DJP" },
+    title: { id: "Registrasi Perpajakan Badan", en: "Corporate Tax Registration", ru: "Налоговая регистрация организации" },
+    issuer: {
+      id: "Direktorat Jenderal Pajak",
+      en: "Directorate General of Taxes",
+      ru: "Главное налоговое управление Индонезии",
+    },
+    facts: [
+      {
+        label: { id: "Nama pada SKT", en: "Name on certificate", ru: "Название в справке" },
+        value: { id: "SUNDAF HOLIDAY GROUP", en: "SUNDAF HOLIDAY GROUP", ru: "SUNDAF HOLIDAY GROUP" },
+      },
+      {
+        label: { id: "Jenis wajib pajak", en: "Taxpayer type", ru: "Тип налогоплательщика" },
+        value: { id: "Badan", en: "Corporate entity", ru: "Юридическое лицо" },
+      },
+      {
+        label: { id: "Terdaftar sejak", en: "Registered since", ru: "Дата регистрации" },
+        value: { id: "10 Januari 2026", en: "10 January 2026", ru: "10 января 2026" },
+      },
+      {
+        label: { id: "Nomor SKT", en: "Certificate reference", ru: "Номер справки" },
+        value: {
+          id: "S-00268/SKT-WP-CT/KPP.0401/2026",
+          en: "S-00268/SKT-WP-CT/KPP.0401/2026",
+          ru: "S-00268/SKT-WP-CT/KPP.0401/2026",
+        },
+      },
+    ],
+  },
+];
 
 const COVERAGE: { Icon: LucideIcon; title: Tri; desc: Tri }[] = [
   {
@@ -349,6 +453,70 @@ export default function B2BLandTour({
             <p className="mt-1 leading-relaxed text-gray-600 dark:text-gray-400">{t(POSITIONING.desc)}</p>
           </div>
         </div>
+
+        {!withCofounder ? (
+          <section
+            aria-labelledby="b2b-legal-registration"
+            className="mt-8 overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-white via-blue-50/60 to-slate-50 shadow-sm dark:border-blue-950 dark:from-slate-950 dark:via-blue-950/25 dark:to-slate-900"
+          >
+            <div className="p-6 sm:p-7">
+              <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-700 dark:border-blue-900 dark:bg-slate-950 dark:text-blue-300">
+                <BadgeCheck size={14} aria-hidden="true" /> {t(LEGALITY.eyebrow)}
+              </span>
+              <h2
+                id="b2b-legal-registration"
+                className={`mt-4 text-2xl font-bold leading-tight text-gray-900 dark:text-white ${lora.className}`}
+              >
+                {t(LEGALITY.title)}
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(LEGALITY.desc)}</p>
+
+              <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                {LEGAL_DOCUMENTS.map((document) => (
+                  <article
+                    key={t(document.title)}
+                    className="flex h-full flex-col rounded-2xl border border-white/80 bg-white/90 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/85"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                          <ShieldCheck size={12} aria-hidden="true" /> {t(document.badge)}
+                        </span>
+                        <h3 className="mt-3 text-lg font-bold text-gray-950 dark:text-white">{t(document.title)}</h3>
+                        <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{t(document.issuer)}</p>
+                      </div>
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                        <FileCheck2 size={20} aria-hidden="true" />
+                      </div>
+                    </div>
+
+                    <dl className="mt-5 divide-y divide-gray-100 border-y border-gray-100 dark:divide-gray-800 dark:border-gray-800">
+                      {document.facts.map((fact) => (
+                        <div key={t(fact.label)} className="grid gap-1 py-3 sm:grid-cols-[8.25rem_1fr] sm:gap-3">
+                          <dt className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t(fact.label)}</dt>
+                          <dd className="break-words text-sm font-semibold leading-relaxed text-gray-950 dark:text-white">{t(fact.value)}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </article>
+                ))}
+              </div>
+
+              <div className="mt-5 flex flex-col gap-4 rounded-2xl border border-dashed border-blue-200 bg-blue-50/80 p-5 dark:border-blue-900 dark:bg-blue-950/20 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck size={18} className="mt-0.5 shrink-0 text-blue-700 dark:text-blue-300" aria-hidden="true" />
+                  <p className="max-w-2xl text-xs leading-relaxed text-gray-600 dark:text-gray-400">{t(LEGALITY.disclosure)}</p>
+                </div>
+                <a
+                  href={`mailto:info@sundaftrip.com?subject=${encodeURIComponent(t(LEGALITY.requestSubject))}`}
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:bg-white dark:text-gray-950 dark:hover:bg-blue-100"
+                >
+                  <Mail size={16} aria-hidden="true" /> {t(LEGALITY.request)}
+                </a>
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         <h2 className={`mb-5 mt-12 ${head}`}>{t(TX.coverageHead)}</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
