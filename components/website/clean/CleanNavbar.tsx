@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  type MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -29,6 +36,19 @@ const desktopLinks = [
   ...secondaryLinks,
 ];
 
+const desktopActionLink = { href: "/tours", label: "Lihat jadwal & biaya" };
+const desktopNavigationLinks = [...desktopLinks, desktopActionLink];
+
+function matchesPath(pathname: string, href: string) {
+  const hrefPath = href.split("?")[0];
+  return pathname === hrefPath || (hrefPath !== "/" && pathname.startsWith(`${hrefPath}/`));
+}
+
+function getDesktopSelection(pathname: string) {
+  return desktopNavigationLinks.find((link) => matchesPath(pathname, link.href))?.href
+    ?? desktopActionLink.href;
+}
+
 const focusableSelector = [
   "a[href]",
   "button:not([disabled])",
@@ -42,19 +62,44 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
   const [open, setOpen] = useState(false);
   const [destinationsOpen, setDestinationsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const [selectedDesktopHref, setSelectedDesktopHref] = useState(() => getDesktopSelection(pathname));
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const headerShellRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
+  const desktopNavRef = useRef<HTMLElement>(null);
+  const desktopIndicatorRef = useRef<HTMLSpanElement>(null);
+  const desktopLinkRefs = useRef(new Map<string, HTMLAnchorElement>());
   const logoSrc = cldFit(logo || "/logo.png", 320);
   const waHref = buildWhatsAppHref(whatsapp, "Halo, saya ingin konsultasi perjalanan bersama Sundaf Trip.");
   const consultationHref = waHref || "/contact";
   const showHairline = pathname !== "/" || scrolled;
 
   function isActive(href: string) {
-    const hrefPath = href.split("?")[0];
-    return pathname === hrefPath || (hrefPath !== "/" && pathname.startsWith(`${hrefPath}/`));
+    return matchesPath(pathname, href);
+  }
+
+  const updateDesktopIndicator = useCallback(() => {
+    const indicator = desktopIndicatorRef.current;
+    const selectedLink = desktopLinkRefs.current.get(selectedDesktopHref);
+    if (!indicator || !selectedLink || selectedLink.offsetWidth === 0) return;
+
+    indicator.style.setProperty("--desktop-indicator-x", `${selectedLink.offsetLeft}px`);
+    indicator.style.setProperty("--desktop-indicator-width", `${selectedLink.offsetWidth}px`);
+    indicator.dataset.ready = "true";
+  }, [selectedDesktopHref]);
+
+  function handleDesktopLinkClick(href: string, event: ReactMouseEvent<HTMLAnchorElement>) {
+    if (
+      event.button === 0
+      && !event.altKey
+      && !event.ctrlKey
+      && !event.metaKey
+      && !event.shiftKey
+    ) {
+      setSelectedDesktopHref(href);
+    }
   }
 
   function closeDrawer() {
@@ -67,6 +112,33 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
     window.addEventListener("scroll", updateScrolled, { passive: true });
     return () => window.removeEventListener("scroll", updateScrolled);
   }, []);
+
+  useEffect(() => {
+    const syncFrame = window.requestAnimationFrame(() => {
+      setSelectedDesktopHref(getDesktopSelection(pathname));
+    });
+    return () => window.cancelAnimationFrame(syncFrame);
+  }, [pathname]);
+
+  useLayoutEffect(() => {
+    updateDesktopIndicator();
+  }, [updateDesktopIndicator]);
+
+  useEffect(() => {
+    const nav = desktopNavRef.current;
+    if (!nav) return;
+
+    const observer = new ResizeObserver(updateDesktopIndicator);
+    observer.observe(nav);
+    desktopLinkRefs.current.forEach((link) => observer.observe(link));
+    window.addEventListener("resize", updateDesktopIndicator);
+    document.fonts.ready.then(updateDesktopIndicator);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateDesktopIndicator);
+    };
+  }, [updateDesktopIndicator]);
 
   useEffect(() => {
     const closeFrame = window.requestAnimationFrame(() => setOpen(false));
@@ -182,18 +254,29 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
         </Link>
 
         <div className={styles.desktopArea}>
-          <nav className={styles.desktopNav} aria-label="Navigasi utama">
-            {desktopLinks.map((link) => (
+          <nav ref={desktopNavRef} className={styles.desktopNav} aria-label="Navigasi utama">
+            <span
+              ref={desktopIndicatorRef}
+              className={styles.desktopNavIndicator}
+              aria-hidden="true"
+            />
+            {desktopNavigationLinks.map((link) => (
               <Link
+                ref={(node) => {
+                  if (node) desktopLinkRefs.current.set(link.href, node);
+                  else desktopLinkRefs.current.delete(link.href);
+                }}
+                className={`${styles.desktopNavLink} ${link.href === desktopActionLink.href ? styles.desktopAction : ""}`}
                 key={link.href}
                 href={link.href}
                 aria-current={isActive(link.href) ? "page" : undefined}
+                data-selected={selectedDesktopHref === link.href ? "true" : undefined}
+                onClick={(event) => handleDesktopLinkClick(link.href, event)}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <Link className={styles.desktopAction} href="/tours">Lihat jadwal &amp; biaya</Link>
         </div>
 
         <div className={styles.headerActions}>
