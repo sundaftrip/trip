@@ -2,7 +2,7 @@ export const HOME_COPY = {
   heroEyebrow: "SPESIALIS RUSIA, ASIA TENGAH & AURORA",
   heroTitle: "Pergi jauh. Pulang bawa cerita yang berbeda.",
   heroBody:
-    "Rusia, Asia Tengah, dan aurora bukan rute yang harus kamu tebak sendiri. Visa, cuaca, rute, dan koordinasi kami siapkan dari awal—supaya kamu bisa menikmati perjalanannya.",
+    "Rusia, Asia Tengah, dan aurora bukan rute yang harus kamu tebak sendiri. Visa, cuaca, rute, dan koordinasi kami siapkan dari awal supaya kamu bisa menikmati perjalanannya.",
 } as const;
 
 export const LEGACY_HOME_COPY = {
