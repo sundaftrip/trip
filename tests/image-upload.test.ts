@@ -64,6 +64,10 @@ test("strict data URI parser rejects parameters, whitespace, malformed base64, a
 });
 
 test("admin folder resolver permits current clients and the exact server-configured default", () => {
+  assert.ok(
+    (ADMIN_UPLOAD_FOLDERS as readonly string[]).includes("tours/itinerary"),
+    "itinerary day uploads must use an allowed admin folder",
+  );
   for (const folder of ADMIN_UPLOAD_FOLDERS) {
     assert.equal(resolveAdminUploadFolder(folder, "custom/default"), folder);
   }

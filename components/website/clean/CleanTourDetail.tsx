@@ -21,7 +21,10 @@ import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
-import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
+import {
+  resolveItineraryDayImage,
+  type ItineraryDisplayDay,
+} from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import TourBookingExperience from "./TourBookingExperience";
@@ -276,7 +279,7 @@ export default function CleanTourDetail({
     description:
       cleanParagraphs(item.description)[0]
       || `Lihat aktivitas dan perpindahan untuk hari ke-${item.day}.`,
-    image: item.image || heroImages[index % heroImages.length],
+    image: resolveItineraryDayImage(item, index, heroImages),
   }));
   const destinationSlug = getDestinationSlug(tour);
   const destinationHref =

@@ -27,6 +27,21 @@ interface SourceItineraryDay {
   image?: string;
 }
 
+const DEFAULT_ITINERARY_IMAGE = "/about-gallery-md/01-aurora.webp";
+
+export function resolveItineraryDayImage(
+  day: Pick<ItineraryDisplayDay, "image">,
+  index: number,
+  fallbackImages: readonly string[],
+) {
+  const customImage = day.image?.trim();
+  if (customImage) return customImage;
+  if (fallbackImages.length === 0) return DEFAULT_ITINERARY_IMAGE;
+
+  const safeIndex = Math.max(0, Math.trunc(index));
+  return fallbackImages[safeIndex % fallbackImages.length] || DEFAULT_ITINERARY_IMAGE;
+}
+
 const MEAL_CODES: Record<string, string> = {
   B: "Sarapan",
   L: "Makan siang",

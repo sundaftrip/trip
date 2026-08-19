@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildItineraryDisplay } from "../lib/itinerary-insights";
+import {
+  buildItineraryDisplay,
+  resolveItineraryDayImage,
+} from "../lib/itinerary-insights";
 
 test("preserves optional itinerary day image for public highlight cards", () => {
   const day = buildItineraryDisplay({
@@ -11,6 +14,10 @@ test("preserves optional itinerary day image for public highlight cards", () => 
   });
 
   assert.equal(day.image, "https://res.cloudinary.com/demo/image/upload/day-3.jpg");
+  assert.equal(
+    resolveItineraryDayImage(day, 2, ["/gallery/one.webp", "/gallery/two.webp"]),
+    day.image,
+  );
 });
 
 test("omits blank itinerary day image", () => {
@@ -22,4 +29,15 @@ test("omits blank itinerary day image", () => {
   });
 
   assert.equal(day.image, undefined);
+  assert.equal(
+    resolveItineraryDayImage(day, 3, ["/gallery/one.webp", "/gallery/two.webp"]),
+    "/gallery/two.webp",
+  );
+});
+
+test("uses a safe local image when neither a day image nor tour gallery exists", () => {
+  assert.equal(
+    resolveItineraryDayImage({}, 0, []),
+    "/about-gallery-md/01-aurora.webp",
+  );
 });
