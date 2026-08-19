@@ -55,7 +55,7 @@ export default async function EditTourPage({
         notes: tour.notes ?? undefined,
         description: tour.description ?? undefined,
         visaInfo: tour.visaInfo ?? undefined,
-        itinerary: (tour.itinerary as { day: number; title: string; description: string }[]) ?? [],
+        itinerary: (tour.itinerary as { day: number; title: string; description: string; image?: string }[]) ?? [],
         addOns: (tour.addOns as { name: string; price: number }[]) ?? [],
         paymentPlan: tour.paymentPlan as TourData["paymentPlan"],
       }} />

@@ -16,6 +16,7 @@ export interface ItineraryDisplayDay {
   day: number;
   title: string;
   description: string;
+  image?: string;
   insights: ItineraryInsight[];
 }
 
@@ -23,6 +24,22 @@ interface SourceItineraryDay {
   day: number;
   title: string;
   description: string;
+  image?: string;
+}
+
+const DEFAULT_ITINERARY_IMAGE = "/about-gallery-md/01-aurora.webp";
+
+export function resolveItineraryDayImage(
+  day: Pick<ItineraryDisplayDay, "image">,
+  index: number,
+  fallbackImages: readonly string[],
+) {
+  const customImage = day.image?.trim();
+  if (customImage) return customImage;
+  if (fallbackImages.length === 0) return DEFAULT_ITINERARY_IMAGE;
+
+  const safeIndex = Math.max(0, Math.trunc(index));
+  return fallbackImages[safeIndex % fallbackImages.length] || DEFAULT_ITINERARY_IMAGE;
 }
 
 const MEAL_CODES: Record<string, string> = {
@@ -231,6 +248,7 @@ export function buildItineraryDisplay(day: SourceItineraryDay): ItineraryDisplay
     day: day.day,
     title: removeMealCodeSuffix(day.title),
     description: stripLeadingItineraryMeta(day.description),
+    image: typeof day.image === "string" && day.image.trim() ? day.image.trim() : undefined,
     insights,
   };
 }

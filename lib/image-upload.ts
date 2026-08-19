@@ -10,6 +10,7 @@ export const ADMIN_UPLOAD_FOLDERS = [
   "testimonials",
   "tours/hero",
   "tours/gallery",
+  "tours/itinerary",
   "tours/portfolio",
 ] as const;
 
