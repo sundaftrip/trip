@@ -6,7 +6,7 @@ import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
 
-type ItineraryItem = { day: number; title: string; description: string };
+type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
 type AddOnDraft = { name: string; price: string | number; desc: string };
 type PaymentPlanMode = "auto" | "manual" | "hidden";
@@ -92,7 +92,7 @@ function getNextItineraryDay(items?: ItineraryItem[]) {
 }
 
 function emptyItineraryItem(items?: ItineraryItem[]): ItineraryItem {
-  return { day: getNextItineraryDay(items), title: "", description: "" };
+  return { day: getNextItineraryDay(items), title: "", description: "", image: "" };
 }
 
 function emptyAddOnItem(): AddOnDraft {
@@ -335,11 +335,12 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         setExclusionInput(typeof draft.exclusionInput === "string" ? draft.exclusionInput : "");
         setEditingInclusionIdx(readNumberOrNull(draft.editingInclusionIdx));
         setEditingExclusionIdx(readNumberOrNull(draft.editingExclusionIdx));
-        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description
+        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description || draft.itineraryItem?.image
           ? {
               day: Number(draft.itineraryItem.day) || getNextItineraryDay(restoredForm.itinerary),
               title: draft.itineraryItem.title ?? "",
               description: draft.itineraryItem.description ?? "",
+              image: draft.itineraryItem.image ?? "",
             }
           : emptyItineraryItem(restoredForm.itinerary)
         );
@@ -519,6 +520,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       day: Number(itineraryItem.day) || getNextItineraryDay(form.itinerary),
       title: itineraryItem.title.trim(),
       description: itineraryItem.description.trim(),
+      image: itineraryItem.image?.trim() || undefined,
     };
     if (!item.title) return;
 
@@ -968,13 +970,14 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.title}</p>
                   {item.description && <p className="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{item.description}</p>}
+                  {item.image && <p className="mt-1 truncate text-[11px] text-blue-500 dark:text-blue-300">Gambar sorotan: {item.image}</p>}
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   <button
                     type="button"
                     title="Edit"
                     onClick={() => {
-                      setItineraryItem({ day: item.day, title: item.title, description: item.description });
+                      setItineraryItem({ day: item.day, title: item.title, description: item.description, image: item.image ?? "" });
                       setEditingItineraryIdx(i);
                     }}
                     className="inline-flex h-9 w-9 items-center justify-center rounded text-blue-500 transition-colors hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30">
@@ -1122,44 +1125,63 @@ function ItineraryItemFields({
   const SubmitIcon = submitTone === "add" ? Plus : Check;
 
   return (
-    <div data-itinerary-fields className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
-      <input
-        type="number"
-        min={1}
-        placeholder="Hari"
-        className="input text-center"
-        value={item.day}
-        onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
-      />
-      <input
-        placeholder="Judul"
-        className="input"
-        value={item.title}
-        onChange={(e) => onChange({ ...item, title: e.target.value })}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            const descriptionInput = e.currentTarget
-              .closest("[data-itinerary-fields]")
-              ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
-            descriptionInput?.focus();
-          }
-        }}
-      />
-      <div className="flex flex-col gap-2 sm:flex-row">
+    <div data-itinerary-fields className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
         <input
-          data-itinerary-description
-          placeholder="Deskripsi"
-          className="input min-w-0 flex-1"
-          value={item.description}
-          onChange={(e) => onChange({ ...item, description: e.target.value })}
+          type="number"
+          min={1}
+          placeholder="Hari"
+          className="input text-center"
+          value={item.day}
+          onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
+        />
+        <input
+          placeholder="Judul"
+          className="input"
+          value={item.title}
+          onChange={(e) => onChange({ ...item, title: e.target.value })}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              onSubmit();
+              const descriptionInput = e.currentTarget
+                .closest("[data-itinerary-fields]")
+                ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
+              descriptionInput?.focus();
             }
           }}
         />
+        <input
+          data-itinerary-description
+          placeholder="Deskripsi"
+          className="input min-w-0"
+          value={item.description}
+          onChange={(e) => onChange({ ...item, description: e.target.value })}
+        />
+      </div>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="space-y-2">
+          <ImageUpload
+            value={item.image ?? ""}
+            onChange={(url) => onChange({ ...item, image: url })}
+            folder="tours/gallery"
+            buttonLabel="Upload Gambar Sorotan"
+          />
+          <input
+            placeholder="URL gambar sorotan hari (opsional)"
+            className="input"
+            value={item.image ?? ""}
+            onChange={(e) => onChange({ ...item, image: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onSubmit();
+              }
+            }}
+          />
+          <p className="text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
+            Gambar ini dipakai untuk kartu “Yang akan ditemui di perjalanan”. Jika kosong, website memakai gambar hero/galeri seperti sebelumnya.
+          </p>
+        </div>
         <div className="flex gap-2 sm:shrink-0">
           {onCancel && (
             <button

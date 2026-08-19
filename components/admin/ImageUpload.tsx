@@ -8,6 +8,7 @@ interface Props {
   onChange: (url: string) => void;
   folder?: string;
   multiple?: boolean;
+  buttonLabel?: string;
 }
 
 // Compress & resize image to max 1600px, JPEG quality 85% — keeps under Vercel's 4.5MB limit
@@ -36,7 +37,7 @@ async function compressImage(file: File): Promise<string> {
   });
 }
 
-export default function ImageUpload({ value, onChange, folder = "travel", multiple = false }: Props) {
+export default function ImageUpload({ value, onChange, folder = "travel", multiple = false, buttonLabel }: Props) {
   const [mode, setMode] = useState<"upload" | "link">("upload");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -167,7 +168,7 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
                 className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition disabled:opacity-60"
               >
                 <Upload size={16} />
-                {uploading ? progress || "Mengupload..." : multiple ? "Upload Gambar" : "Upload Gambar Hero"}
+                {uploading ? progress || "Mengupload..." : (buttonLabel ?? (multiple ? "Upload Gambar" : "Upload Gambar Hero"))}
               </button>
             </div>
           ) : (
