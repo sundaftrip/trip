@@ -276,7 +276,7 @@ export default function CleanTourDetail({
     description:
       cleanParagraphs(item.description)[0]
       || `Lihat aktivitas dan perpindahan untuk hari ke-${item.day}.`,
-    image: heroImages[index % heroImages.length],
+    image: item.image || heroImages[index % heroImages.length],
   }));
   const destinationSlug = getDestinationSlug(tour);
   const destinationHref =

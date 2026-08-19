@@ -477,7 +477,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     WebkitBoxDecorationBreak: "clone",
   };
 
-  const rawItinerary = (tour.itinerary as { day: number; title: string; description: string }[] | null) ?? [];
+  const rawItinerary = (tour.itinerary as { day: number; title: string; description: string; image?: string }[] | null) ?? [];
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
   const hotelInfo = tour.hotel && typeof tour.hotel === "object" && !Array.isArray(tour.hotel)
     ? Object.fromEntries(

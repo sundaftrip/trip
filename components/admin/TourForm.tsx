@@ -6,7 +6,7 @@ import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
 
-type ItineraryItem = { day: number; title: string; description: string };
+type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
 type AddOnDraft = { name: string; price: string | number; desc: string };
 type PaymentPlanMode = "auto" | "manual" | "hidden";
@@ -92,7 +92,7 @@ function getNextItineraryDay(items?: ItineraryItem[]) {
 }
 
 function emptyItineraryItem(items?: ItineraryItem[]): ItineraryItem {
-  return { day: getNextItineraryDay(items), title: "", description: "" };
+  return { day: getNextItineraryDay(items), title: "", description: "", image: "" };
 }
 
 function emptyAddOnItem(): AddOnDraft {
@@ -234,6 +234,7 @@ function hasDraftWork(draft: TourFormDraft, initialForm: TourData) {
     draft.exclusionInput.trim() !== "" ||
     draft.itineraryItem.title.trim() !== "" ||
     draft.itineraryItem.description.trim() !== "" ||
+    (draft.itineraryItem.image?.trim() ?? "") !== "" ||
     draft.addOnItem.name.trim() !== "" ||
     draft.addOnItem.desc.trim() !== "" ||
     String(draft.addOnItem.price).trim() !== ""
@@ -335,11 +336,12 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         setExclusionInput(typeof draft.exclusionInput === "string" ? draft.exclusionInput : "");
         setEditingInclusionIdx(readNumberOrNull(draft.editingInclusionIdx));
         setEditingExclusionIdx(readNumberOrNull(draft.editingExclusionIdx));
-        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description
+        setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description || draft.itineraryItem?.image
           ? {
               day: Number(draft.itineraryItem.day) || getNextItineraryDay(restoredForm.itinerary),
               title: draft.itineraryItem.title ?? "",
               description: draft.itineraryItem.description ?? "",
+              image: draft.itineraryItem.image ?? "",
             }
           : emptyItineraryItem(restoredForm.itinerary)
         );
@@ -519,6 +521,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       day: Number(itineraryItem.day) || getNextItineraryDay(form.itinerary),
       title: itineraryItem.title.trim(),
       description: itineraryItem.description.trim(),
+      image: itineraryItem.image?.trim() || undefined,
     };
     if (!item.title) return;
 
@@ -968,13 +971,14 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.title}</p>
                   {item.description && <p className="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{item.description}</p>}
+                  {item.image && <p className="mt-1 text-[11px] font-medium text-blue-600 dark:text-blue-300">Gambar sorotan terpasang</p>}
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   <button
                     type="button"
                     title="Edit"
                     onClick={() => {
-                      setItineraryItem({ day: item.day, title: item.title, description: item.description });
+                      setItineraryItem({ day: item.day, title: item.title, description: item.description, image: item.image ?? "" });
                       setEditingItineraryIdx(i);
                     }}
                     className="inline-flex h-9 w-9 items-center justify-center rounded text-blue-500 transition-colors hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30">
@@ -1122,64 +1126,78 @@ function ItineraryItemFields({
   const SubmitIcon = submitTone === "add" ? Plus : Check;
 
   return (
-    <div data-itinerary-fields className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
-      <input
-        type="number"
-        min={1}
-        placeholder="Hari"
-        className="input text-center"
-        value={item.day}
-        onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
-      />
-      <input
-        placeholder="Judul"
-        className="input"
-        value={item.title}
-        onChange={(e) => onChange({ ...item, title: e.target.value })}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            const descriptionInput = e.currentTarget
-              .closest("[data-itinerary-fields]")
-              ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
-            descriptionInput?.focus();
-          }
-        }}
-      />
-      <div className="flex flex-col gap-2 sm:flex-row">
+    <div data-itinerary-fields className="space-y-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
         <input
-          data-itinerary-description
-          placeholder="Deskripsi"
-          className="input min-w-0 flex-1"
-          value={item.description}
-          onChange={(e) => onChange({ ...item, description: e.target.value })}
+          type="number"
+          min={1}
+          placeholder="Hari"
+          className="input text-center"
+          value={item.day}
+          onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
+        />
+        <input
+          placeholder="Judul"
+          className="input"
+          value={item.title}
+          onChange={(e) => onChange({ ...item, title: e.target.value })}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              onSubmit();
+              const descriptionInput = e.currentTarget
+                .closest("[data-itinerary-fields]")
+                ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
+              descriptionInput?.focus();
             }
           }}
         />
-        <div className="flex gap-2 sm:shrink-0">
-          {onCancel && (
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            data-itinerary-description
+            placeholder="Deskripsi"
+            className="input min-w-0 flex-1"
+            value={item.description}
+            onChange={(e) => onChange({ ...item, description: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onSubmit();
+              }
+            }}
+          />
+          <div className="flex gap-2 sm:shrink-0">
+            {onCancel && (
+              <button
+                type="button"
+                onClick={onCancel}
+                className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 sm:flex-none">
+                <X size={15} />
+                {submitTone === "save" ? "Batal" : "Reset"}
+              </button>
+            )}
             <button
               type="button"
-              onClick={onCancel}
-              className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 sm:flex-none">
-              <X size={15} />
-              {submitTone === "save" ? "Batal" : "Reset"}
+              onClick={onSubmit}
+              className={`inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition-colors sm:flex-none ${
+                submitTone === "add" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+              }`}>
+              <SubmitIcon size={15} />
+              {submitLabel}
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onSubmit}
-            className={`inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition-colors sm:flex-none ${
-              submitTone === "add" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
-            }`}>
-            <SubmitIcon size={15} />
-            {submitLabel}
-          </button>
+          </div>
         </div>
+      </div>
+      <div>
+        <label className="label mb-2 text-xs">Gambar Sorotan Hari Ini</label>
+        <ImageUpload
+          value={item.image ?? ""}
+          onChange={(url) => onChange({ ...item, image: url })}
+          folder="tours/itinerary"
+          uploadLabel="Upload Gambar Hari"
+        />
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Dipakai pada rail &quot;Yang akan ditemui di perjalanan&quot;. Jika kosong, sistem tetap memakai gambar hero/galeri sebagai fallback.
+        </p>
       </div>
     </div>
   );
