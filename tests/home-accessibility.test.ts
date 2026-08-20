@@ -24,10 +24,12 @@ test("homepage finder labels use the accessible muted color token", () => {
   assert.match(finderLabelRule[1], /color:\s*var\(--home-muted\)/);
 });
 
-test("homepage tour links keep the visible status and title in their name", () => {
+test("homepage tour links derive their name from visible status and title", () => {
+  assert.doesNotMatch(tourRailSource, /aria-label=\{`[^`]*statusLabel\(tour\)/);
+  assert.match(tourRailSource, /alt=""/);
   assert.match(
     tourRailSource,
-    /aria-label=\{`\$\{statusLabel\(tour\)\} \$\{tour\.title\}`\}/,
+    /<span className=\{styles\.tourBadge\}>\{statusLabel\(tour\)\}<\/span>[\s\S]*<h3 className=\{styles\.tourMediaTitle\}>\{tour\.title\}<\/h3>/,
   );
 });
 

@@ -186,12 +186,11 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                 className={styles.tourMedia}
                 data-analytics-event="tour_card_click"
                 data-tour-id={tour.id}
-                aria-label={`${statusLabel(tour)} ${tour.title}`}
                 onClick={(event) => preserveCampaign(event, href)}
               >
                 <Image
                   src={cldThumb(getTourProductImage(tour), 760, 510)}
-                  alt={`Pemandangan destinasi untuk ${tour.title}`}
+                  alt=""
                   fill
                   sizes="(max-width: 699px) 82vw, (max-width: 1199px) 44vw, 360px"
                 />
