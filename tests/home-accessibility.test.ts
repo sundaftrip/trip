@@ -25,11 +25,16 @@ test("homepage finder labels use the accessible muted color token", () => {
 });
 
 test("homepage tour links derive their name from visible status and title", () => {
-  assert.doesNotMatch(tourRailSource, /aria-label=\{`[^`]*statusLabel\(tour\)/);
-  assert.match(tourRailSource, /alt=""/);
+  const link = tourRailSource.match(
+    /<Link[\s\S]*?className=\{styles\.tourMedia\}[\s\S]*?<\/Link>/,
+  )?.[0];
+
+  assert.ok(link, "expected the homepage tour media link");
+  assert.doesNotMatch(link, /\baria-label=/);
+  assert.match(link, /alt=""/);
   assert.match(
-    tourRailSource,
-    /<span className=\{styles\.tourBadge\}>\{statusLabel\(tour\)\}<\/span>[\s\S]*<h3 className=\{styles\.tourMediaTitle\}>\{tour\.title\}<\/h3>/,
+    link,
+    /styles\.tourBadge[\s\S]*statusLabel\(tour\)[\s\S]*styles\.tourMediaTitle[\s\S]*tour\.title/,
   );
 });
 
