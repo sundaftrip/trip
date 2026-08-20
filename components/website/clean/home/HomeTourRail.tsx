@@ -186,7 +186,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                 className={styles.tourMedia}
                 data-analytics-event="tour_card_click"
                 data-tour-id={tour.id}
-                aria-label={`Lihat ${statusLabel(tour)} ${tour.title}`}
+                aria-label={`${statusLabel(tour)} ${tour.title}`}
                 onClick={(event) => preserveCampaign(event, href)}
               >
                 <Image

@@ -27,7 +27,7 @@ test("homepage finder labels use the accessible muted color token", () => {
 test("homepage tour links keep the visible status and title in their name", () => {
   assert.match(
     tourRailSource,
-    /aria-label=\{`Lihat \$\{statusLabel\(tour\)\} \$\{tour\.title\}`\}/,
+    /aria-label=\{`\$\{statusLabel\(tour\)\} \$\{tour\.title\}`\}/,
   );
 });
 
