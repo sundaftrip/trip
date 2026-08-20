@@ -6,6 +6,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type KeyboardEvent,
   type MouseEvent,
 } from "react";
 import Image from "next/image";
@@ -87,7 +88,10 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
     setScrollState({
       canScrollBackward: scrollLeft > 4,
       canScrollForward: scrollLeft < maxScroll - 4,
-      progress: maxScroll > 0 ? scrollLeft / maxScroll : 1,
+      progress:
+        rail.scrollWidth > 0
+          ? Math.min(1, (scrollLeft + rail.clientWidth) / rail.scrollWidth)
+          : 1,
     });
   }, []);
 
@@ -116,10 +120,11 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
     const rail = railRef.current;
     if (!rail) return;
 
-    const firstCard = rail.querySelector<HTMLElement>(`.${styles.tourCard}`);
-    const distance = firstCard
-      ? firstCard.getBoundingClientRect().width + 16
-      : rail.clientWidth * 0.85;
+    const cards = rail.querySelectorAll<HTMLElement>(`.${styles.tourCard}`);
+    const distance =
+      cards.length > 1
+        ? cards[1].offsetLeft - cards[0].offsetLeft
+        : cards[0]?.getBoundingClientRect().width || rail.clientWidth * 0.85;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     rail.scrollBy({
@@ -127,6 +132,14 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
       behavior: reduceMotion ? "auto" : "smooth",
     });
   }, []);
+
+  function handleRailKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    event.preventDefault();
+    scrollRail(event.key === "ArrowRight" ? "forward" : "backward");
+  }
 
   function preserveCampaign(
     event: MouseEvent<HTMLAnchorElement>,
@@ -139,14 +152,20 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
   }
 
   return (
-    <div className={styles.railStage}>
+    <div
+      className={styles.railStage}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Jadwal perjalanan Sundaf"
+    >
       <div
+        id="home-tour-rail"
         ref={railRef}
         className={styles.tourRail}
-        role="region"
-        aria-roledescription="carousel"
-        aria-label="Daftar kartu perjalanan Sundaf"
+        role="group"
+        aria-label="Daftar kartu perjalanan. Geser atau gunakan tombol navigasi."
         tabIndex={0}
+        onKeyDown={handleRailKeyDown}
       >
         {tours.map((tour, index) => {
           const href = `/tours/${tour.slug || tour.id}`;
@@ -167,7 +186,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                 className={styles.tourMedia}
                 data-analytics-event="tour_card_click"
                 data-tour-id={tour.id}
-                aria-label={`Lihat ${tour.title}`}
+                aria-label={`Lihat ${statusLabel(tour)} ${tour.title}`}
                 onClick={(event) => preserveCampaign(event, href)}
               >
                 <Image
@@ -214,13 +233,18 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
         })}
       </div>
       {tours.length > 1 ? (
-        <div className={styles.railControls} aria-label="Navigasi kartu perjalanan">
+        <div
+          className={styles.railControls}
+          role="group"
+          aria-label="Navigasi kartu perjalanan"
+        >
           <button
             type="button"
             className={styles.railButton}
             onClick={() => scrollRail("backward")}
             disabled={!scrollState.canScrollBackward}
             aria-label="Lihat perjalanan sebelumnya"
+            aria-controls="home-tour-rail"
           >
             <ChevronLeft aria-hidden="true" />
           </button>
@@ -233,6 +257,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
             onClick={() => scrollRail("forward")}
             disabled={!scrollState.canScrollForward}
             aria-label="Lihat perjalanan berikutnya"
+            aria-controls="home-tour-rail"
           >
             <ChevronRight aria-hidden="true" />
           </button>
