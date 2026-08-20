@@ -250,9 +250,11 @@ export default function CleanHome({
           <div className={styles.heroOverlay} aria-hidden="true" />
           <div className={`${styles.shell} ${styles.heroShell}`}>
             <div className={styles.heroCopy}>
-              <p className={styles.eyebrowLight}>{heroEyebrow}</p>
-              <h1 id="home-hero-title">{heroTitle}</h1>
-              <p>{heroBody}</p>
+              <p className={`${styles.eyebrowLight} ${styles.heroReveal}`}>{heroEyebrow}</p>
+              <h1 id="home-hero-title" className={`${styles.heroReveal} ${styles.heroTitleReveal}`}>
+                {heroTitle}
+              </h1>
+              <p className={`${styles.heroReveal} ${styles.heroBodyReveal}`}>{heroBody}</p>
             </div>
           </div>
         </section>

@@ -152,6 +152,10 @@
   line-height: 1.6;
 }
 
+.heroReveal {
+  will-change: transform, opacity;
+}
+
 .finderZone {
   position: relative;
   z-index: 3;
@@ -398,6 +402,59 @@
   gap: 16px;
   padding: 2px 2px 16px;
   scroll-padding-inline: 2px;
+}
+
+.railControls {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 42px minmax(96px, 1fr) 42px;
+  gap: 12px;
+  align-items: center;
+}
+
+.railButton {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(7, 93, 99, 0.18);
+  border-radius: 999px !important;
+  background: var(--home-white);
+  color: var(--home-primary);
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.railButton svg {
+  width: 19px;
+  height: 19px;
+  stroke-width: 1.8;
+}
+
+.railButton:disabled {
+  color: #a9b5b8;
+  cursor: not-allowed;
+}
+
+.railProgress {
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dce5e3;
+}
+
+.railProgress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--home-primary);
+  transform-origin: left center;
+  transition: transform 180ms ease;
 }
 
 .tourCard {
@@ -1257,6 +1314,12 @@
     color: var(--home-primary);
   }
 
+  .railButton:hover:not(:disabled) {
+    border-color: rgba(7, 93, 99, 0.36);
+    color: var(--home-primary-strong);
+    transform: translateY(-1px);
+  }
+
   .tourCard:hover .tourMediaTitle,
   .destinationMosaic > a:hover .destinationLabel strong {
     color: #d8fff8;
@@ -1264,6 +1327,20 @@
 
   .tourCard:hover .tourPrice strong {
     color: var(--home-accent);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .heroReveal {
+    animation: heroReveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .heroTitleReveal {
+    animation-delay: 110ms;
+  }
+
+  .heroBodyReveal {
+    animation-delay: 210ms;
   }
 }
 
@@ -1568,6 +1645,17 @@
     grid-auto-columns: 82vw;
     gap: 14px;
     padding-bottom: 10px;
+  }
+
+  .railControls {
+    margin-top: 12px;
+    grid-template-columns: 38px minmax(70px, 1fr) 38px;
+    gap: 10px;
+  }
+
+  .railButton {
+    width: 38px;
+    height: 38px;
   }
 
   .tourCard {
@@ -1888,5 +1976,17 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes heroReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

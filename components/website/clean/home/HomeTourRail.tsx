@@ -1,9 +1,16 @@
 "use client";
 
-import { Fragment, type MouseEvent } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { CleanTour } from "../CleanTourCard";
@@ -63,6 +70,64 @@ function routeHighlight(value: string) {
 }
 
 export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
+  const railRef = useRef<HTMLDivElement>(null);
+  const [scrollState, setScrollState] = useState({
+    canScrollBackward: false,
+    canScrollForward: false,
+    progress: 0,
+  });
+
+  const updateScrollState = useCallback(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+    const scrollLeft = Math.min(maxScroll, Math.max(0, rail.scrollLeft));
+
+    setScrollState({
+      canScrollBackward: scrollLeft > 4,
+      canScrollForward: scrollLeft < maxScroll - 4,
+      progress: maxScroll > 0 ? scrollLeft / maxScroll : 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    let frame = 0;
+    const requestUpdate = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateScrollState);
+    };
+
+    updateScrollState();
+    rail.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      rail.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+    };
+  }, [updateScrollState, tours.length]);
+
+  const scrollRail = useCallback((direction: "backward" | "forward") => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const firstCard = rail.querySelector<HTMLElement>(`.${styles.tourCard}`);
+    const distance = firstCard
+      ? firstCard.getBoundingClientRect().width + 16
+      : rail.clientWidth * 0.85;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    rail.scrollBy({
+      left: direction === "forward" ? distance : -distance,
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, []);
+
   function preserveCampaign(
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -76,6 +141,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
   return (
     <div className={styles.railStage}>
       <div
+        ref={railRef}
         className={styles.tourRail}
         role="region"
         aria-roledescription="carousel"
@@ -147,6 +213,31 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
           );
         })}
       </div>
+      {tours.length > 1 ? (
+        <div className={styles.railControls} aria-label="Navigasi kartu perjalanan">
+          <button
+            type="button"
+            className={styles.railButton}
+            onClick={() => scrollRail("backward")}
+            disabled={!scrollState.canScrollBackward}
+            aria-label="Lihat perjalanan sebelumnya"
+          >
+            <ChevronLeft aria-hidden="true" />
+          </button>
+          <div className={styles.railProgress} aria-hidden="true">
+            <span style={{ transform: `scaleX(${scrollState.progress})` }} />
+          </div>
+          <button
+            type="button"
+            className={styles.railButton}
+            onClick={() => scrollRail("forward")}
+            disabled={!scrollState.canScrollForward}
+            aria-label="Lihat perjalanan berikutnya"
+          >
+            <ChevronRight aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
