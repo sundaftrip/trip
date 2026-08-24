@@ -1367,6 +1367,18 @@
 
 .detailDayBody p { margin: 0 0 12px; }
 
+.detailDayImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 2px 0 20px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--clean-soft);
+}
+
+.detailDayImage img { object-fit: cover; }
+
 .detailDayTags {
   margin-top: 18px;
   display: flex;

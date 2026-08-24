@@ -276,7 +276,7 @@ export default function CleanTourDetail({
         availabilityLabel: status,
       }]
     : [];
-  const experienceItems = itinerary.slice(0, 6).map((item, index) => ({
+  const experienceItems = itinerary.map((item, index) => ({
     title: normalizeItineraryDisplayTitle(item.title) || `Hari ke-${item.day}`,
     description:
       cleanParagraphs(item.description)[0]
@@ -434,17 +434,28 @@ export default function CleanTourDetail({
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);
                   const paragraphs = cleanParagraphs(item.description);
+                  const dayTitle = normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`;
+                  const dayImage = resolveItineraryDayImage(item, index, heroImages);
                   return (
                     <details className={styles.detailDay} key={`${item.day}-${item.title}`} open={index === 0}>
                       <summary>
                         <span className={styles.detailDayNumber}>{String(item.day).padStart(2, "0")}</span>
                         <span className={styles.detailDayHeading}>
                           {date ? <time dateTime={date.iso}>{date.label}</time> : <span>Hari ke-{item.day}</span>}
-                          <strong>{normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`}</strong>
+                          <strong>{dayTitle}</strong>
                         </span>
                         <span className={styles.detailDayToggle} aria-hidden="true" />
                       </summary>
                       <div className={styles.detailDayBody}>
+                        <div className={styles.detailDayImage}>
+                          <Image
+                            src={cldThumb(dayImage, 960, 640)}
+                            alt={`Gambaran perjalanan Hari ${item.day}: ${dayTitle}`}
+                            fill
+                            quality={70}
+                            sizes="(max-width: 700px) calc(100vw - 76px), 760px"
+                          />
+                        </div>
                         {paragraphs.map((paragraph, paragraphIndex) => <p key={`${paragraph.slice(0, 32)}-${paragraphIndex}`}>{paragraph}</p>)}
                         {item.insights.length > 0 && (
                           <div className={styles.detailDayTags}>
