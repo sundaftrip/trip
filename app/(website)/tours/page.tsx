@@ -47,6 +47,20 @@ export const metadata: Metadata = {
 
 const getData = unstable_cache(
   async () => {
+    const previewTour = getCanadaRockiesPreviewTour();
+    // Local/isolated previews intentionally do not receive production DB
+    // credentials. Keep the catalog reviewable with the read-only fixture;
+    // deployed previews with a database still show the complete catalog.
+    if (previewTour && !process.env.DATABASE_URL) {
+      const now = new Date();
+      return {
+        tours: [previewTour],
+        theme: "atlas",
+        whatsapp: "",
+        generatedAt: now.toISOString(),
+      };
+    }
+
     const [toursRaw, companyRows] = await Promise.all([
       prisma.tour.findMany({
         where: publicTourVisibilityWhere(),
@@ -63,7 +77,6 @@ const getData = unstable_cache(
       }),
     ]);
     const now = new Date();
-    const previewTour = getCanadaRockiesPreviewTour();
     const toursWithPreview = previewTour && !toursRaw.some((tour) => tour.slug === previewTour.slug)
       ? [previewTour, ...toursRaw]
       : toursRaw;

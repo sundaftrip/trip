@@ -322,7 +322,9 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const [databaseTour, companyRow] = await Promise.all([
+  const previewTour = getCanadaRockiesPreviewTour(id);
+  const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
+  const [databaseTour, companyRow] = standalonePreview ? [null, null] : await Promise.all([
     prisma.tour.findFirst({
       where: { OR: [{ slug: id }, { id }] },
       select: {
@@ -352,7 +354,7 @@ export async function generateMetadata({
   // The preview fixture is authoritative for this one slug so a shared
   // database draft cannot turn the review URL into a 404. Production always
   // receives null from the preview helper and continues to use persisted data.
-  const tour = getCanadaRockiesPreviewTour(id) ?? databaseTour;
+  const tour = previewTour ?? databaseTour;
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) {
     notFound();
   }
@@ -404,13 +406,19 @@ export async function generateMetadata({
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const previewTour = getCanadaRockiesPreviewTour(id);
+  const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
-  const databaseTour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
-  const tour = getCanadaRockiesPreviewTour(id) ?? databaseTour;
+  const databaseTour = standalonePreview
+    ? null
+    : await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
+  const tour = previewTour ?? databaseTour;
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
   const productHeroImage = getTourProductImage(tour);
   const absoluteProductHeroImage = getAbsoluteTourProductImage(tour, siteUrl);
-  const [companyRows, reviews, visaCountries, relatedRaw] = await Promise.all([
+  const [companyRows, reviews, visaCountries, relatedRaw] = standalonePreview
+    ? [[], [], [], []]
+    : await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
       where: { tourId: tour.id, published: true },
@@ -478,7 +486,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   companyRows.forEach((c) => { company[c.key] = c.value; });
   const waNumber = toWaNumber(company["company_whatsapp"]) || "6281775202759";
   const companyName = company["company_name"] || "";
-  const rawSiteTheme = company["site_theme"] ?? "classic";
+  const rawSiteTheme = company["site_theme"] ?? (standalonePreview ? "atlas" : "classic");
   const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme;
   const isTropical = siteTheme === "tropical";
   const isKawaii   = siteTheme === "kawaii";
