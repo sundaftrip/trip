@@ -27,7 +27,12 @@ import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
-import { getAbsoluteTourProductImage, getTourProductImage, getTourVisualOverride } from "@/lib/tour-product-images";
+import {
+  getAbsoluteTourProductImage,
+  getTourItineraryImage,
+  getTourProductImage,
+  getTourVisualOverride,
+} from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 import {
@@ -529,7 +534,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     const overrideImage = visualOverride?.itineraryImages[item.day];
     const localizedItem = {
       ...item,
-      image: overrideImage ?? item.image,
+      image: getTourItineraryImage(item.image, overrideImage),
       title: localizePdfText(item.title) ?? item.title,
       description: localizePdfText(item.description) ?? item.description,
     };

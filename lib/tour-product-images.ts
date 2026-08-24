@@ -247,12 +247,19 @@ export function getTourVisualOverride(tour: TourProductImageInput) {
   return normalizedSlug ? TOUR_VISUAL_OVERRIDES[normalizedSlug] ?? null : null;
 }
 
-export function getTourProductImage(tour: TourProductImageInput) {
-  const visualOverride = getTourVisualOverride(tour);
-  if (visualOverride) return visualOverride.heroImg;
+export function getTourItineraryImage(
+  cmsImage?: string | null,
+  fallbackImage?: string | null,
+) {
+  return controlledCmsImage(cmsImage) ?? fallbackImage ?? undefined;
+}
 
+export function getTourProductImage(tour: TourProductImageInput) {
   const suppliedHero = controlledCmsImage(tour.heroImg);
   if (suppliedHero) return suppliedHero;
+
+  const visualOverride = getTourVisualOverride(tour);
+  if (visualOverride) return visualOverride.heroImg;
 
   const seed = imageSeed(tour);
   const normalizedSlug = tour.slug?.trim().toLocaleLowerCase("id-ID");
