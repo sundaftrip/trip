@@ -188,13 +188,13 @@ export const CANADA_ROCKIES_TOUR = {
       desc: "Nilai target; dikonfirmasi kembali saat tiket grup dikunci.",
     },
     {
-      name: "Asuransi perjalanan usia sampai 60 tahun",
+      name: "Asuransi perjalanan usia sampai 69 tahun",
       price: 1_000_000,
       tag: "wajib" as const,
       desc: "Premi final mengikuti usia, manfaat, dan persetujuan perusahaan asuransi.",
     },
     {
-      name: "Tambahan premi usia di atas 60 tahun",
+      name: "Tambahan premi usia 70 tahun ke atas",
       price: 500_000,
       tag: "recommended" as const,
       desc: "Ditambahkan bila berlaku; nilai final mengikuti quotation asuransi.",
