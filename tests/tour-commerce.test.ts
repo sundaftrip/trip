@@ -96,6 +96,21 @@ test("builds a fully contextual and URL-encoded WhatsApp handoff", () => {
   assert.match(url.searchParams.get("text") || "", /Asia Tengah 4-TAN/);
 });
 
+test("uses the selected room tier total in the booking message", () => {
+  const message = buildWhatsAppBookingMessage({
+    tourName: "Canada Rocky Mountain Spring",
+    departureDate: "15 April 2027",
+    formattedPrice: "Rp50.300.000",
+    priceCaption: "Total wajib",
+    travelerCount: 2,
+    roomPreference: "2 orang/kamar",
+  });
+
+  assert.match(message, /Total wajib: Rp50\.300\.000\/orang/);
+  assert.match(message, /Kamar: 2 orang\/kamar/);
+  assert.doesNotMatch(message, /Harga mulai: Rp50\.300\.000/);
+});
+
 test("extracts only UTM parameters from a source URL", () => {
   assert.equal(
     extractCampaignFromUrl("https://sundaftrip.com/tours/x?room=twin&utm_medium=social&utm_source=ig"),

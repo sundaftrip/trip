@@ -39,6 +39,7 @@ export type BookingMessageInput = {
   tourName: string;
   departureDate?: string | null;
   formattedPrice?: string | null;
+  priceCaption?: string | null;
   travelerCount?: number | null;
   childCount?: number | null;
   roomPreference?: string | null;
@@ -187,7 +188,7 @@ export function buildWhatsAppBookingMessage(input: BookingMessageInput) {
     "",
     `Tour: ${input.tourName.trim()}`,
     `Tanggal: ${input.departureDate || "Fleksibel / belum dipilih"}`,
-    `Harga mulai: ${input.formattedPrice || "Mohon info"}/orang`,
+    `${input.priceCaption?.trim() || "Harga mulai"}: ${input.formattedPrice || "Mohon info"}/orang`,
     `Peserta: ${participants}`,
     `Kamar: ${input.roomPreference?.trim() || "Belum dipilih"}`,
     `Nama: ${input.customerName?.trim() || "Belum diisi"}`,

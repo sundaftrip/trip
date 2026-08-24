@@ -30,6 +30,11 @@ import { getPublicTourState } from "@/lib/tour-order";
 import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import {
+  parseTourHotelRoomPricing,
+  resolveTourStartingPrice,
+} from "@/lib/tour-room-pricing";
+import { getCanadaRockiesPreviewTour } from "@/lib/canada-catalog-preview";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
@@ -68,7 +73,7 @@ function buildTourMetadataDescription(tour: {
   promoPrice?: number | null;
   tripDate?: Date | null;
   status?: string;
-}, companyName: string) {
+}, companyName: string, resolvedPrice?: number) {
   const explicitDescription = firstMetadataText(tour.description, tour.notes, tour.visaInfo);
   if (explicitDescription) return truncateMetadataText(explicitDescription);
 
@@ -77,7 +82,7 @@ function buildTourMetadataDescription(tour: {
   const city = cleanMetadataText(tour.cityHighlight);
   const duration = cleanMetadataText(tour.duration);
   const route = [country, city].filter(Boolean).join(" - ");
-  const price = Number(tour.promoPrice ?? tour.price);
+  const price = Number(resolvedPrice ?? tour.promoPrice ?? tour.price);
   const isPastTrip = !!tour.tripDate && tour.tripDate.getTime() < Date.now();
   const pricePart = price > 0 ? `mulai ${formatCurrency(price)}/orang` : "";
   const datePart = tour.tripDate
@@ -317,7 +322,9 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const [tour, companyRow] = await Promise.all([
+  const previewTour = getCanadaRockiesPreviewTour(id);
+  const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
+  const [databaseTour, companyRow] = standalonePreview ? [null, null] : await Promise.all([
     prisma.tour.findFirst({
       where: { OR: [{ slug: id }, { id }] },
       select: {
@@ -338,17 +345,37 @@ export async function generateMetadata({
         gallery: true,
         itinerary: true,
         inclusions: true,
+        hotel: true,
+        addOns: true,
       },
     }),
     prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
   ]);
+  // The preview fixture is authoritative for this one slug so a shared
+  // database draft cannot turn the review URL into a 404. Production always
+  // receives null from the preview helper and continues to use persisted data.
+  const tour = previewTour ?? databaseTour;
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) {
     notFound();
   }
 
   const companyName = companyRow?.value ?? "Sundaftrip";
   const title = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
-  const description = buildTourMetadataDescription(tour, companyName);
+  const metadataMandatoryTotal = mandatoryAddOnsTotal(tour.addOns);
+  const { roomPrices: metadataRoomPrices } = parseTourHotelRoomPricing(
+    tour.hotel,
+    metadataMandatoryTotal,
+  );
+  const metadataStartingPrice = resolveTourStartingPrice(
+    tour.promoPrice ?? tour.price,
+    metadataMandatoryTotal,
+    metadataRoomPrices,
+  );
+  const description = buildTourMetadataDescription(
+    tour,
+    companyName,
+    metadataStartingPrice.headlinePrice,
+  );
   const productImage = getAbsoluteTourProductImage(tour, siteUrl);
 
   const canonicalPath = canonicalTourPath(tour);
@@ -379,12 +406,19 @@ export async function generateMetadata({
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const previewTour = getCanadaRockiesPreviewTour(id);
+  const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
   // `id` bisa slug rapi (baru) atau cuid (link lama) — resolve keduanya.
-  const tour = await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
+  const databaseTour = standalonePreview
+    ? null
+    : await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
+  const tour = previewTour ?? databaseTour;
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
   const productHeroImage = getTourProductImage(tour);
   const absoluteProductHeroImage = getAbsoluteTourProductImage(tour, siteUrl);
-  const [companyRows, reviews, visaCountries, relatedRaw] = await Promise.all([
+  const [companyRows, reviews, visaCountries, relatedRaw] = standalonePreview
+    ? [[], [], [], []]
+    : await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
       where: { tourId: tour.id, published: true },
@@ -452,7 +486,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   companyRows.forEach((c) => { company[c.key] = c.value; });
   const waNumber = toWaNumber(company["company_whatsapp"]) || "6281775202759";
   const companyName = company["company_name"] || "";
-  const rawSiteTheme = company["site_theme"] ?? "classic";
+  const rawSiteTheme = company["site_theme"] ?? (standalonePreview ? "atlas" : "classic");
   const siteTheme = rawSiteTheme === "console" ? "atlas" : rawSiteTheme;
   const isTropical = siteTheme === "tropical";
   const isKawaii   = siteTheme === "kawaii";
@@ -479,13 +513,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   const rawItinerary = (tour.itinerary as { day: number; title: string; description: string; image?: string }[] | null) ?? [];
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
-  const hotelInfo = tour.hotel && typeof tour.hotel === "object" && !Array.isArray(tour.hotel)
-    ? Object.fromEntries(
-        Object.entries(tour.hotel)
-          .filter(([, value]) => typeof value === "string" || typeof value === "number")
-          .map(([label, value]) => [label, String(value)]),
-      )
-    : null;
   const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const displayCountry = localizePdfText(tour.country) ?? tour.country;
   const displayCityHighlight = localizePdfText(tour.cityHighlight);
@@ -549,11 +576,19 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   }
 
   // Add-on WAJIB praktis harus dibeli peserta → dilipat ke total harga awal.
-  const basePrice = tour.promoPrice ?? tour.price;
+  const storedBasePrice = tour.promoPrice ?? tour.price;
   const mandatoryAddOns = addOns.filter((a) => a.tag === "wajib");
   const optionalAddOns = addOns.filter((a) => a.tag !== "wajib");
   const mandatoryTotal = mandatoryAddOns.reduce((sum, a) => sum + (Number(a.price) || 0), 0);
-  const startingTotal = basePrice + mandatoryTotal;
+  const { hotelInfo, roomPrices } = parseTourHotelRoomPricing(tour.hotel, mandatoryTotal);
+  const resolvedStartingPrice = resolveTourStartingPrice(
+    storedBasePrice,
+    mandatoryTotal,
+    roomPrices,
+  );
+  const basePrice = resolvedStartingPrice.headlinePrice;
+  const startingTotal = resolvedStartingPrice.mandatoryTotalPrice;
+  const hasLegacyPromo = roomPrices.length === 0 && Boolean(tour.promoPrice);
   const isPurchasable = ["available", "last_seats", "confirmed", "flexible"].includes(
     commerceStatus,
   );
@@ -623,7 +658,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     image: [absoluteProductHeroImage],
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(isoDuration ? { duration: isoDuration } : {}),
-    ...((tour.promoPrice ?? tour.price) > 0 ? {
+    ...(startingTotal > 0 ? {
       offers: {
         "@type": "Offer",
         price: String(startingTotal),
@@ -653,7 +688,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     brand: { "@type": "Brand", name: companyName || "Sundaf Trip" },
     // offers hanya disertakan kalau harga valid (>0). Harga 0 (trip lama) bikin
     // "Rp 0" & warning Merchant listing, review snippet tidak butuh offers.
-    ...((tour.promoPrice ?? tour.price) > 0 ? {
+    ...(startingTotal > 0 ? {
       offers: {
         "@type": "Offer",
         price: String(startingTotal),
@@ -724,6 +759,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
           }}
           itinerary={itinerary}
           mandatoryAddOns={mandatoryAddOns}
+          roomPrices={roomPrices}
           optionalAddOns={optionalAddOns.map((item) => ({
             ...item,
             visaHref: resolveVisaHref(item.name),
@@ -1013,6 +1049,42 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               </div>
             )}
 
+            {roomPrices.length > 0 && (
+              <section aria-labelledby="room-pricing-title">
+                <h2 id="room-pricing-title" className={`${secTitle} mb-2`} style={isOutlined ? { color: tText } : undefined}>
+                  {isOutlined && <Users size={18} />} Harga Berdasarkan Isi Kamar
+                </h2>
+                <p className="mb-4 text-sm text-gray-500 dark:text-gray-400" style={isOutlined ? { color: tSub } : undefined}>
+                  Harga per orang. Total wajib sudah menambahkan seluruh komponen berlabel wajib.
+                </p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {roomPrices.map((room, index) => (
+                    <article
+                      key={room.code}
+                      className={isOutlined
+                        ? `${pfx}-card p-4`
+                        : "rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900"}
+                      style={isOutlined ? { background: index === 0 ? tMint : tCard } : undefined}
+                    >
+                      <p className="text-xs font-bold uppercase tracking-wide text-gray-500" style={isOutlined ? { color: tSub } : undefined}>
+                        {room.label}
+                      </p>
+                      <p className="mt-2 text-lg font-black text-gray-900 dark:text-white" style={isOutlined ? { color: tText } : undefined}>
+                        {formatCurrency(room.headlinePrice)}
+                      </p>
+                      <p className="text-[11px] text-gray-500" style={isOutlined ? { color: tSub } : undefined}>Harga posting/orang</p>
+                      <div className="mt-3 border-t border-solid border-gray-200 pt-3 dark:border-gray-700" style={isOutlined ? { borderColor: tBdr } : undefined}>
+                        <p className="text-[11px] text-gray-500" style={isOutlined ? { color: tSub } : undefined}>Total wajib/orang</p>
+                        <p className="font-black text-gray-900 dark:text-white" style={isOutlined ? { color: tText } : undefined}>
+                          {formatCurrency(room.mandatoryTotalPrice)}
+                        </p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Hotel */}
             {hotelInfo && Object.keys(hotelInfo).length > 0 && (
               <div>
@@ -1068,9 +1140,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   <div className="mb-3">
                     <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Harga paket per orang</p>
                     <span className={`${pfx}-pill font-black`} style={{ background: tMint, color: tText, fontSize: "1.5rem", padding: "8px 20px" }}>
-                      {formatCurrency(tour.promoPrice ?? tour.price)}
+                      {formatCurrency(basePrice)}
                     </span>
-                    {tour.promoPrice && (
+                    {hasLegacyPromo && (
                       <p className="text-sm text-gray-400 mt-2">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>
                     )}
                     {tour.priceLandTour && (
@@ -1082,12 +1154,28 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 ) : (
                   <div className="mb-4">
                     <p className="text-xs text-gray-400 mb-1">Harga paket per orang</p>
-                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(tour.promoPrice ?? tour.price)}</p>
-                    {tour.promoPrice && <p className="text-sm text-gray-400">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>}
+                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(basePrice)}</p>
+                    {hasLegacyPromo && <p className="text-sm text-gray-400">Harga normal <span className="line-through">{formatCurrency(tour.price)}</span></p>}
                     {tour.priceLandTour && <p className="text-xs text-gray-500 mt-1">Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
                   </div>
                 )}
               </div>
+
+              {roomPrices.length > 0 && (
+                <div className={`mb-5 grid gap-2 rounded-xl p-3 text-xs ${isOutlined ? `${pfx}-card` : "border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60"}`}
+                  style={isOutlined ? { background: tCard } : undefined}>
+                  <p className="font-black text-gray-900 dark:text-white" style={isOutlined ? { color: tText } : undefined}>Pilihan isi kamar</p>
+                  {roomPrices.map((room) => (
+                    <div key={room.code} className="flex items-start justify-between gap-3 text-gray-500 dark:text-gray-400">
+                      <span>{room.label}</span>
+                      <span className="text-right">
+                        <strong className="block text-gray-900 dark:text-white" style={isOutlined ? { color: tText } : undefined}>{formatCurrency(room.headlinePrice)}</strong>
+                        <small>Total wajib {formatCurrency(room.mandatoryTotalPrice)}</small>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Rincian wajib — add-on WAJIB ikut total */}
               {mandatoryTotal > 0 && (

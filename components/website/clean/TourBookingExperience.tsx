@@ -8,6 +8,7 @@ import { buildWhatsAppBookingHref } from "@/lib/tour-commerce";
 import type {
   BookingDeparture,
   BookingMode,
+  BookingRoomOption,
   TourBookingSheetProps,
 } from "./TourBookingSheet";
 import styles from "./TourDetailInteractive.module.css";
@@ -26,9 +27,18 @@ type TourBookingExperienceProps = {
   availabilityLabel: string;
   mode: BookingMode;
   departures: BookingDeparture[];
+  roomOptions?: BookingRoomOption[];
   documentationHref?: string;
   showSectionAction?: boolean;
 };
+
+const DEFAULT_ROOM_OPTIONS: BookingRoomOption[] = [
+  { value: "Twin sharing", label: "Twin sharing" },
+  { value: "Double bed", label: "Double bed" },
+  { value: "Single room", label: "Single room" },
+  { value: "Butuh teman sekamar", label: "Butuh teman sekamar" },
+  { value: "Diskusikan dengan tim", label: "Diskusikan dengan tim" },
+];
 
 function digitsOnly(value: string) {
   return value.replace(/\D/g, "");
@@ -43,14 +53,16 @@ export default function TourBookingExperience({
   availabilityLabel,
   mode,
   departures,
+  roomOptions = DEFAULT_ROOM_OPTIONS,
   documentationHref = "#dokumentasi",
   showSectionAction = true,
 }: TourBookingExperienceProps) {
+  const bookingRoomOptions = roomOptions.length > 0 ? roomOptions : DEFAULT_ROOM_OPTIONS;
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(departures[0]?.id || "");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const [room, setRoom] = useState("Twin sharing");
+  const [room, setRoom] = useState(bookingRoomOptions[0].value);
   const [name, setName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [sourceUrl, setSourceUrl] = useState("https://sundaftrip.com");
@@ -61,15 +73,20 @@ export default function TourBookingExperience({
   const nameInputRef = useRef<HTMLInputElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const selectedDeparture = departures.find((departure) => departure.id === selectedId) || departures[0];
+  const selectedRoom = bookingRoomOptions.find((option) => option.value === room) || bookingRoomOptions[0];
+  const selectedRoomLabel = selectedRoom.label;
+  const selectedPriceLabel = selectedRoom.priceLabel || selectedDeparture?.priceLabel || priceLabel;
+  const selectedPriceCaption = selectedRoom.priceCaption || priceCaption;
   const intent = mode === "sold_out" ? "waitlist" : mode === "flexible" ? "private" : "booking";
 
   const whatsappHref = useMemo(() => buildWhatsAppBookingHref(phone, {
     tourName,
     departureDate: selectedDeparture?.label || (mode === "flexible" ? "Fleksibel" : null),
-    formattedPrice: selectedDeparture?.priceLabel || priceLabel,
+    formattedPrice: selectedPriceLabel,
+    priceCaption: selectedPriceCaption,
     travelerCount: adults,
     childCount: children,
-    roomPreference: room,
+    roomPreference: selectedRoomLabel,
     customerName: name,
     customerPhone,
     sourceUrl,
@@ -84,9 +101,10 @@ export default function TourBookingExperience({
     mode,
     name,
     phone,
-    priceLabel,
-    room,
     selectedDeparture,
+    selectedPriceCaption,
+    selectedPriceLabel,
+    selectedRoomLabel,
     sourceUrl,
     tourName,
   ]);
@@ -139,7 +157,7 @@ export default function TourBookingExperience({
         whatsapp: customerPhone.trim(),
         destination: tourName,
         travelDate: selectedDeparture?.label || "Fleksibel",
-        message: `Booking inquiry: ${adults} dewasa, ${children} anak, ${room}`,
+        message: `Booking inquiry: ${adults} dewasa, ${children} anak, ${selectedRoomLabel}, ${selectedPriceCaption} ${selectedPriceLabel}/orang`,
         source: sourceUrl,
       }),
     }).catch(() => undefined);
@@ -221,6 +239,7 @@ export default function TourBookingExperience({
           priceLabel={priceLabel}
           priceCaption={priceCaption}
           room={room}
+          roomOptions={bookingRoomOptions}
           selectedDeparture={selectedDeparture}
           selectedId={selectedId}
           tourId={tourId}

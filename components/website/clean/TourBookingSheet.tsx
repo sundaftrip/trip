@@ -15,6 +15,13 @@ export type BookingDeparture = {
 
 export type BookingMode = "available" | "sold_out" | "completed" | "flexible";
 
+export type BookingRoomOption = {
+  value: string;
+  label: string;
+  priceLabel?: string;
+  priceCaption?: string;
+};
+
 type BookingErrors = {
   name?: string;
   phone?: string;
@@ -44,6 +51,7 @@ export type TourBookingSheetProps = {
   priceLabel: string;
   priceCaption: string;
   room: string;
+  roomOptions: BookingRoomOption[];
   selectedDeparture?: BookingDeparture;
   selectedId: string;
   tourId: string;
@@ -85,6 +93,7 @@ export default function TourBookingSheet({
   priceLabel,
   priceCaption,
   room,
+  roomOptions,
   selectedDeparture,
   selectedId,
   tourId,
@@ -94,6 +103,9 @@ export default function TourBookingSheet({
 }: TourBookingSheetProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const selectedRoom = roomOptions.find((option) => option.value === room);
+  const selectedPriceLabel = selectedRoom?.priceLabel || selectedDeparture?.priceLabel || priceLabel;
+  const selectedPriceCaption = selectedRoom?.priceCaption || priceCaption;
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -217,7 +229,7 @@ export default function TourBookingSheet({
                   <CalendarDays aria-hidden="true" />
                   <span>
                     <strong>{departure.label}</strong>
-                    <small>{departure.availabilityLabel} · {priceCaption} {departure.priceLabel}/orang</small>
+                    <small>{departure.availabilityLabel} · {selectedPriceCaption} {selectedRoom?.priceLabel || departure.priceLabel}/orang</small>
                   </span>
                   <Check className={styles.optionCheck} aria-hidden="true" />
                 </label>
@@ -245,11 +257,9 @@ export default function TourBookingSheet({
           <label className={styles.bookingField}>
             <span>Preferensi kamar</span>
             <select value={room} onChange={(event) => onRoomChange(event.target.value)}>
-              <option>Twin sharing</option>
-              <option>Double bed</option>
-              <option>Single room</option>
-              <option>Butuh teman sekamar</option>
-              <option>Diskusikan dengan tim</option>
+              {roomOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
             </select>
           </label>
 
@@ -292,7 +302,8 @@ export default function TourBookingSheet({
             <div><dt>Perjalanan</dt><dd>{tourName}</dd></div>
             <div><dt>Tanggal</dt><dd>{selectedDeparture?.label || "Fleksibel"}</dd></div>
             <div><dt>Peserta</dt><dd>{adults} dewasa{childCount ? `, ${childCount} anak` : ""}</dd></div>
-            <div><dt>{priceCaption}</dt><dd>{selectedDeparture?.priceLabel || priceLabel}/orang</dd></div>
+            <div><dt>Isi kamar</dt><dd>{selectedRoom?.label || room}</dd></div>
+            <div><dt>{selectedPriceCaption}</dt><dd>{selectedPriceLabel}/orang</dd></div>
           </dl>
         </div>
 
