@@ -27,7 +27,7 @@ import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
-import { getAbsoluteTourProductImage, getTourProductImage } from "@/lib/tour-product-images";
+import { getAbsoluteTourProductImage, getTourProductImage, getTourVisualOverride } from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 import {
@@ -414,6 +414,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     : await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
   const tour = previewTour ?? databaseTour;
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
+  const visualOverride = getTourVisualOverride(tour);
   const productHeroImage = getTourProductImage(tour);
   const absoluteProductHeroImage = getAbsoluteTourProductImage(tour, siteUrl);
   const [companyRows, reviews, visaCountries, relatedRaw] = standalonePreview
@@ -512,6 +513,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   };
 
   const rawItinerary = (tour.itinerary as { day: number; title: string; description: string; image?: string }[] | null) ?? [];
+  const galleryImages = visualOverride?.gallery ?? tour.gallery;
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
   const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const displayCountry = localizePdfText(tour.country) ?? tour.country;
@@ -524,8 +526,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const displayInclusions = tour.inclusions.map((item) => localizePdfText(item) ?? item);
   const displayExclusions = tour.exclusions.map((item) => localizePdfText(item) ?? item);
   const itinerary = rawItinerary.map((item) => {
+    const overrideImage = visualOverride?.itineraryImages[item.day];
     const localizedItem = {
       ...item,
+      image: overrideImage ?? item.image,
       title: localizePdfText(item.title) ?? item.title,
       description: localizePdfText(item.description) ?? item.description,
     };
@@ -746,7 +750,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             notes: displayNotes ?? null,
             heroImg: productHeroImage,
             badge: displayBadge ?? null,
-            gallery: tour.gallery,
+            gallery: galleryImages,
             inclusions: displayInclusions,
             exclusions: displayExclusions,
             hotel: hotelInfo,
@@ -872,12 +876,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Gallery */}
-            {tour.gallery.length > 0 && (
+            {galleryImages.length > 0 && (
               <div>
                 <h2 className={`${secTitle} mb-4`} style={isOutlined ? { color: tText } : undefined}>
                   {isOutlined && <Camera size={18} />} Galeri
                 </h2>
-                <GalleryZoom images={tour.gallery} altPrefix={`${displayTitle} - dokumentasi`} />
+                <GalleryZoom images={galleryImages} altPrefix={`${displayTitle} - dokumentasi`} />
               </div>
             )}
 

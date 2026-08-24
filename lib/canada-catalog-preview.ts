@@ -7,14 +7,15 @@ import {
 export const CANADA_ROCKIES_PREVIEW_ID = "preview-canada-rockies-april-2027";
 
 /**
- * Vercel preview deployments do not seed the database. This read-only record
- * lets reviewers inspect the complete catalog experience before a production
- * upsert is approved. It is impossible to expose on the production target.
+ * Deployed Vercel targets can render this read-only catalog record even when
+ * the production database has not been upserted yet. If the database later
+ * contains the same slug, the catalog page keeps the database record and skips
+ * this fallback to avoid duplicates.
  */
 export function getCanadaRockiesPreviewTour(
   requestedId?: string,
 ): Prisma.TourGetPayload<Record<string, never>> | null {
-  if (process.env.VERCEL_ENV !== "preview") return null;
+  if (!["preview", "production"].includes(process.env.VERCEL_ENV ?? "")) return null;
   if (
     requestedId
     && requestedId !== CANADA_ROCKIES_SLUG

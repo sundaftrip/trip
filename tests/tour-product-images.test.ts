@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   getAbsoluteTourProductImage,
   getTourProductImage,
+  getTourVisualOverride,
   PEXELS_TOUR_IMAGES,
   VIETNAM_PRODUCT_IMAGE_BY_SLUG,
 } from "../lib/tour-product-images";
@@ -140,6 +141,37 @@ test("maps Central Asia and winter Japan packages to their destination pools", (
         country: "Jepang",
       }),
     ),
+  );
+});
+
+test("overrides public Hokkaido and January Aurora visuals with curated local assets", () => {
+  assert.equal(
+    getTourProductImage({
+      slug: "winter-hokkaido-tokyo",
+      title: "Musim Dingin Hokkaido + Tokyo",
+      heroImg: "https://images.unsplash.com/photo-legacy.webp",
+    }),
+    PEXELS_TOUR_IMAGES.japanHokkaido,
+  );
+  assert.equal(
+    getTourVisualOverride({ slug: "winter-hokkaido-tokyo" })?.itineraryImages[4],
+    PEXELS_TOUR_IMAGES.japanBiei,
+  );
+  assert.equal(
+    getTourProductImage({
+      slug: "rusia-aurora-14-januari-2027",
+      title: "Rusia Aurora 14–23 Januari 2027",
+      heroImg: "https://res.cloudinary.com/dlmgl1grq/image/upload/old.png",
+    }),
+    PEXELS_TOUR_IMAGES.russiaAuroraGlow,
+  );
+  assert.equal(
+    getTourProductImage({
+      slug: "rusia-aurora-21-30-januari-2027",
+      title: "Rusia Aurora 21–30 Januari 2027",
+      heroImg: "https://res.cloudinary.com/dlmgl1grq/image/upload/old.png",
+    }),
+    PEXELS_TOUR_IMAGES.russiaAuroraSea,
   );
 });
 

@@ -7,6 +7,12 @@ export type TourProductImageInput = {
   heroImg?: string | null;
 };
 
+export type TourVisualOverride = {
+  heroImg: string;
+  gallery: string[];
+  itineraryImages: Record<number, string>;
+};
+
 export const PEXELS_TOUR_IMAGES = {
   vietnamNinhBinh: "/images/tours/pexels/vietnam-ninh-binh-30280829.webp",
   vietnamHaLong: "/images/tours/pexels/vietnam-ha-long-bay-15303891.webp",
@@ -167,7 +173,84 @@ const GENERIC_TRAVEL = [
   PEXELS_TOUR_IMAGES.russiaStPetersburg,
 ] as const;
 
+export const TOUR_VISUAL_OVERRIDES: Record<string, TourVisualOverride> = {
+  "winter-hokkaido-tokyo": {
+    heroImg: PEXELS_TOUR_IMAGES.japanHokkaido,
+    gallery: [
+      PEXELS_TOUR_IMAGES.japanHokkaido,
+      PEXELS_TOUR_IMAGES.japanBiei,
+      PEXELS_TOUR_IMAGES.japanOtaru,
+      PEXELS_TOUR_IMAGES.japanTokyo,
+    ],
+    itineraryImages: {
+      1: PEXELS_TOUR_IMAGES.japanTokyo,
+      2: PEXELS_TOUR_IMAGES.japanTokyo,
+      3: PEXELS_TOUR_IMAGES.japanTokyo,
+      4: PEXELS_TOUR_IMAGES.japanBiei,
+      5: PEXELS_TOUR_IMAGES.japanBiei,
+      6: PEXELS_TOUR_IMAGES.japanHokkaido,
+      7: PEXELS_TOUR_IMAGES.japanOtaru,
+      8: PEXELS_TOUR_IMAGES.japanHokkaido,
+      9: PEXELS_TOUR_IMAGES.japanTokyo,
+    },
+  },
+  "rusia-aurora-14-januari-2027": {
+    heroImg: PEXELS_TOUR_IMAGES.russiaAuroraGlow,
+    gallery: [
+      PEXELS_TOUR_IMAGES.russiaAuroraGlow,
+      PEXELS_TOUR_IMAGES.russiaAuroraForest,
+      PEXELS_TOUR_IMAGES.russiaMoscow,
+      PEXELS_TOUR_IMAGES.russiaStPetersburg,
+      PEXELS_TOUR_IMAGES.russiaHermitage,
+      PEXELS_TOUR_IMAGES.russiaWinter,
+    ],
+    itineraryImages: {
+      1: PEXELS_TOUR_IMAGES.russiaMoscow,
+      2: PEXELS_TOUR_IMAGES.russiaMoscow,
+      3: PEXELS_TOUR_IMAGES.russiaHermitage,
+      4: PEXELS_TOUR_IMAGES.russiaStPetersburg,
+      5: PEXELS_TOUR_IMAGES.russiaAuroraGlow,
+      6: PEXELS_TOUR_IMAGES.russiaWinter,
+      7: PEXELS_TOUR_IMAGES.russiaMoscowGolden,
+      8: PEXELS_TOUR_IMAGES.russiaMoscow,
+      9: PEXELS_TOUR_IMAGES.russiaAuroraForest,
+      10: PEXELS_TOUR_IMAGES.russiaAuroraGlow,
+    },
+  },
+  "rusia-aurora-21-30-januari-2027": {
+    heroImg: PEXELS_TOUR_IMAGES.russiaAuroraSea,
+    gallery: [
+      PEXELS_TOUR_IMAGES.russiaAuroraSea,
+      PEXELS_TOUR_IMAGES.russiaAuroraForest,
+      PEXELS_TOUR_IMAGES.russiaMoscowGolden,
+      PEXELS_TOUR_IMAGES.russiaStPetersburg,
+      PEXELS_TOUR_IMAGES.russiaHermitage,
+      PEXELS_TOUR_IMAGES.russiaWinter,
+    ],
+    itineraryImages: {
+      1: PEXELS_TOUR_IMAGES.russiaMoscowGolden,
+      2: PEXELS_TOUR_IMAGES.russiaMoscow,
+      3: PEXELS_TOUR_IMAGES.russiaHermitage,
+      4: PEXELS_TOUR_IMAGES.russiaStPetersburg,
+      5: PEXELS_TOUR_IMAGES.russiaAuroraSea,
+      6: PEXELS_TOUR_IMAGES.russiaWinter,
+      7: PEXELS_TOUR_IMAGES.russiaMoscowGolden,
+      8: PEXELS_TOUR_IMAGES.russiaMoscow,
+      9: PEXELS_TOUR_IMAGES.russiaAuroraForest,
+      10: PEXELS_TOUR_IMAGES.russiaAuroraSea,
+    },
+  },
+};
+
+export function getTourVisualOverride(tour: TourProductImageInput) {
+  const normalizedSlug = tour.slug?.trim().toLocaleLowerCase("id-ID");
+  return normalizedSlug ? TOUR_VISUAL_OVERRIDES[normalizedSlug] ?? null : null;
+}
+
 export function getTourProductImage(tour: TourProductImageInput) {
+  const visualOverride = getTourVisualOverride(tour);
+  if (visualOverride) return visualOverride.heroImg;
+
   const suppliedHero = controlledCmsImage(tour.heroImg);
   if (suppliedHero) return suppliedHero;
 
