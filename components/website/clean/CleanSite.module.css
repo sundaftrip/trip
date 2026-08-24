@@ -1400,6 +1400,72 @@
 .detailIncludedList svg { flex: 0 0 18px; margin-top: 2px; color: var(--clean-teal); }
 .detailExcludedList svg { color: #9a4f48; }
 
+.detailRoomPriceGrid {
+  margin: 24px 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.detailRoomPriceGrid article {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--clean-line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.detailRoomPriceGrid article[data-featured="true"] {
+  border-color: var(--clean-teal);
+  background: var(--clean-teal-pale);
+}
+
+.detailRoomPriceGrid article > span {
+  color: var(--clean-teal-dark);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.detailRoomPriceGrid h3 {
+  margin: 12px 0 3px;
+  color: var(--clean-navy);
+  font-size: clamp(22px, 2.4vw, 29px);
+  letter-spacing: -.04em;
+  line-height: 1.1;
+}
+
+.detailRoomPriceGrid article > p {
+  margin: 0;
+  color: var(--clean-muted);
+  font-size: 11px;
+}
+
+.detailRoomPriceGrid dl {
+  margin: 17px 0 0;
+  padding-top: 13px;
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--clean-line);
+}
+
+.detailRoomPriceGrid dl > div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--clean-muted);
+  font-size: 11px;
+}
+
+.detailRoomPriceGrid dd {
+  margin: 0;
+  color: var(--clean-navy);
+  font-weight: 780;
+  text-align: right;
+}
+
 .detailHotelGrid {
   margin-top: 24px;
   display: grid;
@@ -1565,6 +1631,33 @@
 .detailPriceBreakdown strong { color: var(--clean-navy); font-weight: 800; white-space: nowrap; }
 .detailPriceBreakdown small { margin-left: 4px; color: var(--clean-teal-dark); font-size: 8px; font-weight: 800; }
 .detailPriceBreakdown > .detailPriceTotal { padding-top: 10px; border-top: 1px solid var(--clean-line); color: var(--clean-navy); font-weight: 740; }
+
+.detailSidebarRoomPrices {
+  margin: 0 0 22px;
+  padding: 15px;
+  display: grid;
+  gap: 10px;
+  border-radius: 11px;
+  background: var(--clean-soft);
+}
+
+.detailSidebarRoomPrices > strong {
+  color: var(--clean-navy);
+  font-size: 12px;
+}
+
+.detailSidebarRoomPrices > div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--clean-muted);
+  font-size: 11px;
+}
+
+.detailSidebarRoomPrices > div > span:last-child { text-align: right; }
+.detailSidebarRoomPrices b { display: block; color: var(--clean-navy); font-size: 12px; }
+.detailSidebarRoomPrices small { display: block; margin-top: 2px; color: var(--clean-muted); font-size: 9px; }
 
 .detailBookingCard :global(form) { margin-top: 22px; }
 .detailBookingCard :global(input) { min-height: 44px; border-radius: 8px; }
@@ -1964,6 +2057,7 @@
   .detailDayNumber { font-size: 19px; }
   .detailDayBody { padding: 0 0 26px 56px; }
   .detailIncludedGrid,
+  .detailRoomPriceGrid,
   .detailHotelGrid,
   .detailInfoGrid,
   .detailReviewGrid { grid-template-columns: 1fr; }

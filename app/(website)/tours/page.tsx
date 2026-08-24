@@ -11,6 +11,11 @@ import CleanToursCatalog from "@/components/website/clean/CleanToursCatalog";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { buildWhatsAppHref } from "@/lib/utils";
 import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import { getCanadaRockiesPreviewTour } from "@/lib/canada-catalog-preview";
+import {
+  parseTourHotelRoomPricing,
+  resolveTourStartingPrice,
+} from "@/lib/tour-room-pricing";
 
 export const revalidate = 60;
 
@@ -50,7 +55,7 @@ const getData = unstable_cache(
           id: true, slug: true, title: true, country: true, cityHighlight: true,
           price: true, promoPrice: true, seatsLeft: true,
           tripDate: true, duration: true, heroImg: true, badge: true,
-          status: true, pinned: true, addOns: true, createdAt: true,
+          status: true, pinned: true, addOns: true, hotel: true, createdAt: true,
         },
       }),
       prisma.companyInfo.findMany({
@@ -58,7 +63,11 @@ const getData = unstable_cache(
       }),
     ]);
     const now = new Date();
-    const tours = [...toursRaw].sort((a, b) => comparePublicTourCatalogOrder(a, b, now));
+    const previewTour = getCanadaRockiesPreviewTour();
+    const toursWithPreview = previewTour && !toursRaw.some((tour) => tour.slug === previewTour.slug)
+      ? [previewTour, ...toursRaw]
+      : toursRaw;
+    const tours = [...toursWithPreview].sort((a, b) => comparePublicTourCatalogOrder(a, b, now));
     const themeRow = companyRows.find((r) => r.key === "site_theme");
     const whatsapp = companyRows.find((r) => r.key === "company_whatsapp")?.value || "";
     return {
@@ -101,13 +110,22 @@ export default async function ToursPage({
   if (theme === "atlas") {
     const now = new Date(generatedAt);
     const cleanTours = tours.map((tour) => {
-      const { addOns, ...tourFields } = tour;
+      const { addOns, hotel, ...tourFields } = tour;
+      const mandatoryTotal = mandatoryAddOnsTotal(addOns);
+      const { roomPrices } = parseTourHotelRoomPricing(hotel, mandatoryTotal);
+      const startingPrice = resolveTourStartingPrice(
+        Number(tour.promoPrice ?? tour.price),
+        mandatoryTotal,
+        roomPrices,
+      );
       return {
         ...tourFields,
+        price: startingPrice.headlinePrice,
+        promoPrice: null,
         title: normalizeTourDisplayTitle(tour.title),
         tripDate: toIsoDateString(tour.tripDate),
         createdAt: toIsoDateString(tour.createdAt),
-        mandatoryTotal: mandatoryAddOnsTotal(addOns),
+        mandatoryTotal,
         state: getPublicTourState(tour, now),
       };
     });

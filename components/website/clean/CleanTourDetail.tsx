@@ -21,6 +21,7 @@ import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
+import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import {
   resolveItineraryDayImage,
   type ItineraryDisplayDay,
@@ -77,6 +78,7 @@ type CleanTourDetailProps = {
   tour: DetailTour;
   itinerary: ItineraryDisplayDay[];
   mandatoryAddOns: TourAddOn[];
+  roomPrices: TourRoomPrice[];
   optionalAddOns: TourAddOn[];
   paymentPlan: TourPaymentPlan | null;
   relatedTours: CleanTour[];
@@ -214,6 +216,7 @@ export default function CleanTourDetail({
   tour,
   itinerary,
   mandatoryAddOns,
+  roomPrices,
   optionalAddOns,
   paymentPlan,
   relatedTours,
@@ -239,8 +242,7 @@ export default function CleanTourDetail({
   const commerceStatus = isExpired ? "completed" : getCommerceTourStatus(tour);
   const status = bookingStatus(tour, commerceStatus);
   const unavailable = ["completed", "sold_out", "waitlist"].includes(commerceStatus);
-  const displayPrice = tour.promoPrice ?? tour.price;
-  const hasPrice = displayPrice > 0;
+  const hasPrice = basePrice > 0;
   const priceCaption = mandatoryAddOns.length > 0 ? "Total wajib" : "Harga paket";
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
@@ -256,7 +258,7 @@ export default function CleanTourDetail({
       : commerceStatus === "flexible"
         ? "flexible"
         : "available";
-  const priceLabel = hasPrice ? formatCurrency(startingTotal || displayPrice) : "Sesuai permintaan";
+  const priceLabel = hasPrice ? formatCurrency(startingTotal || basePrice) : "Sesuai permintaan";
   const bookingDepartures = tour.tripDate && !isExpired
     ? [{
         id: `${tour.id}-${tour.tripDate.toISOString().slice(0, 10)}`,
@@ -298,7 +300,7 @@ export default function CleanTourDetail({
     {
       question: "Apakah harga sudah memasukkan seluruh biaya wajib?",
       answer: mandatoryAddOns.length
-        ? `Total wajib saat ini ${formatCurrency(startingTotal)} per orang sudah menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal.`
+        ? `${roomPrices.length > 0 ? "Total wajib mulai" : "Total wajib saat ini"} ${formatCurrency(startingTotal)} per orang sudah menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal.`
         : "Tidak ada biaya tambahan berlabel wajib pada data tour ini. Tim tetap mengonfirmasi rincian final sebelum pembayaran.",
     },
     {
@@ -465,6 +467,27 @@ export default function CleanTourDetail({
             <p className={styles.detailSectionLede}>
               Harga paket, biaya wajib di luar paket, dan status ditampilkan sebelum kamu mengirim permintaan ketersediaan.
             </p>
+            {roomPrices.length > 0 && (
+              <div className={styles.detailRoomPriceGrid} aria-label="Harga paket berdasarkan jumlah orang per kamar">
+                {roomPrices.map((room, index) => (
+                  <article key={room.code} data-featured={index === 0}>
+                    <span>{room.label}</span>
+                    <h3>{formatCurrency(room.headlinePrice)}</h3>
+                    <p>Harga posting per orang</p>
+                    <dl>
+                      <div>
+                        <dt>Biaya wajib</dt>
+                        <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
+                      </div>
+                      <div>
+                        <dt>Total wajib per orang</dt>
+                        <dd>{formatCurrency(room.mandatoryTotalPrice)}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            )}
             <div className={interactiveStyles.dateGrid}>
               <article className={interactiveStyles.dateCard} data-unavailable={unavailable}>
                 <div className={interactiveStyles.dateCardTop}>
@@ -472,12 +495,12 @@ export default function CleanTourDetail({
                   <strong>{departureLabel || "Tanggal fleksibel"}</strong>
                 </div>
                 <dl>
-                  <div><dt>Harga paket</dt><dd>{hasPrice ? formatCurrency(basePrice) : "Sesuai permintaan"}/orang</dd></div>
+                  <div><dt>{roomPrices.length > 0 ? `Harga mulai (${roomPrices[0].label})` : "Harga paket"}</dt><dd>{hasPrice ? formatCurrency(basePrice) : "Sesuai permintaan"}/orang</dd></div>
                   {mandatoryAddOns.map((item) => (
                     <div key={item.name}><dt>{item.name} <small>WAJIB</small></dt><dd>+{formatCurrency(item.price)}</dd></div>
                   ))}
                   <div className={interactiveStyles.dateTotal}>
-                    <dt>Total wajib</dt>
+                    <dt>{roomPrices.length > 0 ? "Total wajib mulai" : "Total wajib"}</dt>
                     <dd>{hasPrice ? formatCurrency(startingTotal) : "Dikonfirmasi tim"}</dd>
                   </div>
                   {paymentPlan?.steps[0] && (
@@ -490,6 +513,12 @@ export default function CleanTourDetail({
                   tourName={tour.title}
                   priceLabel={priceLabel}
                   priceCaption={priceCaption}
+                  roomOptions={roomPrices.map((room) => ({
+                    value: room.code,
+                    label: room.label,
+                    priceLabel: formatCurrency(room.mandatoryTotalPrice),
+                    priceCaption: "Total wajib",
+                  }))}
                   availabilityLabel={status}
                   mode={bookingMode}
                   departures={bookingDepartures}
@@ -670,8 +699,8 @@ export default function CleanTourDetail({
           <div className={styles.detailBookingCard}>
             <span className={`${styles.detailStock} ${unavailable ? styles.detailStockUnavailable : ""}`}>{status}</span>
             <p className={styles.detailBookingLabel}>Harga paket per orang</p>
-            <p className={styles.detailBookingPrice}>{hasPrice ? formatCurrency(displayPrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}</p>
-            {tour.promoPrice && <p className={styles.detailOriginalPrice}>Harga normal <s>{formatCurrency(tour.price)}</s></p>}
+            <p className={styles.detailBookingPrice}>{hasPrice ? formatCurrency(basePrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}</p>
+            {tour.promoPrice && roomPrices.length === 0 && <p className={styles.detailOriginalPrice}>Harga normal <s>{formatCurrency(tour.price)}</s></p>}
             {tour.priceLandTour && <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
 
             {mandatoryAddOns.length > 0 && (
@@ -679,6 +708,18 @@ export default function CleanTourDetail({
                 <div><span>Harga paket</span><strong>{formatCurrency(basePrice)}</strong></div>
                 {mandatoryAddOns.map((item) => <div key={item.name}><span>{item.name} <small>WAJIB</small></span><strong>+{formatCurrency(item.price)}</strong></div>)}
                 <div className={styles.detailPriceTotal}><span>Total wajib</span><strong>{formatCurrency(startingTotal)}</strong></div>
+              </div>
+            )}
+
+            {roomPrices.length > 0 && (
+              <div className={styles.detailSidebarRoomPrices}>
+                <strong>Pilihan isi kamar</strong>
+                {roomPrices.map((room) => (
+                  <div key={room.code}>
+                    <span>{room.label}</span>
+                    <span><b>{formatCurrency(room.headlinePrice)}</b><small>Total wajib {formatCurrency(room.mandatoryTotalPrice)}</small></span>
+                  </div>
+                ))}
               </div>
             )}
 
