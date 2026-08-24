@@ -27,7 +27,13 @@ import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
-import { getAbsoluteTourProductImage, getTourProductImage, getTourVisualOverride } from "@/lib/tour-product-images";
+import {
+  getAbsoluteTourProductImage,
+  getTourGalleryImages,
+  getTourItineraryImage,
+  getTourProductImage,
+  getTourVisualOverride,
+} from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 import {
@@ -513,7 +519,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   };
 
   const rawItinerary = (tour.itinerary as { day: number; title: string; description: string; image?: string }[] | null) ?? [];
-  const galleryImages = visualOverride?.gallery ?? tour.gallery;
+  const galleryImages = getTourGalleryImages(tour.gallery, visualOverride?.gallery);
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
   const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const displayCountry = localizePdfText(tour.country) ?? tour.country;
@@ -529,7 +535,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     const overrideImage = visualOverride?.itineraryImages[item.day];
     const localizedItem = {
       ...item,
-      image: overrideImage ?? item.image,
+      image: getTourItineraryImage(item.image, overrideImage),
       title: localizePdfText(item.title) ?? item.title,
       description: localizePdfText(item.description) ?? item.description,
     };

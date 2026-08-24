@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   getAbsoluteTourProductImage,
+  getTourGalleryImages,
+  getTourItineraryImage,
   getTourProductImage,
   getTourVisualOverride,
   PEXELS_TOUR_IMAGES,
@@ -144,14 +146,15 @@ test("maps Central Asia and winter Japan packages to their destination pools", (
   );
 });
 
-test("overrides public Hokkaido and January Aurora visuals with curated local assets", () => {
+test("uses curated local assets only as fallbacks for CMS-managed tour visuals", () => {
+  const hokkaidoCmsHero = "https://images.unsplash.com/photo-1550290960-6e04a8ca2509";
   assert.equal(
     getTourProductImage({
       slug: "winter-hokkaido-tokyo",
       title: "Musim Dingin Hokkaido + Tokyo",
-      heroImg: "https://images.unsplash.com/photo-legacy.webp",
+      heroImg: hokkaidoCmsHero,
     }),
-    PEXELS_TOUR_IMAGES.japanHokkaido,
+    hokkaidoCmsHero,
   );
   assert.equal(
     getTourVisualOverride({ slug: "winter-hokkaido-tokyo" })?.itineraryImages[4],
@@ -161,7 +164,7 @@ test("overrides public Hokkaido and January Aurora visuals with curated local as
     getTourProductImage({
       slug: "rusia-aurora-14-januari-2027",
       title: "Rusia Aurora 14–23 Januari 2027",
-      heroImg: "https://res.cloudinary.com/dlmgl1grq/image/upload/old.png",
+      heroImg: null,
     }),
     PEXELS_TOUR_IMAGES.russiaAuroraGlow,
   );
@@ -169,9 +172,66 @@ test("overrides public Hokkaido and January Aurora visuals with curated local as
     getTourProductImage({
       slug: "rusia-aurora-21-30-januari-2027",
       title: "Rusia Aurora 21–30 Januari 2027",
-      heroImg: "https://res.cloudinary.com/dlmgl1grq/image/upload/old.png",
+      heroImg: null,
     }),
     PEXELS_TOUR_IMAGES.russiaAuroraSea,
+  );
+
+  const cmsDayImage = "https://images.pexels.com/photos/12439602/pexels-photo-12439602.jpeg";
+  assert.equal(
+    getTourItineraryImage(cmsDayImage, PEXELS_TOUR_IMAGES.russiaAuroraGlow),
+    cmsDayImage,
+  );
+  assert.equal(
+    getTourItineraryImage(null, PEXELS_TOUR_IMAGES.russiaAuroraGlow),
+    PEXELS_TOUR_IMAGES.russiaAuroraGlow,
+  );
+});
+
+test("prefers valid CMS gallery images over a local visual override", () => {
+  const visualOverride = getTourVisualOverride({ slug: "winter-hokkaido-tokyo" });
+  const cmsGallery = [
+    "https://images.pexels.com/photos/36067952/pexels-photo-36067952.jpeg",
+    "https://images.unsplash.com/photo-1550290960-6e04a8ca2509",
+  ];
+
+  assert.ok(visualOverride);
+  assert.deepEqual(
+    getTourGalleryImages(cmsGallery, visualOverride.gallery),
+    cmsGallery,
+  );
+});
+
+test("filters invalid CMS gallery images while retaining valid CMS images", () => {
+  assert.deepEqual(
+    getTourGalleryImages([
+      "https://cdn.example.com/tours/untrusted.webp",
+      "javascript:alert(1)",
+      "https://images.pexels.com/photos/36489677/pexels-photo-36489677.jpeg",
+      "  /images/tours/local-approved.webp  ",
+      null,
+    ]),
+    [
+      "https://images.pexels.com/photos/36489677/pexels-photo-36489677.jpeg",
+      "/images/tours/local-approved.webp",
+    ],
+  );
+});
+
+test("falls back to the local gallery when the CMS gallery has no valid images", () => {
+  const visualOverride = getTourVisualOverride({ slug: "rusia-aurora-14-januari-2027" });
+
+  assert.ok(visualOverride);
+  assert.deepEqual(
+    getTourGalleryImages(
+      ["https://cdn.example.com/untrusted.webp", "data:image/png;base64,unsafe"],
+      visualOverride.gallery,
+    ),
+    visualOverride.gallery,
+  );
+  assert.notStrictEqual(
+    getTourGalleryImages([], visualOverride.gallery),
+    visualOverride.gallery,
   );
 });
 
