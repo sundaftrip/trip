@@ -58,6 +58,7 @@ export const CANADA_ROCKIES_TOUR = {
   description: [
     "Perjalanan musim semi melintasi Vancouver, Canadian Rockies, Okanagan, dan Victoria dengan dua kali pelayaran BC Ferries.",
     "Program Kanada berlangsung 15–23 April 2027, dilanjutkan perjalanan pulang hingga estimasi tiba di Jakarta pada hari ke-11. Jadwal penerbangan akan mengikuti allotment grup yang dikonfirmasi.",
+    "Menginap delapan malam di hotel bintang 3 atau setara dengan sarapan harian termasuk.",
     "Harga ditampilkan berdasarkan jumlah peserta dalam satu kamar: berempat, bertiga, atau berdua.",
   ].join("\n\n"),
   itinerary: [
@@ -131,14 +132,14 @@ export const CANADA_ROCKIES_TOUR = {
   inclusions: [
     "Tiket pesawat ekonomi pulang-pergi Jakarta–Vancouver sesuai group fare yang dikonfirmasi",
     "Bagasi check-in sesuai ketentuan fare grup maskapai",
-    "Delapan malam hotel bintang 2–3 atau setara",
+    "Delapan malam hotel bintang 3 atau setara, termasuk sarapan harian",
     "Private coach dan transfer bandara selama program Kanada",
     "Dua kali penyeberangan BC Ferries untuk rute Vancouver–Victoria–Vancouver",
     "Tour Leader dari Indonesia yang berbagi kamar bersama grup",
     "Biaya masuk taman nasional dan parkir bus yang tercantum dalam quotation final",
   ],
   exclusions: [
-    "Sarapan, makan siang, dan makan malam",
+    "Makan siang dan makan malam",
     "Visa Kanada atau eTA bagi peserta yang memenuhi syarat",
     "Aktivitas Columbia Icefield Adventure, Ice Explorer, dan Skywalk",
     "Pengeluaran pribadi, porter, laundry, serta minibar",
@@ -158,14 +159,15 @@ export const CANADA_ROCKIES_TOUR = {
     __room_price_quad: CANADA_ROCKIES_ROOM_PRICES.quad,
     __room_price_triple: CANADA_ROCKIES_ROOM_PRICES.triple,
     __room_price_twin: CANADA_ROCKIES_ROOM_PRICES.twin,
-    "Standar akomodasi": "Hotel bintang 2–3 atau setara, delapan malam",
+    "Standar akomodasi": "Hotel bintang 3 atau setara, delapan malam",
     "Pembagian kamar": "Berempat, bertiga, atau berdua; mengikuti tier harga yang dipilih",
     "Tour Leader": "Berbagi kamar bersama peserta; tidak dihitung sebagai kamar tunggal",
-    "Fasilitas makan": "Tanpa sarapan",
+    "Fasilitas makan": "Sarapan harian termasuk; bentuk layanan mengikuti kebijakan hotel",
   },
   visaInfo: "Visa Kanada belum termasuk. Kelayakan eTA, bila relevan, harus dikonfirmasi berdasarkan dokumen dan riwayat perjalanan masing-masing peserta.",
   notes: [
     "Harga target pada tahap pre-registration bukan harga tetap. Harga final hanya dilepas setelah tiket grup, hotel, coach dalam mata uang CAD, dua penyeberangan ferry, driver hotel, park fee, dan batas overtime dikonfirmasi tertulis.",
+    "Nama hotel bintang 3 dan bentuk sarapan (restoran atau breakfast box untuk keberangkatan pagi) mengikuti konfirmasi tertulis supplier.",
     "Tier berdua masih on request sampai biaya hotel dan coach final memenuhi pengaman arus biaya.",
     "Pre-registration dapat dibatalkan dengan pengembalian penuh sebelum peserta menyetujui harga final dan sebelum deposit supplier non-refundable dilakukan. Setelah itu berlaku syarat pembatalan final yang diberikan tertulis.",
     "Bow Lake, Peyto Lake, Emerald Lake, dan koridor pegunungan mengikuti kondisi cuaca, akses jalan, dan keputusan otoritas taman.",

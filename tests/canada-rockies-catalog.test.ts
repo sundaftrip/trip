@@ -42,6 +42,18 @@ test("catalog route reconciles nine Canada days plus two journey days", () => {
   assert.match(CANADA_ROCKIES_TOUR.duration, /8 Malam Hotel/i);
 });
 
+test("catalog promises eight nights in three-star hotels with daily breakfast", () => {
+  assert.match(
+    CANADA_ROCKIES_TOUR.inclusions.join(" "),
+    /delapan malam hotel bintang 3.*sarapan harian/i,
+  );
+  assert.match(CANADA_ROCKIES_TOUR.hotel["Standar akomodasi"], /bintang 3/i);
+  assert.match(CANADA_ROCKIES_TOUR.hotel["Fasilitas makan"], /sarapan harian termasuk/i);
+  assert.doesNotMatch(CANADA_ROCKIES_TOUR.exclusions.join(" "), /sarapan/i);
+  assert.match(CANADA_ROCKIES_TOUR.exclusions.join(" "), /makan siang dan makan malam/i);
+  assert.match(CANADA_ROCKIES_TOUR.notes, /konfirmasi tertulis supplier/i);
+});
+
 test("catalog avoids closed-attraction promises", () => {
   assert.match(CANADA_ROCKIES_TOUR.notes, /tidak dijanjikan/i);
   assert.doesNotMatch(
