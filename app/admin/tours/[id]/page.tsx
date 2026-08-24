@@ -36,6 +36,7 @@ export default async function EditTourPage({
       </div>
       <TourForm returnHref={returnHref} tour={{
         id: tour.id,
+        slug: tour.slug ?? undefined,
         title: tour.title,
         country: tour.country,
         cityHighlight: tour.cityHighlight ?? undefined,
@@ -50,6 +51,7 @@ export default async function EditTourPage({
         inclusions: tour.inclusions,
         exclusions: tour.exclusions,
         gallery: tour.gallery,
+        hotel: tour.hotel as TourData["hotel"],
         heroImg: tour.heroImg ?? undefined,
         badge: tour.badge ?? undefined,
         notes: tour.notes ?? undefined,
