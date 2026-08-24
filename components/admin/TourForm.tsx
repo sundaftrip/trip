@@ -23,6 +23,7 @@ export type PaymentPlanFormConfig = {
 
 export interface TourData {
   id?: string;
+  slug?: string;
   title?: string;
   country?: string;
   cityHighlight?: string;
@@ -37,6 +38,7 @@ export interface TourData {
   inclusions?: string[];
   exclusions?: string[];
   gallery?: string[];
+  hotel?: Record<string, unknown> | null;
   heroImg?: string;
   badge?: string;
   notes?: string;
@@ -62,6 +64,7 @@ interface TourFormDraft {
 
 function buildInitialForm(tour?: TourData): TourData {
   return {
+    slug: tour?.slug ?? "",
     title: tour?.title ?? "",
     country: tour?.country ?? "",
     cityHighlight: tour?.cityHighlight ?? "",
@@ -76,6 +79,7 @@ function buildInitialForm(tour?: TourData): TourData {
     inclusions: tour?.inclusions ?? [],
     exclusions: tour?.exclusions ?? [],
     gallery: tour?.gallery ?? [],
+    hotel: tour?.hotel ?? null,
     heroImg: tour?.heroImg ?? "",
     badge: tour?.badge ?? "",
     notes: tour?.notes ?? "",
