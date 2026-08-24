@@ -254,6 +254,19 @@ export function getTourItineraryImage(
   return controlledCmsImage(cmsImage) ?? fallbackImage ?? undefined;
 }
 
+export function getTourGalleryImages(
+  cmsGallery?: readonly (string | null | undefined)[] | null,
+  fallbackGallery?: readonly string[] | null,
+) {
+  const controlledCmsGallery = (cmsGallery ?? [])
+    .map((image) => controlledCmsImage(image))
+    .filter((image): image is string => Boolean(image));
+
+  return controlledCmsGallery.length > 0
+    ? controlledCmsGallery
+    : [...(fallbackGallery ?? [])];
+}
+
 export function getTourProductImage(tour: TourProductImageInput) {
   const suppliedHero = controlledCmsImage(tour.heroImg);
   if (suppliedHero) return suppliedHero;

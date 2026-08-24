@@ -29,6 +29,7 @@ import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { getPublicTourState } from "@/lib/tour-order";
 import {
   getAbsoluteTourProductImage,
+  getTourGalleryImages,
   getTourItineraryImage,
   getTourProductImage,
   getTourVisualOverride,
@@ -518,7 +519,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   };
 
   const rawItinerary = (tour.itinerary as { day: number; title: string; description: string; image?: string }[] | null) ?? [];
-  const galleryImages = visualOverride?.gallery ?? tour.gallery;
+  const galleryImages = getTourGalleryImages(tour.gallery, visualOverride?.gallery);
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
   const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
   const displayCountry = localizePdfText(tour.country) ?? tour.country;
