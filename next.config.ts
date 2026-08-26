@@ -27,6 +27,7 @@ const scriptSrc = [
   "https://va.vercel-scripts.com",
   "https://vercel.live",
   "https://www.googletagmanager.com",
+  "https://challenges.cloudflare.com",
 ].join(" ");
 
 const nextConfig: NextConfig = {
@@ -222,6 +223,7 @@ const nextConfig: NextConfig = {
               "media-src 'self' blob: data: https:",
               "font-src 'self' https://fonts.gstatic.com data:",
               "connect-src 'self' https: wss:",
+              "frame-src 'self' https://challenges.cloudflare.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

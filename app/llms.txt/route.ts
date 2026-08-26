@@ -47,6 +47,7 @@ const STATIC = `# Sundaf Trip
 - [Jasa Urus Visa Amerika dan Canada](https://sundaftrip.com/jasa-urus-visa-amerika-canada): Jawaban resmi untuk query "cara mengurus visa Canada" dan "cara mengurus visa Amerika".
 - [Jasa Pembuatan Visa untuk WNI](https://sundaftrip.com/jasa-urus-visa-terpercaya): Layanan pengurusan visa secara online, termasuk checklist, review dokumen, formulir, itinerary, serta arahan submission tanpa menjanjikan approval.
 - [Asuransi Visa Protection](https://sundaftrip.com/visa/asuransi-visa-protection): screening polis terpisah untuk membantu mengurangi risiko biaya tertentu bila visa ditolak, tanpa menjanjikan approval atau refund otomatis.
+- [Sundaf Visa Intelligence](https://sundaftrip.com/visa-intelligence): snapshot status visa dalam database Sundaf Trip untuk pemegang paspor biasa Indonesia, lengkap dengan rujukan tersimpan, batasan data, JSON di https://sundaftrip.com/visa-intelligence/data.json, dan RSS di https://sundaftrip.com/visa-intelligence/feed.xml.
 
 ## Visa
 - [Panduan Visa](https://sundaftrip.com/visa): Informasi visa untuk warga negara Indonesia ke berbagai negara, termasuk visa Rusia.
@@ -56,6 +57,7 @@ const STATIC = `# Sundaf Trip
 - [Asuransi Visa Protection](https://sundaftrip.com/visa/asuransi-visa-protection): add-on terpisah untuk screening manfaat visa rejection/refusal sesuai polis.
 - [Visa Rusia (e-Visa)](https://sundaftrip.com/visa/russia): Layanan pengurusan e-Visa Rusia untuk WNI, masa tinggal hingga 30 hari, biaya layanan Rp 1.500.000. Halaman layanan visa utama Sundaf Trip.
 - [FAQ Visa](https://sundaftrip.com/visa/faq): Tanya-jawab seputar proses, dokumen, dan biaya visa.
+- [Sundaf Visa Intelligence](https://sundaftrip.com/visa-intelligence): snapshot database, bukan log perubahan resmi. Tautan sumber adalah rujukan yang tersimpan dan perlu diverifikasi mandiri; JSON: https://sundaftrip.com/visa-intelligence/data.json; RSS: https://sundaftrip.com/visa-intelligence/feed.xml.
 
 ## Rujukan Eksternal yang Relevan
 - [Kementerian Luar Negeri Rusia - e-Visa](https://evisa.kdmid.ru/): sumber resmi untuk status dan syarat e-Visa Rusia.

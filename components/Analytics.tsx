@@ -5,6 +5,7 @@ import {
   trackSundafEvent,
   type SundafAnalyticsEvent,
 } from "@/lib/analytics-events";
+import { oneF916AttributionFromLocation } from "@/lib/campaign-attribution";
 
 /**
  * Analytics ringan, opt-in via environment variables:
@@ -64,6 +65,18 @@ export default function Analytics() {
       window.gtag("config", GA_ID, { send_page_view: true });
     }
 
+    const oneF916 = oneF916AttributionFromLocation(window.location.search, document.referrer);
+    if (oneF916.matched) {
+      trackSundafEvent("onef916_visit", {
+        detection_method: oneF916.detectionMethod,
+        campaign_source: oneF916.source,
+        campaign_medium: oneF916.medium,
+        campaign_name: oneF916.campaign,
+        campaign_content: oneF916.content,
+        page_path: window.location.pathname,
+      });
+    }
+
     if (FB_PIXEL_ID && !window.fbq) {
       const fbq = ((...args: unknown[]) => {
         fbq.queue = fbq.queue || [];
@@ -93,6 +106,11 @@ export default function Analytics() {
             tour_id: eventTarget.dataset.tourId,
             departure_id: eventTarget.dataset.departureId,
             destination: eventTarget.dataset.destination,
+            placement: eventTarget.dataset.analyticsPlacement,
+            campaign_source: eventTarget.dataset.campaignSource,
+            campaign_content: eventTarget.dataset.campaignContent,
+            format: eventTarget.dataset.analyticsFormat,
+            record_id: eventTarget.dataset.analyticsRecordId,
           },
         );
       } else if (link && !validatedLink) {
@@ -104,11 +122,34 @@ export default function Analytics() {
       if (eventTarget || (link && !validatedLink)) loadVendors();
     };
 
+    let oneF916Interacted = false;
+    const onOneF916Engagement = () => {
+      if (!oneF916.matched || oneF916Interacted || document.visibilityState !== "visible") return;
+      oneF916Interacted = true;
+      trackSundafEvent("onef916_interaction", {
+        detection_method: oneF916.detectionMethod,
+        campaign_source: oneF916.source,
+        campaign_medium: oneF916.medium,
+        campaign_name: oneF916.campaign,
+        campaign_content: oneF916.content,
+        page_path: window.location.pathname,
+      });
+      loadVendors();
+      window.removeEventListener("scroll", onOneF916Engagement);
+      window.removeEventListener("pointerdown", onOneF916Engagement);
+      window.removeEventListener("keydown", onOneF916Engagement);
+    };
+
     const onFirstInteraction = () => loadVendors();
     document.addEventListener("click", onClick, { capture: true });
     window.addEventListener("pointerdown", onFirstInteraction, { once: true, passive: true });
     window.addEventListener("touchstart", onFirstInteraction, { once: true, passive: true });
     window.addEventListener("keydown", onFirstInteraction, { once: true });
+    if (oneF916.matched) {
+      window.addEventListener("scroll", onOneF916Engagement, { passive: true });
+      window.addEventListener("pointerdown", onOneF916Engagement, { passive: true });
+      window.addEventListener("keydown", onOneF916Engagement);
+    }
 
     return () => {
       cancelled = true;
@@ -116,6 +157,9 @@ export default function Analytics() {
       window.removeEventListener("pointerdown", onFirstInteraction);
       window.removeEventListener("touchstart", onFirstInteraction);
       window.removeEventListener("keydown", onFirstInteraction);
+      window.removeEventListener("scroll", onOneF916Engagement);
+      window.removeEventListener("pointerdown", onOneF916Engagement);
+      window.removeEventListener("keydown", onOneF916Engagement);
     };
   }, []);
 

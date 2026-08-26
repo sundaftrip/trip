@@ -509,6 +509,87 @@ model Inquiry {
   @@index([status, createdAt])
 }
 
+enum VisaDiscussionStatus {
+  PENDING
+  PUBLISHED
+  REJECTED
+}
+
+enum VisaDiscussionTopic {
+  DOCUMENTS
+  APPLICATION
+  REFUSAL
+  TRANSIT
+  EMBASSY_VFS
+  OTHER
+}
+
+enum VisaDiscussionReportReason {
+  PERSONAL_DATA
+  MISINFORMATION
+  HARASSMENT
+  SPAM
+  IMPERSONATION
+  OTHER
+}
+
+enum VisaDiscussionReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+// Thread diskusi publik untuk topik visa. Semua submit publik masuk review dulu.
+model VisaDiscussion {
+  id                String                 @id @default(cuid())
+  parentId          String?
+  parent            VisaDiscussion?        @relation("VisaDiscussionReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies           VisaDiscussion[]       @relation("VisaDiscussionReplies")
+  reports           VisaDiscussionReport[]
+  authorName        String
+  countrySlug       String?
+  countryName       String?
+  topic             VisaDiscussionTopic?
+  caseContext       String?
+  title             String?
+  message           String                 @db.Text
+  sourceUrl         String?                @db.Text
+  status            VisaDiscussionStatus   @default(PENDING)
+  isAdminReply      Boolean                @default(false)
+  isLocked          Boolean                @default(false)
+  authorFingerprint String
+  contentHash       String
+  reviewedById      String?
+  reviewedAt        DateTime?
+  publishedAt       DateTime?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@index([status, createdAt])
+  @@index([parentId])
+  @@index([countrySlug, status, createdAt])
+  @@index([authorFingerprint, createdAt])
+  @@index([contentHash, createdAt])
+}
+
+model VisaDiscussionReport {
+  id                  String                     @id @default(cuid())
+  discussionId        String
+  discussion          VisaDiscussion             @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  reason              VisaDiscussionReportReason
+  details             String?
+  status              VisaDiscussionReportStatus @default(OPEN)
+  reporterFingerprint String
+  reviewedById        String?
+  reviewedAt          DateTime?
+  createdAt           DateTime                   @default(now())
+
+  @@unique([discussionId, reporterFingerprint])
+  @@index([status, createdAt])
+  @@index([reporterFingerprint, createdAt])
+  @@index([discussionId, createdAt])
+}
+
 // Katalog PDF B2B khusus agen. File asli disimpan di storage,
 // halaman publik hanya membuka download setelah password agen valid.
 model B2bCatalogDocument {

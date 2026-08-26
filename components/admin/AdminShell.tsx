@@ -20,6 +20,7 @@ const navItems = [
   { href: "/admin/inquiries", label: "Lead Masuk", icon: Inbox },
   { href: "/admin/partners", label: "Referral", icon: Handshake },
   { href: "/admin/database-visa", label: "Database Visa", icon: Database },
+  { href: "/admin/visa-discussions", label: "Diskusi Visa", icon: MessageSquareQuote },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/geo", label: "GEO", icon: Globe2 },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },

@@ -14,7 +14,15 @@ export type SundafAnalyticsEvent =
   | "itinerary_pdf_download"
   | "custom_trip_start"
   | "custom_trip_submit"
-  | "visa_country_search";
+  | "visa_country_search"
+  | "onef916_visit"
+  | "onef916_interaction"
+  | "visa_intelligence_feed_click"
+  | "visa_intelligence_source_click"
+  | "visa_intelligence_correction_click"
+  | "visa_discussion_source_click"
+  | "visa_discussion_reply_open"
+  | "visa_discussion_report_open";
 
 type SafeAnalyticsValue = string | number | boolean | null | undefined;
 

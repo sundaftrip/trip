@@ -162,6 +162,9 @@ export default function VisaLanding({
                 Jasa pembuatan visa
               </Link>
             </div>
+            <Link className={styles.intelligenceLink} href="/visa-intelligence">
+              Powered by Sundaf Visa Intelligence
+            </Link>
           </div>
 
           <dl className={styles.heroFacts} aria-label="Ringkasan database visa">

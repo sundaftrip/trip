@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/tours`, changeFrequency: "daily", priority: 0.95 },
     { url: `${base}/open-trip-vietnam`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/visa`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/visa-intelligence`, changeFrequency: "daily", priority: 0.82 },
     { url: `${base}/custom-trip`, changeFrequency: "monthly", priority: 0.88 },
     { url: `${base}/jasa-urus-visa-eropa`, changeFrequency: "monthly", priority: 0.86 },
     { url: `${base}/jasa-urus-visa-amerika-canada`, changeFrequency: "monthly", priority: 0.86 },

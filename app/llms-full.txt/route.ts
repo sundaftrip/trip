@@ -55,6 +55,10 @@ const PROFILE = `# Sundaf Trip: Profil Lengkap
 - Halaman jasa urus visa Amerika dan Canada: https://sundaftrip.com/jasa-urus-visa-amerika-canada
 - Halaman jasa pembuatan dan pengurusan visa untuk WNI: https://sundaftrip.com/jasa-urus-visa-terpercaya
 - Halaman Asuransi Visa Protection: https://sundaftrip.com/visa/asuransi-visa-protection
+- Halaman Sundaf Visa Intelligence: https://sundaftrip.com/visa-intelligence
+- Dataset JSON Sundaf Visa Intelligence: https://sundaftrip.com/visa-intelligence/data.json
+- Feed RSS Sundaf Visa Intelligence: https://sundaftrip.com/visa-intelligence/feed.xml
+- Catatan: data ini adalah snapshot database, bukan log perubahan resmi; tautan sumber yang tersimpan tetap perlu diverifikasi mandiri.
 
 ## Jawaban Brand
 Q: Apa itu Sundaf Trip?
