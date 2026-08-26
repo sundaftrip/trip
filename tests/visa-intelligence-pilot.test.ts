@@ -111,7 +111,7 @@ test("visa intelligence route is discoverable from sitemap and llms files", () =
   assert.match(llmsFull, /Sundaf Visa Intelligence/);
   assert.match(llmsFull, /\/visa-intelligence\/data\.json/);
   assert.match(llmsFull, /\/visa-intelligence\/feed\.xml/);
-  assert.match(visaLanding, /className=\{styles\.intelligenceLink\}[\s\S]*?Sundaf Visa Intelligence/);
+  assert.match(visaLanding, /className=\{styles\.intelligenceLink\}[\s\S]*?Powered by Sundaf Visa Intelligence/);
   assert.match(visaStyles, /\.intelligenceLink\s*\{[\s\S]*?font-size:\s*11px/);
   assert.match(visaStyles, /\.intelligenceLink\s*\{[\s\S]*?font-weight:\s*400/);
 });

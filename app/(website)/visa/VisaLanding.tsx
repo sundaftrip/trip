@@ -163,7 +163,7 @@ export default function VisaLanding({
               </Link>
             </div>
             <Link className={styles.intelligenceLink} href="/visa-intelligence">
-              Sundaf Visa Intelligence
+              Powered by Sundaf Visa Intelligence
             </Link>
           </div>
 
