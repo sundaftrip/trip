@@ -25,6 +25,8 @@ export const PERMISSION_LABELS: Record<string, { label: string; section: string 
   scraper_view:   { label: "Lihat Scraper",          section: "Scraper" },
   scraper_run:    { label: "Jalankan Scraper",       section: "Scraper" },
   scraper_rewrite:{ label: "AI Rewrite Konten",      section: "Scraper" },
+  visa_discussion_view: { label: "Lihat Diskusi Visa", section: "Diskusi Visa" },
+  visa_discussion_moderate: { label: "Moderasi Diskusi Visa", section: "Diskusi Visa" },
 };
 
 export const ALL_PERMISSION_KEYS = Object.keys(PERMISSION_LABELS);
@@ -39,6 +41,7 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     b2b_catalog_view: true, b2b_catalog_edit: true,
     finance_view: true, finance_edit: true,
     scraper_view: true, scraper_run: true, scraper_rewrite: true,
+    visa_discussion_view: true, visa_discussion_moderate: true,
   },
   EDITOR: {
     tour_create: false, tour_edit: true,  tour_delete: false, tour_status: false,
@@ -49,6 +52,7 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     b2b_catalog_view: false, b2b_catalog_edit: false,
     finance_view: false, finance_edit: false,
     scraper_view: true, scraper_run: false, scraper_rewrite: false,
+    visa_discussion_view: true, visa_discussion_moderate: false,
   },
   VIEWER: {
     tour_create: false, tour_edit: false, tour_delete: false, tour_status: false,
@@ -59,5 +63,6 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     b2b_catalog_view: true, b2b_catalog_edit: false,
     finance_view: true, finance_edit: false,
     scraper_view: true, scraper_run: false, scraper_rewrite: false,
+    visa_discussion_view: false, visa_discussion_moderate: false,
   },
 };
