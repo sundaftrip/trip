@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ClipboardCheck,
   FileCheck2,
-  FileJson,
   FileText,
   Landmark,
   MessageCircle,
@@ -162,11 +161,10 @@ export default function VisaLanding({
                 <MessageCircle size={17} aria-hidden="true" />
                 Jasa pembuatan visa
               </Link>
-              <Link className={styles.secondaryAction} href="/visa-intelligence">
-                <FileJson size={17} aria-hidden="true" />
-                Visa Intelligence
-              </Link>
             </div>
+            <Link className={styles.intelligenceLink} href="/visa-intelligence">
+              Sundaf Visa Intelligence
+            </Link>
           </div>
 
           <dl className={styles.heroFacts} aria-label="Ringkasan database visa">

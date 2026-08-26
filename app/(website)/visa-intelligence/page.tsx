@@ -30,7 +30,7 @@ import styles from "./VisaIntelligence.module.css";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Visa Intelligence untuk Paspor Indonesia",
+  title: "Sundaf Visa Intelligence untuk Paspor Indonesia",
   description:
     "Snapshot status visa dalam database Sundaf Trip untuk paspor Indonesia, dengan rujukan tersimpan, batasan data, serta akses JSON dan RSS.",
   alternates: { canonical: VISA_INTELLIGENCE_CANONICAL_URL },
@@ -63,11 +63,11 @@ export default async function VisaIntelligencePage() {
   ]);
   const correctionHref = buildWhatsAppHref(
     whatsapp,
-    "Halo Sundaf Trip, saya menemukan data di Visa Intelligence yang perlu diperiksa atau dikoreksi.",
+    "Halo Sundaf Trip, saya menemukan data di Sundaf Visa Intelligence yang perlu diperiksa atau dikoreksi.",
   );
   const consultationHref = buildWhatsAppHref(
     whatsapp,
-    "Halo Sundaf Trip, saya membaca Visa Intelligence dan ingin memastikan persyaratan visa untuk perjalanan saya.",
+    "Halo Sundaf Trip, saya membaca Sundaf Visa Intelligence dan ingin memastikan persyaratan visa untuk perjalanan saya.",
   );
   const recentRecords = dataset.records.slice(0, 12);
   const datasetSchema = {
@@ -106,7 +106,7 @@ export default async function VisaIntelligencePage() {
         crumbs={[
           { name: "Beranda", url: "/" },
           { name: "Info Visa", url: "/visa" },
-          { name: "Visa Intelligence", url: "/visa-intelligence" },
+          { name: "Sundaf Visa Intelligence", url: "/visa-intelligence" },
         ]}
       />
       <script

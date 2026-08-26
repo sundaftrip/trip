@@ -101,6 +101,8 @@ test("visa intelligence route is discoverable from sitemap and llms files", () =
   const sitemap = readSource("app/sitemap.ts");
   const llms = readSource("app/llms.txt/route.ts");
   const llmsFull = readSource("app/llms-full.txt/route.ts");
+  const visaLanding = readSource("app/(website)/visa/VisaLanding.tsx");
+  const visaStyles = readSource("app/(website)/visa/VisaPages.module.css");
 
   assert.match(sitemap, /\/visa-intelligence/);
   assert.match(llms, /Sundaf Visa Intelligence/);
@@ -109,6 +111,9 @@ test("visa intelligence route is discoverable from sitemap and llms files", () =
   assert.match(llmsFull, /Sundaf Visa Intelligence/);
   assert.match(llmsFull, /\/visa-intelligence\/data\.json/);
   assert.match(llmsFull, /\/visa-intelligence\/feed\.xml/);
+  assert.match(visaLanding, /className=\{styles\.intelligenceLink\}[\s\S]*?Sundaf Visa Intelligence/);
+  assert.match(visaStyles, /\.intelligenceLink\s*\{[\s\S]*?font-size:\s*11px/);
+  assert.match(visaStyles, /\.intelligenceLink\s*\{[\s\S]*?font-weight:\s*400/);
 });
 
 test("public source URL sanitizer only accepts plain HTTP(S) URLs", () => {
