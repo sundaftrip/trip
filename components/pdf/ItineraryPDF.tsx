@@ -1565,26 +1565,47 @@ const p = StyleSheet.create({
   },
   servicePriceBand: {
     marginTop: 20,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
     backgroundColor: PREMIUM_TEAL,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: "stretch",
   },
-  servicePriceCopy: { flex: 1, paddingRight: 20 },
+  servicePriceCopy: { flex: 1, paddingVertical: 13, paddingHorizontal: 16 },
   servicePriceLabel: {
     fontFamily: FONT.bold,
     fontSize: 6.6,
     color: PREMIUM_GOLD_LIGHT,
     letterSpacing: 0.9,
   },
-  servicePriceNote: { fontSize: 7.2, color: "#CFE0E0", marginTop: 4 },
+  servicePriceGrid: { marginTop: 8 },
+  servicePriceGridRow: { flexDirection: "row", gap: 12, marginBottom: 7 },
+  servicePriceItem: { flex: 1 },
+  servicePriceItemLabel: { fontSize: 6.3, lineHeight: 1.2, color: "#CFE0E0" },
+  servicePriceItemValue: {
+    fontFamily: FONT.bold,
+    fontSize: 7.8,
+    color: PREMIUM_WHITE,
+    marginTop: 2,
+  },
+  servicePriceTotal: {
+    width: 184,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    backgroundColor: PREMIUM_NAVY,
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
+  servicePriceTotalLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.3,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 0.8,
+  },
   servicePriceValue: {
     fontFamily: "Times-Bold",
-    fontSize: 18,
+    fontSize: 20,
     color: PREMIUM_WHITE,
     textAlign: "right",
+    marginTop: 6,
   },
   paymentIntro: { fontSize: 8.2, lineHeight: 1.42, color: PREMIUM_MUTED },
   paymentTotal: {
@@ -3111,6 +3132,15 @@ export function ItineraryPDF({
     landTourLabel ? ["LAND TOUR", cleanText(landTourLabel)] : null,
   ].filter(Boolean) as [string, string][];
   const overviewIntro = `${durationLabel} untuk rute ${routeLabel}. Keberangkatan ${dateLabel}.`;
+  const servicePriceItems = [
+    { name: "Paket dasar", priceLabel: cleanText(priceLabel) },
+    ...mandatoryAddOns.map((item) => ({
+      name: cleanText(item.name),
+      priceLabel: cleanText(item.priceLabel),
+    })),
+  ];
+  const servicePriceColumnCount = servicePriceItems.length > 4 ? 3 : 2;
+  const servicePriceRows = chunkItems(servicePriceItems, servicePriceColumnCount);
   const closingProfile = shortenAtWord(profileText(company), 260);
   const closingCta = closingCallToAction(commerceStatus);
   return (
@@ -3338,10 +3368,27 @@ export function ItineraryPDF({
 
         <View style={p.servicePriceBand} wrap={false}>
           <View style={p.servicePriceCopy}>
-            <Text style={p.servicePriceLabel}>TOTAL WAJIB PER ORANG</Text>
-            <Text style={p.servicePriceNote}>Paket dasar dan seluruh add-on wajib yang tercantum.</Text>
+            <Text style={p.servicePriceLabel}>KOMPONEN BIAYA WAJIB</Text>
+            <View style={p.servicePriceGrid}>
+              {servicePriceRows.map((row, rowIndex) => (
+                <View key={`service-price-row-${rowIndex}`} style={p.servicePriceGridRow} wrap={false}>
+                  {row.map((item, itemIndex) => (
+                    <View key={`${item.name}-${itemIndex}`} style={p.servicePriceItem}>
+                      <Text style={p.servicePriceItemLabel}>{item.name}</Text>
+                      <Text style={p.servicePriceItemValue}>{item.priceLabel}</Text>
+                    </View>
+                  ))}
+                  {Array.from({ length: servicePriceColumnCount - row.length }, (_, emptyIndex) => (
+                    <View key={`service-price-empty-${emptyIndex}`} style={p.servicePriceItem} />
+                  ))}
+                </View>
+              ))}
+            </View>
           </View>
-          <Text style={p.servicePriceValue}>{cleanText(inclusivePriceLabel)}</Text>
+          <View style={p.servicePriceTotal}>
+            <Text style={p.servicePriceTotalLabel}>TOTAL WAJIB PER ORANG</Text>
+            <Text style={p.servicePriceValue}>{cleanText(inclusivePriceLabel)}</Text>
+          </View>
         </View>
       </Page>
 
