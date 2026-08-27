@@ -14,6 +14,7 @@ import {
 } from "@/lib/safe-image-url";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { resolveCompanyPhone } from "@/lib/company-phone";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { getCommerceTourStatus } from "@/lib/tour-commerce";
 import {
@@ -293,7 +294,7 @@ export async function GET(
         logoOnDark,
         tagline: ci["about_tagline"],
         story: parseStory(ci["about_story"]),
-        phone: ci["company_phone"] || "021-22321146",
+        phone: resolveCompanyPhone(ci["company_phone"]),
         whatsapp: ci["company_whatsapp"] || "6281775202759",
         email: ci["company_email"] || "info@sundaftrip.com",
         website: ci["company_website"] || "www.sundaftrip.com",
