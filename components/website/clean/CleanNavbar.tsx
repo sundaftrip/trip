@@ -317,7 +317,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
   return (
     <header className={`${styles.header} ${showHairline ? styles.headerHairline : ""}`}>
       <div ref={headerShellRef} className={styles.headerShell}>
-        <Link className={styles.logoLink} href="/" aria-label="Sundaf Trip, beranda">
+        <Link className={styles.logoLink} href="/" aria-label="Sundaf Trip, beranda" scroll={false}>
           <Image className={styles.logoImage} src={logoSrc} alt="Sundaf Trip" width={180} height={50} priority />
         </Link>
 
@@ -337,6 +337,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
                 className={`${styles.desktopNavLink} ${link.href === desktopActionLink.href ? styles.desktopAction : ""}`}
                 key={link.href}
                 href={link.href}
+                scroll={false}
                 aria-current={isActive(link.href) ? "page" : undefined}
                 data-selected={selectedDesktopHref === link.href ? "true" : undefined}
                 onClick={(event) => handleDesktopLinkClick(link.href, event)}
@@ -416,7 +417,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
           tabIndex={-1}
         >
           <div className={styles.drawerHeader}>
-            <Link className={styles.drawerLogo} href="/" aria-label="Sundaf Trip, beranda" onClick={closeDrawer}>
+            <Link className={styles.drawerLogo} href="/" aria-label="Sundaf Trip, beranda" scroll={false} onClick={closeDrawer}>
               <Image className={styles.logoImage} src={logoSrc} alt="Sundaf Trip" width={180} height={50} />
             </Link>
             <h2 id="clean-mobile-drawer-title" className="sr-only">Menu utama</h2>
@@ -436,6 +437,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
               <Link
                 className={styles.mobileLink}
                 href="/tours"
+                scroll={false}
                 aria-current={isActive("/tours") ? "page" : undefined}
                 onClick={closeDrawer}
               >
@@ -458,7 +460,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
               >
                 <div className={styles.destinationLinks} id="clean-destination-links">
                   {destinationLinks.map((link) => (
-                    <Link key={link.href} href={link.href} onClick={closeDrawer}>
+                    <Link key={link.href} href={link.href} scroll={false} onClick={closeDrawer}>
                       {link.label}
                     </Link>
                   ))}
@@ -470,6 +472,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
                   className={styles.mobileLink}
                   key={link.href}
                   href={link.href}
+                  scroll={false}
                   aria-current={isActive(link.href) ? "page" : undefined}
                   onClick={closeDrawer}
                 >
@@ -478,7 +481,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
               ))}
             </nav>
 
-            <Link className={styles.drawerWhatsApp} href={consultationHref} onClick={closeDrawer}>
+            <Link className={styles.drawerWhatsApp} href={consultationHref} scroll={false} onClick={closeDrawer}>
               Tanya rute via WhatsApp
             </Link>
             <p className={styles.drawerNote}>Konsultasi awal tidak mengonfirmasi kursi atau pembayaran.</p>

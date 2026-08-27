@@ -741,5 +741,5 @@ export default function TourCard({ tour, theme = "classic", eagerImage = false }
   else card = <ClassicCard tour={productTour} isDimmed={isDimmed} />;
 
   if (isDimmed) return card;
-  return <Link href={`/tours/${tour.slug ?? tour.id}`} prefetch={false} className="block h-full min-w-0">{card}</Link>;
+  return <Link href={`/tours/${tour.slug ?? tour.id}`} prefetch={false} scroll={false} className="block h-full min-w-0">{card}</Link>;
 }

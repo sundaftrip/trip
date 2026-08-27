@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X, Loader2, Compass, MapPin, FileCheck, HelpCircle, ArrowRight } from "lucide-react";
-import { resetDocumentScroll } from "@/lib/navigation-scroll";
 
 type Results = {
   destinations: { name: string; region: string; href: string; description: string }[];
@@ -94,8 +93,7 @@ export default function GlobalSearch({
 
   const go = useCallback((href: string) => {
     setOpen(false);
-    resetDocumentScroll();
-    router.push(href);
+    router.push(href, { scroll: false });
   }, [router]);
 
   const total = res.destinations.length + res.tours.length + res.visa.length + res.faqs.length;

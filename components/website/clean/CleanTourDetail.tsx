@@ -28,6 +28,7 @@ import {
 } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
+import StableDetails from "./StableDetails";
 import TourBookingExperience from "./TourBookingExperience";
 import TourDetailTabs from "./TourDetailTabs";
 import TourHeroGallery from "./TourHeroGallery";
@@ -322,8 +323,8 @@ export default function CleanTourDetail({
       <section className={styles.detailHero} aria-labelledby="tour-title">
         <div className={styles.shell}>
           <nav className={styles.detailBreadcrumb} aria-label="Breadcrumb">
-            <Link href="/">Beranda</Link><span aria-hidden="true">/</span>
-            <Link href="/tours">Jadwal tour</Link><span aria-hidden="true">/</span>
+            <Link href="/" scroll={false}>Beranda</Link><span aria-hidden="true">/</span>
+            <Link href="/tours" scroll={false}>Jadwal tour</Link><span aria-hidden="true">/</span>
             <span aria-current="page">{tour.title}</span>
           </nav>
 
@@ -379,7 +380,7 @@ export default function CleanTourDetail({
                   <p>{copy.heroSupport}</p>
                 )}
                 <div className={styles.detailRouteLine}><strong>Rute utama</strong><span>{route}</span></div>
-                <Link className={styles.detailDestinationLink} href={destinationHref}>
+                <Link className={styles.detailDestinationLink} href={destinationHref} scroll={false}>
                   Baca panduan {destinationLabel} →
                 </Link>
               </div>
@@ -437,7 +438,7 @@ export default function CleanTourDetail({
                   const dayTitle = normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`;
                   const dayImage = resolveItineraryDayImage(item, index, heroImages);
                   return (
-                    <details className={styles.detailDay} key={`${item.day}-${item.title}`} open={index === 0}>
+                    <StableDetails className={styles.detailDay} key={`${item.day}-${item.title}`} open={index === 0}>
                       <summary>
                         <span className={styles.detailDayNumber}>{String(item.day).padStart(2, "0")}</span>
                         <span className={styles.detailDayHeading}>
@@ -463,7 +464,7 @@ export default function CleanTourDetail({
                           </div>
                         )}
                       </div>
-                    </details>
+                    </StableDetails>
                   );
                 })}
               </div>
@@ -637,10 +638,10 @@ export default function CleanTourDetail({
             <h2 className={styles.detailSectionTitle} id="tour-faq-title">Hal yang perlu dipastikan</h2>
             <div className={styles.detailFaqs}>
               {tourFaqs.map((item, index) => (
-                <details key={item.question} open={index === 0}>
+                <StableDetails key={item.question} open={index === 0}>
                   <summary>{item.question}</summary>
                   <p>{item.answer}</p>
-                </details>
+                </StableDetails>
               ))}
             </div>
           </section>
@@ -670,6 +671,9 @@ export default function CleanTourDetail({
             <h2 id="mobile-trip-tools-title">Simpan dan bandingkan detail</h2>
             <a
               href={`/tours/${tour.id}/pdf`}
+              download
+              target="_blank"
+              rel="noopener"
               data-analytics-event="itinerary_pdf_download"
               data-tour-id={tour.id}
               aria-describedby="mobile-pdf-recovery"
@@ -680,18 +684,18 @@ export default function CleanTourDetail({
               Jika PDF tidak terbuka, <a href={bookingWaHref} data-analytics-placement="detail-mobile-pdf-recovery">minta salinan via WhatsApp</a>.
             </p>
             {optionalAddOns.length > 0 && (
-              <details>
+              <StableDetails>
                 <summary>Tambahan opsional <span>{optionalAddOns.length}</span></summary>
                 <div>
                   {optionalAddOns.map((item) => (
                     <article key={item.name}>
                       <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
                       {item.desc && <small>{item.desc}</small>}
-                      {item.visaHref && <Link href={item.visaHref}>Lihat bantuan visa →</Link>}
+                      {item.visaHref && <Link href={item.visaHref} scroll={false}>Lihat bantuan visa →</Link>}
                     </article>
                   ))}
                 </div>
-              </details>
+              </StableDetails>
             )}
             <TourShareButtons
               tourTitle={tour.title}
@@ -748,6 +752,9 @@ export default function CleanTourDetail({
             <a
               className={styles.detailBookingPdf}
               href={`/tours/${tour.id}/pdf`}
+              download
+              target="_blank"
+              rel="noopener"
               data-analytics-event="itinerary_pdf_download"
               data-tour-id={tour.id}
               aria-describedby="detail-pdf-recovery"
@@ -766,18 +773,18 @@ export default function CleanTourDetail({
             </dl>
 
             {optionalAddOns.length > 0 && (
-              <details className={styles.detailBookingDisclosure}>
+              <StableDetails className={styles.detailBookingDisclosure}>
                 <summary>Tambahan opsional <span>{optionalAddOns.length}</span></summary>
                 <div>
                   {optionalAddOns.map((item) => (
                     <article key={item.name}>
                       <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
                       {item.desc && <small>{item.desc}</small>}
-                      {item.visaHref && <Link href={item.visaHref}>Lihat bantuan visa →</Link>}
+                      {item.visaHref && <Link href={item.visaHref} scroll={false}>Lihat bantuan visa →</Link>}
                     </article>
                   ))}
                 </div>
-              </details>
+              </StableDetails>
             )}
 
             <div className={styles.detailShare}>
