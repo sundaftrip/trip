@@ -1503,14 +1503,10 @@ const p = StyleSheet.create({
   column: { flex: 1 },
   listCard: {
     backgroundColor: PREMIUM_WHITE,
-    borderTopWidth: 2,
-    borderTopColor: PREMIUM_GOLD,
     padding: 14,
   },
   listCardMuted: {
     backgroundColor: "#EEF1EF",
-    borderTopWidth: 2,
-    borderTopColor: PREMIUM_MUTED,
     padding: 14,
   },
   listCardTitle: {
