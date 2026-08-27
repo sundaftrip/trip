@@ -40,7 +40,10 @@ import {
   parseTourHotelRoomPricing,
   resolveTourStartingPrice,
 } from "@/lib/tour-room-pricing";
-import { getCanadaRockiesPreviewTour } from "@/lib/canada-catalog-preview";
+import {
+  getCanadaRockiesPreviewTour,
+  selectCanadaRockiesTourSource,
+} from "@/lib/canada-catalog-preview";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
@@ -357,10 +360,9 @@ export async function generateMetadata({
     }),
     prisma.companyInfo.findFirst({ where: { key: "company_name" } }),
   ]);
-  // The preview fixture is authoritative for this one slug so a shared
-  // database draft cannot turn the review URL into a 404. Production always
-  // receives null from the preview helper and continues to use persisted data.
-  const tour = previewTour ?? databaseTour;
+  // Preview deployments keep the review fixture authoritative. Production
+  // prefers the persisted record so links such as the PDF use its real ID.
+  const tour = selectCanadaRockiesTourSource(databaseTour, previewTour);
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) {
     notFound();
   }
@@ -418,7 +420,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const databaseTour = standalonePreview
     ? null
     : await prisma.tour.findFirst({ where: { OR: [{ slug: id }, { id }] } });
-  const tour = previewTour ?? databaseTour;
+  const tour = selectCanadaRockiesTourSource(databaseTour, previewTour);
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) notFound();
   const visualOverride = getTourVisualOverride(tour);
   const productHeroImage = getTourProductImage(tour);

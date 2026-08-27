@@ -38,6 +38,21 @@ const desktopLinks = [
 
 const desktopActionLink = { href: "/tours", label: "Lihat jadwal & biaya" };
 const desktopNavigationLinks = [...desktopLinks, desktopActionLink];
+const languageStorageKey = "lang";
+
+type Language = "id" | "en";
+
+function normalizeLanguage(value: string | null): Language {
+  return value === "en" ? "en" : "id";
+}
+
+function readStoredLanguage(): Language {
+  try {
+    return normalizeLanguage(window.localStorage.getItem(languageStorageKey));
+  } catch {
+    return "id";
+  }
+}
 
 function matchesPath(pathname: string, href: string) {
   const hrefPath = href.split("?")[0];
@@ -62,6 +77,8 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
   const [open, setOpen] = useState(false);
   const [destinationsOpen, setDestinationsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [language, setLanguage] = useState<Language>("id");
+  const [translationError, setTranslationError] = useState(false);
   const pathname = usePathname();
   const [selectedDesktopHref, setSelectedDesktopHref] = useState(() => getDesktopSelection(pathname));
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -106,11 +123,61 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
     setOpen(false);
   }
 
+  function toggleLanguage() {
+    const nextLanguage: Language = language === "id" ? "en" : "id";
+
+    setLanguage(nextLanguage);
+    try {
+      window.localStorage.setItem(languageStorageKey, nextLanguage);
+    } catch {
+      // Keep the current tab usable when storage is unavailable.
+    }
+    window.dispatchEvent(new CustomEvent("sundaf:langchange", {
+      detail: { lang: nextLanguage },
+    }));
+  }
+
   useEffect(() => {
     const updateScrolled = () => setScrolled(window.scrollY > 8);
     updateScrolled();
     window.addEventListener("scroll", updateScrolled, { passive: true });
     return () => window.removeEventListener("scroll", updateScrolled);
+  }, []);
+
+  useEffect(() => {
+    const syncTranslationStatus = (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+      if (event.detail?.status === "error") setTranslationError(true);
+      if (event.detail?.status === "loading" || event.detail?.status === "ready") {
+        setTranslationError(false);
+      }
+    };
+
+    window.addEventListener("sundaf:translationstatus", syncTranslationStatus);
+    return () => window.removeEventListener("sundaf:translationstatus", syncTranslationStatus);
+  }, []);
+
+  useEffect(() => {
+    const syncLanguage = (event?: Event) => {
+      const eventLanguage = event instanceof CustomEvent
+        && (event.detail?.lang === "id" || event.detail?.lang === "en")
+        ? event.detail.lang
+        : null;
+      setLanguage(eventLanguage ?? readStoredLanguage());
+    };
+    const syncLanguageAcrossTabs = (event: StorageEvent) => {
+      if (event.key !== languageStorageKey && event.key !== null) return;
+      setLanguage(normalizeLanguage(event.newValue));
+    };
+
+    syncLanguage();
+    window.addEventListener("storage", syncLanguageAcrossTabs);
+    window.addEventListener("sundaf:langchange", syncLanguage);
+
+    return () => {
+      window.removeEventListener("storage", syncLanguageAcrossTabs);
+      window.removeEventListener("sundaf:langchange", syncLanguage);
+    };
   }, []);
 
   useEffect(() => {
@@ -281,6 +348,34 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
 
         <div className={styles.headerActions}>
           <CleanGlobalSearch />
+          <span
+            className="sr-only"
+            role="status"
+            aria-live="polite"
+            data-no-translate
+            translate="no"
+          >
+            {translationError ? "Bahasa Inggris sedang tidak tersedia. Coba lagi." : ""}
+          </span>
+          <button
+            className={styles.languageButton}
+            type="button"
+            aria-label={language === "id"
+              ? translationError
+                ? "Bahasa Inggris sedang tidak tersedia. Coba lagi."
+                : "Tampilkan situs dalam bahasa Inggris"
+              : "View this site in Indonesian"}
+            title={language === "id"
+              ? "Tampilkan dalam bahasa Inggris"
+              : "View in Indonesian"}
+            data-no-translate
+            translate="no"
+            onClick={toggleLanguage}
+          >
+            <span lang={language === "id" ? "en" : "id"} aria-hidden="true">
+              {language === "id" ? "EN" : "ID"}
+            </span>
+          </button>
           <button
             ref={menuButtonRef}
             className={styles.menuButton}

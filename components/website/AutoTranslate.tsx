@@ -1,172 +1,430 @@
 "use client";
 
 import { useEffect } from "react";
+import {
+  normalizeEnglishTranslation,
+  reviewedEnglishFor,
+} from "@/lib/reviewed-english-copy";
 
-/* Auto-translate seluruh teks halaman ke EN saat bahasa = "en", dan kembalikan
-   ke ID saat "id". Mesin: /api/translate (Google gtx + cache DB). Hasil juga
-   di-cache di memori + localStorage agar instan.
+type SiteLanguage = "id" | "en";
+type TranslationStatus = "idle" | "loading" | "ready" | "error";
+type TranslatableAttribute = "alt" | "aria-label" | "placeholder" | "title";
 
-   Pengecualian: elemen ber-atribut [data-no-translate] / [translate="no"],
-   tag non-teks (script/style/code/pre/textarea), dan istilah brand. */
+type TranslationState = {
+  source: string;
+  rendered?: string;
+};
 
-const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "CODE", "PRE", "TEXTAREA", "SVG", "PATH"]);
-const STOP = new Set(["SUNDAF", "Sundaf", "Sundaf Trip", "KOL.ID", "WhatsApp", "EN", "ID", "IN"]);
+type TranslationTarget =
+  | { kind: "text"; node: Text; state: TranslationState }
+  | {
+      kind: "attribute";
+      element: HTMLElement;
+      attribute: TranslatableAttribute;
+      state: TranslationState;
+    };
+
+const SKIP_TAGS = new Set([
+  "SCRIPT",
+  "STYLE",
+  "NOSCRIPT",
+  "CODE",
+  "PRE",
+  "TEXTAREA",
+  "SVG",
+  "PATH",
+  "BLOCKQUOTE",
+]);
+const STOP = new Set([
+  "SUNDAF",
+  "Sundaf",
+  "Sundaf Trip",
+  "KOL.ID",
+  "WhatsApp",
+  "EN",
+  "ID",
+  "IN",
+]);
+const TRANSLATABLE_ATTRIBUTES: TranslatableAttribute[] = [
+  "alt",
+  "aria-label",
+  "placeholder",
+  "title",
+];
 const TRANSLATE_BATCH_SIZE = 45;
-const hasLetters = (s: string) => /[A-Za-zÀ-ÿ]/.test(s);
+const CLIENT_CACHE_LIMIT = 1_500;
+const CLIENT_CACHE_KEY = "tcache_en_v2";
+const INITIAL_ENGLISH_DELAY_MS = 1_000;
+const hasLetters = (value: string) => /[A-Za-zÀ-ÿ]/.test(value);
 
 const memCache = new Map<string, string>();
-const originals = new WeakMap<Text, string>();
+const textStates = new WeakMap<Text, TranslationState>();
+const attributeStates = new WeakMap<HTMLElement, Map<TranslatableAttribute, TranslationState>>();
 let applying = false;
 
-function loadLS() {
+function readLanguage(): SiteLanguage {
   try {
-    const raw = localStorage.getItem("tcache_en");
-    if (raw) { const o = JSON.parse(raw); for (const k in o) memCache.set(k, o[k]); }
-  } catch { /* ignore */ }
-}
-function saveLS() {
-  try {
-    const o: Record<string, string> = {};
-    memCache.forEach((v, k) => { o[k] = v; });
-    localStorage.setItem("tcache_en", JSON.stringify(o));
-  } catch { /* ignore */ }
+    return localStorage.getItem("lang") === "en" ? "en" : "id";
+  } catch {
+    return "id";
+  }
 }
 
-function shouldSkip(node: Text): boolean {
-  let el = node.parentElement;
-  while (el) {
-    if (SKIP_TAGS.has(el.tagName)) return true;
-    if (el.getAttribute("data-no-translate") !== null) return true;
-    if (el.getAttribute("translate") === "no") return true;
-    if (el.isContentEditable) return true;
-    el = el.parentElement;
+function loadClientCache() {
+  try {
+    const raw = localStorage.getItem(CLIENT_CACHE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return;
+    Object.entries(parsed).forEach(([source, translation]) => {
+      if (typeof translation === "string") memCache.set(source, translation);
+    });
+  } catch {
+    // A missing or invalid browser cache must not block the page.
+  }
+}
+
+function saveClientCache() {
+  try {
+    const entries = Array.from(memCache.entries()).slice(-CLIENT_CACHE_LIMIT);
+    localStorage.setItem(CLIENT_CACHE_KEY, JSON.stringify(Object.fromEntries(entries)));
+  } catch {
+    // Translation still works for this visit when localStorage is unavailable.
+  }
+}
+
+function isProtected(element: HTMLElement | null): boolean {
+  let current = element;
+  while (current) {
+    if (SKIP_TAGS.has(current.tagName)) return true;
+    if (current.hasAttribute("data-no-translate")) return true;
+    if (current.getAttribute("translate") === "no") return true;
+    if (current.isContentEditable) return true;
+    current = current.parentElement;
   }
   return false;
 }
 
-function collectTextNodes(): Text[] {
-  const out: Text[] = [];
+function isTranslatable(value: string): boolean {
+  const trimmed = value.trim();
+  return trimmed.length >= 2 && hasLetters(trimmed) && !STOP.has(trimmed);
+}
+
+function textState(node: Text): TranslationState {
+  const current = node.nodeValue ?? "";
+  const existing = textStates.get(node);
+  if (!existing) {
+    const state = { source: current };
+    textStates.set(node, state);
+    return state;
+  }
+
+  if (existing.rendered !== undefined && current === existing.rendered) return existing;
+  if (current !== existing.source) {
+    existing.source = current;
+    existing.rendered = undefined;
+  }
+  return existing;
+}
+
+function attributeState(
+  element: HTMLElement,
+  attribute: TranslatableAttribute,
+): TranslationState | null {
+  const current = element.getAttribute(attribute);
+  if (current === null) return null;
+
+  let states = attributeStates.get(element);
+  if (!states) {
+    states = new Map();
+    attributeStates.set(element, states);
+  }
+
+  const existing = states.get(attribute);
+  if (!existing) {
+    const state = { source: current };
+    states.set(attribute, state);
+    return state;
+  }
+
+  if (existing.rendered !== undefined && current === existing.rendered) return existing;
+  if (current !== existing.source) {
+    existing.source = current;
+    existing.rendered = undefined;
+  }
+  return existing;
+}
+
+function collectTargets(): TranslationTarget[] {
+  const targets: TranslationTarget[] = [];
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-    acceptNode(n) {
-      const t = n as Text;
-      const raw = t.nodeValue ?? "";
-      const trimmed = raw.trim();
-      if (trimmed.length < 2 || !hasLetters(trimmed)) return NodeFilter.FILTER_REJECT;
-      if (STOP.has(trimmed)) return NodeFilter.FILTER_REJECT;
-      if (shouldSkip(t)) return NodeFilter.FILTER_REJECT;
+    acceptNode(candidate) {
+      const node = candidate as Text;
+      if (!isTranslatable(node.nodeValue ?? "")) return NodeFilter.FILTER_REJECT;
+      if (isProtected(node.parentElement)) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     },
   });
-  let cur: Node | null;
-  while ((cur = walker.nextNode())) out.push(cur as Text);
-  return out;
+
+  let current: Node | null;
+  while ((current = walker.nextNode())) {
+    const node = current as Text;
+    targets.push({ kind: "text", node, state: textState(node) });
+  }
+
+  const selector = TRANSLATABLE_ATTRIBUTES.map((attribute) => `[${attribute}]`).join(",");
+  document.body.querySelectorAll<HTMLElement>(selector).forEach((element) => {
+    if (isProtected(element)) return;
+    TRANSLATABLE_ATTRIBUTES.forEach((attribute) => {
+      const state = attributeState(element, attribute);
+      if (!state || !isTranslatable(state.source)) return;
+      targets.push({ kind: "attribute", element, attribute, state });
+    });
+  });
+
+  return targets;
 }
 
-function applyTranslation(node: Text, translated: string) {
-  const raw = node.nodeValue ?? "";
-  const lead = raw.match(/^\s*/)?.[0] ?? "";
-  const trail = raw.match(/\s*$/)?.[0] ?? "";
+function sourceKey(target: TranslationTarget): string {
+  return target.state.source.trim();
+}
+
+function translatedText(source: string, translation: string): string {
+  const leading = source.match(/^\s*/)?.[0] ?? "";
+  const trailing = source.match(/\s*$/)?.[0] ?? "";
+  return `${leading}${translation}${trailing}`;
+}
+
+function applyTranslation(target: TranslationTarget, translation: string) {
+  const rendered = target.kind === "text"
+    ? translatedText(target.state.source, translation)
+    : translation;
+
+  if (target.kind === "text") {
+    if ((target.node.nodeValue ?? "") === rendered) {
+      target.state.rendered = rendered;
+      return;
+    }
+    applying = true;
+    target.node.nodeValue = rendered;
+    target.state.rendered = rendered;
+    applying = false;
+    return;
+  }
+
+  if (target.element.getAttribute(target.attribute) === rendered) {
+    target.state.rendered = rendered;
+    return;
+  }
   applying = true;
-  node.nodeValue = lead + translated + trail;
+  target.element.setAttribute(target.attribute, rendered);
+  target.state.rendered = rendered;
   applying = false;
 }
 
-async function translatePage() {
-  const nodes = collectTextNodes();
-  if (nodes.length === 0) return;
+function translationFor(source: string): string | undefined {
+  const translation = reviewedEnglishFor(source) ?? memCache.get(source);
+  return translation === undefined ? undefined : normalizeEnglishTranslation(translation);
+}
 
-  const need = new Set<string>();
-  const pending: { node: Text; key: string }[] = [];
-  for (const node of nodes) {
-    const raw = node.nodeValue ?? "";
-    const key = raw.trim();
-    if (!originals.has(node)) originals.set(node, raw);
-    // sudah diterjemahkan (isi sekarang == hasil cache)?
-    const cached = memCache.get(key);
-    if (cached != null) { if ((node.nodeValue ?? "").trim() !== cached) applyTranslation(node, cached); continue; }
-    pending.push({ node, key });
-    need.add(key);
-  }
-  if (need.size === 0) return;
+function setTranslationStatus(status: TranslationStatus) {
+  document.documentElement.dataset.translationStatus = status;
+  window.dispatchEvent(
+    new CustomEvent("sundaf:translationstatus", { detail: { status } }),
+  );
+}
 
-  const texts = Array.from(need);
-  try {
-    for (let i = 0; i < texts.length; i += TRANSLATE_BATCH_SIZE) {
-      const batch = texts.slice(i, i + TRANSLATE_BATCH_SIZE);
-      const res = await fetch("/api/translate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texts: batch, target: "en" }),
+async function translatePage(signal: AbortSignal) {
+  const targets = collectTargets();
+  if (targets.length === 0) return;
+
+  const pendingBySource = new Map<string, TranslationTarget[]>();
+  targets.forEach((target) => {
+    const source = sourceKey(target);
+    const translation = translationFor(source);
+    if (translation !== undefined) {
+      applyTranslation(target, translation);
+      return;
+    }
+    const pending = pendingBySource.get(source) ?? [];
+    pending.push(target);
+    pendingBySource.set(source, pending);
+  });
+
+  const sources = Array.from(pendingBySource.keys());
+  for (let index = 0; index < sources.length; index += TRANSLATE_BATCH_SIZE) {
+    if (signal.aborted) return;
+    const batch = sources.slice(index, index + TRANSLATE_BATCH_SIZE);
+    const response = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texts: batch, target: "en" }),
+      signal,
+    });
+    if (!response.ok) throw new Error(`Translation failed: ${response.status}`);
+
+    const data = (await response.json()) as {
+      translations?: Record<string, unknown>;
+      failures?: unknown;
+    };
+    const translations = data.translations ?? {};
+    batch.forEach((source) => {
+      const rawTranslation = translations[source];
+      if (typeof rawTranslation !== "string" || !rawTranslation.trim()) return;
+      const translation = normalizeEnglishTranslation(rawTranslation);
+      memCache.set(source, translation);
+      pendingBySource.get(source)?.forEach((target) => {
+        const targetNode = target.kind === "text" ? target.node : target.element;
+        if (!signal.aborted && document.contains(targetNode)) {
+          applyTranslation(target, translation);
+        }
       });
-      const data = (await res.json()) as { translations?: Record<string, string> };
-      const map = data.translations ?? {};
-      for (const k of batch) if (map[k] != null) memCache.set(k, map[k]);
+    });
+    if (Array.isArray(data.failures) && data.failures.length > 0) {
+      throw new Error("Some page copy could not be translated");
     }
-    saveLS();
-    for (const { node, key } of pending) {
-      const tr = memCache.get(key);
-      if (tr != null && document.contains(node)) applyTranslation(node, tr);
-    }
-  } catch { /* abaikan; biarkan teks asli */ }
+  }
+
+  saveClientCache();
 }
 
 function restorePage() {
-  // kembalikan semua node yang punya original tersimpan
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-  let cur: Node | null;
   applying = true;
-  while ((cur = walker.nextNode())) {
-    const t = cur as Text;
-    const orig = originals.get(t);
-    if (orig != null && t.nodeValue !== orig) t.nodeValue = orig;
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let current: Node | null;
+  while ((current = walker.nextNode())) {
+    const node = current as Text;
+    const state = textStates.get(node);
+    if (state && node.nodeValue !== state.source) node.nodeValue = state.source;
   }
+
+  const selector = TRANSLATABLE_ATTRIBUTES.map((attribute) => `[${attribute}]`).join(",");
+  document.body.querySelectorAll<HTMLElement>(selector).forEach((element) => {
+    const states = attributeStates.get(element);
+    states?.forEach((state, attribute) => {
+      if (element.getAttribute(attribute) !== state.source) {
+        element.setAttribute(attribute, state.source);
+      }
+    });
+  });
+
   applying = false;
+}
+
+function markOriginalQuotes() {
+  document.querySelectorAll<HTMLElement>("blockquote").forEach((quote) => {
+    if (!quote.hasAttribute("lang")) quote.setAttribute("lang", "id");
+    if (!quote.hasAttribute("translate")) quote.setAttribute("translate", "no");
+  });
 }
 
 export default function AutoTranslate() {
   useEffect(() => {
-    loadLS();
-    let lang = (localStorage.getItem("lang") as "id" | "en" | null) ?? "id";
+    loadClientCache();
+    let language = readLanguage();
     let debounce: ReturnType<typeof setTimeout> | null = null;
+    let initialRun: ReturnType<typeof setTimeout> | null = null;
+    let waitingForInitialEnglish = language === "en";
+    let request: AbortController | null = null;
 
     const run = () => {
-      if (lang === "en") translatePage();
-      else restorePage();
+      request?.abort();
+      request = null;
+      document.documentElement.lang = language;
+      document.documentElement.dataset.siteLanguage = language;
+      markOriginalQuotes();
+
+      if (language === "id") {
+        restorePage();
+        setTranslationStatus("idle");
+        return;
+      }
+
+      request = new AbortController();
+      const activeRequest = request;
+      setTranslationStatus("loading");
+      void translatePage(activeRequest.signal)
+        .then(() => {
+          if (!activeRequest.signal.aborted) setTranslationStatus("ready");
+        })
+        .catch((error: unknown) => {
+          if (error instanceof DOMException && error.name === "AbortError") return;
+          if (activeRequest.signal.aborted) return;
+
+          language = "id";
+          try {
+            localStorage.setItem("lang", "id");
+          } catch {
+            // The page can still return to Indonesian without persistence.
+          }
+          restorePage();
+          document.documentElement.lang = "id";
+          document.documentElement.dataset.siteLanguage = "id";
+          window.dispatchEvent(new CustomEvent("sundaf:langchange", {
+            detail: { lang: "id" },
+          }));
+          setTranslationStatus("error");
+        });
     };
+
     const schedule = () => {
       if (debounce) clearTimeout(debounce);
       debounce = setTimeout(run, 250);
     };
 
-    // observer untuk konten baru (navigasi Next / render dinamis)
-    const obs = new MutationObserver((muts) => {
-      if (applying) return;
-      if (lang !== "en") return;
-      // hanya jadwalkan kalau ada perubahan struktur/teks yang relevan
-      for (const m of muts) {
-        if (m.type === "childList" && (m.addedNodes.length > 0)) { schedule(); return; }
-        if (m.type === "characterData") { schedule(); return; }
+    const observer = new MutationObserver((mutations) => {
+      if (applying || waitingForInitialEnglish || language !== "en") return;
+      for (const mutation of mutations) {
+        if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+          schedule();
+          return;
+        }
+        if (mutation.type === "characterData") {
+          const node = mutation.target as Text;
+          const state = textStates.get(node);
+          if (state?.rendered !== undefined && node.nodeValue === state.rendered) {
+            continue;
+          }
+          schedule();
+          return;
+        }
       }
     });
-    obs.observe(document.body, { childList: true, subtree: true, characterData: true });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 
-    const onLang = () => {
-      const next = (localStorage.getItem("lang") as "id" | "en" | null) ?? "id";
-      if (next === lang) return;
-      lang = next;
+    const onLanguageChange = () => {
+      const next = readLanguage();
+      if (next === language) return;
+      if (initialRun) {
+        clearTimeout(initialRun);
+        initialRun = null;
+      }
+      waitingForInitialEnglish = false;
+      language = next;
       run();
     };
-    window.addEventListener("sundaf:langchange", onLang);
-    window.addEventListener("storage", onLang);
+    window.addEventListener("sundaf:langchange", onLanguageChange);
+    window.addEventListener("storage", onLanguageChange);
 
-    // jalankan sekali di awal kalau sudah EN
-    run();
+    if (waitingForInitialEnglish) {
+      setTranslationStatus("loading");
+      initialRun = setTimeout(() => {
+        initialRun = null;
+        waitingForInitialEnglish = false;
+        run();
+      }, INITIAL_ENGLISH_DELAY_MS);
+    } else {
+      run();
+    }
 
     return () => {
-      obs.disconnect();
-      window.removeEventListener("sundaf:langchange", onLang);
-      window.removeEventListener("storage", onLang);
+      observer.disconnect();
+      request?.abort();
+      window.removeEventListener("sundaf:langchange", onLanguageChange);
+      window.removeEventListener("storage", onLanguageChange);
       if (debounce) clearTimeout(debounce);
+      if (initialRun) clearTimeout(initialRun);
     };
   }, []);
 

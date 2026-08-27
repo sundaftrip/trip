@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   CANADA_ROCKIES_PREVIEW_ID,
   getCanadaRockiesPreviewTour,
+  selectCanadaRockiesTourSource,
 } from "../lib/canada-catalog-preview";
 import { CANADA_ROCKIES_SLUG } from "../data/catalog/canada-rockies-april-2027";
 
@@ -27,4 +28,22 @@ test("Canada fixture is available on deployed Vercel targets", () => {
     if (originalVercelEnv === undefined) delete process.env.VERCEL_ENV;
     else process.env.VERCEL_ENV = originalVercelEnv;
   }
+});
+
+test("production uses the persisted Canada record so generated links keep its real ID", () => {
+  const databaseTour = { id: "database-tour-id" };
+  const previewTour = { id: CANADA_ROCKIES_PREVIEW_ID };
+
+  assert.equal(
+    selectCanadaRockiesTourSource(databaseTour, previewTour, "production")?.id,
+    databaseTour.id,
+  );
+  assert.equal(
+    selectCanadaRockiesTourSource(databaseTour, previewTour, "preview")?.id,
+    previewTour.id,
+  );
+  assert.equal(
+    selectCanadaRockiesTourSource(null, previewTour, "production")?.id,
+    previewTour.id,
+  );
 });

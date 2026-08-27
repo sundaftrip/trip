@@ -6,6 +6,16 @@ import {
 
 export const CANADA_ROCKIES_PREVIEW_ID = "preview-canada-rockies-april-2027";
 
+export function selectCanadaRockiesTourSource<T>(
+  databaseTour: T | null,
+  previewTour: T | null,
+  vercelEnv = process.env.VERCEL_ENV,
+): T | null {
+  return vercelEnv === "preview"
+    ? previewTour ?? databaseTour
+    : databaseTour ?? previewTour;
+}
+
 /**
  * Deployed Vercel targets can render this read-only catalog record even when
  * the production database has not been upserted yet. If the database later
