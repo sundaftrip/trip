@@ -1519,12 +1519,27 @@ const p = StyleSheet.create({
     color: PREMIUM_NAVY,
     marginBottom: 10,
   },
+  includedList: { position: "relative" },
+  assuranceRail: {
+    position: "absolute",
+    top: 6,
+    bottom: 8,
+    left: 6.2,
+    width: 0.7,
+    backgroundColor: PREMIUM_GOLD_LIGHT,
+  },
   listItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 6 },
-  listMark: {
+  listCheckMark: {
+    width: 13,
+    height: 13,
+    marginRight: 7,
+    marginTop: 0.2,
+  },
+  listExcludedMark: {
     width: 13,
     height: 13,
     borderRadius: 7,
-    backgroundColor: PREMIUM_NAVY,
+    backgroundColor: PREMIUM_MUTED,
     color: PREMIUM_WHITE,
     fontFamily: FONT.bold,
     fontSize: 7,
@@ -1532,7 +1547,6 @@ const p = StyleSheet.create({
     paddingTop: 2,
     marginRight: 7,
   },
-  listMarkMuted: { backgroundColor: PREMIUM_MUTED },
   listText: { flex: 1, fontSize: 7.7, color: PREMIUM_INK, lineHeight: 1.35 },
   addOnTable: { borderTopWidth: 0.8, borderTopColor: PREMIUM_NAVY },
   addOnRow: {
@@ -2804,7 +2818,21 @@ function PremiumListItem({
 }) {
   return (
     <View style={p.listItem} wrap={false}>
-      <Text style={[p.listMark, excluded ? p.listMarkMuted : {}]}>{excluded ? "-" : "+"}</Text>
+      {excluded ? (
+        <Text style={p.listExcludedMark}>-</Text>
+      ) : (
+        <Svg style={p.listCheckMark} viewBox="0 0 13 13">
+          <Circle cx="6.5" cy="6.5" r="5.8" fill={PREMIUM_WHITE} stroke={PREMIUM_GOLD} strokeWidth={0.8} />
+          <Path
+            d="M 3.5 6.7 L 5.6 8.6 L 9.5 4.4"
+            fill="none"
+            stroke={PREMIUM_GOLD}
+            strokeWidth={1.25}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Svg>
+      )}
       <PremiumLinkedListText text={text} />
     </View>
   );
@@ -3271,9 +3299,12 @@ export function ItineraryPDF({
           <View style={p.twoColumn}>
             <View style={[p.column, p.listCard]}>
               <Text style={p.listCardTitle}>Sudah Termasuk</Text>
-              {tour.inclusions.map((item, index) => (
-                <PremiumListItem key={`${item}-${index}`} text={item} />
-              ))}
+              <View style={p.includedList}>
+                <View style={p.assuranceRail} />
+                {tour.inclusions.map((item, index) => (
+                  <PremiumListItem key={`${item}-${index}`} text={item} />
+                ))}
+              </View>
             </View>
             <View style={[p.column, p.listCardMuted]}>
               <Text style={p.listCardTitle}>Belum Termasuk</Text>
