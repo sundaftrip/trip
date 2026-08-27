@@ -94,6 +94,7 @@ export interface ItineraryPDFProps {
   company: {
     name?: string;
     logo?: string | null;
+    logoOnDark?: string | null;
     tagline?: string;
     story?: string[];
     phone?: string;
@@ -1077,16 +1078,17 @@ const p = StyleSheet.create({
     justifyContent: "space-between",
   },
   coverLogoPlate: {
-    width: 108,
-    height: 40,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 2,
-    backgroundColor: PREMIUM_PAPER,
+    width: 110,
+    height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
-  coverLogo: { width: 86, height: 27, objectFit: "contain" },
+  coverLogo: { width: 108, height: 30, objectFit: "contain" },
+  coverBrandFallback: {
+    fontFamily: FONT.bold,
+    fontSize: 14,
+    color: PREMIUM_WHITE,
+  },
   coverEdition: {
     fontFamily: FONT.bold,
     fontSize: 7.4,
@@ -1650,13 +1652,10 @@ const p = StyleSheet.create({
   },
   closingBrandRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   closingLogoPlate: {
-    width: 104,
-    height: 38,
-    paddingHorizontal: 9,
-    paddingVertical: 6,
-    backgroundColor: PREMIUM_PAPER,
+    width: 110,
+    height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   closingEdition: {
     fontFamily: FONT.bold,
@@ -2706,14 +2705,20 @@ function PremiumBrand({
   company: ItineraryPDFProps["company"];
   cover?: boolean;
 }) {
-  if (company.logo) {
+  const logo = cover ? company.logoOnDark || company.logo : company.logo;
+
+  if (logo) {
     return (
       // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt prop; nearby text and document metadata identify the brand.
-      <Image src={company.logo} style={cover ? p.coverLogo : p.headerLogo} />
+      <Image src={logo} style={cover ? p.coverLogo : p.headerLogo} />
     );
   }
 
-  return <Text style={p.headerBrandFallback}>{company.name || "Sundaf Trip"}</Text>;
+  return (
+    <Text style={cover ? p.coverBrandFallback : p.headerBrandFallback}>
+      {company.name || "Sundaf Trip"}
+    </Text>
+  );
 }
 
 function PremiumChrome({

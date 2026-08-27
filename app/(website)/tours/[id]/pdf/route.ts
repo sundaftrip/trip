@@ -237,10 +237,11 @@ export async function GET(
     imageCache.set(src, pending);
     return pending;
   };
-  const [resolvedHero, storedImages, logo] = await Promise.all([
+  const [resolvedHero, storedImages, logo, logoOnDark] = await Promise.all([
     resolveImage(rawHero),
     Promise.all(storedGallery.map(resolveImage)),
     resolveImage(ci["company_logo"] || "/logo.png"),
+    resolveImage("/vietnam/assets/logo-dark.png"),
   ]);
   const heroImg = resolvedHero || await resolveImage(fallbackHero);
   let gallery = uniqueImages(storedImages);
@@ -289,6 +290,7 @@ export async function GET(
       company: {
         name: ci["company_name"] || "Sundaf Trip",
         logo,
+        logoOnDark,
         tagline: ci["about_tagline"],
         story: parseStory(ci["about_story"]),
         phone: ci["company_phone"] || "021-22321146",
