@@ -3039,9 +3039,10 @@ function itineraryPageRange(entries: PdfItineraryEntry[]) {
   return firstDay === lastDay ? `Hari ${firstDay}, lanjutan.` : `Hari ${firstDay} sampai ${lastDay}.`;
 }
 
-function closingCallToAction(status: CommerceTourStatus) {
+function closingCallToAction(status: CommerceTourStatus, destination: string) {
   if (status === "sold_out" || status === "waitlist") {
     return {
+      kicker: "LANGKAH BERIKUTNYA",
       title: "Daftar tunggu untuk keberangkatan ini.",
       body: "Hubungi tim Sundaf Trip untuk mencatat nama dan jumlah peserta. Tim kami akan mengabari bila kursi tersedia kembali.",
     };
@@ -3049,14 +3050,18 @@ function closingCallToAction(status: CommerceTourStatus) {
 
   if (status === "completed") {
     return {
+      kicker: "LANGKAH BERIKUTNYA",
       title: "Rencanakan perjalanan berikutnya.",
       body: "Perjalanan ini telah selesai. Hubungi tim Sundaf Trip untuk konsultasi rute dan jadwal keberangkatan berikutnya.",
     };
   }
 
   return {
-    title: "Konfirmasi kursi. Minta invoice resmi.",
-    body: "Hubungi tim Sundaf Trip untuk memeriksa ketersediaan dan menerima detail pembayaran sesuai paket ini.",
+    kicker: "HARAPAN KAMI",
+    title: "Semoga perjalanan ini\nmenjadi kenangan indah.",
+    body: destination
+      ? `Sampai jumpa di ${destination} bersama Sundaf Trip.`
+      : "Sampai jumpa di perjalanan berikutnya bersama Sundaf Trip.",
   };
 }
 
@@ -3142,7 +3147,7 @@ export function ItineraryPDF({
   const servicePriceColumnCount = servicePriceItems.length > 4 ? 3 : 2;
   const servicePriceRows = chunkItems(servicePriceItems, servicePriceColumnCount);
   const closingProfile = shortenAtWord(profileText(company), 260);
-  const closingCta = closingCallToAction(commerceStatus);
+  const closingCta = closingCallToAction(commerceStatus, cleanText(tour.country));
   return (
     <Document
       title={`Katalog Perjalanan ${cleanText(tour.title)}`}
@@ -3530,7 +3535,7 @@ export function ItineraryPDF({
         </View>
 
         <View style={p.closingCopy}>
-          <Text style={p.closingKicker}>LANGKAH BERIKUTNYA</Text>
+          <Text style={p.closingKicker}>{closingCta.kicker}</Text>
           <Text style={p.closingTitle}>{closingCta.title}</Text>
           <Text style={p.closingText}>{closingCta.body}</Text>
         </View>
