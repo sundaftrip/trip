@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { useRouter } from "next/navigation";
 import { resetDocumentScroll } from "@/lib/navigation-scroll";
 import { Search, ChevronRight } from "lucide-react";
@@ -295,13 +295,13 @@ export default function VisaDatabase({ entries }: { entries: VisaCountry[] }) {
                   aria-label={`Detail visa ${c.name}`}
                   onClick={() => {
                     resetDocumentScroll();
-                    router.push(href);
+                    router.push(href, { scroll: false });
                   }}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
                       resetDocumentScroll();
-                      router.push(href);
+                      router.push(href, { scroll: false });
                     }
                   }}
                   className="group cursor-pointer align-top transition-colors hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-gray-400 dark:hover:bg-gray-900/40 dark:focus-visible:bg-gray-900/40 dark:focus-visible:outline-gray-600"

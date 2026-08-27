@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 
 export default function WebsiteError({
   reset,

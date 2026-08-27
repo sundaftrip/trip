@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import Image from "next/image";
 import { ArrowRight, Clock } from "lucide-react";
 import { formatDate, cldOptimize } from "@/lib/utils";

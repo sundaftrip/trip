@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE } from "@/lib/utils";
 

@@ -3,6 +3,14 @@ export function normalizeNavigationPath(pathname: string) {
   return pathname.replace(/\/+$/, "") || "/";
 }
 
+export function shouldScrollLinkToFragment(href: unknown) {
+  if (typeof href === "string") return href.includes("#");
+  if (!href || typeof href !== "object" || !("hash" in href)) return false;
+
+  const hash = href.hash;
+  return typeof hash === "string" && hash.length > 0;
+}
+
 export const DESKTOP_SCROLL_RESET_MIN_WIDTH = 1024;
 
 type ScrollInputCapabilities = {

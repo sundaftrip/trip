@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
@@ -11,6 +11,7 @@ import { buildWhatsAppHref } from "@/lib/utils";
 import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanTourCard from "@/components/website/clean/CleanTourCard";
+import StableDetails from "@/components/website/clean/StableDetails";
 import styles from "@/components/website/clean/DestinationHub.module.css";
 
 export const revalidate = 300;
@@ -272,7 +273,7 @@ export default async function DestinationHubPage({
         <div className={styles.shell}>
           <p className={styles.kicker}>YANG SERING DITANYAKAN</p>
           <h2 id="destination-faq-title">Tentang {destination.name}</h2>
-          <div className={styles.faqs}>{destination.faqs.map((faq) => <details key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</div>
+          <div className={styles.faqs}>{destination.faqs.map((faq) => <StableDetails key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></StableDetails>)}</div>
         </div>
       </section>
 

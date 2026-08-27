@@ -1,4 +1,5 @@
 import { List } from "lucide-react";
+import StableDetails from "@/components/website/clean/StableDetails";
 import styles from "./BlogSupporting.module.css";
 
 export type BlogArticleHeading = {
@@ -19,7 +20,7 @@ export default function BlogArticleToc({ headings }: BlogArticleTocProps) {
       className={`${styles.atlasPanel} ${styles.tocPanel}`}
       aria-label="Navigasi artikel"
     >
-      <details className={styles.tocDetails} open>
+      <StableDetails className={styles.tocDetails} open>
         <summary className={styles.tocSummary}>
           <List className={styles.tocIcon} size={18} aria-hidden="true" />
           <span className={styles.tocHeadingGroup}>
@@ -46,7 +47,7 @@ export default function BlogArticleToc({ headings }: BlogArticleTocProps) {
             ))}
           </ol>
         </nav>
-      </details>
+      </StableDetails>
     </aside>
   );
 }

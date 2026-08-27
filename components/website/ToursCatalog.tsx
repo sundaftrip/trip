@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, type CSSProperties } from "react";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import ToursSection from "./ToursSection";
 import { REGIONS, regionOf, type RegionKey } from "./TourFilter";

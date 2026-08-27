@@ -2,7 +2,7 @@
 export const revalidate = 300;
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
 import { formatDate, cldOptimize } from "@/lib/utils";

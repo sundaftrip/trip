@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import StableDetails from "@/components/website/clean/StableDetails";
 
 export const metadata: Metadata = {
   title: "Wisata Kazakhstan dari Indonesia, Almaty, Astana & Alam Liar, Sundaftrip",
@@ -465,7 +466,7 @@ export default async function KazakhstanPage() {
           </h2>
           <div className="space-y-3">
             {FAQ.map(({ q, a }) => (
-              <details key={q}
+              <StableDetails key={q}
                 className={`group ${isOutlined ? cardClass : "border border-gray-200 dark:border-slate-800 rounded-2xl bg-gray-50 dark:bg-slate-900"}`}
                 style={cardBg ? { background: cardBg, borderColor: bdrClr } : {}}>
                 <summary className={`flex items-center justify-between px-6 py-4 cursor-pointer list-none select-none font-bold text-sm gap-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
@@ -478,7 +479,7 @@ export default async function KazakhstanPage() {
                   style={isOutlined ? { color: subClr, borderColor: bdrClr } : undefined}>
                   <p className="pt-4">{a}</p>
                 </div>
-              </details>
+              </StableDetails>
             ))}
           </div>
         </section>

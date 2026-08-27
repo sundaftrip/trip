@@ -35,7 +35,22 @@ export default function StableDetails({
       const nextTop = summary.getBoundingClientRect().top;
       const delta = nextTop - previousTop;
       if (Math.abs(delta) > 1) {
-        window.scrollBy({ top: delta, left: 0, behavior: "auto" });
+        const scrollingElement = document.scrollingElement;
+        if (!scrollingElement) return;
+
+        // The public shell enables smooth scrolling globally. Temporarily
+        // override it so the position correction happens in the same frame
+        // and never appears as a second bounce after the details toggle.
+        const root = document.documentElement;
+        const body = document.body;
+        const previousRootBehavior = root.style.scrollBehavior;
+        const previousBodyBehavior = body.style.scrollBehavior;
+
+        root.style.scrollBehavior = "auto";
+        body.style.scrollBehavior = "auto";
+        scrollingElement.scrollTop += delta;
+        root.style.scrollBehavior = previousRootBehavior;
+        body.style.scrollBehavior = previousBodyBehavior;
       }
     });
   }

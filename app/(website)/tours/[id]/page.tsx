@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { isPublicTourVisible, publicTourVisibilityWhere } from "@/lib/public-tours";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import {
   MapPin, Calendar, Clock, Users, CheckCircle, XCircle,
   ArrowLeft, Camera, Building2, FileText,

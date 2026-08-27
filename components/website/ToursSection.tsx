@@ -1,5 +1,6 @@
 import TourCard from "./TourCard";
 import AnimateIn from "./AnimateIn";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { getTourProductImage } from "@/lib/tour-product-images";
 
 interface Tour {
@@ -115,7 +116,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
                 const price = tour.promoPrice ?? tour.price;
                 const productImage = getTourProductImage(tour);
                 return (
-                  <a key={tour.id} href={`/tours/${tour.slug ?? tour.id}`} className="nu-row">
+                  <Link key={tour.id} href={`/tours/${tour.slug ?? tour.id}`} className="nu-row">
                     <div className="nu-row-thumb">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={productImage} alt={tour.title} loading="lazy" />
@@ -136,7 +137,7 @@ export default function ToursSection({ tours, pinnedTours = [], theme = "classic
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--nu-gold)" }} className="shrink-0">
                       <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
-                  </a>
+                  </Link>
                 );
               })}
             </div>

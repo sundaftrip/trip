@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";

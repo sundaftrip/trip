@@ -2,7 +2,7 @@
    Tidak hanya untuk user, juga supaya SearchAction schema valid,
    yang berpotensi memunculkan sitelinks search box di SERP Google. */
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { Search as SearchIcon, Compass, MapPin, BookOpen, FileCheck, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { visaSlug } from "@/lib/visa-slug";

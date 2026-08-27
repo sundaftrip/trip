@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import {
   AlertTriangle,
   ArrowRight,
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import StableDetails from "@/components/website/clean/StableDetails";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
@@ -413,7 +414,7 @@ export default async function VisaProtectionPage() {
           <h2 className="text-xl font-black">FAQ Asuransi Visa Protection</h2>
           <div className="mt-4 space-y-3">
             {FAQS.map((faq) => (
-              <details
+              <StableDetails
                 key={faq.question}
                 className="group rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
               >
@@ -428,7 +429,7 @@ export default async function VisaProtectionPage() {
                 <p className="px-4 pb-4 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
                   {faq.answer}
                 </p>
-              </details>
+              </StableDetails>
             ))}
           </div>
         </div>

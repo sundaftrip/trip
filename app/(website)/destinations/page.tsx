@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, ArrowUpRight, Compass, MapPin } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
