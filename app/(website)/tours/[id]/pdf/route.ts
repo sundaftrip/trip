@@ -19,6 +19,7 @@ import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { getCommerceTourStatus } from "@/lib/tour-commerce";
 import {
   getCanadaRockiesPreviewTour,
+  resolveCanadaRockiesPdfNotes,
   selectCanadaRockiesTourSource,
 } from "@/lib/canada-catalog-preview";
 import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
@@ -278,7 +279,7 @@ export async function GET(
     heroImg,
     gallery: uniqueImages(gallery),
     visaInfo: tour.visaInfo,
-    notes: tour.notes,
+    notes: resolveCanadaRockiesPdfNotes(tour.notes, tour.slug),
     addOns: normalizedAddOns,
   });
   const localizedMandatoryAddOns = (pdfTour.addOns ?? [])
