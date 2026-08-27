@@ -16,6 +16,22 @@ export function selectCanadaRockiesTourSource<T>(
     : databaseTour ?? previewTour;
 }
 
+export function resolveCanadaRockiesPdfNotes(
+  databaseNotes: string | null,
+  resolvedTourSlug?: string | null,
+): string | null {
+  if (resolvedTourSlug !== CANADA_ROCKIES_SLUG) return databaseNotes;
+
+  const normalizedNotes = databaseNotes?.trim() ?? "";
+  const isLegacyDetailedNote = normalizedNotes
+    .toLocaleLowerCase("id-ID")
+    .startsWith("harga target pada tahap pendaftaran awal bukan harga tetap.");
+
+  return !normalizedNotes || isLegacyDetailedNote
+    ? CANADA_ROCKIES_TOUR.notes
+    : databaseNotes;
+}
+
 /**
  * Deployed Vercel targets can render this read-only catalog record even when
  * the production database has not been upserted yet. If the database later

@@ -3,9 +3,13 @@ import test from "node:test";
 import {
   CANADA_ROCKIES_PREVIEW_ID,
   getCanadaRockiesPreviewTour,
+  resolveCanadaRockiesPdfNotes,
   selectCanadaRockiesTourSource,
 } from "../lib/canada-catalog-preview";
-import { CANADA_ROCKIES_SLUG } from "../data/catalog/canada-rockies-april-2027";
+import {
+  CANADA_ROCKIES_SLUG,
+  CANADA_ROCKIES_TOUR,
+} from "../data/catalog/canada-rockies-april-2027";
 
 test("Canada fixture is available on deployed Vercel targets", () => {
   const originalVercelEnv = process.env.VERCEL_ENV;
@@ -45,5 +49,25 @@ test("production uses the persisted Canada record so generated links keep its re
   assert.equal(
     selectCanadaRockiesTourSource(null, previewTour, "production")?.id,
     previewTour.id,
+  );
+});
+
+test("Canada PDF replaces only the known stale detailed note", () => {
+  const staleDetailedNote = [
+    "Harga target pada tahap pendaftaran awal bukan harga tetap.",
+    "Harga final ditetapkan setelah tiket grup, hotel, coach dalam mata uang CAD, dan biaya lain dikonfirmasi.",
+  ].join(" ");
+
+  assert.equal(
+    resolveCanadaRockiesPdfNotes(staleDetailedNote, CANADA_ROCKIES_SLUG),
+    CANADA_ROCKIES_TOUR.notes,
+  );
+  assert.equal(
+    resolveCanadaRockiesPdfNotes("Catatan baru dari CMS.", CANADA_ROCKIES_SLUG),
+    "Catatan baru dari CMS.",
+  );
+  assert.equal(
+    resolveCanadaRockiesPdfNotes(staleDetailedNote, "another-tour"),
+    staleDetailedNote,
   );
 });
