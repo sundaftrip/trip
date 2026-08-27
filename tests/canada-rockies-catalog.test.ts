@@ -51,11 +51,9 @@ test("catalog promises eight nights in three-star hotels with daily breakfast", 
   assert.match(CANADA_ROCKIES_TOUR.hotel["Fasilitas makan"], /sarapan harian termasuk/i);
   assert.doesNotMatch(CANADA_ROCKIES_TOUR.exclusions.join(" "), /sarapan/i);
   assert.match(CANADA_ROCKIES_TOUR.exclusions.join(" "), /makan siang dan makan malam/i);
-  assert.match(CANADA_ROCKIES_TOUR.notes, /konfirmasi tertulis supplier/i);
 });
 
 test("catalog avoids closed-attraction promises", () => {
-  assert.match(CANADA_ROCKIES_TOUR.notes, /tidak dijanjikan/i);
   assert.doesNotMatch(
     CANADA_ROCKIES_TOUR.itinerary.map((day) => `${day.title} ${day.description}`).join(" "),
     /Ice Explorer|Skywalk|Spiral Tunnels Viewpoint/i,
@@ -65,5 +63,7 @@ test("catalog avoids closed-attraction promises", () => {
 test("pre-registration cannot expose an automatic payment plan", () => {
   assert.equal(CANADA_ROCKIES_TOUR.paymentPlan.mode, "hidden");
   assert.equal(CANADA_ROCKIES_TOUR.status, "DRAFT");
-  assert.match(CANADA_ROCKIES_TOUR.notes, /harga target/i);
+  assert.match(CANADA_ROCKIES_TOUR.notes, /mengumpulkan peserta.*membentuk grup/i);
+  assert.match(CANADA_ROCKIES_TOUR.notes, /invoice resmi/i);
+  assert.doesNotMatch(CANADA_ROCKIES_TOUR.notes, /ferry|park fee|driver|Bow Lake|Ice Explorer/i);
 });

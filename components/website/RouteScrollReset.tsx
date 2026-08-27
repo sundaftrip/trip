@@ -37,8 +37,8 @@ export default function RouteScrollReset() {
       const href = anchor.getAttribute("href");
       if (!href || !shouldResetScrollForNavigation(window.location.href, href)) return;
 
-      // Next.js keeps the old page visible while the next route is prepared.
-      // Move that old page to its header immediately so its footer cannot flash.
+      // Keep the old page header visible on desktop while Next.js prepares the
+      // next route. On mobile, do not jump the outgoing page before transition.
       resetDocumentScroll();
     }
 
