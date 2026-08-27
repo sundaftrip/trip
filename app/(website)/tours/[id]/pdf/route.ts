@@ -67,7 +67,14 @@ function mimeForFile(filePath: string) {
   return null;
 }
 
-function toPdfRemoteImageSrc(src: string) {
+type PdfImageOptions = {
+  preserveTransparency?: boolean;
+};
+
+function toPdfRemoteImageSrc(
+  src: string,
+  { preserveTransparency = false }: PdfImageOptions = {},
+) {
   try {
     const url = new URL(src);
     if (
@@ -77,9 +84,12 @@ function toPdfRemoteImageSrc(src: string) {
       return src;
     }
 
+    const transformation = preserveTransparency
+      ? "w_1400,c_fit,q_auto:best,f_png"
+      : "w_1400,c_fill,g_auto,q_auto:good,f_jpg";
     url.pathname = url.pathname.replace(
       "/image/upload/",
-      "/image/upload/w_1400,c_fill,g_auto,q_auto:good,f_jpg/",
+      `/image/upload/${transformation}/`,
     );
     return url.href;
   } catch {
@@ -87,7 +97,10 @@ function toPdfRemoteImageSrc(src: string) {
   }
 }
 
-async function toPdfImageSrc(src?: string | null) {
+async function toPdfImageSrc(
+  src?: string | null,
+  options: PdfImageOptions = {},
+) {
   if (!src) return null;
   if (/^data:/i.test(src)) {
     try {
@@ -98,7 +111,7 @@ async function toPdfImageSrc(src?: string | null) {
   }
   if (/^https?:\/\//i.test(src)) {
     try {
-      return await fetchPdfImageDataUrl(toPdfRemoteImageSrc(src));
+      return await fetchPdfImageDataUrl(toPdfRemoteImageSrc(src, options));
     } catch {
       return null;
     }
@@ -241,8 +254,8 @@ export async function GET(
   const [resolvedHero, storedImages, logo, logoOnDark] = await Promise.all([
     resolveImage(rawHero),
     Promise.all(storedGallery.map(resolveImage)),
-    resolveImage(ci["company_logo"] || "/logo.png"),
-    resolveImage("/vietnam/assets/logo-dark.png"),
+    resolveImage("/logo-pdf-paper.png"),
+    toPdfImageSrc("/vietnam/assets/logo-dark.png", { preserveTransparency: true }),
   ]);
   const heroImg = resolvedHero || await resolveImage(fallbackHero);
   let gallery = uniqueImages(storedImages);
