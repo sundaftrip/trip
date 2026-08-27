@@ -1528,6 +1528,15 @@ const p = StyleSheet.create({
     width: 0.7,
     backgroundColor: PREMIUM_GOLD_LIGHT,
   },
+  excludedList: { position: "relative" },
+  boundaryRail: {
+    position: "absolute",
+    top: 5,
+    bottom: 8,
+    left: 4.8,
+    width: 0.5,
+    backgroundColor: "#C7CECC",
+  },
   listItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 6 },
   listCheckMark: {
     width: 13,
@@ -1535,17 +1544,11 @@ const p = StyleSheet.create({
     marginRight: 7,
     marginTop: 0.2,
   },
-  listExcludedMark: {
-    width: 13,
-    height: 13,
-    borderRadius: 7,
-    backgroundColor: PREMIUM_MUTED,
-    color: PREMIUM_WHITE,
-    fontFamily: FONT.bold,
-    fontSize: 7,
-    textAlign: "center",
-    paddingTop: 2,
-    marginRight: 7,
+  listBoundaryMark: {
+    width: 10,
+    height: 10,
+    marginRight: 10,
+    marginTop: 1.4,
   },
   listText: { flex: 1, fontSize: 7.7, color: PREMIUM_INK, lineHeight: 1.35 },
   addOnTable: { borderTopWidth: 0.8, borderTopColor: PREMIUM_NAVY },
@@ -2819,7 +2822,10 @@ function PremiumListItem({
   return (
     <View style={p.listItem} wrap={false}>
       {excluded ? (
-        <Text style={p.listExcludedMark}>-</Text>
+        <Svg style={p.listBoundaryMark} viewBox="0 0 10 10">
+          <Circle cx="5" cy="5" r="4.2" fill="#EEF1EF" stroke="#8B989B" strokeWidth={0.65} />
+          <Line x1="3.3" y1="5" x2="6.7" y2="5" stroke="#8B989B" strokeWidth={0.8} />
+        </Svg>
       ) : (
         <Svg style={p.listCheckMark} viewBox="0 0 13 13">
           <Circle cx="6.5" cy="6.5" r="5.8" fill={PREMIUM_WHITE} stroke={PREMIUM_GOLD} strokeWidth={0.8} />
@@ -3308,9 +3314,12 @@ export function ItineraryPDF({
             </View>
             <View style={[p.column, p.listCardMuted]}>
               <Text style={p.listCardTitle}>Belum Termasuk</Text>
-              {tour.exclusions.map((item, index) => (
-                <PremiumListItem key={`${item}-${index}`} text={item} excluded />
-              ))}
+              <View style={p.excludedList}>
+                <View style={p.boundaryRail} />
+                {tour.exclusions.map((item, index) => (
+                  <PremiumListItem key={`${item}-${index}`} text={item} excluded />
+                ))}
+              </View>
             </View>
           </View>
         )}
