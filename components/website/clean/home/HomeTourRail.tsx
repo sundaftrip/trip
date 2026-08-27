@@ -1,9 +1,17 @@
 "use client";
 
-import { Fragment, type MouseEvent } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { CleanTour } from "../CleanTourCard";
@@ -63,6 +71,76 @@ function routeHighlight(value: string) {
 }
 
 export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
+  const railRef = useRef<HTMLDivElement>(null);
+  const [scrollState, setScrollState] = useState({
+    canScrollBackward: false,
+    canScrollForward: false,
+    progress: 0,
+  });
+
+  const updateScrollState = useCallback(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+    const scrollLeft = Math.min(maxScroll, Math.max(0, rail.scrollLeft));
+
+    setScrollState({
+      canScrollBackward: scrollLeft > 4,
+      canScrollForward: scrollLeft < maxScroll - 4,
+      progress:
+        rail.scrollWidth > 0
+          ? Math.min(1, (scrollLeft + rail.clientWidth) / rail.scrollWidth)
+          : 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    let frame = 0;
+    const requestUpdate = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateScrollState);
+    };
+
+    updateScrollState();
+    rail.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      rail.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+    };
+  }, [updateScrollState, tours.length]);
+
+  const scrollRail = useCallback((direction: "backward" | "forward") => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const cards = rail.querySelectorAll<HTMLElement>(`.${styles.tourCard}`);
+    const distance =
+      cards.length > 1
+        ? cards[1].offsetLeft - cards[0].offsetLeft
+        : cards[0]?.getBoundingClientRect().width || rail.clientWidth * 0.85;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    rail.scrollBy({
+      left: direction === "forward" ? distance : -distance,
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, []);
+
+  function handleRailKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    event.preventDefault();
+    scrollRail(event.key === "ArrowRight" ? "forward" : "backward");
+  }
+
   function preserveCampaign(
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -74,13 +152,20 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
   }
 
   return (
-    <div className={styles.railStage}>
+    <div
+      className={styles.railStage}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Jadwal perjalanan Sundaf"
+    >
       <div
+        id="home-tour-rail"
+        ref={railRef}
         className={styles.tourRail}
-        role="region"
-        aria-roledescription="carousel"
-        aria-label="Daftar kartu perjalanan Sundaf"
+        role="group"
+        aria-label="Daftar kartu perjalanan. Geser atau gunakan tombol navigasi."
         tabIndex={0}
+        onKeyDown={handleRailKeyDown}
       >
         {tours.map((tour, index) => {
           const href = `/tours/${tour.slug || tour.id}`;
@@ -101,12 +186,11 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                 className={styles.tourMedia}
                 data-analytics-event="tour_card_click"
                 data-tour-id={tour.id}
-                aria-label={`Lihat ${tour.title}`}
                 onClick={(event) => preserveCampaign(event, href)}
               >
                 <Image
                   src={cldThumb(getTourProductImage(tour), 760, 510)}
-                  alt={`Pemandangan destinasi untuk ${tour.title}`}
+                  alt=""
                   fill
                   sizes="(max-width: 699px) 82vw, (max-width: 1199px) 44vw, 360px"
                 />
@@ -147,6 +231,37 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
           );
         })}
       </div>
+      {tours.length > 1 ? (
+        <div
+          className={styles.railControls}
+          role="group"
+          aria-label="Navigasi kartu perjalanan"
+        >
+          <button
+            type="button"
+            className={styles.railButton}
+            onClick={() => scrollRail("backward")}
+            disabled={!scrollState.canScrollBackward}
+            aria-label="Lihat perjalanan sebelumnya"
+            aria-controls="home-tour-rail"
+          >
+            <ChevronLeft aria-hidden="true" />
+          </button>
+          <div className={styles.railProgress} aria-hidden="true">
+            <span style={{ transform: `scaleX(${scrollState.progress})` }} />
+          </div>
+          <button
+            type="button"
+            className={styles.railButton}
+            onClick={() => scrollRail("forward")}
+            disabled={!scrollState.canScrollForward}
+            aria-label="Lihat perjalanan berikutnya"
+            aria-controls="home-tour-rail"
+          >
+            <ChevronRight aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
