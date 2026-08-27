@@ -113,6 +113,7 @@
 
 .menuButton,
 .searchButton,
+.languageButton,
 .drawerClose,
 .destinationToggle {
   appearance: none;
@@ -123,6 +124,7 @@
 
 .menuButton,
 .searchButton,
+.languageButton,
 .drawerClose {
   width: 44px;
   height: 44px;
@@ -140,6 +142,7 @@
 
 .menuButton:hover,
 .searchButton:hover,
+.languageButton:hover,
 .drawerClose:hover {
   background: var(--shell-ice);
   color: var(--shell-primary);
@@ -157,6 +160,14 @@
   width: 22px;
   height: 22px;
   stroke-width: 1.6;
+}
+
+.languageButton {
+  border: 1px solid var(--shell-line);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .searchLayer {
@@ -883,6 +894,7 @@
 .drawerLogo:focus-visible,
 .menuButton:focus-visible,
 .searchButton:focus-visible,
+.languageButton:focus-visible,
 .searchClose:focus-visible,
 .searchForm:focus-within,
 .searchResultButton:focus-visible,
@@ -940,6 +952,16 @@
 
   .searchAllResults {
     margin: 0 20px max(18px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 359px) {
+  .headerShell {
+    gap: 4px;
+  }
+
+  .headerActions {
+    gap: 0;
   }
 }
 
@@ -1083,6 +1105,7 @@
   .drawerLayer,
   .header::after,
   .menuButton,
+  .languageButton,
   .drawerClose,
   .drawerBackdrop,
   .drawer,
