@@ -2758,17 +2758,19 @@ function PremiumHeading({
   eyebrow,
   title,
   intro,
+  showRule = true,
 }: {
   eyebrow: string;
   title: string;
   intro?: string;
+  showRule?: boolean;
 }) {
   return (
     <View style={p.heading} minPresenceAhead={72}>
       <Text style={p.headingEyebrow}>{eyebrow.toUpperCase()}</Text>
       <Text style={p.headingTitle}>{title}</Text>
       {!!intro && <Text style={p.headingIntro}>{intro}</Text>}
-      <View style={p.goldRule} />
+      {showRule && <View style={p.goldRule} />}
     </View>
   );
 }
@@ -3225,6 +3227,7 @@ export function ItineraryPDF({
             intro={pageIndex === 0
               ? `Rute untuk ${displayItinerary.length} hari perjalanan.`
               : itineraryPageRange(pageEntries)}
+            showRule={false}
           />
 
           <View style={p.itineraryList}>
