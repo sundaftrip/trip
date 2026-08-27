@@ -7,14 +7,18 @@ const routeSource = readFileSync(
   "utf8",
 );
 
-test("uses a paper-matched colored PDF logo on light pages", () => {
+test("keeps the colored company logo transparent on light PDF pages", () => {
   assert.match(
     routeSource,
     /preserveTransparency[\s\S]*?w_1400,c_fit,q_auto:best,f_png/,
   );
   assert.match(
     routeSource,
-    /resolveImage\("\/logo-pdf-paper\.png"\)/,
+    /toPdfImageSrc\(ci\["company_logo"\] \|\| "\/logo\.png", \{ preserveTransparency: true \}\)/,
+  );
+  assert.match(
+    routeSource,
+    /toPdfImageSrc\("\/logo\.png", \{ preserveTransparency: true \}\)/,
   );
 });
 
