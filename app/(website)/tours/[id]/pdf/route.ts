@@ -16,6 +16,10 @@ import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
 import { getCommerceTourStatus } from "@/lib/tour-commerce";
+import {
+  getCanadaRockiesPreviewTour,
+  selectCanadaRockiesTourSource,
+} from "@/lib/canada-catalog-preview";
 import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
 
 export const runtime = "nodejs";
@@ -164,8 +168,10 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  const [tour, companyRows] = await Promise.all([
-    prisma.tour.findUnique({ where: { id } }),
+  const previewTour = getCanadaRockiesPreviewTour(id);
+  const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
+  const [databaseTour, companyRows] = standalonePreview ? [null, []] : await Promise.all([
+    prisma.tour.findFirst({ where: { OR: [{ id }, { slug: id }] } }),
     prisma.companyInfo.findMany({
       where: { key: { in: [
         "company_name", "company_logo", "company_whatsapp", "company_phone",
@@ -174,6 +180,7 @@ export async function GET(
       ] } },
     }),
   ]);
+  const tour = selectCanadaRockiesTourSource(databaseTour, previewTour);
 
   if (!tour || (process.env.NODE_ENV === "production" && !isPublicTourVisible(tour))) {
     return new Response("Tour tidak ditemukan", { status: 404 });

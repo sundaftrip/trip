@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
   if (texts.length === 0) return NextResponse.json({ translations: {} });
 
   const result: Record<string, string> = {};
+  const failures: string[] = [];
 
   // 1) cache lookup
   const hashes = texts.map((t) => hashOf(t, target));
@@ -110,10 +111,10 @@ export async function POST(req: NextRequest) {
           }).catch(() => {});
         }
       } catch {
-        result[t] = t; // fallback: biarkan teks asli supaya UI tidak rusak
+        failures.push(t);
       }
     });
   }
 
-  return NextResponse.json({ translations: result });
+  return NextResponse.json({ translations: result, failures });
 }

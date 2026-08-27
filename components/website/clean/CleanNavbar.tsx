@@ -78,6 +78,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
   const [destinationsOpen, setDestinationsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [language, setLanguage] = useState<Language>("id");
+  const [translationError, setTranslationError] = useState(false);
   const pathname = usePathname();
   const [selectedDesktopHref, setSelectedDesktopHref] = useState(() => getDesktopSelection(pathname));
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -141,6 +142,19 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
     updateScrolled();
     window.addEventListener("scroll", updateScrolled, { passive: true });
     return () => window.removeEventListener("scroll", updateScrolled);
+  }, []);
+
+  useEffect(() => {
+    const syncTranslationStatus = (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+      if (event.detail?.status === "error") setTranslationError(true);
+      if (event.detail?.status === "loading" || event.detail?.status === "ready") {
+        setTranslationError(false);
+      }
+    };
+
+    window.addEventListener("sundaf:translationstatus", syncTranslationStatus);
+    return () => window.removeEventListener("sundaf:translationstatus", syncTranslationStatus);
   }, []);
 
   useEffect(() => {
@@ -334,11 +348,22 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
 
         <div className={styles.headerActions}>
           <CleanGlobalSearch />
+          <span
+            className="sr-only"
+            role="status"
+            aria-live="polite"
+            data-no-translate
+            translate="no"
+          >
+            {translationError ? "Bahasa Inggris sedang tidak tersedia. Coba lagi." : ""}
+          </span>
           <button
             className={styles.languageButton}
             type="button"
             aria-label={language === "id"
-              ? "Tampilkan situs dalam bahasa Inggris"
+              ? translationError
+                ? "Bahasa Inggris sedang tidak tersedia. Coba lagi."
+                : "Tampilkan situs dalam bahasa Inggris"
               : "View this site in Indonesian"}
             title={language === "id"
               ? "Tampilkan dalam bahasa Inggris"
