@@ -1313,13 +1313,19 @@ const p = StyleSheet.create({
     fontSize: 26,
     color: PREMIUM_NAVY,
   },
-  priceCard: {
+  overviewSide: {
     flex: 1,
-    minHeight: 184,
-    padding: 17,
-    backgroundColor: PREMIUM_NAVY,
-    justifyContent: "space-between",
+    height: 184,
+    gap: 8,
   },
+  priceCard: {
+    padding: 15,
+    backgroundColor: PREMIUM_NAVY,
+    justifyContent: "center",
+  },
+  priceCardCompact: { height: 88 },
+  priceCardPromo: { height: 118 },
+  priceCardSolo: { flex: 1 },
   priceCardLabel: {
     fontFamily: FONT.bold,
     fontSize: 6.9,
@@ -1346,14 +1352,8 @@ const p = StyleSheet.create({
     color: PREMIUM_GOLD_LIGHT,
     marginTop: 4,
   },
-  priceCardFoot: {
-    borderTopWidth: 0.7,
-    borderTopColor: "#53686D",
-    paddingTop: 10,
-    fontSize: 7.7,
-    lineHeight: 1.35,
-    color: "#CBD4D5",
-  },
+  priceCardRule: { width: 28, height: 1.5, backgroundColor: PREMIUM_GOLD, marginTop: 12 },
+  overviewAccentImage: { flex: 1, width: "100%", objectFit: "cover" },
   metaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -3048,6 +3048,9 @@ export function ItineraryPDF({
   const galleryImages = uniquePdfGalleryImages(tour.gallery).slice(0, 7);
   const coverImage = cleanText(tour.heroImg) || galleryImages[0] || null;
   const overviewImage = galleryImages.find((image) => image !== coverImage) || coverImage;
+  const overviewAccentImage = galleryImages.find(
+    (image) => image !== coverImage && image !== overviewImage,
+  ) || null;
   const closingLead = galleryImages[1] || galleryImages[0] || coverImage;
   const closingSide = [galleryImages[3], galleryImages[4]].filter(Boolean) as string[];
   const normalPrice = splitNormalPriceLabel(inclusivePriceCoretLabel);
@@ -3159,14 +3162,21 @@ export function ItineraryPDF({
               </View>
             )}
           </View>
-          <View style={p.priceCard}>
-            <PremiumPriceBlock
-              priceLabel={inclusivePriceLabel}
-              priceCoretLabel={inclusivePriceCoretLabel}
-            />
-            <Text style={p.priceCardFoot}>
-              Total mencakup paket dasar dan seluruh add-on wajib yang tercantum dalam katalog ini.
-            </Text>
+          <View style={p.overviewSide}>
+            <View
+              style={overviewAccentImage
+                ? [p.priceCard, normalPrice ? p.priceCardPromo : p.priceCardCompact]
+                : [p.priceCard, p.priceCardSolo]}
+            >
+              <PremiumPriceBlock
+                priceLabel={inclusivePriceLabel}
+                priceCoretLabel={inclusivePriceCoretLabel}
+              />
+              <View style={p.priceCardRule} />
+            </View>
+            {!!overviewAccentImage && (
+              <PdfImage src={overviewAccentImage} style={p.overviewAccentImage} />
+            )}
           </View>
         </View>
 
