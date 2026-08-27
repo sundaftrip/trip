@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import * as cheerio from "cheerio";
 import { ArrowLeft, Clock, Calendar, User, MapPin } from "lucide-react";
 import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";

@@ -2,7 +2,7 @@
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
 export const revalidate = 60;
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { unstable_cache } from "next/cache";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";

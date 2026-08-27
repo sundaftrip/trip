@@ -5,6 +5,7 @@ import {
   DESKTOP_SCROLL_RESET_MIN_WIDTH,
   isDesktopScrollResetViewport,
   resetDocumentScroll,
+  shouldScrollLinkToFragment,
   shouldResetScrollForNavigation,
 } from "../lib/navigation-scroll";
 
@@ -25,6 +26,14 @@ test("ignores external and non-web navigation", () => {
   assert.equal(shouldResetScrollForNavigation(current, "https://example.com/visa"), false);
   assert.equal(shouldResetScrollForNavigation(current, "mailto:halo@sundaftrip.com"), false);
   assert.equal(shouldResetScrollForNavigation(current, "http://["), false);
+});
+
+test("keeps intentional fragment navigation while preserving ordinary routes", () => {
+  assert.equal(shouldScrollLinkToFragment("/tours"), false);
+  assert.equal(shouldScrollLinkToFragment("/?page=2#tours"), true);
+  assert.equal(shouldScrollLinkToFragment("#contact"), true);
+  assert.equal(shouldScrollLinkToFragment({ pathname: "/", hash: "tours" }), true);
+  assert.equal(shouldScrollLinkToFragment({ pathname: "/tours" }), false);
 });
 
 test("does not force an immediate scroll reset on mobile navigation", () => {

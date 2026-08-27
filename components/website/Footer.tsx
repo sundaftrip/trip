@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { buildWhatsAppHref, cldFit, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
 import { FaqList, type FaqItem } from "./FaqList";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 
 /* Filter region tour, minimalist boarding-pass style.
    Map negara → region untuk tampilan filter. */

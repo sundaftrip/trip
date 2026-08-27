@@ -370,6 +370,8 @@ export default function CompanyProfileContent({ proofPhotos = [] }: { proofPhoto
             <a
               href="/sundaftrip-company-profile.pdf"
               download
+              target="_blank"
+              rel="noopener"
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 font-bold text-sm rounded-xl border border-gray-600 text-gray-200 hover:bg-gray-800 transition"
             >
               <Download size={15} /> {t(TX.pdfPrefix)} · English
@@ -377,6 +379,8 @@ export default function CompanyProfileContent({ proofPhotos = [] }: { proofPhoto
             <a
               href="/sundaftrip-company-profile-ru.pdf"
               download
+              target="_blank"
+              rel="noopener"
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 font-bold text-sm rounded-xl border border-gray-600 text-gray-200 hover:bg-gray-800 transition"
             >
               <Download size={15} /> {t(TX.pdfPrefix)} · Русский

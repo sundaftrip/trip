@@ -8,6 +8,7 @@ import {
 } from "react";
 import dynamic from "next/dynamic";
 import Link from "./PreserveScrollLink";
+import StableDetails from "./StableDetails";
 import { usePathname, useRouter } from "next/navigation";
 import { MessageCircle, SlidersHorizontal, X } from "lucide-react";
 import { trackSundafEvent } from "@/lib/analytics-events";
@@ -424,27 +425,27 @@ export default function CleanToursCatalog({
             <h2 id="catalog-faq-title">Pertanyaan tentang jadwal</h2>
           </div>
           <div className={styles.faqs}>
-            <details>
+            <StableDetails>
               <summary>Bagaimana jika tanggal open trip belum cocok?</summary>
               <p>
                 Pilih land tour privat untuk membicarakan tanggal, jumlah peserta, dan rute
                 yang lebih fleksibel.
               </p>
-            </details>
-            <details>
+            </StableDetails>
+            <StableDetails>
               <summary>Apakah status kursi dapat berubah?</summary>
               <p>
                 Ya. Ketersediaan dikonfirmasi kembali oleh tim sebelum pembayaran dan kursi
                 dinyatakan terpesan.
               </p>
-            </details>
-            <details>
+            </StableDetails>
+            <StableDetails>
               <summary>Mengapa trip terdahulu tetap ditampilkan?</summary>
               <p>
                 Halaman tersebut menjadi dokumentasi rute dan perjalanan yang telah
                 dijalankan, bukan penawaran keberangkatan aktif.
               </p>
-            </details>
+            </StableDetails>
           </div>
         </div>
       </section>

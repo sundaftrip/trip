@@ -1,7 +1,7 @@
 export const revalidate = 300;
 
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { unstable_cache } from "next/cache";
 import { ArrowRight, MessageSquareQuote, ShieldCheck, Star } from "lucide-react";
 import { prisma } from "@/lib/prisma";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import Image from "next/image";
 import { MapPin, Calendar, Users, Clock, ArrowRight } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";

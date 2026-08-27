@@ -1,7 +1,7 @@
 /* Shared B2B land-tour profile.
    /partner  → Billy sebagai sosok utama + PDF versi Billy.
    /b2b      → Ferdiansah + pilihan bahasa ID / ENG / RU. */
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import type { LucideIcon } from "lucide-react";
 import {
   Building2, Compass, CheckCircle2, Phone, Mail, Download,
@@ -477,6 +477,8 @@ export default function B2BLandTour({
             <a
               href={pdfHref}
               download
+              target="_blank"
+              rel="noopener"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-600 px-6 py-3 text-sm font-bold text-gray-200 transition hover:bg-gray-800"
             >
               <Download size={16} /> {t(TX.profile)}

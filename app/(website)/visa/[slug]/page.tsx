@@ -1,7 +1,7 @@
 /* Country-specific visa detail. Content remains CMS-driven while the
    presentation follows the public Atlas shell and mobile accessibility rules. */
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronDown, CheckCircle2, FileText, HelpCircle, ArrowRight, ShieldCheck } from "lucide-react";
 
@@ -20,6 +20,7 @@ import {
 import { FlagIcon } from "@/lib/flag-icon";
 import TestimonialSection from "@/components/website/TestimonialSection";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import StableDetails from "@/components/website/clean/StableDetails";
 import VisaConsultationForm from "../VisaConsultationForm";
 import styles from "../VisaPages.module.css";
 
@@ -718,7 +719,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             </h2>
             <div className={styles.faqList}>
               {countryFaqs.map((f, i) => (
-                <details
+                <StableDetails
                   key={`country-${i}`}
                   className={styles.faqItem}
                 >
@@ -732,7 +733,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   <div className={styles.faqAnswer}>
                     {f.answer}
                   </div>
-                </details>
+                </StableDetails>
               ))}
             </div>
           </section>

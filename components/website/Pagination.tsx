@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 /* Navigasi halaman katalog tour, aesthetic boarding pass / flight info bar.

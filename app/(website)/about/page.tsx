@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { prisma } from "@/lib/prisma";
 import { toWaNumber } from "@/lib/utils";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { Users, ShieldCheck, Heart, CloudSun, MapPin, MessageCircle, Award, ArrowRight } from "lucide-react";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import GalleryZoom from "@/components/website/GalleryZoom";

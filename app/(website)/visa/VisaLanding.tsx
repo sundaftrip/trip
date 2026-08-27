@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import {
   ArrowRight,
   BadgeCheck,
@@ -14,6 +14,7 @@ import {
 
 import { FlagIcon } from "@/lib/flag-icon";
 import { visaSlug } from "@/lib/visa-slug";
+import StableDetails from "@/components/website/clean/StableDetails";
 import type { VisaCountry } from "./VisaDatabase";
 import VisaCountryDirectory from "./VisaCountryDirectory";
 import styles from "./VisaPages.module.css";
@@ -334,13 +335,13 @@ export default function VisaLanding({
 
               <div className={styles.faqList}>
                 {faqs.map((faq) => (
-                  <details className={styles.faqItem} key={faq.id}>
+                  <StableDetails className={styles.faqItem} key={faq.id}>
                     <summary className={styles.faqSummary}>
                       <span>{faq.question}</span>
                       <ChevronDown size={18} aria-hidden="true" />
                     </summary>
                     <p className={styles.faqAnswer}>{faq.answer}</p>
-                  </details>
+                  </StableDetails>
                 ))}
               </div>
             </div>

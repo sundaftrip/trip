@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import StableDetails from "@/components/website/clean/StableDetails";
 
 export type FaqItem = {
   q: string;
@@ -135,7 +136,7 @@ export function FaqList({
             : item.layanan ?? DEFAULT_LAYANAN_CTA;
         const isOpen = openSet.has(i);
         return (
-          <details
+          <StableDetails
             key={i}
             className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
           >
@@ -204,7 +205,7 @@ export function FaqList({
                 </div>
               )}
             </div>
-          </details>
+          </StableDetails>
         );
       })}
     </div>

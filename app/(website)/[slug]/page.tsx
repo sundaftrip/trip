@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { notFound } from "next/navigation";
 import { BadgePercent, Banknote, CalendarDays, MapPin, Plane, Sparkles, Ticket } from "lucide-react";
 import { prisma } from "@/lib/prisma";

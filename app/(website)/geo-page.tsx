@@ -1,8 +1,9 @@
 import type React from "react";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import StableDetails from "@/components/website/clean/StableDetails";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 export interface GeoFaq {
@@ -200,14 +201,14 @@ export default function GeoPage({
         </h2>
         <div className="space-y-3">
           {faqs.map((faq) => (
-            <details key={faq.question} className="at-card p-5 group">
+            <StableDetails key={faq.question} className="at-card p-5 group">
               <summary className="cursor-pointer list-none font-bold text-sm" style={{ color: "var(--at-text)" }}>
                 {faq.question}
               </summary>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
                 <LinkedText text={faq.answer} />
               </p>
-            </details>
+            </StableDetails>
           ))}
         </div>
       </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import Link from "next/link";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, Search } from "lucide-react";
 
 import { trackSundafEvent } from "@/lib/analytics-events";
