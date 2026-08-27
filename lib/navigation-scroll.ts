@@ -3,6 +3,13 @@ export function normalizeNavigationPath(pathname: string) {
   return pathname.replace(/\/+$/, "") || "/";
 }
 
+export const DESKTOP_SCROLL_RESET_MIN_WIDTH = 1024;
+
+export function isDesktopScrollResetViewport(viewportWidth: number) {
+  return Number.isFinite(viewportWidth)
+    && viewportWidth >= DESKTOP_SCROLL_RESET_MIN_WIDTH;
+}
+
 export function shouldResetScrollForNavigation(currentHref: string, nextHref: string) {
   try {
     const currentUrl = new URL(currentHref);
@@ -21,6 +28,7 @@ export function shouldResetScrollForNavigation(currentHref: string, nextHref: st
 
 export function resetDocumentScroll() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
+  if (!isDesktopScrollResetViewport(window.innerWidth)) return;
 
   const root = document.documentElement;
   const previousScrollBehavior = root.style.scrollBehavior;

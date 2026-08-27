@@ -163,7 +163,7 @@ function normalizePdfAddOns(raw: unknown): PdfAddOn[] {
 }
 
 export async function GET(
-  req: Request,
+  _req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
@@ -188,7 +188,7 @@ export async function GET(
 
   const ci: Record<string, string> = {};
   companyRows.forEach((c) => { ci[c.key] = c.value; });
-  const faqUrl = `${new URL(req.url).origin}/faq`;
+  const faqUrl = "https://sundaftrip.com/faq";
 
   const itinerary = (tour.itinerary as ItineraryDay[] | null) ?? [];
   const basePrice = tour.promoPrice ?? tour.price;
@@ -240,7 +240,7 @@ export async function GET(
   const [resolvedHero, storedImages, logo] = await Promise.all([
     resolveImage(rawHero),
     Promise.all(storedGallery.map(resolveImage)),
-    resolveImage(ci["company_logo"]),
+    resolveImage(ci["company_logo"] || "/logo.png"),
   ]);
   const heroImg = resolvedHero || await resolveImage(fallbackHero);
   let gallery = uniqueImages(storedImages);
@@ -285,16 +285,17 @@ export async function GET(
       inclusivePriceCoretLabel,
       landTourLabel,
       paymentPlan,
+      commerceStatus,
       company: {
-        name: ci["company_name"],
+        name: ci["company_name"] || "Sundaf Trip",
         logo,
         tagline: ci["about_tagline"],
         story: parseStory(ci["about_story"]),
-        phone: ci["company_phone"],
-        whatsapp: ci["company_whatsapp"],
-        email: ci["company_email"],
-        website: ci["company_website"],
-        instagram: ci["company_instagram"],
+        phone: ci["company_phone"] || "021-22321146",
+        whatsapp: ci["company_whatsapp"] || "6281775202759",
+        email: ci["company_email"] || "info@sundaftrip.com",
+        website: ci["company_website"] || "www.sundaftrip.com",
+        instagram: ci["company_instagram"] || "sundaf.trip",
         nib: ci["company_nib"],
       },
       faqUrl,

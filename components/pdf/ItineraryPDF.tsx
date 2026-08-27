@@ -5,6 +5,7 @@ import {
 } from "@react-pdf/renderer";
 import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
+import type { CommerceTourStatus } from "@/lib/tour-commerce";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 
 const PAPER = "#FFFFFF";
@@ -44,10 +45,10 @@ const TYPOGRAPHY = {
 const MAX_ITINERARY_BRIEF_LENGTH = 260;
 const PAYMENT_TERMS = [
   "Pembayaran hanya mengikuti invoice resmi Sundaf Trip.",
-  "DP mengunci seat dan nominalnya mengikuti invoice awal.",
-  "Pelunasan wajib mengikuti jadwal settlement atau invoice terbaru.",
+  "DP mengunci kursi dan nominalnya mengikuti invoice awal.",
+  "Pelunasan mengikuti jadwal pembayaran atau invoice terbaru.",
   "Add-on opsional dan layanan yang tidak ditandai wajib dibayar terpisah setelah dikonfirmasi.",
-  "Bukti transfer wajib dikirim untuk verifikasi administrasi.",
+  "Kirim bukti transfer agar pembayaran dapat dicek.",
   "Keterlambatan pembayaran dapat memengaruhi ketersediaan tiket, hotel, dan layanan.",
 ];
 
@@ -104,6 +105,7 @@ export interface ItineraryPDFProps {
   };
   faqUrl?: string;
   paymentPlan?: TourPaymentPlan | null;
+  commerceStatus?: CommerceTourStatus;
 }
 
 const s = StyleSheet.create({
@@ -1001,12 +1003,778 @@ const s = StyleSheet.create({
   denseFooterText: { fontSize: 6.2, color: SUB },
 });
 
+const PREMIUM_NAVY = "#132B3A";
+const PREMIUM_TEAL = "#075D63";
+const PREMIUM_INK = "#13252B";
+const PREMIUM_MUTED = "#68767A";
+const PREMIUM_GOLD = "#C99A4B";
+const PREMIUM_GOLD_LIGHT = "#E9D5AC";
+const PREMIUM_PAPER = "#FCFAF6";
+const PREMIUM_MIST = "#DFF1F2";
+const PREMIUM_LINE = "#D6DAD7";
+const PREMIUM_WHITE = "#FFFFFF";
+
+const p = StyleSheet.create({
+  coverPage: {
+    backgroundColor: PREMIUM_TEAL,
+    color: PREMIUM_WHITE,
+    fontFamily: FONT.regular,
+  },
+  coverSizer: {
+    height: 842,
+  },
+  coverHero: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: 505,
+    objectFit: "cover",
+  },
+  coverFallback: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: 505,
+    backgroundColor: "#244952",
+  },
+  coverFallbackAccentOne: {
+    position: "absolute",
+    top: 52,
+    right: -48,
+    width: 310,
+    height: 310,
+    borderRadius: 155,
+    borderWidth: 1,
+    borderColor: "#4D7177",
+  },
+  coverFallbackAccentTwo: {
+    position: "absolute",
+    top: 122,
+    right: 22,
+    width: 178,
+    height: 178,
+    borderRadius: 89,
+    backgroundColor: "#315B62",
+  },
+  coverTint: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: 505,
+    backgroundColor: PREMIUM_TEAL,
+    opacity: 0.33,
+  },
+  coverBrandBar: {
+    position: "absolute",
+    top: 31,
+    left: 36,
+    right: 36,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  coverLogoPlate: {
+    width: 108,
+    height: 40,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 2,
+    backgroundColor: PREMIUM_PAPER,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  coverLogo: { width: 86, height: 27, objectFit: "contain" },
+  coverEdition: {
+    fontFamily: FONT.bold,
+    fontSize: 7.4,
+    color: PREMIUM_WHITE,
+    letterSpacing: 1.55,
+  },
+  coverTitlePanel: {
+    position: "absolute",
+    left: 36,
+    right: 36,
+    top: 335,
+    paddingTop: 18,
+    paddingBottom: 21,
+    paddingHorizontal: 22,
+    backgroundColor: PREMIUM_NAVY,
+    borderTopWidth: 3,
+    borderTopColor: PREMIUM_GOLD,
+  },
+  coverKicker: {
+    fontFamily: FONT.bold,
+    fontSize: 8,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 1.45,
+    marginBottom: 9,
+  },
+  coverTitle: {
+    fontFamily: "Times-Bold",
+    fontSize: 34,
+    lineHeight: 0.98,
+    color: PREMIUM_WHITE,
+    maxWidth: 470,
+  },
+  coverRoute: {
+    fontFamily: FONT.bold,
+    fontSize: 10.5,
+    lineHeight: 1.25,
+    color: PREMIUM_GOLD_LIGHT,
+    marginTop: 12,
+  },
+  coverBottom: {
+    position: "absolute",
+    left: 36,
+    right: 36,
+    top: 584,
+  },
+  coverMetaRow: {
+    flexDirection: "row",
+    borderTopWidth: 0.7,
+    borderTopColor: "#4B6167",
+    borderBottomWidth: 0.7,
+    borderBottomColor: "#4B6167",
+  },
+  coverMetaItem: {
+    flex: 1,
+    paddingTop: 13,
+    paddingBottom: 12,
+    paddingRight: 14,
+  },
+  coverMetaDivider: {
+    borderLeftWidth: 0.7,
+    borderLeftColor: "#4B6167",
+    paddingLeft: 14,
+  },
+  coverMetaLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.8,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 0.85,
+    marginBottom: 4,
+  },
+  coverMetaValue: {
+    fontFamily: FONT.bold,
+    fontSize: 9.4,
+    color: PREMIUM_WHITE,
+    lineHeight: 1.2,
+  },
+  coverPriceRow: {
+    marginTop: 22,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+  },
+  coverPriceLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 7.3,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 1.1,
+  },
+  coverPrice: {
+    fontFamily: "Times-Bold",
+    fontSize: 25,
+    color: PREMIUM_WHITE,
+    marginTop: 4,
+  },
+  coverPrepared: {
+    fontSize: 8.3,
+    color: "#C9D2D3",
+    textAlign: "right",
+    lineHeight: 1.3,
+  },
+
+  contentPage: {
+    backgroundColor: PREMIUM_PAPER,
+    color: PREMIUM_INK,
+    fontFamily: FONT.regular,
+    paddingTop: 92,
+    paddingBottom: 72,
+    paddingHorizontal: 42,
+  },
+  header: {
+    position: "absolute",
+    top: 27,
+    left: 42,
+    right: 42,
+    height: 36,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 0.65,
+    borderBottomColor: PREMIUM_LINE,
+    paddingBottom: 9,
+  },
+  headerLogo: { width: 82, height: 25, objectFit: "contain" },
+  headerBrandFallback: {
+    fontFamily: FONT.bold,
+    fontSize: 14,
+    color: PREMIUM_NAVY,
+  },
+  headerSection: {
+    fontFamily: FONT.bold,
+    fontSize: 6.8,
+    color: PREMIUM_MUTED,
+    letterSpacing: 1.15,
+    textAlign: "right",
+  },
+  footer: {
+    position: "absolute",
+    bottom: 24,
+    left: 42,
+    right: 42,
+    flexDirection: "row",
+    alignItems: "center",
+    borderTopWidth: 0.65,
+    borderTopColor: PREMIUM_LINE,
+    paddingTop: 8,
+  },
+  footerLinks: { flex: 1, flexDirection: "row", gap: 18 },
+  footerLink: {
+    fontFamily: FONT.bold,
+    fontSize: 6.6,
+    color: PREMIUM_NAVY,
+    textDecoration: "none",
+  },
+  pageNumber: {
+    position: "absolute",
+    bottom: 25,
+    right: 42,
+    width: 44,
+    fontFamily: FONT.bold,
+    fontSize: 6.8,
+    color: PREMIUM_MUTED,
+    textAlign: "right",
+  },
+  heading: { marginBottom: 16 },
+  headingEyebrow: {
+    fontFamily: FONT.bold,
+    fontSize: 7.2,
+    color: PREMIUM_GOLD,
+    letterSpacing: 1.4,
+    marginBottom: 7,
+  },
+  headingTitle: {
+    fontFamily: "Times-Bold",
+    fontSize: 28,
+    lineHeight: 1.03,
+    color: PREMIUM_NAVY,
+  },
+  headingIntro: {
+    maxWidth: 430,
+    fontSize: 9.4,
+    lineHeight: 1.45,
+    color: PREMIUM_MUTED,
+    marginTop: 8,
+  },
+  goldRule: {
+    width: 38,
+    height: 2.5,
+    backgroundColor: PREMIUM_GOLD,
+    marginTop: 12,
+  },
+  sectionBlock: { marginTop: 20 },
+  sectionLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 7.2,
+    color: PREMIUM_GOLD,
+    letterSpacing: 1.15,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontFamily: "Times-Bold",
+    fontSize: 18,
+    lineHeight: 1.08,
+    color: PREMIUM_NAVY,
+    marginBottom: 10,
+  },
+  overviewHeroRow: { flexDirection: "row", gap: 14, alignItems: "stretch" },
+  overviewImageWrap: {
+    width: "56%",
+    height: 184,
+    overflow: "hidden",
+    backgroundColor: PREMIUM_MIST,
+  },
+  overviewImage: { width: "100%", height: "100%", objectFit: "cover" },
+  overviewImageFallback: {
+    flex: 1,
+    backgroundColor: "#DDE6E2",
+    padding: 24,
+    justifyContent: "flex-end",
+  },
+  overviewFallbackCountry: {
+    fontFamily: "Times-Bold",
+    fontSize: 26,
+    color: PREMIUM_NAVY,
+  },
+  priceCard: {
+    flex: 1,
+    minHeight: 184,
+    padding: 17,
+    backgroundColor: PREMIUM_NAVY,
+    justifyContent: "space-between",
+  },
+  priceCardLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.9,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 1.15,
+  },
+  priceCardValue: {
+    fontFamily: "Times-Bold",
+    fontSize: 22,
+    lineHeight: 1.05,
+    color: PREMIUM_WHITE,
+    marginTop: 7,
+  },
+  priceCardNormalLabel: { fontSize: 7.4, color: "#BAC5C6", marginTop: 7 },
+  priceCardNormal: {
+    fontFamily: FONT.bold,
+    fontSize: 8.6,
+    color: "#D8E0E0",
+    textDecoration: "line-through",
+  },
+  priceCardSaving: {
+    fontFamily: FONT.bold,
+    fontSize: 7.4,
+    color: PREMIUM_GOLD_LIGHT,
+    marginTop: 4,
+  },
+  priceCardFoot: {
+    borderTopWidth: 0.7,
+    borderTopColor: "#53686D",
+    paddingTop: 10,
+    fontSize: 7.7,
+    lineHeight: 1.35,
+    color: "#CBD4D5",
+  },
+  metaGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 16,
+    borderTopWidth: 0.7,
+    borderTopColor: PREMIUM_LINE,
+    borderLeftWidth: 0.7,
+    borderLeftColor: PREMIUM_LINE,
+  },
+  metaCard: {
+    width: "50%",
+    minHeight: 52,
+    paddingVertical: 9,
+    paddingHorizontal: 13,
+    borderRightWidth: 0.7,
+    borderRightColor: PREMIUM_LINE,
+    borderBottomWidth: 0.7,
+    borderBottomColor: PREMIUM_LINE,
+  },
+  metaCardLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.4,
+    color: PREMIUM_GOLD,
+    letterSpacing: 0.9,
+    marginBottom: 4,
+  },
+  metaCardValue: {
+    fontFamily: FONT.bold,
+    fontSize: 9,
+    lineHeight: 1.25,
+    color: PREMIUM_NAVY,
+  },
+  breakdown: {
+    borderTopWidth: 1,
+    borderTopColor: PREMIUM_NAVY,
+    borderBottomWidth: 1,
+    borderBottomColor: PREMIUM_NAVY,
+  },
+  breakdownRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 9,
+    borderBottomWidth: 0.55,
+    borderBottomColor: PREMIUM_LINE,
+  },
+  breakdownName: { flex: 1, fontSize: 8.5, lineHeight: 1.25, color: PREMIUM_INK },
+  breakdownTag: {
+    fontFamily: FONT.bold,
+    fontSize: 5.8,
+    color: PREMIUM_GOLD,
+    letterSpacing: 0.65,
+    marginLeft: 4,
+  },
+  breakdownPrice: {
+    width: 126,
+    fontFamily: FONT.bold,
+    fontSize: 8.7,
+    textAlign: "right",
+    color: PREMIUM_NAVY,
+  },
+  breakdownTotalRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  breakdownTotalName: {
+    flex: 1,
+    fontFamily: FONT.bold,
+    fontSize: 8.3,
+    color: PREMIUM_NAVY,
+    letterSpacing: 0.45,
+  },
+  breakdownTotalPrice: {
+    width: 160,
+    fontFamily: "Times-Bold",
+    fontSize: 15,
+    textAlign: "right",
+    color: PREMIUM_NAVY,
+  },
+  quietNote: { fontSize: 7.3, color: PREMIUM_MUTED, lineHeight: 1.42, marginTop: 8 },
+  photoStrip: { flexDirection: "row", gap: 6, marginTop: 18 },
+  photoStripImage: { flex: 1, height: 82, objectFit: "cover" },
+
+  itineraryList: { borderTopWidth: 0.8, borderTopColor: PREMIUM_NAVY },
+  itineraryCard: {
+    flexDirection: "row",
+    paddingVertical: 13,
+    borderBottomWidth: 0.6,
+    borderBottomColor: PREMIUM_LINE,
+  },
+  itineraryDayCol: { width: 58, paddingRight: 11 },
+  itineraryDayLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.3,
+    color: PREMIUM_GOLD,
+    letterSpacing: 0.8,
+  },
+  itineraryDayNumber: {
+    fontFamily: "Times-Bold",
+    fontSize: 23,
+    color: PREMIUM_NAVY,
+    marginTop: 1,
+  },
+  itineraryBody: {
+    flex: 1,
+    paddingLeft: 13,
+    borderLeftWidth: 2,
+    borderLeftColor: PREMIUM_GOLD_LIGHT,
+  },
+  itineraryTitle: {
+    fontFamily: FONT.bold,
+    fontSize: 10.3,
+    lineHeight: 1.25,
+    color: PREMIUM_NAVY,
+  },
+  itineraryBrief: {
+    fontSize: 8.2,
+    lineHeight: 1.42,
+    color: PREMIUM_MUTED,
+    marginTop: 4,
+  },
+  highlightLine: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 7,
+  },
+  highlightLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.2,
+    color: PREMIUM_GOLD,
+    letterSpacing: 0.65,
+    marginRight: 7,
+  },
+  highlightText: {
+    flex: 1,
+    fontFamily: FONT.bold,
+    fontSize: 7.1,
+    lineHeight: 1.25,
+    color: PREMIUM_INK,
+  },
+  insightRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 5, gap: 10 },
+  insightItem: { flexDirection: "row", alignItems: "center" },
+  insightDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: PREMIUM_GOLD,
+    marginRight: 4,
+  },
+  insightText: { fontSize: 6.7, color: PREMIUM_MUTED },
+
+  twoColumn: { flexDirection: "row", gap: 15, alignItems: "flex-start" },
+  column: { flex: 1 },
+  listCard: {
+    backgroundColor: PREMIUM_WHITE,
+    borderTopWidth: 2,
+    borderTopColor: PREMIUM_GOLD,
+    padding: 14,
+  },
+  listCardMuted: {
+    backgroundColor: "#EEF1EF",
+    borderTopWidth: 2,
+    borderTopColor: PREMIUM_MUTED,
+    padding: 14,
+  },
+  listCardTitle: {
+    fontFamily: "Times-Bold",
+    fontSize: 14,
+    color: PREMIUM_NAVY,
+    marginBottom: 10,
+  },
+  listItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 6 },
+  listMark: {
+    width: 13,
+    height: 13,
+    borderRadius: 7,
+    backgroundColor: PREMIUM_NAVY,
+    color: PREMIUM_WHITE,
+    fontFamily: FONT.bold,
+    fontSize: 7,
+    textAlign: "center",
+    paddingTop: 2,
+    marginRight: 7,
+  },
+  listMarkMuted: { backgroundColor: PREMIUM_MUTED },
+  listText: { flex: 1, fontSize: 7.7, color: PREMIUM_INK, lineHeight: 1.35 },
+  addOnTable: { borderTopWidth: 0.8, borderTopColor: PREMIUM_NAVY },
+  addOnRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 0.55,
+    borderBottomColor: PREMIUM_LINE,
+    paddingVertical: 8,
+  },
+  addOnName: { flex: 1, fontSize: 8.1, lineHeight: 1.25, color: PREMIUM_INK },
+  addOnPrice: {
+    width: 120,
+    fontFamily: FONT.bold,
+    fontSize: 8.2,
+    textAlign: "right",
+    color: PREMIUM_NAVY,
+  },
+  servicePriceBand: {
+    marginTop: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: PREMIUM_TEAL,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  servicePriceCopy: { flex: 1, paddingRight: 20 },
+  servicePriceLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.6,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 0.9,
+  },
+  servicePriceNote: { fontSize: 7.2, color: "#CFE0E0", marginTop: 4 },
+  servicePriceValue: {
+    fontFamily: "Times-Bold",
+    fontSize: 18,
+    color: PREMIUM_WHITE,
+    textAlign: "right",
+  },
+  paymentIntro: { fontSize: 8.2, lineHeight: 1.42, color: PREMIUM_MUTED },
+  paymentTotal: {
+    fontFamily: "Times-Bold",
+    fontSize: 18,
+    color: PREMIUM_NAVY,
+    marginTop: 7,
+  },
+  paymentSteps: { flexDirection: "row", gap: 8, marginTop: 12 },
+  paymentStep: {
+    flex: 1,
+    minHeight: 84,
+    padding: 11,
+    backgroundColor: PREMIUM_WHITE,
+    borderTopWidth: 2,
+    borderTopColor: PREMIUM_GOLD,
+  },
+  paymentStepNumber: {
+    fontFamily: FONT.bold,
+    fontSize: 6.2,
+    color: PREMIUM_GOLD,
+    letterSpacing: 0.7,
+  },
+  paymentStepLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 8.2,
+    color: PREMIUM_NAVY,
+    marginTop: 5,
+    lineHeight: 1.2,
+  },
+  paymentStepDue: { fontSize: 6.8, color: PREMIUM_MUTED, lineHeight: 1.25, marginTop: 4 },
+  paymentStepAmount: {
+    fontFamily: "Times-Bold",
+    fontSize: 10.4,
+    color: PREMIUM_NAVY,
+    marginTop: 7,
+  },
+  termsGrid: { flexDirection: "row", gap: 14, marginTop: 8 },
+  termColumn: { flex: 1 },
+  termItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 6 },
+  termNumber: {
+    width: 16,
+    fontFamily: "Times-Bold",
+    fontSize: 9,
+    color: PREMIUM_GOLD,
+  },
+  termText: { flex: 1, fontSize: 7.5, lineHeight: 1.34, color: PREMIUM_INK },
+  noteCard: {
+    backgroundColor: "#E9EFEC",
+    padding: 14,
+    borderLeftWidth: 3,
+    borderLeftColor: PREMIUM_NAVY,
+  },
+  noteCardStack: { marginTop: 12 },
+  noteCardTitle: {
+    fontFamily: FONT.bold,
+    fontSize: 7,
+    color: PREMIUM_NAVY,
+    letterSpacing: 0.8,
+    marginBottom: 6,
+  },
+  noteCardText: { fontSize: 7.8, lineHeight: 1.42, color: PREMIUM_INK },
+  textLink: { color: PREMIUM_NAVY, fontFamily: FONT.bold, textDecoration: "underline" },
+
+  closingPage: {
+    height: 842,
+    minHeight: 842,
+    backgroundColor: PREMIUM_NAVY,
+    color: PREMIUM_WHITE,
+    fontFamily: FONT.regular,
+    padding: 38,
+  },
+  closingBrandRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  closingLogoPlate: {
+    width: 104,
+    height: 38,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    backgroundColor: PREMIUM_PAPER,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closingEdition: {
+    fontFamily: FONT.bold,
+    fontSize: 6.8,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 1.1,
+  },
+  closingGallery: { flexDirection: "row", gap: 7, height: 282, marginTop: 30 },
+  closingLeadImage: { width: "62%", height: "100%", objectFit: "cover" },
+  closingSide: { flex: 1, gap: 7 },
+  closingSideImage: { flex: 1, width: "100%", objectFit: "cover" },
+  closingGalleryFallback: {
+    flex: 1,
+    backgroundColor: "#254A52",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closingFallbackText: {
+    fontFamily: "Times-Bold",
+    fontSize: 25,
+    color: PREMIUM_GOLD_LIGHT,
+  },
+  closingCopy: { marginTop: 31, width: 440 },
+  closingKicker: {
+    fontFamily: FONT.bold,
+    fontSize: 7.3,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 1.2,
+  },
+  closingTitle: {
+    fontFamily: "Times-Bold",
+    fontSize: 31,
+    lineHeight: 1.02,
+    color: PREMIUM_WHITE,
+    marginTop: 8,
+  },
+  closingText: { fontSize: 9, lineHeight: 1.45, color: "#CAD4D5", marginTop: 10 },
+  contactRow: {
+    flexDirection: "row",
+    gap: 9,
+    marginTop: 22,
+    paddingTop: 16,
+    borderTopWidth: 0.7,
+    borderTopColor: "#4F666A",
+  },
+  contactCard: { flex: 1 },
+  contactLabel: {
+    fontFamily: FONT.bold,
+    fontSize: 6.2,
+    color: PREMIUM_GOLD_LIGHT,
+    letterSpacing: 0.8,
+    marginBottom: 4,
+  },
+  contactValue: {
+    fontFamily: FONT.bold,
+    fontSize: 8,
+    lineHeight: 1.25,
+    color: PREMIUM_WHITE,
+    textDecoration: "none",
+  },
+  closingProfile: {
+    marginTop: 112,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+  },
+  closingProfileText: { width: 390, fontSize: 6.9, lineHeight: 1.38, color: "#AFC0C2" },
+  closingNib: { fontFamily: FONT.bold, fontSize: 6.4, color: PREMIUM_GOLD_LIGHT },
+});
+
 function waLink(raw: string) {
   return `https://wa.me/${raw.replace(/\D/g, "")}`;
 }
 
 function cleanText(value?: string | null) {
-  return value ? stripItineraryMarkup(value).replace(/\s+/g, " ").trim() : "";
+  return value
+    ? stripItineraryMarkup(value)
+      .replace(/[\u2010-\u2015\u2212]/g, "-")
+      .replace(/\s*[\u2192\u2794]\s*/g, " - ")
+      .replace(/\bpemandu wisata dan pengemudi\b/gi, "tour leader & driver")
+      .replace(/\bpemimpin tur dan pengemudi\b/gi, "tour leader & driver")
+      .replace(/\bpemimpin tur\b/gi, "tour leader")
+      .replace(/\bpemandu wisata\b/gi, "tour leader")
+      .replace(/\bpengemudi\b/gi, "driver")
+      .replace(/\bKelayakan\b/g, "Syarat")
+      .replace(/\bkelayakan\b/g, "syarat")
+      .replace(/\bpre-registration\b/gi, "pendaftaran awal")
+      .replace(/\bjadwal settlement\b/gi, "jadwal pelunasan")
+      .replace(/\bsettlement\b/gi, "pelunasan")
+      .replace(/\bkeadaan kahar\b/gi, "situasi di luar kendali")
+      .replace(/\bdriver hotel\b/gi, "akomodasi driver")
+      .replace(/\bdeposit supplier non-refundable\b/gi, "deposit vendor yang tidak dapat dikembalikan")
+      .replace(/\botoritas taman\b/gi, "pengelola taman")
+      .replace(/\bkeadaan aktual\b/gi, "kondisi di lapangan")
+      .replace(/\bdikonfirmasi tertulis supplier\b/gi, "dikonfirmasi secara tertulis oleh vendor")
+      .replace(/\bquotation final\b/gi, "penawaran final")
+      .replace(/\bgroup fare\b/gi, "tarif grup")
+      .replace(/\bpark fee\b/gi, "biaya parkir")
+      .replace(/\bbatas overtime\b/gi, "batas waktu kerja")
+      .replace(/\bHarga final hanya dilepas\b/g, "Harga final ditetapkan")
+      .replace(/\bdikonfirmasi tertulis\b/gi, "dikonfirmasi secara tertulis")
+      .replace(/\bkonfirmasi tertulis supplier\b/gi, "konfirmasi tertulis dari vendor")
+      .replace(
+        /Setelah itu berlaku syarat pembatalan final yang diberikan tertulis\./gi,
+        "Setelah itu, berlaku syarat pembatalan tertulis.",
+      )
+      .replace(
+        /Tier berdua masih on request sampai biaya hotel dan coach final memenuhi pengaman arus biaya\./gi,
+        "Harga kamar untuk dua orang masih menunggu konfirmasi biaya hotel dan coach.",
+      )
+      .replace(
+        /Syarat eTA, bila relevan, harus dikonfirmasi berdasarkan dokumen dan riwayat perjalanan masing-masing peserta\./gi,
+        "Syarat eTA bergantung pada dokumen dan riwayat perjalanan setiap peserta.",
+      )
+      .replace(/([.!?]\s+)syarat\b/g, "$1Syarat")
+      .replace(/\s+/g, " ")
+      .trim()
+    : "";
 }
 
 function websiteFooterLink(raw?: string | null) {
@@ -1017,6 +1785,14 @@ function websiteFooterLink(raw?: string | null) {
     display,
     href: `https://${display.replace(/^www\./i, "")}`,
   };
+}
+
+function publicFaqUrl(raw: string | undefined, websiteHref: string) {
+  if (!raw) return null;
+  if (/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(raw)) {
+    return `${websiteHref.replace(/\/+$/, "")}/faq`;
+  }
+  return raw;
 }
 
 function instagramFooterLink(raw?: string | null) {
@@ -1037,7 +1813,7 @@ function profileText(company: ItineraryPDFProps["company"]) {
   const story = company.story?.map(cleanText).find(Boolean);
   const nib = company.nib ? ` NIB ${company.nib}.` : "";
 
-  return story || `${name} adalah brand perjalanan Indonesia untuk paket tour, private/open trip, aurora borealis, Asia Tengah, dan bantuan visa bagi traveler Indonesia.${nib}`;
+  return story || `${name} menyediakan paket tour, private trip, open trip, dan bantuan visa untuk traveler Indonesia.${nib}`;
 }
 
 function uniquePdfGalleryImages(images?: string[] | null) {
@@ -1449,6 +2225,8 @@ function destinationHighlightsForDay(day: Pick<ItineraryDay, "title" | "descript
 
 function cleanBriefSegment(value: string) {
   return cleanText(value)
+    .replace(/\bPrivate coach\b/gi, "Bus privat")
+    .replace(/\bfare grup\b/gi, "tarif grup")
     .replace(/^["']+|["']+$/g, "")
     .replace(/\s*[•|]\s*/g, ", ")
     .replace(/\s+(?:-|--|\u2013|\u2014)\s+/g, " - ")
@@ -1557,6 +2335,8 @@ function formatPdfBriefText(value: string) {
 
 function formatPdfListText(value: string) {
   return cleanText(value)
+    .replace(/\bPrivate coach\b/gi, "Bus privat")
+    .replace(/\bfare grup\b/gi, "tarif grup")
     .replace(/\bFlights?\b/gi, "Penerbangan")
     .replace(/\bIncluding baggage\b/gi, "Termasuk bagasi")
     .replace(/\bBreakfast at (?:the )?hotel\b/gi, "Sarapan di hotel")
@@ -1566,6 +2346,7 @@ function formatPdfListText(value: string) {
     .replace(/\bMeals outside the program\b/gi, "Makan di luar program")
     .replace(/\bMeals?\b/gi, "Makan")
     .replace(/\bTransportasi\b\s*:?\s*/gi, "")
+    .replace(/^tour leader\b/i, "Tour leader")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -1642,7 +2423,7 @@ function placeForDay(day: Pick<ItineraryDay, "title" | "description">) {
   return "";
 }
 
-export function ItineraryPDF({
+ export function ItineraryPDFLegacy({
   tour,
   priceLabel,
   priceCoretLabel,
@@ -1831,7 +2612,7 @@ export function ItineraryPDF({
             </>
           ) : (
             <Text style={s.flowBodyText}>
-              Jadwal pembayaran mengikuti invoice resmi Sundaf Trip dan konfirmasi administrasi terbaru.
+              Jadwal pembayaran mengikuti invoice resmi dari Sundaf Trip.
             </Text>
           )}
 
@@ -1917,3 +2698,766 @@ export function ItineraryPDF({
   );
 }
 /* Legacy compact portrait styles are intentionally kept above for reuse in older generated variants. */
+
+function PremiumBrand({
+  company,
+  cover = false,
+}: {
+  company: ItineraryPDFProps["company"];
+  cover?: boolean;
+}) {
+  if (company.logo) {
+    return (
+      // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt prop; nearby text and document metadata identify the brand.
+      <Image src={company.logo} style={cover ? p.coverLogo : p.headerLogo} />
+    );
+  }
+
+  return <Text style={p.headerBrandFallback}>{company.name || "Sundaf Trip"}</Text>;
+}
+
+function PremiumChrome({
+  company,
+  section,
+}: {
+  company: ItineraryPDFProps["company"];
+  section: string;
+}) {
+  const websiteLink = websiteFooterLink(company.website);
+  const instagramLink = instagramFooterLink(company.instagram);
+
+  return (
+    <>
+      <View fixed style={p.header}>
+        <PremiumBrand company={company} />
+        <Text style={p.headerSection}>{section.toUpperCase()}</Text>
+      </View>
+      <View fixed style={p.footer}>
+        <View style={p.footerLinks}>
+          <Link src={websiteLink.href} style={p.footerLink}>{websiteLink.display}</Link>
+          <Link src={instagramLink.href} style={p.footerLink}>{instagramLink.display}</Link>
+        </View>
+      </View>
+      <Text
+        fixed
+        style={p.pageNumber}
+        render={({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) => (
+          `${pageNumber} / ${totalPages}`
+        )}
+      />
+    </>
+  );
+}
+
+function PremiumHeading({
+  eyebrow,
+  title,
+  intro,
+}: {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+}) {
+  return (
+    <View style={p.heading} minPresenceAhead={72}>
+      <Text style={p.headingEyebrow}>{eyebrow.toUpperCase()}</Text>
+      <Text style={p.headingTitle}>{title}</Text>
+      {!!intro && <Text style={p.headingIntro}>{intro}</Text>}
+      <View style={p.goldRule} />
+    </View>
+  );
+}
+
+function PremiumSectionHeading({
+  label,
+  title,
+}: {
+  label: string;
+  title: string;
+}) {
+  return (
+    <View minPresenceAhead={64}>
+      <Text style={p.sectionLabel}>{label.toUpperCase()}</Text>
+      <Text style={p.sectionTitle}>{title}</Text>
+    </View>
+  );
+}
+
+function PremiumLinkedListText({ text }: { text: string }) {
+  const displayText = formatPdfListText(text);
+  const parts = linkedTextParts(displayText);
+  if (!parts) return <Text style={p.listText}>{displayText}</Text>;
+
+  return (
+    <Text style={p.listText}>
+      {parts.before}
+      <Link src={VISA_URL} style={p.textLink}>{parts.linked}</Link>
+      {parts.after}
+    </Text>
+  );
+}
+
+function PremiumListItem({
+  text,
+  excluded = false,
+}: {
+  text: string;
+  excluded?: boolean;
+}) {
+  return (
+    <View style={p.listItem} wrap={false}>
+      <Text style={[p.listMark, excluded ? p.listMarkMuted : {}]}>{excluded ? "-" : "+"}</Text>
+      <PremiumLinkedListText text={text} />
+    </View>
+  );
+}
+
+function PremiumPriceBlock({
+  priceLabel,
+  priceCoretLabel,
+}: {
+  priceLabel: string;
+  priceCoretLabel?: string | null;
+}) {
+  const normalPrice = splitNormalPriceLabel(priceCoretLabel);
+
+  return (
+    <View>
+      <Text style={p.priceCardLabel}>TOTAL WAJIB PER ORANG</Text>
+      <Text style={p.priceCardValue}>{cleanText(priceLabel)}</Text>
+      {!!normalPrice && (
+        <>
+          <Text style={p.priceCardNormalLabel}>Harga normal</Text>
+          <Text style={p.priceCardNormal}>{normalPrice.normalLabel}</Text>
+          {!!normalPrice.savingsLabel && (
+            <Text style={p.priceCardSaving}>{normalPrice.savingsLabel}</Text>
+          )}
+        </>
+      )}
+    </View>
+  );
+}
+
+function PremiumInsightRow({ insights }: { insights: ItineraryInsight[] }) {
+  if (insights.length === 0) return null;
+
+  return (
+    <View style={p.insightRow}>
+      {insights.slice(0, 4).map((insight) => {
+        const display = pdfInsightDisplay(insight);
+        return (
+          <View key={`${insight.kind}-${insight.value}`} style={p.insightItem}>
+            <View style={p.insightDot} />
+            <Text style={p.insightText}>{display.label}: {display.value}</Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+function chunkItems<T>(items: T[], size: number) {
+  const rows: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    rows.push(items.slice(index, index + size));
+  }
+  return rows;
+}
+
+type PdfItineraryDay = ReturnType<typeof buildItineraryDisplay>;
+
+interface PdfItineraryEntry {
+  day: PdfItineraryDay;
+  description: string;
+  continuation: boolean;
+  partIndex: number;
+  partCount: number;
+}
+
+const ITINERARY_DESCRIPTION_CHUNK_LENGTH = 900;
+const ITINERARY_PAGE_HEIGHT_BUDGET = 600;
+const LONG_FORM_SEGMENT_LENGTH = 1800;
+
+function fullItineraryDescription(day: PdfItineraryDay) {
+  return formatPdfBriefText(day.description);
+}
+
+function splitTextAtWords(value: string, maxLength: number) {
+  const text = cleanText(value);
+  if (!text) return [""];
+  if (text.length <= maxLength) return [text];
+
+  const chunks: string[] = [];
+  let current = "";
+
+  for (const word of text.split(/\s+/)) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length <= maxLength || !current) {
+      current = candidate;
+      continue;
+    }
+
+    chunks.push(current);
+    current = word;
+  }
+
+  if (current) chunks.push(current);
+  return chunks;
+}
+
+function splitBalancedTextAtWords(value: string, maxLength: number) {
+  const text = cleanText(value);
+  if (!text || text.length <= maxLength) return [text];
+
+  const segmentCount = Math.ceil(text.length / maxLength);
+  return splitTextAtWords(text, Math.ceil(text.length / segmentCount));
+}
+
+function itineraryEntries(days: PdfItineraryDay[]) {
+  return days.flatMap((day) => {
+    const descriptions = splitTextAtWords(
+      fullItineraryDescription(day),
+      ITINERARY_DESCRIPTION_CHUNK_LENGTH,
+    );
+
+    return descriptions.map((description, partIndex) => ({
+      day,
+      description,
+      continuation: partIndex > 0,
+      partIndex,
+      partCount: descriptions.length,
+    }));
+  });
+}
+
+function estimatedLineCount(value: string, averageCharsPerLine: number) {
+  const text = cleanText(value);
+  return text ? Math.max(1, Math.ceil(text.length / averageCharsPerLine)) : 0;
+}
+
+function estimatedItineraryEntryHeight(entry: PdfItineraryEntry) {
+  const highlights = destinationHighlightsForDay(entry.day);
+  const insightText = entry.day.insights
+    .slice(0, 4)
+    .map((insight) => {
+      const display = pdfInsightDisplay(insight);
+      return `${display.label}: ${display.value}`;
+    })
+    .join("  ");
+  const showDetails = entry.partIndex === entry.partCount - 1;
+  const title = `${cleanText(entry.day.title)}${entry.continuation ? " (lanjutan)" : ""}`;
+  const titleHeight = estimatedLineCount(title, 58) * 13;
+  const descriptionHeight = estimatedLineCount(entry.description, 82) * 11.7;
+  const highlightHeight = showDetails && highlights.length > 0
+    ? 7 + estimatedLineCount(highlights.join(" / "), 76) * 9
+    : 0;
+  const insightHeight = showDetails && insightText
+    ? 5 + estimatedLineCount(insightText, 76) * 9
+    : 0;
+
+  return 26 + Math.max(31, titleHeight + (entry.description ? 4 + descriptionHeight : 0)
+    + highlightHeight + insightHeight);
+}
+
+function paginateItinerary(days: PdfItineraryDay[]) {
+  const entries = itineraryEntries(days);
+  if (entries.length === 0) return [] as PdfItineraryEntry[][];
+
+  const pages: PdfItineraryEntry[][] = [];
+  let page: PdfItineraryEntry[] = [];
+  let pageHeight = 0;
+
+  for (const entry of entries) {
+    const entryHeight = estimatedItineraryEntryHeight(entry);
+    if (page.length > 0 && pageHeight + entryHeight > ITINERARY_PAGE_HEIGHT_BUDGET) {
+      pages.push(page);
+      page = [];
+      pageHeight = 0;
+    }
+
+    page.push(entry);
+    pageHeight += entryHeight;
+  }
+
+  if (page.length > 0) pages.push(page);
+  return pages;
+}
+
+function itineraryPageRange(entries: PdfItineraryEntry[]) {
+  const firstDay = entries[0]?.day.day;
+  const lastDay = entries[entries.length - 1]?.day.day;
+  if (firstDay === undefined || lastDay === undefined) return "";
+  return firstDay === lastDay ? `Hari ${firstDay}, lanjutan.` : `Hari ${firstDay} sampai ${lastDay}.`;
+}
+
+function closingCallToAction(status: CommerceTourStatus) {
+  if (status === "sold_out" || status === "waitlist") {
+    return {
+      title: "Daftar tunggu untuk keberangkatan ini.",
+      body: "Hubungi tim Sundaf Trip untuk mencatat nama dan jumlah peserta. Tim kami akan mengabari bila kursi tersedia kembali.",
+    };
+  }
+
+  if (status === "completed") {
+    return {
+      title: "Rencanakan perjalanan berikutnya.",
+      body: "Perjalanan ini telah selesai. Hubungi tim Sundaf Trip untuk konsultasi rute dan jadwal keberangkatan berikutnya.",
+    };
+  }
+
+  return {
+    title: "Konfirmasi kursi. Minta invoice resmi.",
+    body: "Hubungi tim Sundaf Trip untuk memeriksa ketersediaan dan menerima detail pembayaran sesuai paket ini.",
+  };
+}
+
+export function ItineraryPDF({
+  tour,
+  priceLabel,
+  priceCoretLabel,
+  mandatoryAddOns = [],
+  inclusivePriceLabel,
+  inclusivePriceCoretLabel,
+  landTourLabel,
+  company,
+  faqUrl,
+  paymentPlan,
+  commerceStatus = "available",
+}: ItineraryPDFProps) {
+  const companyName = cleanText(company.name) || "Sundaf Trip";
+  const dateLabel = cleanText(tour.tripDateLabel) || "Tanggal mengikuti jadwal";
+  const durationLabel = cleanText(tour.duration) || `${tour.itinerary.length} hari`;
+  const destinationLabel = cleanText(tour.cityHighlight) || cleanText(tour.country);
+  const routeLabel = destinationLabel || cleanText(tour.title);
+  const displayItinerary = tour.itinerary.map(buildItineraryDisplay);
+  const itineraryPages = paginateItinerary(displayItinerary);
+  const hasItinerary = itineraryPages.length > 0;
+  const serviceSectionNumber = hasItinerary ? "03" : "02";
+  const reservationSectionNumber = hasItinerary ? "04" : "03";
+  const notesCopy = cleanText(tour.notes)
+    || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan.";
+  const visaCopy = cleanText(tour.visaInfo)
+    || "Bantuan visa tersedia melalui Sundaf Trip. Hubungi tim kami untuk memeriksa dokumen yang diperlukan.";
+  const noteSegments = splitBalancedTextAtWords(notesCopy, LONG_FORM_SEGMENT_LENGTH);
+  const visaSegments = splitBalancedTextAtWords(visaCopy, LONG_FORM_SEGMENT_LENGTH);
+  const galleryImages = uniquePdfGalleryImages(tour.gallery).slice(0, 7);
+  const coverImage = cleanText(tour.heroImg) || galleryImages[0] || null;
+  const overviewImage = galleryImages.find((image) => image !== coverImage) || coverImage;
+  const closingLead = galleryImages[1] || galleryImages[0] || coverImage;
+  const closingSide = [galleryImages[3], galleryImages[4]].filter(Boolean) as string[];
+  const normalPrice = splitNormalPriceLabel(inclusivePriceCoretLabel);
+  const paymentTermColumns = chunkItems(PAYMENT_TERMS, Math.ceil(PAYMENT_TERMS.length / 2));
+  const paymentStepRows = chunkItems(paymentPlan?.steps ?? [], 3);
+  const websiteLink = websiteFooterLink(company.website);
+  const faqLink = publicFaqUrl(faqUrl, websiteLink.href);
+  const contacts = [
+    company.whatsapp ? {
+      label: "WHATSAPP",
+      value: cleanText(company.whatsapp),
+      href: waLink(company.whatsapp),
+    } : null,
+    company.phone ? {
+      label: "TELEPON",
+      value: cleanText(company.phone),
+      href: `tel:${company.phone.replace(/\s+/g, "")}`,
+    } : null,
+    company.email ? {
+      label: "EMAIL",
+      value: cleanText(company.email),
+      href: `mailto:${company.email}`,
+    } : null,
+    {
+      label: "WEBSITE",
+      value: websiteLink.display,
+      href: websiteLink.href,
+    },
+  ].filter(Boolean) as Array<{ label: string; value: string; href: string }>;
+  const summaryMeta = [
+    ["DURASI", durationLabel],
+    ["KEBERANGKATAN", dateLabel],
+    ["DESTINASI", routeLabel],
+    tour.seatsLeft > 0 ? ["KETERSEDIAAN", `${tour.seatsLeft} kursi tersisa`] : null,
+    landTourLabel ? ["LAND TOUR", cleanText(landTourLabel)] : null,
+  ].filter(Boolean) as [string, string][];
+  const overviewIntro = `${durationLabel} untuk rute ${routeLabel}. Keberangkatan ${dateLabel}.`;
+  const closingProfile = shortenAtWord(profileText(company), 260);
+  const closingCta = closingCallToAction(commerceStatus);
+  return (
+    <Document
+      title={`Katalog Perjalanan ${cleanText(tour.title)}`}
+      author={companyName}
+      subject={`${routeLabel} - ${dateLabel}`}
+    >
+      <Page size="A4" style={p.coverPage} wrap={false}>
+        <View style={p.coverSizer} />
+        {coverImage ? (
+          <PdfImage src={coverImage} style={p.coverHero} />
+        ) : (
+          <View style={p.coverFallback}>
+            <View style={p.coverFallbackAccentOne} />
+            <View style={p.coverFallbackAccentTwo} />
+          </View>
+        )}
+        <View style={p.coverTint} />
+
+        <View style={p.coverBrandBar}>
+          <View style={p.coverLogoPlate}>
+            <PremiumBrand company={company} cover />
+          </View>
+          <Text style={p.coverEdition}>KATALOG PERJALANAN</Text>
+        </View>
+
+        <View style={p.coverTitlePanel}>
+          <Text style={p.coverKicker}>{cleanText(tour.country).toUpperCase()}</Text>
+          <Text style={p.coverTitle}>{cleanText(tour.title)}</Text>
+          <Text style={p.coverRoute}>{routeLabel}</Text>
+        </View>
+
+        <View style={p.coverBottom}>
+          <View style={p.coverMetaRow}>
+            {[
+              ["DURASI", durationLabel],
+              ["KEBERANGKATAN", dateLabel],
+              ["DESTINASI", routeLabel],
+            ].map(([label, value], index) => (
+              <View key={label} style={[p.coverMetaItem, index > 0 ? p.coverMetaDivider : {}]}>
+                <Text style={p.coverMetaLabel}>{label}</Text>
+                <Text style={p.coverMetaValue}>{value}</Text>
+              </View>
+            ))}
+          </View>
+          <View style={p.coverPriceRow}>
+            <View>
+              <Text style={p.coverPriceLabel}>TOTAL WAJIB PER ORANG</Text>
+              <Text style={p.coverPrice}>{cleanText(inclusivePriceLabel)}</Text>
+            </View>
+            <Text style={p.coverPrepared}>Disiapkan oleh{`\n`}{companyName}</Text>
+          </View>
+        </View>
+      </Page>
+
+      <Page size="A4" style={p.contentPage} wrap>
+        <PremiumChrome company={company} section="Ringkasan Paket" />
+        <PremiumHeading
+          eyebrow="01 / Paket"
+          title="Ringkasan Paket"
+          intro={overviewIntro}
+        />
+
+        <View style={p.overviewHeroRow} wrap={false}>
+          <View style={p.overviewImageWrap}>
+            {overviewImage ? (
+              <PdfImage src={overviewImage} style={p.overviewImage} />
+            ) : (
+              <View style={p.overviewImageFallback}>
+                <Text style={p.overviewFallbackCountry}>{routeLabel}</Text>
+              </View>
+            )}
+          </View>
+          <View style={p.priceCard}>
+            <PremiumPriceBlock
+              priceLabel={inclusivePriceLabel}
+              priceCoretLabel={inclusivePriceCoretLabel}
+            />
+            <Text style={p.priceCardFoot}>
+              Total mencakup paket dasar dan seluruh add-on wajib yang tercantum dalam katalog ini.
+            </Text>
+          </View>
+        </View>
+
+        <View style={p.metaGrid}>
+          {summaryMeta.map(([label, value]) => (
+            <View key={label} style={p.metaCard} wrap={false}>
+              <Text style={p.metaCardLabel}>{label}</Text>
+              <Text style={p.metaCardValue}>{value}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={p.sectionBlock}>
+          <PremiumSectionHeading label="Harga" title="Rincian Harga Wajib" />
+          <View style={p.breakdown}>
+            <View style={p.breakdownRow} wrap={false}>
+              <Text style={p.breakdownName}>Paket dasar</Text>
+              <Text style={p.breakdownPrice}>{cleanText(priceLabel)}</Text>
+            </View>
+            {mandatoryAddOns.map((item, index) => (
+              <View key={`${item.name}-${index}`} style={p.breakdownRow} wrap={false}>
+                <Text style={p.breakdownName}>
+                  {cleanText(item.name)} <Text style={p.breakdownTag}>WAJIB</Text>
+                </Text>
+                <Text style={p.breakdownPrice}>{cleanText(item.priceLabel)}</Text>
+              </View>
+            ))}
+          </View>
+          {!!priceCoretLabel && (
+            <Text style={p.quietNote}>Harga paket dasar: {cleanText(priceLabel)}. {cleanText(priceCoretLabel)}.</Text>
+          )}
+          {!!normalPrice && (
+            <Text style={p.quietNote}>
+              Harga normal total: {normalPrice.normalLabel}{normalPrice.savingsLabel ? `. ${normalPrice.savingsLabel}.` : "."}
+            </Text>
+          )}
+        </View>
+      </Page>
+
+      {itineraryPages.map((pageEntries, pageIndex) => (
+        <Page key={`itinerary-page-${pageIndex}`} size="A4" style={p.contentPage} wrap>
+          <PremiumChrome company={company} section="Rencana Perjalanan" />
+          <PremiumHeading
+            eyebrow="02 / Itinerary"
+            title={pageIndex === 0 ? "Rencana Perjalanan" : "Lanjutan Rencana Perjalanan"}
+            intro={pageIndex === 0
+              ? `Rute untuk ${displayItinerary.length} hari perjalanan.`
+              : itineraryPageRange(pageEntries)}
+          />
+
+          <View style={p.itineraryList}>
+            {pageEntries.map((entry) => {
+              const highlights = destinationHighlightsForDay(entry.day);
+              const showDetails = entry.partIndex === entry.partCount - 1;
+              const title = `${cleanText(entry.day.title)}${entry.continuation ? " (lanjutan)" : ""}`;
+
+              return (
+                <View
+                  key={`${entry.day.day}-${entry.partIndex}`}
+                  style={p.itineraryCard}
+                  wrap={false}
+                >
+                  <View style={p.itineraryDayCol}>
+                    <Text style={p.itineraryDayLabel}>{entry.continuation ? "LANJUTAN" : "HARI"}</Text>
+                    <Text style={p.itineraryDayNumber}>{entry.day.day}</Text>
+                  </View>
+                  <View style={p.itineraryBody}>
+                    <Text style={p.itineraryTitle}>{title}</Text>
+                    {!!entry.description && <Text style={p.itineraryBrief}>{entry.description}</Text>}
+                    {showDetails && highlights.length > 0 && (
+                      <View style={p.highlightLine}>
+                        <Text style={p.highlightLabel}>SOROTAN</Text>
+                        <Text style={p.highlightText}>{highlights.join("  /  ")}</Text>
+                      </View>
+                    )}
+                    {showDetails && <PremiumInsightRow insights={entry.day.insights} />}
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+          {pageIndex === itineraryPages.length - 1 && (
+            <Text style={p.quietNote}>
+              Detail aktivitas dapat berubah mengikuti cuaca dan kebutuhan operasional di lapangan.
+            </Text>
+          )}
+        </Page>
+      ))}
+
+      <Page size="A4" style={p.contentPage} wrap>
+        <PremiumChrome company={company} section="Layanan Paket" />
+        <PremiumHeading
+          eyebrow={`${serviceSectionNumber} / Detail`}
+          title="Layanan Paket"
+          intro="Periksa apa yang sudah termasuk, biaya di luar paket, dan add-on opsional sebelum meminta invoice."
+        />
+
+        {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
+          <View style={p.twoColumn}>
+            <View style={[p.column, p.listCard]}>
+              <Text style={p.listCardTitle}>Sudah Termasuk</Text>
+              {tour.inclusions.map((item, index) => (
+                <PremiumListItem key={`${item}-${index}`} text={item} />
+              ))}
+            </View>
+            <View style={[p.column, p.listCardMuted]}>
+              <Text style={p.listCardTitle}>Belum Termasuk</Text>
+              {tour.exclusions.map((item, index) => (
+                <PremiumListItem key={`${item}-${index}`} text={item} excluded />
+              ))}
+            </View>
+          </View>
+        )}
+
+        {(tour.addOns ?? []).length > 0 && (
+          <View style={p.sectionBlock}>
+            <PremiumSectionHeading label="Pilihan" title="Add-on Opsional" />
+            <View style={p.addOnTable}>
+              {(tour.addOns ?? []).map((item, index) => (
+                <View key={`${item.name}-${index}`} style={p.addOnRow} wrap={false}>
+                  <Text style={p.addOnName}>
+                    {cleanText(item.name)}{item.tag === "recommended" ? "  /  rekomendasi" : ""}
+                  </Text>
+                  <Text style={p.addOnPrice}>{cleanText(item.priceLabel)}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        <View style={p.servicePriceBand} wrap={false}>
+          <View style={p.servicePriceCopy}>
+            <Text style={p.servicePriceLabel}>TOTAL WAJIB PER ORANG</Text>
+            <Text style={p.servicePriceNote}>Paket dasar dan seluruh add-on wajib yang tercantum.</Text>
+          </View>
+          <Text style={p.servicePriceValue}>{cleanText(inclusivePriceLabel)}</Text>
+        </View>
+      </Page>
+
+      <Page size="A4" style={p.contentPage} wrap>
+        <PremiumChrome company={company} section="Pembayaran dan Catatan" />
+        <PremiumHeading
+          eyebrow={`${reservationSectionNumber} / Reservasi`}
+          title="Pembayaran dan Catatan"
+          intro="Jadwal pembayaran mengikuti invoice resmi. Baca catatan paket sebelum konfirmasi kursi."
+        />
+
+        <View style={p.sectionBlock}>
+          <PremiumSectionHeading label="Pembayaran" title="Jadwal Pembayaran" />
+          {!!paymentPlan && paymentPlan.steps.length > 0 ? (
+            <>
+              <Text style={p.paymentIntro}>{cleanText(paymentPlan.intro)}</Text>
+              <Text style={p.paymentIntro}>{cleanText(paymentPlan.paymentMethodsLabel)}</Text>
+              <Text style={p.paymentTotal}>{cleanText(paymentPlan.totalLabel)} / orang</Text>
+              {paymentStepRows.map((row, rowIndex) => (
+                <View key={`payment-row-${rowIndex}`} style={p.paymentSteps} wrap={false}>
+                  {row.map((step, stepIndex) => (
+                    <View key={step.label} style={p.paymentStep}>
+                      <Text style={p.paymentStepNumber}>TAHAP {rowIndex * 3 + stepIndex + 1}</Text>
+                      <Text style={p.paymentStepLabel}>{cleanText(step.label)}</Text>
+                      <Text style={p.paymentStepDue}>{cleanText(step.dueDateLabel)}</Text>
+                      <Text style={p.paymentStepAmount}>{cleanText(step.amountLabel)}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+              {!!paymentPlan.finePrint && (
+                <Text style={p.quietNote}>{cleanText(paymentPlan.finePrint)}</Text>
+              )}
+            </>
+          ) : (
+            <Text style={p.paymentIntro}>
+              Jadwal pembayaran mengikuti invoice resmi dari Sundaf Trip.
+            </Text>
+          )}
+        </View>
+
+        <View style={p.sectionBlock}>
+          <PremiumSectionHeading label="Ketentuan" title="Ketentuan Pembayaran" />
+          <View style={p.termsGrid}>
+            {paymentTermColumns.map((column, columnIndex) => (
+              <View key={`term-column-${columnIndex}`} style={p.termColumn}>
+                {column.map((item, itemIndex) => (
+                  <View key={item} style={p.termItem} wrap={false}>
+                    <Text style={p.termNumber}>{columnIndex * column.length + itemIndex + 1}</Text>
+                    <Text style={p.termText}>{cleanText(item)}</Text>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={p.sectionBlock}>
+          {noteSegments.map((segment, index) => (
+            <View
+              key={`note-segment-${index}`}
+              style={index > 0 ? p.noteCardStack : {}}
+              wrap={false}
+            >
+              {index === 0 ? (
+                <PremiumSectionHeading label="Catatan" title="Catatan Penting" />
+              ) : (
+                <Text style={p.noteCardTitle}>CATATAN PENTING, LANJUTAN</Text>
+              )}
+              <View style={p.noteCard}>
+                <Text style={p.noteCardText}>{segment}</Text>
+              </View>
+            </View>
+          ))}
+
+          {visaSegments.map((segment, index) => {
+            const isFinalSegment = index === visaSegments.length - 1;
+            return (
+              <View
+                key={`visa-segment-${index}`}
+                style={p.noteCardStack}
+                wrap={false}
+              >
+                {index === 0 ? (
+                  <PremiumSectionHeading label="Dokumen" title="Visa dan Pendaftaran" />
+                ) : (
+                  <Text style={p.noteCardTitle}>VISA DAN PENDAFTARAN, LANJUTAN</Text>
+                )}
+                <View style={p.noteCard}>
+                  <Text style={p.noteCardText}>
+                    {segment}
+                    {isFinalSegment && (
+                      <>
+                        {" "}
+                        <Link src={VISA_URL} style={p.textLink}>sundaftrip.com/visa</Link>
+                        {!!faqLink && (
+                          <>
+                            {"  FAQ: "}
+                            <Link src={faqLink} style={p.textLink}>{faqLink.replace(/^https?:\/\//, "")}</Link>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </Page>
+
+      <Page size="A4" style={p.closingPage} wrap={false}>
+        <View style={p.closingBrandRow}>
+          <View style={p.closingLogoPlate}>
+            <PremiumBrand company={company} cover />
+          </View>
+          <Text style={p.closingEdition}>{cleanText(tour.title).toUpperCase()}</Text>
+        </View>
+
+        <View style={p.closingGallery}>
+          {closingLead ? (
+            <PdfImage src={closingLead} style={p.closingLeadImage} />
+          ) : (
+            <View style={p.closingGalleryFallback}>
+              <Text style={p.closingFallbackText}>{routeLabel}</Text>
+            </View>
+          )}
+          {closingLead && (
+            <View style={p.closingSide}>
+              {closingSide.length > 0 ? closingSide.map((image, index) => (
+                <PdfImage key={`${image}-${index}`} src={image} style={p.closingSideImage} />
+              )) : (
+                <View style={p.closingGalleryFallback}>
+                  <Text style={p.closingFallbackText}>{cleanText(tour.country)}</Text>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+
+        <View style={p.closingCopy}>
+          <Text style={p.closingKicker}>LANGKAH BERIKUTNYA</Text>
+          <Text style={p.closingTitle}>{closingCta.title}</Text>
+          <Text style={p.closingText}>{closingCta.body}</Text>
+        </View>
+
+        <View style={p.contactRow}>
+          {contacts.map((contact) => (
+            <View key={contact.label} style={p.contactCard}>
+              <Text style={p.contactLabel}>{contact.label}</Text>
+              <Link src={contact.href} style={p.contactValue}>{contact.value}</Link>
+            </View>
+          ))}
+        </View>
+
+        <View style={p.closingProfile}>
+          <Text style={p.closingProfileText}>{closingProfile}</Text>
+          {!!company.nib && <Text style={p.closingNib}>NIB {cleanText(company.nib)}</Text>}
+        </View>
+      </Page>
+    </Document>
+  );
+}
