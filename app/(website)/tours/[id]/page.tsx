@@ -1238,6 +1238,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
               {/* Download itinerary PDF */}
               <a href={`/tours/${tour.id}/pdf`}
+                download
+                target="_blank"
+                rel="noopener"
                 data-analytics-event="itinerary_pdf_download"
                 data-tour-id={tour.id}
                 className={`w-full flex items-center justify-center gap-2 py-3 font-bold mb-3 transition ${isOutlined ? `${pfx}-card` : "border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"}`}

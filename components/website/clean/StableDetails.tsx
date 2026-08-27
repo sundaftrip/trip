@@ -5,7 +5,10 @@ import {
   type MouseEvent,
   useRef,
 } from "react";
-import { isDesktopScrollResetViewport } from "@/lib/navigation-scroll";
+import {
+  getScrollInputCapabilities,
+  isDesktopScrollResetViewport,
+} from "@/lib/navigation-scroll";
 
 type StableDetailsProps = DetailsHTMLAttributes<HTMLDetailsElement>;
 
@@ -19,7 +22,7 @@ export default function StableDetails({
 
   function preserveSummaryPosition() {
     if (typeof window === "undefined") return;
-    if (isDesktopScrollResetViewport(window.innerWidth)) return;
+    if (isDesktopScrollResetViewport(window.innerWidth, getScrollInputCapabilities())) return;
 
     const previousTop = summaryTopRef.current;
     summaryTopRef.current = null;

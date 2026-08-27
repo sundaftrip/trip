@@ -5,9 +5,39 @@ export function normalizeNavigationPath(pathname: string) {
 
 export const DESKTOP_SCROLL_RESET_MIN_WIDTH = 1024;
 
-export function isDesktopScrollResetViewport(viewportWidth: number) {
+type ScrollInputCapabilities = {
+  coarsePointer?: boolean;
+  finePointer?: boolean;
+  hover?: boolean;
+  maxTouchPoints?: number;
+};
+
+export function isDesktopScrollResetViewport(
+  viewportWidth: number,
+  {
+    coarsePointer = false,
+    finePointer = true,
+    hover = true,
+    maxTouchPoints = 0,
+  }: ScrollInputCapabilities = {},
+) {
   return Number.isFinite(viewportWidth)
-    && viewportWidth >= DESKTOP_SCROLL_RESET_MIN_WIDTH;
+    && viewportWidth >= DESKTOP_SCROLL_RESET_MIN_WIDTH
+    && !coarsePointer
+    && finePointer
+    && hover
+    && maxTouchPoints <= 0;
+}
+
+export function getScrollInputCapabilities() {
+  if (typeof window === "undefined") return {};
+
+  return {
+    coarsePointer: window.matchMedia?.("(pointer: coarse)").matches ?? false,
+    finePointer: window.matchMedia?.("(pointer: fine)").matches ?? false,
+    hover: window.matchMedia?.("(hover: hover)").matches ?? false,
+    maxTouchPoints: typeof navigator === "undefined" ? 0 : navigator.maxTouchPoints,
+  };
 }
 
 export function shouldResetScrollForNavigation(currentHref: string, nextHref: string) {
@@ -28,7 +58,7 @@ export function shouldResetScrollForNavigation(currentHref: string, nextHref: st
 
 export function resetDocumentScroll() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
-  if (!isDesktopScrollResetViewport(window.innerWidth)) return;
+  if (!isDesktopScrollResetViewport(window.innerWidth, getScrollInputCapabilities())) return;
 
   const root = document.documentElement;
   const previousScrollBehavior = root.style.scrollBehavior;

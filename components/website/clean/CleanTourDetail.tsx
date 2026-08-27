@@ -812,7 +812,7 @@ export default function CleanTourDetail({
                 <h2 className={styles.detailSectionTitle} id="related-title">Masih ingin membandingkan?</h2>
                 <p>Bandingkan destinasi, durasi, tanggal, dan harga sebelum menentukan perjalanan yang paling sesuai.</p>
               </div>
-              <Link href="/tours">Lihat semua jadwal →</Link>
+              <Link href="/tours" scroll={false}>Lihat semua jadwal →</Link>
             </div>
             <div className={styles.detailRelatedGrid}>{relatedTours.map((item) => <CleanTourCard key={item.id} tour={item} compact />)}</div>
           </div>
