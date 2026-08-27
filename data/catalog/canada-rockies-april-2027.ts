@@ -165,15 +165,7 @@ export const CANADA_ROCKIES_TOUR = {
     "Fasilitas makan": "Sarapan harian termasuk; bentuk layanan mengikuti kebijakan hotel",
   },
   visaInfo: "Visa Kanada belum termasuk. Kelayakan eTA, bila relevan, harus dikonfirmasi berdasarkan dokumen dan riwayat perjalanan masing-masing peserta.",
-  notes: [
-    "Harga target pada tahap pre-registration bukan harga tetap. Harga final hanya dilepas setelah tiket grup, hotel, coach dalam mata uang CAD, dua penyeberangan ferry, driver hotel, park fee, dan batas overtime dikonfirmasi tertulis.",
-    "Nama hotel bintang 3 dan bentuk sarapan (layanan restoran atau kotak sarapan untuk keberangkatan pagi) mengikuti konfirmasi tertulis supplier.",
-    "Tier berdua masih on request sampai biaya hotel dan coach final memenuhi pengaman arus biaya.",
-    "Pre-registration dapat dibatalkan dengan pengembalian penuh sebelum peserta menyetujui harga final dan sebelum deposit supplier non-refundable dilakukan. Setelah itu berlaku syarat pembatalan final yang diberikan tertulis.",
-    "Bow Lake, Peyto Lake, Emerald Lake, dan koridor pegunungan mengikuti kondisi cuaca, akses jalan, dan keputusan otoritas taman.",
-    "Ice Explorer, Skywalk, dan Spiral Tunnels Viewpoint tidak dijanjikan untuk perjalanan pertengahan April.",
-    "Foto destinasi bersifat ilustrasi. Kondisi salju, danau, cuaca, serta akses mengikuti keadaan aktual pada bulan April.",
-  ].join("\n"),
+  notes: "Pendaftaran awal dibuka untuk mengumpulkan peserta dan membentuk grup keberangkatan. Setelah grup terbentuk, Sundaf Trip akan menyampaikan harga final dan jadwal pembayaran melalui invoice resmi.",
   addOns: [
     {
       name: "Tips Tour Leader & driver + city tax",
