@@ -251,12 +251,14 @@ export async function GET(
     imageCache.set(src, pending);
     return pending;
   };
-  const [resolvedHero, storedImages, logo, logoOnDark] = await Promise.all([
+  const [resolvedHero, storedImages, resolvedLogo, logoOnDark] = await Promise.all([
     resolveImage(rawHero),
     Promise.all(storedGallery.map(resolveImage)),
-    resolveImage("/logo-pdf-paper.png"),
+    toPdfImageSrc(ci["company_logo"] || "/logo.png", { preserveTransparency: true }),
     toPdfImageSrc("/vietnam/assets/logo-dark.png", { preserveTransparency: true }),
   ]);
+  const logo = resolvedLogo
+    || await toPdfImageSrc("/logo.png", { preserveTransparency: true });
   const heroImg = resolvedHero || await resolveImage(fallbackHero);
   let gallery = uniqueImages(storedImages);
   if (gallery.length < MAX_PDF_GALLERY_IMAGES) {
