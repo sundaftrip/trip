@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "./PreserveScrollLink";
 import { Calendar, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";

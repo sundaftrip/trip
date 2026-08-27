@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import Link from "./PreserveScrollLink";
 import { usePathname, useRouter } from "next/navigation";
 import { MessageCircle, SlidersHorizontal, X } from "lucide-react";
 import { trackSundafEvent } from "@/lib/analytics-events";

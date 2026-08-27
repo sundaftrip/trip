@@ -6,6 +6,26 @@ function source(relativePath: string) {
   return readFileSync(new URL(`../${relativePath}`, import.meta.url), "utf8");
 }
 
+test("uses one preserve-scroll link policy across the clean public website", () => {
+  const sharedLink = source("components/website/clean/PreserveScrollLink.tsx");
+  const cleanLinkSurfaces = [
+    "components/website/clean/CleanFooter.tsx",
+    "components/website/clean/CleanHome.tsx",
+    "components/website/clean/CleanNavbar.tsx",
+    "components/website/clean/CleanReviews.tsx",
+    "components/website/clean/CleanTourCard.tsx",
+    "components/website/clean/CleanTourDetail.tsx",
+    "components/website/clean/CleanToursCatalog.tsx",
+    "components/website/clean/home/HomeReviews.tsx",
+    "components/website/clean/home/HomeTourRail.tsx",
+  ];
+
+  assert.match(sharedLink, /scroll=\{scroll \?\? false\}/);
+  cleanLinkSurfaces.forEach((relativePath) => {
+    assert.doesNotMatch(source(relativePath), /from "next\/link"/);
+  });
+});
+
 test("keeps primary tour-card and search navigation at the current scroll position", () => {
   const tourCard = source("components/website/clean/CleanTourCard.tsx");
   const globalSearch = source("components/website/clean/CleanGlobalSearch.tsx");

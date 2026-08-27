@@ -2,7 +2,7 @@
 
 import { Fragment, type MouseEvent } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "../PreserveScrollLink";
 import { useRouter } from "next/navigation";
 import { Calendar, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";

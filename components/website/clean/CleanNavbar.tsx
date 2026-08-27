@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "./PreserveScrollLink";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
