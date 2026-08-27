@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import Link from "./PreserveScrollLink";
 import { usePathname, useRouter } from "next/navigation";
 import { MessageCircle, SlidersHorizontal, X } from "lucide-react";
 import { trackSundafEvent } from "@/lib/analytics-events";
@@ -253,7 +253,8 @@ export default function CleanToursCatalog({
       destination: next.destination,
       result_count: draftCount,
     });
-    window.location.assign(nextHref);
+    setSheetOpen(false);
+    router.push(nextHref, { scroll: false });
   }
 
   function removeFilter(key: keyof CatalogFilterState) {
@@ -383,7 +384,7 @@ export default function CleanToursCatalog({
                 >
                   Reset filter
                 </button>
-                <Link href="/custom-trip">Rancang private trip</Link>
+                <Link href="/custom-trip" scroll={false}>Rancang private trip</Link>
               </div>
             </div>
           )}
@@ -398,7 +399,7 @@ export default function CleanToursCatalog({
                 <p className={styles.eyebrow}>PILIH TANGGAL SENDIRI</p>
                 <h2 id="private-preview-title">Land tour privat</h2>
               </div>
-              <Link href={privateCatalogHref} className={styles.privatePreviewLink}>
+              <Link href={privateCatalogHref} className={styles.privatePreviewLink} scroll={false}>
                 Lihat semua land tour privat
               </Link>
             </div>

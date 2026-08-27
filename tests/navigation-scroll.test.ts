@@ -31,19 +31,56 @@ test("does not force an immediate scroll reset on mobile navigation", () => {
   assert.equal(isDesktopScrollResetViewport(320), false);
   assert.equal(isDesktopScrollResetViewport(759), false);
   assert.equal(isDesktopScrollResetViewport(DESKTOP_SCROLL_RESET_MIN_WIDTH - 1), false);
+  assert.equal(isDesktopScrollResetViewport(1024, {
+    coarsePointer: true,
+    finePointer: false,
+    hover: false,
+    maxTouchPoints: 5,
+  }), false);
+  assert.equal(isDesktopScrollResetViewport(1366, {
+    coarsePointer: true,
+    finePointer: false,
+    hover: false,
+    maxTouchPoints: 5,
+  }), false);
+  assert.equal(isDesktopScrollResetViewport(1440, {
+    coarsePointer: false,
+    finePointer: true,
+    hover: true,
+    maxTouchPoints: 5,
+  }), false);
 });
 
 test("keeps the existing immediate scroll reset on desktop navigation", () => {
-  assert.equal(isDesktopScrollResetViewport(DESKTOP_SCROLL_RESET_MIN_WIDTH), true);
-  assert.equal(isDesktopScrollResetViewport(1440), true);
+  const desktopCapabilities = {
+    coarsePointer: false,
+    finePointer: true,
+    hover: true,
+    maxTouchPoints: 0,
+  };
+  assert.equal(isDesktopScrollResetViewport(DESKTOP_SCROLL_RESET_MIN_WIDTH, desktopCapabilities), true);
+  assert.equal(isDesktopScrollResetViewport(1440, desktopCapabilities), true);
 });
 
 function withMockScrollEnvironment(
-  viewportWidth: number,
+  {
+    viewportWidth,
+    coarsePointer = false,
+    finePointer = true,
+    hover = true,
+    maxTouchPoints = 0,
+  }: {
+    viewportWidth: number;
+    coarsePointer?: boolean;
+    finePointer?: boolean;
+    hover?: boolean;
+    maxTouchPoints?: number;
+  },
   run: (scrollCalls: ScrollToOptions[]) => void,
 ) {
   const previousWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
   const previousDocument = Object.getOwnPropertyDescriptor(globalThis, "document");
+  const previousNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator");
   const scrollCalls: ScrollToOptions[] = [];
   const style = { scrollBehavior: "smooth" };
 
@@ -51,6 +88,14 @@ function withMockScrollEnvironment(
     configurable: true,
     value: {
       innerWidth: viewportWidth,
+      matchMedia(query: string) {
+        return {
+          matches:
+            (query === "(pointer: coarse)" && coarsePointer)
+            || (query === "(pointer: fine)" && finePointer)
+            || (query === "(hover: hover)" && hover),
+        };
+      },
       scrollTo(options: ScrollToOptions) {
         scrollCalls.push(options);
       },
@@ -64,6 +109,10 @@ function withMockScrollEnvironment(
     configurable: true,
     value: { documentElement: { style } },
   });
+  Object.defineProperty(globalThis, "navigator", {
+    configurable: true,
+    value: { maxTouchPoints },
+  });
 
   try {
     run(scrollCalls);
@@ -72,18 +121,39 @@ function withMockScrollEnvironment(
     else Reflect.deleteProperty(globalThis, "window");
     if (previousDocument) Object.defineProperty(globalThis, "document", previousDocument);
     else Reflect.deleteProperty(globalThis, "document");
+    if (previousNavigator) Object.defineProperty(globalThis, "navigator", previousNavigator);
+    else Reflect.deleteProperty(globalThis, "navigator");
   }
 }
 
 test("resetDocumentScroll leaves the mobile viewport untouched", () => {
-  withMockScrollEnvironment(390, (scrollCalls) => {
+  withMockScrollEnvironment({
+    viewportWidth: 390,
+    coarsePointer: true,
+    finePointer: false,
+    hover: false,
+    maxTouchPoints: 5,
+  }, (scrollCalls) => {
+    resetDocumentScroll();
+    assert.deepEqual(scrollCalls, []);
+  });
+});
+
+test("resetDocumentScroll leaves a 1024px touch tablet untouched", () => {
+  withMockScrollEnvironment({
+    viewportWidth: 1024,
+    coarsePointer: true,
+    finePointer: false,
+    hover: false,
+    maxTouchPoints: 5,
+  }, (scrollCalls) => {
     resetDocumentScroll();
     assert.deepEqual(scrollCalls, []);
   });
 });
 
 test("resetDocumentScroll keeps the desktop reset", () => {
-  withMockScrollEnvironment(1440, (scrollCalls) => {
+  withMockScrollEnvironment({ viewportWidth: 1440 }, (scrollCalls) => {
     resetDocumentScroll();
     assert.deepEqual(scrollCalls, [{ top: 0, left: 0, behavior: "auto" }]);
   });

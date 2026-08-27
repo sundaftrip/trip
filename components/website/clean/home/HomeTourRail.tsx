@@ -2,7 +2,8 @@
 
 import { Fragment, type MouseEvent } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "../PreserveScrollLink";
+import { useRouter } from "next/navigation";
 import { Calendar, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
@@ -63,6 +64,8 @@ function routeHighlight(value: string) {
 }
 
 export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
+  const router = useRouter();
+
   function preserveCampaign(
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -70,7 +73,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
     const attributedHref = appendCampaignToPath(href, window.location.search);
     if (attributedHref === href) return;
     event.preventDefault();
-    window.location.assign(attributedHref);
+    router.push(attributedHref, { scroll: false });
   }
 
   return (
@@ -98,6 +101,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
               </span>
               <Link
                 href={href}
+                scroll={false}
                 className={styles.tourMedia}
                 data-analytics-event="tour_card_click"
                 data-tour-id={tour.id}
