@@ -23,9 +23,8 @@ export function resolveCanadaRockiesPdfNotes(
   if (resolvedTourSlug !== CANADA_ROCKIES_SLUG) return databaseNotes;
 
   const normalizedNotes = databaseNotes?.trim() ?? "";
-  const isLegacyDetailedNote = normalizedNotes
-    .toLocaleLowerCase("id-ID")
-    .startsWith("harga target pada tahap pendaftaran awal bukan harga tetap.");
+  const isLegacyDetailedNote = /^harga target pada tahap (?:pre-registration|pendaftaran awal) bukan harga tetap\./i
+    .test(normalizedNotes);
 
   return !normalizedNotes || isLegacyDetailedNote
     ? CANADA_ROCKIES_TOUR.notes

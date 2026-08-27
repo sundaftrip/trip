@@ -54,12 +54,19 @@ test("production uses the persisted Canada record so generated links keep its re
 
 test("Canada PDF replaces only the known stale detailed note", () => {
   const staleDetailedNote = [
-    "Harga target pada tahap pendaftaran awal bukan harga tetap.",
+    "Harga target pada tahap pre-registration bukan harga tetap.",
     "Harga final ditetapkan setelah tiket grup, hotel, coach dalam mata uang CAD, dan biaya lain dikonfirmasi.",
   ].join(" ");
 
   assert.equal(
     resolveCanadaRockiesPdfNotes(staleDetailedNote, CANADA_ROCKIES_SLUG),
+    CANADA_ROCKIES_TOUR.notes,
+  );
+  assert.equal(
+    resolveCanadaRockiesPdfNotes(
+      staleDetailedNote.replace("pre-registration", "pendaftaran awal"),
+      CANADA_ROCKIES_SLUG,
+    ),
     CANADA_ROCKIES_TOUR.notes,
   );
   assert.equal(
