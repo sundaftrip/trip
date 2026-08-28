@@ -28,7 +28,7 @@ type TourBookingExperienceProps = {
   mode: BookingMode;
   departures: BookingDeparture[];
   roomOptions?: BookingRoomOption[];
-  documentationHref?: string;
+  completedTourHref?: string;
   showSectionAction?: boolean;
 };
 
@@ -54,7 +54,7 @@ export default function TourBookingExperience({
   mode,
   departures,
   roomOptions = DEFAULT_ROOM_OPTIONS,
-  documentationHref = "#dokumentasi",
+  completedTourHref = "#itinerary",
   showSectionAction = true,
 }: TourBookingExperienceProps) {
   const bookingRoomOptions = roomOptions.length > 0 ? roomOptions : DEFAULT_ROOM_OPTIONS;
@@ -168,13 +168,13 @@ export default function TourBookingExperience({
     return (
       <>
         {showSectionAction && (
-          <a className={styles.sectionBookingAction} href={documentationHref}>
-            Lihat dokumentasi perjalanan
+          <a className={styles.sectionBookingAction} href={completedTourHref}>
+            Lihat itinerary perjalanan
           </a>
         )}
-        <div className={styles.mobileBookingBar} role="region" aria-label="Aksi dokumentasi perjalanan">
-          <div><span>Trip selesai</span><strong>Dokumentasi perjalanan</strong></div>
-          <a href={documentationHref}>Lihat dokumentasi</a>
+        <div className={styles.mobileBookingBar} role="region" aria-label="Itinerary perjalanan selesai">
+          <div><span>Trip selesai</span><strong>Itinerary perjalanan</strong></div>
+          <a href={completedTourHref}>Lihat itinerary</a>
         </div>
       </>
     );
