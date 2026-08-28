@@ -14,7 +14,6 @@ import {
   Users,
   X,
 } from "lucide-react";
-import GalleryZoom from "@/components/website/GalleryZoom";
 import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { cldThumb, formatCurrency } from "@/lib/utils";
@@ -417,15 +416,6 @@ export default function CleanTourDetail({
             </section>
           )}
 
-          {tour.gallery.length > 0 && (
-            <section className={styles.detailContentSection} id="galeri" aria-labelledby="galeri-title">
-              <p className={styles.detailSectionKicker}>Visual perjalanan</p>
-              <h2 className={styles.detailSectionTitle} id="galeri-title">Dokumentasi &amp; gambaran perjalanan</h2>
-              <p className={styles.detailSectionLede}>Foto peserta dan dokumentasi operasional Sundaf ditampilkan jika tersedia. Visual destinasi berlisensi hanya digunakan sebagai gambaran dan tidak dinyatakan sebagai dokumentasi peserta.</p>
-              <div className={styles.detailGallery}><GalleryZoom images={tour.gallery} altPrefix={`${tour.title} - dokumentasi`} /></div>
-            </section>
-          )}
-
           {itinerary.length > 0 && (
             <section className={styles.detailContentSection} id="itinerary" aria-labelledby="itinerary-title">
               <p className={styles.detailSectionKicker}>Rencana perjalanan</p>
@@ -534,7 +524,7 @@ export default function CleanTourDetail({
                   availabilityLabel={status}
                   mode={bookingMode}
                   departures={bookingDepartures}
-                  documentationHref={tour.gallery.length ? "#galeri" : "#ringkasan"}
+                  completedTourHref={itinerary.length > 0 ? "#itinerary" : "#ringkasan"}
                 />
               </article>
             </div>
