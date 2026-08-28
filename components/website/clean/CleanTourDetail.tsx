@@ -379,7 +379,12 @@ export default function CleanTourDetail({
                   <p>{copy.heroSupport}</p>
                 )}
                 <div className={styles.detailRouteLine}><strong>Rute utama</strong><span>{route}</span></div>
-                <Link className={styles.detailDestinationLink} href={destinationHref} scroll={false}>
+                <Link
+                  className={styles.detailDestinationLink}
+                  href={destinationHref}
+                  scroll={true}
+                  data-scroll-reset-after-navigation
+                >
                   Baca panduan {destinationLabel} →
                 </Link>
               </div>
