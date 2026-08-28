@@ -5,6 +5,7 @@ import {
   DESKTOP_SCROLL_RESET_MIN_WIDTH,
   isDesktopScrollResetViewport,
   resetDocumentScroll,
+  resetDocumentScrollAfterNavigation,
   shouldScrollLinkToFragment,
   shouldResetScrollForNavigation,
 } from "../lib/navigation-scroll";
@@ -145,6 +146,19 @@ test("resetDocumentScroll leaves the mobile viewport untouched", () => {
   }, (scrollCalls) => {
     resetDocumentScroll();
     assert.deepEqual(scrollCalls, []);
+  });
+});
+
+test("resetDocumentScrollAfterNavigation starts the mobile destination at the top", () => {
+  withMockScrollEnvironment({
+    viewportWidth: 390,
+    coarsePointer: true,
+    finePointer: false,
+    hover: false,
+    maxTouchPoints: 5,
+  }, (scrollCalls) => {
+    resetDocumentScrollAfterNavigation();
+    assert.deepEqual(scrollCalls, [{ top: 0, left: 0, behavior: "auto" }]);
   });
 });
 

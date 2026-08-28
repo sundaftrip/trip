@@ -47,6 +47,21 @@ test("keeps intentional public hash navigation working", () => {
   assert.match(consoleSidebar, /\/#contact/);
 });
 
+test("opens the tour destination guide at the top of its page", () => {
+  const cleanDetail = source("components/website/clean/CleanTourDetail.tsx");
+  const routeReset = source("components/website/RouteScrollReset.tsx");
+
+  assert.match(
+    cleanDetail,
+    /className=\{styles\.detailDestinationLink\}[\s\S]{0,160}?href=\{destinationHref\}[\s\S]{0,160}?scroll=\{true\}[\s\S]{0,160}?data-scroll-reset-after-navigation/,
+  );
+  assert.match(routeReset, /anchor\.hasAttribute\(RESET_AFTER_NAVIGATION_ATTRIBUTE\)/);
+  assert.match(routeReset, /if \(!event\.defaultPrevented\) resetOnNextPathRef\.current = nextPathname/);
+  assert.match(routeReset, /resetDocumentScrollAfterNavigation\(\)/);
+  assert.match(routeReset, /resetPathname === normalizeNavigationPath\(pathname\)/);
+  assert.match(routeReset, /resetDocumentScroll\(\)/);
+});
+
 test("uses stable details across every public expandable section", () => {
   const publicSources = [
     ...sourceFiles("app/(website)"),

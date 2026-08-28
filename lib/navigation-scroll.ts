@@ -68,6 +68,12 @@ export function resetDocumentScroll() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
   if (!isDesktopScrollResetViewport(window.innerWidth, getScrollInputCapabilities())) return;
 
+  scrollDocumentToTop();
+}
+
+function scrollDocumentToTop() {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
   const root = document.documentElement;
   const previousScrollBehavior = root.style.scrollBehavior;
   root.style.scrollBehavior = "auto";
@@ -76,4 +82,8 @@ export function resetDocumentScroll() {
   window.requestAnimationFrame(() => {
     root.style.scrollBehavior = previousScrollBehavior;
   });
+}
+
+export function resetDocumentScrollAfterNavigation() {
+  scrollDocumentToTop();
 }
