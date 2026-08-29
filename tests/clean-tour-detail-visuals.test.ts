@@ -26,6 +26,14 @@ const roomRecoverySource = readFileSync(
   new URL("../components/website/clean/TourRoomRecoveryLink.tsx", import.meta.url),
   "utf8",
 );
+const recommendedAddOnSource = readFileSync(
+  new URL("../components/website/clean/TourRecommendedAddOnToggle.tsx", import.meta.url),
+  "utf8",
+);
+const bookingSheetSource = readFileSync(
+  new URL("../components/website/clean/TourBookingSheet.tsx", import.meta.url),
+  "utf8",
+);
 
 test("shows visual highlights for every itinerary day", () => {
   assert.match(source, /const experienceItems = itinerary\.map\(/);
@@ -69,17 +77,41 @@ test("makes every room tier an accessible synchronized choice", () => {
 });
 
 test("keeps the selected room synchronized through every booking surface", () => {
-  assert.match(source, /<TourRoomSelectionProvider roomPrices=\{roomPrices\}>/);
+  assert.match(source, /<TourRoomSelectionProvider roomPrices=\{roomPrices\} selectableAddOn=\{selectableAddOn\}>/);
   assert.match(roomSelectionSource, /selectedRoomCode/);
   assert.match(roomBookingSource, /useTourRoomSelection\(\)/);
   assert.match(roomSidebarSource, /useTourRoomSelection\(\)/);
   assert.match(roomSidebarSource, /selectedRoom\?\.headlinePrice \?\? basePrice/);
   assert.match(roomSidebarSource, /selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal/);
   assert.match(roomSidebarSource, /buildWhatsAppBookingHref\(bookingPhone/);
-  assert.match(roomSidebarSource, /roomPreference: selectedRoom\.label/);
+  assert.match(roomSidebarSource, /roomPreference: selectedRoom\?\.label/);
   assert.match(source, /<TourRoomRecoveryLink/g);
   assert.equal(source.match(/<TourRoomRecoveryLink/g)?.length, 2);
   assert.match(roomRecoverySource, /useTourRoomSelection\(\)/);
-  assert.match(roomRecoverySource, /selectedRoom\.mandatoryTotalPrice/);
-  assert.match(roomRecoverySource, /roomPreference: selectedRoom\.label/);
+  assert.match(roomRecoverySource, /selectedRoom\?\.mandatoryTotalPrice/);
+  assert.match(roomRecoverySource, /roomPreference: selectedRoom\?\.label/);
+});
+
+test("keeps recommended travel insurance optional and synchronized", () => {
+  assert.match(source, /item\.tag === "recommended"/);
+  assert.match(source, /asuransi perjalanan usia sampai 69 tahun/i);
+  assert.match(source, /disclosureOptionalAddOns = optionalAddOns\.filter/);
+  assert.match(roomSelectionSource, /useState\(false\)/);
+  assert.match(roomSelectionSource, /includeSelectableAddOn && selectableAddOn/);
+  assert.match(recommendedAddOnSource, /type="checkbox"/);
+  assert.match(recommendedAddOnSource, /checked=\{includeSelectableAddOn\}/);
+  assert.match(recommendedAddOnSource, /setIncludeSelectableAddOn\(event\.target\.checked\)/);
+  assert.match(recommendedAddOnSource, /DIREKOMENDASIKAN/);
+  assert.match(recommendedAddOnSource, /Termasuk/);
+  assert.match(recommendedAddOnSource, /Tidak termasuk/);
+  assert.doesNotMatch(recommendedAddOnSource, /type="button"/);
+  assert.match(roomBookingSource, /selectedMandatoryTotalPrice \+ selectableAddOnTotal/);
+  assert.match(roomSidebarSource, /selectedMandatoryTotalPrice \+ selectableAddOnTotal/);
+  assert.match(roomRecoverySource, /\(selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal\) \+ selectableAddOnTotal/);
+  assert.match(bookingSheetSource, /<TourRecommendedAddOnToggle \/>/);
+  assert.match(bookingSource, /addOnPreference/);
+  assert.match(bookingSource, /addOnPreference \? priceLabel : selectedDeparture\?\.priceLabel/);
+  assert.match(bookingSheetSource, /addOnPreference \? priceLabel : selectedDeparture\?\.priceLabel/);
+  assert.match(roomSidebarSource, /selectedRoom \|\| selectableAddOn/);
+  assert.match(roomRecoverySource, /selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal/);
 });

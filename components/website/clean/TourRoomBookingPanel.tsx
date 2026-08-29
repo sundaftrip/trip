@@ -4,6 +4,7 @@ import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import { formatCurrency } from "@/lib/utils";
 import type { BookingDeparture, BookingMode } from "./TourBookingSheet";
 import TourBookingExperience from "./TourBookingExperience";
+import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
 import styles from "./CleanSite.module.css";
 import interactiveStyles from "./TourDetailInteractive.module.css";
@@ -54,15 +55,23 @@ export default function TourRoomBookingPanel({
   bookingDepartures,
   completedTourHref,
 }: TourRoomBookingPanelProps) {
-  const { selectedRoom, setSelectedRoomCode } = useTourRoomSelection();
+  const {
+    selectedRoom,
+    setSelectedRoomCode,
+    selectableAddOn,
+    selectableAddOnTotal,
+    selectableAddOnPreference,
+  } = useTourRoomSelection();
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
-  const selectedTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
+  const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
+  const selectedTotalPrice = selectedMandatoryTotalPrice + selectableAddOnTotal;
+  const selectedCaption = selectableAddOn ? "Total per orang" : priceCaption;
   const selectedPriceLabel = hasPrice ? formatCurrency(selectedTotalPrice) : priceLabel;
   const roomOptions = roomPrices.map((room) => ({
     value: room.code,
     label: room.label,
-    priceLabel: formatCurrency(room.mandatoryTotalPrice),
-    priceCaption: "Total wajib",
+    priceLabel: formatCurrency(room.mandatoryTotalPrice + selectableAddOnTotal),
+    priceCaption: selectedCaption,
   }));
 
   return (
@@ -72,6 +81,7 @@ export default function TourRoomBookingPanel({
           <legend className={styles.detailRoomPriceLegend}>Pilih jumlah orang per kamar</legend>
           {roomPrices.map((room) => {
             const selected = room.code === selectedRoom?.code;
+            const displayedTotal = room.mandatoryTotalPrice + selectableAddOnTotal;
             const inputId = `room-price-${room.code}`;
             return (
               <label
@@ -98,8 +108,8 @@ export default function TourRoomBookingPanel({
                     <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
                   </div>
                   <div>
-                    <dt>Total wajib per orang</dt>
-                    <dd>{formatCurrency(room.mandatoryTotalPrice)}</dd>
+                    <dt>{selectableAddOn ? "Total per orang" : "Total wajib per orang"}</dt>
+                    <dd>{formatCurrency(displayedTotal)}</dd>
                   </div>
                 </dl>
               </label>
@@ -114,6 +124,7 @@ export default function TourRoomBookingPanel({
             <span>{status}</span>
             <strong>{departureLabel || "Tanggal fleksibel"}</strong>
           </div>
+          <TourRecommendedAddOnToggle />
           <dl aria-live="polite">
             <div>
               <dt>{selectedRoom ? `Harga paket (${selectedRoom.label})` : "Harga paket"}</dt>
@@ -126,7 +137,7 @@ export default function TourRoomBookingPanel({
               </div>
             ))}
             <div className={interactiveStyles.dateTotal}>
-              <dt>Total wajib per orang</dt>
+              <dt>{selectableAddOn ? "Total per orang" : "Total wajib per orang"}</dt>
               <dd>{hasPrice ? formatCurrency(selectedTotalPrice) : "Dikonfirmasi tim"}</dd>
             </div>
             {paymentInitialAmountLabel && (
@@ -138,10 +149,11 @@ export default function TourRoomBookingPanel({
             tourId={tourId}
             tourName={tourName}
             priceLabel={selectedPriceLabel}
-            priceCaption={priceCaption}
+            priceCaption={selectedCaption}
             roomOptions={roomOptions}
             selectedRoomValue={selectedRoom?.code}
             onRoomChange={setSelectedRoomCode}
+            addOnPreference={selectableAddOnPreference}
             availabilityLabel={availabilityLabel}
             mode={bookingMode}
             departures={bookingDepartures}

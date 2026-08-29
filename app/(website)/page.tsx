@@ -18,6 +18,7 @@ import TestimonialSection from "@/components/website/TestimonialSection";
 import CleanHome from "@/components/website/clean/CleanHome";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import { resolveCanadaRockiesAddOns } from "@/lib/canada-catalog-preview";
 
 const getData = unstable_cache(async () => {
   const [texts, toursRaw, posts, companyRows, testimonials] = await Promise.all([
@@ -126,7 +127,7 @@ export default async function HomePage() {
         ...tourFields,
         title: normalizeTourDisplayTitle(tour.title),
         tripDate: toIsoDateString(tour.tripDate),
-        mandatoryTotal: mandatoryAddOnsTotal(addOns),
+        mandatoryTotal: mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(addOns, tour.slug)),
         state: getPublicTourState(tour, now),
       };
     });

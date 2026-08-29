@@ -6,14 +6,66 @@ import {
 
 export const CANADA_ROCKIES_PREVIEW_ID = "preview-canada-rockies-april-2027";
 
+export function resolveCanadaRockiesAddOns(
+  databaseAddOns: unknown,
+  resolvedTourSlug?: string | null,
+): unknown {
+  if (resolvedTourSlug !== CANADA_ROCKIES_SLUG) return databaseAddOns;
+
+  const reviewedInsurance = CANADA_ROCKIES_TOUR.addOns.find((item) => (
+    /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
+  ));
+  const source = Array.isArray(databaseAddOns)
+    ? databaseAddOns
+    : CANADA_ROCKIES_TOUR.addOns;
+  let hasReviewedInsurance = false;
+  const resolved = source.map((item) => {
+    if (
+      !item
+      || typeof item !== "object"
+      || !("name" in item)
+      || typeof item.name !== "string"
+      || !/asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
+    ) {
+      return item;
+    }
+
+    hasReviewedInsurance = true;
+    return { ...item, tag: "recommended" };
+  });
+
+  if (!hasReviewedInsurance && reviewedInsurance) {
+    resolved.push({ ...reviewedInsurance });
+  }
+
+  return resolved;
+}
+
 export function selectCanadaRockiesTourSource<T>(
   databaseTour: T | null,
   previewTour: T | null,
   vercelEnv = process.env.VERCEL_ENV,
 ): T | null {
-  return vercelEnv === "preview"
+  const selectedTour = vercelEnv === "preview"
     ? previewTour ?? databaseTour
     : databaseTour ?? previewTour;
+
+  if (
+    !selectedTour
+    || typeof selectedTour !== "object"
+    || !("slug" in selectedTour)
+    || selectedTour.slug !== CANADA_ROCKIES_SLUG
+  ) {
+    return selectedTour;
+  }
+
+  return {
+    ...selectedTour,
+    addOns: resolveCanadaRockiesAddOns(
+      "addOns" in selectedTour ? selectedTour.addOns : undefined,
+      selectedTour.slug,
+    ),
+  } as T;
 }
 
 export function resolveCanadaRockiesPdfNotes(

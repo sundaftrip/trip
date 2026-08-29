@@ -43,6 +43,7 @@ export type BookingMessageInput = {
   travelerCount?: number | null;
   childCount?: number | null;
   roomPreference?: string | null;
+  addOnPreference?: string | null;
   customerName?: string | null;
   customerPhone?: string | null;
   sourceUrl?: string | null;
@@ -191,6 +192,7 @@ export function buildWhatsAppBookingMessage(input: BookingMessageInput) {
     `${input.priceCaption?.trim() || "Harga mulai"}: ${input.formattedPrice || "Mohon info"}/orang`,
     `Peserta: ${participants}`,
     `Kamar: ${input.roomPreference?.trim() || "Belum dipilih"}`,
+    ...(input.addOnPreference?.trim() ? [`Add-on: ${input.addOnPreference.trim()}`] : []),
     `Nama: ${input.customerName?.trim() || "Belum diisi"}`,
     `WhatsApp: ${input.customerPhone?.trim() || "Belum diisi"}`,
     "",
