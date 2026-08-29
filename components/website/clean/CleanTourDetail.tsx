@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import TourShareButtons from "@/components/website/TourShareButtons";
+import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
@@ -361,7 +362,13 @@ export default function CleanTourDetail({
               <div className={styles.detailHeroHeading}>
                 <div>
                   <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
-                  <h1 id="tour-title">{tour.title}</h1>
+                  <h1 id="tour-title">
+                    <TextWithAuroraAccent
+                      text={tour.title}
+                      phrase="Aurora"
+                      glow
+                    />
+                  </h1>
                 </div>
                 <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
               </div>

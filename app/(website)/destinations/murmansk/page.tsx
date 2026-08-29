@@ -6,6 +6,7 @@ import { getGeoPageContent } from "@/lib/geo-pages";
 import { MapPin, Clock, MessageCircle, Star, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
 import ActivityVideo from "@/components/website/ActivityVideo";
+import AuroraText from "@/components/website/AuroraText";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 
@@ -218,7 +219,7 @@ export default async function MurmanskPage() {
             <br />
             {isPixel
               ? <span className="text-white drop-shadow-lg">{destination.hero.titleLine2.toUpperCase()}</span>
-              : <span className="aurora-text aurora-glow">{destination.hero.titleLine2}</span>
+              : <AuroraText glow>{destination.hero.titleLine2}</AuroraText>
             }
           </h1>
 
