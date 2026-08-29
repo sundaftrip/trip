@@ -17,10 +17,8 @@
   margin-top: 22px;
 }
 
-@media (min-width: 701px) {
-  .dateGrid {
-    display: none;
-  }
+.dateCardOptionControls {
+  display: contents;
 }
 
 .dateCard {
@@ -113,6 +111,12 @@
 .dateTotal dd {
   color: #075d63;
   font-weight: 800;
+}
+
+@media (min-width: 701px) {
+  .dateCardOptionControls {
+    display: none;
+  }
 }
 
 .tabBar > div {

@@ -92,8 +92,20 @@ test("makes every room tier an accessible synchronized choice", () => {
   assert.doesNotMatch(roomBookingSource, /data-featured/);
 });
 
-test("shows the detailed date card only when the desktop booking sidebar is hidden", () => {
+test("keeps the main date card while removing its duplicate option controls on desktop", () => {
   assert.match(
+    roomBookingSource,
+    /className=\{interactiveStyles\.dateCardOptionControls\}[\s\S]*?<TourRecommendedAddOnToggle \/>[\s\S]*?<TourVisaServiceToggle \/>/,
+  );
+  assert.match(
+    interactiveStylesSource,
+    /\.dateCardOptionControls \{\s*display: contents;\s*\}/,
+  );
+  assert.match(
+    interactiveStylesSource,
+    /@media \(min-width: 701px\) \{[\s\S]*?\.dateCardOptionControls \{\s*display: none;\s*\}/,
+  );
+  assert.doesNotMatch(
     interactiveStylesSource,
     /@media \(min-width: 701px\) \{[\s\S]*?\.dateGrid \{\s*display: none;\s*\}/,
   );

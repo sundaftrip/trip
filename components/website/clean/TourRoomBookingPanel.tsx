@@ -130,8 +130,10 @@ export default function TourRoomBookingPanel({
             <span>{status}</span>
             <strong>{departureLabel || "Tanggal fleksibel"}</strong>
           </div>
-          <TourRecommendedAddOnToggle />
-          <TourVisaServiceToggle />
+          <div className={interactiveStyles.dateCardOptionControls}>
+            <TourRecommendedAddOnToggle />
+            <TourVisaServiceToggle />
+          </div>
           <dl aria-live="polite">
             <div>
               <dt>{selectedRoom ? `Harga paket (${selectedRoom.label})` : "Harga paket"}</dt>
