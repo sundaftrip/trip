@@ -75,13 +75,18 @@ function scrollDocumentToTop() {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const root = document.documentElement;
-  const previousScrollBehavior = root.style.scrollBehavior;
-  root.style.scrollBehavior = "auto";
-  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  const body = document.body;
+  const scrollingElement = document.scrollingElement ?? root;
+  const previousRootScrollBehavior = root.style.scrollBehavior;
+  const previousBodyScrollBehavior = body?.style.scrollBehavior;
 
-  window.requestAnimationFrame(() => {
-    root.style.scrollBehavior = previousScrollBehavior;
-  });
+  root.style.scrollBehavior = "auto";
+  if (body) body.style.scrollBehavior = "auto";
+  scrollingElement.scrollTop = 0;
+  scrollingElement.scrollLeft = 0;
+
+  root.style.scrollBehavior = previousRootScrollBehavior;
+  if (body) body.style.scrollBehavior = previousBodyScrollBehavior ?? "";
 }
 
 export function resetDocumentScrollAfterNavigation() {

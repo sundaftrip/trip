@@ -15,6 +15,11 @@ import {
 
 const RESET_AFTER_NAVIGATION_ATTRIBUTE = "data-scroll-reset-after-navigation";
 
+type PendingScrollReset = {
+  pathname: string;
+  desktopOnly: boolean;
+};
+
 function closestAnchor(target: EventTarget | null) {
   if (!(target instanceof Element)) return null;
   return target.closest<HTMLAnchorElement>("a[href]");
@@ -23,7 +28,7 @@ function closestAnchor(target: EventTarget | null) {
 export default function RouteScrollReset() {
   const pathname = usePathname();
   const previousPathnameRef = useRef(pathname);
-  const resetOnNextPathRef = useRef<string | null>(null);
+  const resetOnNextPathRef = useRef<PendingScrollReset | null>(null);
 
   useEffect(() => {
     function handleNavigationClick(event: MouseEvent) {
@@ -50,20 +55,19 @@ export default function RouteScrollReset() {
       const href = anchor.getAttribute("href");
       if (!href || !shouldResetScrollForNavigation(window.location.href, href)) return;
 
-      if (anchor.hasAttribute(RESET_AFTER_NAVIGATION_ATTRIBUTE)) {
-        const nextPathname = normalizeNavigationPath(
+      // Keep the current page still while App Router resolves the destination.
+      // The opt-in attribute keeps the existing forced reset for touch devices.
+      const pendingReset = {
+        pathname: normalizeNavigationPath(
           new URL(href, window.location.href).pathname,
-        );
+        ),
+        desktopOnly: !anchor.hasAttribute(RESET_AFTER_NAVIGATION_ATTRIBUTE),
+      };
 
-        // Wait until bubbling finishes so a cancelled click cannot arm a later reset.
-        window.queueMicrotask(() => {
-          if (!event.defaultPrevented) resetOnNextPathRef.current = nextPathname;
-        });
-        return;
-      }
-
-      // Preserve the established behavior for all other public links.
-      resetDocumentScroll();
+      // Wait until bubbling finishes so a cancelled click cannot arm a later reset.
+      window.queueMicrotask(() => {
+        if (!event.defaultPrevented) resetOnNextPathRef.current = pendingReset;
+      });
     }
 
     document.addEventListener("click", handleNavigationClick, { capture: true });
@@ -73,12 +77,13 @@ export default function RouteScrollReset() {
   useLayoutEffect(() => {
     if (previousPathnameRef.current === pathname) return;
 
-    const resetPathname = resetOnNextPathRef.current;
+    const pendingReset = resetOnNextPathRef.current;
     previousPathnameRef.current = pathname;
     resetOnNextPathRef.current = null;
 
-    if (resetPathname === normalizeNavigationPath(pathname)) {
-      resetDocumentScrollAfterNavigation();
+    if (pendingReset?.pathname === normalizeNavigationPath(pathname)) {
+      if (pendingReset.desktopOnly) resetDocumentScroll();
+      else resetDocumentScrollAfterNavigation();
     }
   }, [pathname]);
 
