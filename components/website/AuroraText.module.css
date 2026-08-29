@@ -1,0 +1,59 @@
+.auroraText {
+  color: #f4fffd;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.glow {
+  filter: drop-shadow(0 0 12px rgb(91 246 218 / 34%));
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .auroraText {
+    color: transparent;
+    background-image: linear-gradient(
+      120deg,
+      #4ade80 0%,
+      #22d3ee 22%,
+      #818cf8 45%,
+      #c084fc 64%,
+      #38bdf8 82%,
+      #4ade80 100%
+    );
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: 260% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 640px) {
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    .auroraText {
+      animation: aurora-text-drift 18s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .auroraText,
+  .glow {
+    color: CanvasText;
+    background: none;
+    filter: none;
+    animation: none;
+    -webkit-text-fill-color: CanvasText;
+  }
+}
+
+@keyframes aurora-text-drift {
+  from {
+    background-position: 0% 50%;
+  }
+
+  to {
+    background-position: 100% 50%;
+  }
+}

@@ -15,6 +15,7 @@ import {
 import { getHomeFaqs, type HomeFaqItem } from "@/lib/home-faqs";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
+import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import type { CleanTour } from "./CleanTourCard";
 import HomeFaqs from "./home/HomeFaqs";
 import HomeReviews from "./home/HomeReviews";
@@ -251,7 +252,13 @@ export default function CleanHome({
           <div className={`${styles.shell} ${styles.heroShell}`}>
             <div className={styles.heroCopy}>
               <p className={styles.eyebrowLight}>{heroEyebrow}</p>
-              <h1 id="home-hero-title">{heroTitle}</h1>
+              <h1 id="home-hero-title">
+                <TextWithAuroraAccent
+                  text={heroTitle}
+                  phrase="cerita yang berbeda."
+                  glow
+                />
+              </h1>
               <p>{heroBody}</p>
             </div>
           </div>
