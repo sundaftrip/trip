@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, relative } from "node:path";
 import test from "node:test";
@@ -37,6 +37,14 @@ test("uses one preserve-scroll link policy across the entire public website", ()
   assert.deepEqual(directNextLinkImports, []);
 });
 
+test("keeps the current public page visible while the next route loads", () => {
+  const publicRouteFallback = fileURLToPath(
+    new URL("../app/(website)/loading.tsx", import.meta.url),
+  );
+
+  assert.equal(existsSync(publicRouteFallback), false);
+});
+
 test("keeps intentional public hash navigation working", () => {
   const pagination = source("components/website/Pagination.tsx");
   const tourFilter = source("components/website/TourFilter.tsx");
@@ -55,11 +63,12 @@ test("opens the tour destination guide at the top of its page", () => {
     cleanDetail,
     /className=\{styles\.detailDestinationLink\}[\s\S]{0,160}?href=\{destinationHref\}[\s\S]{0,160}?scroll=\{true\}[\s\S]{0,160}?data-scroll-reset-after-navigation/,
   );
-  assert.match(routeReset, /anchor\.hasAttribute\(RESET_AFTER_NAVIGATION_ATTRIBUTE\)/);
-  assert.match(routeReset, /if \(!event\.defaultPrevented\) resetOnNextPathRef\.current = nextPathname/);
+  assert.match(routeReset, /desktopOnly: !anchor\.hasAttribute\(RESET_AFTER_NAVIGATION_ATTRIBUTE\)/);
+  assert.match(routeReset, /pathname: normalizeNavigationPath/);
+  assert.match(routeReset, /if \(!event\.defaultPrevented\) resetOnNextPathRef\.current = pendingReset/);
   assert.match(routeReset, /resetDocumentScrollAfterNavigation\(\)/);
-  assert.match(routeReset, /resetPathname === normalizeNavigationPath\(pathname\)/);
-  assert.match(routeReset, /resetDocumentScroll\(\)/);
+  assert.match(routeReset, /pendingReset\?\.pathname === normalizeNavigationPath\(pathname\)/);
+  assert.equal(routeReset.match(/resetDocumentScroll\(\)/g)?.length, 1);
 });
 
 test("uses stable details across every public expandable section", () => {
