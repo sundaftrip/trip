@@ -4,7 +4,13 @@ import { formatCurrency } from "@/lib/utils";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
 import styles from "./CleanSite.module.css";
 
-export default function TourRecommendedAddOnToggle({ compact = false }: { compact?: boolean }) {
+export default function TourRecommendedAddOnToggle({
+  compact = false,
+  grouped = false,
+}: {
+  compact?: boolean;
+  grouped?: boolean;
+}) {
   const {
     selectableAddOn,
     includeSelectableAddOn,
@@ -17,6 +23,7 @@ export default function TourRecommendedAddOnToggle({ compact = false }: { compac
     <label
       className={styles.detailRecommendedAddOn}
       data-compact={compact || undefined}
+      data-grouped={grouped || undefined}
       data-included={includeSelectableAddOn}
     >
       <span className={styles.detailRecommendedAddOnCopy}>
