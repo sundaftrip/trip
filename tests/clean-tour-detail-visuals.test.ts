@@ -42,6 +42,14 @@ const detailPageSource = readFileSync(
   new URL("../app/(website)/tours/[id]/page.tsx", import.meta.url),
   "utf8",
 );
+const interactiveStylesSource = readFileSync(
+  new URL("../components/website/clean/TourDetailInteractive.module.css", import.meta.url),
+  "utf8",
+);
+const cleanStylesSource = readFileSync(
+  new URL("../components/website/clean/CleanSite.module.css", import.meta.url),
+  "utf8",
+);
 
 test("shows visual highlights for every itinerary day", () => {
   assert.match(source, /const experienceItems = itinerary\.map\(/);
@@ -82,6 +90,17 @@ test("makes every room tier an accessible synchronized choice", () => {
   assert.doesNotMatch(roomBookingSource, /type="button"/);
   assert.doesNotMatch(roomBookingSource, /aria-pressed/);
   assert.doesNotMatch(roomBookingSource, /data-featured/);
+});
+
+test("shows the detailed date card only when the desktop booking sidebar is hidden", () => {
+  assert.match(
+    interactiveStylesSource,
+    /@media \(min-width: 701px\) \{[\s\S]*?\.dateGrid \{\s*display: none;\s*\}/,
+  );
+  assert.match(
+    cleanStylesSource,
+    /@media \(max-width: 700px\) \{[\s\S]*?\.detailBookingSidebar \{ display: none; \}/,
+  );
 });
 
 test("keeps the selected room synchronized through every booking surface", () => {
