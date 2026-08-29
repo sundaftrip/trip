@@ -69,10 +69,13 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
 
-  // Identitas editorial Sundaf memakai satu keluarga huruf agar heading,
-  // navigasi, dan kartu terasa konsisten. Pengaturan font CMS tetap disimpan
-  // untuk kompatibilitas data, tetapi tidak lagi mengganti tipografi publik.
-  const fontFamily = 'var(--font-jost), "Helvetica Neue", Arial, sans-serif';
+  // Atlas memakai Plus Jakarta Sans untuk keterbacaan UI dan Jost untuk judul
+  // editorial. Pengaturan font CMS tetap disimpan untuk kompatibilitas data,
+  // tetapi tidak lagi mengganti tipografi publik canonical.
+  const uiFontFamily =
+    'var(--font-plus-jakarta), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+  const displayFontFamily =
+    'var(--font-jost), "Helvetica Neue", Arial, sans-serif';
   // Atlas is the canonical public brand. Lock its palette here so an older
   // saved CMS preset (for example forest green or electric blue) cannot leak
   // back into the live website. Other preview themes remain configurable.
@@ -87,7 +90,8 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     ` --site-accent-ink: ${accent};` +
     ` --site-aurora: #20B8B5;` +
     ` --site-warm-accent: #E58A68;` +
-    ` --site-font-family: ${fontFamily};` +
+    ` --site-font-family: ${uiFontFamily};` +
+    ` --site-display-font-family: ${displayFontFamily};` +
     ` --background: #FFFFFF;` +
     ` --foreground: #132B3A;` +
     ` --site-bg: #FFFFFF;` +
