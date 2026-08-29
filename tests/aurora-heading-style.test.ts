@@ -59,16 +59,17 @@ test("keeps an accessible solid-color fallback when gradient text is unsupported
   );
 });
 
-test("animates slowly only on motion-enabled non-mobile viewports", () => {
+test("animates visibly on every motion-enabled viewport", () => {
   assert.match(
     stylesSource,
-    /@media \(prefers-reduced-motion: no-preference\) and \(min-width: 640px\) \{[\s\S]*?animation: aurora-text-drift 18s/,
+    /@media \(prefers-reduced-motion: no-preference\) \{[\s\S]*?animation: aurora-text-drift 8s/,
   );
+  assert.doesNotMatch(stylesSource, /min-width:\s*640px/);
   const activeAnimations = [...stylesSource.matchAll(/animation:\s*([^;]+);/g)]
     .map((match) => match[1].trim())
     .filter((value) => value !== "none");
   assert.deepEqual(activeAnimations, [
-    "aurora-text-drift 18s ease-in-out infinite alternate",
+    "aurora-text-drift 8s ease-in-out infinite alternate",
   ]);
   assert.doesNotMatch(stylesSource, /opacity\s*:/);
 });
