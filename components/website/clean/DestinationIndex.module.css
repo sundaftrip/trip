@@ -14,7 +14,7 @@
   color: var(--destination-ink);
   font-family:
     var(--site-font-family),
-    var(--font-plus-jakarta),
+    "Plus Jakarta Sans",
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
@@ -56,7 +56,6 @@
 .hero h1 {
   margin: 0;
   max-width: 780px;
-  font-family: var(--site-display-font-family, var(--font-jost), "Helvetica Neue", Arial, sans-serif);
   font-size: clamp(46px, 6.2vw, 76px);
   font-weight: 790;
   letter-spacing: -.052em;
@@ -160,7 +159,6 @@
 .guideIntro h2,
 .cta h2 {
   margin: 0;
-  font-family: var(--site-display-font-family, var(--font-jost), "Helvetica Neue", Arial, sans-serif);
   font-size: clamp(31px, 4vw, 48px);
   letter-spacing: -.04em;
   line-height: 1.08;

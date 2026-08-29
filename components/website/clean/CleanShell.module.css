@@ -12,12 +12,12 @@
   --shell-white: #fff;
   color: var(--shell-ink);
   font-weight: 400;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   font-family: var(
     --site-font-family,
-    var(--font-plus-jakarta),
-    ui-sans-serif,
-    system-ui,
+    var(--font-jost),
+    "Helvetica Neue",
+    Arial,
     sans-serif
   );
 }
