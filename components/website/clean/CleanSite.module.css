@@ -1536,9 +1536,22 @@
   padding: 10px;
 }
 
+.detailRecommendedAddOn[data-grouped="true"] {
+  margin: 0;
+  padding: 12px 0;
+  border: 0;
+  border-radius: 0;
+  align-items: center;
+  background: transparent;
+}
+
 .detailRecommendedAddOn[data-included="true"] {
   border-color: var(--clean-teal-dark, #075d63);
   background: var(--clean-teal-pale, #e5f3f1);
+}
+
+.detailRecommendedAddOn[data-grouped="true"][data-included="true"] {
+  background: transparent;
 }
 
 .detailRecommendedAddOnCopy {
@@ -1648,6 +1661,19 @@
   padding: 10px;
 }
 
+.detailVisaServices[data-grouped="true"] {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.detailRecommendedAddOn[data-grouped="true"] +
+.detailVisaServices[data-grouped="true"] {
+  border-top: 1px solid #d8e5e4;
+}
+
 .detailVisaServicesIntro {
   margin: 0 0 10px;
   color: var(--clean-muted);
@@ -1660,6 +1686,10 @@
 .detailVisaServiceList {
   display: grid;
   gap: 8px;
+}
+
+.detailVisaServices[data-grouped="true"] .detailVisaServiceList {
+  gap: 0;
 }
 
 .detailVisaServiceList > label {
@@ -1675,9 +1705,24 @@
   cursor: pointer;
 }
 
+.detailVisaServices[data-grouped="true"] .detailVisaServiceList > label {
+  padding: 12px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.detailVisaServices[data-grouped="true"] .detailVisaServiceList > label + label {
+  border-top: 1px solid #d8e5e4;
+}
+
 .detailVisaServiceList > label[data-included="true"] {
   border-color: var(--clean-teal-dark, #075d63);
   background: var(--clean-teal-pale, #e5f3f1);
+}
+
+.detailVisaServices[data-grouped="true"] .detailVisaServiceList > label[data-included="true"] {
+  background: transparent;
 }
 
 .detailVisaServiceCopy { min-width: 0; }

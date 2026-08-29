@@ -18,7 +18,13 @@
 }
 
 .dateCardOptionControls {
-  display: contents;
+  margin: 16px 0 18px;
+  padding: 4px 12px;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid #cfdcdc;
+  border-radius: 12px;
+  background: #f8fbfb;
 }
 
 .dateCard {

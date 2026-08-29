@@ -92,15 +92,25 @@ test("makes every room tier an accessible synchronized choice", () => {
   assert.doesNotMatch(roomBookingSource, /data-featured/);
 });
 
-test("keeps the main date card while removing its duplicate option controls on desktop", () => {
+test("keeps the main date card while grouping mobile option controls and hiding them on desktop", () => {
   assert.match(
     roomBookingSource,
-    /className=\{interactiveStyles\.dateCardOptionControls\}[\s\S]*?<TourRecommendedAddOnToggle \/>[\s\S]*?<TourVisaServiceToggle \/>/,
+    /\{hasOptionalServices && \([\s\S]*?className=\{interactiveStyles\.dateCardOptionControls\}[\s\S]*?role="group"[\s\S]*?aria-label="Tambahan opsional"[\s\S]*?<TourRecommendedAddOnToggle compact grouped \/>[\s\S]*?<TourVisaServiceToggle compact grouped \/>/,
   );
   assert.match(
     interactiveStylesSource,
-    /\.dateCardOptionControls \{\s*display: contents;\s*\}/,
+    /\.dateCardOptionControls \{[\s\S]*?display: grid;[\s\S]*?border: 1px solid #cfdcdc;[\s\S]*?border-radius: 12px;/,
   );
+  assert.match(
+    cleanStylesSource,
+    /\.detailRecommendedAddOn\[data-grouped="true"\] \{[\s\S]*?border: 0;[\s\S]*?background: transparent;/,
+  );
+  assert.match(
+    cleanStylesSource,
+    /\.detailVisaServices\[data-grouped="true"\] \{[\s\S]*?border: 0;[\s\S]*?background: transparent;/,
+  );
+  assert.match(recommendedAddOnSource, /data-grouped=\{grouped \|\| undefined\}/);
+  assert.match(visaToggleSource, /data-grouped=\{grouped \|\| undefined\}/);
   assert.match(
     interactiveStylesSource,
     /@media \(min-width: 701px\) \{[\s\S]*?\.dateCardOptionControls \{\s*display: none;\s*\}/,
@@ -175,7 +185,7 @@ test("offers only the visas required by the selected trip and keeps them optiona
   assert.match(visaToggleSource, /Jika visa Anda masih berlaku, pilih Tidak\./);
   assert.match(visaToggleSource, /type="checkbox"/);
   assert.match(visaToggleSource, /included \? "Ya" : "Tidak"/);
-  assert.match(roomBookingSource, /<TourVisaServiceToggle \/>/);
+  assert.match(roomBookingSource, /<TourVisaServiceToggle compact grouped \/>/);
   assert.match(roomSidebarSource, /<TourVisaServiceToggle compact \/>/);
   assert.match(bookingSheetSource, /<TourVisaServiceToggle \/>/);
 });

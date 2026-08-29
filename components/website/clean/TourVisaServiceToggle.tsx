@@ -4,7 +4,13 @@ import { formatCurrency } from "@/lib/utils";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
 import styles from "./CleanSite.module.css";
 
-export default function TourVisaServiceToggle({ compact = false }: { compact?: boolean }) {
+export default function TourVisaServiceToggle({
+  compact = false,
+  grouped = false,
+}: {
+  compact?: boolean;
+  grouped?: boolean;
+}) {
   const {
     visaOffers,
     includedVisaOfferIds,
@@ -17,6 +23,7 @@ export default function TourVisaServiceToggle({ compact = false }: { compact?: b
     <section
       className={styles.detailVisaServices}
       data-compact={compact || undefined}
+      data-grouped={grouped || undefined}
       aria-label="Pilihan bantuan visa"
     >
       {!compact && (
