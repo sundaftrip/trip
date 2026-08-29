@@ -168,7 +168,7 @@ export const CANADA_ROCKIES_TOUR = {
   notes: "Pendaftaran awal dibuka untuk mengumpulkan peserta dan membentuk grup keberangkatan. Setelah grup terbentuk, Sundaf Trip akan menyampaikan harga final dan jadwal pembayaran melalui invoice resmi.",
   addOns: [
     {
-      name: "Tips Tour Leader & driver + city tax",
+      name: "Tips Tour Leader & Driver + city tax",
       price: 3_000_000,
       tag: "wajib" as const,
       desc: "Dibayar bersama pelunasan paket.",

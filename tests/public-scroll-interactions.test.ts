@@ -152,3 +152,10 @@ test("corrects details movement without a smooth window scroll call", () => {
   assert.match(stableDetails, /scrollingElement\.scrollTop \+= delta/);
   assert.doesNotMatch(stableDetails, /window\.scrollBy/);
 });
+
+test("closes the booking sheet without moving the page to its opener", () => {
+  const bookingSheet = source("components/website/clean/TourBookingSheet.tsx");
+
+  assert.match(bookingSheet, /opener\?\.focus\(\{ preventScroll: true \}\)/);
+  assert.doesNotMatch(bookingSheet, /opener\?\.focus\(\)/);
+});

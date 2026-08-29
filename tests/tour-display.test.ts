@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { localizePdfText } from "../lib/itinerary-pdf-localization";
+import { normalizeTourServiceTerms } from "../lib/tour-service-terms";
 import { normalizeItineraryDisplayTitle, normalizeTourDisplayTitle } from "../lib/tour-display";
 
 test("normalizes an all-lowercase imported tour title", () => {
@@ -48,5 +49,28 @@ test("localizes mixed imported Vietnam itinerary phrasing", () => {
   assert.equal(
     localizePdfText("Begin your exploration of Hanoi dengan a relaxing one-hour cyclo ride through the charming Hanoi Old Quarter."),
     "Mulai eksplorasi Hanoi dengan cyclo ride santai selama satu jam melalui Hanoi Old Quarter.",
+  );
+});
+
+test("keeps Tour Leader and Driver as the public service terms", () => {
+  assert.equal(
+    normalizeTourServiceTerms("Tips pemimpin tur & pengemudi"),
+    "Tips Tour Leader & Driver",
+  );
+  assert.equal(
+    normalizeTourServiceTerms("Tips pemimpin tur dan pengemudi"),
+    "Tips Tour Leader & Driver",
+  );
+  assert.equal(
+    normalizeTourServiceTerms("Tips Tour leader & driver"),
+    "Tips Tour Leader & Driver",
+  );
+  assert.equal(
+    localizePdfText("Tips Tour Leader & driver + city tax"),
+    "Tips Tour Leader & Driver + city tax",
+  );
+  assert.equal(
+    localizePdfText("Tips pemimpin tur & pengemudi"),
+    "Tips Tour Leader & Driver",
   );
 });

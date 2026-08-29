@@ -1,3 +1,5 @@
+import { normalizeTourServiceTerms } from "./tour-service-terms";
+
 export interface LocalizableItineraryDay {
   day: number;
   title: string;
@@ -216,7 +218,7 @@ function applyTranslations(value: string) {
 
 export function localizePdfText(value?: string | null) {
   if (!value) return value ?? null;
-  return value
+  const localized = value
     .split("\n")
     .map((line) => {
       const trimmed = line.trim();
@@ -225,6 +227,7 @@ export function localizePdfText(value?: string | null) {
     })
     .join("\n")
     .replace(/\n{3,}/g, "\n\n");
+  return normalizeTourServiceTerms(localized);
 }
 
 export function localizePdfTour<T extends LocalizablePdfTour>(tour: T): T {

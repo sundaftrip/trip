@@ -9,8 +9,10 @@ import {
 test("uses the approved travel and visa terminology", () => {
   assert.equal(reviewedEnglishFor("Kelayakan"), "Requirements");
   assert.equal(reviewedEnglishFor("Syarat Kelayakan"), "Application Requirements");
-  assert.equal(reviewedEnglishFor("Pemimpin tur & pengemudi"), "Tour leader & driver");
+  assert.equal(reviewedEnglishFor("Pemimpin tur & pengemudi"), "Tour Leader & Driver");
   assert.equal(reviewedEnglishFor("Pemandu wisata"), "Local guide");
+  assert.equal(reviewedEnglishFor("Pilih jumlah orang per kamar"), "Choose room occupancy");
+  assert.equal(reviewedEnglishFor("Harga paket (3 orang/kamar)"), "Package price (3 guests/room)");
 });
 
 test("keeps shared English copy free from the rejected house style", () => {

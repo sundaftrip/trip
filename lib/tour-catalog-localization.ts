@@ -1,4 +1,5 @@
 import { localizePdfText } from "./itinerary-pdf-localization";
+import { normalizeTourServiceTerms } from "./tour-service-terms";
 
 const TRANSLATE_URL = "https://translate.googleapis.com/translate_a/single";
 const TRANSLATE_CHUNK_LIMIT = 1400;
@@ -291,7 +292,7 @@ export function normalizeCatalogIndonesian(value?: string | null) {
   for (const [pattern, replacement] of POST_REPLACEMENTS) {
     out = out.replace(pattern, replacement);
   }
-  return normalizeSpacing(out);
+  return normalizeTourServiceTerms(normalizeSpacing(out));
 }
 
 export function hasEnglishCatalogHint(value?: string | null) {

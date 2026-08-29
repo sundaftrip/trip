@@ -14,7 +14,6 @@ import {
   Users,
   X,
 } from "lucide-react";
-import TourBookingCTA from "@/components/website/TourBookingCTA";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
@@ -28,9 +27,12 @@ import {
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import StableDetails from "./StableDetails";
-import TourBookingExperience from "./TourBookingExperience";
 import TourDetailTabs from "./TourDetailTabs";
 import TourHeroGallery from "./TourHeroGallery";
+import TourRoomBookingPanel from "./TourRoomBookingPanel";
+import TourRoomBookingSidebar from "./TourRoomBookingSidebar";
+import TourRoomRecoveryLink from "./TourRoomRecoveryLink";
+import { TourRoomSelectionProvider } from "./TourRoomSelectionContext";
 import styles from "./CleanSite.module.css";
 import interactiveStyles from "./TourDetailInteractive.module.css";
 
@@ -368,7 +370,8 @@ export default function CleanTourDetail({
 
       <TourDetailTabs tabs={sectionTabs} tourId={tour.id} />
 
-      <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
+      <TourRoomSelectionProvider roomPrices={roomPrices}>
+        <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
           <section className={styles.detailContentSection} id="ringkasan" aria-labelledby="ringkasan-title">
             <div className={styles.detailSummary}>
@@ -474,65 +477,26 @@ export default function CleanTourDetail({
             <p className={styles.detailSectionLede}>
               Harga paket, biaya wajib di luar paket, dan status ditampilkan sebelum kamu mengirim permintaan ketersediaan.
             </p>
-            {roomPrices.length > 0 && (
-              <div className={styles.detailRoomPriceGrid} aria-label="Harga paket berdasarkan jumlah orang per kamar">
-                {roomPrices.map((room, index) => (
-                  <article key={room.code} data-featured={index === 0}>
-                    <span>{room.label}</span>
-                    <h3>{formatCurrency(room.headlinePrice)}</h3>
-                    <p>Harga posting per orang</p>
-                    <dl>
-                      <div>
-                        <dt>Biaya wajib</dt>
-                        <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
-                      </div>
-                      <div>
-                        <dt>Total wajib per orang</dt>
-                        <dd>{formatCurrency(room.mandatoryTotalPrice)}</dd>
-                      </div>
-                    </dl>
-                  </article>
-                ))}
-              </div>
-            )}
-            <div className={interactiveStyles.dateGrid}>
-              <article className={interactiveStyles.dateCard} data-unavailable={unavailable}>
-                <div className={interactiveStyles.dateCardTop}>
-                  <span>{status}</span>
-                  <strong>{departureLabel || "Tanggal fleksibel"}</strong>
-                </div>
-                <dl>
-                  <div><dt>{roomPrices.length > 0 ? `Harga mulai (${roomPrices[0].label})` : "Harga paket"}</dt><dd>{hasPrice ? formatCurrency(basePrice) : "Sesuai permintaan"}/orang</dd></div>
-                  {mandatoryAddOns.map((item) => (
-                    <div key={item.name}><dt>{item.name} <small>WAJIB</small></dt><dd>+{formatCurrency(item.price)}</dd></div>
-                  ))}
-                  <div className={interactiveStyles.dateTotal}>
-                    <dt>{roomPrices.length > 0 ? "Total wajib mulai" : "Total wajib"}</dt>
-                    <dd>{hasPrice ? formatCurrency(startingTotal) : "Dikonfirmasi tim"}</dd>
-                  </div>
-                  {paymentPlan?.steps[0] && (
-                    <div><dt>Minimum pembayaran awal</dt><dd>{paymentPlan.steps[0].amountLabel}</dd></div>
-                  )}
-                </dl>
-                <TourBookingExperience
-                  phone={bookingPhone}
-                  tourId={tour.id}
-                  tourName={tour.title}
-                  priceLabel={priceLabel}
-                  priceCaption={priceCaption}
-                  roomOptions={roomPrices.map((room) => ({
-                    value: room.code,
-                    label: room.label,
-                    priceLabel: formatCurrency(room.mandatoryTotalPrice),
-                    priceCaption: "Total wajib",
-                  }))}
-                  availabilityLabel={status}
-                  mode={bookingMode}
-                  departures={bookingDepartures}
-                  completedTourHref={itinerary.length > 0 ? "#itinerary" : "#ringkasan"}
-                />
-              </article>
-            </div>
+            <TourRoomBookingPanel
+              roomPrices={roomPrices}
+              mandatoryAddOns={mandatoryAddOns}
+              paymentInitialAmountLabel={paymentPlan?.steps[0]?.amountLabel}
+              status={status}
+              departureLabel={departureLabel}
+              unavailable={unavailable}
+              hasPrice={hasPrice}
+              basePrice={basePrice}
+              startingTotal={startingTotal}
+              bookingPhone={bookingPhone}
+              tourId={tour.id}
+              tourName={tour.title}
+              priceLabel={priceLabel}
+              priceCaption={priceCaption}
+              availabilityLabel={status}
+              bookingMode={bookingMode}
+              bookingDepartures={bookingDepartures}
+              completedTourHref={itinerary.length > 0 ? "#itinerary" : "#ringkasan"}
+            />
           </section>
 
           {hasFacilities && (
@@ -676,7 +640,15 @@ export default function CleanTourDetail({
               <Download aria-hidden="true" />Unduh itinerary PDF
             </a>
             <p className={styles.detailPdfRecovery} id="mobile-pdf-recovery">
-              Jika PDF tidak terbuka, <a href={bookingWaHref} data-analytics-placement="detail-mobile-pdf-recovery">minta salinan via WhatsApp</a>.
+              Jika PDF tidak terbuka,{" "}
+              <TourRoomRecoveryLink
+                fallbackHref={bookingWaHref}
+                phone={bookingPhone}
+                tourName={tour.title}
+                departureLabel={departureLabel}
+                bookingMode={bookingMode}
+                analyticsPlacement="detail-mobile-pdf-recovery"
+              />.
             </p>
             {optionalAddOns.length > 0 && (
               <StableDetails>
@@ -708,41 +680,24 @@ export default function CleanTourDetail({
         <aside className={styles.detailBookingSidebar} aria-label="Informasi pemesanan">
           <div className={styles.detailBookingCard}>
             <span className={`${styles.detailStock} ${unavailable ? styles.detailStockUnavailable : ""}`}>{status}</span>
-            <p className={styles.detailBookingLabel}>Harga paket per orang</p>
-            <p className={styles.detailBookingPrice}>{hasPrice ? formatCurrency(basePrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}</p>
-            {tour.promoPrice && roomPrices.length === 0 && <p className={styles.detailOriginalPrice}>Harga normal <s>{formatCurrency(tour.price)}</s></p>}
-            {tour.priceLandTour && <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(tour.priceLandTour)}</p>}
-
-            {mandatoryAddOns.length > 0 && (
-              <div className={styles.detailPriceBreakdown}>
-                <div><span>Harga paket</span><strong>{formatCurrency(basePrice)}</strong></div>
-                {mandatoryAddOns.map((item) => <div key={item.name}><span>{item.name} <small>WAJIB</small></span><strong>+{formatCurrency(item.price)}</strong></div>)}
-                <div className={styles.detailPriceTotal}><span>Total wajib</span><strong>{formatCurrency(startingTotal)}</strong></div>
-              </div>
-            )}
-
-            {roomPrices.length > 0 && (
-              <div className={styles.detailSidebarRoomPrices}>
-                <strong>Pilihan isi kamar</strong>
-                {roomPrices.map((room) => (
-                  <div key={room.code}>
-                    <span>{room.label}</span>
-                    <span><b>{formatCurrency(room.headlinePrice)}</b><small>Total wajib {formatCurrency(room.mandatoryTotalPrice)}</small></span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {unavailable ? (
-              <div className={styles.detailUnavailableCta}>{isExpired ? "Trip ini sudah selesai" : "Kapasitas saat ini penuh"}</div>
-            ) : (
-              <TourBookingCTA
-                waHref={bookingWaHref}
-                destination={tour.title}
-                summary={bookingSummary}
-                buttonClassName={styles.detailBookingPrimary}
-              />
-            )}
+            <TourRoomBookingSidebar
+              roomPrices={roomPrices}
+              mandatoryAddOns={mandatoryAddOns}
+              hasPrice={hasPrice}
+              basePrice={basePrice}
+              startingTotal={startingTotal}
+              promoPrice={tour.promoPrice}
+              originalPrice={tour.price}
+              priceLandTour={tour.priceLandTour}
+              unavailable={unavailable}
+              isExpired={isExpired}
+              bookingWaHref={bookingWaHref}
+              bookingSummary={bookingSummary}
+              bookingPhone={bookingPhone}
+              bookingMode={bookingMode}
+              tourName={tour.title}
+              departureLabel={departureLabel}
+            />
 
             <a
               className={styles.detailBookingPdf}
@@ -757,7 +712,15 @@ export default function CleanTourDetail({
               <Download aria-hidden="true" />Unduh itinerary PDF
             </a>
             <p className={styles.detailPdfRecovery} id="detail-pdf-recovery">
-              Jika unduhan gagal, <a href={bookingWaHref} data-analytics-placement="detail-pdf-recovery">minta salinan via WhatsApp</a>.
+              Jika unduhan gagal,{" "}
+              <TourRoomRecoveryLink
+                fallbackHref={bookingWaHref}
+                phone={bookingPhone}
+                tourName={tour.title}
+                departureLabel={departureLabel}
+                bookingMode={bookingMode}
+                analyticsPlacement="detail-pdf-recovery"
+              />.
             </p>
             <p className={styles.detailBookingNote}>Konsultasi awal gratis. Tim akan mengonfirmasi harga, jadwal, dan ketersediaan terbaru.</p>
 
@@ -796,7 +759,8 @@ export default function CleanTourDetail({
             </div>
           </div>
         </aside>
-      </div>
+        </div>
+      </TourRoomSelectionProvider>
 
       {relatedTours.length > 0 && (
         <section className={styles.detailRelated} aria-labelledby="related-title">
