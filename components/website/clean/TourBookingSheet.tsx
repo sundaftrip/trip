@@ -273,7 +273,7 @@ export default function TourBookingSheet({
             </select>
           </label>
 
-          <TourRecommendedAddOnToggle />
+          <TourRecommendedAddOnToggle flat />
           <TourVisaServiceToggle />
 
           <label className={styles.bookingField}>

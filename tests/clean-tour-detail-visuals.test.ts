@@ -157,10 +157,20 @@ test("keeps recommended travel insurance optional and synchronized", () => {
   assert.match(recommendedAddOnSource, /Termasuk/);
   assert.match(recommendedAddOnSource, /Tidak termasuk/);
   assert.doesNotMatch(recommendedAddOnSource, /type="button"/);
+  assert.match(recommendedAddOnSource, /flat = false/);
+  assert.match(recommendedAddOnSource, /data-flat=\{\(flat && !compact && !grouped\) \|\| undefined\}/);
+  assert.match(bookingSheetSource, /<TourRecommendedAddOnToggle flat \/>/);
+  assert.match(
+    cleanStylesSource,
+    /\.detailRecommendedAddOn\[data-flat="true"\] \{[\s\S]*?padding: 0;[\s\S]*?border: 0;[\s\S]*?border-radius: 0;[\s\S]*?background: transparent;/,
+  );
+  assert.match(
+    cleanStylesSource,
+    /\.detailRecommendedAddOn\[data-flat="true"\]\[data-included="true"\] \{[\s\S]*?background: transparent;/,
+  );
   assert.match(roomBookingSource, /selectedMandatoryTotalPrice \+ optionalServicesTotal/);
   assert.match(roomSidebarSource, /selectedMandatoryTotalPrice \+ optionalServicesTotal/);
   assert.match(roomRecoverySource, /\(selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal\) \+ optionalServicesTotal/);
-  assert.match(bookingSheetSource, /<TourRecommendedAddOnToggle \/>/);
   assert.match(bookingSource, /addOnPreference/);
   assert.match(bookingSource, /\|\| selectedDeparture\?\.priceLabel/);
   assert.match(bookingSheetSource, /\|\| selectedDeparture\?\.priceLabel/);

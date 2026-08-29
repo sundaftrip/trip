@@ -7,9 +7,11 @@ import styles from "./CleanSite.module.css";
 export default function TourRecommendedAddOnToggle({
   compact = false,
   grouped = false,
+  flat = false,
 }: {
   compact?: boolean;
   grouped?: boolean;
+  flat?: boolean;
 }) {
   const {
     selectableAddOn,
@@ -24,6 +26,7 @@ export default function TourRecommendedAddOnToggle({
       className={styles.detailRecommendedAddOn}
       data-compact={compact || undefined}
       data-grouped={grouped || undefined}
+      data-flat={(flat && !compact && !grouped) || undefined}
       data-included={includeSelectableAddOn}
     >
       <span className={styles.detailRecommendedAddOnCopy}>
