@@ -1545,9 +1545,22 @@
   background: transparent;
 }
 
+.detailRecommendedAddOn[data-flat="true"] {
+  min-height: 0;
+  margin: 12px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .detailRecommendedAddOn[data-included="true"] {
   border-color: var(--clean-teal-dark, #075d63);
   background: var(--clean-teal-pale, #e5f3f1);
+}
+
+.detailRecommendedAddOn[data-flat="true"][data-included="true"] {
+  background: transparent;
 }
 
 .detailRecommendedAddOn[data-grouped="true"][data-included="true"] {
