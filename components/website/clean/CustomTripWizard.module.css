@@ -3,7 +3,7 @@
   padding: 108px 0 84px;
   background: #FFFFFF;
   color: #132b3a;
-  font-family: var(--site-font-family), "Plus Jakarta Sans", sans-serif;
+  font-family: var(--site-font-family), var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
 .shell {
@@ -41,6 +41,7 @@
 .aftercare h2 {
   margin: 0;
   color: #132b3a;
+  font-family: var(--site-display-font-family, var(--font-jost), "Helvetica Neue", Arial, sans-serif);
   font-size: clamp(38px, 6vw, 66px);
   font-weight: 790;
   letter-spacing: -.045em;

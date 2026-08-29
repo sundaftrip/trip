@@ -20,13 +20,13 @@
   overflow-x: hidden;
   background: var(--home-paper);
   color: var(--home-ink);
-  font-weight: 300;
-  letter-spacing: 0.012em;
+  font-weight: 400;
+  letter-spacing: 0;
   font-family: var(
     --site-font-family,
-    var(--font-jost),
-    "Helvetica Neue",
-    Arial,
+    var(--font-plus-jakarta),
+    ui-sans-serif,
+    system-ui,
     sans-serif
   );
 }
@@ -135,6 +135,7 @@
 .heroCopy h1 {
   max-width: 10ch;
   margin: 0;
+  font-family: var(--site-display-font-family, var(--font-jost), "Helvetica Neue", Arial, sans-serif);
   font-size: clamp(52px, 6.2vw, 76px);
   font-weight: 780;
   line-height: 1.01;
@@ -307,6 +308,7 @@
 .finalLayout h2 {
   margin: 0;
   color: var(--home-ink);
+  font-family: var(--site-display-font-family, var(--font-jost), "Helvetica Neue", Arial, sans-serif);
   font-size: clamp(31px, 4.1vw, 49px);
   font-weight: 760;
   line-height: 1.06;
