@@ -195,7 +195,29 @@ test("offers only the visas required by the selected trip and keeps them optiona
   assert.match(visaToggleSource, /Jika visa Anda masih berlaku, pilih Tidak\./);
   assert.match(visaToggleSource, /type="checkbox"/);
   assert.match(visaToggleSource, /included \? "Ya" : "Tidak"/);
+  assert.match(visaToggleSource, /flat = false/);
+  assert.match(visaToggleSource, /data-flat=\{\(flat && !compact && !grouped\) \|\| undefined\}/);
   assert.match(roomBookingSource, /<TourVisaServiceToggle compact grouped \/>/);
   assert.match(roomSidebarSource, /<TourVisaServiceToggle compact \/>/);
-  assert.match(bookingSheetSource, /<TourVisaServiceToggle \/>/);
+  assert.match(bookingSheetSource, /<TourVisaServiceToggle flat \/>/);
+  assert.match(
+    cleanStylesSource,
+    /\.detailVisaServices\[data-flat="true"\] \{[\s\S]*?padding: 0;[\s\S]*?border: 0;[\s\S]*?border-radius: 0;[\s\S]*?background: transparent;/,
+  );
+  assert.match(
+    cleanStylesSource,
+    /\.detailVisaServices\[data-flat="true"\] \.detailVisaServiceList > label \{[\s\S]*?padding: 0;[\s\S]*?border: 0;[\s\S]*?border-radius: 0;[\s\S]*?background: transparent;/,
+  );
+  assert.match(
+    cleanStylesSource,
+    /\.detailVisaServices\[data-flat="true"\] \.detailVisaServicesIntro strong \{[\s\S]*?font-size: 14px;[\s\S]*?font-weight: 700;[\s\S]*?line-height: 1\.4;/,
+  );
+  assert.match(
+    cleanStylesSource,
+    /\.detailRecommendedAddOn\[data-flat="true"\] \.detailRecommendedAddOnCopy strong \{[\s\S]*?font-size: 14px;[\s\S]*?font-weight: 700;[\s\S]*?line-height: 1\.4;/,
+  );
+  assert.match(
+    interactiveStylesSource,
+    /\.bookingSheet \{[\s\S]*?font-family: var\(--font-plus-jakarta\)[\s\S]*?font-weight: 400;[\s\S]*?letter-spacing: 0;/,
+  );
 });

@@ -274,7 +274,7 @@ export default function TourBookingSheet({
           </label>
 
           <TourRecommendedAddOnToggle flat />
-          <TourVisaServiceToggle />
+          <TourVisaServiceToggle flat />
 
           <label className={styles.bookingField}>
             <span>Nama</span>
