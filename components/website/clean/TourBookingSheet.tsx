@@ -159,7 +159,7 @@ export default function TourBookingSheet({
         if (ariaHidden === null) target.removeAttribute("aria-hidden");
         else target.setAttribute("aria-hidden", ariaHidden);
       });
-      window.requestAnimationFrame(() => opener?.focus());
+      window.requestAnimationFrame(() => opener?.focus({ preventScroll: true }));
     };
   }, [onClose, opener]);
 

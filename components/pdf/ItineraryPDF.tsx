@@ -7,6 +7,7 @@ import { buildItineraryDisplay, type ItineraryInsight } from "@/lib/itinerary-in
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 import type { CommerceTourStatus } from "@/lib/tour-commerce";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
+import { normalizeTourServiceTerms } from "@/lib/tour-service-terms";
 
 const PAPER = "#FFFFFF";
 const TEAL = "#FBD324";
@@ -1760,14 +1761,12 @@ function waLink(raw: string) {
 
 function cleanText(value?: string | null) {
   return value
-    ? stripItineraryMarkup(value)
+    ? normalizeTourServiceTerms(stripItineraryMarkup(value)
       .replace(/[\u2010-\u2015\u2212]/g, "-")
       .replace(/\s*[\u2192\u2794]\s*/g, " - ")
-      .replace(/\bpemandu wisata dan pengemudi\b/gi, "tour leader & driver")
-      .replace(/\bpemimpin tur dan pengemudi\b/gi, "tour leader & driver")
-      .replace(/\bpemimpin tur\b/gi, "tour leader")
-      .replace(/\bpemandu wisata\b/gi, "tour leader")
-      .replace(/\bpengemudi\b/gi, "driver")
+      .replace(/\bpemandu wisata dan pengemudi\b/gi, "Tour Leader & Driver")
+      .replace(/\bpemimpin tur dan pengemudi\b/gi, "Tour Leader & Driver")
+      .replace(/\bpemandu wisata\b/gi, "Tour Leader")
       .replace(/\bKelayakan\b/g, "Syarat")
       .replace(/\bkelayakan\b/g, "syarat")
       .replace(/\bpre-registration\b/gi, "pendaftaran awal")
@@ -1800,7 +1799,7 @@ function cleanText(value?: string | null) {
       )
       .replace(/([.!?]\s+)syarat\b/g, "$1Syarat")
       .replace(/\s+/g, " ")
-      .trim()
+      .trim())
     : "";
 }
 
@@ -2373,7 +2372,7 @@ function formatPdfListText(value: string) {
     .replace(/\bMeals outside the program\b/gi, "Makan di luar program")
     .replace(/\bMeals?\b/gi, "Makan")
     .replace(/\bTransportasi\b\s*:?\s*/gi, "")
-    .replace(/^tour leader\b/i, "Tour leader")
+    .replace(/^tour leader\b/i, "Tour Leader")
     .replace(/\s+/g, " ")
     .trim();
 }

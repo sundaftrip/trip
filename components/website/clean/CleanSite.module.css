@@ -1413,25 +1413,64 @@
 
 .detailRoomPriceGrid {
   margin: 24px 0;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  border: 0;
 }
 
-.detailRoomPriceGrid article {
+.detailRoomPriceLegend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.detailRoomPriceGrid label {
+  position: relative;
+  width: 100%;
   min-width: 0;
   padding: 22px;
   border: 1px solid var(--clean-line);
   border-radius: 14px;
   background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
 }
 
-.detailRoomPriceGrid article[data-featured="true"] {
+.detailRoomPriceGrid label:hover {
+  border-color: color-mix(in srgb, var(--clean-teal) 55%, var(--clean-line));
+}
+
+.detailRoomPriceGrid label[data-selected="true"] {
   border-color: var(--clean-teal);
   background: var(--clean-teal-pale);
 }
 
-.detailRoomPriceGrid article > span {
+.detailRoomPriceInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.detailRoomPriceGrid label:focus-within {
+  outline: 3px solid color-mix(in srgb, var(--clean-teal) 30%, transparent);
+  outline-offset: 3px;
+}
+
+.detailRoomPriceGrid label > span {
   color: var(--clean-teal-dark);
   font-size: 11px;
   font-weight: 800;
@@ -1447,7 +1486,7 @@
   line-height: 1.1;
 }
 
-.detailRoomPriceGrid article > p {
+.detailRoomPriceGrid label > p {
   margin: 0;
   color: var(--clean-muted);
   font-size: 11px;
@@ -1657,16 +1696,27 @@
   font-size: 12px;
 }
 
-.detailSidebarRoomPrices > div {
+.detailSidebarRoomPrices > button {
+  width: 100%;
+  padding: 4px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
   color: var(--clean-muted);
+  font: inherit;
   font-size: 11px;
+  text-align: left;
+  cursor: pointer;
 }
 
-.detailSidebarRoomPrices > div > span:last-child { text-align: right; }
+.detailSidebarRoomPrices > button:hover,
+.detailSidebarRoomPrices > button[data-selected="true"] { background: #fff; color: var(--clean-teal-dark); }
+.detailSidebarRoomPrices > button:focus-visible { outline: 2px solid var(--clean-teal); outline-offset: 2px; }
+.detailSidebarRoomPrices > button > span:last-child { text-align: right; }
 .detailSidebarRoomPrices b { display: block; color: var(--clean-navy); font-size: 12px; }
 .detailSidebarRoomPrices small { display: block; margin-top: 2px; color: var(--clean-muted); font-size: 9px; }
 

@@ -28,6 +28,8 @@ type TourBookingExperienceProps = {
   mode: BookingMode;
   departures: BookingDeparture[];
   roomOptions?: BookingRoomOption[];
+  selectedRoomValue?: string;
+  onRoomChange?: (value: string) => void;
   completedTourHref?: string;
   showSectionAction?: boolean;
 };
@@ -54,6 +56,8 @@ export default function TourBookingExperience({
   mode,
   departures,
   roomOptions = DEFAULT_ROOM_OPTIONS,
+  selectedRoomValue,
+  onRoomChange,
   completedTourHref = "#itinerary",
   showSectionAction = true,
 }: TourBookingExperienceProps) {
@@ -62,7 +66,9 @@ export default function TourBookingExperience({
   const [selectedId, setSelectedId] = useState(departures[0]?.id || "");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const [room, setRoom] = useState(bookingRoomOptions[0].value);
+  const [internalRoom, setInternalRoom] = useState(bookingRoomOptions[0].value);
+  const room = selectedRoomValue ?? internalRoom;
+  const setRoom = onRoomChange ?? setInternalRoom;
   const [name, setName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [sourceUrl, setSourceUrl] = useState("https://sundaftrip.com");
@@ -202,8 +208,8 @@ export default function TourBookingExperience({
       )}
       <div className={styles.mobileBookingBar} role="region" aria-label="Pemesanan cepat">
         <div>
-          <span>{mode === "sold_out" ? "Kapasitas" : priceCaption}</span>
-          <strong>{mode === "sold_out" ? availabilityLabel : priceLabel}</strong>
+          <span>{mode === "sold_out" ? "Kapasitas" : selectedPriceCaption}</span>
+          <strong>{mode === "sold_out" ? availabilityLabel : selectedPriceLabel}</strong>
         </div>
         <button type="button" onClick={(event) => showSheet(event.currentTarget)}>
           {triggerLabel}

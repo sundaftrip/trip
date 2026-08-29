@@ -10,6 +10,22 @@ const bookingSource = readFileSync(
   new URL("../components/website/clean/TourBookingExperience.tsx", import.meta.url),
   "utf8",
 );
+const roomBookingSource = readFileSync(
+  new URL("../components/website/clean/TourRoomBookingPanel.tsx", import.meta.url),
+  "utf8",
+);
+const roomSidebarSource = readFileSync(
+  new URL("../components/website/clean/TourRoomBookingSidebar.tsx", import.meta.url),
+  "utf8",
+);
+const roomSelectionSource = readFileSync(
+  new URL("../components/website/clean/TourRoomSelectionContext.tsx", import.meta.url),
+  "utf8",
+);
+const roomRecoverySource = readFileSync(
+  new URL("../components/website/clean/TourRoomRecoveryLink.tsx", import.meta.url),
+  "utf8",
+);
 
 test("shows visual highlights for every itinerary day", () => {
   assert.match(source, /const experienceItems = itinerary\.map\(/);
@@ -32,4 +48,38 @@ test("does not repeat the hero gallery before the itinerary", () => {
   );
   assert.doesNotMatch(bookingSource, /Lihat dokumentasi/);
   assert.match(bookingSource, /Lihat itinerary perjalanan/);
+});
+
+test("makes every room tier an accessible synchronized choice", () => {
+  assert.match(roomBookingSource, /<fieldset className=\{styles\.detailRoomPriceGrid\}>/);
+  assert.match(roomBookingSource, /<legend className=\{styles\.detailRoomPriceLegend\}>Pilih jumlah orang per kamar<\/legend>/);
+  assert.match(roomBookingSource, /<label[\s\S]{0,180}data-selected=\{selected\}/);
+  assert.match(roomBookingSource, /type="radio"/);
+  assert.match(roomBookingSource, /checked=\{selected\}/);
+  assert.match(roomBookingSource, /aria-label=\{`Pilih \$\{room\.label\}`\}/);
+  assert.match(roomBookingSource, /onChange=\{\(\) => setSelectedRoomCode\(room\.code\)\}/);
+  assert.match(roomBookingSource, /selectedRoom\?\.headlinePrice/);
+  assert.match(roomBookingSource, /selectedRoom\?\.mandatoryTotalPrice/);
+  assert.match(roomBookingSource, /selectedRoomValue=\{selectedRoom\?\.code\}/);
+  assert.match(bookingSource, /const room = selectedRoomValue \?\? internalRoom/);
+  assert.match(bookingSource, /onRoomChange \?\? setInternalRoom/);
+  assert.doesNotMatch(roomBookingSource, /type="button"/);
+  assert.doesNotMatch(roomBookingSource, /aria-pressed/);
+  assert.doesNotMatch(roomBookingSource, /data-featured/);
+});
+
+test("keeps the selected room synchronized through every booking surface", () => {
+  assert.match(source, /<TourRoomSelectionProvider roomPrices=\{roomPrices\}>/);
+  assert.match(roomSelectionSource, /selectedRoomCode/);
+  assert.match(roomBookingSource, /useTourRoomSelection\(\)/);
+  assert.match(roomSidebarSource, /useTourRoomSelection\(\)/);
+  assert.match(roomSidebarSource, /selectedRoom\?\.headlinePrice \?\? basePrice/);
+  assert.match(roomSidebarSource, /selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal/);
+  assert.match(roomSidebarSource, /buildWhatsAppBookingHref\(bookingPhone/);
+  assert.match(roomSidebarSource, /roomPreference: selectedRoom\.label/);
+  assert.match(source, /<TourRoomRecoveryLink/g);
+  assert.equal(source.match(/<TourRoomRecoveryLink/g)?.length, 2);
+  assert.match(roomRecoverySource, /useTourRoomSelection\(\)/);
+  assert.match(roomRecoverySource, /selectedRoom\.mandatoryTotalPrice/);
+  assert.match(roomRecoverySource, /roomPreference: selectedRoom\.label/);
 });
