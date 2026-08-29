@@ -1554,6 +1554,27 @@
   background: transparent;
 }
 
+.detailRecommendedAddOn[data-flat="true"] .detailRecommendedAddOnCopy strong {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  line-height: 1.4;
+}
+
+.detailRecommendedAddOn[data-flat="true"] .detailRecommendedAddOnCopy small {
+  margin-top: 3px;
+  color: var(--clean-muted);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.detailRecommendedAddOn[data-flat="true"] .detailRecommendedAddOnAction > span:first-child,
+.detailVisaServices[data-flat="true"] .detailRecommendedAddOnAction > span:first-child {
+  font-size: 11px;
+  font-weight: 500;
+}
+
 .detailRecommendedAddOn[data-included="true"] {
   border-color: var(--clean-teal-dark, #075d63);
   background: var(--clean-teal-pale, #e5f3f1);
@@ -1682,6 +1703,14 @@
   background: transparent;
 }
 
+.detailVisaServices[data-flat="true"] {
+  margin: 14px 0 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .detailRecommendedAddOn[data-grouped="true"] +
 .detailVisaServices[data-grouped="true"] {
   border-top: 1px solid #d8e5e4;
@@ -1696,6 +1725,22 @@
 
 .detailVisaServicesIntro strong { color: var(--clean-navy); }
 
+.detailVisaServices[data-flat="true"] .detailVisaServicesIntro {
+  margin-bottom: 11px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.detailVisaServices[data-flat="true"] .detailVisaServicesIntro strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  line-height: 1.4;
+}
+
 .detailVisaServiceList {
   display: grid;
   gap: 8px;
@@ -1703,6 +1748,10 @@
 
 .detailVisaServices[data-grouped="true"] .detailVisaServiceList {
   gap: 0;
+}
+
+.detailVisaServices[data-flat="true"] .detailVisaServiceList {
+  gap: 8px;
 }
 
 .detailVisaServiceList > label {
@@ -1725,6 +1774,14 @@
   background: transparent;
 }
 
+.detailVisaServices[data-flat="true"] .detailVisaServiceList > label {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .detailVisaServices[data-grouped="true"] .detailVisaServiceList > label + label {
   border-top: 1px solid #d8e5e4;
 }
@@ -1735,6 +1792,10 @@
 }
 
 .detailVisaServices[data-grouped="true"] .detailVisaServiceList > label[data-included="true"] {
+  background: transparent;
+}
+
+.detailVisaServices[data-flat="true"] .detailVisaServiceList > label[data-included="true"] {
   background: transparent;
 }
 
@@ -1751,6 +1812,20 @@
   color: var(--clean-teal-dark);
   font-size: 10px;
   font-weight: 780;
+}
+
+.detailVisaServices[data-flat="true"] .detailVisaServiceCopy strong {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  line-height: 1.4;
+}
+
+.detailVisaServices[data-flat="true"] .detailVisaServiceCopy small {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .detailHotelGrid {

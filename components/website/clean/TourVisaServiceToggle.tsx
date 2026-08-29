@@ -7,9 +7,11 @@ import styles from "./CleanSite.module.css";
 export default function TourVisaServiceToggle({
   compact = false,
   grouped = false,
+  flat = false,
 }: {
   compact?: boolean;
   grouped?: boolean;
+  flat?: boolean;
 }) {
   const {
     visaOffers,
@@ -24,6 +26,7 @@ export default function TourVisaServiceToggle({
       className={styles.detailVisaServices}
       data-compact={compact || undefined}
       data-grouped={grouped || undefined}
+      data-flat={(flat && !compact && !grouped) || undefined}
       aria-label="Pilihan bantuan visa"
     >
       {!compact && (
