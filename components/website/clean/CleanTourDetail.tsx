@@ -25,6 +25,7 @@ import {
   type ItineraryDisplayDay,
 } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
+import type { TourVisaOffer } from "@/lib/tour-visa-offers";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import StableDetails from "./StableDetails";
 import TourDetailTabs from "./TourDetailTabs";
@@ -82,6 +83,7 @@ type CleanTourDetailProps = {
   mandatoryAddOns: TourAddOn[];
   roomPrices: TourRoomPrice[];
   optionalAddOns: TourAddOn[];
+  visaOffers: TourVisaOffer[];
   paymentPlan: TourPaymentPlan | null;
   relatedTours: CleanTour[];
   reviews: TourReview[];
@@ -185,6 +187,15 @@ function cleanParagraphs(value: string | null) {
     .filter(Boolean);
 }
 
+function naturalizeVisaParagraph(paragraph: string) {
+  return paragraph
+    .replace(
+      /Kelayakan eTA, bila relevan, harus dikonfirmasi/gi,
+      "Persyaratan eTA, jika berlaku, perlu dikonfirmasi",
+    )
+    .replace(/\bKelayakan\b/gi, "Persyaratan");
+}
+
 function itineraryDate(tripDate: Date | null, day: number) {
   if (!tripDate) return null;
   const date = new Date(tripDate);
@@ -220,6 +231,7 @@ export default function CleanTourDetail({
   mandatoryAddOns,
   roomPrices,
   optionalAddOns,
+  visaOffers,
   paymentPlan,
   relatedTours,
   reviews,
@@ -236,7 +248,7 @@ export default function CleanTourDetail({
 }: CleanTourDetailProps) {
   const copy = detailCopy(tour, isFlexibleDate);
   const summaryParagraphs = cleanParagraphs(tour.description);
-  const visaParagraphs = cleanParagraphs(tour.visaInfo);
+  const visaParagraphs = cleanParagraphs(tour.visaInfo).map(naturalizeVisaParagraph);
   const noteParagraphs = cleanParagraphs(tour.notes);
   const heroImage = tour.heroImg || tour.gallery[0] || "/about-gallery-md/01-aurora.webp";
   const heroImages = [heroImage, ...tour.gallery];
@@ -251,7 +263,10 @@ export default function CleanTourDetail({
     && /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
     && Number(item.price) > 0
   ));
-  const disclosureOptionalAddOns = optionalAddOns.filter((item) => item !== selectableAddOn);
+  const disclosureOptionalAddOns = optionalAddOns.filter((item) => (
+    item !== selectableAddOn
+    && !(visaOffers.length > 0 && /visa/i.test(item.name))
+  ));
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
   const sectionTabs = [
@@ -272,6 +287,7 @@ export default function CleanTourDetail({
         id: `${tour.id}-${tour.tripDate.toISOString().slice(0, 10)}`,
         label: departureLabel || "Tanggal akan dikonfirmasi",
         priceLabel,
+        priceValue: hasPrice ? (startingTotal || basePrice) : undefined,
         status: commerceStatus === "sold_out"
           ? "sold_out" as const
           : commerceStatus === "waitlist"
@@ -376,7 +392,11 @@ export default function CleanTourDetail({
 
       <TourDetailTabs tabs={sectionTabs} tourId={tour.id} />
 
-      <TourRoomSelectionProvider roomPrices={roomPrices} selectableAddOn={selectableAddOn}>
+      <TourRoomSelectionProvider
+        roomPrices={roomPrices}
+        selectableAddOn={selectableAddOn}
+        visaOffers={visaOffers}
+      >
         <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
           <section className={styles.detailContentSection} id="ringkasan" aria-labelledby="ringkasan-title">
@@ -507,7 +527,6 @@ export default function CleanTourDetail({
 
           {hasFacilities && (
             <section className={styles.detailContentSection} id="fasilitas" aria-labelledby="fasilitas-title">
-              <p className={styles.detailSectionKicker}>Transparansi paket</p>
               <h2 className={styles.detailSectionTitle} id="fasilitas-title">Yang termasuk dalam paket</h2>
               <div className={styles.detailIncludedGrid}>
                 {tour.inclusions.length > 0 && (

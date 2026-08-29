@@ -4,12 +4,14 @@ import { useEffect, useRef, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { CalendarDays, Check, ChevronDown, X } from "lucide-react";
 import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
+import TourVisaServiceToggle from "./TourVisaServiceToggle";
 import styles from "./TourDetailInteractive.module.css";
 
 export type BookingDeparture = {
   id: string;
   label: string;
   priceLabel: string;
+  priceValue?: number;
   status: "available" | "last_seats" | "confirmed" | "sold_out" | "waitlist";
   availabilityLabel: string;
 };
@@ -108,7 +110,7 @@ export default function TourBookingSheet({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const selectedRoom = roomOptions.find((option) => option.value === room);
   const selectedPriceLabel = selectedRoom?.priceLabel
-    || (addOnPreference ? priceLabel : selectedDeparture?.priceLabel)
+    || selectedDeparture?.priceLabel
     || priceLabel;
   const selectedPriceCaption = selectedRoom?.priceCaption || priceCaption;
 
@@ -236,7 +238,7 @@ export default function TourBookingSheet({
                     <strong>{departure.label}</strong>
                     <small>
                       {departure.availabilityLabel} · {selectedPriceCaption}{" "}
-                      {selectedRoom?.priceLabel || (addOnPreference ? priceLabel : departure.priceLabel)}/orang
+                      {selectedRoom?.priceLabel || departure.priceLabel}/orang
                     </small>
                   </span>
                   <Check className={styles.optionCheck} aria-hidden="true" />
@@ -272,6 +274,7 @@ export default function TourBookingSheet({
           </label>
 
           <TourRecommendedAddOnToggle />
+          <TourVisaServiceToggle />
 
           <label className={styles.bookingField}>
             <span>Nama</span>
