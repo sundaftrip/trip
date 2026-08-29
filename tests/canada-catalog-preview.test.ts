@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   CANADA_ROCKIES_PREVIEW_ID,
   getCanadaRockiesPreviewTour,
+  resolveCanadaRockiesAddOns,
   resolveCanadaRockiesPdfNotes,
   selectCanadaRockiesTourSource,
 } from "../lib/canada-catalog-preview";
@@ -35,21 +36,40 @@ test("Canada fixture is available on deployed Vercel targets", () => {
 });
 
 test("production uses the persisted Canada record so generated links keep its real ID", () => {
-  const databaseTour = { id: "database-tour-id" };
-  const previewTour = { id: CANADA_ROCKIES_PREVIEW_ID };
+  const databaseTour = {
+    id: "database-tour-id",
+    slug: CANADA_ROCKIES_SLUG,
+    addOns: [
+      { name: "Biaya lokal", price: 4_400_000, tag: "wajib" },
+      { name: "Asuransi perjalanan usia sampai 69 tahun", price: 1_000_000, tag: "wajib" },
+    ],
+  };
+  const previewTour = {
+    id: CANADA_ROCKIES_PREVIEW_ID,
+    slug: CANADA_ROCKIES_SLUG,
+    addOns: CANADA_ROCKIES_TOUR.addOns.map((item) => ({ ...item })),
+  };
+  const productionTour = selectCanadaRockiesTourSource(databaseTour, previewTour, "production");
+  const previewSelection = selectCanadaRockiesTourSource(databaseTour, previewTour, "preview");
 
+  assert.equal(productionTour?.id, databaseTour.id);
+  assert.equal(previewSelection?.id, previewTour.id);
   assert.equal(
-    selectCanadaRockiesTourSource(databaseTour, previewTour, "production")?.id,
-    databaseTour.id,
+    productionTour?.addOns.find((item) => /asuransi perjalanan usia sampai 69 tahun/i.test(item.name))?.tag,
+    "recommended",
   );
-  assert.equal(
-    selectCanadaRockiesTourSource(databaseTour, previewTour, "preview")?.id,
-    previewTour.id,
-  );
+  assert.equal(productionTour?.addOns[0]?.name, "Biaya lokal");
   assert.equal(
     selectCanadaRockiesTourSource(null, previewTour, "production")?.id,
     previewTour.id,
   );
+});
+
+test("only the Canada catalog receives the reviewed add-on snapshot", () => {
+  const original = [{ name: "Asuransi", price: 500_000, tag: "wajib" }];
+
+  assert.equal(resolveCanadaRockiesAddOns(original, "another-tour"), original);
+  assert.notEqual(resolveCanadaRockiesAddOns(original, CANADA_ROCKIES_SLUG), original);
 });
 
 test("Canada PDF replaces only the known stale detailed note", () => {

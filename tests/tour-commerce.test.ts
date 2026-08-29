@@ -101,13 +101,15 @@ test("uses the selected room tier total in the booking message", () => {
     tourName: "Canada Rocky Mountain Spring",
     departureDate: "15 April 2027",
     formattedPrice: "Rp50.300.000",
-    priceCaption: "Total wajib",
+    priceCaption: "Total per orang",
     travelerCount: 2,
     roomPreference: "2 orang/kamar",
+    addOnPreference: "Asuransi perjalanan usia sampai 69 tahun disertakan",
   });
 
-  assert.match(message, /Total wajib: Rp50\.300\.000\/orang/);
+  assert.match(message, /Total per orang: Rp50\.300\.000\/orang/);
   assert.match(message, /Kamar: 2 orang\/kamar/);
+  assert.match(message, /Add-on: Asuransi perjalanan usia sampai 69 tahun disertakan/);
   assert.doesNotMatch(message, /Harga mulai: Rp50\.300\.000/);
 });
 

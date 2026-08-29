@@ -3,6 +3,7 @@
 import { useEffect, useRef, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { CalendarDays, Check, ChevronDown, X } from "lucide-react";
+import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import styles from "./TourDetailInteractive.module.css";
 
 export type BookingDeparture = {
@@ -50,6 +51,7 @@ export type TourBookingSheetProps = {
   phoneInputRef: RefObject<HTMLInputElement | null>;
   priceLabel: string;
   priceCaption: string;
+  addOnPreference?: string;
   room: string;
   roomOptions: BookingRoomOption[];
   selectedDeparture?: BookingDeparture;
@@ -92,6 +94,7 @@ export default function TourBookingSheet({
   phoneInputRef,
   priceLabel,
   priceCaption,
+  addOnPreference,
   room,
   roomOptions,
   selectedDeparture,
@@ -104,7 +107,9 @@ export default function TourBookingSheet({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const selectedRoom = roomOptions.find((option) => option.value === room);
-  const selectedPriceLabel = selectedRoom?.priceLabel || selectedDeparture?.priceLabel || priceLabel;
+  const selectedPriceLabel = selectedRoom?.priceLabel
+    || (addOnPreference ? priceLabel : selectedDeparture?.priceLabel)
+    || priceLabel;
   const selectedPriceCaption = selectedRoom?.priceCaption || priceCaption;
 
   useEffect(() => {
@@ -229,7 +234,10 @@ export default function TourBookingSheet({
                   <CalendarDays aria-hidden="true" />
                   <span>
                     <strong>{departure.label}</strong>
-                    <small>{departure.availabilityLabel} · {selectedPriceCaption} {selectedRoom?.priceLabel || departure.priceLabel}/orang</small>
+                    <small>
+                      {departure.availabilityLabel} · {selectedPriceCaption}{" "}
+                      {selectedRoom?.priceLabel || (addOnPreference ? priceLabel : departure.priceLabel)}/orang
+                    </small>
                   </span>
                   <Check className={styles.optionCheck} aria-hidden="true" />
                 </label>
@@ -262,6 +270,8 @@ export default function TourBookingSheet({
               ))}
             </select>
           </label>
+
+          <TourRecommendedAddOnToggle />
 
           <label className={styles.bookingField}>
             <span>Nama</span>
@@ -303,6 +313,7 @@ export default function TourBookingSheet({
             <div><dt>Tanggal</dt><dd>{selectedDeparture?.label || "Fleksibel"}</dd></div>
             <div><dt>Peserta</dt><dd>{adults} dewasa{childCount ? `, ${childCount} anak` : ""}</dd></div>
             <div><dt>Isi kamar</dt><dd>{selectedRoom?.label || room}</dd></div>
+            {addOnPreference && <div><dt>Add-on</dt><dd>{addOnPreference}</dd></div>}
             <div><dt>{selectedPriceCaption}</dt><dd>{selectedPriceLabel}/orang</dd></div>
           </dl>
         </div>

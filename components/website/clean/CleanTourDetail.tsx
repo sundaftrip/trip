@@ -246,6 +246,12 @@ export default function CleanTourDetail({
   const unavailable = ["completed", "sold_out", "waitlist"].includes(commerceStatus);
   const hasPrice = basePrice > 0;
   const priceCaption = mandatoryAddOns.length > 0 ? "Total wajib" : "Harga paket";
+  const selectableAddOn = optionalAddOns.find((item) => (
+    item.tag === "recommended"
+    && /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
+    && Number(item.price) > 0
+  ));
+  const disclosureOptionalAddOns = optionalAddOns.filter((item) => item !== selectableAddOn);
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
   const sectionTabs = [
@@ -370,7 +376,7 @@ export default function CleanTourDetail({
 
       <TourDetailTabs tabs={sectionTabs} tourId={tour.id} />
 
-      <TourRoomSelectionProvider roomPrices={roomPrices}>
+      <TourRoomSelectionProvider roomPrices={roomPrices} selectableAddOn={selectableAddOn}>
         <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
           <section className={styles.detailContentSection} id="ringkasan" aria-labelledby="ringkasan-title">
@@ -644,17 +650,18 @@ export default function CleanTourDetail({
               <TourRoomRecoveryLink
                 fallbackHref={bookingWaHref}
                 phone={bookingPhone}
+                startingTotal={startingTotal}
                 tourName={tour.title}
                 departureLabel={departureLabel}
                 bookingMode={bookingMode}
                 analyticsPlacement="detail-mobile-pdf-recovery"
               />.
             </p>
-            {optionalAddOns.length > 0 && (
+            {disclosureOptionalAddOns.length > 0 && (
               <StableDetails>
-                <summary>Tambahan opsional <span>{optionalAddOns.length}</span></summary>
+                <summary>Tambahan opsional <span>{disclosureOptionalAddOns.length}</span></summary>
                 <div>
-                  {optionalAddOns.map((item) => (
+                  {disclosureOptionalAddOns.map((item) => (
                     <article key={item.name}>
                       <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
                       {item.desc && <small>{item.desc}</small>}
@@ -716,6 +723,7 @@ export default function CleanTourDetail({
               <TourRoomRecoveryLink
                 fallbackHref={bookingWaHref}
                 phone={bookingPhone}
+                startingTotal={startingTotal}
                 tourName={tour.title}
                 departureLabel={departureLabel}
                 bookingMode={bookingMode}
@@ -730,11 +738,11 @@ export default function CleanTourDetail({
               <div><dt>{isFlexibleDate ? "Kapasitas" : "Ketersediaan"}</dt><dd>{capacityLabel}</dd></div>
             </dl>
 
-            {optionalAddOns.length > 0 && (
+            {disclosureOptionalAddOns.length > 0 && (
               <StableDetails className={styles.detailBookingDisclosure}>
-                <summary>Tambahan opsional <span>{optionalAddOns.length}</span></summary>
+                <summary>Tambahan opsional <span>{disclosureOptionalAddOns.length}</span></summary>
                 <div>
-                  {optionalAddOns.map((item) => (
+                  {disclosureOptionalAddOns.map((item) => (
                     <article key={item.name}>
                       <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
                       {item.desc && <small>{item.desc}</small>}

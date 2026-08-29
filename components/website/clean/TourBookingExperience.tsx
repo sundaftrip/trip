@@ -30,6 +30,7 @@ type TourBookingExperienceProps = {
   roomOptions?: BookingRoomOption[];
   selectedRoomValue?: string;
   onRoomChange?: (value: string) => void;
+  addOnPreference?: string;
   completedTourHref?: string;
   showSectionAction?: boolean;
 };
@@ -58,6 +59,7 @@ export default function TourBookingExperience({
   roomOptions = DEFAULT_ROOM_OPTIONS,
   selectedRoomValue,
   onRoomChange,
+  addOnPreference = "",
   completedTourHref = "#itinerary",
   showSectionAction = true,
 }: TourBookingExperienceProps) {
@@ -81,7 +83,9 @@ export default function TourBookingExperience({
   const selectedDeparture = departures.find((departure) => departure.id === selectedId) || departures[0];
   const selectedRoom = bookingRoomOptions.find((option) => option.value === room) || bookingRoomOptions[0];
   const selectedRoomLabel = selectedRoom.label;
-  const selectedPriceLabel = selectedRoom.priceLabel || selectedDeparture?.priceLabel || priceLabel;
+  const selectedPriceLabel = selectedRoom.priceLabel
+    || (addOnPreference ? priceLabel : selectedDeparture?.priceLabel)
+    || priceLabel;
   const selectedPriceCaption = selectedRoom.priceCaption || priceCaption;
   const intent = mode === "sold_out" ? "waitlist" : mode === "flexible" ? "private" : "booking";
 
@@ -93,6 +97,7 @@ export default function TourBookingExperience({
     travelerCount: adults,
     childCount: children,
     roomPreference: selectedRoomLabel,
+    addOnPreference,
     customerName: name,
     customerPhone,
     sourceUrl,
@@ -113,6 +118,7 @@ export default function TourBookingExperience({
     selectedRoomLabel,
     sourceUrl,
     tourName,
+    addOnPreference,
   ]);
 
   const closeSheet = useCallback(() => {
@@ -163,7 +169,7 @@ export default function TourBookingExperience({
         whatsapp: customerPhone.trim(),
         destination: tourName,
         travelDate: selectedDeparture?.label || "Fleksibel",
-        message: `Booking inquiry: ${adults} dewasa, ${children} anak, ${selectedRoomLabel}, ${selectedPriceCaption} ${selectedPriceLabel}/orang`,
+        message: `Booking inquiry: ${adults} dewasa, ${children} anak, ${selectedRoomLabel}, ${addOnPreference ? `${addOnPreference}, ` : ""}${selectedPriceCaption} ${selectedPriceLabel}/orang`,
         source: sourceUrl,
       }),
     }).catch(() => undefined);
@@ -246,6 +252,7 @@ export default function TourBookingExperience({
           priceCaption={priceCaption}
           room={room}
           roomOptions={bookingRoomOptions}
+          addOnPreference={addOnPreference}
           selectedDeparture={selectedDeparture}
           selectedId={selectedId}
           tourId={tourId}

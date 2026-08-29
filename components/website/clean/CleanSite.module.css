@@ -1516,6 +1516,125 @@
   text-align: right;
 }
 
+.detailRecommendedAddOn {
+  min-height: 64px;
+  margin: 16px 0;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #b9d4d2;
+  border-radius: 12px;
+  background: #f4faf9;
+  cursor: pointer;
+}
+
+.detailRecommendedAddOn[data-compact="true"] {
+  min-height: 56px;
+  margin: 4px 0;
+  padding: 10px;
+}
+
+.detailRecommendedAddOn[data-included="true"] {
+  border-color: var(--clean-teal-dark, #075d63);
+  background: var(--clean-teal-pale, #e5f3f1);
+}
+
+.detailRecommendedAddOnCopy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.detailRecommendedAddOnCopy strong,
+.detailRecommendedAddOnCopy small {
+  display: block;
+}
+
+.detailRecommendedAddOnCopy strong {
+  color: var(--clean-navy, #132b3a);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.detailRecommendedAddOnCopy small {
+  margin-top: 4px;
+  color: var(--clean-teal-dark, #075d63);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.detailRecommendedAddOnAction {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detailRecommendedAddOnAction > span:first-child {
+  color: var(--clean-muted, #66737a);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.detailRecommendedAddOnSwitch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  flex: 0 0 46px;
+}
+
+.detailRecommendedAddOnSwitch input {
+  position: absolute;
+  inset: -9px;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.detailBookingCard .detailRecommendedAddOnSwitch input {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.detailRecommendedAddOnSwitch > span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #aab6b8;
+  transition: background-color 160ms ease;
+}
+
+.detailRecommendedAddOnSwitch > span::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(19, 43, 58, .24);
+  content: "";
+  transition: transform 160ms ease;
+}
+
+.detailRecommendedAddOnSwitch input:checked + span {
+  background: var(--clean-teal-dark, #075d63);
+}
+
+.detailRecommendedAddOnSwitch input:checked + span::after {
+  transform: translateX(20px);
+}
+
+.detailRecommendedAddOnSwitch input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--clean-teal, #0f777c) 35%, transparent);
+  outline-offset: 3px;
+}
+
 .detailHotelGrid {
   margin-top: 24px;
   display: grid;
@@ -1680,6 +1799,8 @@
 .detailPriceBreakdown > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; color: var(--clean-muted); font-size: 12px; }
 .detailPriceBreakdown strong { color: var(--clean-navy); font-weight: 800; white-space: nowrap; }
 .detailPriceBreakdown small { margin-left: 4px; color: var(--clean-teal-dark); font-size: 8px; font-weight: 800; }
+.detailPriceBreakdown .detailRecommendedAddOnCopy strong { white-space: normal; }
+.detailPriceBreakdown .detailRecommendedAddOnCopy small { margin-left: 0; }
 .detailPriceBreakdown > .detailPriceTotal { padding-top: 10px; border-top: 1px solid var(--clean-line); color: var(--clean-navy); font-weight: 740; }
 
 .detailSidebarRoomPrices {
@@ -2130,6 +2251,8 @@
     grid-auto-columns: 78vw;
   }
   .detailIncludedGrid > div + div { border-top: 1px solid var(--clean-line); border-left: 0; }
+  .detailRecommendedAddOn { align-items: flex-start; }
+  .detailRecommendedAddOnAction { min-height: 40px; }
   .detailPaymentIntro { grid-template-columns: 1fr; gap: 14px; }
   .detailReviewHeading,
   .detailRelatedHeading { display: grid; align-items: start; }

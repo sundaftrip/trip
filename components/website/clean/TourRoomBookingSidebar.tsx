@@ -5,6 +5,7 @@ import { buildWhatsAppBookingHref } from "@/lib/tour-commerce";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
+import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
 import styles from "./CleanSite.module.css";
 
@@ -50,23 +51,34 @@ export default function TourRoomBookingSidebar({
   tourName,
   departureLabel,
 }: TourRoomBookingSidebarProps) {
-  const { selectedRoom, setSelectedRoomCode } = useTourRoomSelection();
+  const {
+    selectedRoom,
+    setSelectedRoomCode,
+    selectableAddOn,
+    selectableAddOnTotal,
+    selectableAddOnPreference,
+  } = useTourRoomSelection();
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
-  const selectedTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
-  const selectedBookingWaHref = selectedRoom
+  const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
+  const selectedTotalPrice = selectedMandatoryTotalPrice + selectableAddOnTotal;
+  const selectedPriceCaption = selectableAddOn ? "Total per orang" : "Total wajib";
+  const selectedBookingWaHref = selectedRoom || selectableAddOn
     ? buildWhatsAppBookingHref(bookingPhone, {
         tourName,
         departureDate: departureLabel,
         formattedPrice: formatCurrency(selectedTotalPrice),
-        priceCaption: "Total wajib",
-        roomPreference: selectedRoom.label,
+        priceCaption: selectedPriceCaption,
+        roomPreference: selectedRoom?.label,
+        addOnPreference: selectableAddOnPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })
     : bookingWaHref;
-  const selectedBookingSummary = selectedRoom
-    ? `Kamar: ${selectedRoom.label} · Paket: ${formatCurrency(selectedHeadlinePrice)}`
+  const selectedBookingSummary = selectedRoom || selectableAddOn
+    ? (selectedRoom ? `Kamar: ${selectedRoom.label} · ` : "")
+      + `Paket: ${formatCurrency(selectedHeadlinePrice)}`
       + mandatoryAddOns.map((item) => ` · ${item.name} (wajib): ${formatCurrency(item.price)}`).join("")
-      + ` · Total wajib: ${formatCurrency(selectedTotalPrice)}/orang`
+      + (selectableAddOnPreference ? ` · ${selectableAddOnPreference}` : "")
+      + ` · ${selectedPriceCaption}: ${formatCurrency(selectedTotalPrice)}/orang`
     : bookingSummary;
 
   return (
@@ -82,7 +94,7 @@ export default function TourRoomBookingSidebar({
         <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(priceLandTour)}</p>
       )}
 
-      {mandatoryAddOns.length > 0 && (
+      {(mandatoryAddOns.length > 0 || selectableAddOn) && (
         <div className={styles.detailPriceBreakdown}>
           <div><span>Harga paket</span><strong>{formatCurrency(selectedHeadlinePrice)}</strong></div>
           {mandatoryAddOns.map((item) => (
@@ -91,8 +103,9 @@ export default function TourRoomBookingSidebar({
               <strong>+{formatCurrency(item.price)}</strong>
             </div>
           ))}
+          <TourRecommendedAddOnToggle compact />
           <div className={styles.detailPriceTotal}>
-            <span>Total wajib</span><strong>{formatCurrency(selectedTotalPrice)}</strong>
+            <span>{selectedPriceCaption}</span><strong>{formatCurrency(selectedTotalPrice)}</strong>
           </div>
         </div>
       )}
@@ -111,7 +124,10 @@ export default function TourRoomBookingSidebar({
               <span>{room.label}</span>
               <span>
                 <b>{formatCurrency(room.headlinePrice)}</b>
-                <small>Total wajib {formatCurrency(room.mandatoryTotalPrice)}</small>
+                <small>
+                  {selectableAddOn ? "Total per orang" : "Total wajib"}{" "}
+                  {formatCurrency(room.mandatoryTotalPrice + selectableAddOnTotal)}
+                </small>
               </span>
             </button>
           ))}

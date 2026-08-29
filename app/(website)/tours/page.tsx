@@ -11,7 +11,10 @@ import CleanToursCatalog from "@/components/website/clean/CleanToursCatalog";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { buildWhatsAppHref } from "@/lib/utils";
 import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
-import { getCanadaRockiesPreviewTour } from "@/lib/canada-catalog-preview";
+import {
+  getCanadaRockiesPreviewTour,
+  resolveCanadaRockiesAddOns,
+} from "@/lib/canada-catalog-preview";
 import {
   parseTourHotelRoomPricing,
   resolveTourStartingPrice,
@@ -124,7 +127,8 @@ export default async function ToursPage({
     const now = new Date(generatedAt);
     const cleanTours = tours.map((tour) => {
       const { addOns, hotel, ...tourFields } = tour;
-      const mandatoryTotal = mandatoryAddOnsTotal(addOns);
+      const resolvedAddOns = resolveCanadaRockiesAddOns(addOns, tour.slug);
+      const mandatoryTotal = mandatoryAddOnsTotal(resolvedAddOns);
       const { roomPrices } = parseTourHotelRoomPricing(hotel, mandatoryTotal);
       const startingPrice = resolveTourStartingPrice(
         Number(tour.promoPrice ?? tour.price),

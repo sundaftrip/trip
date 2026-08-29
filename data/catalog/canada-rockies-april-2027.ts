@@ -11,7 +11,7 @@ const MEDIA = {
 
 export const CANADA_ROCKIES_SLUG = "canada-rockies-spring-victoria-april-2027";
 
-export const CANADA_ROCKIES_MANDATORY_TOTAL = 5_400_000;
+export const CANADA_ROCKIES_MANDATORY_TOTAL = 4_400_000;
 
 export const CANADA_ROCKIES_ROOM_PRICES = {
   quad: 40_900_000,
@@ -182,7 +182,7 @@ export const CANADA_ROCKIES_TOUR = {
     {
       name: "Asuransi perjalanan usia sampai 69 tahun",
       price: 1_000_000,
-      tag: "wajib" as const,
+      tag: "recommended" as const,
       desc: "Premi final mengikuti usia, manfaat, dan persetujuan perusahaan asuransi.",
     },
     {

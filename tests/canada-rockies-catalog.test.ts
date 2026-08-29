@@ -22,14 +22,23 @@ test("posting and mandatory totals stay within the audited public price gap", ()
   }
 });
 
-test("mandatory add-ons reconcile to the advertised payable total", () => {
+test("travel insurance is recommended and excluded from the default payable total", () => {
   const mandatoryTotal = CANADA_ROCKIES_TOUR.addOns
     .filter((item) => item.tag === "wajib")
     .reduce((sum, item) => sum + item.price, 0);
+  const travelInsurance = CANADA_ROCKIES_TOUR.addOns.find((item) => (
+    /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
+  ));
+
   assert.equal(mandatoryTotal, CANADA_ROCKIES_MANDATORY_TOTAL);
-  assert.equal(CANADA_ROCKIES_ROOM_PRICES.quad + mandatoryTotal, 46_300_000);
-  assert.equal(CANADA_ROCKIES_ROOM_PRICES.triple + mandatoryTotal, 48_300_000);
-  assert.equal(CANADA_ROCKIES_ROOM_PRICES.twin + mandatoryTotal, 50_300_000);
+  assert.equal(travelInsurance?.tag, "recommended");
+  assert.equal(travelInsurance?.price, 1_000_000);
+  assert.equal(CANADA_ROCKIES_ROOM_PRICES.quad + mandatoryTotal, 45_300_000);
+  assert.equal(CANADA_ROCKIES_ROOM_PRICES.triple + mandatoryTotal, 47_300_000);
+  assert.equal(CANADA_ROCKIES_ROOM_PRICES.twin + mandatoryTotal, 49_300_000);
+  assert.equal(CANADA_ROCKIES_ROOM_PRICES.quad + mandatoryTotal + travelInsurance!.price, 46_300_000);
+  assert.equal(CANADA_ROCKIES_ROOM_PRICES.triple + mandatoryTotal + travelInsurance!.price, 48_300_000);
+  assert.equal(CANADA_ROCKIES_ROOM_PRICES.twin + mandatoryTotal + travelInsurance!.price, 50_300_000);
 });
 
 test("catalog route reconciles nine Canada days plus two journey days", () => {

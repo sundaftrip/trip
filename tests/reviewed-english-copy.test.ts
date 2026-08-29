@@ -13,6 +13,11 @@ test("uses the approved travel and visa terminology", () => {
   assert.equal(reviewedEnglishFor("Pemandu wisata"), "Local guide");
   assert.equal(reviewedEnglishFor("Pilih jumlah orang per kamar"), "Choose room occupancy");
   assert.equal(reviewedEnglishFor("Harga paket (3 orang/kamar)"), "Package price (3 guests/room)");
+  assert.equal(reviewedEnglishFor("Total per orang"), "Total per guest");
+  assert.equal(reviewedEnglishFor("DIREKOMENDASIKAN"), "RECOMMENDED");
+  assert.equal(reviewedEnglishFor("Termasuk"), "Included");
+  assert.equal(reviewedEnglishFor("Tidak termasuk"), "Not included");
+  assert.equal(reviewedEnglishFor("Sertakan asuransi perjalanan"), "Include travel insurance");
 });
 
 test("keeps shared English copy free from the rejected house style", () => {

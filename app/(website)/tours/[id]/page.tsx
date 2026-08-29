@@ -42,6 +42,7 @@ import {
 } from "@/lib/tour-room-pricing";
 import {
   getCanadaRockiesPreviewTour,
+  resolveCanadaRockiesAddOns,
   selectCanadaRockiesTourSource,
 } from "@/lib/canada-catalog-preview";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
@@ -575,7 +576,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     heroImg: getTourProductImage(item),
     badge: item.badge ?? null,
     status: item.status,
-    mandatoryTotal: mandatoryAddOnsTotal(item.addOns),
+    mandatoryTotal: mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(item.addOns, item.slug)),
     state: getPublicTourState(item, now),
   }));
 

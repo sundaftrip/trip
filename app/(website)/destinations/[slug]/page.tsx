@@ -9,6 +9,7 @@ import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref } from "@/lib/utils";
 import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import { resolveCanadaRockiesAddOns } from "@/lib/canada-catalog-preview";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanTourCard from "@/components/website/clean/CleanTourCard";
 import StableDetails from "@/components/website/clean/StableDetails";
@@ -184,7 +185,7 @@ export default async function DestinationHubPage({
       ...tour,
       title: normalizeTourDisplayTitle(tour.title),
       tripDate: tour.tripDate?.toISOString() ?? null,
-      mandatoryTotal: mandatoryAddOnsTotal(tour.addOns),
+      mandatoryTotal: mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(tour.addOns, tour.slug)),
       state: getPublicTourState(tour, now),
     };
   });
