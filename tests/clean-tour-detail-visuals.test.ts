@@ -34,6 +34,14 @@ const bookingSheetSource = readFileSync(
   new URL("../components/website/clean/TourBookingSheet.tsx", import.meta.url),
   "utf8",
 );
+const visaToggleSource = readFileSync(
+  new URL("../components/website/clean/TourVisaServiceToggle.tsx", import.meta.url),
+  "utf8",
+);
+const detailPageSource = readFileSync(
+  new URL("../app/(website)/tours/[id]/page.tsx", import.meta.url),
+  "utf8",
+);
 
 test("shows visual highlights for every itinerary day", () => {
   assert.match(source, /const experienceItems = itinerary\.map\(/);
@@ -77,7 +85,10 @@ test("makes every room tier an accessible synchronized choice", () => {
 });
 
 test("keeps the selected room synchronized through every booking surface", () => {
-  assert.match(source, /<TourRoomSelectionProvider roomPrices=\{roomPrices\} selectableAddOn=\{selectableAddOn\}>/);
+  assert.match(source, /<TourRoomSelectionProvider/);
+  assert.match(source, /roomPrices=\{roomPrices\}/);
+  assert.match(source, /selectableAddOn=\{selectableAddOn\}/);
+  assert.match(source, /visaOffers=\{visaOffers\}/);
   assert.match(roomSelectionSource, /selectedRoomCode/);
   assert.match(roomBookingSource, /useTourRoomSelection\(\)/);
   assert.match(roomSidebarSource, /useTourRoomSelection\(\)/);
@@ -105,13 +116,35 @@ test("keeps recommended travel insurance optional and synchronized", () => {
   assert.match(recommendedAddOnSource, /Termasuk/);
   assert.match(recommendedAddOnSource, /Tidak termasuk/);
   assert.doesNotMatch(recommendedAddOnSource, /type="button"/);
-  assert.match(roomBookingSource, /selectedMandatoryTotalPrice \+ selectableAddOnTotal/);
-  assert.match(roomSidebarSource, /selectedMandatoryTotalPrice \+ selectableAddOnTotal/);
-  assert.match(roomRecoverySource, /\(selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal\) \+ selectableAddOnTotal/);
+  assert.match(roomBookingSource, /selectedMandatoryTotalPrice \+ optionalServicesTotal/);
+  assert.match(roomSidebarSource, /selectedMandatoryTotalPrice \+ optionalServicesTotal/);
+  assert.match(roomRecoverySource, /\(selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal\) \+ optionalServicesTotal/);
   assert.match(bookingSheetSource, /<TourRecommendedAddOnToggle \/>/);
   assert.match(bookingSource, /addOnPreference/);
-  assert.match(bookingSource, /addOnPreference \? priceLabel : selectedDeparture\?\.priceLabel/);
-  assert.match(bookingSheetSource, /addOnPreference \? priceLabel : selectedDeparture\?\.priceLabel/);
-  assert.match(roomSidebarSource, /selectedRoom \|\| selectableAddOn/);
+  assert.match(bookingSource, /\|\| selectedDeparture\?\.priceLabel/);
+  assert.match(bookingSheetSource, /\|\| selectedDeparture\?\.priceLabel/);
+  assert.doesNotMatch(bookingSource, /addOnPreference \? priceLabel/);
+  assert.doesNotMatch(bookingSheetSource, /addOnPreference \? priceLabel/);
+  assert.match(roomBookingSource, /applyOptionalServicesToDepartures\(/);
+  assert.match(roomBookingSource, /bookingDepartures,\s*optionalServicesTotal/);
+  assert.match(roomBookingSource, /departures=\{pricedBookingDepartures\}/);
+  assert.match(source, /priceValue: hasPrice \? \(startingTotal \|\| basePrice\) : undefined/);
+  assert.match(roomSidebarSource, /selectedRoom \|\| hasOptionalServices/);
   assert.match(roomRecoverySource, /selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal/);
+});
+
+test("offers only the visas required by the selected trip and keeps them optional", () => {
+  assert.match(detailPageSource, /resolveTourVisaOffers\(\{/);
+  assert.match(detailPageSource, /servicePrice: true/);
+  assert.match(detailPageSource, /variants: \{/);
+  assert.match(detailPageSource, /visaOffers=\{visaOffers\}/);
+  assert.match(roomSelectionSource, /includedVisaOfferIds/);
+  assert.match(roomSelectionSource, /optionalServicesTotal = selectableAddOnTotal \+ visaOfferTotal/);
+  assert.match(visaToggleSource, /Perjalanan ini membutuhkan visa\./);
+  assert.match(visaToggleSource, /Jika visa Anda masih berlaku, pilih Tidak\./);
+  assert.match(visaToggleSource, /type="checkbox"/);
+  assert.match(visaToggleSource, /included \? "Ya" : "Tidak"/);
+  assert.match(roomBookingSource, /<TourVisaServiceToggle \/>/);
+  assert.match(roomSidebarSource, /<TourVisaServiceToggle compact \/>/);
+  assert.match(bookingSheetSource, /<TourVisaServiceToggle \/>/);
 });

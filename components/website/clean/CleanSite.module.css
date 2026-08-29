@@ -1635,6 +1635,66 @@
   outline-offset: 3px;
 }
 
+.detailVisaServices {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid var(--clean-line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.detailVisaServices[data-compact="true"] {
+  margin: 4px 0;
+  padding: 10px;
+}
+
+.detailVisaServicesIntro {
+  margin: 0 0 10px;
+  color: var(--clean-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.detailVisaServicesIntro strong { color: var(--clean-navy); }
+
+.detailVisaServiceList {
+  display: grid;
+  gap: 8px;
+}
+
+.detailVisaServiceList > label {
+  min-height: 52px;
+  padding: 10px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid #cfdcdc;
+  border-radius: 10px;
+  background: #f8fbfb;
+  cursor: pointer;
+}
+
+.detailVisaServiceList > label[data-included="true"] {
+  border-color: var(--clean-teal-dark, #075d63);
+  background: var(--clean-teal-pale, #e5f3f1);
+}
+
+.detailVisaServiceCopy { min-width: 0; }
+.detailVisaServiceCopy strong,
+.detailVisaServiceCopy small { display: block; }
+.detailVisaServiceCopy strong {
+  color: var(--clean-navy);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.detailVisaServiceCopy small {
+  margin-top: 3px;
+  color: var(--clean-teal-dark);
+  font-size: 10px;
+  font-weight: 780;
+}
+
 .detailHotelGrid {
   margin-top: 24px;
   display: grid;
@@ -1660,22 +1720,24 @@
   margin-top: 24px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .detailInfoGrid article {
-  padding: 28px;
+  min-width: 0;
+  padding: 22px;
   display: flex;
   align-items: flex-start;
-  gap: 15px;
-  border-top: 3px solid var(--clean-teal-dark);
-  border-radius: 16px;
-  background: var(--clean-soft);
+  gap: 13px;
+  border: 1px solid var(--clean-line);
+  border-radius: 11px;
+  background: #fff;
 }
 
-.detailInfoGrid article > svg { flex: 0 0 20px; color: var(--clean-teal-dark); }
-.detailInfoGrid h3 { margin: 0 0 13px; color: var(--clean-navy); font-size: 17px; }
-.detailInfoGrid p { margin: 0 0 11px; color: var(--clean-muted); font-size: 14px; line-height: 1.65; }
+.detailInfoGrid article > svg { flex: 0 0 18px; color: var(--clean-teal-dark); }
+.detailInfoGrid h3 { margin: 0 0 9px; color: var(--clean-navy); font-size: 15px; }
+.detailInfoGrid p { margin: 0 0 10px; color: var(--clean-muted); font-size: 13px; line-height: 1.6; }
+.detailInfoGrid p:last-child { margin-bottom: 0; }
 
 .detailSuitabilityGrid {
   margin-top: 24px;
@@ -2243,7 +2305,17 @@
   .detailHotelGrid,
   .detailInfoGrid,
   .detailReviewGrid { grid-template-columns: 1fr; }
-  .detailSuitabilityGrid { grid-template-columns: 1fr; }
+  .detailSuitabilityGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .detailSuitabilityGrid article {
+    padding: 16px 18px;
+    border-radius: 11px;
+  }
+  .detailSuitabilityGrid article > span { font-size: 8px; }
+  .detailSuitabilityGrid h3 { margin: 6px 0 5px; font-size: 15px; }
+  .detailSuitabilityGrid p { font-size: 12px; line-height: 1.45; }
   .detailHighlightRail {
     width: calc(100vw - 20px);
     margin-right: -20px;

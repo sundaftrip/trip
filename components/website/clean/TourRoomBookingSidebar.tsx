@@ -7,6 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
 import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
+import TourVisaServiceToggle from "./TourVisaServiceToggle";
 import styles from "./CleanSite.module.css";
 
 type MandatoryAddOn = {
@@ -54,30 +55,30 @@ export default function TourRoomBookingSidebar({
   const {
     selectedRoom,
     setSelectedRoomCode,
-    selectableAddOn,
-    selectableAddOnTotal,
-    selectableAddOnPreference,
+    hasOptionalServices,
+    optionalServicesTotal,
+    optionalServicesPreference,
   } = useTourRoomSelection();
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
   const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
-  const selectedTotalPrice = selectedMandatoryTotalPrice + selectableAddOnTotal;
-  const selectedPriceCaption = selectableAddOn ? "Total per orang" : "Total wajib";
-  const selectedBookingWaHref = selectedRoom || selectableAddOn
+  const selectedTotalPrice = selectedMandatoryTotalPrice + optionalServicesTotal;
+  const selectedPriceCaption = hasOptionalServices ? "Total per orang" : "Total wajib";
+  const selectedBookingWaHref = selectedRoom || hasOptionalServices
     ? buildWhatsAppBookingHref(bookingPhone, {
         tourName,
         departureDate: departureLabel,
         formattedPrice: formatCurrency(selectedTotalPrice),
         priceCaption: selectedPriceCaption,
         roomPreference: selectedRoom?.label,
-        addOnPreference: selectableAddOnPreference,
+        addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })
     : bookingWaHref;
-  const selectedBookingSummary = selectedRoom || selectableAddOn
+  const selectedBookingSummary = selectedRoom || hasOptionalServices
     ? (selectedRoom ? `Kamar: ${selectedRoom.label} · ` : "")
       + `Paket: ${formatCurrency(selectedHeadlinePrice)}`
       + mandatoryAddOns.map((item) => ` · ${item.name} (wajib): ${formatCurrency(item.price)}`).join("")
-      + (selectableAddOnPreference ? ` · ${selectableAddOnPreference}` : "")
+      + (optionalServicesPreference ? ` · ${optionalServicesPreference}` : "")
       + ` · ${selectedPriceCaption}: ${formatCurrency(selectedTotalPrice)}/orang`
     : bookingSummary;
 
@@ -94,7 +95,7 @@ export default function TourRoomBookingSidebar({
         <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(priceLandTour)}</p>
       )}
 
-      {(mandatoryAddOns.length > 0 || selectableAddOn) && (
+      {(mandatoryAddOns.length > 0 || hasOptionalServices) && (
         <div className={styles.detailPriceBreakdown}>
           <div><span>Harga paket</span><strong>{formatCurrency(selectedHeadlinePrice)}</strong></div>
           {mandatoryAddOns.map((item) => (
@@ -104,6 +105,7 @@ export default function TourRoomBookingSidebar({
             </div>
           ))}
           <TourRecommendedAddOnToggle compact />
+          <TourVisaServiceToggle compact />
           <div className={styles.detailPriceTotal}>
             <span>{selectedPriceCaption}</span><strong>{formatCurrency(selectedTotalPrice)}</strong>
           </div>
@@ -125,8 +127,8 @@ export default function TourRoomBookingSidebar({
               <span>
                 <b>{formatCurrency(room.headlinePrice)}</b>
                 <small>
-                  {selectableAddOn ? "Total per orang" : "Total wajib"}{" "}
-                  {formatCurrency(room.mandatoryTotalPrice + selectableAddOnTotal)}
+                  {hasOptionalServices ? "Total per orang" : "Total wajib"}{" "}
+                  {formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal)}
                 </small>
               </span>
             </button>

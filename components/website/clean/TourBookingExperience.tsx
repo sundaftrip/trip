@@ -84,7 +84,7 @@ export default function TourBookingExperience({
   const selectedRoom = bookingRoomOptions.find((option) => option.value === room) || bookingRoomOptions[0];
   const selectedRoomLabel = selectedRoom.label;
   const selectedPriceLabel = selectedRoom.priceLabel
-    || (addOnPreference ? priceLabel : selectedDeparture?.priceLabel)
+    || selectedDeparture?.priceLabel
     || priceLabel;
   const selectedPriceCaption = selectedRoom.priceCaption || priceCaption;
   const intent = mode === "sold_out" ? "waitlist" : mode === "flexible" ? "private" : "booking";

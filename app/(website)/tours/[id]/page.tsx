@@ -46,10 +46,25 @@ import {
   selectCanadaRockiesTourSource,
 } from "@/lib/canada-catalog-preview";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
+import {
+  resolveTourVisaOffers,
+  type VisaServiceCatalogEntry,
+} from "@/lib/tour-visa-offers";
+import visaSeed from "@/prisma/visa-seed.json";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
+
+const previewVisaCountries: VisaServiceCatalogEntry[] = visaSeed.map((entry) => ({
+  name: entry.name,
+  en: entry.en,
+  region: entry.region,
+  visa: entry.visa,
+  servicePrice: entry.servicePrice ?? null,
+  sortOrder: entry.id,
+  variants: [],
+}));
 
 function cleanMetadataText(value?: string | null) {
   const localized = localizePdfText(value);
@@ -427,14 +442,32 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const productHeroImage = getTourProductImage(tour);
   const absoluteProductHeroImage = getAbsoluteTourProductImage(tour, siteUrl);
   const [companyRows, reviews, visaCountries, relatedRaw] = standalonePreview
-    ? [[], [], [], []]
+    ? [[], [], previewVisaCountries, []]
     : await Promise.all([
     prisma.companyInfo.findMany({ where: { key: { in: ["company_whatsapp", "company_name", "site_theme"] } } }),
     prisma.testimonial.findMany({
       where: { tourId: tour.id, published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     }),
-    prisma.countryVisa.findMany({ select: { name: true, en: true } }),
+    prisma.countryVisa.findMany({
+      select: {
+        name: true,
+        en: true,
+        region: true,
+        visa: true,
+        servicePrice: true,
+        sortOrder: true,
+        variants: {
+          orderBy: { sortOrder: "asc" },
+          select: {
+            name: true,
+            priceIDR: true,
+            processingTime: true,
+            sortOrder: true,
+          },
+        },
+      },
+    }),
     // P1.3 internal linking: tour upcoming bookable lain (untuk "Tour Lainnya").
     // Khususnya berharga di halaman trip selesai → arahkan user ke yang masih bisa dipesan.
     prisma.tour.findMany({
@@ -552,6 +585,17 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     name: localizePdfText(item.name) ?? item.name,
     desc: localizePdfText(item.desc) ?? item.desc,
   }));
+  const visaOffers = resolveTourVisaOffers({
+    title: displayTitle,
+    slug: tour.slug,
+    country: displayCountry,
+    cityHighlight: displayCityHighlight,
+    destinationText: [
+      displayVisaInfo ?? "",
+      ...displayExclusions,
+    ],
+    itinerary,
+  }, visaCountries);
   const displayRelatedTours = relatedTours.map((item) => ({
     ...item,
     title: normalizeTourDisplayTitle(localizePdfText(item.title) ?? item.title),
@@ -777,6 +821,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             ...item,
             visaHref: resolveVisaHref(item.name),
           }))}
+          visaOffers={visaOffers}
           paymentPlan={paymentPlan}
           relatedTours={cleanRelatedTours}
           reviews={reviews.map((review) => ({

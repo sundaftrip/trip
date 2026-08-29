@@ -26,19 +26,19 @@ export default function TourRoomRecoveryLink({
 }: TourRoomRecoveryLinkProps) {
   const {
     selectedRoom,
-    selectableAddOn,
-    selectableAddOnTotal,
-    selectableAddOnPreference,
+    hasOptionalServices,
+    optionalServicesTotal,
+    optionalServicesPreference,
   } = useTourRoomSelection();
-  const totalPrice = (selectedRoom?.mandatoryTotalPrice ?? startingTotal) + selectableAddOnTotal;
-  const href = selectedRoom || selectableAddOn
+  const totalPrice = (selectedRoom?.mandatoryTotalPrice ?? startingTotal) + optionalServicesTotal;
+  const href = selectedRoom || hasOptionalServices
     ? buildWhatsAppBookingHref(phone, {
         tourName,
         departureDate: departureLabel,
         formattedPrice: formatCurrency(totalPrice),
-        priceCaption: selectableAddOn ? "Total per orang" : "Total wajib",
+        priceCaption: hasOptionalServices ? "Total per orang" : "Total wajib",
         roomPreference: selectedRoom?.label,
-        addOnPreference: selectableAddOnPreference,
+        addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })
     : fallbackHref;
