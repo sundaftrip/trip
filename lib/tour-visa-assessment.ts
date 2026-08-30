@@ -79,11 +79,19 @@ function schengen(record?: VisaAssessmentRecord) {
   return /\bschengen\b/.test(region) && !/\bnon schengen\b/.test(region);
 }
 
-// Only a simple day limit is executable. Windows, alternative durations and
-// other prose require a human check rather than a guessed immigration rule.
-function simpleStayLimit(value?: string | null) {
-  const match = (value ?? "").trim().match(/^(?:(?:maksimal|max\.?|up to)\s+)?(\d+)\s*(?:hari|days?)(?:\s*(?:per kunjungan|per visit))?\.?$/i);
-  return match && Number(match[1]) > 0 ? Number(match[1]) : null;
+// Parse only explicit numeric rules already stored by the content team. A
+// rolling window supplies a route cap, never the traveler's remaining days.
+function stayRule(value?: string | null): { limit: number; windowDays: number | null } | null {
+  const text = (value ?? "").trim();
+  const rolling = text.match(/^(\d+)\s+(?:hari|days?)\s+(?:dalam|in)\s+(\d+)\s+(?:hari|days?)\.?$/i);
+  if (rolling) {
+    const limit = Number(rolling[1]);
+    const windowDays = Number(rolling[2]);
+    return Number.isSafeInteger(limit) && Number.isSafeInteger(windowDays) && limit > 0 && windowDays >= limit ? { limit, windowDays } : null;
+  }
+  const match = text.match(/^(?:(?:maksimal|max\.?|up to)\s+)?(\d+)\s*(?:hari|days?)(?:\s*(?:per kunjungan|per visit))?\.?$/i);
+  const limit = match ? Number(match[1]) : 0;
+  return Number.isSafeInteger(limit) && limit > 0 ? { limit, windowDays: null } : null;
 }
 
 function exactCountry(text: string, records: readonly VisaAssessmentRecord[]) {
@@ -207,12 +215,18 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
       warnings.push(`${record.name}: pemeriksaan transit diperlukan; visa wisata tidak ditambahkan otomatis.`);
       return candidate;
     }
-    const limit = simpleStayLimit(record.stay);
-    if (limit === null) {
+    const rule = stayRule(record.stay);
+    if (rule === null) {
       result.status = "unknown";
       result.explanation = "Batas lama tinggal belum dapat dipastikan dari data yang tersedia. Tim perlu memeriksa persyaratan perjalanan ini.";
       issues.push(`${record.name}: batas lama tinggal perlu diperiksa.`);
       return candidate;
+    }
+    const { limit, windowDays } = rule;
+    if (windowDays !== null) {
+      const condition = `Batas tinggal ${limit} hari dalam ${windowDays} hari. Hari kunjungan sebelumnya dalam periode tersebut perlu dihitung bersama tim; layanan visa bukan konfirmasi sisa izin tinggal.`;
+      result.conditions = unique([...result.conditions, condition]);
+      warnings.push(`${record.name}: ${condition}`);
     }
     if (stop.stayDays !== null && stop.stayDays > limit) {
       result.status = "conditional";
@@ -221,7 +235,10 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
       return candidate;
     }
     if (result.status === "visa_free" || result.status === "visa_on_arrival") {
-      if (stop.stayDays === null) {
+      if (windowDays !== null) {
+        result.status = "conditional";
+        result.explanation = `Data rujukan mencantumkan ${record.visa === "voa" ? "visa on arrival" : "bebas visa"} dengan batas ${limit} hari dalam ${windowDays} hari. Tim perlu memeriksa kunjungan sebelumnya untuk memastikan sisa waktu tinggal Anda.`;
+      } else if (stop.stayDays === null) {
         result.status = "conditional";
         result.explanation = `Data rujukan mencantumkan ${record.visa === "voa" ? "visa on arrival" : "bebas visa"} sampai ${limit} hari. Lama tinggal katalog belum dicatat; konfirmasikan kepada tim.`;
         warnings.push(`${record.name}: lama tinggal belum tersedia untuk memastikan persyaratan.`);
@@ -344,7 +361,7 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
     const enteredIndices = visitStops.flatMap((stop, index) => schengen(stop.record) ? [index] : []);
     const reentry = enteredIndices.length > 1 && visitStops.slice(enteredIndices[0], enteredIndices[enteredIndices.length - 1]).some((stop) => !schengen(stop.record));
     const totalDays = schengenGroup.reduce((total, candidate) => total + (candidate.stop.stayDays ?? 0), 0);
-    const limits = schengenGroup.map((candidate) => simpleStayLimit(candidate.stop.record?.stay)).filter((limit): limit is number => limit !== null);
+    const limits = schengenGroup.map((candidate) => stayRule(candidate.stop.record?.stay)?.limit ?? null).filter((limit): limit is number => limit !== null);
     const exceeded = limits.length > 0 && totalDays > Math.min(...limits);
     if (exceeded || reentry) {
       for (const candidate of schengenGroup) {

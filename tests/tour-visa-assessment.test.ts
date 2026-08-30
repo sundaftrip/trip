@@ -180,7 +180,7 @@ test("fingerprint is deterministic, ignores record order and review stamps, and 
 });
 
 test("unknown free-stay limits do not become a confirmed visa-free result", () => {
-  for (const stay of [null, "", "30 atau 60 hari", "90 hari dalam 180 hari"]) {
+  for (const stay of [null, "", "30 atau 60 hari", "90 hari dalam 180 hari atau sesuai visa"]) {
     const result = assessTourVisas({ plan: plan("br") }, [{ ...brazil, stay }], now);
     assert.equal(result.countries[0].status, "unknown");
     assert.equal(result.countries[0].serviceState, "consultation");
@@ -212,7 +212,7 @@ test("contradictory handling of the same visa requires review", () => {
   assert.ok(schengenMixed.issues.some((issue) => issue.includes("konsisten")));
 });
 
-test("required and eVisa rules with unexecutable stay limits cannot create priced offers", () => {
+test("required and eVisa rules with missing, ambiguous or exceeded stay limits cannot create priced offers", () => {
   for (const visa of ["wajib", "evisa"]) {
     for (const stay of [null, "", "90 hari dalam 180 hari", "30 atau 60 hari"]) {
       const destination = { ...plan("fr").destinations[0], stayDays: 120 };
@@ -252,7 +252,7 @@ test("manual coverage conflicts cannot bypass review through explicit service ha
   assert.ok(separateButIncluded.issues.length);
   const ambiguousIncluded = assessTourVisas({ plan: plan({ ...plan("pe").destinations[0], service: "included" }), addOns: [{ name: "Visa", tag: "wajib" }] }, [peru], now);
   assert.ok(ambiguousIncluded.issues.length);
-  const unknownButIncluded = assessTourVisas({ plan: plan({ ...plan("fr").destinations[0], service: "included" }) }, [{ ...france, stay: "90 hari dalam 180 hari" }], now);
+  const unknownButIncluded = assessTourVisas({ plan: plan({ ...plan("fr").destinations[0], service: "included" }) }, [{ ...france, stay: "90 hari dalam 180 hari atau sesuai visa" }], now);
   assert.equal(unknownButIncluded.countries[0].serviceState, "consultation");
 });
 
@@ -276,4 +276,36 @@ test("only exact whole IDR headline amounts or priced variants can be added", ()
   }
   const result = assessTourVisas({ plan: plan({ ...plan("pe").destinations[0], variantId: "fixed" }) }, [{ ...peru, servicePrice: "Mulai Rp 2.000.000", variants: [{ id: "fixed", name: "Fixed", priceIDR: 2_750_000 }] }], now);
   assert.equal(result.offers[0]?.price, 2_750_000);
+});
+
+test("canonical rolling-window rules preserve required visa service with a prior-stay warning", () => {
+  for (const stay of ["90 hari dalam 180 hari", "90 days in 180 days"]) {
+    const result = assessTourVisas({ plan: plan({ ...plan("fr").destinations[0], stayDays: 14 }) }, [{ ...france, stay }], now);
+    assert.equal(result.countries[0].status, "required");
+    assert.equal(result.offers[0]?.id, "visa-schengen");
+    assert.deepEqual(result.issues, []);
+    assert.ok(result.warnings.some((warning) => warning.includes("180") && warning.includes("sebelumnya")));
+    assert.ok(result.countries[0].conditions.some((condition) => condition.includes("90") && condition.includes("180")));
+  }
+});
+
+test("rolling-window route caps apply to individual and combined Schengen stays", () => {
+  const records = [france, netherlands].map((record) => ({ ...record, stay: "90 hari dalam 180 hari" }));
+  for (const visaPlan of [plan({ ...plan("fr").destinations[0], stayDays: 120 }), plan({ ...plan("fr").destinations[0], stayDays: 60 }, { ...plan("nl").destinations[0], stayDays: 40 })]) {
+    const result = assessTourVisas({ plan: visaPlan }, records, now);
+    assert.deepEqual(result.offers, []);
+    assert.ok(result.issues.some((issue) => issue.includes("lama tinggal")));
+  }
+  const malformed = assessTourVisas({ plan: plan("fr") }, [{ ...france, stay: "180 hari dalam 90 hari" }], now);
+  assert.equal(malformed.countries[0].status, "unknown");
+  assert.ok(malformed.issues.length);
+});
+
+test("visa-free rolling windows are conditional until previous stays are checked", () => {
+  const result = assessTourVisas({ plan: plan("br") }, [{ ...brazil, stay: "90 hari dalam 180 hari" }], now);
+  assert.equal(result.countries[0].status, "conditional");
+  assert.equal(result.countries[0].serviceState, "consultation");
+  assert.deepEqual(result.offers, []);
+  assert.deepEqual(result.issues, []);
+  assert.ok(result.countries[0].conditions.length);
 });
