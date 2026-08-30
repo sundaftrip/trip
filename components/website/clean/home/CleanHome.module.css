@@ -826,12 +826,10 @@
   padding: 0;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   color: var(--home-primary);
   font-size: 13px;
   font-weight: 520;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
   cursor: pointer;
 }
 
