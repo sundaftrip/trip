@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { prepareTourVisaWrite } from "../lib/tour-visa-publishing";
+import { prepareTourVisaWrite, tourVisaReadDto } from "../lib/tour-visa-publishing";
 import { readTourItinerary, readTourVisaPlan } from "../lib/tour-visa-plan";
 import type { TourVisaPlan } from "../lib/tour-visa-plan";
 import { assessTourVisas } from "../lib/tour-visa-assessment";
@@ -88,4 +88,21 @@ test("a stale browser confirmation cannot acknowledge changed visa data", () => 
   const result = prepareTourVisaWrite({ ...draft, status: "ACTIVE", visaPlan: plan, ...confirmation }, null, [{ ...records[0], servicePrice: "Rp 2.000.000" }], now);
   assert.equal(result.ok, false);
   if (!result.ok) assert.match(result.error, /berubah/);
+});
+
+test("public DTO preserves itinerary array without disclosing the review marker", () => {
+  const first = prepareTourVisaWrite({ ...draft, status: "ACTIVE", visaPlan: plan, ...confirmation }, null, records, now);
+  assert.equal(first.ok, true);
+  if (!first.ok) return;
+  assert.deepEqual(tourVisaReadDto(first).itinerary, days);
+  assert.equal(tourVisaReadDto(first).visaPlan?.review, undefined);
+  assert.ok(tourVisaReadDto(first, true).visaPlan?.review);
+  assert.equal(tourVisaReadDto({ itinerary: days }).visaPlan, null);
+});
+
+test("invalid plan and invalid itinerary days cannot be saved even in a draft", () => {
+  assert.equal(prepareTourVisaWrite({ ...draft, visaPlan: { ...plan, passportCountry: "US" } }, null, records, now).ok, false);
+  for (const value of [{ day: -1, title: "Title", description: "" }, { day: 1, title: 12, description: "" }, { day: 1, title: "Title" }]) {
+    assert.equal(prepareTourVisaWrite({ ...draft, itinerary: [value] }, null, records, now).ok, false);
+  }
 });

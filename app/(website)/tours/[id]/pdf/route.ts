@@ -26,6 +26,7 @@ import {
 import { ItineraryPDF, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
 import { readTourItinerary } from "@/lib/tour-visa-plan";
 import { assessCatalogVisas, getTourVisaCountries } from "@/lib/tour-visa-data";
+import { buildTourVisaCatalogNotes, buildTourVisaPdfAddOns } from "@/lib/tour-visa-catalog";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -283,9 +284,9 @@ export async function GET(
     exclusions: tour.exclusions,
     heroImg,
     gallery: uniqueImages(gallery),
-    visaInfo: visaAssessment.summary.join("\n\n"),
+    visaInfo: buildTourVisaCatalogNotes(visaAssessment),
     notes: resolveCanadaRockiesPdfNotes(tour.notes, tour.slug),
-    addOns: normalizedAddOns,
+    addOns: [...normalizedAddOns, ...buildTourVisaPdfAddOns(visaAssessment)],
   });
   const localizedMandatoryAddOns = (pdfTour.addOns ?? [])
     .filter((item) => item.tag === "wajib");

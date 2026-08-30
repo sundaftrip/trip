@@ -48,6 +48,7 @@ import {
 } from "@/lib/canada-catalog-preview";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { assessCatalogVisas, getTourVisaCountries } from "@/lib/tour-visa-data";
+import { buildTourVisaCatalogNotes } from "@/lib/tour-visa-catalog";
 import { readTourItinerary } from "@/lib/tour-visa-plan";
 import type { VisaAssessmentRecord } from "@/lib/tour-visa-assessment";
 import visaSeed from "@/prisma/visa-seed.json";
@@ -548,7 +549,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const displayCityHighlight = localizePdfText(tour.cityHighlight);
   const displayDuration = localizePdfText(tour.duration);
   const displayDescription = localizePdfText(tour.description);
-  const displayVisaInfo = visaAssessment.summary.join("\n\n");
+  const displayVisaInfo = buildTourVisaCatalogNotes(visaAssessment);
   const displayNotes = localizePdfText(tour.notes);
   const displayBadge = localizePdfText(tour.badge);
   const displayInclusions = tour.inclusions.map((item) => localizePdfText(item) ?? item);
