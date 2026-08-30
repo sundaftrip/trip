@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import test from "node:test";
 import postcss from "postcss";
+import ts from "typescript";
 
 const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const shell = read("components/admin/AdminShell.tsx");
@@ -93,4 +94,31 @@ test("list headers wrap and all targeted CMS embellishments are removed", () => 
   assert.doesNotMatch(scraper, /bg-gradient|backdrop-blur|shadow-2xl|Sparkles/);
   assert.match(scraper, /onClick=\{runScrape\}/);
   assert.match(scraper, /onClick=\{\(\) => applyDiff\(d, ch\)\}/);
+});
+
+test("moderation header and draft picker are restrained without losing working controls", () => {
+  const discussion = read("app/admin/visa-discussions/page.tsx");
+  const scraper = read("components/admin/ScraperTool.tsx");
+  assert.doesNotMatch(discussion, /bg-gradient|shadow-sm/);
+  assert.match(discussion, /styles\.pageHeader/);
+  assert.match(discussion, /canModerate=\{canModerate\}/);
+  assert.match(discussion, /checkPermission\(session, "visa_discussion_view"\)/);
+  assert.match(discussion, /checkPermission\(session, "visa_discussion_moderate"\)/);
+  assert.match(discussion, /aria-current=\{active \? "page" : undefined\}/);
+  assert.doesNotMatch(scraper, /Sparkles|violet/);
+  assert.match(scraper, /aria-pressed=\{active\}/);
+  for (const action of ["onClick={handleScrape}", "onClick={rewriteSelected}", "onClick={() => setStyle(s.id)}", "onRewrite={() => rewritePost(post)}"]) {
+    assert.ok(scraper.includes(action), `Missing action: ${action}`);
+  }
+  const tree = ts.createSourceFile("ScraperTool.tsx", scraper, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let buttons = 0;
+  function inspect(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(tree) === "button") {
+      buttons++;
+      assert.ok(node.children.some((child) => !ts.isJsxText(child) || child.text.trim().length > 0), "Empty decorative button found");
+    }
+    ts.forEachChild(node, inspect);
+  }
+  inspect(tree);
+  assert.equal(buttons, 5);
 });
