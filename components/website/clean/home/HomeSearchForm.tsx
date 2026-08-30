@@ -1,7 +1,6 @@
 "use client";
 
 import { type FormEvent } from "react";
-import { CalendarDays, MapPin, Search } from "lucide-react";
 import { trackSundafEvent } from "@/lib/analytics-events";
 import styles from "./CleanHome.module.css";
 
@@ -47,7 +46,6 @@ export default function HomeSearchForm({
       aria-label="Cari rute yang pas"
     >
       <label className={styles.finderField}>
-        <MapPin aria-hidden="true" />
         <span>
           <small>TUJUAN</small>
           <select name="destination" defaultValue="all">
@@ -62,7 +60,6 @@ export default function HomeSearchForm({
       </label>
 
       <label className={styles.finderField}>
-        <CalendarDays aria-hidden="true" />
         <span>
           <small>WAKTU BERANGKAT</small>
           <select name="month" defaultValue="all">
@@ -77,7 +74,6 @@ export default function HomeSearchForm({
       </label>
 
       <button type="submit">
-        <Search aria-hidden="true" />
         Lihat perjalanan
       </button>
     </form>
