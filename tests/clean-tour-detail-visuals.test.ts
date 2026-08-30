@@ -95,7 +95,7 @@ test("makes every room tier an accessible synchronized choice", () => {
 test("keeps the main date card while grouping mobile option controls and hiding them on desktop", () => {
   assert.match(
     roomBookingSource,
-    /\{hasOptionalServices && \([\s\S]*?className=\{interactiveStyles\.dateCardOptionControls\}[\s\S]*?role="group"[\s\S]*?aria-label="Tambahan opsional"[\s\S]*?<TourRecommendedAddOnToggle compact grouped \/>[\s\S]*?<TourVisaServiceToggle compact grouped \/>/,
+    /\{\(hasOptionalServices \|\| hasVisaInformation\) && \([\s\S]*?className=\{interactiveStyles\.dateCardOptionControls\}[\s\S]*?role="group"[\s\S]*?aria-label="Tambahan opsional"[\s\S]*?<TourRecommendedAddOnToggle compact grouped \/>[\s\S]*?<TourVisaServiceToggle compact grouped \/>/,
   );
   assert.match(
     interactiveStylesSource,

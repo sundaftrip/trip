@@ -19,7 +19,7 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Lihat layanan visa": "View visa service",
   "Konsultasikan kebutuhan visa": "Discuss visa requirements",
   "Ketentuan dan sumber": "Conditions and sources",
-  "Sumber ketentuan resmi": "Official requirements source",
+  "Rujukan ketentuan": "Requirements reference",
   "Hal yang perlu dikonfirmasi": "Details to confirm",
   "Rute dan kebutuhan visa perlu dikonfirmasi bersama tim Sundaf.": "Please confirm the route and visa requirements with the Sundaf team.",
   "Bantuan visa sudah termasuk paket. Tidak perlu ditambahkan lagi.": "Visa assistance is already included in the package. No additional selection is needed.",

@@ -79,7 +79,7 @@ export default function TourVisaServiceToggle({
                   {country.conditions.length > 0 && <ul>{country.conditions.map((condition, index) => <li key={index}>{condition}</li>)}</ul>}
                   {country.checkedAt && <p>Terakhir diperiksa: {country.checkedAt.slice(0, 10)}</p>}
                   {country.sourceUrl && /^https?:\/\//i.test(country.sourceUrl) && (
-                    <a href={country.sourceUrl} target="_blank" rel="noopener noreferrer">Sumber ketentuan resmi</a>
+                    <a href={country.sourceUrl} target="_blank" rel="noopener noreferrer">Rujukan ketentuan</a>
                   )}
                 </StableDetails>
               )}

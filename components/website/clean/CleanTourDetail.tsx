@@ -680,6 +680,7 @@ export default function CleanTourDetail({
             <p className={styles.detailPdfRecovery} id="mobile-pdf-recovery">
               Jika PDF tidak terbuka,{" "}
               <TourRoomRecoveryLink
+                hasPrice={hasPrice}
                 fallbackHref={bookingWaHref}
                 phone={bookingPhone}
                 startingTotal={startingTotal}
@@ -753,6 +754,7 @@ export default function CleanTourDetail({
             <p className={styles.detailPdfRecovery} id="detail-pdf-recovery">
               Jika unduhan gagal,{" "}
               <TourRoomRecoveryLink
+                hasPrice={hasPrice}
                 fallbackHref={bookingWaHref}
                 phone={bookingPhone}
                 startingTotal={startingTotal}
