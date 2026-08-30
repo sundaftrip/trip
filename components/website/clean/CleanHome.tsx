@@ -256,7 +256,6 @@ export default function CleanHome({
                 <TextWithAuroraAccent
                   text={heroTitle}
                   phrase="cerita yang berbeda."
-                  glow
                 />
               </h1>
               <p>{heroBody}</p>
