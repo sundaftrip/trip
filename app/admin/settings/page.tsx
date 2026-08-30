@@ -5,14 +5,17 @@ import { isFeatureEnabledFor, type Plan } from "@/lib/plan";
 import { COLOR_SCHEMES } from "@/lib/color-schemes";
 import { Lock } from "lucide-react";
 import StickyFormActions from "@/components/admin/StickyFormActions";
+import { changedValues, cmsErrorMessage, requestCmsJson } from "@/lib/cms-request";
 
 const INFO_FIELDS = [
   { key: "company_name", label: "Nama Perusahaan" },
+  { key: "company_legal_name", label: "Nama Badan Usaha (footer dan informasi legalitas)" },
   { key: "company_nib", label: "NIB" },
   { key: "company_address", label: "Alamat" },
   { key: "company_phone", label: "Telepon" },
   { key: "company_whatsapp", label: "WhatsApp" },
   { key: "company_email", label: "Email" },
+  { key: "company_opening_hours", label: "Jam Layanan (halaman kontak)" },
   { key: "company_website", label: "Website" },
   { key: "company_instagram", label: "Instagram (username, mis. sundaf.trip)" },
   { key: "company_tiktok", label: "TikTok (username, mis. sundaf.trip)" },
@@ -62,16 +65,23 @@ const THEMES = [
 
 export default function SettingsPage() {
   const [data, setData] = useState<Record<string, string>>({});
+  const [baseline, setBaseline] = useState<Record<string, string>>({});
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [activeScheme, setActiveScheme] = useState<string>("");
   const [plan, setPlan] = useState<Plan>("basic");
 
   useEffect(() => {
-    fetch("/api/settings").then((r) => r.json()).then((d) => {
+    requestCmsJson<Record<string, string>>("/api/settings").then((d) => {
+      if (!d || Array.isArray(d) || Object.values(d).some((value) => typeof value !== "string")) throw new Error("Data pengaturan tidak valid. Muat ulang sebelum menyimpan.");
       setData(d);
+      setBaseline(d);
+      setLoaded(true);
       setActiveScheme((d["site_theme"] ?? "classic") === "atlas" ? "sundaf" : (d["color_scheme"] ?? "sundaf"));
-    });
+    }).catch((error) => setError(cmsErrorMessage(error)));
     // Plan diresolusi dari MASTER lewat /api/plan
     fetch("/api/plan").then((r) => r.json()).then((d) => {
       if (d?.plan) setPlan(d.plan);
@@ -83,15 +93,26 @@ export default function SettingsPage() {
   const isPro = plan === "pro";
 
   async function handleSave() {
+    if (!loaded || saving || uploading) return;
+    const snapshot = data;
+    const changes = changedValues(snapshot, baseline);
+    if (!Object.keys(changes).length) return;
     setSaving(true);
-    await fetch("/api/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setSaved(false);
+    setError("");
+    try {
+      await requestCmsJson("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(changes),
+      });
+      setBaseline(snapshot);
+      setSaved(true);
+    } catch (error) {
+      setError(cmsErrorMessage(error));
+    } finally {
+      setSaving(false);
+    }
   }
 
   function applyScheme(schemeId: string) {
@@ -102,23 +123,30 @@ export default function SettingsPage() {
   }
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const { url } = await res.json();
-    setData((d) => ({ ...d, company_logo: url }));
+    await uploadImage(e, "company_logo");
   }
 
   async function handleFaviconUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    await uploadImage(e, "favicon_logo");
+  }
+
+  async function uploadImage(e: React.ChangeEvent<HTMLInputElement>, key: string) {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || uploading || !loaded) return;
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const { url } = await res.json();
-    setData((d) => ({ ...d, favicon_logo: url }));
+    setUploading(true);
+    setSaved(false);
+    setError("");
+    try {
+      const { url } = await requestCmsJson<{ url?: string }>("/api/upload", { method: "POST", body: fd });
+      if (!url) throw new Error("Unggahan tidak menghasilkan gambar. Gambar sebelumnya tetap dipakai.");
+      setData((d) => ({ ...d, [key]: url }));
+    } catch (error) {
+      setError(cmsErrorMessage(error));
+    } finally {
+      setUploading(false);
+    }
   }
 
   const atlasBrandLocked = (data["site_theme"] ?? "classic") === "atlas";
@@ -135,18 +163,23 @@ export default function SettingsPage() {
         </div>
       </div>
       <StickyFormActions
-        loading={saving}
-        primaryLabel={saved ? "Tersimpan!" : "Simpan Semua"}
+        loading={saving || uploading}
+        disabled={!loaded || !Object.keys(changedValues(data, baseline)).length}
+        primaryLabel={saved && !Object.keys(changedValues(data, baseline)).length ? "Tersimpan!" : "Simpan Perubahan"}
         onSave={handleSave}
       />
+      {error && <div role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-200">{error} {!loaded && <button type="button" className="underline" onClick={() => window.location.reload()}>Muat ulang</button>}</div>}
+      {saved && !Object.keys(changedValues(data, baseline)).length && <p role="status" className="text-sm text-emerald-700">Perubahan tersimpan.</p>}
+      <fieldset disabled={!loaded || saving || uploading} className="space-y-6 min-w-0">
 
       {/* Company Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 dark:text-white">Informasi Perusahaan</h2>
         {INFO_FIELDS.map(({ key, label }) => (
           <div key={key}>
-            <label className="label">{label}</label>
-            <input className="input" value={data[key] ?? ""}
+            <label htmlFor={key} className="label">{label}</label>
+            <input id={key} className="input" value={data[key] ?? ""}
+              placeholder={key === "company_opening_hours" ? "Senin-Jumat 09:00-17:00 WIB" : undefined}
               onChange={(e) => setData({ ...data, [key]: e.target.value })} />
           </div>
         ))}
@@ -514,18 +547,19 @@ export default function SettingsPage() {
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <div className="mb-5">
           <h2 className="font-semibold text-gray-900 dark:text-white">Font Website</h2>
-          <p className="text-xs text-gray-500 mt-1">Pilih tipografi untuk seluruh halaman website</p>
+          <p className="text-xs text-gray-500 mt-1">Website aktif memakai Jost sebagai identitas tetap. Pilihan font lama di bawah hanya referensi dan tidak dapat diubah dari CMS.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {FONTS.map(({ key, label, desc, sample }) => {
-            const active = (data["site_font"] ?? "jost") === key;
+            const active = key === "jost";
             const cssVar = FONT_CSS_VAR[key];
             return (
               <button
                 key={key}
                 type="button"
-                onClick={() => setData((d) => ({ ...d, site_font: key }))}
+                disabled
+                aria-label={`${label}${active ? ", font website aktif" : ", tidak tersedia"}`}
                 className={`text-left px-4 py-3.5 rounded-xl border-2 transition-all ${
                   active
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
@@ -553,6 +587,7 @@ export default function SettingsPage() {
         </div>
 
       </div>
+      </fieldset>
     </div>
   );
 }

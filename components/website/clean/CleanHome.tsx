@@ -13,6 +13,7 @@ import {
   replaceLegacyHomepageCopy,
 } from "@/lib/home-copy";
 import { getHomeFaqs, type HomeFaqItem } from "@/lib/home-faqs";
+import { HOME_TEXT_DEFAULTS } from "@/lib/website-texts";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
 import { TextWithAuroraAccent } from "@/components/website/AuroraText";
@@ -56,6 +57,7 @@ export type CleanHomeTextValue =
 
 export type CleanHomeProps = {
   tours: CleanTour[];
+  finderTours?: CleanTour[];
   testimonials: CleanHomeTestimonial[];
   posts: CleanHomePost[];
   company: Record<string, string>;
@@ -174,13 +176,14 @@ export default function CleanHome({
   posts,
   company,
   texts,
+  finderTours = tours,
   heroImage = "/images/home/murmansk-aurora-group.png",
 }: CleanHomeProps) {
   const scheduledTours = tours
     .filter((tour) => tour.state === "bookable" || tour.state === "sold")
     .slice(0, 6);
-  const destinationOptions = getDestinationOptions(tours);
-  const monthOptions = getMonthOptions(tours);
+  const destinationOptions = getDestinationOptions(finderTours);
+  const monthOptions = getMonthOptions(finderTours);
   const nib = company.company_nib || "1601260060842";
   const legalName = company.company_legal_name || "CV Sundaf Holiday Group";
   const whatsappNumber = company.company_whatsapp || "+62 817-7520-2759";
@@ -189,7 +192,11 @@ export default function CleanHome({
       whatsappNumber,
       "Halo Sundaf Trip, saya ingin konsultasi untuk memilih perjalanan yang sesuai.",
     ) || "/contact";
-  const resolvedFaqs = getHomeFaqs(nib, legalName);
+  const resolvedFaqs = getHomeFaqs(nib, legalName).map((item, index) => ({
+    ...item,
+    question: readText(texts, [`home_faq_${index + 1}_question`], item.question),
+    answer: readText(texts, [`home_faq_${index + 1}_answer`], item.answer),
+  }));
   const journalPosts = posts.slice(0, 3);
 
   const heroEyebrow = replaceLegacyHomepageCopy(
@@ -370,38 +377,38 @@ export default function CleanHome({
         <section className={`${styles.section} ${styles.benefitSection}`} aria-labelledby="benefits-title">
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>CARA KERJA SUNDAF</p>
-              <h2 id="benefits-title">Kami urus yang rumit. Kamu nikmati yang penting.</h2>
+              <p className={styles.eyebrow}>{readText(texts, ["home_benefits_eyebrow"], HOME_TEXT_DEFAULTS.home_benefits_eyebrow)}</p>
+              <h2 id="benefits-title">{readText(texts, ["home_benefits_title"], HOME_TEXT_DEFAULTS.home_benefits_title)}</h2>
             </div>
 
             <div className={styles.benefitGrid}>
               <article>
                 <div className={styles.benefitTitle}>
                   <FileCheck aria-hidden="true" />
-                  <h3>Visa &amp; dokumen dibantu</h3>
+                  <h3>{readText(texts, ["home_benefit_1_title"], HOME_TEXT_DEFAULTS.home_benefit_1_title)}</h3>
                 </div>
-                <p>Kami cek kebutuhan dokumen dan menjelaskan alurnya sebelum pengajuan dimulai.</p>
+                <p>{readText(texts, ["home_benefit_1_desc"], HOME_TEXT_DEFAULTS.home_benefit_1_desc)}</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
                   <Clock aria-hidden="true" />
-                  <h3>Itinerary punya ruang bernapas</h3>
+                  <h3>{readText(texts, ["home_benefit_2_title"], HOME_TEXT_DEFAULTS.home_benefit_2_title)}</h3>
                 </div>
-                <p>Rute disusun agar kamu tidak hanya datang, foto, lalu bergegas pindah kota.</p>
+                <p>{readText(texts, ["home_benefit_2_desc"], HOME_TEXT_DEFAULTS.home_benefit_2_desc)}</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
                   <MessageCircle aria-hidden="true" />
-                  <h3>Persiapan dari awal</h3>
+                  <h3>{readText(texts, ["home_benefit_3_title"], HOME_TEXT_DEFAULTS.home_benefit_3_title)}</h3>
                 </div>
-                <p>Info keberangkatan, kebutuhan cuaca, dan detail pertemuan dibagikan sebelum hari H.</p>
+                <p>{readText(texts, ["home_benefit_3_desc"], HOME_TEXT_DEFAULTS.home_benefit_3_desc)}</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
                   <Compass aria-hidden="true" />
-                  <h3>Didampingi selama perjalanan</h3>
+                  <h3>{readText(texts, ["home_benefit_4_title"], HOME_TEXT_DEFAULTS.home_benefit_4_title)}</h3>
                 </div>
-                <p>Tour leader membantu koordinasi grup, supaya kamu bisa fokus pada pengalaman di perjalanan.</p>
+                <p>{readText(texts, ["home_benefit_4_desc"], HOME_TEXT_DEFAULTS.home_benefit_4_desc)}</p>
               </article>
             </div>
           </div>

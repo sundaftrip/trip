@@ -25,6 +25,14 @@ const COLOR_DEFAULTS: Record<string, string> = {
 
 const COLOR_KEYS = Object.keys(COLOR_DEFAULTS);
 
+const getFooterTagline = unstable_cache(async () => {
+  try {
+    return (await prisma.siteText.findUnique({ where: { key: "home_footer_tagline" } }))?.valueId || "";
+  } catch {
+    return "";
+  }
+}, ["active-footer-tagline"], { revalidate: 300, tags: ["footer-data"] });
+
 const getSiteConfig = unstable_cache(
   async () => {
     try {
@@ -63,7 +71,7 @@ const getSiteConfig = unstable_cache(
 );
 
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const config = await getSiteConfig();
+  const [config, footerTagline] = await Promise.all([getSiteConfig(), getFooterTagline()]);
   const { colors, logo, theme, whatsapp, company } = config;
   // Preview-theme via cookie sengaja dihilangkan dari server layout karena
   // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
@@ -144,7 +152,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         </a>
         <CleanNavbar logo={logo} whatsapp={whatsapp} />
         <main id="website-main" className="flex-1" data-theme="atlas" tabIndex={-1}>{children}</main>
-        <CleanFooter logo={logo} company={company} />
+        <CleanFooter logo={logo} company={company} tagline={footerTagline} />
         <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <AutoTranslate />
         <ReferralCapture />

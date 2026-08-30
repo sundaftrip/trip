@@ -18,6 +18,8 @@ export type FaqItem = {
   id: string;
   question: string;
   answer: string[];
+  /** Server-sanitized CMS markup; plain answer remains the search/schema source. */
+  answerHtml?: string;
   relatedLinks?: FaqLink[];
 };
 

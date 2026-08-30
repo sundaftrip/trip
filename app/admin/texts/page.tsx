@@ -1,22 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import TextsForm from "@/components/admin/TextsForm";
-
-const TEXT_KEYS = [
-  { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"] },
-  // Kartu "Mengapa Kami?" (WhySection) — sebelumnya tak bisa diedit dari admin.
-  { section: "Keunggulan (Mengapa Kami)", keys: [
-    "why_1_title", "why_1_desc",
-    "why_2_title", "why_2_desc",
-    "why_3_title", "why_3_desc",
-    "why_4_title", "why_4_desc",
-  ] },
-  { section: "Footer", keys: ["footer_tagline"] },
-  { section: "Kontak", keys: ["contact_title", "contact_desc"] },
-  { section: "Pembayaran", keys: ["payment_bank_name", "payment_bank_acc", "payment_bank_holder"] },
-];
+import { ACTIVE_TEXT_SECTIONS, LEGACY_TEXT_SECTIONS, activeTextValues } from "@/lib/website-texts";
 
 export default async function TextsPage() {
-  const existing = await prisma.siteText.findMany();
+  const [existing, companyRows] = await Promise.all([
+    prisma.siteText.findMany(),
+    prisma.companyInfo.findMany({ where: { key: { in: ["company_nib", "company_legal_name"] } } }),
+  ]);
+  const company = Object.fromEntries(companyRows.map((row) => [row.key, row.value]));
   const textsMap: Record<string, { id?: string; en?: string }> = {};
   existing.forEach((t) => {
     textsMap[t.key] = { id: t.valueId ?? undefined, en: t.valueEn ?? undefined };
@@ -26,9 +17,9 @@ export default async function TextsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Teks Website</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Edit semua teks yang tampil di halaman publik</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Teks pembuka beranda, cara kerja, footer, dan kontak. FAQ dikelola melalui menu FAQ; katalog melalui menu Tour.</p>
       </div>
-      <TextsForm sections={TEXT_KEYS} initialValues={textsMap} />
+      <TextsForm sections={[...ACTIVE_TEXT_SECTIONS, ...LEGACY_TEXT_SECTIONS]} initialValues={activeTextValues(textsMap, company)} />
     </div>
   );
 }
