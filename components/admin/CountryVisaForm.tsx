@@ -163,6 +163,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       sourceUrl: form.sourceUrl.trim(),
       lastVerifiedAt: form.lastVerifiedAt,
       variants: (form.variants ?? []).map((v, i) => ({
+        id: v.id,
         sortOrder: i,
         name: v.name.trim(),
         priceIDR:
