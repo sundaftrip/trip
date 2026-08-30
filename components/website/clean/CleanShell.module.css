@@ -1060,24 +1060,6 @@
     color: var(--shell-primary);
   }
 
-  .desktopNav a.desktopAction {
-    min-height: 44px;
-    display: inline-flex;
-    flex: 0 0 auto;
-    font-size: 13px;
-    font-weight: 450;
-    border-radius: 999px;
-    background: var(--shell-primary);
-    color: var(--shell-white);
-    box-shadow: none;
-    transition: background-color 160ms ease;
-  }
-
-  .desktopNav a.desktopAction:hover {
-    background: var(--shell-primary-strong);
-    color: var(--shell-white);
-  }
-
   .drawerLayer {
     display: none;
   }

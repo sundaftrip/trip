@@ -16,27 +16,24 @@ function declarations(selector: string) {
   return values;
 }
 
-test("desktop CTA is painted as solid teal without a measured or moving overlay", () => {
-  const action = declarations(".desktopNav a.desktopAction");
-  assert.equal(action.background, "var(--shell-primary)");
-  assert.equal(action.color, "var(--shell-white)");
-  assert.equal(action["box-shadow"], "none");
-  assert.doesNotMatch(JSON.stringify(action), /gradient|translate|scale|cubic-bezier/);
+test("desktop CTA shares plain text navigation styling without a card or moving overlay", () => {
+  assert.deepEqual(declarations(".desktopNav a.desktopAction"), {});
+  const link = declarations(".desktopNav a");
+  assert.equal(link.color, "var(--shell-ink-soft)");
+  assert.match(link.transition, /^color /);
+  assert.doesNotMatch(JSON.stringify(link), /background|box-shadow|border-radius|gradient|translate|scale|cubic-bezier/);
   assert.doesNotMatch(navbar, /desktopNavIndicator|updateDesktopIndicator|desktopLinkRefs|selectedDesktopHref|ResizeObserver|useLayoutEffect/);
 });
 
-test("CTA hover and active routes keep legible text without moving the button", () => {
-  const hover = declarations(".desktopNav a.desktopAction:hover");
-  assert.equal(hover.background, "var(--shell-primary-strong)");
-  assert.equal(hover.color, "var(--shell-white)");
-  assert.ok(!hover.transform || hover.transform === "none");
-  assert.equal(declarations('.desktopNav a[aria-current="page"]').color, "var(--shell-primary)");
+test("navigation hover and active routes change only text color", () => {
+  assert.deepEqual(declarations(".desktopNav a.desktopAction:hover"), {});
+  assert.deepEqual(declarations(".desktopNav a:hover"), { color: "var(--shell-primary)" });
+  assert.deepEqual(declarations('.desktopNav a[aria-current="page"]'), { color: "var(--shell-primary)" });
   assert.doesNotMatch(css.toString(), /desktopNavIndicator|desktop-indicator|data-selected/);
 });
 
 test("keeps desktop sizing, keyboard focus and real route semantics", () => {
   assert.equal(declarations(".desktopNav a")["min-height"], "44px");
-  assert.equal(declarations(".desktopNav a.desktopAction")["border-radius"], "999px");
   assert.equal(declarations(".desktopNav a:focus-visible").outline, "3px solid var(--shell-aurora)");
   assert.match(navbar, /const desktopActionLink = \{ href: "\/tours", label: "Lihat jadwal & biaya" \}/);
   assert.match(navbar, /aria-current=\{isActive\(link\.href\) \? "page" : undefined\}/);
@@ -46,7 +43,7 @@ test("keeps desktop sizing, keyboard focus and real route semantics", () => {
 
 test("keeps mobile menu and desktop breakpoint independent of the CTA styling", () => {
   const action = css.nodes.flatMap((node) => node.type === "atrule" && node.name === "media" && node.params === "(min-width: 1024px)"
-    ? (node.nodes ?? []).filter((child) => child.type === "rule" && child.selector === ".desktopNav a.desktopAction") : []);
+    ? (node.nodes ?? []).filter((child) => child.type === "rule" && child.selector === ".desktopNav a") : []);
   assert.equal(action.length, 1);
   assert.match(navbar, /aria-controls="clean-mobile-drawer"/);
   assert.match(navbar, /if \(!open\) return/);
