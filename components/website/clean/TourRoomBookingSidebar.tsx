@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
 import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
-import TourVisaServiceToggle from "./TourVisaServiceToggle";
+import TourVisaServiceToggle, { TourVisaGroupPrice } from "./TourVisaServiceToggle";
 import styles from "./CleanSite.module.css";
 
 type MandatoryAddOn = {
@@ -58,11 +58,14 @@ export default function TourRoomBookingSidebar({
     hasOptionalServices,
     optionalServicesTotal,
     optionalServicesPreference,
+    adults,
+    childCount,
+    visaOffers,
   } = useTourRoomSelection();
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
   const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
   const selectedTotalPrice = selectedMandatoryTotalPrice + optionalServicesTotal;
-  const selectedPriceCaption = hasOptionalServices ? "Total per orang" : "Total wajib";
+  const selectedPriceCaption = visaOffers.length > 0 ? "Per orang, di luar bantuan visa" : hasOptionalServices ? "Total per orang" : "Total wajib";
   const selectedBookingWaHref = selectedRoom || hasOptionalServices
     ? buildWhatsAppBookingHref(bookingPhone, {
         tourName,
@@ -70,6 +73,8 @@ export default function TourRoomBookingSidebar({
         formattedPrice: formatCurrency(selectedTotalPrice),
         priceCaption: selectedPriceCaption,
         roomPreference: selectedRoom?.label,
+        travelerCount: adults,
+        childCount,
         addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })
@@ -109,6 +114,7 @@ export default function TourRoomBookingSidebar({
           <div className={styles.detailPriceTotal}>
             <span>{selectedPriceCaption}</span><strong>{formatCurrency(selectedTotalPrice)}</strong>
           </div>
+          <TourVisaGroupPrice />
         </div>
       )}
 
@@ -127,7 +133,7 @@ export default function TourRoomBookingSidebar({
               <span>
                 <b>{formatCurrency(room.headlinePrice)}</b>
                 <small>
-                  {hasOptionalServices ? "Total per orang" : "Total wajib"}{" "}
+                  {selectedPriceCaption}{" "}
                   {formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal)}
                 </small>
               </span>

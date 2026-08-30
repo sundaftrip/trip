@@ -29,6 +29,9 @@ export default function TourRoomRecoveryLink({
     hasOptionalServices,
     optionalServicesTotal,
     optionalServicesPreference,
+    adults,
+    childCount,
+    visaOffers,
   } = useTourRoomSelection();
   const totalPrice = (selectedRoom?.mandatoryTotalPrice ?? startingTotal) + optionalServicesTotal;
   const href = selectedRoom || hasOptionalServices
@@ -36,8 +39,10 @@ export default function TourRoomRecoveryLink({
         tourName,
         departureDate: departureLabel,
         formattedPrice: formatCurrency(totalPrice),
-        priceCaption: hasOptionalServices ? "Total per orang" : "Total wajib",
+        priceCaption: visaOffers.length > 0 ? "Per orang, di luar bantuan visa" : hasOptionalServices ? "Total per orang" : "Total wajib",
         roomPreference: selectedRoom?.label,
+        travelerCount: adults,
+        childCount,
         addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })
