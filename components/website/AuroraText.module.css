@@ -29,10 +29,11 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) and (min-width: 640px) {
+@media (prefers-reduced-motion: no-preference) {
   @supports ((background-clip: text) or (-webkit-background-clip: text)) {
     .auroraText {
-      animation: aurora-text-drift 18s ease-in-out infinite alternate;
+      animation: aurora-text-drift 8s ease-in-out infinite alternate;
+      will-change: background-position;
     }
   }
 }
@@ -44,6 +45,7 @@
     background: none;
     filter: none;
     animation: none;
+    will-change: auto;
     -webkit-text-fill-color: CanvasText;
   }
 }
