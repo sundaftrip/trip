@@ -119,6 +119,11 @@ function routeStops(plan: TourVisaPlan | null, country: string | null | undefine
   });
 }
 
+function countryReentry(stops: readonly Stop[], countryId: string) {
+  const indices = stops.flatMap((stop, index) => stop.destination.kind === "visit" && stop.destination.countryId === countryId ? [index] : []);
+  return indices.length > 1 && stops.slice(indices[0], indices[indices.length - 1]).some((stop) => stop.destination.countryId !== countryId);
+}
+
 function exactIdrPrice(value?: string | null) {
   const amount = (value ?? "").trim().replace(/^(?:Rp\.?|IDR)\s*/i, "");
   if (!/^(?:\d+|\d{1,3}(?:\.\d{3})+|\d{1,3}(?:,\d{3})+)$/.test(amount)) return null;
@@ -149,6 +154,8 @@ function matchingVisaReference(text: string, record: VisaAssessmentRecord, recor
   const names = [record.name, record.en, ...(schengen(record) ? ["Schengen"] : [])];
   const mentions = (name: string) => ` ${value} `.includes(` ${normalized(name)} `);
   if (names.some(mentions)) return "match";
+  // A member-named Schengen component still covers the same group visa.
+  if (schengen(record) && records.some((other) => schengen(other) && [other.name, other.en].some(mentions))) return "match";
   // A named, unrelated visa is never removed or confused with this service.
   if (records.some((other) => [other.name, other.en].some(mentions)) || /\bschengen\b/.test(value)) return "other";
   return "ambiguous";
@@ -234,6 +241,12 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
       issues.push(`${record.name}: lama tinggal melebihi batas pada data visa.`);
       return candidate;
     }
+    if (!candidate.isSchengen && countryReentry(stops, stop.destination.countryId)) {
+      result.status = "conditional";
+      result.explanation = "Rute keluar lalu kembali masuk ke negara ini. Tim perlu memeriksa jumlah entri dan jenis izin yang sesuai sebelum menawarkan layanan visa.";
+      warnings.push(`${record.name}: rute masuk kembali; jumlah entri visa perlu diperiksa sebelum memilih layanan.`);
+      return candidate;
+    }
     if (result.status === "visa_free" || result.status === "visa_on_arrival") {
       if (windowDays !== null) {
         result.status = "conditional";
@@ -292,6 +305,12 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
     // Audit existing package costs before any service/status early return. A
     // mandatory or selectable add-on can still charge even when this engine
     // suppresses its own automatic offer.
+    if (candidate.isSchengen && matching.filter((reference) => !reference.included).length > 1) {
+      result.serviceState = "consultation";
+      result.explanation += " Ada lebih dari satu komponen biaya visa untuk rute Schengen yang sama. Tim perlu menyatukan atau menjelaskan rincian biayanya sebelum pemesanan.";
+      issues.push("Rute Schengen memiliki beberapa komponen biaya visa yang perlu diperiksa agar tidak dihitung ganda.");
+      return false;
+    }
     if ((stop.destination.service === "included" || includedReference) && chargedReference) {
       result.serviceState = "consultation";
       result.explanation += " Visa dinyatakan termasuk paket tetapi juga tercantum sebagai biaya tambahan. Tim perlu memperbaiki rincian agar biaya tidak dihitung dua kali.";
@@ -357,9 +376,8 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
   const schengenHandled = new Set<Candidate>();
   if (schengenGroup.length) {
     schengenGroup.forEach((candidate) => schengenHandled.add(candidate));
-    const visitStops = stops.filter((stop) => stop.destination.kind === "visit");
-    const enteredIndices = visitStops.flatMap((stop, index) => schengen(stop.record) ? [index] : []);
-    const reentry = enteredIndices.length > 1 && visitStops.slice(enteredIndices[0], enteredIndices[enteredIndices.length - 1]).some((stop) => !schengen(stop.record));
+    const enteredIndices = stops.flatMap((stop, index) => stop.destination.kind === "visit" && schengen(stop.record) ? [index] : []);
+    const reentry = enteredIndices.length > 1 && stops.slice(enteredIndices[0], enteredIndices[enteredIndices.length - 1]).some((stop) => !schengen(stop.record));
     const totalDays = schengenGroup.reduce((total, candidate) => total + (candidate.stop.stayDays ?? 0), 0);
     const limits = schengenGroup.map((candidate) => stayRule(candidate.stop.record?.stay)?.limit ?? null).filter((limit): limit is number => limit !== null);
     const exceeded = limits.length > 0 && totalDays > Math.min(...limits);

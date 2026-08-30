@@ -309,3 +309,51 @@ test("visa-free rolling windows are conditional until previous stays are checked
   assert.deepEqual(result.issues, []);
   assert.ok(result.countries[0].conditions.length);
 });
+
+test("multiple charged country visas in one Schengen group require pricing review", () => {
+  const result = assessTourVisas({ plan: plan("fr", "nl"), addOns: [{ name: "Visa Prancis", tag: "wajib" }, { name: "Visa Belanda", tag: "wajib" }] }, [france, netherlands], now);
+  assert.deepEqual(result.offers, []);
+  assert.ok(result.issues.some((issue) => issue.includes("Schengen") && issue.includes("biaya")));
+  assert.ok(result.countries.every((country) => country.serviceState === "consultation"));
+});
+
+test("Schengen coverage recognizes included-versus-charged references across member countries", () => {
+  const result = assessTourVisas({ plan: plan("fr", "nl"), inclusions: ["Visa Prancis termasuk"], addOns: [{ name: "Visa Belanda", tag: "wajib" }] }, [france, netherlands], now);
+  assert.deepEqual(result.offers, []);
+  assert.ok(result.issues.some((issue) => issue.includes("termasuk") && issue.includes("biaya")));
+  assert.ok(result.countries.every((country) => country.serviceState === "consultation"));
+});
+
+test("one member-named Schengen component covers the whole group without another offer", () => {
+  for (const input of [{ inclusions: ["Visa Prancis termasuk"] }, { addOns: [{ name: "Visa Prancis", tag: "wajib" }] }]) {
+    const result = assessTourVisas({ plan: plan("fr", "nl"), ...input }, [france, netherlands], now);
+    assert.deepEqual(result.offers, []);
+    assert.deepEqual(result.issues, []);
+    assert.ok(result.countries.every((country) => country.serviceState === ("inclusions" in input ? "included" : "separate")));
+  }
+});
+
+test("non-Schengen re-entry cannot automatically sell a single-entry service", () => {
+  const records = [brazil, { ...peru, variants: [{ id: "single", name: "Single entry", priceIDR: 1_000_000 }] }];
+  const result = assessTourVisas({ plan: plan("pe", "br", "pe") }, records, now);
+  const country = result.countries.find((country) => country.id === "pe");
+  assert.equal(country?.status, "conditional");
+  assert.equal(country?.serviceState, "consultation");
+  assert.deepEqual(result.offers, []);
+  assert.deepEqual(result.issues, []);
+  assert.ok(result.warnings.some((warning) => warning.includes("entri")));
+  const consecutive = assessTourVisas({ plan: plan("pe", "pe") }, records, now);
+  assert.equal(consecutive.offers[0]?.id, "visa-peru");
+});
+
+test("a foreign transit between visits cannot conceal a return entry", () => {
+  const transit = { countryId: "br", stayDays: 0, kind: "transit" as const, service: "offer" as const };
+  const regular = assessTourVisas({ plan: plan("pe", transit) }, [peru, brazil], now);
+  assert.deepEqual(regular.offers.map((offer) => offer.id), ["visa-peru"]);
+  const reentry = assessTourVisas({ plan: plan("pe", transit, "pe") }, [peru, brazil], now);
+  assert.deepEqual(reentry.offers, []);
+  assert.ok(reentry.warnings.some((warning) => warning.includes("entri")));
+  const schengenReentry = assessTourVisas({ plan: plan("fr", transit, "nl") }, [france, netherlands, brazil], now);
+  assert.deepEqual(schengenReentry.offers, []);
+  assert.ok(schengenReentry.warnings.some((warning) => warning.includes("entri")));
+});
