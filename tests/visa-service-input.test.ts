@@ -68,16 +68,16 @@ test("update preserves same-country IDs, creates new rows and removes only omitt
   ] }, "update"), ["keep", "remove"]);
   assert.deepEqual(data.variants, {
     deleteMany: { id: { notIn: ["keep"] } },
-    update: [{ where: { id: "keep" }, data: { name: "Updated", priceIDR: 2_000_000, sortOrder: 0 } }],
+    update: [{ where: { id: "keep" }, data: { name: "Updated", priceIDR: 2_000_000 } }],
     create: [{ name: "New", priceIDR: null, sortOrder: 1, processingTime: null, notes: null }],
   });
 });
 
-test("partial updates of existing variants preserve omitted price and details", () => {
+test("partial updates of existing variants preserve omitted price, order and details", () => {
   const data = visaServiceUpdateData(parseVisaServiceInput({ variants: [{ id: "keep", name: "Renamed" }] }, "update"), ["keep"]);
   assert.deepEqual(data.variants, {
     deleteMany: { id: { notIn: ["keep"] } },
-    update: [{ where: { id: "keep" }, data: { name: "Renamed", sortOrder: 0 } }],
+    update: [{ where: { id: "keep" }, data: { name: "Renamed" } }],
     create: [],
   });
 });

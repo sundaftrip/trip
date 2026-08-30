@@ -40,7 +40,7 @@ type VariantFields = {
 
 export type ParsedVisaServiceInput = {
   data: Partial<ServiceFields>;
-  variants?: (Partial<VariantFields> & { id?: string; sortOrder: number })[];
+  variants?: (Partial<VariantFields> & { id?: string; sortOrder?: number })[];
 };
 
 function invalid(field: string): never {
@@ -153,8 +153,10 @@ export function parseVisaServiceInput(body: unknown, mode: "create" | "update"):
     for (const key of ["processingTime", "notes"] as const) {
       if (Object.hasOwn(variant, key)) fields[key] = nullableText(variant[key], key);
     }
-    return { ...(id ? { id } : {}), ...fields,
-      sortOrder: Object.hasOwn(variant, "sortOrder") ? integer(variant.sortOrder, "urutan varian") : index };
+    const order = Object.hasOwn(variant, "sortOrder")
+      ? { sortOrder: integer(variant.sortOrder, "urutan varian") }
+      : id ? {} : { sortOrder: index };
+    return { ...(id ? { id } : {}), ...fields, ...order };
   });
   return { data, variants };
 }
@@ -163,7 +165,7 @@ function newVariant(variant: NonNullable<ParsedVisaServiceInput["variants"]>[num
   if (variant.id || !variant.name) invalid("varian baru");
   return {
     name: variant.name,
-    sortOrder: variant.sortOrder,
+    sortOrder: variant.sortOrder ?? 0,
     priceIDR: variant.priceIDR ?? null,
     processingTime: variant.processingTime ?? null,
     notes: variant.notes ?? null,
