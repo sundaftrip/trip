@@ -55,3 +55,8 @@ test("supports zero-day transit, repeat visits and an explicit review stamp", ()
   const value = { ...plan, destinations: [...plan.destinations, { countryId: "us", stayDays: 0, kind: "transit", service: "separate" }, ...plan.destinations], review: { at: "2026-08-31T00:00:00.000Z", fingerprint: "abc" } };
   assert.deepEqual(normalizeTourVisaPlan(value), { ok: true, value });
 });
+
+test("invalid optional day images cannot escape the typed reader", () => {
+  assert.deepEqual(readTourItinerary([{ ...days[0], image: 42 }]), [{ day: 1, title: "Lima", description: "Arrival" }]);
+  assert.throws(() => packTourItinerary(days, { ...plan, destinations: [] }), /negara/);
+});
