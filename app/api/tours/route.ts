@@ -9,6 +9,8 @@ import { apiError } from "@/lib/api-error";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
 import slugify from "slugify";
+import { getTourVisaCountries } from "@/lib/tour-visa-data";
+import { prepareTourVisaWrite, tourVisaReadDto } from "@/lib/tour-visa-publishing";
 
 const PUBLIC_TOUR_STATUSES = ["ACTIVE", "FULL"] as const;
 
@@ -104,7 +106,7 @@ export async function GET(req: NextRequest) {
     select: TOUR_READ_SELECT,
     orderBy: { createdAt: "desc" },
   });
-  const response = NextResponse.json(tours);
+  const response = NextResponse.json(tours.map((tour) => tourVisaReadDto(tour, authenticated)));
   if (authenticated) response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
@@ -149,6 +151,9 @@ export async function POST(req: NextRequest) {
   if (!data.slug) data.slug = await uniqueTourSlug(data.title);
 
   try {
+    const visaWrite = prepareTourVisaWrite({ ...data, ...("visaPlan" in body ? { visaPlan: body.visaPlan } : {}), visaReviewConfirmed: body.visaReviewConfirmed, visaReviewFingerprint: body.visaReviewFingerprint }, null, await getTourVisaCountries());
+    if (!visaWrite.ok) return NextResponse.json({ error: visaWrite.error }, { status: 422 });
+    data.itinerary = visaWrite.itinerary;
     const tour = await prisma.tour.create({ data: data as unknown as Prisma.TourUncheckedCreateInput });
 
     await logActivity({
@@ -158,7 +163,7 @@ export async function POST(req: NextRequest) {
     });
 
     revalidatePublicContent();
-    return NextResponse.json(tour, { status: 201 });
+    return NextResponse.json(tourVisaReadDto(tour, true), { status: 201 });
   } catch (err) {
     return apiError(err, { duplicate: "Slug tour sudah dipakai." });
   }

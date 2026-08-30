@@ -9,6 +9,7 @@ type TourRoomRecoveryLinkProps = {
   fallbackHref: string;
   phone: string;
   startingTotal: number;
+  hasPrice: boolean;
   tourName: string;
   departureLabel: string | null;
   bookingMode: BookingMode;
@@ -19,6 +20,7 @@ export default function TourRoomRecoveryLink({
   fallbackHref,
   phone,
   startingTotal,
+  hasPrice,
   tourName,
   departureLabel,
   bookingMode,
@@ -29,15 +31,20 @@ export default function TourRoomRecoveryLink({
     hasOptionalServices,
     optionalServicesTotal,
     optionalServicesPreference,
+    adults,
+    childCount,
+    visaOffers,
   } = useTourRoomSelection();
   const totalPrice = (selectedRoom?.mandatoryTotalPrice ?? startingTotal) + optionalServicesTotal;
   const href = selectedRoom || hasOptionalServices
     ? buildWhatsAppBookingHref(phone, {
         tourName,
         departureDate: departureLabel,
-        formattedPrice: formatCurrency(totalPrice),
-        priceCaption: hasOptionalServices ? "Total per orang" : "Total wajib",
+        formattedPrice: hasPrice ? formatCurrency(totalPrice) : "Sesuai permintaan",
+        priceCaption: visaOffers.length > 0 ? "Per orang, di luar bantuan visa" : hasOptionalServices ? "Total per orang" : "Total wajib",
         roomPreference: selectedRoom?.label,
+        travelerCount: adults,
+        childCount,
         addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })

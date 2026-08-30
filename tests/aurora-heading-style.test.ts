@@ -80,10 +80,17 @@ test("uses readable system colors and removes visual effects in forced-colors mo
   );
 });
 
-test("keeps aurora accents restrained to dark hero headings", () => {
-  assert.match(homeSource, /phrase="cerita yang berbeda\."[\s\S]*?glow/);
+test("keeps the homepage phrase gradient without opting into a glowing shadow", () => {
+  const homeAccent = homeSource.match(/<TextWithAuroraAccent\b[^>]*\/>/)?.[0];
+  assert.ok(homeAccent, "homepage keeps its gradient text helper");
+  assert.match(homeAccent, /text=\{heroTitle\}/);
+  assert.match(homeAccent, /phrase="cerita yang berbeda\."/);
+  assert.doesNotMatch(homeAccent, /\bglow\b/);
+  assert.match(componentSource, /function TextWithAuroraAccent\(\{[\s\S]*?glow = false/);
   assert.equal((homeSource.match(/<TextWithAuroraAccent/g) ?? []).length, 1);
+});
 
+test("preserves the existing aurora accents on other dark hero headings", () => {
   assert.match(tourDetailSource, /<h1 id="tour-title">[\s\S]*?phrase="Aurora"[\s\S]*?glow/);
   assert.equal((tourDetailSource.match(/<TextWithAuroraAccent/g) ?? []).length, 1);
 

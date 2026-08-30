@@ -1,3 +1,5 @@
+import { readTourItinerary } from "./tour-visa-plan";
+
 export type TourIndexabilityInput = {
   id?: string | null;
   slug?: string | null;
@@ -27,7 +29,7 @@ export function isSubstantialArchivedTour(
   if (!departure || departure.getTime() >= now.getTime()) return true;
 
   const textLength = `${tour.description || ""} ${tour.notes || ""}`.trim().length;
-  const itineraryCount = Array.isArray(tour.itinerary) ? tour.itinerary.length : 0;
+  const itineraryCount = readTourItinerary(tour.itinerary).length;
   const galleryCount = Array.isArray(tour.gallery) ? tour.gallery.length : 0;
   const inclusionCount = Array.isArray(tour.inclusions) ? tour.inclusions.length : 0;
 

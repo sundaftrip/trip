@@ -8,6 +8,7 @@ import {
   localizeCatalogText,
 } from "../lib/tour-catalog-localization";
 import { galleryForVietnamTour, heroForVietnamTour } from "../lib/vietnam-tour-images";
+import { prepareTourVisaWrite } from "../lib/tour-visa-publishing";
 
 type ImportFile = {
   created_at?: string;
@@ -349,9 +350,14 @@ async function main() {
   let created = 0;
   let updated = 0;
   try {
+    const visaCountries = await prisma.countryVisa.findMany({ include: { variants: true } });
     for (const sourceTour of source.tours) {
       const data = await toTourInput(sourceTour);
-      const existing = await prisma.tour.findUnique({ where: { slug: sourceTour.slug }, select: { id: true } });
+      const existing = await prisma.tour.findUnique({ where: { slug: sourceTour.slug } });
+      data.status = existing?.status ?? "DRAFT";
+      const visaWrite = prepareTourVisaWrite(data as unknown as Record<string, unknown>, existing, visaCountries);
+      if (!visaWrite.ok) throw new Error(`${sourceTour.slug}: ${visaWrite.error}`);
+      data.itinerary = visaWrite.itinerary as Prisma.InputJsonValue;
       await prisma.tour.upsert({
         where: { slug: sourceTour.slug },
         create: data,

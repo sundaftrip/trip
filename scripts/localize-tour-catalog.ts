@@ -1,18 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import fs from "node:fs";
 import path from "node:path";
+import { packTourItinerary, readTourItinerary, readTourVisaPlan } from "../lib/tour-visa-plan";
 import {
   hasEnglishCatalogHint,
   localizeCatalogRecord,
   localizeCatalogStringArray,
   localizeCatalogText,
 } from "../lib/tour-catalog-localization";
-
-type ItineraryItem = {
-  day: number;
-  title: string;
-  description: string;
-};
 
 type AddOnItem = {
   name: string;
@@ -74,7 +69,7 @@ async function main() {
     });
 
     for (const tour of tours) {
-      const itinerary = Array.isArray(tour.itinerary) ? (tour.itinerary as ItineraryItem[]) : [];
+      const itinerary = readTourItinerary(tour.itinerary);
       const addOns = Array.isArray(tour.addOns) ? (tour.addOns as AddOnItem[]) : [];
       const hotel =
         tour.hotel && !Array.isArray(tour.hotel) && typeof tour.hotel === "object"
@@ -90,13 +85,13 @@ async function main() {
         duration: (await localizeCatalogText(tour.duration)) ?? null,
         badge: (await localizeCatalogText(tour.badge)) ?? null,
         visaInfo: (await localizeCatalogText(tour.visaInfo)) ?? null,
-        itinerary: await Promise.all(
+        itinerary: packTourItinerary(await Promise.all(
           itinerary.map(async (item) => ({
             ...item,
             title: (await localizeCatalogText(item.title)) ?? item.title,
             description: (await localizeCatalogText(item.description)) ?? item.description,
           }))
-        ),
+        ), readTourVisaPlan(tour.itinerary)),
         inclusions: await localizeCatalogStringArray(tour.inclusions),
         exclusions: await localizeCatalogStringArray(tour.exclusions),
         hotel: (await localizeCatalogRecord(hotel)) ?? undefined,

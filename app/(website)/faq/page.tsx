@@ -3,10 +3,11 @@ export const revalidate = 300;
 import type { Metadata } from "next";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import FaqExplorer from "./FaqExplorer";
-import { FAQ_BOTTOM_CTA, FAQ_SECTIONS, faqAnswerText } from "@/lib/faq-content";
+import { FAQ_BOTTOM_CTA, faqAnswerText } from "@/lib/faq-content";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { toWaNumber } from "@/lib/utils";
+import { GENERAL_FAQ_SOURCE_KEY, resolveGeneralFaqSections } from "@/lib/faq-cms";
 
 export const metadata: Metadata = {
   title: {
@@ -37,6 +38,11 @@ async function getChromeData() {
 
 export default async function FaqPage() {
   const { theme, company } = await getChromeData();
+  // Do not resurrect defaults after intentional hiding/deletion, or on a failed
+  // CMS read. A failed regeneration keeps the previous successful ISR output.
+  const sourceRow = await prisma.companyInfo.findUnique({ where: { key: GENERAL_FAQ_SOURCE_KEY } });
+  const faqRows = sourceRow?.value === "cms" ? await prisma.faq.findMany({ where: { group: "umum" }, orderBy: [{ order: "asc" }, { createdAt: "asc" }] }) : [];
+  const sections = resolveGeneralFaqSections(sourceRow?.value, faqRows);
 
   const isKawaii = theme === "kawaii";
   const isTropical = theme === "tropical";
@@ -153,7 +159,7 @@ export default async function FaqPage() {
     "@type": "FAQPage",
     "@id": "https://sundaftrip.com/faq#faqpage",
     inLanguage: "id-ID",
-    mainEntity: FAQ_SECTIONS.flatMap((section) =>
+    mainEntity: sections.flatMap((section) =>
       section.items.map((item) => ({
         "@type": "Question",
         name: item.question,
@@ -214,7 +220,7 @@ export default async function FaqPage() {
         </header>
 
         <FaqExplorer
-          sections={FAQ_SECTIONS}
+          sections={sections}
           bottomCta={FAQ_BOTTOM_CTA}
           whatsappHref={whatsappHref}
           theme={{ isOutlined, pfx, headClr, subClr, cardBg, bdrClr }}

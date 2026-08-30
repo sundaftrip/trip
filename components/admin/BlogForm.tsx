@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
 import RichTextEditor from "./RichTextEditor";
 import StickyFormActions from "./StickyFormActions";
+import styles from "./AdminWorkspace.module.css";
 import slugify from "slugify";
+import { adminActionError, omitUnchangedFields, requestAdminAction } from "@/lib/admin-action";
 
 interface BlogData {
   id?: string;
@@ -24,6 +26,7 @@ export default function BlogForm({ post }: { post?: BlogData }) {
   const router = useRouter();
   const isEdit = !!post?.id;
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState<BlogData>({
     slug: post?.slug ?? "",
     title: post?.title ?? "",
@@ -49,48 +52,58 @@ export default function BlogForm({ post }: { post?: BlogData }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    const res = await fetch(isEdit ? `/api/blog/${post!.id}` : "/api/blog", {
-      method: isEdit ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setLoading(false);
-    if (res.ok) router.push("/admin/blog");
+    setError("");
+    const payload = isEdit ? omitUnchangedFields(form, { published: post?.published ?? false }, ["published"]) : form;
+    try {
+      await requestAdminAction(isEdit ? `/api/blog/${post!.id}` : "/api/blog", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }, "Artikel belum tersimpan. Coba lagi.");
+      router.push("/admin/blog");
+      router.refresh();
+    } catch (error) {
+      setError(adminActionError(error, "Artikel belum tersimpan. Coba lagi."));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+    <form onSubmit={handleSubmit} className={styles.form}>
+      {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">{error}</p>}
       <StickyFormActions
         loading={loading}
         primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Artikel"}
         cancelHref="/admin/blog"
       />
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <div className={`${styles.formSection} space-y-4`}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="label mb-1">Judul *</label>
-            <input required className="input" value={form.title} onChange={(e) => handleTitleChange(e.target.value)} placeholder="Judul artikel" />
+            <label htmlFor="blog-title" className="label mb-1">Judul *</label>
+            <input id="blog-title" required className="input" value={form.title} onChange={(e) => handleTitleChange(e.target.value)} placeholder="Judul artikel" />
           </div>
           <div>
-            <label className="label mb-1">Slug *</label>
-            <input required className="input font-mono text-sm" value={form.slug} onChange={(e) => set("slug", e.target.value)} placeholder="url-artikel" />
+            <label htmlFor="blog-slug" className="label mb-1">Slug *</label>
+            <input id="blog-slug" required className="input font-mono text-sm" value={form.slug} onChange={(e) => set("slug", e.target.value)} placeholder="url-artikel" />
           </div>
           <div>
-            <label className="label mb-1">Kategori</label>
-            <input className="input" value={form.category} onChange={(e) => set("category", e.target.value)} placeholder="cth: Umroh, Travel Tips" />
+            <label htmlFor="blog-category" className="label mb-1">Kategori</label>
+            <input id="blog-category" className="input" value={form.category} onChange={(e) => set("category", e.target.value)} placeholder="cth: Umroh, Travel Tips" />
           </div>
           <div>
-            <label className="label mb-1">Penulis</label>
-            <input className="input" value={form.author} onChange={(e) => set("author", e.target.value)} />
+            <label htmlFor="blog-author" className="label mb-1">Penulis</label>
+            <input id="blog-author" className="input" value={form.author} onChange={(e) => set("author", e.target.value)} />
           </div>
           <div>
-            <label className="label mb-1">Estimasi Baca</label>
-            <input className="input" value={form.readTime} onChange={(e) => set("readTime", e.target.value)} placeholder="cth: 5 menit" />
+            <label htmlFor="blog-read-time" className="label mb-1">Estimasi Baca</label>
+            <input id="blog-read-time" className="input" value={form.readTime} onChange={(e) => set("readTime", e.target.value)} placeholder="cth: 5 menit" />
           </div>
           <div className="md:col-span-2">
-            <label className="label mb-1">Ringkasan</label>
-            <textarea className="input min-h-[80px]" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} placeholder="Deskripsi singkat artikel" />
+            <label htmlFor="blog-excerpt" className="label mb-1">Ringkasan</label>
+            <textarea id="blog-excerpt" className="input min-h-[80px]" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} placeholder="Deskripsi singkat artikel" />
           </div>
         </div>
 
@@ -105,7 +118,7 @@ export default function BlogForm({ post }: { post?: BlogData }) {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <label className="label mb-3">Konten *</label>
         <RichTextEditor value={form.body ?? ""} onChange={(val) => set("body", val)} />
       </div>

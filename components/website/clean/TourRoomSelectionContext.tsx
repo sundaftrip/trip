@@ -8,7 +8,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { TourVisaOffer } from "@/lib/tour-visa-offers";
+import {
+  calculateVisaSelection,
+  clampVisaTravelerCount,
+  formatVisaSelectionPreference,
+  updateVisaTravelerParty,
+  type SelectableVisaOffer,
+  type TourVisaAssessmentView,
+  type VisaSelection,
+} from "@/lib/tour-visa-selection";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 
 export type TourSelectableAddOn = {
@@ -25,7 +33,15 @@ type TourRoomSelectionValue = {
   setIncludeSelectableAddOn: (value: boolean) => void;
   selectableAddOnTotal: number;
   selectableAddOnPreference: string;
-  visaOffers: TourVisaOffer[];
+  visaOffers: SelectableVisaOffer[];
+  visaAssessment?: TourVisaAssessmentView;
+  adults: number;
+  childCount: number;
+  travelerCount: number;
+  setAdults: (value: number) => void;
+  setChildCount: (value: number) => void;
+  visaSelection: VisaSelection;
+  setVisaTravelerCount: (id: string, count: number) => void;
   includedVisaOfferIds: string[];
   setVisaOfferIncluded: (id: string, value: boolean) => void;
   visaOfferTotal: number;
@@ -33,6 +49,7 @@ type TourRoomSelectionValue = {
   optionalServicesTotal: number;
   optionalServicesPreference: string;
   hasOptionalServices: boolean;
+  hasVisaInformation: boolean;
 };
 
 const TourRoomSelectionContext = createContext<TourRoomSelectionValue | null>(null);
@@ -41,16 +58,32 @@ export function TourRoomSelectionProvider({
   roomPrices,
   selectableAddOn,
   visaOffers = [],
+  visaAssessment,
   children,
 }: {
   roomPrices: TourRoomPrice[];
   selectableAddOn?: TourSelectableAddOn;
-  visaOffers?: TourVisaOffer[];
+  visaOffers?: SelectableVisaOffer[];
+  visaAssessment?: TourVisaAssessmentView;
   children: ReactNode;
 }) {
   const [selectedRoomCode, setSelectedRoomCode] = useState<string>(roomPrices[0]?.code ?? "");
   const [includeSelectableAddOn, setIncludeSelectableAddOn] = useState(false);
-  const [includedVisaOfferIds, setIncludedVisaOfferIds] = useState<string[]>([]);
+  const [travelers, setTravelers] = useState({ adults: 1, childCount: 0, visaCounts: {} as Record<string, number> });
+  const { adults, childCount } = travelers;
+  const travelerCount = adults + childCount;
+  const setTravelerCount = useCallback((field: "adults" | "childCount", value: number) => {
+    setTravelers((current) => updateVisaTravelerParty(current, field, value));
+  }, []);
+  const setAdults = useCallback((value: number) => setTravelerCount("adults", value), [setTravelerCount]);
+  const setChildCount = useCallback((value: number) => setTravelerCount("childCount", value), [setTravelerCount]);
+  const setVisaTravelerCount = useCallback((id: string, count: number) => {
+    if (!visaOffers.some((offer) => offer.id === id)) return;
+    setTravelers((current) => ({
+      ...current,
+      visaCounts: { ...current.visaCounts, [id]: clampVisaTravelerCount(count, current.adults + current.childCount) },
+    }));
+  }, [visaOffers]);
   const selectedRoom = roomPrices.find((room) => room.code === selectedRoomCode) ?? roomPrices[0];
   const selectableAddOnTotal = includeSelectableAddOn && selectableAddOn
     ? selectableAddOn.price
@@ -59,25 +92,22 @@ export function TourRoomSelectionProvider({
     ? `${selectableAddOn.name} ${includeSelectableAddOn ? "disertakan" : "tidak disertakan"}`
     : "";
   const setVisaOfferIncluded = useCallback((id: string, included: boolean) => {
-    setIncludedVisaOfferIds((current) => {
-      if (included) return current.includes(id) ? current : [...current, id];
-      return current.filter((currentId) => currentId !== id);
-    });
-  }, []);
-  const visaOfferTotal = visaOffers.reduce(
-    (total, offer) => total + (includedVisaOfferIds.includes(offer.id) ? offer.price : 0),
-    0,
+    setVisaTravelerCount(id, included ? travelerCount : 0);
+  }, [setVisaTravelerCount, travelerCount]);
+  const visaSelection = useMemo(
+    () => calculateVisaSelection(visaOffers, travelers.visaCounts, travelerCount),
+    [visaOffers, travelers.visaCounts, travelerCount],
   );
-  const visaOfferPreference = visaOffers
-    .map((offer) => (
-      `${offer.name}: ${includedVisaOfferIds.includes(offer.id) ? "Ya, perlu dibantu" : "Tidak"}`
-    ))
-    .join("; ");
-  const optionalServicesTotal = selectableAddOnTotal + visaOfferTotal;
+  const includedVisaOfferIds = visaSelection.items.map((item) => item.id);
+  const visaOfferTotal = visaSelection.total;
+  const visaOfferPreference = visaOffers.length ? formatVisaSelectionPreference(visaSelection) : "";
+  // Visa assistance is priced per applicant, not per traveler in the entire group.
+  const optionalServicesTotal = selectableAddOnTotal;
   const optionalServicesPreference = [selectableAddOnPreference, visaOfferPreference]
     .filter(Boolean)
     .join("; ");
   const hasOptionalServices = Boolean(selectableAddOn || visaOffers.length > 0);
+  const hasVisaInformation = Boolean(visaAssessment);
   const value = useMemo(() => ({
     selectedRoom,
     selectedRoomCode,
@@ -88,6 +118,14 @@ export function TourRoomSelectionProvider({
     selectableAddOnTotal,
     selectableAddOnPreference,
     visaOffers,
+    visaAssessment,
+    adults,
+    childCount,
+    travelerCount,
+    setAdults,
+    setChildCount,
+    visaSelection,
+    setVisaTravelerCount,
     includedVisaOfferIds,
     setVisaOfferIncluded,
     visaOfferTotal,
@@ -95,8 +133,18 @@ export function TourRoomSelectionProvider({
     optionalServicesTotal,
     optionalServicesPreference,
     hasOptionalServices,
+    hasVisaInformation,
   }), [
     hasOptionalServices,
+    hasVisaInformation,
+    adults,
+    childCount,
+    travelerCount,
+    setAdults,
+    setChildCount,
+    setVisaTravelerCount,
+    visaAssessment,
+    visaSelection,
     includeSelectableAddOn,
     includedVisaOfferIds,
     optionalServicesPreference,
