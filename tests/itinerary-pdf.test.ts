@@ -4,7 +4,7 @@ import { cloneElement, isValidElement, type ReactNode } from "react";
 import { readFileSync } from "node:fs";
 import { pdf, renderToBuffer } from "@react-pdf/renderer";
 import { ItineraryPDF, type ItineraryPDFProps } from "../components/pdf/ItineraryPDF";
-import { CleanItineraryPDF, pdfText } from "../components/pdf/CleanItineraryPDF";
+import { CleanItineraryPDF, pdfText, wrapPdfWord } from "../components/pdf/CleanItineraryPDF";
 import { CANADA_ROCKIES_TOUR } from "../data/catalog/canada-rockies-april-2027";
 import { localizePdfTour } from "../lib/itinerary-pdf-localization";
 import { formatCurrency, formatDate } from "../lib/utils";
@@ -16,7 +16,7 @@ const props: ItineraryPDFProps = {
     addOns: [{ name: "Asuransi", tag: "recommended", priceLabel: "Rp 1.000.000", desc: "Premi sesuai usia." }],
   }, company: { name: "Sundaf Trip", phone: "08111620207" },
   priceLabel: "Rp 40.900.000", inclusivePriceLabel: "Rp 45.300.000",
-  mandatoryAddOns: [{ name: "Tips Tour Leader & Driver", tag: "wajib", priceLabel: "Rp 4.400.000" }],
+  mandatoryAddOns: [{ name: "Tips Tour Leader & Driver", tag: "wajib", priceLabel: "Rp 4.400.000", desc: "Biaya dikonfirmasi saat tiket grup dikunci." }],
 };
 
 function collectText(node: ReactNode): string {
@@ -41,6 +41,7 @@ test("keeps raw meal and stay metadata, complete descriptions, notes and contact
   assert.ok(text.includes("Opsional, belum masuk total di atas."));
   assert.ok(text.includes("Asuransi (direkomendasikan)"));
   assert.ok(text.includes("Premi sesuai usia."));
+  assert.ok(text.includes("Biaya dikonfirmasi saat tiket grup dikunci."));
 });
 
 test("normalizes service wording without shortening content", () => {
@@ -78,7 +79,7 @@ interface LayoutNode {
   type: string;
   props?: { fixed?: boolean; render?: unknown };
   box?: { top: number; height: number; width: number; paddingTop?: number; paddingBottom?: number };
-  lines?: Array<{ box: { height: number } }>;
+  lines?: Array<{ box: { height: number }; xAdvance: number; overflowRight?: number }>;
   children?: LayoutNode[];
 }
 
@@ -109,6 +110,8 @@ async function checkedLayout(data: ItineraryPDFProps) {
           assert.ok(node.box.height > 0, `page ${index + 1}: zero-height body text`);
           const lineHeight = node.lines.reduce((sum, line) => sum + line.box.height, 0);
           assert.ok(node.box.height + 0.6 >= lineHeight, `page ${index + 1}: shrunk text box`);
+          // textkit excludes trailing whitespace from the visible line width.
+          assert.ok(node.lines.every((line) => line.xAdvance - (line.overflowRight || 0) <= node.box!.width + 0.6), `page ${index + 1}: text overflows horizontally`);
           assert.ok(y >= minY - 0.6 && y + node.box.height <= maxY + 0.6, `page ${index + 1}: body text outside margins (${y}, ${node.box.height})`);
         }
         return; // Inline Text spans intentionally have no standalone box.
@@ -135,4 +138,21 @@ test("Canada stays at three pages with full-size photos and no clipped body text
 test("multi-page paragraphs and long service lists do not shrink or clip on page breaks", async () => {
   const paragraph = "Sarapan di hotel lalu perjalanan dilanjutkan sesuai program yang sudah tercantum. ".repeat(80);
   await checkedLayout({ ...props, tour: { ...props.tour, itinerary: [{ day: 1, title: "Hari panjang (B,L)", description: paragraph + "AKHIR HARI" }], notes: paragraph + "AKHIR CATATAN", inclusions: Array.from({ length: 25 }, (_, i) => `Layanan ${i + 1}: transportasi dan tiket kunjungan sesuai program perjalanan.`) } });
+});
+
+test("a single sixteen-item service column is allowed to flow across pages", async () => {
+  await checkedLayout({ ...props, tour: { ...props.tour, itinerary: [], exclusions: [], inclusions: Array.from({ length: 16 }, (_, i) => `${i + 1}. ${"DOKUMENPERJALANAN ".repeat(12).trim()}`) } });
+});
+
+test("long supplier references wrap within the page without dropping characters", async () => {
+  const reference = `https://supplier.example/booking?reference=${"ABC123".repeat(1000)}`;
+  assert.equal(wrapPdfWord(reference).join(""), reference);
+  assert.deepEqual(wrapPdfWord("direkomendasikan"), ["direkomendasikan"]);
+  await checkedLayout({ ...props, tour: { ...props.tour, itinerary: [{ day: 1, title: "Referensi supplier", description: reference }] } });
+});
+
+test("long Vietnam titles stay inside the page margins", async () => {
+  for (const title of ["4 Hari 3 Malam Vietnam Utara dengan Sapa", "5 Hari 4 Malam Vietnam Utara dengan Sapa dan Teluk Halong"]) {
+    await checkedLayout({ ...props, tour: { ...props.tour, title } });
+  }
 });

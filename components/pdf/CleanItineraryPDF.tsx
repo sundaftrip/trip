@@ -1,5 +1,5 @@
-import { Document, Page, View, Text, Link, Image, StyleSheet } from "@react-pdf/renderer";
-import { Fragment } from "react";
+import { Document, Page, View, Text as PdfText, Link, Image, StyleSheet } from "@react-pdf/renderer";
+import { Fragment, type ComponentProps } from "react";
 import type { ItineraryPDFProps } from "./ItineraryPDF";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeTourServiceTerms } from "@/lib/tour-service-terms";
@@ -28,6 +28,16 @@ export function pdfText(value?: string | null): string {
 const ink = "#17313D";
 const teal = "#075E62";
 const muted = "#52636A";
+
+// Ordinary words remain intact. Very long supplier references and URLs need
+// emergency break points; returning every character preserves the source text.
+export function wrapPdfWord(word: string): string[] {
+  return word.length > 20 ? word.match(/.{1,10}/gu) || [word] : [word];
+}
+
+function Text(props: ComponentProps<typeof PdfText>) {
+  return <PdfText {...props} hyphenationCallback={wrapPdfWord} />;
+}
 const styles = StyleSheet.create({
   // Do not inherit lineHeight from Page: react-pdf's dynamic page-number pass
   // multiplies inherited values on relayout and can corrupt wrapping/footers.
@@ -38,7 +48,7 @@ const styles = StyleSheet.create({
   footer: { position: "absolute", top: 811, left: 38, fontSize: 8, color: muted },
   pageNumber: { position: "absolute", top: 811, right: 38, fontSize: 8, color: muted },
   link: { color: teal, textDecoration: "none" },
-  title: { fontFamily: "Helvetica-Bold", fontSize: 26, lineHeight: 1.14, marginBottom: 9 },
+  title: { fontFamily: "Helvetica-Bold", fontSize: 26, lineHeight: 1.14, marginBottom: 9, paddingRight: 8 },
   meta: { fontSize: 10, color: teal, marginBottom: 5 },
   route: { fontSize: 10, color: muted, marginBottom: 14 },
   hero: { width: "100%", height: 204, objectFit: "cover" },
@@ -87,7 +97,10 @@ function Day({ day }: { day: ItineraryPDFProps["tour"]["itinerary"][number] }) {
   const [first = "", ...rest] = day.description.split(/\n+/).filter((line) => line.trim());
   // Keep the heading with a bounded opening paragraph, even if a supplier sends
   // a single multi-page paragraph. The remainder flows; no words are discarded.
-  const boundary = first.length > 420 ? first.lastIndexOf(" ", 420) : -1;
+  const space = first.lastIndexOf(" ", 420);
+  const boundary = first.length > 420
+    ? space > 0 ? space : Array.from(first).slice(0, 420).join("").length
+    : -1;
   const opening = boundary > 0 ? first.slice(0, boundary) : first;
   const continuation = boundary > 0 ? [first.slice(boundary).trim(), ...rest] : rest;
   return <>
@@ -121,6 +134,7 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
   const photos = gallery.slice(1, 3);
   const optional = (tour.addOns || []).filter((item) => item.tag !== "wajib");
   const stackLists = tour.inclusions.length + tour.exclusions.length > 16
+    || tour.inclusions.length > 8 || tour.exclusions.length > 8
     || [...tour.inclusions, ...tour.exclusions].some((item) => item.length > 220);
   const photoDay = Math.ceil(tour.itinerary.length / 2) - 1;
   const safeFaq = faqUrl && /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(faqUrl) ? `${website}/faq` : faqUrl;
@@ -158,7 +172,10 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
         </View>
         {mandatoryAddOns.map((item, index) => (
           <View style={styles.row} key={index} wrap={false}>
-            <Text style={styles.rowLabel}>{pdfText(item.name)} (wajib)</Text>
+            <View style={styles.rowLabel}>
+              <Text>{pdfText(item.name)} (wajib)</Text>
+              {!!item.desc && <Text style={styles.optionDescription}>{pdfText(item.desc)}</Text>}
+            </View>
             <Text style={styles.rowValue}>{pdfText(item.priceLabel)}</Text>
           </View>
         ))}
