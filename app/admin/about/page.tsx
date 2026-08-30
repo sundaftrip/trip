@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, GripVertical, ExternalLink } from "lucide-react";
 import StickyFormActions from "@/components/admin/StickyFormActions";
+import { changedValues, cmsErrorMessage, requestCmsJson } from "@/lib/cms-request";
 
 /* ── Defaults (fallback kalau DB kosong) ── */
 const DEFAULT_STORY = [
   "Sundaftrip berawal dari rasa penasaran sama tempat-tempat yang jarang masuk daftar liburan orang Indonesia. Bukan cuma Paris, Tokyo, atau Korea, tapi Rusia saat musim dingin, kota tua di Asia Tengah, dan negeri-negeri bekas Uni Soviet yang ceritanya panjang banget.",
   "Dari perjalanan kecil, kami belajar satu hal: destinasi terbaik sering bukan yang paling ramai di timeline, tapi yang bikin kamu pulang bawa cerita berbeda.",
   "Lama-lama rutenya makin serius. Moskow dan St. Petersburg. Murmansk buat berburu aurora. Kazakhstan dengan danau birunya. Uzbekistan dengan Samarkand yang megah. Kyrgyzstan yang alamnya masih liar. Tajikistan dengan jalan Pamir yang legend banget.",
-  "Sekarang 1500+ traveler Indonesia sudah kami bantu berangkat. Ada yang pertama kali ke Rusia, ada yang deg-degan urus visa, ada juga yang pulang-pulang malah ngajak keluarga dan teman buat ikut batch berikutnya.",
+  "Sekarang kami fokus membantu traveler Indonesia memahami rute, persiapan visa, dan keputusan perjalanan sejak sebelum berangkat sampai perjalanan selesai.",
 ];
 
 const DEFAULT_VALUES = [
@@ -31,85 +32,69 @@ const DEFAULT_DESTINATIONS = [
 interface ValueItem { title: string; desc: string; }
 interface DestItem   { label: string; sub: string; }
 
-function saved(key: string) {
-  return `about_${key}`;
-}
-
-async function saveKeys(data: Record<string, string>) {
-  return fetch("/api/settings", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-}
-
 /* ══════════════════════════════════════ */
 export default function AdminAboutPage() {
   const [loaded, setLoaded]       = useState(false);
+  const [error, setError] = useState("");
+  const [baseline, setBaseline] = useState<Record<string, string>>({});
+  const [savingAll, setSavingAll] = useState(false);
+  const [savedAll, setSavedAll] = useState(false);
 
   /* Story */
   const [story, setStory]         = useState<string[]>(DEFAULT_STORY);
-  const [savingStory, setSavingS] = useState(false);
-  const [savedStory, setSavedS]   = useState(false);
 
   /* Values */
   const [values, setValues]         = useState<ValueItem[]>(DEFAULT_VALUES);
-  const [savingValues, setSavingV]  = useState(false);
-  const [savedValues, setSavedV]    = useState(false);
 
   /* Destinations */
   const [dests, setDests]           = useState<DestItem[]>(DEFAULT_DESTINATIONS);
-  const [savingDests, setSavingD]   = useState(false);
-  const [savedDests, setSavedD]     = useState(false);
 
   /* Hero tagline */
   const [tagline, setTagline]       = useState("");
-  const [savingTag, setSavingTag]   = useState(false);
-  const [savedTag, setSavedTag]     = useState(false);
 
   /* ── Load dari DB ── */
   useEffect(() => {
-    fetch("/api/settings").then(r => r.json()).then((d: Record<string, string>) => {
-      if (d.about_tagline)      setTagline(d.about_tagline);
-      if (d.about_story)        setStory(JSON.parse(d.about_story));
-      if (d.about_values)       setValues(JSON.parse(d.about_values));
-      if (d.about_destinations) setDests(JSON.parse(d.about_destinations));
+    requestCmsJson<Record<string, string>>("/api/settings").then((d) => {
+      if (!d || Array.isArray(d) || Object.values(d).some((value) => typeof value !== "string")) throw new Error("Data Tentang Kami tidak valid.");
+      const nextStory: unknown = d.about_story ? JSON.parse(d.about_story) : DEFAULT_STORY;
+      const nextValues: unknown = d.about_values ? JSON.parse(d.about_values) : DEFAULT_VALUES;
+      const nextDests: unknown = d.about_destinations ? JSON.parse(d.about_destinations) : DEFAULT_DESTINATIONS;
+      if (!Array.isArray(nextStory) || !nextStory.every((item) => typeof item === "string") ||
+          !Array.isArray(nextValues) || !nextValues.every((item) => item && typeof item.title === "string" && typeof item.desc === "string") ||
+          !Array.isArray(nextDests) || !nextDests.every((item) => item && typeof item.label === "string" && typeof item.sub === "string")) {
+        throw new Error("Format konten Tentang Kami tidak valid. Data belum dapat diedit agar konten tersimpan tidak tertimpa.");
+      }
+      setTagline(d.about_tagline ?? "");
+      setStory(nextStory);
+      setValues(nextValues);
+      setDests(nextDests);
+      setBaseline({ about_tagline: d.about_tagline ?? "", about_story: JSON.stringify(nextStory), about_values: JSON.stringify(nextValues), about_destinations: JSON.stringify(nextDests) });
       setLoaded(true);
-    }).catch(() => setLoaded(true));
+    }).catch((error) => setError(cmsErrorMessage(error)));
   }, []);
+
+  const current = { about_tagline: tagline, about_story: JSON.stringify(story), about_values: JSON.stringify(values), about_destinations: JSON.stringify(dests) };
+  const dirty = Object.keys(changedValues(current, baseline)).length > 0;
 
   /* ── Save helpers ── */
   async function saveAll() {
-    setSavingTag(true);
-    setSavingS(true);
-    setSavingV(true);
-    setSavingD(true);
-    await saveKeys({
-      [saved("tagline")]: tagline,
-      [saved("story")]: JSON.stringify(story),
-      [saved("values")]: JSON.stringify(values),
-      [saved("destinations")]: JSON.stringify(dests),
-    });
-    setSavingTag(false);
-    setSavingS(false);
-    setSavingV(false);
-    setSavingD(false);
-    setSavedTag(true);
-    setSavedS(true);
-    setSavedV(true);
-    setSavedD(true);
-    setTimeout(() => {
-      setSavedTag(false);
-      setSavedS(false);
-      setSavedV(false);
-      setSavedD(false);
-    }, 2500);
+    if (!loaded || savingAll || !dirty) return;
+    const snapshot = current;
+    setSavingAll(true);
+    setSavedAll(false);
+    setError("");
+    try {
+      await requestCmsJson("/api/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(changedValues(snapshot, baseline)) });
+      setBaseline(snapshot);
+      setSavedAll(true);
+    } catch (error) {
+      setError(cmsErrorMessage(error));
+    } finally {
+      setSavingAll(false);
+    }
   }
 
-  if (!loaded) return <div className="flex items-center justify-center h-64 text-sm text-gray-400">Memuat…</div>;
-
-  const savingAll = savingTag || savingStory || savingValues || savingDests;
-  const savedAll = savedTag && savedStory && savedValues && savedDests;
+  if (!loaded) return error ? <div role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">{error} <button type="button" className="underline" onClick={() => window.location.reload()}>Muat ulang</button></div> : <div className="flex items-center justify-center h-64 text-sm text-gray-400">Memuat…</div>;
 
   return (
     <div className="space-y-8 max-w-3xl">
@@ -128,10 +113,13 @@ export default function AdminAboutPage() {
       </div>
       <StickyFormActions
         loading={savingAll}
-        disabled={!tagline.trim()}
-        primaryLabel={savedAll ? "Tersimpan!" : "Simpan Semua"}
+        disabled={!dirty}
+        primaryLabel={savedAll && !dirty ? "Tersimpan!" : "Simpan Perubahan"}
         onSave={saveAll}
       />
+      {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-200">{error}</p>}
+      {savedAll && !dirty && <p role="status" className="text-sm text-emerald-700">Perubahan tersimpan.</p>}
+      <fieldset disabled={savingAll} className="space-y-8 min-w-0">
 
       {/* ── 1. Tagline Hero ── */}
       <Section title="Tagline / Sub-judul Hero" hint="Kalimat pendek di bawah judul 'Tentang Kami'">
@@ -145,7 +133,7 @@ export default function AdminAboutPage() {
       </Section>
 
       {/* ── 2. Cerita Kami ── */}
-      <Section title="Cerita Kami" hint="Tiga paragraf kisah Sundaftrip (ditampilkan berurutan)">
+      <Section title="Cerita Kami" hint="Paragraf kisah Sundaftrip, ditampilkan berurutan">
         {story.map((p, i) => (
           <div key={i}>
             <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Paragraf {i + 1}</label>
@@ -243,6 +231,7 @@ export default function AdminAboutPage() {
         </button>
       </Section>
 
+      </fieldset>
     </div>
   );
 }

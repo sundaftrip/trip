@@ -6,8 +6,9 @@ import {
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import styles from "./CleanShell.module.css";
+import { HOME_TEXT_DEFAULTS } from "@/lib/website-texts";
 
-export default function CleanFooter({ logo, company }: { logo?: string; company: Record<string, string> }) {
+export default function CleanFooter({ logo, company, tagline }: { logo?: string; company: Record<string, string>; tagline?: string }) {
   const logoSrc = cldFit(logo || "/logo.png", 320);
   const whatsappDisplay = company.company_whatsapp?.trim();
   const whatsapp = buildWhatsAppHref(whatsappDisplay, "Halo, saya ingin konsultasi perjalanan bersama Sundaf Trip.");
@@ -39,7 +40,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             </Link>
             <h2 id="footer-brand-title" className="sr-only">Sundaf Trip</h2>
             <p className={styles.footerDescription}>
-              Perjalanan Rusia, Asia Tengah, aurora, dan private trip yang dirancang untuk traveler Indonesia.
+              {tagline?.trim() || HOME_TEXT_DEFAULTS.home_footer_tagline}
             </p>
             {(legalName || officeAddress) && (
               <div className={styles.companyBlock}>

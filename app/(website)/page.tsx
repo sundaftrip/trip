@@ -77,14 +77,15 @@ const getData = unstable_cache(async () => {
   ]);
   // Sudah difilter di query, tinggal urut: pinned + niche utama
   // (Rusia/Asia Tengah/Aurora) dulu, lalu tanggal terdekat.
-  const tours = [...toursRaw].sort(compareFeaturedTourOrder).slice(0, 9);
+  const finderTours = [...toursRaw].sort(compareFeaturedTourOrder);
+  const tours = finderTours.slice(0, 9);
   const t: Record<string, { id?: string; en?: string }> = {};
   texts.forEach((x) => { t[x.key] = { id: x.valueId ?? undefined, en: x.valueEn ?? undefined }; });
   const company: Record<string, string> = {};
   companyRows.forEach((c) => { company[c.key] = c.value; });
-  return { texts: t, tours, posts, company, companyRows, testimonials };
+  return { texts: t, tours, finderTours, posts, company, companyRows, testimonials };
 // tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
-}, ["home-page-data", "home-payload-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
+}, ["home-page-data", "home-payload-v2"], { revalidate: 300, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   // Title, description, keywords, OG & Twitter card — semuanya diwarisi dari
@@ -110,7 +111,7 @@ export default async function HomePage() {
   // Tidak ada searchParams, pagination + filter region ditangani di
   // client (lihat ToursCatalog). Hasilnya: page HTML jadi STATIC dan
   // bisa di-cache Vercel Edge.
-  const { texts, tours: allTours, posts, company, companyRows, testimonials } = await getData();
+  const { texts, tours: allTours, finderTours, posts, company, companyRows, testimonials } = await getData();
   const wa = toWaNumber(company["company_whatsapp"]);
   const companyName = "Sundaf Trip";
   const themeRow = companyRows.find((r) => r.key === "site_theme");
@@ -121,7 +122,7 @@ export default async function HomePage() {
 
   if (theme === "atlas") {
     const now = new Date();
-    const tours = allTours.map((tour) => {
+    const tours = finderTours.map((tour) => {
       const { addOns, ...tourFields } = tour;
       return {
         ...tourFields,
@@ -133,7 +134,8 @@ export default async function HomePage() {
     });
     return (
       <CleanHome
-        tours={tours}
+        tours={tours.slice(0, 9)}
+        finderTours={tours}
         testimonials={testimonials}
         posts={posts}
         company={company}

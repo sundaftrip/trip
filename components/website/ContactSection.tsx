@@ -78,7 +78,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     phone   && { Icon: Phone,         label: "Telepon",     value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
     wa      && { Icon: Phone,         label: "WhatsApp",    value: "WhatsApp", href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",       value: email,   href: `mailto:${email}` },
-    { Icon: Clock, label: "Jam layanan", value: OPENING_HOURS, href: null },
+    { Icon: Clock, label: "Jam layanan", value: company["company_opening_hours"]?.trim() || OPENING_HOURS, href: null },
     { Icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress, href: null },
     igUser  && { Icon: InstagramIcon, label: "Instagram",   value: `@${igUser}`, href: `https://www.instagram.com/${igUser}` },
   ].filter(Boolean) as ContactItem[];
