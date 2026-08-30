@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Search, RefreshCw, Rss, BookOpen, ExternalLink, Sparkles } from "lucide-react";
+import { Search, RefreshCw, Rss, BookOpen, ExternalLink } from "lucide-react";
 import ScrapedCard, { ScrapedPost } from "./ScrapedCard";
+import styles from "./AdminWorkspace.module.css";
 import {
   SCRAPER_STYLES,
   DEFAULT_STYLE,
@@ -258,9 +259,8 @@ export default function ScraperTool() {
           </div>
 
           {/* Style picker — mode draft (berlaku saat klik buat draft) */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles size={16} className="text-violet-500" />
+          <div className={styles.formSection}>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                 Mode Draft
               </h3>
@@ -275,25 +275,22 @@ export default function ScraperTool() {
                   <button
                     key={s.id}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => setStyle(s.id)}
-                    className={`text-left p-4 rounded-xl border-2 transition ${
+                    className={`text-left p-3 rounded border transition-colors ${
                       active
-                        ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20"
+                        ? "border-gray-500 bg-gray-100 dark:border-gray-400 dark:bg-gray-800"
                         : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
                       <span
-                        className={`font-semibold text-sm ${
-                          active
-                            ? "text-violet-700 dark:text-violet-300"
-                            : "text-gray-900 dark:text-white"
-                        }`}
+                        className="font-semibold text-sm text-gray-900 dark:text-white"
                       >
                         {s.label}
                       </span>
                       {active && (
-                        <span className="text-xs font-semibold text-violet-600 dark:text-violet-400">
+                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                           ✓ Dipilih
                         </span>
                       )}
