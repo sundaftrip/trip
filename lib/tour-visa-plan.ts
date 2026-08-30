@@ -74,7 +74,11 @@ export function normalizeTourVisaPlan(value: unknown): TourVisaPlanNormalization
 
 export function readTourItinerary(value: unknown): TourItineraryDay[] {
   const days = Array.isArray(value) ? value : object(value) && value.version === 2 && Array.isArray(value.days) ? value.days : [];
-  return days.filter((day): day is TourItineraryDay => object(day) && typeof day.day === "number" && Number.isFinite(day.day) && typeof day.title === "string" && typeof day.description === "string").map((day) => ({ ...day }));
+  return days.filter((day): day is TourItineraryDay => object(day) && typeof day.day === "number" && Number.isFinite(day.day) && typeof day.title === "string" && typeof day.description === "string").map((day) => {
+    const copy = { ...day };
+    if (typeof copy.image !== "string") delete copy.image;
+    return copy;
+  });
 }
 
 export function readTourVisaPlan(value: unknown): TourVisaPlan | null {
