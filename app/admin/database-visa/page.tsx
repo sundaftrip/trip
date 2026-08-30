@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Pencil, Globe2, Info } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
 import ScrapeVisaButton from "@/components/admin/ScrapeVisaButton";
 import { FlagIcon } from "@/lib/flag-icon";
+import styles from "@/components/admin/AdminWorkspace.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -29,32 +30,26 @@ export default async function VisaDatabasePage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
-            <Globe2 size={22} className="text-white" />
-          </div>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Database Visa</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {entries.length} negara tampil di halaman publik /visa
             </p>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
+        <div className={styles.pageActions}>
           <ScrapeVisaButton />
           <Link
             href="/admin/database-visa/new"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm"
+            className={styles.primaryButton}
           >
             <Plus size={16} /> Tambah Negara
           </Link>
         </div>
       </div>
 
-      <div className="flex items-start gap-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-300">
-        <Info size={16} className="shrink-0 mt-0.5" />
+      <div className={styles.notice}>
         <p>
           Kolom <b>Biaya</b> bisa kamu isi dengan harga IDR-mu sendiri
           (mis. <code className="bg-blue-100 dark:bg-blue-800/40 px-1 rounded">Rp 950.000</code>).
@@ -63,9 +58,9 @@ export default async function VisaDatabasePage() {
         </p>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className={styles.tablePanel}>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table aria-label="Database visa" className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
                 <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Negara</th>
@@ -125,6 +120,7 @@ export default async function VisaDatabasePage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/database-visa/${c.id}`}
+                          aria-label={`Edit visa ${c.name}`}
                           className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition"
                         >
                           <Pencil size={15} />

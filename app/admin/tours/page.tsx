@@ -5,6 +5,7 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 import TourPinButton from "@/components/admin/TourPinButton";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
+import styles from "@/components/admin/AdminWorkspace.module.css";
 
 type ToursSearchParams = {
   q?: string | string[];
@@ -216,31 +217,31 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tour</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {tours.length} dari {allTours.length} tour tampil · {pinnedCount}/5 tour dipin · Urutan: {activeSortLabel}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className={styles.pageActions}>
           <Link
             href="/admin/tours/import"
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium rounded-lg transition"
+            className={styles.secondaryButton}
           >
             <Upload size={16} /> Import Massal
           </Link>
           <Link
             href="/admin/tours/new"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
+            className={styles.primaryButton}
           >
             <Plus size={16} /> Tambah Tour
           </Link>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className={styles.tablePanel}>
         <form action="/admin/tours" className="border-b border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-750 px-4 py-4">
           <input type="hidden" name="sort" value={sortKey ?? ""} />
           <input type="hidden" name="dir" value={sortKey ? sortDir : ""} />
@@ -249,6 +250,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 name="q"
+                aria-label="Cari tour"
                 defaultValue={query}
                 placeholder="Cari judul, Vietnam, Rusia, badge..."
                 className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 pl-9 pr-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500"
@@ -257,6 +259,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
 
             <select
               name="country"
+              aria-label="Filter negara"
               defaultValue={countryFilter}
               className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500"
             >
@@ -268,6 +271,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
 
             <select
               name="status"
+              aria-label="Filter status"
               defaultValue={statusFilter}
               className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500"
             >
@@ -280,14 +284,14 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
             <div className="flex items-center gap-2">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                className={styles.primaryButton}
               >
                 Filter
               </button>
               {hasFilter && (
                 <Link
                   href="/admin/tours"
-                  className="inline-flex items-center justify-center gap-1 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition hover:bg-white dark:hover:bg-gray-700"
+                  className={styles.secondaryButton}
                 >
                   <X size={15} /> Reset
                 </Link>
@@ -297,7 +301,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
         </form>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] text-sm">
+          <table aria-label="Daftar tour" className="w-full min-w-[980px] text-sm">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
                 {renderSortHeader("title", "Judul")}
@@ -330,7 +334,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
               {tours.map((tour) => (
                 <tr key={tour.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{tour.title}</p>
+                    <p className="font-medium text-gray-900 dark:text-white min-w-[220px] max-w-[340px] whitespace-normal">{tour.title}</p>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {tour.pinned && <span className="text-xs text-teal-700 bg-teal-50 dark:bg-teal-900/20 dark:text-teal-300 px-1.5 py-0.5 rounded">PIN</span>}
                       {tour.badge && <span className="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 rounded">{tour.badge}</span>}
@@ -367,6 +371,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={`/admin/tours/${tour.id}?returnTo=${encodeURIComponent(currentListHref)}`}
+                        aria-label={`Edit tour ${tour.title}`}
                         className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition"
                       >
                         <Pencil size={15} />
