@@ -15,7 +15,7 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  padding-top: 94px;
+  padding-top: 68px;
   contain: paint;
   overflow-x: hidden;
   background: var(--home-paper);
@@ -105,12 +105,12 @@
 
 .heroShell {
   min-height: inherit;
-  padding-block: 80px 44px;
+  padding-block: 80px 112px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: stretch;
-  gap: clamp(32px, 4vw, 56px);
+  gap: 40px;
 }
 
 .heroCopy {
@@ -158,9 +158,9 @@
 .finderZone {
   position: relative;
   z-index: 1;
-  width: min(960px, 100%);
+  width: min(768px, 100%);
   min-width: 0;
-  align-self: center;
+  align-self: flex-start;
   border-radius: 999px;
 }
 
@@ -168,7 +168,7 @@
   position: relative;
   isolation: isolate;
   min-height: 0;
-  padding: 12px 14px 12px 28px;
+  padding: 8px 10px 8px 24px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 12px;
@@ -238,7 +238,7 @@
 }
 
 .finderCard > button {
-  min-width: 180px;
+  min-width: 156px;
   min-height: 56px;
   padding: 0 20px;
   display: inline-flex;
@@ -1339,12 +1339,6 @@
 
   .finalActions {
     width: min(100%, 390px);
-  }
-}
-
-@media (max-width: 920px) {
-  .home {
-    padding-top: 68px;
   }
 }
 
