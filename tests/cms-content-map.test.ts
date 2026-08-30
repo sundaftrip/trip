@@ -18,3 +18,10 @@ test("static pages have honest limitations and no false editor action", () => {
   }
   assert.match(CMS_CONTENT_MAP.find((item) => item.publicPath === "/faq")!.note, /Gunakan FAQ CMS/);
 });
+
+test("contact map identifies visible hero controls and static metadata", () => {
+  const contact = CMS_CONTENT_MAP.find((item) => item.publicPath === "/contact")!;
+  assert.ok(contact.controls.some((control) => control.href === "/admin/texts"));
+  assert.match(contact.note, /pembuka halaman kontak/);
+  assert.match(contact.note, /Metadata/);
+});
