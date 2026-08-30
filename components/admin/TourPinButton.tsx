@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Pin, PinOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { adminActionError, requestAdminAction } from "@/lib/admin-action";
 
 interface Props {
   id: string;
@@ -39,23 +40,21 @@ export default function TourPinButton({ id, pinned, disabled = false }: Props) {
     setLoading(true);
     setFeedback(nextPinned ? "Pin..." : "Lepas...");
     setError("");
-    const res = await fetch(`/api/tours/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pinned: nextPinned }),
-    });
-    setLoading(false);
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    try {
+      await requestAdminAction(`/api/tours/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pinned: nextPinned }),
+      }, "Gagal update pin. Coba lagi.");
+      showFeedback(nextPinned ? "Dipin" : "Dilepas");
+      router.refresh();
+    } catch (error) {
       setIsPinned(!nextPinned);
       setFeedback("");
-      setError(data.error ?? "Gagal update pin.");
-      return;
+      setError(adminActionError(error, "Gagal update pin. Coba lagi."));
+    } finally {
+      setLoading(false);
     }
-
-    showFeedback(nextPinned ? "Dipin" : "Dilepas");
-    router.refresh();
   }
 
   return (
@@ -81,7 +80,7 @@ export default function TourPinButton({ id, pinned, disabled = false }: Props) {
         {feedback || error}
       </span>
       {error && (
-        <p className="absolute right-0 z-10 mt-1 w-52 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-700 shadow-lg dark:border-red-800 dark:bg-gray-900 dark:text-red-300">
+        <p role="alert" className="absolute right-0 z-10 mt-1 w-52 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-700 shadow-lg dark:border-red-800 dark:bg-gray-900 dark:text-red-300">
           {error}
         </p>
       )}

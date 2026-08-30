@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
 import ImageUpload from "@/components/admin/ImageUpload";
 import StickyFormActions from "@/components/admin/StickyFormActions";
+import { adminActionError, requestAdminAction } from "@/lib/admin-action";
 
 interface FormData {
   name: string; role: string; content: string;
@@ -33,23 +34,24 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (saving) return;
     if (!form.name.trim() || !form.content.trim()) {
       setError("Nama dan isi testimoni wajib diisi.");
       return;
     }
     setSaving(true);
     setError("");
-    const res = await fetch(id ? `/api/testimonials/${id}` : "/api/testimonials", {
-      method: id ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    if (res.ok) {
+    try {
+      await requestAdminAction(id ? `/api/testimonials/${id}` : "/api/testimonials", {
+        method: id ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      }, "Testimoni belum tersimpan. Coba lagi.");
       router.push("/admin/testimonials");
       router.refresh();
-    } else {
-      const d = await res.json().catch(() => ({}));
-      setError(d.error ?? "Gagal menyimpan.");
+    } catch (error) {
+      setError(adminActionError(error, "Testimoni belum tersimpan. Coba lagi."));
+    } finally {
       setSaving(false);
     }
   }
@@ -57,7 +59,7 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
       {error && (
-        <div className="px-4 py-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400">
+        <div role="alert" className="px-4 py-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400">
           {error}
         </div>
       )}
@@ -142,7 +144,7 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
         <label className="label">Rating</label>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((n) => (
-            <button key={n} type="button" onClick={() => set("rating", n)}>
+            <button key={n} type="button" aria-label={`Rating ${n} dari 5`} aria-pressed={n === form.rating} onClick={() => set("rating", n)}>
               <Star size={28} className={n <= form.rating ? "fill-amber-400 text-amber-400" : "text-gray-200 dark:text-gray-700"} />
             </button>
           ))}
@@ -159,10 +161,11 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
         </div>
         <div className="flex flex-col justify-end pb-1">
           <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`relative w-10 h-6 rounded-full transition-colors ${form.published ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"}`}
+            <button type="button" role="switch" aria-checked={form.published} aria-label="Tampilkan di website"
+              className={`relative w-10 h-6 rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${form.published ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"}`}
               onClick={() => set("published", !form.published)}>
-              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.published ? "translate-x-5" : "translate-x-1"}`} />
-            </div>
+              <span aria-hidden="true" className={`absolute top-1 left-0 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.published ? "translate-x-5" : "translate-x-1"}`} />
+            </button>
             <span className="text-sm text-gray-700 dark:text-gray-300">Tampilkan di website</span>
           </label>
         </div>

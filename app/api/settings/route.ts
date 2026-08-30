@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidateTag, revalidatePath } from "next/cache";
-import { checkPermission } from "@/lib/permissions";
+import { checkPermissions } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { PLAN_FEATURES } from "@/lib/plan";
 import { getPlan } from "@/lib/license";
@@ -83,14 +83,35 @@ export async function PUT(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let body: Record<string, string>;
-  try { body = await req.json(); } catch {
+  let input: unknown;
+  try { input = await req.json(); } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
-  // Hanya nilai string yang diterima (kolom CompanyInfo.value bertipe String)
-  for (const k of Object.keys(body)) {
-    if (typeof body[k] !== "string") delete body[k];
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return NextResponse.json({ error: "Pengaturan tidak valid" }, { status: 400 });
   }
+  const entries = Object.entries(input);
+  if (!entries.length || entries.some(([key, value]) => !key.trim() || typeof value !== "string")) {
+    return NextResponse.json({ error: "Setiap pengaturan harus memiliki nilai teks" }, { status: 400 });
+  }
+  const body = Object.fromEntries(entries) as Record<string, string>;
+  if (Object.keys(body).some(isSecretSettingKey)) {
+    return NextResponse.json({ error: "Kredensial tidak dapat diubah melalui pengaturan umum" }, { status: 400 });
+  }
+  // Source activation has its own validated endpoint and text-edit authority.
+  if (Object.hasOwn(body, "faq_general_source")) {
+    return NextResponse.json({ error: "Ubah sumber FAQ melalui pengelolaan FAQ" }, { status: 400 });
+  }
+
+  // A mixed save must never use appearance permission to change company data,
+  // or require appearance permission for a company-only edit.
+  const requiredPermissions = [...new Set(Object.keys(body).map((key) =>
+    key.startsWith("color_") || key.startsWith("site_") ? "color_edit" : "company_edit"
+  ))];
+  if (!await checkPermissions(session, requiredPermissions)) {
+    return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
+  }
+  const isColorChange = requiredPermissions.includes("color_edit");
 
   // Keep the WhatsApp number in the digits-only form wa.me links need,
   // regardless of how it was typed in the admin panel.
@@ -98,29 +119,21 @@ export async function PUT(req: NextRequest) {
     body.company_whatsapp = body.company_whatsapp.replace(/\D/g, "");
   }
 
-  // Block plan-locked features — plan diresolusi dari MASTER
-  const plan = await getPlan();
-
-  if (body.site_theme && body.site_theme !== "classic") {
-    const featureKey = `theme_${body.site_theme}`;
-    if (PLAN_FEATURES[featureKey] === "pro" && plan !== "pro") {
-      return NextResponse.json({ error: "Tema ini memerlukan paket Pro" }, { status: 403 });
-    }
-  }
-
-  // Skema warna juga fitur Pro
-  if (body.color_scheme && PLAN_FEATURES["color_schemes"] === "pro" && plan !== "pro") {
-    return NextResponse.json({ error: "Skema warna memerlukan paket Pro" }, { status: 403 });
-  }
-
-  const isColorChange = Object.keys(body).some((k) => k.startsWith("color_") || k.startsWith("site_"));
-  const permKey = isColorChange ? "color_edit" : "company_edit";
-
-  if (!await checkPermission(session, permKey))
-    return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
-
   try {
-    await Promise.all(
+    // Company edits do not depend on the theme licensing service.
+    if (isColorChange) {
+      const plan = await getPlan();
+      if (body.site_theme && body.site_theme !== "classic") {
+        const featureKey = `theme_${body.site_theme}`;
+        if (PLAN_FEATURES[featureKey] === "pro" && plan !== "pro") {
+          return NextResponse.json({ error: "Tema ini memerlukan paket Pro" }, { status: 403 });
+        }
+      }
+      if (body.color_scheme && PLAN_FEATURES["color_schemes"] === "pro" && plan !== "pro") {
+        return NextResponse.json({ error: "Skema warna memerlukan paket Pro" }, { status: 403 });
+      }
+    }
+    await prisma.$transaction(
       Object.entries(body).map(([key, value]) =>
         prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
       )

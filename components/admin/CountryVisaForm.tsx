@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import StickyFormActions from "./StickyFormActions";
 import styles from "./AdminWorkspace.module.css";
+import { adminActionError, requestAdminAction } from "@/lib/admin-action";
 
 interface VisaVariantEntry {
   id?: string;
@@ -145,6 +146,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setError(null);
     setLoading(true);
 
@@ -183,19 +185,18 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         .filter((f) => f.question.length > 0 && f.answer.length > 0),
     };
 
-    const res = await fetch(isEdit ? `/api/visa-database/${entry!.id}` : "/api/visa-database", {
-      method: isEdit ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    setLoading(false);
-    if (res.ok) {
+    try {
+      await requestAdminAction(isEdit ? `/api/visa-database/${entry!.id}` : "/api/visa-database", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }, "Data visa belum tersimpan. Coba lagi.");
       router.push("/admin/database-visa");
       router.refresh();
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Gagal menyimpan. Coba lagi.");
+    } catch (error) {
+      setError(adminActionError(error, "Data visa belum tersimpan. Coba lagi."));
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -204,7 +205,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
+        <div role="alert" className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
           {error}
         </div>
       )}
