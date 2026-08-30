@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
 import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
-import TourVisaServiceToggle from "./TourVisaServiceToggle";
+import TourVisaServiceToggle, { TourVisaGroupPrice } from "./TourVisaServiceToggle";
 import styles from "./CleanSite.module.css";
 
 type MandatoryAddOn = {
@@ -56,37 +56,45 @@ export default function TourRoomBookingSidebar({
     selectedRoom,
     setSelectedRoomCode,
     hasOptionalServices,
+    hasVisaInformation,
     optionalServicesTotal,
     optionalServicesPreference,
+    adults,
+    childCount,
+    visaOffers,
   } = useTourRoomSelection();
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
   const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
   const selectedTotalPrice = selectedMandatoryTotalPrice + optionalServicesTotal;
-  const selectedPriceCaption = hasOptionalServices ? "Total per orang" : "Total wajib";
+  const selectedTotalLabel = hasPrice ? formatCurrency(selectedTotalPrice) : "Sesuai permintaan";
+  const selectedHeadlineLabel = hasPrice ? formatCurrency(selectedHeadlinePrice) : "Sesuai permintaan";
+  const selectedPriceCaption = visaOffers.length > 0 ? "Per orang, di luar bantuan visa" : hasOptionalServices ? "Total per orang" : "Total wajib";
   const selectedBookingWaHref = selectedRoom || hasOptionalServices
     ? buildWhatsAppBookingHref(bookingPhone, {
         tourName,
         departureDate: departureLabel,
-        formattedPrice: formatCurrency(selectedTotalPrice),
+        formattedPrice: selectedTotalLabel,
         priceCaption: selectedPriceCaption,
         roomPreference: selectedRoom?.label,
+        travelerCount: adults,
+        childCount,
         addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",
       })
     : bookingWaHref;
   const selectedBookingSummary = selectedRoom || hasOptionalServices
     ? (selectedRoom ? `Kamar: ${selectedRoom.label} · ` : "")
-      + `Paket: ${formatCurrency(selectedHeadlinePrice)}`
+      + `Paket: ${selectedHeadlineLabel}`
       + mandatoryAddOns.map((item) => ` · ${item.name} (wajib): ${formatCurrency(item.price)}`).join("")
       + (optionalServicesPreference ? ` · ${optionalServicesPreference}` : "")
-      + ` · ${selectedPriceCaption}: ${formatCurrency(selectedTotalPrice)}/orang`
+      + ` · ${selectedPriceCaption}: ${selectedTotalLabel}/orang`
     : bookingSummary;
 
   return (
     <>
       <p className={styles.detailBookingLabel}>Harga paket per orang</p>
       <p className={styles.detailBookingPrice}>
-        {hasPrice ? formatCurrency(selectedHeadlinePrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}
+        {selectedHeadlineLabel} {hasPrice && <small>/orang</small>}
       </p>
       {promoPrice && roomPrices.length === 0 && (
         <p className={styles.detailOriginalPrice}>Harga normal <s>{formatCurrency(originalPrice)}</s></p>
@@ -95,9 +103,9 @@ export default function TourRoomBookingSidebar({
         <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(priceLandTour)}</p>
       )}
 
-      {(mandatoryAddOns.length > 0 || hasOptionalServices) && (
+      {(mandatoryAddOns.length > 0 || hasOptionalServices || hasVisaInformation) && (
         <div className={styles.detailPriceBreakdown}>
-          <div><span>Harga paket</span><strong>{formatCurrency(selectedHeadlinePrice)}</strong></div>
+          <div><span>Harga paket</span><strong>{selectedHeadlineLabel}</strong></div>
           {mandatoryAddOns.map((item) => (
             <div key={item.name}>
               <span>{item.name} <small>WAJIB</small></span>
@@ -107,8 +115,9 @@ export default function TourRoomBookingSidebar({
           <TourRecommendedAddOnToggle compact />
           <TourVisaServiceToggle compact />
           <div className={styles.detailPriceTotal}>
-            <span>{selectedPriceCaption}</span><strong>{formatCurrency(selectedTotalPrice)}</strong>
+            <span>{selectedPriceCaption}</span><strong>{selectedTotalLabel}</strong>
           </div>
+          <TourVisaGroupPrice />
         </div>
       )}
 
@@ -125,10 +134,10 @@ export default function TourRoomBookingSidebar({
             >
               <span>{room.label}</span>
               <span>
-                <b>{formatCurrency(room.headlinePrice)}</b>
+                <b>{hasPrice ? formatCurrency(room.headlinePrice) : "Sesuai permintaan"}</b>
                 <small>
-                  {hasOptionalServices ? "Total per orang" : "Total wajib"}{" "}
-                  {formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal)}
+                  {selectedPriceCaption}{" "}
+                  {hasPrice ? formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal) : "Dikonfirmasi tim"}
                 </small>
               </span>
             </button>

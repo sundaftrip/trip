@@ -5,6 +5,8 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { trackSundafEvent } from "@/lib/analytics-events";
 import { readCampaignAttribution } from "@/lib/campaign-attribution";
 import { buildWhatsAppBookingHref } from "@/lib/tour-commerce";
+import { formatCurrency } from "@/lib/utils";
+import { useTourRoomSelection } from "./TourRoomSelectionContext";
 import type {
   BookingDeparture,
   BookingMode,
@@ -66,8 +68,7 @@ export default function TourBookingExperience({
   const bookingRoomOptions = roomOptions.length > 0 ? roomOptions : DEFAULT_ROOM_OPTIONS;
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(departures[0]?.id || "");
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
+  const { adults, childCount: children, setAdults, setChildCount: setChildren, visaOfferTotal } = useTourRoomSelection();
   const [internalRoom, setInternalRoom] = useState(bookingRoomOptions[0].value);
   const room = selectedRoomValue ?? internalRoom;
   const setRoom = onRoomChange ?? setInternalRoom;
@@ -216,6 +217,7 @@ export default function TourBookingExperience({
         <div>
           <span>{mode === "sold_out" ? "Kapasitas" : selectedPriceCaption}</span>
           <strong>{mode === "sold_out" ? availabilityLabel : selectedPriceLabel}</strong>
+          {visaOfferTotal > 0 && <small>Visa grup: +{formatCurrency(visaOfferTotal)}</small>}
         </div>
         <button type="button" onClick={(event) => showSheet(event.currentTarget)}>
           {triggerLabel}

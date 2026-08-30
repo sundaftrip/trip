@@ -28,6 +28,7 @@ import {
 } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import type { TourVisaOffer } from "@/lib/tour-visa-offers";
+import { getVisibleOptionalAddOns, type TourVisaAssessmentView } from "@/lib/tour-visa-selection";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import StableDetails from "./StableDetails";
 import TourDetailTabs from "./TourDetailTabs";
@@ -86,6 +87,7 @@ type CleanTourDetailProps = {
   roomPrices: TourRoomPrice[];
   optionalAddOns: TourAddOn[];
   visaOffers: TourVisaOffer[];
+  visaAssessment?: TourVisaAssessmentView;
   paymentPlan: TourPaymentPlan | null;
   relatedTours: CleanTour[];
   reviews: TourReview[];
@@ -234,6 +236,7 @@ export default function CleanTourDetail({
   roomPrices,
   optionalAddOns,
   visaOffers,
+  visaAssessment,
   paymentPlan,
   relatedTours,
   reviews,
@@ -265,10 +268,10 @@ export default function CleanTourDetail({
     && /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
     && Number(item.price) > 0
   ));
-  const disclosureOptionalAddOns = optionalAddOns.filter((item) => (
-    item !== selectableAddOn
-    && !(visaOffers.length > 0 && /visa/i.test(item.name))
-  ));
+  const disclosureOptionalAddOns = getVisibleOptionalAddOns(
+    optionalAddOns.filter((item) => item !== selectableAddOn),
+    visaOffers,
+  );
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
   const sectionTabs = [
@@ -401,9 +404,11 @@ export default function CleanTourDetail({
       <TourDetailTabs tabs={sectionTabs} tourId={tour.id} />
 
       <TourRoomSelectionProvider
+        key={tour.id}
         roomPrices={roomPrices}
         selectableAddOn={selectableAddOn}
         visaOffers={visaOffers}
+        visaAssessment={visaAssessment}
       >
         <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
@@ -675,6 +680,7 @@ export default function CleanTourDetail({
             <p className={styles.detailPdfRecovery} id="mobile-pdf-recovery">
               Jika PDF tidak terbuka,{" "}
               <TourRoomRecoveryLink
+                hasPrice={hasPrice}
                 fallbackHref={bookingWaHref}
                 phone={bookingPhone}
                 startingTotal={startingTotal}
@@ -748,6 +754,7 @@ export default function CleanTourDetail({
             <p className={styles.detailPdfRecovery} id="detail-pdf-recovery">
               Jika unduhan gagal,{" "}
               <TourRoomRecoveryLink
+                hasPrice={hasPrice}
                 fallbackHref={bookingWaHref}
                 phone={bookingPhone}
                 startingTotal={startingTotal}

@@ -220,6 +220,13 @@
   white-space: nowrap;
 }
 
+.mobileBookingBar small {
+  display: block;
+  color: #075d63;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
 .mobileBookingBar > button,
 .mobileBookingBar > a {
   min-height: 48px;
