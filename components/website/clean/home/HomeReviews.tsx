@@ -92,7 +92,6 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
                     aria-label={`Lihat selengkapnya ulasan dari ${item.name}`}
                   >
                     Lihat selengkapnya
-                    <span aria-hidden="true"> →</span>
                   </Link>
                 </div>
 
