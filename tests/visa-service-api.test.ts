@@ -141,6 +141,18 @@ test("PUT refuses foreign IDs without changing either country or invalidating ca
   assert.equal(app.revalidated, 0);
 });
 
+test("PUT variant rename does not reorder variants unless an order is submitted", async () => {
+  const app = harness();
+  app.seed({ id: "a", variants: [
+    { id: "a-1", name: "First", priceIDR: 100, sortOrder: 5 },
+    { id: "a-2", name: "Second", priceIDR: 200, sortOrder: 9 },
+  ] });
+  const response = await app.detail.PUT(request({ variants: [{ id: "a-2", name: "Renamed" }, { id: "a-1" }] }), params("a"));
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.deepEqual(result.variants.map((item: Variant) => [item.id, item.sortOrder]), [["a-1", 5], ["a-2", 9]]);
+});
+
 test("PUT transaction failure rolls back and does not disclose infrastructure errors", async () => {
   const app = harness();
   app.seed({ id: "a", notes: "Before", variants: [] });
