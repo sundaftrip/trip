@@ -80,6 +80,14 @@ const netherlands: VisaServiceCatalogEntry = {
   ],
 };
 
+const vietnam: VisaServiceCatalogEntry = {
+  name: "Vietnam",
+  en: "Vietnam",
+  region: "Asia Tenggara",
+  visa: "bebas",
+  servicePrice: "Rp 850.000",
+};
+
 test("parses Indonesian currency strings used by the visa service", () => {
   assert.equal(parseVisaServicePrice("Mulai Rp 4.300.000"), 4_300_000);
   assert.equal(parseVisaServicePrice("Rp 3,5 juta"), 3_500_000);
@@ -214,4 +222,85 @@ test("returns no offer when the matching visa service has no positive price", ()
     resolveTourVisaOffers({ country: "Kanada" }, [noPriceCanada]),
     [],
   );
+});
+
+test("does not mistake the French history of Cat Cat Village for a Schengen destination", () => {
+  const offers = resolveTourVisaOffers(
+    {
+      title: "5 Hari 4 Malam Vietnam Utara dengan Sapa dan Teluk Halong",
+      slug: "5d4n-northern-vietnam-with-sapa-and-halong-bay",
+      country: "Vietnam",
+      cityHighlight: "Hanoi – Sapa – Teluk Halong",
+      itinerary: [{
+        day: 2,
+        title: "Hanoi - Joint Limousine ke Sapa - Trekking ke Cat Cat Village",
+        description: "berjalan menyusuri dasar lembah hingga air terjun tempat orang Prancis membangun Pembangkit Listrik Tenaga Hidrolik",
+      }],
+    },
+    [france, vietnam, canada, unitedStates],
+  );
+
+  assert.deepEqual(offers, []);
+});
+
+test("does not use attraction names or other itinerary fields as destination countries", () => {
+  assert.deepEqual(resolveTourVisaOffers({
+    country: "Vietnam",
+    itinerary: [
+      { title: "Desa Prancis", description: "French Village di Ba Na Hills", image: "https://example.com/france.jpg" },
+      { title: "Grand World", highlights: ["Suasana Belanda dan Italia"] },
+      { title: "Museum", description: "Sejarah Amerika Serikat dan Kanada" },
+    ],
+  }, [vietnam, france, netherlands, canada, unitedStates]), []);
+});
+
+test("visa and exclusion notes cannot add unrelated countries to a Canada trip", () => {
+  const offers = resolveTourVisaOffers({
+    country: "Kanada",
+    title: "Canada Rockies Spring",
+    cityHighlight: "Vancouver, Banff, Calgary",
+    destinationText: [
+      "Pemegang visa Amerika Serikat dapat menghubungi tim untuk pemeriksaan dokumen.",
+      "Visa Schengen, Inggris, dan Prancis belum termasuk.",
+    ],
+  }, [canada, unitedStates, france, unitedKingdom]);
+
+  assert.deepEqual(offers.map((offer) => offer.id), ["visa-canada"]);
+});
+
+test("transit and airline mentions in itinerary notes do not become destinations", () => {
+  const offers = resolveTourVisaOffers({
+    country: "Kanada",
+    itinerary: [{
+      title: "Transit di Amerika Serikat sebelum Vancouver",
+      description: "Pilihan penerbangan Air France melalui Prancis mengikuti jadwal maskapai.",
+    }],
+    destinationText: "Persyaratan transit United States dikonfirmasi terpisah.",
+  }, [canada, unitedStates, france]);
+
+  assert.deepEqual(offers.map((offer) => offer.id), ["visa-canada"]);
+});
+
+test("unconfirmed prose alone does not create a visa offer", () => {
+  assert.deepEqual(resolveTourVisaOffers({
+    itinerary: [{ title: "France", description: "Canada, United States" }],
+    destinationText: "Schengen",
+  }, [france, canada, unitedStates]), []);
+});
+
+test("declared multi-country metadata still offers Canada and United States separately", () => {
+  const offers = resolveTourVisaOffers({
+    country: "Kanada, Amerika Serikat",
+    route: "Vancouver → Seattle → Los Angeles",
+    itinerary: [{ description: "Bangunan bersejarah bergaya Prancis" }],
+  }, [france, unitedStates, canada]);
+
+  assert.deepEqual(offers.map((offer) => offer.id), ["visa-canada", "visa-united-states"]);
+});
+
+test("city metadata still supports Canada when the country field has not been filled", () => {
+  assert.deepEqual(resolveTourVisaOffers({
+    title: "Rockies Spring",
+    cityHighlight: "Vancouver • Banff • Calgary",
+  }, [canada, france]).map((offer) => offer.id), ["visa-canada"]);
 });

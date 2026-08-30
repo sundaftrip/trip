@@ -6,6 +6,7 @@ export type TourVisaSource = {
   country?: string | null;
   cityHighlight?: string | null;
   route?: string | null;
+  // Legacy prose inputs are accepted but never used as evidence of a destination.
   destinationText?: string | readonly string[] | null;
   itinerary?: unknown;
 };
@@ -83,26 +84,12 @@ function phraseIndex(text: string, phrases: readonly string[]) {
   return earliest;
 }
 
-function flattenItineraryText(value: unknown, output: string[], depth = 0) {
-  if (depth > 4 || value == null) return;
-  if (typeof value === "string") {
-    output.push(value);
-    return;
-  }
-  if (Array.isArray(value)) {
-    for (const item of value) flattenItineraryText(item, output, depth + 1);
-    return;
-  }
-  if (typeof value !== "object") return;
-
-  for (const nestedValue of Object.values(value as Record<string, unknown>)) {
-    flattenItineraryText(nestedValue, output, depth + 1);
-  }
-}
-
 function collectDestinationText(tour: TourVisaSource) {
   const values: string[] = [];
 
+  // Only catalog destination metadata can select a visa service. Itinerary
+  // prose, exclusions and visa notes can mention nationalities, architecture,
+  // existing visas or transit without making those countries tour destinations.
   for (const value of [
     tour.title,
     tour.slug,
@@ -113,10 +100,6 @@ function collectDestinationText(tour: TourVisaSource) {
     if (value) values.push(value);
   }
 
-  if (typeof tour.destinationText === "string") values.push(tour.destinationText);
-  else if (tour.destinationText) values.push(...tour.destinationText);
-
-  flattenItineraryText(tour.itinerary, values);
   return normalizeText(values.join(" "));
 }
 
