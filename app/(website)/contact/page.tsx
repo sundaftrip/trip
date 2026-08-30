@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { getContactHeroText } from "@/lib/website-texts";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import ContactSection from "@/components/website/ContactSection";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
@@ -109,6 +110,7 @@ function pageSurface(theme: PublicTheme): { className: string; style?: CSSProper
 
 export default async function ContactPage() {
   const { texts, company } = await getData();
+  const hero = getContactHeroText(texts);
   const theme = normalizeTheme(company["site_theme"]);
   const surface = pageSurface(theme);
   const isAtlas = theme === "atlas";
@@ -130,19 +132,19 @@ export default async function ContactPage() {
             className={isAtlas ? "at-pill mb-5 inline-flex" : "text-xs font-bold uppercase tracking-[0.22em]"}
             style={{ color: isAtlas ? "var(--at-subtext)" : "var(--site-accent,#075D63)" }}
           >
-            Kontak resmi
+            {hero.eyebrow}
           </p>
           <h1
             id="contact-page-title"
             className={isAtlas ? supportStyles.title : "mt-3 max-w-4xl text-4xl font-black leading-tight sm:text-6xl"}
             style={{ color: isAtlas ? "var(--at-text)" : "var(--site-heading,#222831)" }}
           >
-            Hubungi Sundaf Trip
+            {hero.title}
           </h1>
           <p
             className={isAtlas ? `${supportStyles.lede} mt-5` : "mt-5 max-w-2xl text-sm leading-7 text-gray-600 dark:text-gray-300"}
           >
-            Konsultasi paket tour, custom trip, dokumen visa, dan kebutuhan perjalanan lain lewat kanal resmi Sundaf Trip.
+            {hero.body}
           </p>
         </div>
       </section>
