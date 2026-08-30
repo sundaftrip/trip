@@ -9,6 +9,7 @@ import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
 import { GEO_CMS_ROUTES, validateGeoRouteMutation } from "@/lib/geo-cms-routes";
+import { validateGeoCmsStructuredInput } from "@/lib/geo-cms-input";
 
 const FIELDS = [
   "routePath",
@@ -40,12 +41,7 @@ function pickGeoInput(body: Record<string, unknown>) {
 function validate(data: Record<string, unknown>): string | null {
   if ("title" in data && (typeof data.title !== "string" || !data.title.trim())) return "Title wajib diisi.";
   if ("answer" in data && (typeof data.answer !== "string" || !data.answer.trim())) return "Jawaban singkat wajib diisi.";
-  if ("sections" in data && !Array.isArray(data.sections)) return "Konten tambahan harus berupa data valid.";
-  if ("faqs" in data && !Array.isArray(data.faqs)) return "FAQ harus berupa data valid.";
-  if ("content" in data && data.content !== null && (typeof data.content !== "object" || Array.isArray(data.content))) {
-    return "Konten halaman harus berupa data valid.";
-  }
-  return null;
+  return validateGeoCmsStructuredInput(data);
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {

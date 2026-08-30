@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Trash2 } from "lucide-react";
 import StickyFormActions from "./StickyFormActions";
-import { GEO_CMS_ROUTES, buildGeoSaveInput, getGeoCmsBaselineNotice, getGeoCmsDisplayState, getGeoSaveError, isSupportedGeoRoute } from "@/lib/geo-cms-routes";
+import { GEO_CMS_ROUTES, buildGeoSaveInput, getGeoCmsBaselineNotice, getGeoCmsDisplayState, getGeoCmsFieldSupport, getGeoSaveError, isSupportedGeoRoute } from "@/lib/geo-cms-routes";
+import { normalizeGeoCmsEditorData } from "@/lib/geo-cms-input";
 
 import type {
   GeoDestinationActivity,
@@ -70,10 +71,6 @@ function emptyFaq(): GeoFaq {
   return { question: "", answer: "" };
 }
 
-function initialDestination(page?: GeoFormData | GeoPageContent): GeoDestinationContent | null {
-  return page?.destination ?? ("content" in (page ?? {}) ? (page as GeoFormData).content ?? null : null);
-}
-
 function emptyQuickFact(): GeoDestinationQuickFact {
   return { icon: "map-pin", label: "", value: "" };
 }
@@ -94,9 +91,10 @@ function emptyBudgetItem(): GeoDestinationBudgetItem {
   return { item: "", range: "" };
 }
 
-export default function GeoPageForm({ page, canPublish = false }: {
+export default function GeoPageForm({ page, canPublish = false, structuredFallback }: {
   page?: GeoFormData | GeoPageContent;
   canPublish?: boolean;
+  structuredFallback?: GeoPageContent;
 }) {
   const router = useRouter();
   const isEdit = "id" in (page ?? {}) && !!(page as GeoFormData | undefined)?.id;
@@ -119,11 +117,14 @@ export default function GeoPageForm({ page, canPublish = false }: {
     order: (page as GeoFormData | undefined)?.order ?? 0,
   }), [page, isEdit]);
 
+  const structured = useMemo(() => normalizeGeoCmsEditorData(page ?? {}, structuredFallback), [page, structuredFallback]);
+  const { invalidFields } = structured;
   const [form, setForm] = useState(initial);
-  const [sections, setSections] = useState<EditableSection[]>(() => normalizeSections(page?.sections));
-  const [faqs, setFaqs] = useState<GeoFaq[]>(() => normalizeFaqs(page?.faqs));
-  const [destination, setDestination] = useState<GeoDestinationContent | null>(() => initialDestination(page));
+  const [sections, setSections] = useState<EditableSection[]>(() => normalizeSections(structured.sections));
+  const [faqs, setFaqs] = useState<GeoFaq[]>(() => normalizeFaqs(structured.faqs));
+  const [destination, setDestination] = useState<GeoDestinationContent | null>(() => structured.destination ?? null);
   const supportedRoute = isSupportedGeoRoute(form.routePath);
+  const fieldSupport = getGeoCmsFieldSupport(form.routePath);
   const { publicHref, description: publicStateDescription } = getGeoCmsDisplayState(form.routePath, isEdit ? page?.published : undefined);
   const baselineNotice = getGeoCmsBaselineNotice(form.routePath);
 
@@ -271,9 +272,9 @@ export default function GeoPageForm({ page, canPublish = false }: {
       setError("Alamat ini belum terhubung ke CMS. Pilih halaman yang tersedia dari daftar GEO.");
       return;
     }
-    const cleanedSections = cleanSections();
+    const cleanedSections = fieldSupport.sections && !invalidFields.includes("sections") ? cleanSections() : [];
     if (!cleanedSections) return;
-    const cleanedFaqs = cleanFaqs();
+    const cleanedFaqs = invalidFields.includes("faqs") ? [] : cleanFaqs();
     if (!cleanedFaqs) return;
 
     setLoading(true);
@@ -281,7 +282,7 @@ export default function GeoPageForm({ page, canPublish = false }: {
       const res = await fetch(isEdit ? `/api/geo-pages/${(page as GeoFormData).id}` : "/api/geo-pages", {
         method: isEdit ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...buildGeoSaveInput(form, initial.published, isEdit), sections: cleanedSections, faqs: cleanedFaqs, content: destination }),
+        body: JSON.stringify(buildGeoSaveInput({ ...form, sections: cleanedSections, faqs: cleanedFaqs, content: destination }, initial.published, isEdit, invalidFields)),
       });
       if (!res.ok) {
         const payload: unknown = await res.json().catch(() => null);
@@ -322,6 +323,12 @@ export default function GeoPageForm({ page, canPublish = false }: {
         )}
       </div>
 
+      {invalidFields.length > 0 && (
+        <p id="geo-legacy-data-help" role="status" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+          Format data lama belum valid pada: {invalidFields.map((field) => ({ sections: "Konten Tambahan", faqs: "Pertanyaan dan Jawaban", content: "Konten Halaman Destinasi" })[field]).join(", ")}. Bagian tersebut ditampilkan dengan nilai aman dan hanya dapat dibaca. Data asli tetap tersimpan dan tidak ditimpa saat bagian lain disimpan. Hubungi admin untuk perbaikan data.
+        </p>
+      )}
+
       <fieldset disabled={loading || !supportedRoute} className="min-w-0 space-y-6">
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
@@ -335,12 +342,14 @@ export default function GeoPageForm({ page, canPublish = false }: {
             <p id="geo-route-help" className="mt-1 text-xs text-gray-500 dark:text-gray-400">Alamat mengikuti halaman yang sudah tersedia. CMS tidak membuat alamat website baru.</p>
           </div>
           <div>
-            <label className="label mb-1">Schema Type</label>
-            <input className="input" value={form.schemaType} onChange={(e) => set("schemaType", e.target.value)} placeholder="WebPage / CollectionPage / Article" />
+            <label htmlFor="geo-schema-type" className="label mb-1">Schema Type</label>
+            <input id="geo-schema-type" disabled={!fieldSupport.schemaType} aria-describedby={!fieldSupport.schemaType && supportedRoute ? "geo-schema-help" : undefined} className="input" value={!fieldSupport.schemaType && supportedRoute ? "Article" : form.schemaType} onChange={(e) => set("schemaType", e.target.value)} placeholder="WebPage / CollectionPage / Article" />
+            {!fieldSupport.schemaType && supportedRoute && <p id="geo-schema-help" className="mt-1 text-xs text-gray-500 dark:text-gray-400">Schema halaman destinasi tetap Article; nilai lama yang tersimpan tidak mengubah schema publik.</p>}
           </div>
           <div className="md:col-span-2">
             <label className="label mb-1">Title *</label>
             <input required className="input" value={form.title} onChange={(e) => set("title", e.target.value)} />
+            {!fieldSupport.schemaType && supportedRoute && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Judul ini digunakan sebagai headline Article. Judul yang terlihat pada gambar hero diatur di Konten Halaman Destinasi → Hero.</p>}
           </div>
           <div>
             <label className="label mb-1">Eyebrow</label>
@@ -387,7 +396,7 @@ export default function GeoPageForm({ page, canPublish = false }: {
       </div>
 
       {destination && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+        <fieldset id="geo-destination-fields" disabled={invalidFields.includes("content")} aria-describedby={invalidFields.includes("content") ? "geo-legacy-data-help" : undefined} className="min-w-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6">
           <div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Konten Halaman Destinasi</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -670,14 +679,14 @@ export default function GeoPageForm({ page, canPublish = false }: {
               <textarea className="input min-h-[90px] md:col-span-2" value={destination.finalCta.description} onChange={(e) => updateDestination((prev) => ({ ...prev, finalCta: { ...prev.finalCta, description: e.target.value } }))} placeholder="Deskripsi CTA akhir" />
             </div>
           </div>
-        </div>
+        </fieldset>
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <fieldset id="geo-section-fields" disabled={!fieldSupport.sections || invalidFields.includes("sections")} aria-describedby="geo-sections-help" className="min-w-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Konten Tambahan</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Gunakan jika halaman perlu blok penjelasan ekstra.</p>
+            <p id="geo-sections-help" className="text-sm text-gray-500 dark:text-gray-400">{invalidFields.includes("sections") ? "Data lama tidak sesuai format; bagian ini hanya baca dan tidak diubah saat bagian lain disimpan." : fieldSupport.sections ? "Gunakan jika halaman perlu blok penjelasan ekstra." : supportedRoute ? "Tidak digunakan pada halaman destinasi ini. Data lama tetap tersimpan dan tidak diubah saat Anda menyimpan bagian lain." : "Alamat ini belum terhubung ke website; konten tambahan hanya dapat dibaca."}</p>
           </div>
           <button type="button" onClick={() => setSections((prev) => [...prev, emptySection()])}
             className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
@@ -729,9 +738,9 @@ export default function GeoPageForm({ page, canPublish = false }: {
             ))}
           </div>
         )}
-      </div>
+      </fieldset>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <fieldset id="geo-faq-fields" disabled={invalidFields.includes("faqs")} aria-describedby={invalidFields.includes("faqs") ? "geo-legacy-data-help" : undefined} className="min-w-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Pertanyaan dan Jawaban</h2>
@@ -770,7 +779,7 @@ export default function GeoPageForm({ page, canPublish = false }: {
             ))}
           </div>
         )}
-      </div>
+      </fieldset>
 
       </fieldset>
     </form>

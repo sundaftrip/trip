@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Pencil, Plus, Sparkles } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 
 import DeleteButton from "@/components/admin/DeleteButton";
 import { GEO_FALLBACKS } from "@/lib/geo-pages";
@@ -82,7 +82,7 @@ export default async function GeoAdminPage() {
                           href={`/admin/geo/new?routePath=${encodeURIComponent(fallback.routePath)}`}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600 text-white text-xs font-semibold hover:bg-violet-700 transition"
                         >
-                          <Sparkles size={13} /> Edit konten bawaan
+                          Edit konten bawaan
                         </Link>
                       )}
                     </div>

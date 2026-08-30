@@ -6,6 +6,8 @@ import { NextRequest, NextResponse } from "next/server";
 import ts from "typescript";
 import * as authorization from "../lib/authorization";
 import * as geoRoutes from "../lib/geo-cms-routes";
+import * as geoInput from "../lib/geo-cms-input";
+import type { GeoDestinationContent } from "../types/geo";
 
 type Handler = (request: NextRequest, context: { params: Promise<{ id: string }> }) => Promise<NextResponse>;
 type HarnessOptions = { permissions?: string[]; routePath?: string | null; authenticated?: boolean; failWrite?: boolean };
@@ -22,6 +24,7 @@ function apiHarness(item: boolean, options: HarnessOptions = {}) {
     "@/lib/auth": { auth: async () => session },
     "@/lib/authorization": authorization,
     "@/lib/geo-cms-routes": geoRoutes,
+    "@/lib/geo-cms-input": geoInput,
     "@/lib/permissions": {
       checkPermissions: async (_session: unknown, keys: string[]) => {
         permissions.push(keys);
@@ -76,6 +79,13 @@ function request(method: "POST" | "PUT", body: unknown) {
 }
 const context = () => ({ params: Promise.resolve({ id: "page-1" }) });
 const validCreate = { routePath: "/visa-rusia-wni", title: "Title", answer: "Answer", sections: [], faqs: [] };
+const validDestination = {
+  hero: { eyebrow: "", titleLine1: "Heading", titleLine2: "", description: "", image: "", imageAlt: "", primaryCtaLabel: "", allToursCtaLabel: "", secondaryCtaLabel: "" },
+  quickFacts: [], intro: { eyebrow: "", title: "", paragraphs: [] }, guide: { eyebrow: "", title: "", cards: [] },
+  activities: { eyebrow: "", title: "", items: [] }, travel: { eyebrow: "", title: "", steps: [] },
+  budget: { eyebrow: "", title: "", items: [], totalLabel: "", totalValue: "", note: "" },
+  emptyTours: { icon: "", title: "", description: "", ctaLabel: "", ctaHref: "" }, finalCta: { title: "", description: "", buttonLabel: "" },
+} satisfies GeoDestinationContent;
 
 test("POST saves a supported draft with create permission only", async () => {
   const api = apiHarness(false, { permissions: ["geo_create"] });
@@ -108,6 +118,60 @@ test("PUT text-only payload needs edit permission but not publication permission
   assert.equal(response.status, 200);
   assert.equal(api.writes.length, 1);
   assert.equal(Object.hasOwn(api.writes[0].data, "published"), false);
+});
+
+test("destination editor updates preserve unused sections and schema without blocking supported fields", async () => {
+  for (const routePath of ["/destinations/murmansk", "/destinations/teriberka"]) {
+    const api = apiHarness(true, { routePath, permissions: ["geo_edit"] });
+    const payload = geoRoutes.buildGeoSaveInput({ routePath, title: "Revised Article headline", answer: "Updated summary", published: true, sections: [{ title: "", body: "Legacy content" }], schemaType: "WebPage", faqs: [], content: validDestination }, true, true);
+    const response = await api.handlers.PUT(request("PUT", payload), context());
+    assert.equal(response.status, 200);
+    assert.equal(api.writes.length, 1);
+    const written = api.writes[0].data;
+    for (const field of ["sections", "schemaType", "published"]) assert.equal(Object.hasOwn(written, field), false, field);
+    assert.equal(written.title, payload.title);
+    assert.equal(written.answer, payload.answer);
+    assert.deepEqual(written.content, payload.content);
+    assert.deepEqual(written.faqs, []);
+    const createApi = apiHarness(false, { permissions: ["geo_create"] });
+    const create = geoRoutes.buildGeoSaveInput({ ...validCreate, routePath, schemaType: "Article", published: false }, false, false);
+    assert.equal((await createApi.handlers.POST(request("POST", create), context())).status, 201);
+  }
+});
+
+test("GEO mutations reject malformed nested data before writing instead of creating an unopenable editor", async () => {
+  const malformed = [
+    { sections: [null] }, { sections: [{ title: 7 }] }, { sections: [{ title: "Title", body: {} }] }, { sections: [{ title: "Title", items: [null] }] },
+    { faqs: [null] }, { faqs: [{ question: "Question" }] }, { faqs: [{ question: {}, answer: "Answer" }] },
+    { content: {} }, { content: { ...validDestination, hero: [] } }, { content: { ...validDestination, quickFacts: [null] } },
+    { content: { ...validDestination, guide: { ...validDestination.guide, cards: [{ title: "Title", content: null }] } } },
+    { content: { ...validDestination, activities: { ...validDestination.activities, items: [{ title: "Title", desc: "", img: "", video: {} }] } } },
+  ];
+  for (const item of [false, true]) {
+    const method = item ? "PUT" : "POST";
+    for (const invalid of malformed) {
+      const api = apiHarness(item);
+      const response = await api.handlers[method](request(method, { ...validCreate, ...invalid }), context());
+      assert.equal(response.status, 422, `${method}: ${JSON.stringify(invalid)}`);
+      assert.equal(api.writes.length, 0);
+      assert.equal(typeof (await response.json()).error, "string");
+    }
+  }
+});
+
+test("GEO mutations preserve valid structured rows and allow explicit null content", async () => {
+  for (const item of [false, true]) {
+    const method = item ? "PUT" : "POST";
+    for (const content of [validDestination, null]) {
+      const api = apiHarness(item);
+      const body = { ...validCreate, sections: [{ title: "Useful section", body: "Text", items: ["A", "B"] }], faqs: [{ question: "Q", answer: "A" }], content };
+      const response = await api.handlers[method](request(method, body), context());
+      assert.equal(response.status, item ? 200 : 201);
+      assert.deepEqual(api.writes[0].data.sections, body.sections);
+      assert.deepEqual(api.writes[0].data.faqs, body.faqs);
+      assert.deepEqual(api.writes[0].data.content, content);
+    }
+  }
 });
 
 test("PUT still requires publication permission whenever published is submitted", async () => {
