@@ -590,11 +590,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     slug: tour.slug,
     country: displayCountry,
     cityHighlight: displayCityHighlight,
-    destinationText: [
-      displayVisaInfo ?? "",
-      ...displayExclusions,
-    ],
-    itinerary,
   }, visaCountries);
   const displayRelatedTours = relatedTours.map((item) => ({
     ...item,
