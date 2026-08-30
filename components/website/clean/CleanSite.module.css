@@ -1754,27 +1754,32 @@
   gap: 8px;
 }
 
-.detailVisaServiceList > label {
+.detailVisaServiceOption {
   min-height: 52px;
   padding: 10px 11px;
+  display: grid;
+  gap: 8px;
+  border: 1px solid #cfdcdc;
+  border-radius: 10px;
+  background: #f8fbfb;
+}
+
+.detailVisaServiceOption > label:first-child {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  border: 1px solid #cfdcdc;
-  border-radius: 10px;
-  background: #f8fbfb;
   cursor: pointer;
 }
 
-.detailVisaServices[data-grouped="true"] .detailVisaServiceList > label {
+.detailVisaServices[data-grouped="true"] .detailVisaServiceOption {
   padding: 12px 0;
   border: 0;
   border-radius: 0;
   background: transparent;
 }
 
-.detailVisaServices[data-flat="true"] .detailVisaServiceList > label {
+.detailVisaServices[data-flat="true"] .detailVisaServiceOption {
   min-height: 44px;
   padding: 0;
   border: 0;
@@ -1782,20 +1787,20 @@
   background: transparent;
 }
 
-.detailVisaServices[data-grouped="true"] .detailVisaServiceList > label + label {
+.detailVisaServices[data-grouped="true"] .detailVisaServiceOption + .detailVisaServiceOption {
   border-top: 1px solid #d8e5e4;
 }
 
-.detailVisaServiceList > label[data-included="true"] {
+.detailVisaServiceOption[data-included="true"] {
   border-color: var(--clean-teal-dark, #075d63);
   background: var(--clean-teal-pale, #e5f3f1);
 }
 
-.detailVisaServices[data-grouped="true"] .detailVisaServiceList > label[data-included="true"] {
+.detailVisaServices[data-grouped="true"] .detailVisaServiceOption[data-included="true"] {
   background: transparent;
 }
 
-.detailVisaServices[data-flat="true"] .detailVisaServiceList > label[data-included="true"] {
+.detailVisaServices[data-flat="true"] .detailVisaServiceOption[data-included="true"] {
   background: transparent;
 }
 
@@ -1827,6 +1832,43 @@
   font-weight: 600;
   line-height: 1.4;
 }
+
+.detailVisaRequirements {
+  margin-bottom: 14px;
+  display: grid;
+  gap: 10px;
+  color: var(--clean-muted);
+  font-size: 12px;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.detailVisaRequirements p { margin: 3px 0; text-align: left; }
+.detailVisaRequirements > div > p:first-child { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+.detailVisaRequirements strong { color: var(--clean-navy); }
+.detailVisaRequirements a,
+.detailVisaServiceLink { color: var(--clean-teal-dark); font-size: 12px; }
+.detailVisaRequirementDetails { margin-top: 4px; }
+.detailVisaRequirementDetails summary { cursor: pointer; font-size: 12px; color: var(--clean-teal-dark); }
+.detailVisaRequirementDetails ul { padding-left: 18px; margin: 8px 0; }
+.detailVisaApplicantCount { display: grid; gap: 5px; font-size: 12px; color: var(--clean-muted); }
+.detailVisaApplicantCount select {
+  min-height: 44px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--clean-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--clean-navy);
+  font: inherit;
+}
+.detailVisaGroupPrice { margin: 12px 0; font-size: 12px; color: var(--clean-muted); }
+.detailVisaGroupPrice p { display: flex; justify-content: space-between; gap: 12px; margin: 5px 0; text-align: left; }
+.detailVisaGroupPrice p:first-child { color: var(--clean-navy); }
+.detailVisaGroupPrice p span:first-child { min-width: 0; }
+.detailVisaGroupPrice strong { flex-shrink: 0; }
+.detailVisaGroupPrice small { display: block; font-size: 11px; line-height: 1.5; }
+.detailVisaServiceList + .detailVisaServicesIntro { margin: 10px 0 0; }
 
 .detailHotelGrid {
   margin-top: 24px;
@@ -1996,6 +2038,10 @@
 .detailPriceBreakdown small { margin-left: 4px; color: var(--clean-teal-dark); font-size: 8px; font-weight: 800; }
 .detailPriceBreakdown .detailRecommendedAddOnCopy strong { white-space: normal; }
 .detailPriceBreakdown .detailRecommendedAddOnCopy small { margin-left: 0; }
+.detailPriceBreakdown > .detailVisaGroupPrice { display: block; }
+.detailPriceBreakdown .detailVisaGroupPrice small { margin-left: 0; color: var(--clean-muted); font-size: 11px; font-weight: 400; }
+.detailPriceBreakdown .detailVisaRequirements strong { white-space: normal; }
+.detailPriceBreakdown .detailVisaServicesIntro strong { white-space: normal; }
 .detailPriceBreakdown > .detailPriceTotal { padding-top: 10px; border-top: 1px solid var(--clean-line); color: var(--clean-navy); font-weight: 740; }
 
 .detailSidebarRoomPrices {

@@ -147,7 +147,7 @@ test("keeps the selected room synchronized through every booking surface", () =>
 test("keeps recommended travel insurance optional and synchronized", () => {
   assert.match(source, /item\.tag === "recommended"/);
   assert.match(source, /asuransi perjalanan usia sampai 69 tahun/i);
-  assert.match(source, /disclosureOptionalAddOns = optionalAddOns\.filter/);
+  assert.match(source, /disclosureOptionalAddOns = getVisibleOptionalAddOns/);
   assert.match(roomSelectionSource, /useState\(false\)/);
   assert.match(roomSelectionSource, /includeSelectableAddOn && selectableAddOn/);
   assert.match(recommendedAddOnSource, /type="checkbox"/);
@@ -190,9 +190,9 @@ test("offers only the visas required by the selected trip and keeps them optiona
   assert.match(detailPageSource, /variants: \{/);
   assert.match(detailPageSource, /visaOffers=\{visaOffers\}/);
   assert.match(roomSelectionSource, /includedVisaOfferIds/);
-  assert.match(roomSelectionSource, /optionalServicesTotal = selectableAddOnTotal \+ visaOfferTotal/);
-  assert.match(visaToggleSource, /Perjalanan ini membutuhkan visa\./);
-  assert.match(visaToggleSource, /Jika visa Anda masih berlaku, pilih Tidak\./);
+  assert.match(roomSelectionSource, /optionalServicesTotal = selectableAddOnTotal;/);
+  assert.doesNotMatch(visaToggleSource, /Perjalanan ini membutuhkan visa\./);
+  assert.match(visaToggleSource, /negara tujuan, masa berlaku, dan jumlah masuk/);
   assert.match(visaToggleSource, /type="checkbox"/);
   assert.match(visaToggleSource, /included \? "Ya" : "Tidak"/);
   assert.match(visaToggleSource, /flat = false/);
@@ -206,7 +206,7 @@ test("offers only the visas required by the selected trip and keeps them optiona
   );
   assert.match(
     cleanStylesSource,
-    /\.detailVisaServices\[data-flat="true"\] \.detailVisaServiceList > label \{[\s\S]*?padding: 0;[\s\S]*?border: 0;[\s\S]*?border-radius: 0;[\s\S]*?background: transparent;/,
+    /\.detailVisaServices\[data-flat="true"\] \.detailVisaServiceOption \{[\s\S]*?padding: 0;[\s\S]*?border: 0;[\s\S]*?border-radius: 0;[\s\S]*?background: transparent;/,
   );
   assert.match(
     cleanStylesSource,

@@ -7,7 +7,7 @@ import type { BookingDeparture, BookingMode } from "./TourBookingSheet";
 import TourBookingExperience from "./TourBookingExperience";
 import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
-import TourVisaServiceToggle from "./TourVisaServiceToggle";
+import TourVisaServiceToggle, { TourVisaGroupPrice } from "./TourVisaServiceToggle";
 import styles from "./CleanSite.module.css";
 import interactiveStyles from "./TourDetailInteractive.module.css";
 
@@ -63,11 +63,12 @@ export default function TourRoomBookingPanel({
     hasOptionalServices,
     optionalServicesTotal,
     optionalServicesPreference,
+    visaOffers,
   } = useTourRoomSelection();
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
   const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
   const selectedTotalPrice = selectedMandatoryTotalPrice + optionalServicesTotal;
-  const selectedCaption = hasOptionalServices ? "Total per orang" : priceCaption;
+  const selectedCaption = visaOffers.length > 0 ? "Per orang, di luar bantuan visa" : hasOptionalServices ? "Total per orang" : priceCaption;
   const selectedPriceLabel = hasPrice ? formatCurrency(selectedTotalPrice) : priceLabel;
   const roomOptions = roomPrices.map((room) => ({
     value: room.code,
@@ -114,7 +115,7 @@ export default function TourRoomBookingPanel({
                     <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
                   </div>
                   <div>
-                    <dt>{hasOptionalServices ? "Total per orang" : "Total wajib per orang"}</dt>
+                    <dt>{selectedCaption}</dt>
                     <dd>{formatCurrency(displayedTotal)}</dd>
                   </div>
                 </dl>
@@ -152,13 +153,14 @@ export default function TourRoomBookingPanel({
               </div>
             ))}
             <div className={interactiveStyles.dateTotal}>
-              <dt>{hasOptionalServices ? "Total per orang" : "Total wajib per orang"}</dt>
+              <dt>{selectedCaption}</dt>
               <dd>{hasPrice ? formatCurrency(selectedTotalPrice) : "Dikonfirmasi tim"}</dd>
             </div>
             {paymentInitialAmountLabel && (
               <div><dt>Minimum pembayaran awal</dt><dd>{paymentInitialAmountLabel}</dd></div>
             )}
           </dl>
+          <TourVisaGroupPrice />
           <TourBookingExperience
             phone={bookingPhone}
             tourId={tourId}
