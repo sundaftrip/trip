@@ -61,6 +61,7 @@ export default function TourRoomBookingPanel({
     selectedRoom,
     setSelectedRoomCode,
     hasOptionalServices,
+    hasVisaInformation,
     optionalServicesTotal,
     optionalServicesPreference,
     visaOffers,
@@ -73,7 +74,7 @@ export default function TourRoomBookingPanel({
   const roomOptions = roomPrices.map((room) => ({
     value: room.code,
     label: room.label,
-    priceLabel: formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal),
+    priceLabel: hasPrice ? formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal) : priceLabel,
     priceCaption: selectedCaption,
   }));
   const pricedBookingDepartures = applyOptionalServicesToDepartures(
@@ -107,7 +108,7 @@ export default function TourRoomBookingPanel({
                   onChange={() => setSelectedRoomCode(room.code)}
                 />
                 <span>{room.label}</span>
-                <h3>{formatCurrency(room.headlinePrice)}</h3>
+                <h3>{hasPrice ? formatCurrency(room.headlinePrice) : "Sesuai permintaan"}</h3>
                 <p>Harga posting per orang</p>
                 <dl>
                   <div>
@@ -116,7 +117,7 @@ export default function TourRoomBookingPanel({
                   </div>
                   <div>
                     <dt>{selectedCaption}</dt>
-                    <dd>{formatCurrency(displayedTotal)}</dd>
+                    <dd>{hasPrice ? formatCurrency(displayedTotal) : "Dikonfirmasi tim"}</dd>
                   </div>
                 </dl>
               </label>
@@ -131,7 +132,7 @@ export default function TourRoomBookingPanel({
             <span>{status}</span>
             <strong>{departureLabel || "Tanggal fleksibel"}</strong>
           </div>
-          {hasOptionalServices && (
+          {(hasOptionalServices || hasVisaInformation) && (
             <div
               className={interactiveStyles.dateCardOptionControls}
               role="group"

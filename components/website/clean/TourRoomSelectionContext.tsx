@@ -49,6 +49,7 @@ type TourRoomSelectionValue = {
   optionalServicesTotal: number;
   optionalServicesPreference: string;
   hasOptionalServices: boolean;
+  hasVisaInformation: boolean;
 };
 
 const TourRoomSelectionContext = createContext<TourRoomSelectionValue | null>(null);
@@ -105,7 +106,8 @@ export function TourRoomSelectionProvider({
   const optionalServicesPreference = [selectableAddOnPreference, visaOfferPreference]
     .filter(Boolean)
     .join("; ");
-  const hasOptionalServices = Boolean(selectableAddOn || visaOffers.length > 0 || visaAssessment);
+  const hasOptionalServices = Boolean(selectableAddOn || visaOffers.length > 0);
+  const hasVisaInformation = Boolean(visaAssessment);
   const value = useMemo(() => ({
     selectedRoom,
     selectedRoomCode,
@@ -131,8 +133,10 @@ export function TourRoomSelectionProvider({
     optionalServicesTotal,
     optionalServicesPreference,
     hasOptionalServices,
+    hasVisaInformation,
   }), [
     hasOptionalServices,
+    hasVisaInformation,
     adults,
     childCount,
     travelerCount,
