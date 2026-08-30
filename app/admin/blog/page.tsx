@@ -1,38 +1,39 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Pencil, Sparkles } from "lucide-react";
+import { Plus, Pencil, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
+import styles from "@/components/admin/AdminWorkspace.module.css";
 
 export default async function BlogAdminPage() {
   const posts = await prisma.blog.findMany({ orderBy: { date: "desc" } });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Blog</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">{posts.length} artikel</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className={styles.pageActions}>
           <Link
             href="/admin/scraper"
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-medium rounded-lg transition shadow-sm"
+            className={styles.secondaryButton}
           >
-            <Sparkles size={16} /> Scrape Konten
+            <Download size={16} aria-hidden="true" /> Scrape Konten
           </Link>
           <Link
             href="/admin/blog/new"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
+            className={styles.primaryButton}
           >
             <Plus size={16} /> Tulis Artikel
           </Link>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className={styles.tablePanel}>
         <div className="overflow-x-auto">
-        <table className="w-full text-sm min-w-[640px]">
+        <table aria-label="Daftar artikel" className="w-full text-sm min-w-[720px]">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
               <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Judul</th>
@@ -52,7 +53,7 @@ export default async function BlogAdminPage() {
             {posts.map((post) => (
               <tr key={post.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[280px]">{post.title}</p>
+                  <p className="font-medium text-gray-900 dark:text-white min-w-[200px] max-w-[340px] whitespace-normal">{post.title}</p>
                   <p className="text-xs text-gray-400">/{post.slug}</p>
                 </td>
                 <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{post.category ?? "-"}</td>
@@ -65,7 +66,7 @@ export default async function BlogAdminPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-2">
-                    <Link href={`/admin/blog/${post.id}`} className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                    <Link href={`/admin/blog/${post.id}`} aria-label={`Edit artikel ${post.title}`} className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
                       <Pencil size={15} />
                     </Link>
                     <DeleteButton id={post.id} endpoint="/api/blog" label="artikel" />
