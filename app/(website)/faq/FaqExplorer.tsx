@@ -233,8 +233,8 @@ export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }
           className={`border p-8 text-center ${theme.isOutlined ? "border-2 border-solid" : "rounded-lg border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"}`}
           style={theme.isOutlined ? { background: theme.cardBg, borderColor: theme.bdrClr, color: theme.subClr } : undefined}
         >
-          <p className="text-sm font-semibold">Tidak ada FAQ yang cocok.</p>
-          <p className="mt-2 text-sm">Coba kata lain seperti visa, refund, deposit, aurora, atau private trip.</p>
+          <p className="text-sm font-semibold">{sections.length ? "Tidak ada FAQ yang cocok." : "Belum ada FAQ yang ditampilkan."}</p>
+          <p className="mt-2 text-sm">{sections.length ? "Coba kata lain seperti visa, refund, deposit, aurora, atau private trip." : "Hubungi tim Sundaf jika ada pertanyaan tentang perjalanan."}</p>
         </div>
       ) : (
         <div className="space-y-12">
@@ -316,7 +316,7 @@ export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }
                           style={theme.isOutlined ? { color: theme.subClr, borderColor: theme.bdrClr } : undefined}
                         >
                           <div className="space-y-3">
-                            {item.answer.map((paragraph) => (
+                            {item.answerHtml ? <div className="space-y-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:underline" dangerouslySetInnerHTML={{ __html: item.answerHtml }} /> : item.answer.map((paragraph) => (
                               <p key={paragraph}>{paragraph}</p>
                             ))}
                             {item.relatedLinks?.length ? (
