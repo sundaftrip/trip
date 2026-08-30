@@ -72,13 +72,14 @@ test("dashboard uses compact metrics and preserves operational counts", () => {
   assert.match(dashboard, /take: 5, orderBy: \{ createdAt: "desc" \}/);
 });
 
-test("forms use plain sections while keeping their save endpoints and submitted payloads", () => {
+test("forms use plain sections with checked saves and serialized request bodies", () => {
   for (const file of ["TourForm", "CountryVisaForm", "BlogForm"]) {
     const form = read(`components/admin/${file}.tsx`);
     assert.match(form, /styles\.formSection/);
     assert.match(form, /onSubmit=\{handleSubmit\}/);
     assert.match(form, /method: isEdit \? "PUT" : "POST"/);
-    assert.match(form, /body: JSON\.stringify\((?:payload|form)\)/);
+    assert.match(form, /await requestAdminAction\(/);
+    assert.match(form, /body: JSON\.stringify\(/);
   }
 });
 
