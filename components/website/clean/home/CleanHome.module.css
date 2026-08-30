@@ -77,8 +77,8 @@
 
 .hero {
   position: relative;
-  height: clamp(560px, 72svh, 720px);
-  min-height: 560px;
+  height: auto;
+  min-height: clamp(620px, 76svh, 760px);
   isolation: isolate;
   overflow: hidden;
   background: var(--home-primary-strong);
@@ -104,14 +104,17 @@
 }
 
 .heroShell {
-  height: 100%;
+  min-height: inherit;
+  padding-block: 80px 44px;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  gap: clamp(32px, 4vw, 56px);
 }
 
 .heroCopy {
   max-width: 690px;
-  padding-bottom: 154px;
 }
 
 .eyebrow,
@@ -154,22 +157,37 @@
 
 .finderZone {
   position: relative;
-  z-index: 3;
-  margin-top: -78px;
-  background: var(--home-paper);
+  z-index: 1;
+  width: min(960px, 100%);
+  min-width: 0;
+  align-self: center;
+  border-radius: 999px;
 }
 
 .finderCard {
+  position: relative;
+  isolation: isolate;
   min-height: 0;
-  padding: 16px;
+  padding: 12px 14px 12px 28px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 12px;
   align-items: stretch;
-  border: 1px solid var(--home-line);
-  border-radius: 18px !important;
-  background: var(--home-white);
-  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f9f8 100%);
+  box-shadow: 0 20px 48px rgba(0, 18, 24, 0.2), 0 3px 8px rgba(0, 18, 24, 0.08);
+}
+
+.finderZone::before {
+  content: "";
+  position: absolute;
+  inset: 14px 20px -10px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(110deg, rgba(3, 40, 42, 0.42), rgba(32, 184, 181, 0.28) 52%, rgba(93, 130, 168, 0.22));
+  filter: blur(22px);
+  pointer-events: none;
 }
 
 .finderField {
@@ -207,6 +225,7 @@
 
 .finderField select {
   width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 0 26px 0 0;
   border: 0;
@@ -220,14 +239,14 @@
 
 .finderCard > button {
   min-width: 180px;
-  min-height: 48px;
+  min-height: 56px;
   padding: 0 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   align-self: center;
   border: 0;
-  border-radius: 12px !important;
+  border-radius: 999px !important;
   background: var(--home-primary);
   color: var(--home-white);
   font-size: 15px;
@@ -1233,10 +1252,6 @@
 }
 
 @media (min-width: 760px) {
-  .finderZone .shell {
-    width: min(860px, calc(100% - 64px));
-  }
-
   .destinationMosaic {
     grid-template-columns: 1.18fr 0.82fr 0.82fr;
   }
@@ -1252,20 +1267,11 @@
 
 @media (min-width: 921px) {
   .hero {
-    height: clamp(640px, 76svh, 780px);
-    min-height: 640px;
+    min-height: clamp(640px, 76svh, 780px);
   }
 
   .heroImage {
     object-position: 50% 64%;
-  }
-
-  .heroShell {
-    align-items: center;
-  }
-
-  .heroCopy {
-    padding: 40px 0 96px;
   }
 
   .heroCopy h1 {
@@ -1276,14 +1282,6 @@
 @media (max-width: 1040px) {
   .shell {
     width: min(100% - 48px, 900px);
-  }
-
-  .finderCard {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .finderCard > button {
-    grid-column: 1 / 3;
   }
 
   .tourRail {
@@ -1356,8 +1354,7 @@
   }
 
   .hero {
-    height: 456px;
-    min-height: 456px;
+    min-height: 0;
   }
 
   .heroImage {
@@ -1374,12 +1371,12 @@
   }
 
   .heroShell {
-    align-items: flex-start;
+    padding-block: 48px 36px;
+    gap: 32px;
   }
 
   .heroCopy {
     max-width: 350px;
-    padding: 54px 0 0;
   }
 
   .eyebrow,
@@ -1402,19 +1399,16 @@
     line-height: 1.53;
   }
 
-  .finderZone {
-    display: flow-root;
-    margin-top: 0;
-    background: var(--home-paper);
-  }
-
   .finderCard {
     min-height: 0;
-    margin-top: -58px;
-    padding: 16px;
-    grid-template-columns: 1fr;
+    padding: 20px;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
-    box-shadow: none;
+    border-radius: 28px !important;
+  }
+
+  .finderZone {
+    border-radius: 28px;
   }
 
   .finderField {
@@ -1786,10 +1780,6 @@
 @media (max-width: 370px) {
   .shell {
     width: min(100% - 32px, 560px);
-  }
-
-  .heroCopy {
-    padding-top: 46px;
   }
 
   .heroCopy h1 {
