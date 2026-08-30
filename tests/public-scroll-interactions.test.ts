@@ -128,13 +128,13 @@ test("marks every itinerary PDF trigger as an isolated download", () => {
   const cleanDetail = source("components/website/clean/CleanTourDetail.tsx");
   const legacyDetail = source("app/(website)/tours/[id]/page.tsx");
   const cleanPdfLinks = cleanDetail.match(
-    /href=\{`\/tours\/\$\{tour\.id\}\/pdf`\}[\s\S]{0,100}?download[\s\S]{0,100}?target="_blank"/g,
+    /href=\{itineraryPdfHref\(tour\.id\)\}[\s\S]{0,100}?download[\s\S]{0,100}?target="_blank"/g,
   );
 
   assert.equal(cleanPdfLinks?.length, 2);
   assert.match(
     legacyDetail,
-    /href=\{`\/tours\/\$\{tour\.id\}\/pdf`\}[\s\S]{0,100}?download[\s\S]{0,100}?target="_blank"/,
+    /href=\{itineraryPdfHref\(tour\.id\)\}[\s\S]{0,100}?download[\s\S]{0,100}?target="_blank"/,
   );
 });
 

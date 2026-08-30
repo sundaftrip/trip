@@ -17,6 +17,7 @@ import {
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import { cldThumb, formatCurrency } from "@/lib/utils";
+import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
@@ -661,7 +662,7 @@ export default function CleanTourDetail({
           <section className={styles.detailMobileUtilities} aria-labelledby="mobile-trip-tools-title">
             <h2 id="mobile-trip-tools-title">Simpan dan bandingkan detail</h2>
             <a
-              href={`/tours/${tour.id}/pdf`}
+              href={itineraryPdfHref(tour.id)}
               download
               target="_blank"
               rel="noopener"
@@ -734,7 +735,7 @@ export default function CleanTourDetail({
 
             <a
               className={styles.detailBookingPdf}
-              href={`/tours/${tour.id}/pdf`}
+              href={itineraryPdfHref(tour.id)}
               download
               target="_blank"
               rel="noopener"
