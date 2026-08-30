@@ -211,3 +211,69 @@ test("contradictory handling of the same visa requires review", () => {
   assert.deepEqual(schengenMixed.offers, []);
   assert.ok(schengenMixed.issues.some((issue) => issue.includes("konsisten")));
 });
+
+test("required and eVisa rules with unexecutable stay limits cannot create priced offers", () => {
+  for (const visa of ["wajib", "evisa"]) {
+    for (const stay of [null, "", "90 hari dalam 180 hari", "30 atau 60 hari"]) {
+      const destination = { ...plan("fr").destinations[0], stayDays: 120 };
+      const result = assessTourVisas({ plan: plan(destination) }, [{ ...france, visa, stay }], now);
+      assert.deepEqual(result.offers, [], `${visa}: ${stay}`);
+      assert.equal(result.countries[0].serviceState, "consultation");
+      assert.ok(result.issues.some((issue) => issue.includes("lama tinggal")));
+    }
+  }
+});
+
+test("an included visa cannot also appear as a charged add-on", () => {
+  for (const marker of [{ isMandatory: true }, { mandatory: true }, { tag: "wajib" }, { isMandatory: false }]) {
+    const result = assessTourVisas({
+      plan: plan({ ...plan("fr").destinations[0], service: "included" }),
+      inclusions: ["Visa Schengen termasuk"],
+      addOns: [{ name: "Visa Schengen", ...marker }],
+    }, [france], now);
+    assert.deepEqual(result.offers, []);
+    assert.equal(result.countries[0].serviceState, "consultation");
+    assert.ok(result.issues.some((issue) => issue.includes("termasuk") && issue.includes("biaya")));
+  }
+});
+
+test("manual coverage conflicts cannot bypass review through explicit service handling", () => {
+  for (const service of ["offer", "included", "separate", "none"] as const) {
+    const result = assessTourVisas({
+      plan: plan({ ...plan("pe").destinations[0], service }),
+      inclusions: ["Visa Peru"],
+      addOns: [{ name: "Visa Peru", tag: "wajib" }],
+    }, [peru], now);
+    assert.deepEqual(result.offers, []);
+    assert.equal(result.countries[0].serviceState, "consultation");
+    assert.ok(result.issues.length);
+  }
+  const separateButIncluded = assessTourVisas({ plan: plan({ ...plan("pe").destinations[0], service: "separate" }), inclusions: ["Visa Peru"] }, [peru], now);
+  assert.ok(separateButIncluded.issues.length);
+  const ambiguousIncluded = assessTourVisas({ plan: plan({ ...plan("pe").destinations[0], service: "included" }), addOns: [{ name: "Visa", tag: "wajib" }] }, [peru], now);
+  assert.ok(ambiguousIncluded.issues.length);
+  const unknownButIncluded = assessTourVisas({ plan: plan({ ...plan("fr").destinations[0], service: "included" }) }, [{ ...france, stay: "90 hari dalam 180 hari" }], now);
+  assert.equal(unknownButIncluded.countries[0].serviceState, "consultation");
+});
+
+test("headline qualifiers, ranges, currencies and prose never become an exact IDR add-on", () => {
+  for (const servicePrice of [
+    "USD 100", "Proses 7 hari, Rp 2.500.000", "Rp 2.500.000 - Rp 4.000.000",
+    "Mulai Rp 2.500.000", "From IDR 2500000", "Rp 2.500.000 per orang",
+    "Rp 2,5 juta", "2500000 USD", "Rp 2.500,50", "2.500,000", "-2500000",
+  ]) {
+    const result = assessTourVisas({ plan: plan("pe") }, [{ ...peru, servicePrice }], now);
+    assert.deepEqual(result.offers, [], servicePrice);
+    assert.equal(result.countries[0].serviceState, "consultation");
+    assert.ok(result.warnings.some((warning) => warning.includes("harga")));
+  }
+});
+
+test("only exact whole IDR headline amounts or priced variants can be added", () => {
+  for (const servicePrice of ["Rp 2.500.000", "IDR 2,500,000", "2500000", "2.500.000", "  Rp2500000  "]) {
+    const result = assessTourVisas({ plan: plan("pe") }, [{ ...peru, servicePrice }], now);
+    assert.equal(result.offers[0]?.price, 2_500_000, servicePrice);
+  }
+  const result = assessTourVisas({ plan: plan({ ...plan("pe").destinations[0], variantId: "fixed" }) }, [{ ...peru, servicePrice: "Mulai Rp 2.000.000", variants: [{ id: "fixed", name: "Fixed", priceIDR: 2_750_000 }] }], now);
+  assert.equal(result.offers[0]?.price, 2_750_000);
+});
