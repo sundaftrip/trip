@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { isAllowedTranslationOrigin } from "@/lib/translation-origin";
 
 /* Auto-translate (ID -> EN) via endpoint Google Translate gratis (gtx),
    dengan cache di DB: sekali sebuah string diterjemahkan, dipakai ulang.
@@ -9,12 +10,6 @@ import { rateLimit, clientIp } from "@/lib/rate-limit";
    Pemanggil: components/website/AutoTranslate.tsx (client-side, fetch same-origin). */
 
 export const runtime = "nodejs";
-
-// Origin yang boleh memanggil endpoint ini (anti pemakaian lintas situs).
-// Origin yang absen TIDAK ditolak — beberapa client legit tidak mengirimnya.
-const ALLOWED_ORIGIN_HOSTS = new Set([
-  "sundaftrip.com", "www.sundaftrip.com", "localhost", "127.0.0.1",
-]);
 
 const hashOf = (s: string, target: string) =>
   crypto.createHash("sha1").update(`${target}:${s}`).digest("hex");
@@ -51,14 +46,9 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (x: T) => Promise<R
 }
 
 export async function POST(req: NextRequest) {
-  // Tolak Origin asing (kalau header-nya ADA dan bukan host kita)
-  const origin = req.headers.get("origin");
-  if (origin) {
-    let host = "";
-    try { host = new URL(origin).hostname; } catch { /* origin rusak → host kosong → ditolak */ }
-    if (!ALLOWED_ORIGIN_HOSTS.has(host)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+  // Hanya origin situs dan deployment preview ini yang boleh memanggil endpoint.
+  if (!isAllowedTranslationOrigin(req.headers.get("origin"))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   // Rate limit per IP: 10 request/menit (endpoint fan-out ke Google + tulis DB)
