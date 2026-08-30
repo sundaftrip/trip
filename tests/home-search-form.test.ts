@@ -106,6 +106,26 @@ test("uses an in-flow pill over the hero with a decorative gradient shadow", () 
   assert.equal(cssRule(".finderZone")["margin-top"], undefined);
 });
 
+test("keeps the compact finder left-aligned with the hero copy and photo space below", () => {
+  const zone = cssRule(".finderZone");
+  const shell = cssRule(".heroShell");
+  assert.equal(zone.width, "min(768px, 100%)");
+  assert.equal(zone["align-self"], "flex-start");
+  assert.equal(shell["justify-content"], "flex-start");
+  assert.equal(shell["padding-block"], "80px 112px");
+  assert.equal(shell.gap, "40px");
+  assert.equal(cssRule(".finderCard").padding, "8px 10px 8px 24px");
+  assert.equal(cssRule(".finderCard > button")["min-width"], "156px");
+});
+
+test("homepage offsets only the real header height without a white strip above the hero", () => {
+  const shell = readFileSync(new URL("../components/website/clean/CleanShell.module.css", import.meta.url), "utf8");
+  const headerHeight = shell.match(/\.header\s*\{[^}]*\bheight:\s*(\d+px);/)?.[1];
+  assert.equal(headerHeight, "68px");
+  assert.equal(cssRule(".home")["padding-top"], headerHeight);
+  assert.equal(cssRule(".home", "(max-width: 920px)")["padding-top"], undefined);
+});
+
 test("mobile finder stays rounded and stacked without fixed-height clipping or offsets", () => {
   const mobile = "(max-width: 759px)";
   assert.equal(cssRule(".finderCard", mobile)["grid-template-columns"], "minmax(0, 1fr)");
