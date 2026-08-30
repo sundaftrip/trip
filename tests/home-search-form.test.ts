@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import postcss from "postcss";
+import ts from "typescript";
 
 const home = readFileSync(
   new URL("../components/website/clean/CleanHome.tsx", import.meta.url),
@@ -58,7 +60,58 @@ test("uses unboxed fields with visible focus and comfortable touch targets", () 
   assert.match(field, /border-radius:\s*0(?: !important)?;/);
   assert.match(field, /background:\s*transparent;/);
   assert.match(select, /min-height:\s*44px;/);
-  assert.match(button, /min-height:\s*48px;/);
+  assert.ok(Number(button.match(/min-height:\s*(\d+)px;/)?.[1]) >= 48);
   assert.doesNotMatch(select, /appearance:\s*none/);
   assert.match(styles, /:focus-visible\s*\{[^}]*outline:\s*3px solid/);
+});
+
+test("places the single search form inside the hero after its copy", () => {
+  const tree = ts.createSourceFile("CleanHome.tsx", home, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let hero: ts.JsxElement | undefined;
+  const forms: ts.JsxSelfClosingElement[] = [];
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(tree) === "section"
+      && node.openingElement.attributes.getText(tree).includes('aria-labelledby="home-hero-title"')) hero = node;
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(tree) === "HomeSearchForm") forms.push(node);
+    ts.forEachChild(node, visit);
+  }
+  visit(tree);
+  assert.ok(hero);
+  assert.equal(forms.length, 1);
+  assert.ok(forms[0].pos > hero.pos && forms[0].end < hero.end);
+  assert.ok(forms[0].pos > home.indexOf("<p>{heroBody}</p>"));
+});
+
+function cssRule(selector: string, media?: string) {
+  const result: Record<string, string> = {};
+  postcss.parse(styles).walkRules(selector, (rule) => {
+    const parent = rule.parent;
+    const query = parent?.type === "atrule" ? parent.params : undefined;
+    if (query !== media) return;
+    rule.walkDecls((decl) => { result[decl.prop] = decl.value; });
+  });
+  return result;
+}
+
+test("uses an in-flow pill over the hero with a decorative gradient shadow", () => {
+  assert.equal(cssRule(".hero").height, "auto");
+  assert.equal(cssRule(".heroShell")["flex-direction"], "column");
+  assert.equal(cssRule(".finderCard")["border-radius"], "999px");
+  assert.equal(cssRule(".finderCard > button")["border-radius"], "999px");
+  const shadow = cssRule(".finderZone::before");
+  assert.match(shadow.background, /linear-gradient/);
+  assert.match(shadow.filter, /blur\(/);
+  assert.equal(shadow["pointer-events"], "none");
+  assert.equal(cssRule(".finderZone").background, undefined);
+  assert.equal(cssRule(".finderZone")["margin-top"], undefined);
+});
+
+test("mobile finder stays rounded and stacked without fixed-height clipping or offsets", () => {
+  const mobile = "(max-width: 759px)";
+  assert.equal(cssRule(".finderCard", mobile)["grid-template-columns"], "minmax(0, 1fr)");
+  assert.equal(cssRule(".finderCard", mobile)["border-radius"], "28px");
+  assert.equal(cssRule(".finderCard", mobile)["margin-top"], undefined);
+  assert.equal(cssRule(".hero", mobile).height, undefined);
+  assert.equal(cssRule(".hero", "(min-width: 921px)").height, undefined);
+  assert.equal(cssRule(".finderCard", "(max-width: 1040px)")["grid-template-columns"], undefined);
 });
