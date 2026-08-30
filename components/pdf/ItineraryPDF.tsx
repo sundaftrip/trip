@@ -3064,7 +3064,9 @@ function closingCallToAction(status: CommerceTourStatus, destination: string) {
   };
 }
 
-export function ItineraryPDF({
+export { CleanItineraryPDF as ItineraryPDF } from "./CleanItineraryPDF";
+
+export function ItineraryPDFPremium({
   tour,
   priceLabel,
   priceCoretLabel,
