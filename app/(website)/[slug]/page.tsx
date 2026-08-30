@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
+import { readTourItinerary } from "@/lib/tour-visa-plan";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import { notFound } from "next/navigation";
 import { BadgePercent, Banknote, CalendarDays, MapPin, Plane, Sparkles, Ticket } from "lucide-react";
@@ -120,8 +121,7 @@ function effectivePrice(tour: TourCandidate | null) {
 }
 
 function itineraryTitles(raw: unknown) {
-  if (!Array.isArray(raw)) return [];
-  return raw
+  return readTourItinerary(raw)
     .map((item) => {
       if (!item || typeof item !== "object") return "";
       const title = (item as { title?: unknown }).title;

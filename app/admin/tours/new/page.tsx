@@ -1,5 +1,6 @@
 import TourForm, { type TourData } from "@/components/admin/TourForm";
 import { CANADA_ROCKIES_TOUR } from "@/data/catalog/canada-rockies-april-2027";
+import { getTourVisaEditorCountries } from "@/lib/tour-visa-data";
 
 type NewTourSearchParams = {
   template?: string | string[];
@@ -12,7 +13,7 @@ function firstParam(value?: string | string[]) {
 function canadaRockiesTemplate(): TourData {
   return {
     ...CANADA_ROCKIES_TOUR,
-    status: "ACTIVE",
+    status: "DRAFT",
     tripDate: CANADA_ROCKIES_TOUR.tripDate.toISOString(),
     inclusions: [...CANADA_ROCKIES_TOUR.inclusions],
     exclusions: [...CANADA_ROCKIES_TOUR.exclusions],
@@ -30,6 +31,7 @@ export default async function NewTourPage({
   searchParams: Promise<NewTourSearchParams>;
 }) {
   const template = firstParam((await searchParams).template);
+  const countries = await getTourVisaEditorCountries();
   const initialTour = template === "canada-rockies-april-2027"
     ? canadaRockiesTemplate()
     : undefined;
@@ -40,7 +42,7 @@ export default async function NewTourPage({
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tambah Tour</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">Buat paket tour baru</p>
       </div>
-      <TourForm tour={initialTour} />
+      <TourForm tour={initialTour} countries={countries} />
     </div>
   );
 }

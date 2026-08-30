@@ -9,6 +9,8 @@ import { pickInput, badNumber, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS,
 import { apiError } from "@/lib/api-error";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
+import { getTourVisaCountries } from "@/lib/tour-visa-data";
+import { prepareTourVisaWrite, tourVisaReadDto } from "@/lib/tour-visa-publishing";
 
 const PUBLIC_TOUR_STATUSES = ["ACTIVE", "FULL"] as const;
 
@@ -73,7 +75,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
       select: TOUR_READ_SELECT,
     });
   if (!tour) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  const response = NextResponse.json(tour);
+  const response = NextResponse.json(tourVisaReadDto(tour, authenticated));
   if (authenticated) response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
@@ -92,7 +94,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const data = pickInput(body, TOUR_INPUT_FIELDS);
   const isStatusOnly = "status" in data && Object.keys(data).length === 1;
   const requiredPermissions = requiredPermissionsForMutation(
-    data,
+    { ...data, ...("visaPlan" in body || body.visaReviewConfirmed === true ? { itinerary: data.itinerary ?? null } : {}) },
     "tour_edit",
     { status: "tour_status" },
   );
@@ -115,6 +117,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 
   try {
+    const [existing, countries] = await Promise.all([
+      prisma.tour.findUnique({ where: { id } }),
+      getTourVisaCountries(),
+    ]);
+    if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const visaWrite = prepareTourVisaWrite({ ...data, ...("visaPlan" in body ? { visaPlan: body.visaPlan } : {}), visaReviewConfirmed: body.visaReviewConfirmed, visaReviewFingerprint: body.visaReviewFingerprint }, existing, countries);
+    if (!visaWrite.ok) return NextResponse.json({ error: visaWrite.error }, { status: 422 });
+    data.itinerary = visaWrite.itinerary;
     const tour = await prisma.tour.update({
       where: { id },
       data: data as unknown as Prisma.TourUncheckedUpdateInput,
@@ -128,7 +138,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     });
 
     revalidatePublicContent();
-    return NextResponse.json(tour);
+    return NextResponse.json(tourVisaReadDto(tour, true));
   } catch (err) {
     return apiError(err, { duplicate: "Slug tour sudah dipakai." });
   }

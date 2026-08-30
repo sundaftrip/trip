@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
         title: r.title!.trim(),
         country: r.country!.trim(),
         price: typeof r.price === "number" && r.price > 0 ? r.price : 0,
-        status: "ACTIVE" as const,
+        // Imported routes have not yet had their country/visa plan reviewed.
+        status: "DRAFT" as const,
         tripDate: d && !isNaN(d.getTime()) ? d : null,
         duration: r.duration?.trim() || null,
         heroImg: r.heroImg?.trim() || null,
@@ -52,5 +53,5 @@ export async function POST(req: NextRequest) {
   });
 
   revalidatePublicContent();
-  return NextResponse.json({ created: result.count }, { status: 201 });
+  return NextResponse.json({ created: result.count, status: "DRAFT", message: "Katalog disimpan sebagai draft. Lengkapi negara tujuan dan pemeriksaan visa sebelum terbit." }, { status: 201 });
 }

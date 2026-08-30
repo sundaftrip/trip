@@ -23,7 +23,9 @@ import {
   resolveCanadaRockiesPdfNotes,
   selectCanadaRockiesTourSource,
 } from "@/lib/canada-catalog-preview";
-import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
+import { ItineraryPDF, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
+import { readTourItinerary } from "@/lib/tour-visa-plan";
+import { assessCatalogVisas, getTourVisaCountries } from "@/lib/tour-visa-data";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -186,7 +188,7 @@ export async function GET(
 
   const previewTour = getCanadaRockiesPreviewTour(id);
   const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
-  const [databaseTour, companyRows] = standalonePreview ? [null, []] : await Promise.all([
+  const [databaseTour, companyRows, visaCountries] = standalonePreview ? [null, [], []] : await Promise.all([
     prisma.tour.findFirst({ where: { OR: [{ id }, { slug: id }] } }),
     prisma.companyInfo.findMany({
       where: { key: { in: [
@@ -195,6 +197,7 @@ export async function GET(
         "company_instagram", "about_tagline", "about_story",
       ] } },
     }),
+    getTourVisaCountries(),
   ]);
   const tour = selectCanadaRockiesTourSource(databaseTour, previewTour);
 
@@ -206,7 +209,8 @@ export async function GET(
   companyRows.forEach((c) => { ci[c.key] = c.value; });
   const faqUrl = "https://sundaftrip.com/faq";
 
-  const itinerary = (tour.itinerary as ItineraryDay[] | null) ?? [];
+  const itinerary = readTourItinerary(tour.itinerary);
+  const visaAssessment = assessCatalogVisas(tour, visaCountries);
   const basePrice = tour.promoPrice ?? tour.price;
   const priceLabel = formatCurrency(basePrice);
   const priceCoretLabel = tour.promoPrice
@@ -279,7 +283,7 @@ export async function GET(
     exclusions: tour.exclusions,
     heroImg,
     gallery: uniqueImages(gallery),
-    visaInfo: tour.visaInfo,
+    visaInfo: visaAssessment.summary.join("\n\n"),
     notes: resolveCanadaRockiesPdfNotes(tour.notes, tour.slug),
     addOns: normalizedAddOns,
   });

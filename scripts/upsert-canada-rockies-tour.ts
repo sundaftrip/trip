@@ -1,6 +1,7 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import fs from "node:fs";
 import path from "node:path";
+import { prepareTourVisaWrite } from "../lib/tour-visa-publishing";
 import {
   CANADA_ROCKIES_SLUG,
   CANADA_ROCKIES_TOUR,
@@ -62,6 +63,13 @@ async function main() {
   const data = tourInput();
   const prisma = new PrismaClient();
   try {
+    const [existing, visaCountries] = await Promise.all([
+      prisma.tour.findUnique({ where: { slug: CANADA_ROCKIES_SLUG } }),
+      prisma.countryVisa.findMany({ include: { variants: true } }),
+    ]);
+    const visaWrite = prepareTourVisaWrite(data as unknown as Record<string, unknown>, existing, visaCountries);
+    if (!visaWrite.ok) throw new Error(visaWrite.error);
+    data.itinerary = visaWrite.itinerary as Prisma.InputJsonValue;
     const tour = await prisma.tour.upsert({
       where: { slug: CANADA_ROCKIES_SLUG },
       create: data,

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { readTourItinerary } from "@/lib/tour-visa-plan";
 import { prisma } from "@/lib/prisma";
 import { visaSlug, similarity } from "@/lib/visa-slug";
 import { SEARCH_DESTINATIONS, destinationSearchText, findSearchDestinations } from "@/lib/search-destinations";
@@ -148,10 +149,7 @@ export async function GET(req: NextRequest) {
   };
 
   const toursPrepared = allTours.map((t) => {
-    const itinText = Array.isArray(t.itinerary)
-      ? (t.itinerary as { title?: string; description?: string }[])
-          .map((d) => `${d?.title ?? ""} ${d?.description ?? ""}`).join(" ")
-      : "";
+    const itinText = readTourItinerary(t.itinerary).map((day) => `${day.title} ${day.description}`).join(" ");
     const blob = [t.title, t.country, t.cityHighlight, t.duration, t.description, itinText].join(" ");
     addVocab(blob);
     return {

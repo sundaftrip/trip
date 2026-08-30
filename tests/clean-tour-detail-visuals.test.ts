@@ -185,9 +185,9 @@ test("keeps recommended travel insurance optional and synchronized", () => {
 });
 
 test("offers only the visas required by the selected trip and keeps them optional", () => {
-  assert.match(detailPageSource, /resolveTourVisaOffers\(\{/);
-  assert.match(detailPageSource, /servicePrice: true/);
-  assert.match(detailPageSource, /variants: \{/);
+  assert.match(detailPageSource, /assessCatalogVisas\(tour, visaCountries\)/);
+  assert.match(detailPageSource, /getTourVisaCountries\(\)/);
+  assert.match(detailPageSource, /visaAssessment=\{visaAssessment\}/);
   assert.match(detailPageSource, /visaOffers=\{visaOffers\}/);
   assert.match(roomSelectionSource, /includedVisaOfferIds/);
   assert.match(roomSelectionSource, /optionalServicesTotal = selectableAddOnTotal;/);

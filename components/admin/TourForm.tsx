@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
+import TourVisaPlanEditor, { type VisaEditorCountry } from "./TourVisaPlanEditor";
+import type { TourVisaPlan } from "@/lib/tour-visa-plan";
 
 type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
@@ -44,6 +46,7 @@ export interface TourData {
   notes?: string;
   description?: string;
   visaInfo?: string;
+  visaPlan?: TourVisaPlan | null;
   itinerary?: ItineraryItem[];
   addOns?: { name: string; price: number; tag?: AddOnTag; desc?: string }[];
   paymentPlan?: PaymentPlanFormConfig;
@@ -85,6 +88,7 @@ function buildInitialForm(tour?: TourData): TourData {
     notes: tour?.notes ?? "",
     description: tour?.description ?? "",
     visaInfo: tour?.visaInfo ?? "",
+    visaPlan: tour?.visaPlan ?? null,
     itinerary: tour?.itinerary ?? [],
     addOns: tour?.addOns ?? [],
     paymentPlan: normalizePaymentPlanConfig(tour?.paymentPlan),
@@ -263,7 +267,7 @@ function persistDraft(draftKey: string, draft: TourFormDraft, initialForm: TourD
   }
 }
 
-export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?: TourData; returnHref?: string }) {
+export default function TourForm({ tour, countries = [], returnHref = "/admin/tours" }: { tour?: TourData; countries?: VisaEditorCountry[]; returnHref?: string }) {
   const router = useRouter();
   const isEdit = !!tour?.id;
   const initialForm = useMemo(() => buildInitialForm(tour), [tour]);
@@ -271,6 +275,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState<TourData>(initialForm);
+  const [visaReviewFingerprint, setVisaReviewFingerprint] = useState<string | null>(null);
 
   const [inclusionInput, setInclusionInput] = useState("");
   const [exclusionInput, setExclusionInput] = useState("");
@@ -492,6 +497,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   }
 
   function set(key: keyof TourData, value: unknown) {
+    if (["country", "visaPlan", "tripDate", "duration", "inclusions", "addOns"].includes(key)) setVisaReviewFingerprint(null);
     setForm((p) => ({ ...p, [key]: value }));
   }
 
@@ -557,6 +563,8 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       seatsLeft: Number(form.seatsLeft),
       tripDate: form.tripDate ? new Date(form.tripDate).toISOString() : null,
       paymentPlan: paymentPlanForSubmit.value,
+      visaReviewConfirmed: Boolean(visaReviewFingerprint),
+      visaReviewFingerprint,
     };
     const res = await fetch(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
       method: isEdit ? "PUT" : "POST",
@@ -1087,14 +1095,25 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Catatan Penting & Visa */}
+      <TourVisaPlanEditor
+        value={form.visaPlan ?? null}
+        countries={countries}
+        country={form.country}
+        inclusions={form.inclusions}
+        addOns={form.addOns}
+        confirmedFingerprint={visaReviewFingerprint}
+        onChange={(value) => set("visaPlan", value)}
+        onConfirm={setVisaReviewFingerprint}
+      />
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Catatan Penting & Visa</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Catatan Penting">
             <textarea className="input min-h-[100px]" value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Mis: Pastikan paspor minimal 6 bulan masa berlaku, vaksin tertentu wajib, dll." />
           </Field>
-          <Field label="Informasi Visa">
+          <Field label="Catatan visa lama (tidak menentukan penawaran)">
             <textarea className="input min-h-[100px]" value={form.visaInfo} onChange={(e) => set("visaInfo", e.target.value)} />
+            <p className="text-xs text-gray-500 mt-1">Informasi pelanggan dan PDF menggunakan ringkasan negara di atas. Catatan ini tetap disimpan untuk referensi admin.</p>
           </Field>
         </div>
       </div>

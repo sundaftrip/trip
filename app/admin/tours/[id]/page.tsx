@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import TourForm, { type TourData } from "@/components/admin/TourForm";
+import { getTourVisaEditorCountries } from "@/lib/tour-visa-data";
+import { readTourItinerary, readTourVisaPlan } from "@/lib/tour-visa-plan";
 
 type EditTourSearchParams = {
   returnTo?: string | string[];
@@ -25,7 +27,7 @@ export default async function EditTourPage({
 }) {
   const [{ id }, sp] = await Promise.all([params, searchParams]);
   const returnHref = safeReturnHref(sp.returnTo);
-  const tour = await prisma.tour.findUnique({ where: { id } });
+  const [tour, countries] = await Promise.all([prisma.tour.findUnique({ where: { id } }), getTourVisaEditorCountries()]);
   if (!tour) notFound();
 
   return (
@@ -34,7 +36,7 @@ export default async function EditTourPage({
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Tour</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">{tour.title}</p>
       </div>
-      <TourForm returnHref={returnHref} tour={{
+      <TourForm countries={countries} returnHref={returnHref} tour={{
         id: tour.id,
         slug: tour.slug ?? undefined,
         title: tour.title,
@@ -57,7 +59,8 @@ export default async function EditTourPage({
         notes: tour.notes ?? undefined,
         description: tour.description ?? undefined,
         visaInfo: tour.visaInfo ?? undefined,
-        itinerary: (tour.itinerary as { day: number; title: string; description: string; image?: string }[]) ?? [],
+        itinerary: readTourItinerary(tour.itinerary),
+        visaPlan: readTourVisaPlan(tour.itinerary),
         addOns: (tour.addOns as { name: string; price: number }[]) ?? [],
         paymentPlan: tour.paymentPlan as TourData["paymentPlan"],
       }} />
