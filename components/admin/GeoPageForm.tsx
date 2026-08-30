@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Plus, Trash2 } from "lucide-react";
 import StickyFormActions from "./StickyFormActions";
+import { GEO_CMS_ROUTES, buildGeoSaveInput, getGeoCmsBaselineNotice, getGeoCmsDisplayState, getGeoSaveError, isSupportedGeoRoute } from "@/lib/geo-cms-routes";
 
 import type {
   GeoDestinationActivity,
@@ -92,7 +94,10 @@ function emptyBudgetItem(): GeoDestinationBudgetItem {
   return { item: "", range: "" };
 }
 
-export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageContent }) {
+export default function GeoPageForm({ page, canPublish = false }: {
+  page?: GeoFormData | GeoPageContent;
+  canPublish?: boolean;
+}) {
   const router = useRouter();
   const isEdit = "id" in (page ?? {}) && !!(page as GeoFormData | undefined)?.id;
   const [loading, setLoading] = useState(false);
@@ -110,14 +115,17 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
     secondaryCtaLabel: page?.secondaryCtaLabel ?? "",
     secondaryCtaHref: page?.secondaryCtaHref ?? "",
     schemaType: page?.schemaType ?? "WebPage",
-    published: page?.published ?? true,
+    published: isEdit ? page?.published ?? false : false,
     order: (page as GeoFormData | undefined)?.order ?? 0,
-  }), [page]);
+  }), [page, isEdit]);
 
   const [form, setForm] = useState(initial);
   const [sections, setSections] = useState<EditableSection[]>(() => normalizeSections(page?.sections));
   const [faqs, setFaqs] = useState<GeoFaq[]>(() => normalizeFaqs(page?.faqs));
   const [destination, setDestination] = useState<GeoDestinationContent | null>(() => initialDestination(page));
+  const supportedRoute = isSupportedGeoRoute(form.routePath);
+  const { publicHref, description: publicStateDescription } = getGeoCmsDisplayState(form.routePath, isEdit ? page?.published : undefined);
+  const baselineNotice = getGeoCmsBaselineNotice(form.routePath);
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -257,47 +265,74 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setError("");
+    if (!supportedRoute) {
+      setError("Alamat ini belum terhubung ke CMS. Pilih halaman yang tersedia dari daftar GEO.");
+      return;
+    }
     const cleanedSections = cleanSections();
     if (!cleanedSections) return;
     const cleanedFaqs = cleanFaqs();
     if (!cleanedFaqs) return;
 
     setLoading(true);
-    const res = await fetch(isEdit ? `/api/geo-pages/${(page as GeoFormData).id}` : "/api/geo-pages", {
-      method: isEdit ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, sections: cleanedSections, faqs: cleanedFaqs, content: destination }),
-    });
-    setLoading(false);
-
-    if (res.ok) {
+    try {
+      const res = await fetch(isEdit ? `/api/geo-pages/${(page as GeoFormData).id}` : "/api/geo-pages", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...buildGeoSaveInput(form, initial.published, isEdit), sections: cleanedSections, faqs: cleanedFaqs, content: destination }),
+      });
+      if (!res.ok) {
+        const payload: unknown = await res.json().catch(() => null);
+        setError(getGeoSaveError(res.status, payload));
+        return;
+      }
       router.push("/admin/geo");
       router.refresh();
-      return;
+    } catch {
+      setError("Belum dapat memastikan penyimpanan karena koneksi terputus. Isi formulir tetap ada. Periksa koneksi dan status halaman sebelum mencoba kembali.");
+    } finally {
+      setLoading(false);
     }
-    const payload = await res.json().catch(() => null);
-    setError(payload?.error ?? "Gagal menyimpan halaman GEO.");
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-5xl">
+    <form onSubmit={handleSubmit} aria-busy={loading} className="space-y-6 max-w-5xl">
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
+        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
           {error}
         </div>
       )}
       <StickyFormActions
         loading={loading}
-        primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Halaman GEO"}
+        disabled={!supportedRoute}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Simpan Konten CMS"}
         cancelHref="/admin/geo"
       />
+
+      <div className={`rounded-xl border px-4 py-3 text-sm ${supportedRoute ? "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-200" : "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200"}`}>
+        <p>{publicStateDescription}</p>
+        {baselineNotice && <p className="mt-2">{baselineNotice}</p>}
+        {!supportedRoute && <p className="mt-1">Catatan lama tetap tersimpan. Editor dinonaktifkan agar perubahan tidak disalahartikan sebagai perubahan website.</p>}
+        {publicHref && (
+          <Link href={publicHref} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">
+            Buka halaman website (konten tersimpan)
+          </Link>
+        )}
+      </div>
+
+      <fieldset disabled={loading || !supportedRoute} className="min-w-0 space-y-6">
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="label mb-1">Route Path *</label>
-            <input required className="input font-mono text-sm" value={form.routePath} onChange={(e) => set("routePath", e.target.value)} placeholder="/visa-rusia-wni" />
+            <label htmlFor="geo-route-path" className="label mb-1">Alamat halaman *</label>
+            <select id="geo-route-path" required disabled={Boolean(page?.routePath)} aria-describedby="geo-route-help" className="input font-mono text-sm" value={form.routePath} onChange={(e) => set("routePath", e.target.value)}>
+              {!supportedRoute && <option value={form.routePath}>{form.routePath || "Pilih halaman dari daftar GEO"}</option>}
+              {GEO_CMS_ROUTES.map((route) => <option key={route.routePath} value={route.routePath}>{route.routePath}</option>)}
+            </select>
+            <p id="geo-route-help" className="mt-1 text-xs text-gray-500 dark:text-gray-400">Alamat mengikuti halaman yang sudah tersedia. CMS tidak membuat alamat website baru.</p>
           </div>
           <div>
             <label className="label mb-1">Schema Type</label>
@@ -342,9 +377,13 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
         </div>
 
         <div className="flex items-center gap-3">
-          <input type="checkbox" id="published" checked={form.published} onChange={(e) => set("published", e.target.checked)} className="w-4 h-4 rounded" />
-          <label htmlFor="published" className="text-sm text-gray-700 dark:text-gray-300">Published</label>
+          <input type="checkbox" id="published" checked={form.published} disabled={!canPublish || !supportedRoute} aria-describedby="geo-publication-help" onChange={(e) => set("published", e.target.checked)} className="w-4 h-4 rounded" />
+          <label htmlFor="published" className="text-sm text-gray-700 dark:text-gray-300">{supportedRoute ? "Gunakan konten CMS di halaman publik" : "Status publikasi lama (tidak terhubung)"}</label>
         </div>
+        <p id="geo-publication-help" className="text-sm text-gray-500 dark:text-gray-400">
+          {supportedRoute ? "Jika tidak diaktifkan, URL tetap dapat dibuka dengan konten bawaan. Isi CMS Anda tetap tersimpan. Perubahan status berlaku setelah disimpan." : "Status lama ini tidak mengaktifkan halaman publik dan tidak membuktikan bahwa URL tersedia."}
+          {supportedRoute && !canPublish && " Anda dapat menyimpan teks tanpa mengubah status; perubahan status memerlukan izin publikasi GEO."}
+        </p>
       </div>
 
       {destination && (
@@ -419,6 +458,7 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
                   <input className="input" value={item.label} onChange={(e) => updateQuickFact(index, "label", e.target.value)} placeholder="Label" />
                   <input className="input" value={item.value} onChange={(e) => updateQuickFact(index, "value", e.target.value)} placeholder="Nilai" />
                   <button type="button" onClick={() => updateDestination((prev) => ({ ...prev, quickFacts: prev.quickFacts.filter((_, i) => i !== index) }))}
+                    aria-label={`Hapus fakta cepat ${index + 1}`}
                     className="inline-flex items-center justify-center px-3 rounded-lg border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-red-950/30 transition">
                     <Trash2 size={16} />
                   </button>
@@ -481,6 +521,7 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
                   <input className="input" value={card.title} onChange={(e) => updateGuideCard(index, "title", e.target.value)} placeholder="Judul poin" />
                   <textarea className="input min-h-[76px]" value={card.content} onChange={(e) => updateGuideCard(index, "content", e.target.value)} placeholder="Isi poin" />
                   <button type="button" onClick={() => updateDestination((prev) => ({ ...prev, guide: { ...prev.guide, cards: prev.guide.cards.filter((_, i) => i !== index) } }))}
+                    aria-label={`Hapus panduan ${index + 1}`}
                     className="inline-flex items-center justify-center px-3 rounded-lg border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-red-950/30 transition">
                     <Trash2 size={16} />
                   </button>
@@ -554,6 +595,7 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
                   <input className="input" value={step.title} onChange={(e) => updateTravelStep(index, "title", e.target.value)} placeholder="Judul langkah" />
                   <textarea className="input min-h-[76px]" value={step.desc} onChange={(e) => updateTravelStep(index, "desc", e.target.value)} placeholder="Deskripsi langkah" />
                   <button type="button" onClick={() => updateDestination((prev) => ({ ...prev, travel: { ...prev.travel, steps: prev.travel.steps.filter((_, i) => i !== index) } }))}
+                    aria-label={`Hapus langkah perjalanan ${index + 1}`}
                     className="inline-flex items-center justify-center px-3 rounded-lg border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-red-950/30 transition">
                     <Trash2 size={16} />
                   </button>
@@ -586,6 +628,7 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
                   <input className="input" value={item.item} onChange={(e) => updateBudgetItem(index, "item", e.target.value)} placeholder="Item budget" />
                   <input className="input" value={item.range} onChange={(e) => updateBudgetItem(index, "range", e.target.value)} placeholder="Range harga" />
                   <button type="button" onClick={() => updateDestination((prev) => ({ ...prev, budget: { ...prev.budget, items: prev.budget.items.filter((_, i) => i !== index) } }))}
+                    aria-label={`Hapus item budget ${index + 1}`}
                     className="inline-flex items-center justify-center px-3 rounded-lg border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-red-950/30 transition">
                     <Trash2 size={16} />
                   </button>
@@ -729,6 +772,7 @@ export default function GeoPageForm({ page }: { page?: GeoFormData | GeoPageCont
         )}
       </div>
 
+      </fieldset>
     </form>
   );
 }

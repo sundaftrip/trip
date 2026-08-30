@@ -3,13 +3,17 @@ import { notFound } from "next/navigation";
 import GeoPageForm from "@/components/admin/GeoPageForm";
 import { GEO_FALLBACKS } from "@/lib/geo-pages";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { isSupportedGeoRoute } from "@/lib/geo-cms-routes";
 
 export default async function EditGeoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const page = await prisma.geoPage.findUnique({ where: { id } });
   if (!page) notFound();
   const serialized = JSON.parse(JSON.stringify(page));
-  const fallback = GEO_FALLBACKS[page.routePath];
+  const fallback = isSupportedGeoRoute(page.routePath) ? GEO_FALLBACKS[page.routePath] : undefined;
+  const canPublish = await checkPermission(await auth(), "geo_publish");
   const formPage = fallback
     ? {
         ...fallback,
@@ -26,7 +30,7 @@ export default async function EditGeoPage({ params }: { params: Promise<{ id: st
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit GEO</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">{page.routePath}</p>
       </div>
-      <GeoPageForm page={formPage} />
+      <GeoPageForm page={formPage} canPublish={canPublish} />
     </div>
   );
 }

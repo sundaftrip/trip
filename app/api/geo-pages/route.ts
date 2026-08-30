@@ -8,6 +8,7 @@ import { getPublicationCreatePolicy } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
+import { GEO_CMS_ROUTES, validateGeoRouteMutation } from "@/lib/geo-cms-routes";
 
 const FIELDS = [
   "routePath",
@@ -36,16 +37,9 @@ function pickGeoInput(body: Record<string, unknown>) {
   return data;
 }
 
-function normalizeRoutePath(value: unknown): string {
-  if (typeof value !== "string") return "";
-  const trimmed = value.trim();
-  if (!trimmed) return "";
-  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
-}
-
 function validate(data: Record<string, unknown>): string | null {
-  data.routePath = normalizeRoutePath(data.routePath);
-  if (typeof data.routePath !== "string" || !data.routePath) return "Route path wajib diisi.";
+  const routeError = validateGeoRouteMutation(data);
+  if (routeError) return routeError;
   if (typeof data.title !== "string" || !data.title.trim()) return "Title wajib diisi.";
   if (typeof data.answer !== "string" || !data.answer.trim()) return "Jawaban singkat wajib diisi.";
   if (!Array.isArray(data.sections)) return "Konten tambahan harus berupa data valid.";
@@ -60,7 +54,7 @@ export async function GET() {
   const session = await auth();
   const canReadDrafts = await hasPersistedUser(session);
   const pages = await prisma.geoPage.findMany({
-    where: canReadDrafts ? undefined : { published: true },
+    where: canReadDrafts ? undefined : { published: true, routePath: { in: GEO_CMS_ROUTES.map((route) => route.routePath) } },
     orderBy: [{ order: "asc" }, { updatedAt: "desc" }],
   });
   const response = NextResponse.json(pages);
@@ -76,6 +70,8 @@ export async function POST(req: NextRequest) {
   try { body = await req.json(); } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return NextResponse.json({ error: "Data halaman tidak valid." }, { status: 400 });
 
   const data = pickGeoInput(body);
   if (data.published !== undefined && typeof data.published !== "boolean")
