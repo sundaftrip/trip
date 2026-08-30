@@ -22,6 +22,7 @@ import TourCard from "@/components/website/TourCard";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanTourDetail from "@/components/website/clean/CleanTourDetail";
 import { localizePdfText } from "@/lib/itinerary-pdf-localization";
+import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
 import { buildItineraryDisplay, type ItineraryDisplayDay, type ItineraryInsight } from "@/lib/itinerary-insights";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -1283,7 +1284,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               )}
 
               {/* Download itinerary PDF */}
-              <a href={`/tours/${tour.id}/pdf`}
+              <a href={itineraryPdfHref(tour.id)}
                 download
                 target="_blank"
                 rel="noopener"

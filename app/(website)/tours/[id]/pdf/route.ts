@@ -13,6 +13,7 @@ import {
   validatePdfImageDataUrl,
 } from "@/lib/safe-image-url";
 import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
+import { ITINERARY_PDF_HEADERS } from "@/lib/itinerary-pdf-download";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -325,7 +326,7 @@ export async function GET(
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="Rencana-Perjalanan-${slugify(pdfTour.title)}.pdf"`,
-      "Cache-Control": "no-store, must-revalidate",
+      ...ITINERARY_PDF_HEADERS,
       // Jangan sampai PDF terindex sebagai duplikat halaman tour di Google.
       "X-Robots-Tag": "noindex",
     },

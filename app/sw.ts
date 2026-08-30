@@ -9,6 +9,7 @@ import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { NetworkOnly, Serwist } from "serwist";
 import type { RuntimeCaching } from "serwist";
+import { isItineraryPdfPathname } from "../lib/itinerary-pdf-download";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -56,6 +57,14 @@ const livePageNetworkOnly: RuntimeCaching = {
   handler: new NetworkOnly(),
 };
 
+// Downloads can have an empty destination instead of document/navigation.
+// Never let them fall through to Serwist's "others" cache, including offline.
+const itineraryPdfNetworkOnly: RuntimeCaching = {
+  matcher: ({ sameOrigin, url: { pathname } }) =>
+    sameOrigin && isItineraryPdfPathname(pathname),
+  handler: new NetworkOnly({ fetchOptions: { cache: "no-store" } }),
+};
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   precacheOptions: {
@@ -64,14 +73,15 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: [sensitiveNetworkOnly, livePageNetworkOnly, ...defaultCache],
+  runtimeCaching: [sensitiveNetworkOnly, itineraryPdfNetworkOnly, livePageNetworkOnly, ...defaultCache],
   fallbacks: {
     entries: [
       {
         url: "/~offline",
         matcher: ({ request }) => {
           const { pathname } = new URL(request.url);
-          return request.destination === "document" && !isSensitivePathname(pathname);
+          return request.destination === "document" && !isSensitivePathname(pathname)
+            && !isItineraryPdfPathname(pathname);
         },
       },
     ],
@@ -97,7 +107,8 @@ self.addEventListener("activate", (event) => {
           await Promise.all(
             requests.map((request) => {
               const url = new URL(request.url);
-              if (url.origin === self.location.origin && isSensitivePathname(url.pathname)) {
+              if (url.origin === self.location.origin
+                && (isSensitivePathname(url.pathname) || isItineraryPdfPathname(url.pathname))) {
                 return cache.delete(request);
               }
               return Promise.resolve(false);
