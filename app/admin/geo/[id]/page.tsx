@@ -30,7 +30,7 @@ export default async function EditGeoPage({ params }: { params: Promise<{ id: st
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit GEO</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">{page.routePath}</p>
       </div>
-      <GeoPageForm page={formPage} canPublish={canPublish} />
+      <GeoPageForm page={formPage} canPublish={canPublish} structuredFallback={fallback} />
     </div>
   );
 }

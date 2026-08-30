@@ -9,6 +9,7 @@ import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
 import { GEO_CMS_ROUTES, validateGeoRouteMutation } from "@/lib/geo-cms-routes";
+import { validateGeoCmsStructuredInput } from "@/lib/geo-cms-input";
 
 const FIELDS = [
   "routePath",
@@ -44,10 +45,7 @@ function validate(data: Record<string, unknown>): string | null {
   if (typeof data.answer !== "string" || !data.answer.trim()) return "Jawaban singkat wajib diisi.";
   if (!Array.isArray(data.sections)) return "Konten tambahan harus berupa data valid.";
   if (!Array.isArray(data.faqs)) return "FAQ harus berupa data valid.";
-  if ("content" in data && data.content !== null && (typeof data.content !== "object" || Array.isArray(data.content))) {
-    return "Konten halaman harus berupa data valid.";
-  }
-  return null;
+  return validateGeoCmsStructuredInput(data);
 }
 
 export async function GET() {

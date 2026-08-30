@@ -8,6 +8,7 @@ import {
   buildGeoSaveInput,
   getGeoCmsDisplayState,
   getGeoCmsBaselineNotice,
+  getGeoCmsFieldSupport,
   getGeoSaveError,
   isSupportedGeoRoute,
   normalizeGeoRoutePath,
@@ -122,6 +123,85 @@ test("protected default content is disclosed without changing public renderer ru
   assert.equal(getGeoCmsBaselineNotice("/visa-rusia-wni"), null);
 });
 
+test("destination-only unused controls match the actual public renderer fields", () => {
+  const destinationRoutes = ["/destinations/murmansk", "/destinations/teriberka"];
+  for (const route of GEO_CMS_ROUTES) {
+    const destination = destinationRoutes.includes(route.routePath);
+    assert.deepEqual(getGeoCmsFieldSupport(route.routePath), { sections: !destination, schemaType: !destination });
+    if (!destination) continue;
+    const page = source(`app/(website)${route.routePath}/page.tsx`);
+    assert.doesNotMatch(page, /geoContent\.(?:sections|schemaType)/);
+    assert.match(page, /"@type": "Article"/);
+    assert.match(page, /geoContent\.faqs/);
+    assert.match(page, /geoContent\.destination/);
+    assert.match(getGeoCmsBaselineNotice(route.routePath) ?? "", /Konten Tambahan.*tidak ditampilkan/);
+    assert.match(getGeoCmsBaselineNotice(route.routePath) ?? "", /Article/);
+    assert.match(getGeoCmsBaselineNotice(route.routePath) ?? "", /Konten Halaman Destinasi/);
+  }
+  assert.deepEqual(getGeoCmsFieldSupport("/unknown"), { sections: false, schemaType: false });
+});
+
+test("destination saves preserve unused stored data by omitting it only on edits", () => {
+  for (const routePath of ["/destinations/murmansk", "/destinations/teriberka"]) {
+    const sections = [{ title: "", body: "Ignored legacy incomplete row" }];
+    const form = { routePath, published: true, title: "Updated headline", sections, schemaType: "WebPage", faqs: [{ question: "Q", answer: "A" }], content: { hero: { titleLine1: "Visible heading" } } };
+    const update = buildGeoSaveInput(form, true, true);
+    for (const field of ["sections", "schemaType", "published"]) assert.equal(Object.hasOwn(update, field), false, field);
+    assert.equal(update.title, form.title);
+    assert.equal(update.content, form.content);
+    assert.equal(update.faqs, form.faqs);
+    assert.equal(form.sections, sections);
+    assert.equal(form.schemaType, "WebPage");
+    const create = buildGeoSaveInput({ ...form, published: false, sections: [], schemaType: "Article" }, false, false);
+    assert.deepEqual(create.sections, []);
+    assert.equal(create.schemaType, "Article");
+    assert.equal(create.published, false);
+  }
+  const generic = { routePath: "/visa-rusia-wni", published: true, sections: [{ title: "Kept" }], schemaType: "WebPage" };
+  const update = buildGeoSaveInput(generic, true, true);
+  assert.equal(update.sections, generic.sections);
+  assert.equal(update.schemaType, generic.schemaType);
+});
+
+test("saving valid edits never rewrites malformed legacy structured groups", () => {
+  const form = { routePath: "/visa-rusia-wni", published: true, title: "Updated title", sections: [], faqs: [], content: null };
+  const preserved = buildGeoSaveInput(form, true, true, ["sections", "faqs", "content"]);
+  assert.equal(preserved.title, "Updated title");
+  for (const field of ["sections", "faqs", "content"]) assert.equal(Object.hasOwn(preserved, field), false);
+  assert.deepEqual(form.sections, []);
+  const partial = buildGeoSaveInput(form, true, true, ["sections"]);
+  assert.equal(Object.hasOwn(partial, "sections"), false);
+  assert.deepEqual(partial.faqs, []);
+  assert.equal(partial.content, null);
+});
+
+test("destination unused fields are disabled with scoped guidance and cannot block supported edits", () => {
+  const form = source("components/admin/GeoPageForm.tsx");
+  assert.match(form, /getGeoCmsFieldSupport\(form\.routePath\)/);
+  assert.match(form, /const cleanedSections = fieldSupport\.sections && !invalidFields\.includes\("sections"\) \? cleanSections\(\) : \[\]/);
+  assert.match(form, /<input[^>]+id="geo-schema-type"[^>]+disabled=\{!fieldSupport\.schemaType\}/);
+  assert.match(form, /<fieldset[^>]+disabled=\{!fieldSupport\.sections \|\| invalidFields\.includes\("sections"\)\}[^>]+aria-describedby="geo-sections-help"/);
+  assert.match(form, /Schema halaman destinasi tetap Article/);
+  assert.match(form, /Data lama tetap tersimpan dan tidak diubah/);
+  assert.match(form, /Judul ini digunakan sebagai headline Article/);
+  assert.match(form, /buildGeoSaveInput\(\{ \.\.\.form, sections: cleanedSections, faqs: cleanedFaqs, content: destination \}, initial\.published, isEdit, invalidFields\)/);
+});
+
+test("editor safely normalizes legacy values and makes malformed groups read-only", () => {
+  const form = source("components/admin/GeoPageForm.tsx");
+  const edit = source("app/admin/geo/[id]/page.tsx");
+  assert.match(form, /normalizeGeoCmsEditorData\(page \?\? \{\}, structuredFallback\)/);
+  assert.match(form, /normalizeSections\(structured\.sections\)/);
+  assert.match(form, /normalizeFaqs\(structured\.faqs\)/);
+  assert.match(form, /structured\.destination \?\? null/);
+  assert.match(form, /invalidFields\.length > 0/);
+  assert.match(form, /Data asli tetap tersimpan/);
+  assert.match(form, /<fieldset[^>]+disabled=\{invalidFields\.includes\("content"\)\}/);
+  assert.match(form, /<fieldset[^>]+disabled=\{invalidFields\.includes\("faqs"\)\}/);
+  assert.match(form, /const cleanedFaqs = invalidFields\.includes\("faqs"\) \? \[\] : cleanFaqs\(\)/);
+  assert.match(edit, /structuredFallback=\{fallback\}/);
+});
+
 test("save errors remain actionable and never treat a network failure as confirmed success", () => {
   assert.match(getGeoSaveError(401, null), /login/i);
   assert.match(getGeoSaveError(403, null), /izin/i);
@@ -144,7 +224,7 @@ test("API routes keep strict permissions and validate the effective public route
 
 test("form preserves edits on save failures and offers only supported public controls", () => {
   const form = source("components/admin/GeoPageForm.tsx");
-  assert.match(form, /buildGeoSaveInput\(form, initial\.published, isEdit\)/);
+  assert.match(form, /buildGeoSaveInput\(\{ \.\.\.form, sections: cleanedSections, faqs: cleanedFaqs, content: destination \}, initial\.published, isEdit, invalidFields\)/);
   assert.match(form, /finally\s*\{\s*setLoading\(false\)/);
   assert.match(form, /role="alert"/);
   assert.match(form, /Belum dapat memastikan penyimpanan/);
@@ -164,4 +244,6 @@ test("admin listing and creation do not advertise arbitrary published URLs", () 
   assert.match(create, /GEO_CMS_ROUTES/);
   assert.match(create, /isSupportedGeoRoute/);
   assert.doesNotMatch(listing, /\? "Published" : "Draft"/);
+  assert.doesNotMatch(listing, /Sparkles/);
+  assert.match(listing, /Edit konten bawaan/);
 });

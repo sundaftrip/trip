@@ -23,6 +23,12 @@ export function isSupportedGeoRoute(routePath: string): boolean {
   return GEO_CMS_ROUTES.some((route) => route.routePath === routePath);
 }
 
+export function getGeoCmsFieldSupport(routePath: string): { sections: boolean; schemaType: boolean } {
+  const destinationPage = routePath === "/destinations/murmansk" || routePath === "/destinations/teriberka";
+  const supported = isSupportedGeoRoute(routePath) && !destinationPage;
+  return { sections: supported, schemaType: supported };
+}
+
 export function validateGeoRouteMutation(
   data: Record<string, unknown>,
   currentRoutePath?: string,
@@ -39,13 +45,24 @@ export function validateGeoRouteMutation(
   return "Alamat ini belum terhubung ke CMS. Pilih halaman GEO yang tersedia; menyimpan data tidak membuat alamat website baru.";
 }
 
-export function buildGeoSaveInput<T extends { published: boolean }>(
+type GeoSaveFields = { published: boolean; routePath?: string; schemaType?: string; sections?: unknown; faqs?: unknown; content?: unknown };
+type OptionalGeoSaveField = "published" | "schemaType" | "sections" | "faqs" | "content";
+
+export function buildGeoSaveInput<T extends GeoSaveFields>(
   form: T,
   initialPublished: boolean,
   isEdit: boolean,
-): Omit<T, "published"> & { published?: boolean } {
-  const { published, ...fields } = form;
-  return isEdit && published === initialPublished ? fields : { ...fields, published };
+  preserveFields: readonly ("sections" | "faqs" | "content")[] = [],
+): Omit<T, OptionalGeoSaveField> & Partial<Pick<T, OptionalGeoSaveField>> {
+  const input: Omit<T, OptionalGeoSaveField> & Partial<Pick<T, OptionalGeoSaveField>> = { ...form };
+  if (isEdit) {
+    if (form.published === initialPublished) delete input.published;
+    const fieldSupport = getGeoCmsFieldSupport(form.routePath ?? "");
+    if (!fieldSupport.sections) delete input.sections;
+    if (!fieldSupport.schemaType) delete input.schemaType;
+    for (const field of preserveFields) delete input[field];
+  }
+  return input;
 }
 
 export function getGeoCmsDisplayState(routePath: string, published?: boolean): {
@@ -70,6 +87,7 @@ export function getGeoCmsDisplayState(routePath: string, published?: boolean): {
 }
 
 export function getGeoCmsBaselineNotice(routePath: string): string | null {
+  if (routePath === "/destinations/murmansk" || routePath === "/destinations/teriberka") return "Konten Tambahan umum tidak ditampilkan pada halaman destinasi ini. Schema publik tetap Article. Kedua kolom dinonaktifkan; gunakan Konten Halaman Destinasi untuk isi utama dan Pertanyaan dan Jawaban untuk FAQ.";
   if (routePath === "/sundaf-trip") return "Metadata, schema, blok identitas resmi, dan dua FAQ identitas mengikuti versi bawaan website. Judul, CTA, ringkasan, serta blok dan FAQ tambahan dapat diedit; kalimat identitas resmi tetap disertakan pada ringkasan.";
   if (routePath === "/tour-rusia-dari-indonesia" || routePath === "/open-trip-aurora-rusia") return "Ringkasan utama, eyebrow, metadata, schema, CTA, serta blok dan FAQ bawaan mengikuti versi website. CMS dapat mengubah judul dan menambah blok atau FAQ dengan judul atau pertanyaan baru. Mengubah isian bawaan tersebut tidak menggantikan tampilan publik.";
   return null;
