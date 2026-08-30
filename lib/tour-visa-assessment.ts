@@ -1,4 +1,4 @@
-import { parseVisaServicePrice, type TourVisaOffer, type VisaServiceCatalogEntry, type VisaServiceVariant } from "./tour-visa-offers";
+import type { TourVisaOffer, VisaServiceCatalogEntry, VisaServiceVariant } from "./tour-visa-offers";
 import { normalizeTourVisaPlan, type TourVisaDestination, type TourVisaPlan } from "./tour-visa-plan";
 import { visaSlug } from "./visa-slug";
 
@@ -111,6 +111,13 @@ function routeStops(plan: TourVisaPlan | null, country: string | null | undefine
   });
 }
 
+function exactIdrPrice(value?: string | null) {
+  const amount = (value ?? "").trim().replace(/^(?:Rp\.?|IDR)\s*/i, "");
+  if (!/^(?:\d+|\d{1,3}(?:\.\d{3})+|\d{1,3}(?:,\d{3})+)$/.test(amount)) return null;
+  const price = Number(amount.replace(/[.,]/g, ""));
+  return Number.isSafeInteger(price) && price > 0 ? price : null;
+}
+
 function priceFor(record: VisaAssessmentRecord, variantId?: string): { price: number; processingTime: string | null; variantId: string | null } | { error: string; blocking: boolean } {
   const variants = record.variants ?? [];
   if (variantId) {
@@ -124,7 +131,7 @@ function priceFor(record: VisaAssessmentRecord, variantId?: string): { price: nu
   if (variants.length === 1 && Number.isFinite(variants[0].priceIDR) && Number(variants[0].priceIDR) > 0) {
     return { price: Number(variants[0].priceIDR), processingTime: variants[0].processingTime?.trim() || null, variantId: variants[0].id ?? null };
   }
-  const price = parseVisaServicePrice(record.servicePrice);
+  const price = exactIdrPrice(record.servicePrice);
   return price ? { price, processingTime: null, variantId: null } : { error: "Hubungi tim untuk harga pengurusan visa.", blocking: false };
 }
 
@@ -201,18 +208,20 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
       return candidate;
     }
     const limit = simpleStayLimit(record.stay);
-    if (limit !== null && stop.stayDays !== null && stop.stayDays > limit) {
+    if (limit === null) {
+      result.status = "unknown";
+      result.explanation = "Batas lama tinggal belum dapat dipastikan dari data yang tersedia. Tim perlu memeriksa persyaratan perjalanan ini.";
+      issues.push(`${record.name}: batas lama tinggal perlu diperiksa.`);
+      return candidate;
+    }
+    if (stop.stayDays !== null && stop.stayDays > limit) {
       result.status = "conditional";
       result.explanation = `Rencana tinggal ${stop.stayDays} hari melebihi batas ${limit} hari pada rujukan. Hubungi tim untuk memeriksa izin yang sesuai.`;
       issues.push(`${record.name}: lama tinggal melebihi batas pada data visa.`);
       return candidate;
     }
     if (result.status === "visa_free" || result.status === "visa_on_arrival") {
-      if (limit === null) {
-        result.status = "unknown";
-        result.explanation = "Batas lama tinggal belum dapat dipastikan dari data yang tersedia. Tim perlu memeriksa persyaratan perjalanan ini.";
-        issues.push(`${record.name}: batas lama tinggal perlu diperiksa.`);
-      } else if (stop.stayDays === null) {
+      if (stop.stayDays === null) {
         result.status = "conditional";
         result.explanation = `Data rujukan mencantumkan ${record.visa === "voa" ? "visa on arrival" : "bebas visa"} sampai ${limit} hari. Lama tinggal katalog belum dicatat; konfirmasikan kepada tim.`;
         warnings.push(`${record.name}: lama tinggal belum tersedia untuk memastikan persyaratan.`);
@@ -246,38 +255,68 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
 
   const applyCoverage = (candidate: Candidate) => {
     const { stop, result } = candidate;
-    const record = stop.record!;
+    const record = stop.record;
+    if (!record) return false;
+    const references = [
+      ...(input.inclusions ?? []).map((name) => ({ name, included: true })),
+      ...(input.addOns ?? []).map((addOn) => ({ name: addOn.name, included: false })),
+    ];
+    const matching: typeof references = [];
+    let ambiguous = false;
+    for (const reference of references) {
+      const match = matchingVisaReference(reference.name, record, records);
+      if (match === "none") continue;
+      if (match === "other") { warnings.push(`Periksa komponen visa lain pada paket: ${reference.name}.`); continue; }
+      if (match === "match") matching.push(reference);
+      else ambiguous = true;
+    }
+    const includedReference = matching.some((reference) => reference.included);
+    const chargedReference = matching.some((reference) => !reference.included);
+    // Audit existing package costs before any service/status early return. A
+    // mandatory or selectable add-on can still charge even when this engine
+    // suppresses its own automatic offer.
+    if ((stop.destination.service === "included" || includedReference) && chargedReference) {
+      result.serviceState = "consultation";
+      result.explanation += " Visa dinyatakan termasuk paket tetapi juga tercantum sebagai biaya tambahan. Tim perlu memperbaiki rincian agar biaya tidak dihitung dua kali.";
+      issues.push(`${record.name}: visa termasuk paket sekaligus tercantum sebagai biaya tambahan.`);
+      return false;
+    }
+    if (ambiguous) {
+      result.serviceState = "consultation";
+      result.explanation += " Ada komponen visa pada paket yang cakupannya belum jelas. Tim perlu memeriksanya agar biaya tidak dihitung dua kali.";
+      issues.push(`${record.name}: cakupan komponen visa paket belum jelas.`);
+      return false;
+    }
+    if ((stop.destination.service === "separate" && includedReference) || (stop.destination.service === "none" && matching.length > 0)) {
+      result.serviceState = "consultation";
+      result.explanation += " Penanganan visa dalam rencana perjalanan belum sesuai dengan rincian paket. Tim perlu menyelaraskan informasi dan biayanya.";
+      issues.push(`${record.name}: penanganan visa tidak sesuai dengan rincian paket.`);
+      return false;
+    }
+    if (!["required", "evisa"].includes(result.status)) return false;
     if (stop.destination.service === "included" || stop.destination.service === "separate") {
       result.serviceState = stop.destination.service;
-      result.explanation += stop.destination.service === "included" ? " Pengurusan visa sudah termasuk paket dan tidak ditambahkan lagi." : " Pengurusan visa ditangani terpisah dan tidak ditambahkan ke total ini.";
+      result.explanation += stop.destination.service === "included"
+        ? " Pengurusan visa sudah termasuk paket dan tidak ditambahkan lagi."
+        : chargedReference
+          ? " Pengurusan visa tercantum sebagai komponen biaya tersendiri pada paket dan tidak ditambahkan lagi."
+          : " Pengurusan visa ditangani terpisah dan tidak ditambahkan ke total ini.";
       return false;
     }
     if (stop.destination.service === "none") {
       result.explanation += " Pengurusan belum ditawarkan dalam katalog ini; hubungi tim bila membutuhkan bantuan.";
       return false;
     }
-    const references = [
-      ...(input.inclusions ?? []).map((name) => ({ name, included: true })),
-      ...(input.addOns ?? []).map((addOn) => ({ name: addOn.name, included: false })),
-    ];
-    let conflict = false;
-    for (const reference of references) {
-      const match = matchingVisaReference(reference.name, record, records);
-      if (match === "none") continue;
-      if (match === "other") { warnings.push(`Periksa komponen visa lain pada paket: ${reference.name}.`); continue; }
-      conflict = true;
-      if (match === "match") {
-        result.serviceState = reference.included ? "included" : "separate";
-        result.explanation += reference.included ? " Visa tercantum dalam isi paket; biaya tidak ditambahkan lagi." : " Visa tercantum sebagai komponen biaya tersendiri; biaya tidak ditambahkan lagi.";
-        warnings.push(`${record.name}: komponen visa yang sudah ada perlu diselaraskan dengan rencana visa.`);
-      } else {
-        result.serviceState = "consultation";
-        result.explanation += " Ada komponen visa pada paket yang cakupannya belum jelas. Tim perlu memeriksanya agar biaya tidak dihitung dua kali.";
-        issues.push(`${record.name}: cakupan komponen visa paket belum jelas.`);
-      }
+    if (matching.length) {
+      result.serviceState = includedReference ? "included" : "separate";
+      result.explanation += includedReference ? " Visa tercantum dalam isi paket; biaya tidak ditambahkan lagi." : " Visa tercantum sebagai komponen biaya tersendiri; biaya tidak ditambahkan lagi.";
+      warnings.push(`${record.name}: komponen visa yang sudah ada perlu diselaraskan dengan rencana visa.`);
+      return false;
     }
-    return !conflict;
+    return true;
   };
+
+  const coverageEligibility = new Map(candidates.map((candidate) => [candidate, applyCoverage(candidate)]));
 
   const offers: AssessedTourVisaOffer[] = [];
   const addOffer = (candidate: Candidate, group: Candidate[] = [candidate]) => {
@@ -319,7 +358,7 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
       if (reentry) warnings.push("Rute kembali memasuki Schengen; jumlah entri visa perlu diperiksa sebelum memilih layanan.");
     }
     const uncertain = schengenGroup.some((candidate) => !["required", "evisa"].includes(candidate.result.status));
-    const eligible = schengenGroup.map(applyCoverage);
+    const eligible = schengenGroup.map((candidate) => coverageEligibility.get(candidate));
     if (uncertain) {
       for (const candidate of schengenGroup) {
         if (candidate.result.serviceState === "offered") candidate.result.serviceState = "consultation";
@@ -339,7 +378,7 @@ export function assessTourVisas(input: TourVisaAssessmentInput, records: readonl
   }
   for (const candidate of candidates) {
     if (schengenHandled.has(candidate) || !["required", "evisa"].includes(candidate.result.status)) continue;
-    if (applyCoverage(candidate)) addOffer(candidate);
+    if (coverageEligibility.get(candidate)) addOffer(candidate);
   }
 
   const countries = candidates.map((candidate) => candidate.result);
