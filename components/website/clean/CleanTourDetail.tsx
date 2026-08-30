@@ -27,8 +27,6 @@ import {
   type ItineraryDisplayDay,
 } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
-import type { TourVisaOffer } from "@/lib/tour-visa-offers";
-import { getVisibleOptionalAddOns, type TourVisaAssessmentView } from "@/lib/tour-visa-selection";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import StableDetails from "./StableDetails";
 import TourDetailTabs from "./TourDetailTabs";
@@ -86,8 +84,6 @@ type CleanTourDetailProps = {
   mandatoryAddOns: TourAddOn[];
   roomPrices: TourRoomPrice[];
   optionalAddOns: TourAddOn[];
-  visaOffers: TourVisaOffer[];
-  visaAssessment?: TourVisaAssessmentView;
   paymentPlan: TourPaymentPlan | null;
   relatedTours: CleanTour[];
   reviews: TourReview[];
@@ -235,8 +231,6 @@ export default function CleanTourDetail({
   mandatoryAddOns,
   roomPrices,
   optionalAddOns,
-  visaOffers,
-  visaAssessment,
   paymentPlan,
   relatedTours,
   reviews,
@@ -268,10 +262,7 @@ export default function CleanTourDetail({
     && /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
     && Number(item.price) > 0
   ));
-  const disclosureOptionalAddOns = getVisibleOptionalAddOns(
-    optionalAddOns.filter((item) => item !== selectableAddOn),
-    visaOffers,
-  );
+  const disclosureOptionalAddOns = optionalAddOns.filter((item) => item !== selectableAddOn);
   const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
   const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
   const sectionTabs = [
@@ -407,8 +398,6 @@ export default function CleanTourDetail({
         key={tour.id}
         roomPrices={roomPrices}
         selectableAddOn={selectableAddOn}
-        visaOffers={visaOffers}
-        visaAssessment={visaAssessment}
       >
         <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>

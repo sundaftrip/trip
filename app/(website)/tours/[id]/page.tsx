@@ -47,27 +47,16 @@ import {
   selectCanadaRockiesTourSource,
 } from "@/lib/canada-catalog-preview";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
-import { assessCatalogVisas, getTourVisaCountries } from "@/lib/tour-visa-data";
-import { buildTourVisaCatalogNotes } from "@/lib/tour-visa-catalog";
 import { readTourItinerary } from "@/lib/tour-visa-plan";
-import type { VisaAssessmentRecord } from "@/lib/tour-visa-assessment";
 import visaSeed from "@/prisma/visa-seed.json";
 
 // Fallback ke domain produksi, bukan localhost — kalau env hilang saat build,
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 
-const previewVisaCountries: VisaAssessmentRecord[] = visaSeed.map((entry) => ({
-  id: String(entry.id),
+const previewVisaCountries = visaSeed.map((entry) => ({
   name: entry.name,
   en: entry.en,
-  region: entry.region,
-  visa: entry.visa,
-  servicePrice: entry.servicePrice ?? null,
-  sortOrder: entry.id,
-  variants: [],
-  stay: entry.stay,
-  conditions: entry.conditions,
 }));
 
 function cleanMetadataText(value?: string | null) {
@@ -453,7 +442,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
       where: { tourId: tour.id, published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     }),
-    getTourVisaCountries(),
+    prisma.countryVisa.findMany({ select: { name: true, en: true } }),
     // P1.3 internal linking: tour upcoming bookable lain (untuk "Tour Lainnya").
     // Khususnya berharga di halaman trip selesai → arahkan user ke yang masih bisa dipesan.
     prisma.tour.findMany({
@@ -541,7 +530,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   };
 
   const rawItinerary = readTourItinerary(tour.itinerary);
-  const visaAssessment = assessCatalogVisas(tour, visaCountries);
   const galleryImages = getTourGalleryImages(tour.gallery, visualOverride?.gallery);
   const rawAddOns = (tour.addOns as { name: string; price: number; tag?: "" | "wajib" | "recommended"; desc?: string }[] | null) ?? [];
   const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
@@ -549,7 +537,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const displayCityHighlight = localizePdfText(tour.cityHighlight);
   const displayDuration = localizePdfText(tour.duration);
   const displayDescription = localizePdfText(tour.description);
-  const displayVisaInfo = buildTourVisaCatalogNotes(visaAssessment);
+  const displayVisaInfo = localizePdfText(tour.visaInfo);
   const displayNotes = localizePdfText(tour.notes);
   const displayBadge = localizePdfText(tour.badge);
   const displayInclusions = tour.inclusions.map((item) => localizePdfText(item) ?? item);
@@ -572,7 +560,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     name: localizePdfText(item.name) ?? item.name,
     desc: localizePdfText(item.desc) ?? item.desc,
   }));
-  const visaOffers = visaAssessment.offers;
   const displayRelatedTours = relatedTours.map((item) => ({
     ...item,
     title: normalizeTourDisplayTitle(localizePdfText(item.title) ?? item.title),
@@ -799,8 +786,6 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             ...item,
             visaHref: resolveVisaHref(item.name),
           }))}
-          visaOffers={visaOffers}
-          visaAssessment={visaAssessment}
           paymentPlan={paymentPlan}
           relatedTours={cleanRelatedTours}
           reviews={reviews.map((review) => ({

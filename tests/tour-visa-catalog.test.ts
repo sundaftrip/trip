@@ -35,11 +35,11 @@ test("unknown destination keeps consultation text without inventing a fee", () =
   assert.deepEqual(buildTourVisaPdfAddOns(assessment), []);
 });
 
-test("website and PDF use the same conditions presenter and PDF optional cost adapter", () => {
-  for (const path of ["app/(website)/tours/[id]/page.tsx", "app/(website)/tours/[id]/pdf/route.ts"]) {
-    const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-    assert.match(source, /buildTourVisaCatalogNotes\(visaAssessment\)/);
-  }
+test("website restores manual notes while PDF retains its approved presenter and cost adapter", () => {
+  const website = readFileSync(new URL("../app/(website)/tours/[id]/page.tsx", import.meta.url), "utf8");
+  assert.match(website, /displayVisaInfo = localizePdfText\(tour\.visaInfo\)/);
+  assert.doesNotMatch(website, /buildTourVisaCatalogNotes/);
   const pdf = readFileSync(new URL("../app/(website)/tours/[id]/pdf/route.ts", import.meta.url), "utf8");
+  assert.match(pdf, /buildTourVisaCatalogNotes\(visaAssessment\)/);
   assert.match(pdf, /buildTourVisaPdfAddOns\(visaAssessment\)/);
 });

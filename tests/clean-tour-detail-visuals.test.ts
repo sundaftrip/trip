@@ -129,7 +129,7 @@ test("keeps the selected room synchronized through every booking surface", () =>
   assert.match(source, /<TourRoomSelectionProvider/);
   assert.match(source, /roomPrices=\{roomPrices\}/);
   assert.match(source, /selectableAddOn=\{selectableAddOn\}/);
-  assert.match(source, /visaOffers=\{visaOffers\}/);
+  assert.doesNotMatch(source, /visaOffers=|visaAssessment=/);
   assert.match(roomSelectionSource, /selectedRoomCode/);
   assert.match(roomBookingSource, /useTourRoomSelection\(\)/);
   assert.match(roomSidebarSource, /useTourRoomSelection\(\)/);
@@ -147,7 +147,7 @@ test("keeps the selected room synchronized through every booking surface", () =>
 test("keeps recommended travel insurance optional and synchronized", () => {
   assert.match(source, /item\.tag === "recommended"/);
   assert.match(source, /asuransi perjalanan usia sampai 69 tahun/i);
-  assert.match(source, /disclosureOptionalAddOns = getVisibleOptionalAddOns/);
+  assert.match(source, /disclosureOptionalAddOns = optionalAddOns\.filter/);
   assert.match(roomSelectionSource, /useState\(false\)/);
   assert.match(roomSelectionSource, /includeSelectableAddOn && selectableAddOn/);
   assert.match(recommendedAddOnSource, /type="checkbox"/);
@@ -184,11 +184,10 @@ test("keeps recommended travel insurance optional and synchronized", () => {
   assert.match(roomRecoverySource, /selectedRoom\?\.mandatoryTotalPrice \?\? startingTotal/);
 });
 
-test("offers only the visas required by the selected trip and keeps them optional", () => {
-  assert.match(detailPageSource, /assessCatalogVisas\(tour, visaCountries\)/);
-  assert.match(detailPageSource, /getTourVisaCountries\(\)/);
-  assert.match(detailPageSource, /visaAssessment=\{visaAssessment\}/);
-  assert.match(detailPageSource, /visaOffers=\{visaOffers\}/);
+test("catalogs disconnect automatic visa controls while reusable components remain isolated", () => {
+  assert.doesNotMatch(detailPageSource, /assessCatalogVisas|getTourVisaCountries/);
+  assert.doesNotMatch(detailPageSource, /visaAssessment=|visaOffers=/);
+  assert.match(detailPageSource, /displayVisaInfo = localizePdfText\(tour\.visaInfo\)/);
   assert.match(roomSelectionSource, /includedVisaOfferIds/);
   assert.match(roomSelectionSource, /optionalServicesTotal = selectableAddOnTotal;/);
   assert.doesNotMatch(visaToggleSource, /Perjalanan ini membutuhkan visa\./);

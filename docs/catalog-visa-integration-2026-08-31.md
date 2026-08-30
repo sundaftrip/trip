@@ -1,5 +1,13 @@
 # Integrasi visa katalog
 
+## Keputusan terbaru: katalog tanpa pilihan visa otomatis
+
+Atas permintaan pemilik, halaman katalog tidak lagi menerima penilaian atau penawaran visa otomatis. Toggle visa, pilihan jumlah pemohon, subtotal visa, dan kalimat otomatis dalam pesan pemesanan tidak muncul. Catatan visa serta biaya tambahan yang ditulis pada katalog tetap ditampilkan; asuransi opsional tetap dapat dipilih.
+
+PDF dibekukan pada versi commit `24bfe4084a05f14ad4d9b9534e1620792975abeb`. Perubahan ini tidak menyentuh route, template, isi, perhitungan, versi unduhan, data, maupun aset PDF. Mesin aturan dan editor admin tidak diubah. Uraian integrasi awal di bawah adalah catatan implementasi, bukan gambaran kontrol yang saat ini ditampilkan kepada pelanggan.
+
+Usulan berikutnya, belum menambahkan fitur: gunakan catatan singkat yang ditulis tim dan percakapan melalui tombol **Cek ketersediaan** yang sudah ada untuk membahas bantuan visa secara personal.
+
 ## Hasil dan batas penggunaan
 
 Katalog baru memakai daftar negara yang dipilih admin, urutan kunjungan, jumlah hari, dan transit. Nama pemasaran seperti "Latin America" tidak digunakan untuk menebak kebutuhan visa. Profil yang didukung saat ini adalah paspor biasa Indonesia untuk perjalanan wisata.
