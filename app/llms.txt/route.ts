@@ -55,7 +55,7 @@ const STATIC = `# Sundaf Trip
 - [Jasa Urus Visa Amerika dan Canada](https://sundaftrip.com/jasa-urus-visa-amerika-canada): Pendampingan dokumen visa Amerika Serikat dan Canada/Kanada untuk WNI.
 - [Jasa Pembuatan Visa untuk WNI](https://sundaftrip.com/jasa-urus-visa-terpercaya): Pendampingan visa secara online untuk pemegang paspor Indonesia, dengan cakupan dan biaya yang dikonfirmasi sebelum proses.
 - [Asuransi Visa Protection](https://sundaftrip.com/visa/asuransi-visa-protection): add-on terpisah untuk screening manfaat visa rejection/refusal sesuai polis.
-- [Visa Rusia (e-Visa)](https://sundaftrip.com/visa/russia): Layanan pengurusan e-Visa Rusia untuk WNI, masa tinggal hingga 30 hari, biaya layanan Rp 1.500.000. Halaman layanan visa utama Sundaf Trip.
+- [Visa Rusia (e-Visa)](https://sundaftrip.com/visa/russia): Layanan pengurusan e-Visa Rusia untuk WNI, masa tinggal hingga 30 hari, biaya layanan Rp 1.600.000. Halaman layanan visa utama Sundaf Trip.
 - [FAQ Visa](https://sundaftrip.com/visa/faq): Tanya-jawab seputar proses, dokumen, dan biaya visa.
 - [Sundaf Visa Intelligence](https://sundaftrip.com/visa-intelligence): snapshot database, bukan log perubahan resmi. Tautan sumber adalah rujukan yang tersimpan dan perlu diverifikasi mandiri; JSON: https://sundaftrip.com/visa-intelligence/data.json; RSS: https://sundaftrip.com/visa-intelligence/feed.xml.
 
