@@ -51,9 +51,9 @@ const cleanStylesSource = readFileSync(
   "utf8",
 );
 
-test("shows visual highlights for every itinerary day", () => {
-  assert.match(source, /const experienceItems = itinerary\.map\(/);
-  assert.doesNotMatch(source, /const experienceItems = itinerary\.slice\(/);
+test("keeps one complete itinerary without a duplicate highlights rail", () => {
+  assert.doesNotMatch(source, /experienceItems|detailHighlightRail/);
+  assert.match(source, /itinerary\.map\(\(item, index\)/);
 });
 
 test("renders the resolved image inside every itinerary day", () => {

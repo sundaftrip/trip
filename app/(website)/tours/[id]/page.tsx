@@ -507,11 +507,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // Trip yang tanggalnya sudah lewat TIDAK lagi dialihkan, tetap dibuka dalam
   // mode "Trip Selesai" (read-only) supaya ulasan + rating tetap tampil & terindeks.
   const commerceStatus = getCommerceTourStatus(tour, now);
-  const isExpired = commerceStatus === "completed";
+  const isExpired = commerceStatus === "completed" || commerceStatus === "departed";
   const isFlexibleDate = !tour.tripDate && tour.status === "ACTIVE";
   const departureLabel = tour.tripDate ? formatDate(tour.tripDate) : isFlexibleDate ? "Tanggal fleksibel" : null;
   const capacityLabel = isExpired
-    ? "Trip selesai"
+    ? commerceStatus === "departed" ? "Sudah berangkat" : "Trip selesai"
     : commerceStatus === "sold_out"
       ? "Penuh"
       : commerceStatus === "waitlist"
@@ -1261,7 +1261,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
               {isExpired ? (
                 <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-xl"}`}
                   style={isOutlined ? { background: tCard, color: tSub } : undefined}>
-                  <CheckCircle size={16} /> Trip Selesai
+                  <CheckCircle size={16} /> {commerceStatus === "departed" ? "Sudah Berangkat" : "Trip Selesai"}
                 </div>
               ) : tour.status === "FULL" ? (
                 <div className={`w-full py-3 text-center font-black mb-3 flex items-center justify-center gap-2 ${isOutlined ? `${pfx}-card` : "bg-red-100 text-red-700 rounded-xl"}`}

@@ -218,6 +218,7 @@ function bookingStatus(
   commerceStatus: ReturnType<typeof getCommerceTourStatus>,
 ) {
   if (commerceStatus === "completed") return "Trip selesai";
+  if (commerceStatus === "departed") return "Sudah berangkat";
   if (commerceStatus === "sold_out") return "Penuh";
   if (commerceStatus === "waitlist") return "Daftar tunggu";
   if (commerceStatus === "confirmed") return "Pasti berangkat";
@@ -255,9 +256,9 @@ export default function CleanTourDetail({
   const heroImage = tour.heroImg || tour.gallery[0] || "/about-gallery-md/01-aurora.webp";
   const heroImages = [heroImage, ...tour.gallery];
   const route = tour.cityHighlight || tour.country;
-  const commerceStatus = isExpired ? "completed" : getCommerceTourStatus(tour);
+  const commerceStatus = getCommerceTourStatus(tour);
   const status = bookingStatus(tour, commerceStatus);
-  const unavailable = ["completed", "sold_out", "waitlist"].includes(commerceStatus);
+  const unavailable = ["completed", "departed", "sold_out", "waitlist"].includes(commerceStatus);
   const hasPrice = basePrice > 0;
   const priceCaption = mandatoryAddOns.length > 0 ? "Total wajib" : "Harga paket";
   const selectableAddOn = optionalAddOns.find((item) => (
@@ -276,8 +277,8 @@ export default function CleanTourDetail({
     { id: "harga-tanggal", label: "Harga & Tanggal", show: true },
     { id: "ulasan", label: "Ulasan", show: true },
   ].filter((item) => item.show).map(({ id, label }) => ({ id, label }));
-  const bookingMode = commerceStatus === "completed"
-    ? "completed"
+  const bookingMode = commerceStatus === "completed" || commerceStatus === "departed"
+    ? commerceStatus
     : commerceStatus === "sold_out" || commerceStatus === "waitlist"
       ? "sold_out"
       : commerceStatus === "flexible"
@@ -302,13 +303,6 @@ export default function CleanTourDetail({
         availabilityLabel: status,
       }]
     : [];
-  const experienceItems = itinerary.map((item, index) => ({
-    title: normalizeItineraryDisplayTitle(item.title) || `Hari ke-${item.day}`,
-    description:
-      cleanParagraphs(item.description)[0]
-      || `Lihat aktivitas dan perpindahan untuk hari ke-${item.day}.`,
-    image: resolveItineraryDayImage(item, index, heroImages),
-  }));
   const destinationSlug = getDestinationSlug(tour);
   const destinationHref =
     destinationSlug === "lainnya" ? "/destinations" : `/destinations/${destinationSlug}`;
@@ -428,41 +422,11 @@ export default function CleanTourDetail({
             </div>
           </section>
 
-          {experienceItems.length > 1 && (
-            <section className={styles.detailContentSection} aria-labelledby="highlights-title">
-              <p className={styles.detailSectionKicker}>Sorotan pengalaman</p>
-              <h2 className={styles.detailSectionTitle} id="highlights-title">Yang akan ditemui di perjalanan</h2>
-              <div
-                className={styles.detailHighlightRail}
-                role="region"
-                aria-label="Sorotan pengalaman, geser untuk melihat lainnya"
-                tabIndex={0}
-              >
-                {experienceItems.map((item, index) => (
-                  <article key={`${item.title}-${index}`}>
-                    <div>
-                      <Image
-                        src={cldThumb(item.image, 640, 480)}
-                        alt={`Gambaran destinasi untuk ${item.title}`}
-                        fill
-                        quality={60}
-                        sizes="(max-width: 700px) 78vw, 320px"
-                      />
-                    </div>
-                    <span>Hari {itinerary[index]?.day || index + 1}</span>
-                    <h3>{item.title}</h3>
-                    <p>{item.description}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
-
           {itinerary.length > 0 && (
             <section className={styles.detailContentSection} id="itinerary" aria-labelledby="itinerary-title">
               <p className={styles.detailSectionKicker}>Rencana perjalanan</p>
               <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary {tour.title}</h2>
-              <p className={styles.detailSectionLede}>Buka hari yang ingin dilihat. Aktivitas utama dan informasi praktis ditampilkan tanpa memenuhi seluruh halaman.</p>
+              <p className={styles.detailSectionLede}>Pilih hari untuk melihat aktivitas, akomodasi, dan perpindahan.</p>
               <div className={styles.detailItinerary}>
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);

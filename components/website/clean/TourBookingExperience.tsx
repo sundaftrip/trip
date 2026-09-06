@@ -176,7 +176,7 @@ export default function TourBookingExperience({
     return true;
   }
 
-  if (mode === "completed") {
+  if (mode === "completed" || mode === "departed") {
     return (
       <>
         {showSectionAction && (
@@ -184,8 +184,8 @@ export default function TourBookingExperience({
             Lihat itinerary perjalanan
           </a>
         )}
-        <div className={styles.mobileBookingBar} role="region" aria-label="Itinerary perjalanan selesai">
-          <div><span>Trip selesai</span><strong>Itinerary perjalanan</strong></div>
+        <div className={styles.mobileBookingBar} role="region" aria-label="Itinerary perjalanan">
+          <div><span>{mode === "departed" ? "Sudah berangkat" : "Trip selesai"}</span><strong>Itinerary perjalanan</strong></div>
           <a href={completedTourHref}>Lihat itinerary</a>
         </div>
       </>

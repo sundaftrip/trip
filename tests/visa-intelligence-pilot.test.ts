@@ -97,23 +97,17 @@ test("visa intelligence dataset serializes as JSON and a transparent RSS snapsho
   assert.match(rss, /<atom:link href="https:\/\/sundaftrip\.com\/visa-intelligence\/feed\.xml"/);
 });
 
-test("visa intelligence route is discoverable from sitemap and llms files", () => {
+test("visa sources remain discoverable without implementation branding in the customer hero", () => {
   const sitemap = readSource("app/sitemap.ts");
-  const llms = readSource("app/llms.txt/route.ts");
-  const llmsFull = readSource("app/llms-full.txt/route.ts");
-  const visaLanding = readSource("app/(website)/visa/VisaLanding.tsx");
-  const visaStyles = readSource("app/(website)/visa/VisaPages.module.css");
-
+  const profile = readSource("lib/crawl-catalog.ts");
   assert.match(sitemap, /\/visa-intelligence/);
-  assert.match(llms, /Sundaf Visa Intelligence/);
-  assert.match(llms, /\/visa-intelligence\/data\.json/);
-  assert.match(llms, /\/visa-intelligence\/feed\.xml/);
-  assert.match(llmsFull, /Sundaf Visa Intelligence/);
-  assert.match(llmsFull, /\/visa-intelligence\/data\.json/);
-  assert.match(llmsFull, /\/visa-intelligence\/feed\.xml/);
-  assert.match(visaLanding, /className=\{styles\.intelligenceLink\}[\s\S]*?Powered by Sundaf Visa Intelligence/);
-  assert.match(visaStyles, /\.intelligenceLink\s*\{[\s\S]*?font-size:\s*11px/);
-  assert.match(visaStyles, /\.intelligenceLink\s*\{[\s\S]*?font-weight:\s*400/);
+  assert.match(profile, /\/visa-intelligence/);
+  assert.match(profile, /\/visa-intelligence\/data\.json/);
+  assert.match(profile, /\/visa-intelligence\/feed\.xml/);
+  for (const route of ["app/llms.txt/route.ts", "app/llms-full.txt/route.ts"]) {
+    assert.match(readSource(route), /CRAWL_PROFILE/);
+  }
+  assert.doesNotMatch(readSource("app/(website)/visa/VisaLanding.tsx"), /Powered by/);
 });
 
 test("public source URL sanitizer only accepts plain HTTP(S) URLs", () => {

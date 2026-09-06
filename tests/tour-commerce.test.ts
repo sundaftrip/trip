@@ -25,7 +25,7 @@ test("maps legacy tour data to customer-facing availability states", () => {
       { status: "ACTIVE", tripDate: "2026-07-20", duration: "11 hari 9 malam" },
       NOW,
     ),
-    "available",
+    "departed",
   );
   assert.equal(getCommerceTourStatus({ status: "ACTIVE", tripDate: null }, NOW), "flexible");
 });
@@ -119,4 +119,16 @@ test("extracts only UTM parameters from a source URL", () => {
     "utm_medium=social&utm_source=ig",
   );
   assert.equal(extractCampaignFromUrl("not a url"), "");
+});
+
+test("a departed tour has no bookable departure even while still in progress", () => {
+  assert.equal(getCompatibleDeparture({ status: "ACTIVE", tripDate: "2026-07-20", duration: "11 hari", seatsLeft: 15 }, NOW), null);
+});
+
+test("booking closes at departure and completed follows the trip duration", () => {
+  const trip = { tripDate: "2026-09-04T00:00:00Z", duration: "11 hari", status: "ACTIVE", seatsLeft: 12 };
+  assert.equal(getCommerceTourStatus(trip, new Date("2026-09-03T23:59:59.999Z")), "available");
+  assert.equal(getCommerceTourStatus(trip, new Date("2026-09-04T00:00:00Z")), "departed");
+  assert.equal(getCommerceTourStatus(trip, new Date("2026-09-14T23:59:59.999Z")), "departed");
+  assert.equal(getCommerceTourStatus(trip, new Date("2026-09-15T00:00:00Z")), "completed");
 });

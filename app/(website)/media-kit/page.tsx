@@ -254,9 +254,7 @@ export default async function MediaKitPage() {
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
               {description}
             </p>
-            <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-              Fokus utama Sundaf Trip adalah perjalanan Rusia, aurora borealis, Asia Tengah, dan bantuan visa untuk traveler Indonesia. Situs resmi brand ini adalah https://sundaftrip.com.
-            </p>
+
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

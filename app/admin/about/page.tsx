@@ -6,22 +6,21 @@ import StickyFormActions from "@/components/admin/StickyFormActions";
 
 /* ── Defaults (fallback kalau DB kosong) ── */
 const DEFAULT_STORY = [
-  "Sundaftrip berawal dari rasa penasaran sama tempat-tempat yang jarang masuk daftar liburan orang Indonesia. Bukan cuma Paris, Tokyo, atau Korea, tapi Rusia saat musim dingin, kota tua di Asia Tengah, dan negeri-negeri bekas Uni Soviet yang ceritanya panjang banget.",
-  "Dari perjalanan kecil, kami belajar satu hal: destinasi terbaik sering bukan yang paling ramai di timeline, tapi yang bikin kamu pulang bawa cerita berbeda.",
-  "Lama-lama rutenya makin serius. Moskow dan St. Petersburg. Murmansk buat berburu aurora. Kazakhstan dengan danau birunya. Uzbekistan dengan Samarkand yang megah. Kyrgyzstan yang alamnya masih liar. Tajikistan dengan jalan Pamir yang legend banget.",
-  "Sekarang 1500+ traveler Indonesia sudah kami bantu berangkat. Ada yang pertama kali ke Rusia, ada yang deg-degan urus visa, ada juga yang pulang-pulang malah ngajak keluarga dan teman buat ikut batch berikutnya.",
+  "Sundaf Trip adalah biro perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group, dengan fokus pada Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
+  "Rute perjalanan mencakup Moskow, St. Petersburg, Murmansk, Teriberka, serta kota dan bentang alam di Kazakhstan, Uzbekistan, Kyrgyzstan, dan Tajikistan.",
+  "Pilih open trip dengan jadwal tetap atau rancang perjalanan privat. Tim membantu persiapan rute, dokumen, dan koordinasi sebelum keberangkatan.",
 ];
 
 const DEFAULT_VALUES = [
-  { title: "Grup kecil, cerita besar", desc: "Bukan rombongan bus yang buru-buru turun foto lalu naik lagi. Ritmenya kami jaga supaya tetap enak dinikmati." },
+  { title: "Rute dan jadwal jelas", desc: "Aktivitas, perpindahan kota, dan akomodasi dijelaskan sebelum memesan." },
   { title: "Visa dibantu dari awal", desc: "Kami bantu cek dokumen, alur pengajuan, dan risiko yang perlu kamu tahu sebelum berangkat." },
-  { title: "Itinerary tetap manusiawi", desc: "Ada waktu explore, ada waktu istirahat, ada ruang buat benar-benar merasa sedang jalan-jalan." },
+  { title: "Waktu perjalanan dan istirahat", desc: "Jadwal mencakup kegiatan, perjalanan antarkota, dan waktu istirahat." },
   { title: "Update kondisi lapangan", desc: "Sebelum berangkat, kami cek lagi cuaca, visa, rute, dan situasi destinasi." },
 ];
 
 const DEFAULT_DESTINATIONS = [
   { label: "Rusia", sub: "Moskow · St. Petersburg · Murmansk · Teriberka" },
-  { label: "Aurora Borealis", sub: "Berburu cahaya utara tanpa harus nebak semua sendiri" },
+  { label: "Aurora Borealis", sub: "Perjalanan aurora di kawasan Rusia Arktik" },
   { label: "Kazakhstan", sub: "Almaty · Astana · Danau Kaindy · Charyn Canyon" },
   { label: "Uzbekistan", sub: "Tashkent · Samarkand · Bukhara" },
   { label: "Kyrgyzstan", sub: "Bishkek · Issyk-Kul · Song Kol" },

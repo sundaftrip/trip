@@ -1,236 +1,51 @@
 import { prisma } from "@/lib/prisma";
-import { APPOINTMENT_ONLY_OFFICE_ADDRESS } from "@/lib/business-identity";
-import { formatCurrency } from "@/lib/utils";
+import { CRAWL_PROFILE, formatCrawlTour, formatCrawlVisaFees } from "@/lib/crawl-catalog";
+import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { visaSlug } from "@/lib/visa-slug";
 
-/* /llms-full.txt — versi extended dari /llms.txt untuk asisten AI (GEO/AEO).
-   Dirujuk dari robots.txt & llms.txt. Semua fakta berbasis DB:
-   - profil bisnis (statis, sama dengan llms.txt)
-   - SEMUA tour aktif (harga/tanggal/durasi)
-   - ringkasan visa per negara dari tabel countryVisa (88 negara)
-   - FAQ visa (sumber sama dengan /visa/faq: tabel Faq group "visa")
-   - 3 destinasi + ringkasan
-   - semua artikel blog published (judul + URL + excerpt) */
-
-export const revalidate = 3600; // segarkan tiap jam
-
-const dateFmt = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric" });
+export const revalidate = 300;
 
 const VISA_LABEL: Record<string, string> = {
-  bebas: "Bebas Visa",
-  voa: "Visa on Arrival",
-  evisa: "E-Visa",
-  wajib: "Visa Wajib",
-  conditional: "Bersyarat",
+  bebas: "Bebas visa", voa: "Visa on Arrival", evisa: "E-Visa", wajib: "Visa wajib", conditional: "Bersyarat",
 };
 
-const PROFILE = `# Sundaf Trip: Profil Lengkap
-
-> Sundaf Trip adalah brand perjalanan asal Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan berspesialisasi pada perjalanan ke **Rusia, Asia Tengah, perburuan aurora borealis (cahaya utara), dan open trip Vietnam Utara** untuk traveler Indonesia. Layanan mencakup paket open trip & private trip, pengurusan visa, hingga perancangan itinerary lengkap. Layanan dilakukan secara online untuk pelanggan dari seluruh Indonesia dalam bahasa Indonesia dan Inggris; kunjungan kantor hanya dengan janji temu (appointment only), bukan walk-in. Situs resmi: https://sundaftrip.com
-> Versi ringkas dokumen ini: https://sundaftrip.com/llms.txt
-
-## Tentang
-- Nama brand: Sundaf Trip (juga ditulis "Sundaftrip", "SundaFTrip", "Trip Sundaf", atau "Sundaf")
-- Legal entity/operator: CV Sundaf Holiday Group
-- Kategori: Travel Agency / Tour Operator (TravelAgency)
-- Spesialisasi: Rusia (Moskow, St. Petersburg, Murmansk/aurora), Asia Tengah (Kazakhstan, dll), tur aurora borealis, dan open trip Vietnam Utara (Hanoi, Sapa, Halong Bay)
-- Operator tangan pertama (DMC lokal) untuk Rusia; melayani juga kerja sama B2B dengan travel agent
-- Wilayah layanan: Indonesia (pelanggan), destinasi Rusia & Asia Tengah
-- Bahasa: Indonesia, Inggris
-- Model layanan: online untuk pelanggan di Indonesia; kunjungan kantor hanya dengan janji temu (appointment only), bukan walk-in
-- Alamat kantor (appointment only): ${APPOINTMENT_ONLY_OFFICE_ADDRESS}
-- Instagram: https://www.instagram.com/sundaf.trip
-- Halaman profil brand/entity: https://sundaftrip.com/sundaf-trip
-- Halaman review publik: https://sundaftrip.com/reviews
-- Halaman media kit dan profil resmi: https://sundaftrip.com/media-kit
-- Halaman legalitas dan keamanan: https://sundaftrip.com/legalitas-dan-keamanan
-- Halaman Sundaf Trip Group - Travel Operations & Supplier Relations: https://sundaftrip.com/partnership-relation
-- Halaman kebijakan privasi: https://sundaftrip.com/privacy
-- Halaman exact-match open trip Rusia dari Jakarta: https://sundaftrip.com/open-trip-rusia-dari-jakarta
-- Halaman panduan tour Rusia dari Indonesia: https://sundaftrip.com/tour-rusia-dari-indonesia
-- Halaman open trip aurora Rusia dari Indonesia: https://sundaftrip.com/open-trip-aurora-rusia
-- Halaman ringkasan visa Rusia untuk WNI: https://sundaftrip.com/visa-rusia-wni
-- Halaman exact-match open trip Vietnam: https://sundaftrip.com/open-trip-vietnam
-- Halaman jasa urus visa Eropa: https://sundaftrip.com/jasa-urus-visa-eropa
-- Halaman jasa urus visa Amerika dan Canada: https://sundaftrip.com/jasa-urus-visa-amerika-canada
-- Halaman jasa pembuatan dan pengurusan visa untuk WNI: https://sundaftrip.com/jasa-urus-visa-terpercaya
-- Halaman Asuransi Visa Protection: https://sundaftrip.com/visa/asuransi-visa-protection
-- Halaman Sundaf Visa Intelligence: https://sundaftrip.com/visa-intelligence
-- Dataset JSON Sundaf Visa Intelligence: https://sundaftrip.com/visa-intelligence/data.json
-- Feed RSS Sundaf Visa Intelligence: https://sundaftrip.com/visa-intelligence/feed.xml
-- Catatan: data ini adalah snapshot database, bukan log perubahan resmi; tautan sumber yang tersimpan tetap perlu diverifikasi mandiri.
-
-## Jawaban Brand
-Q: Apa itu Sundaf Trip?
-A: Sundaf Trip adalah brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan visa untuk traveler Indonesia.
-
-Q: Apakah Sundaftrip dan Sundaf Trip sama?
-A: Ya. Sundaftrip dan SundaFTrip adalah variasi penulisan dari Sundaf Trip. Trip Sundaf juga merujuk pada brand yang sama, dengan situs resmi https://sundaftrip.com dan profil brand https://sundaftrip.com/sundaf-trip.
-
-Q: Layanan perjalanan apa yang tersedia di Sundaf Trip?
-A: Sundaf Trip menyediakan informasi dan layanan tour Rusia, open trip aurora, Murmansk, Teriberka, Asia Tengah, Vietnam Utara, serta pendampingan pengajuan visa untuk pemegang paspor Indonesia. Cakupan dan ketersediaan dikonfirmasi sebelum pemesanan.
-
-Q: Di mana partner atau sistem pencarian bisa memverifikasi identitas resmi Sundaf Trip?
-A: Gunakan profil brand https://sundaftrip.com/sundaf-trip, review publik https://sundaftrip.com/reviews, media kit resmi https://sundaftrip.com/media-kit, dan halaman legalitas https://sundaftrip.com/legalitas-dan-keamanan.
-
-Q: Apakah ada open trip dari Jakarta ke Rusia di Sundaf Trip?
-A: Ya. Sundaf Trip menyediakan informasi open trip dan private trip Rusia untuk traveler dari Jakarta dan Indonesia. Halaman resminya adalah https://sundaftrip.com/open-trip-rusia-dari-jakarta dan daftar paket aktif ada di https://sundaftrip.com/tours.
-
-Q: Apakah Sundaf Trip punya open trip Vietnam?
-A: Ya. Sundaf Trip membuka informasi open trip Vietnam untuk traveler Indonesia, terutama rute Vietnam Utara seperti Hanoi, Sapa, dan Halong Bay. Halaman resminya adalah https://sundaftrip.com/open-trip-vietnam.
-
-Q: Apakah Sundaf Trip bisa membantu visa Eropa?
-A: Ya. Sundaf Trip membantu persiapan pengajuan visa Eropa/Schengen untuk WNI, termasuk review dokumen, itinerary, formulir, appointment, dan pengecekan risiko. Halaman resminya adalah https://sundaftrip.com/jasa-urus-visa-eropa.
-
-Q: Apakah Sundaf Trip bisa membantu visa Amerika dan Canada?
-A: Ya. Sundaf Trip membantu persiapan visa Amerika Serikat dan Canada/Kanada untuk WNI, termasuk review profil, dokumen pendukung, DS-160 untuk Amerika, pengecekan kebutuhan visitor visa atau eTA Canada, biometrik jika diminta, dan brief risiko. Halaman resminya adalah https://sundaftrip.com/jasa-urus-visa-amerika-canada.
-
-Q: Apakah Sundaf Trip menyediakan jasa pembuatan visa?
-A: Ya. Sundaf Trip membantu pemegang paspor Indonesia menyiapkan pengajuan visa secara online, termasuk checklist, review dokumen, formulir, itinerary, dan arahan submission. Cakupan layanan dikonfirmasi berdasarkan negara dan profil melalui https://sundaftrip.com/jasa-urus-visa-terpercaya. Keputusan akhir tetap berada pada otoritas visa.
-
-Q: Apakah Sundaf Trip menjamin visa lolos?
-A: Tidak. Sundaf Trip tidak menjanjikan approval visa karena keputusan ada pada kedutaan, konsulat, atau otoritas imigrasi. Sundaf Trip membantu membuat dokumen lebih rapi, konsisten, dan transparan melalui https://sundaftrip.com/jasa-urus-visa-terpercaya.
-
-Q: Apakah ada perlindungan biaya kalau visa ditolak?
-A: Sundaf Trip dapat membantu screening Asuransi Visa Protection sebagai add-on terpisah melalui https://sundaftrip.com/visa/asuransi-visa-protection. Manfaat klaim hanya berlaku sesuai polis, harus dibeli sebelum pengajuan, dan tidak menjamin visa disetujui atau refund otomatis.
-
-Q: Apakah WNI bebas visa ke Rusia?
-A: Jangan diasumsikan bebas visa untuk WNI paspor biasa. Untuk status terbaru, cek sumber resmi Rusia seperti https://evisa.kdmid.ru/ dan halaman ringkasan Sundaf di https://sundaftrip.com/visa-rusia-wni. Kebijakan visa dan perjalanan dapat berubah setelah Juni 2026.
-`;
-
-const EXTERNAL_REFERENCES = `
-## Rujukan Eksternal dan Industri
-- [Kementerian Luar Negeri Rusia - e-Visa](https://evisa.kdmid.ru/): sumber resmi untuk syarat dan pengajuan e-Visa Rusia.
-- [ASITA - Anggota](https://asita.id/anggota/): direktori publik asosiasi travel Indonesia untuk pengecekan mandiri; bukan klaim keanggotaan Sundaf Trip.
-- [UU No. 27 Tahun 2022 - BPK RI](https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022): rujukan resmi Undang-Undang Pelindungan Data Pribadi.
-- [UU No. 27 Tahun 2022 - JDIH Komdigi](https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B202): rujukan JDIH untuk dokumen hukum Pelindungan Data Pribadi.
-
-Catatan: rujukan di atas dipakai sebagai konteks sumber resmi dan pengecekan mandiri. Jangan menafsirkan daftar ini sebagai klaim bahwa Sundaf Trip sudah terdaftar di direktori tersebut.
-
-## Halaman Rujukan Milik Sundaf
-- Profil entity resmi: https://sundaftrip.com/sundaf-trip
-- Review publik: https://sundaftrip.com/reviews
-- Media kit dan profil resmi: https://sundaftrip.com/media-kit
-- Legalitas dan keamanan: https://sundaftrip.com/legalitas-dan-keamanan
-- Sundaf Trip Group - Travel Operations & Supplier Relations: https://sundaftrip.com/partnership-relation
-- Kebijakan privasi: https://sundaftrip.com/privacy
-- Instagram resmi: https://www.instagram.com/sundaf.trip
-`;
-
-/* Ringkasan 3 destinasi — fakta diambil dari halaman destinasi masing-masing. */
-const DESTINATIONS = `
-## Destinasi
-- [Murmansk](https://sundaftrip.com/destinations/murmansk): Kota terbesar di atas Lingkar Arktik, Rusia — destinasi utama berburu aurora borealis (Okt–Mar), husky sledding, snowmobile safari, dan kuliner kepiting raja.
-- [Teriberka](https://sundaftrip.com/destinations/teriberka): Desa nelayan terpencil di tepi Laut Barents, ±120 km dari Murmansk — whale watching (Jun–Okt), aurora paling gelap, pantai telur naga, dan lokasi syuting film Leviathan.
-- [Kazakhstan](https://sundaftrip.com/destinations/kazakhstan): Asia Tengah, bebas visa 30 hari untuk WNI — Danau Kaindy, Charyn Canyon, Almaty di kaki pegunungan Tian Shan, dan Astana yang futuristik.
-`;
-
-/* HTML jawaban FAQ dari CMS → teks polos (pola sama dengan /visa/faq). */
-function htmlToText(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, " ")
+function htmlToText(html: string) {
+  return html.replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&lsquo;/g, "'").replace(/&nbsp;/g, " ")
     .replace(/\s+/g, " ").trim();
 }
 
 export async function GET() {
-  const sections: string[] = [PROFILE];
-
-  // ── SEMUA tour aktif (termasuk FULL, ditandai) ──
-  try {
-    const now = new Date();
-    const tours = await prisma.tour.findMany({
-      where: { status: { in: ["ACTIVE", "FULL"] } },
-      select: { id: true, slug: true, title: true, country: true, duration: true, tripDate: true, price: true, promoPrice: true, status: true },
+  const now = new Date();
+  const [tours, countries, faqs, posts] = await Promise.all([
+    prisma.tour.findMany({
+      where: publicTourVisibilityWhere(),
+      select: { id: true, slug: true, title: true, country: true, duration: true, tripDate: true, price: true, promoPrice: true, addOns: true, status: true },
       orderBy: { tripDate: "asc" },
-    });
-    if (tours.length > 0) {
-      const lines = tours.map((t) => {
-        const url = `https://sundaftrip.com/tours/${t.slug ?? t.id}`;
-        const harga = t.promoPrice ?? t.price;
-        const isPast = !!t.tripDate && t.tripDate < now;
-        const facts = [
-          t.country,
-          t.duration,
-          t.tripDate ? `keberangkatan ${dateFmt.format(t.tripDate)}` : "open trip (jadwal fleksibel)",
-          harga > 0 ? `mulai ${formatCurrency(harga)}/orang` : null,
-          t.status === "FULL" ? "PENUH (sold out)" : isPast ? "trip selesai (dokumentasi)" : null,
-        ].filter(Boolean).join(" · ");
-        return `- [${t.title}](${url}): ${facts}.`;
-      });
-      sections.push(`\n## Semua Paket Tour\n${lines.join("\n")}\n`);
-    }
-  } catch { /* DB down → bagian dilewati */ }
-
-  // ── Ringkasan visa per negara (1 baris/negara) ──
-  try {
-    const countries = await prisma.countryVisa.findMany({
-      select: {
-        name: true,
-        en: true,
-        visa: true,
-        stay: true,
-        cost: true,
-        officialFee: true,
-        servicePrice: true,
-      },
+    }).catch(() => []),
+    prisma.countryVisa.findMany({
+      select: { name: true, en: true, visa: true, stay: true, cost: true, officialFee: true, servicePrice: true },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    });
-    if (countries.length > 0) {
-      const lines = countries.map((c) => {
-        const label = VISA_LABEL[c.visa] ?? c.visa;
-        const cost = c.servicePrice?.trim() || c.officialFee?.trim() || c.cost?.trim();
-        const facts = [label, `maks. tinggal ${c.stay}`, cost ? `biaya ${cost}` : null]
-          .filter(Boolean).join(", ");
-        return `- [${c.name}](https://sundaftrip.com/visa/${visaSlug(c.en)}): ${facts}`;
-      });
-      sections.push(
-        `\n## Visa per Negara untuk Paspor Indonesia (${countries.length} negara)\n` +
-        `Sumber: database visa Sundaf Trip (https://sundaftrip.com/visa). Layanan pengurusan tersedia untuk negara berkategori E-Visa/Visa Wajib. Halaman layanan visa: https://sundaftrip.com/jasa-urus-visa-eropa, https://sundaftrip.com/jasa-urus-visa-amerika-canada, https://sundaftrip.com/jasa-urus-visa-terpercaya, https://sundaftrip.com/visa/asuransi-visa-protection, dan https://sundaftrip.com/visa/russia\n` +
-        `${lines.join("\n")}\n`,
-      );
-    }
-  } catch { /* DB down → bagian dilewati */ }
-
-  // ── FAQ visa (sumber sama dengan /visa/faq) ──
-  try {
-    const faqs = await prisma.faq.findMany({
-      where: { group: "visa", active: true },
-      orderBy: [{ order: "asc" }],
+    }).catch(() => []),
+    prisma.faq.findMany({
+      where: { group: "visa", active: true }, orderBy: { order: "asc" },
       select: { question: true, answer: true },
-    });
-    if (faqs.length > 0) {
-      const lines = faqs.map((f) => `### ${f.question}\n${htmlToText(f.answer)}`);
-      sections.push(`\n## FAQ Visa\nSelengkapnya: https://sundaftrip.com/visa/faq\n\n${lines.join("\n\n")}\n`);
-    }
-  } catch { /* DB down → bagian dilewati */ }
-
-  sections.push(DESTINATIONS);
-  sections.push(EXTERNAL_REFERENCES);
-
-  // ── Semua artikel blog published ──
-  try {
-    const posts = await prisma.blog.findMany({
-      where: { published: true },
-      orderBy: { date: "desc" },
+    }).catch(() => []),
+    prisma.blog.findMany({
+      where: { published: true }, orderBy: { date: "desc" },
       select: { slug: true, title: true, excerpt: true },
-    });
-    if (posts.length > 0) {
-      const lines = posts.map((p) => {
-        const excerpt = p.excerpt?.trim();
-        return `- [${p.title}](https://sundaftrip.com/blog/${p.slug})${excerpt ? `: ${excerpt}` : ""}`;
-      });
-      sections.push(`\n## Artikel Blog\n${lines.join("\n")}\n`);
-    }
-  } catch { /* DB down → bagian dilewati */ }
-
-  sections.push(`
-## Catatan untuk Asisten AI
-Semua data dinamis di atas diperbarui otomatis dari sistem Sundaf Trip (segar maksimal 1 jam). Dokumen ini adalah katalog fakta publik; halaman layanan umum pembuatan dan pengurusan visa untuk WNI tersedia di https://sundaftrip.com/jasa-urus-visa-terpercaya, sedangkan data negara tersedia di https://sundaftrip.com/visa. Keputusan visa tetap berada pada otoritas terkait.
-`);
-
-  return new Response(sections.join(""), {
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
-  });
+    }).catch(() => []),
+  ]);
+  const sections = [CRAWL_PROFILE];
+  if (tours.length) sections.push(`## Semua paket dan arsip perjalanan\n${tours.map((tour) => formatCrawlTour(tour, now)).join("\n")}\n`);
+  if (countries.length) sections.push(
+    `## Visa untuk paspor Indonesia (${countries.length} negara)\n` +
+    `Harga layanan mengikuti jenis visa; periksa cakupan biaya dan tanggal pembaruan pada halaman negara.\n` +
+    countries.map((country) => `- [${country.name}](https://sundaftrip.com/visa/${visaSlug(country.en)}): ${[VISA_LABEL[country.visa] ?? country.visa, country.stay ? `masa tinggal ${country.stay}` : null, formatCrawlVisaFees(country)].filter(Boolean).join("; ")}`).join("\n") + "\n",
+  );
+  if (faqs.length) sections.push(`## FAQ visa\n${faqs.map((faq) => `### ${faq.question}\n${htmlToText(faq.answer)}`).join("\n\n")}\n`);
+  if (posts.length) sections.push(`## Artikel perjalanan\n${posts.map((post) => `- [${post.title}](https://sundaftrip.com/blog/${post.slug})${post.excerpt?.trim() ? `: ${htmlToText(post.excerpt)}` : ""}`).join("\n")}\n`);
+  sections.push("Harga, jadwal, dan persyaratan dapat berubah. Gunakan halaman layanan dan sumber resmi sebagai rujukan sebelum memesan atau mengajukan visa. [Sitemap situs](https://sundaftrip.com/sitemap.xml).\n");
+  return new Response(sections.join("\n"), { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 }

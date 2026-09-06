@@ -25,10 +25,6 @@ function testimonialDate(value: CleanHomeTestimonial["date"]) {
   return Number.isNaN(date.getTime()) ? null : DATE_FORMATTER.format(date);
 }
 
-function withoutLongDash(value: string) {
-  return value.replace(/\s*[—–]\s*/g, ", ");
-}
-
 export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }) {
   if (!items.length) return null;
 
@@ -38,8 +34,8 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
         <div className={styles.reviewHeading}>
           <div className={styles.sectionHeading}>
             <p className={styles.eyebrow}>CERITA PESERTA</p>
-            <h2 id="stories-title">Bukan hanya sampai. Ini yang mereka bawa pulang.</h2>
-            <p>Cerita dari traveler yang sudah berangkat bersama Sundaf, tentang rute, rasa aman, dan momen yang paling mereka ingat.</p>
+            <h2 id="stories-title">Ulasan peserta</h2>
+            <p>Pengalaman peserta yang telah bepergian bersama Sundaf Trip.</p>
           </div>
         </div>
 
@@ -84,7 +80,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
 
                 <div className={styles.reviewBody}>
                   <blockquote className={styles.reviewExcerpt}>
-                    “{withoutLongDash(item.content)}”
+                    “{item.content}”
                   </blockquote>
                   <Link
                     className={styles.reviewMore}

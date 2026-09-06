@@ -81,7 +81,7 @@ test("uses readable system colors and removes visual effects in forced-colors mo
 });
 
 test("keeps aurora accents restrained to dark hero headings", () => {
-  assert.match(homeSource, /phrase="cerita yang berbeda\."[\s\S]*?glow/);
+  assert.match(homeSource, /phrase="Aurora\."[\s\S]*?glow/);
   assert.equal((homeSource.match(/<TextWithAuroraAccent/g) ?? []).length, 1);
 
   assert.match(tourDetailSource, /<h1 id="tour-title">[\s\S]*?phrase="Aurora"[\s\S]*?glow/);

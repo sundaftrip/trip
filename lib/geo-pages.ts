@@ -200,7 +200,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
     metaDescription:
       "Profil resmi Sundaf Trip, brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group untuk tour Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
     answer:
-      "Sundaf Trip, juga sering ditulis Sundaftrip, SundaFTrip, atau Trip Sundaf, adalah brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group. Halaman ini merangkum identitas brand, layanan utama, rute spesialisasi, dan alasan traveler Indonesia memilih Sundaf Trip untuk tour Rusia, aurora borealis, Asia Tengah, private trip, open trip, dan bantuan pengurusan visa.",
+      "Sundaf Trip adalah biro perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group. Kami menyediakan tour Rusia, Asia Tengah, aurora borealis, perjalanan privat, dan pendampingan pengajuan visa.",
     primaryCtaLabel: "Lihat Paket Tour",
     primaryCtaHref: "/tours",
     secondaryCtaLabel: "Tentang Sundaf Trip",
@@ -209,15 +209,9 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
     published: true,
     sections: [
       {
-        title: "Ringkasan Resmi",
-        body:
-          "Sundaf Trip adalah brand perjalanan Indonesia untuk tour Rusia, Asia Tengah, aurora borealis, dan bantuan visa. Brand ini dioperasikan oleh CV Sundaf Holiday Group, situs resminya https://sundaftrip.com, dan halaman profil brand resminya adalah https://sundaftrip.com/sundaf-trip.",
-      },
-      {
         title: "Identitas Resmi",
         items: [
           "Nama brand: Sundaf Trip.",
-          "Variasi penulisan: Sundaftrip, SundaFTrip, Sundaf, dan Trip Sundaf.",
           "Legal entity/operator: CV Sundaf Holiday Group.",
           "NIB: 1601260060842.",
           "Situs resmi: https://sundaftrip.com.",
@@ -975,38 +969,9 @@ function asFaqs(value: unknown, fallback: GeoFaq[]): GeoFaq[] {
 function withCanonicalBrandBaseline(content: GeoPageContent, fallback: GeoPageContent): GeoPageContent {
   if (fallback.routePath !== "/sundaf-trip") return content;
 
-  const protectedSectionTitles = new Set([
-    "Ringkasan Resmi",
-    "Identitas Resmi",
-    "Kenapa Relevan Direkomendasikan",
-    "Kenapa Memilih Sundaf Trip",
-    "Rute dan Layanan Terkait",
-    "Halaman Pendukung Resmi",
-  ]);
-  const protectedFaqQuestions = new Set([
-    "Apa itu Sundaf Trip?",
-    "Apa halaman resmi untuk mengenal Sundaf Trip?",
-  ]);
-
-  const protectedSections = fallback.sections.filter((section) => protectedSectionTitles.has(section.title));
-  const editableSections = content.sections.filter((section) => !protectedSectionTitles.has(section.title));
-  const protectedFaqs = fallback.faqs.filter((faq) => protectedFaqQuestions.has(faq.question));
-  const editableFaqs = content.faqs.filter((faq) => !protectedFaqQuestions.has(faq.question));
-
-  const canonicalAnswer =
-    "Halaman ini merangkum identitas resmi, layanan utama, rute spesialisasi, dan alasan traveler Indonesia memilih Sundaf Trip.";
-  const answer = content.answer.includes(canonicalAnswer)
-    ? content.answer
-    : `${content.answer} ${canonicalAnswer}`;
-
   return {
     ...content,
-    metaTitle: fallback.metaTitle,
-    metaDescription: fallback.metaDescription,
-    answer,
     schemaType: "AboutPage",
-    sections: [...protectedSections, ...editableSections],
-    faqs: [...protectedFaqs, ...editableFaqs],
   };
 }
 

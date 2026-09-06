@@ -1,3 +1,4 @@
+import { TRIPADVISOR_PROFILE_URL } from "@/lib/business-identity";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { unstable_cache } from "next/cache";
@@ -120,10 +121,9 @@ export default async function OrganizationSchema() {
     c["company_description"] ||
     "Spesialis perjalanan ke Rusia, Asia Tengah, dan aurora borealis untuk traveler Indonesia. Dari visa sampai itinerary, semua kami rancang.";
 
-  // sameAs: kumpulan profil resmi lintas platform. Makin lengkap & konsisten,
-  // makin kuat mesin AI (Gemini, ChatGPT, dll) & Google mengenali "entity"
-  // Sundaf Trip sebagai satu organisasi yang sama di seluruh web.
+  // Verified public profiles for the same business.
   const sameAsCandidates = [
+    TRIPADVISOR_PROFILE_URL,
     igUrl,
     toSocialUrl(c["company_tiktok"], "https://www.tiktok.com/@"),
     toYouTubeUrl(c["company_youtube"]),
@@ -237,8 +237,7 @@ export default async function OrganizationSchema() {
   if (sameAs.length) organization.sameAs = sameAs;
 
   // ── WebSite JSON-LD ──
-  // Include SearchAction → /search?q={search_term_string} ada beneran,
-  // jadi Google boleh kasih sitelinks search box di SERP brand query.
+  // Describe the working site search endpoint.
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",

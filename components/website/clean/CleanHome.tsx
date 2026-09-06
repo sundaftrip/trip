@@ -255,7 +255,7 @@ export default function CleanHome({
               <h1 id="home-hero-title">
                 <TextWithAuroraAccent
                   text={heroTitle}
-                  phrase="cerita yang berbeda."
+                  phrase="Aurora."
                   glow
                 />
               </h1>
@@ -278,8 +278,8 @@ export default function CleanHome({
             <div className={styles.headingRow}>
               <div className={styles.sectionHeading}>
                 <p className={styles.eyebrow}>JADWAL TERDEKAT</p>
-                <h2 id="active-tours-title">Rute yang siap kamu ceritakan sepulangnya.</h2>
-                <p>Pilih perjalanan yang sudah memiliki tanggal, itinerary, dan gambaran biaya yang jelas.</p>
+                <h2 id="active-tours-title">Jadwal open trip</h2>
+                <p>Bandingkan tanggal, rute, dan biaya sebelum memilih perjalanan.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
                 Lihat semua jadwal <ArrowRight aria-hidden="true" />
@@ -307,8 +307,8 @@ export default function CleanHome({
         >
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <h2 id="destinations-title">Pilih rute yang tidak biasa.</h2>
-              <p>Dari langit malam Murmansk sampai kota-kota Jalur Sutra, setiap rute kami siapkan untuk traveler Indonesia.</p>
+              <h2 id="destinations-title">Destinasi pilihan</h2>
+              <p>Jelajahi rute Rusia, Asia Tengah, dan Vietnam bersama Sundaf Trip.</p>
             </div>
 
             <div className={styles.destinationMosaic}>
@@ -375,7 +375,7 @@ export default function CleanHome({
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
               <p className={styles.eyebrow}>CARA KERJA SUNDAF</p>
-              <h2 id="benefits-title">Kami urus yang rumit. Kamu nikmati yang penting.</h2>
+              <h2 id="benefits-title">Persiapan dan pendampingan perjalanan</h2>
             </div>
 
             <div className={styles.benefitGrid}>
@@ -389,9 +389,9 @@ export default function CleanHome({
               <article>
                 <div className={styles.benefitTitle}>
                   <Clock aria-hidden="true" />
-                  <h3>Itinerary punya ruang bernapas</h3>
+                  <h3>Rute dan jadwal jelas</h3>
                 </div>
-                <p>Rute disusun agar kamu tidak hanya datang, foto, lalu bergegas pindah kota.</p>
+                <p>Lihat aktivitas, perpindahan kota, dan akomodasi sebelum memesan.</p>
               </article>
               <article>
                 <div className={styles.benefitTitle}>
@@ -420,8 +420,8 @@ export default function CleanHome({
           <div className={`${styles.shell} ${styles.faqLayout}`}>
             <div className={styles.sectionHeading}>
               <p className={styles.eyebrow}>BIAR MAKIN YAKIN</p>
-              <h2 id="faq-title">Yang perlu kamu tahu sebelum bilang, “gas”.</h2>
-              <p>Soal legalitas, harga, visa, sampai perubahan rencana, kami jawab terus terang di sini.</p>
+              <h2 id="faq-title">Pertanyaan sebelum memesan</h2>
+              <p>Informasi legalitas, pembayaran, visa, dan perubahan rencana.</p>
             </div>
             <HomeFaqs items={resolvedFaqs} />
           </div>
@@ -432,10 +432,10 @@ export default function CleanHome({
             <div className={styles.privatePanel}>
               <div>
                 <p className={styles.eyebrowLight}>PRIVATE &amp; CUSTOM TRIP</p>
-                <h2 id="private-trip-title">Punya tanggal sendiri? Kita rancang rutenya bersama.</h2>
+                <h2 id="private-trip-title">Private trip sesuai rencanamu</h2>
                 <p>
                   Kirim tujuan, jumlah peserta, durasi, dan kisaran budget. Kami akan
-                  menyiapkan pilihan rute yang masuk akal untuk cara kamu bepergian.
+                  menyiapkan pilihan rute sesuai kebutuhanmu.
                 </p>
               </div>
               <Link
@@ -454,7 +454,7 @@ export default function CleanHome({
               <div className={styles.headingRow}>
                 <div className={styles.sectionHeading}>
                   <p className={styles.eyebrow}>BEKAL SEBELUM PERGI</p>
-                  <h2 id="journal-title">Baca dulu. Berangkat lebih siap.</h2>
+                  <h2 id="journal-title">Panduan perjalanan</h2>
                   <p>Panduan destinasi, visa, cuaca, dan persiapan praktis untuk traveler Indonesia.</p>
                 </div>
                 <Link className={styles.desktopSectionLink} href="/blog">
@@ -513,7 +513,7 @@ export default function CleanHome({
           <div className={`${styles.shell} ${styles.finalLayout}`}>
             <div>
               <p className={styles.eyebrow}>MASIH MENENTUKAN RUTE?</p>
-              <h2 id="final-cta-title">Ceritakan rencanamu. Kami bantu melihat jalan yang paling masuk akal.</h2>
+              <h2 id="final-cta-title">Butuh bantuan memilih perjalanan?</h2>
               <p>
                 Sampaikan destinasi, waktu berangkat, jumlah peserta, dan kisaran budget. Kamu
                 akan mendapat arahan awal sebelum memutuskan.

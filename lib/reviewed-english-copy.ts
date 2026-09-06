@@ -248,6 +248,37 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Sampaikan destinasi, waktu berangkat, jumlah peserta, dan kisaran budget. Kamu akan mendapat arahan awal sebelum memutuskan.":
     "Share your destination, preferred dates, group size, and budget range. We will give you an initial recommendation before you decide.",
   "Konsultasi rute via WhatsApp": "Ask about a route on WhatsApp",
+
+  "Sudah berangkat": "Already departed",
+  "Keberangkatan ini sudah dimulai": "This departure has started",
+
+  // Clear service copy
+  "Jelajahi Rusia, Asia Tengah & Aurora.": "Explore Russia, Central Asia & the Northern Lights.",
+  "Pilih open trip dengan jadwal tetap atau rancang perjalanan privat. Kami membantu menyiapkan rute, visa, dan kebutuhan sebelum berangkat.": "Choose a scheduled group tour or plan a private trip. We help with routes, visas, and preparation before departure.",
+  "Jadwal open trip": "Upcoming group tours",
+  "Bandingkan tanggal, rute, dan biaya sebelum memilih perjalanan.": "Compare dates, routes, and prices before choosing a trip.",
+  "Destinasi pilihan": "Explore our destinations",
+  "Jelajahi rute Rusia, Asia Tengah, dan Vietnam bersama Sundaf Trip.": "Explore Russia, Central Asia, and Vietnam with Sundaf Trip.",
+  "Persiapan dan pendampingan perjalanan": "Planning and support",
+  "Rute dan jadwal jelas": "Routes and schedules",
+  "Lihat aktivitas, perpindahan kota, dan akomodasi sebelum memesan.": "See activities, transfers, and accommodation before booking.",
+  "Pertanyaan sebelum memesan": "Before you book",
+  "Informasi legalitas, pembayaran, visa, dan perubahan rencana.": "Business registration, payments, visas, and changes to your plans.",
+  "Private trip sesuai rencanamu": "A private trip around your plans",
+  "Panduan perjalanan": "Travel guides",
+  "Butuh bantuan memilih perjalanan?": "Need help choosing a trip?",
+  "Kirim tujuan, jumlah peserta, durasi, dan kisaran budget. Kami akan menyiapkan pilihan rute sesuai kebutuhanmu.": "Share your destination, group size, trip length, and budget. We will suggest suitable routes.",
+  "Pengalaman peserta yang telah bepergian bersama Sundaf Trip.": "Reviews from guests who have traveled with Sundaf Trip.",
+  "Persyaratan dan biaya visa": "Visa requirements and fees",
+  "Pilih negara tujuan untuk melihat dokumen, estimasi proses, dan biaya layanan. Keputusan visa tetap berada pada otoritas terkait.": "Choose a destination to see documents, processing estimates, and service fees. Visa decisions rest with the relevant authority.",
+  "Layanan visa populer": "Popular visa services",
+  "Lihat pilihan layanan dan persyaratan pengajuan.": "See available services and application requirements.",
+  "Biaya layanan": "Service fee",
+  "Negara tujuan": "Destination country",
+  "Cari negara tujuan": "Find a destination country",
+  "Informasi proses, dokumen, dan biaya pengajuan visa.": "Visa application steps, documents, and fees.",
+  "Baca FAQ visa": "Read visa FAQs",
+  "Pilih hari untuk melihat aktivitas, akomodasi, dan perpindahan.": "Choose a day to see activities, accommodation, and transfers.",
 } as const;
 
 export function reviewedEnglishFor(source: string): string | undefined {
