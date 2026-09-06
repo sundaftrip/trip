@@ -9,7 +9,7 @@ export async function GET() {
   const [tours, posts, contacts] = await Promise.all([
     prisma.tour.findMany({
       where: { AND: [publicTourVisibilityWhere(), { status: { not: "FULL" } }, { OR: [{ tripDate: null }, { tripDate: { gt: now } }] }] },
-      select: { id: true, slug: true, title: true, country: true, duration: true, tripDate: true, price: true, promoPrice: true, addOns: true, status: true },
+      select: { id: true, slug: true, title: true, country: true, duration: true, tripDate: true, price: true, promoPrice: true, addOns: true, hotel: true, status: true },
       orderBy: { tripDate: "asc" },
       take: 12,
     }).catch(() => []),

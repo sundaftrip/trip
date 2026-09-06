@@ -138,12 +138,14 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
     || [...tour.inclusions, ...tour.exclusions].some((item) => item.length > 220);
   const photoDay = Math.ceil(tour.itinerary.length / 2) - 1;
   const safeFaq = faqUrl && /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(faqUrl) ? `${website}/faq` : faqUrl;
-  const closingTitle = commerceStatus === "completed"
+  const closingTitle = commerceStatus === "completed" || commerceStatus === "departed"
     ? "Rencanakan perjalanan berikutnya."
     : commerceStatus === "sold_out" || commerceStatus === "waitlist"
       ? "Daftar tunggu untuk keberangkatan ini."
       : "Semoga perjalanan ini menjadi kenangan indah.";
-  const closingBody = commerceStatus === "completed"
+  const closingBody = commerceStatus === "departed"
+    ? "Keberangkatan ini sudah dimulai. Hubungi tim Sundaf Trip untuk jadwal berikutnya."
+    : commerceStatus === "completed"
     ? "Perjalanan ini telah selesai. Hubungi tim Sundaf Trip untuk rute dan jadwal berikutnya."
     : commerceStatus === "sold_out" || commerceStatus === "waitlist"
       ? "Hubungi tim Sundaf Trip untuk mencatat nama dan jumlah peserta. Kami akan mengabari bila kursi tersedia kembali."
@@ -186,7 +188,7 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
         {!!priceCoretLabel && <Text style={styles.quiet}>Harga normal paket: {pdfText(priceCoretLabel)}</Text>}
         {!!inclusivePriceCoretLabel && <Text style={styles.quiet}>Harga normal total: {pdfText(inclusivePriceCoretLabel)}</Text>}
         {!!landTourLabel && <Text style={styles.quiet}>Land tour: {pdfText(landTourLabel)}</Text>}
-        {tour.seatsLeft > 0 && commerceStatus !== "completed" && commerceStatus !== "sold_out" && commerceStatus !== "waitlist" && <Text style={styles.quiet}>{tour.seatsLeft} kursi tersedia saat katalog diterbitkan.</Text>}
+        {tour.seatsLeft > 0 && ["available", "last_seats", "confirmed"].includes(commerceStatus) && <Text style={styles.quiet}>{tour.seatsLeft} kursi tersedia saat katalog diterbitkan.</Text>}
         {optional.length > 0 && (
           <>
             <Text style={styles.subheading} minPresenceAhead={40}>Pilihan tambahan</Text>

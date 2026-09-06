@@ -21,7 +21,7 @@ export async function GET() {
   const [tours, countries, faqs, posts] = await Promise.all([
     prisma.tour.findMany({
       where: publicTourVisibilityWhere(),
-      select: { id: true, slug: true, title: true, country: true, duration: true, tripDate: true, price: true, promoPrice: true, addOns: true, status: true },
+      select: { id: true, slug: true, title: true, country: true, duration: true, tripDate: true, price: true, promoPrice: true, addOns: true, hotel: true, status: true },
       orderBy: { tripDate: "asc" },
     }).catch(() => []),
     prisma.countryVisa.findMany({

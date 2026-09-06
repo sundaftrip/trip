@@ -2,6 +2,7 @@ import { APPOINTMENT_ONLY_OFFICE_ADDRESS, TRIPADVISOR_PROFILE_URL } from "./busi
 import { resolveCanadaRockiesAddOns } from "./canada-catalog-preview";
 import { canonicalTourPath } from "./seo-routes";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "./tour-commerce";
+import { parseTourHotelRoomPricing, resolveTourStartingPrice } from "./tour-room-pricing";
 import { formatCurrency } from "./utils";
 
 export const CRAWL_PROFILE = `# Sundaf Trip
@@ -57,6 +58,7 @@ type CrawlTour = {
   price: number;
   promoPrice: number | null;
   addOns: unknown;
+  hotel?: unknown;
   status: string;
 };
 
@@ -65,9 +67,13 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
 });
 
 export function formatCrawlTour(tour: CrawlTour, now = new Date()) {
-  const basePrice = tour.promoPrice ?? tour.price;
   const mandatoryTotal = mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(tour.addOns, tour.slug));
-  const total = basePrice + mandatoryTotal;
+  const { roomPrices } = parseTourHotelRoomPricing(tour.hotel, mandatoryTotal);
+  const { headlinePrice: basePrice, mandatoryTotalPrice: total } = resolveTourStartingPrice(
+    tour.promoPrice ?? tour.price,
+    mandatoryTotal,
+    roomPrices,
+  );
   const status = getCommerceTourStatus(tour, now);
   const departed = tour.tripDate && tour.tripDate <= now;
   const facts = [

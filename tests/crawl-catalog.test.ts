@@ -33,3 +33,13 @@ test("official visa fees and Sundaf service prices retain distinct labels", () =
   assert.equal(formatCrawlVisaFees({ cost: "USD 25" }), "biaya tercatat: USD 25");
   assert.equal(formatCrawlVisaFees({}), "");
 });
+
+test("crawler room-tier prices stay authoritative over a conflicting legacy promo", () => {
+  const line = formatCrawlTour({
+    ...tour, price: 40_900_000, promoPrice: 39_000_000,
+    hotel: { __room_price_quad: "40900000" },
+    addOns: [{ name: "Biaya wajib", tag: "wajib", price: 5_400_000 }],
+  }, now);
+  assert.match(line, /46\.300\.000/);
+  assert.doesNotMatch(line, /44\.400\.000/);
+});
