@@ -1227,10 +1227,19 @@
 }
 
 @media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tourRail {
+    /* Let rounded shadows fade inside the scrollport without moving the cards. */
+    margin: -14px -18px -20px;
+    padding: 16px 20px 36px;
+    scroll-padding-inline: 20px;
+  }
+
   .tourCard:hover {
     border-color: rgba(10, 101, 112, 0.38);
-    box-shadow: 0 20px 44px rgba(18, 51, 55, 0.13);
-    transform: translateY(-6px);
+    box-shadow:
+      0 3px 8px -3px rgba(18, 51, 55, 0.07),
+      0 12px 22px -9px rgba(18, 51, 55, 0.09);
+    transform: translateY(-3px);
   }
 
   .tourCard:hover .tourMedia img,
