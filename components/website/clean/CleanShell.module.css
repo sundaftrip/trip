@@ -1028,36 +1028,47 @@
   }
 
   .desktopNav {
-    position: relative;
     display: flex;
     align-items: center;
     gap: 2px;
     padding: 2px;
-    isolation: isolate;
-    border-radius: 999px;
   }
 
   .desktopNav a {
+    --nav-link-padding: clamp(11px, 1.25vw, 18px);
     position: relative;
-    z-index: 1;
     min-height: 44px;
-    padding-inline: clamp(11px, 1.25vw, 18px);
+    padding-inline: var(--nav-link-padding);
     display: inline-flex;
     align-items: center;
+    border-radius: 4px;
     color: var(--shell-ink-soft);
     font-size: 13px;
     font-weight: 450;
     line-height: 1.2;
+    text-decoration: none;
     white-space: nowrap;
-    transition: color 280ms ease;
+    transition: color 180ms ease;
   }
 
-  .desktopNav a:hover {
-    color: var(--shell-primary);
-  }
-
+  .desktopNav a:hover,
   .desktopNav a[aria-current="page"] {
     color: var(--shell-primary);
+  }
+
+  .desktopNav a[aria-current="page"]::after {
+    position: absolute;
+    right: var(--nav-link-padding);
+    bottom: 5px;
+    left: var(--nav-link-padding);
+    height: 2px;
+    background: currentColor;
+    content: "";
+  }
+
+  .desktopNav a:focus-visible {
+    outline: 2px solid var(--shell-primary);
+    outline-offset: 2px;
   }
 
   .drawerLayer {
