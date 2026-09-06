@@ -361,6 +361,21 @@
     box-shadow 240ms ease;
 }
 
+.tourLink {
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+
+.tourLink:focus-visible {
+  outline: 3px solid var(--home-primary);
+  outline-offset: -3px;
+}
+
 .tourMedia {
   position: relative;
   aspect-ratio: 3 / 2;
