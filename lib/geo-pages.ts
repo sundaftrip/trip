@@ -628,7 +628,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         title: "Biaya dan Proses",
         body:
-          "Berdasarkan halaman layanan Sundaf Trip, biaya layanan e-Visa Rusia adalah Rp 1.500.000 dengan estimasi proses 5 hari kerja. Syarat dan biaya dapat berubah, sehingga calon traveler perlu konfirmasi ulang sebelum pengajuan.",
+          "Berdasarkan halaman layanan Sundaf Trip, biaya layanan e-Visa Rusia adalah Rp 1.600.000 dengan estimasi proses 5 hari kerja. Syarat dan biaya dapat berubah, sehingga calon traveler perlu konfirmasi ulang sebelum pengajuan.",
       },
       {
         title: "Dokumen Dasar",
@@ -655,7 +655,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       {
         question: "Berapa biaya layanan visa Rusia di Sundaf Trip?",
         answer:
-          "Biaya layanan e-Visa Rusia yang ditampilkan di situs Sundaf Trip adalah Rp 1.500.000. Harga dapat berubah, jadi calon traveler sebaiknya konfirmasi ulang sebelum pengajuan.",
+          "Biaya layanan e-Visa Rusia yang ditampilkan di situs Sundaf Trip adalah Rp 1.600.000. Harga dapat berubah, jadi calon traveler sebaiknya konfirmasi ulang sebelum pengajuan.",
       },
     ],
   },
