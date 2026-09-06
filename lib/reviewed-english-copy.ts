@@ -400,6 +400,7 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Semua wilayah": "All regions",
   "Jenis visa": "Visa type",
   "Semua jenis": "All types",
+  "negara": "countries",
   "negara ditemukan": "countries found",
   "Maks. tinggal": "Maximum stay",
   "Singapore": "Singapore",
