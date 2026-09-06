@@ -40,6 +40,7 @@ function formatTripDate(value: string | null) {
 function statusLabel(tour: CleanTour) {
   const status = getCommerceTourStatus(tour);
   if (status === "completed") return "Trip selesai";
+  if (status === "departed") return "Sudah berangkat";
   if (status === "sold_out") return "Penuh";
   if (status === "waitlist") return "Daftar tunggu";
   if (status === "confirmed") return "Pasti berangkat";
@@ -61,7 +62,7 @@ export default function CleanTourCard({
   const baseHref = `/tours/${tour.slug || tour.id}`;
   const href = campaignQuery ? `${baseHref}?${campaignQuery}` : baseHref;
   const commerceStatus = getCommerceTourStatus(tour);
-  const unavailable = commerceStatus === "completed";
+  const unavailable = commerceStatus === "completed" || commerceStatus === "departed";
   const image = cldThumb(getTourProductImage(tour), 900, compact ? 520 : 700);
   const mandatoryTotal = Math.max(0, Number(tour.mandatoryTotal) || 0);
   const basePrice = Number(tour.promoPrice ?? tour.price);
@@ -85,7 +86,7 @@ export default function CleanTourCard({
           src={image}
           alt={tour.title}
           fill
-          sizes="(max-width: 370px) calc(100vw - 24px), (max-width: 700px) calc(50vw - 17px), (max-width: 1100px) 50vw, 33vw"
+          sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 1100px) 50vw, 33vw"
           className={styles.tourImage}
         />
         <span className={styles.tourPhotoShade} aria-hidden="true" />

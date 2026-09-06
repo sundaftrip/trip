@@ -59,10 +59,10 @@ test("hidden payment schedules stay hidden; manual schedules retain amounts and 
 });
 
 test("unavailable trips do not claim seats are available", () => {
-  for (const commerceStatus of ["sold_out", "waitlist", "completed"] as const) {
+  for (const commerceStatus of ["sold_out", "waitlist", "completed", "departed"] as const) {
     const text = collectText(ItineraryPDF({ ...props, commerceStatus }));
     assert.ok(!text.includes("20 kursi tersedia"));
-    assert.ok(text.includes(commerceStatus === "completed" ? "Perjalanan ini telah selesai" : "Daftar tunggu"));
+    assert.ok(text.includes(commerceStatus === "departed" ? "Keberangkatan ini sudah dimulai" : commerceStatus === "completed" ? "Perjalanan ini telah selesai" : "Daftar tunggu"));
   }
 });
 

@@ -159,7 +159,7 @@ export function getCatalogTripType(
   now = new Date(),
 ): CatalogTripType {
   const status = getCommerceTourStatus(tour, now);
-  if (status === "completed") return "archive";
+  if (status === "completed" || status === "departed") return "archive";
   if (!tour.tripDate || status === "flexible") return "private";
   return "open";
 }
@@ -269,7 +269,8 @@ export function filterCatalogTours<T extends CatalogFilterTour>(
         waitlist: 3,
         sold_out: 4,
         flexible: 5,
-        completed: 6,
+        departed: 6,
+        completed: 7,
       }[status];
     };
     return (

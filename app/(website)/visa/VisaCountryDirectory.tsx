@@ -20,7 +20,7 @@ const VISA_LABEL: Record<VisaKey, string> = {
   conditional: "Bersyarat",
 };
 
-const INITIAL_RESULT_COUNT = 18;
+const INITIAL_RESULT_COUNT = 6;
 
 function isVisaKey(value: string): value is VisaKey {
   return value === "bebas"

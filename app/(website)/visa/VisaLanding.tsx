@@ -118,7 +118,7 @@ function newestVerification(entries: VisaCountry[]) {
   }, null);
 
   if (!newest) return "Tanggal verifikasi tersedia di tiap negara";
-  return `Pembaruan terbaru ${new Intl.DateTimeFormat("id-ID", {
+  return `${new Intl.DateTimeFormat("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -146,12 +146,10 @@ export default function VisaLanding({
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>Layanan visa Sundaf Trip</p>
             <h1 className={styles.heroTitle} id="visa-page-title">
-              Cari persyaratan visa sebelum menyiapkan dokumen.
+              Persyaratan dan biaya visa
             </h1>
             <p className={styles.heroLede}>
-              Pilih negara tujuan untuk melihat jenis visa, masa tinggal, dokumen,
-              estimasi proses, dan biaya yang tercatat. Keputusan permohonan tetap
-              berada pada kedutaan atau otoritas terkait.
+              Pilih negara tujuan untuk melihat dokumen, estimasi proses, dan biaya layanan. Keputusan visa tetap berada pada otoritas terkait.
             </p>
             <div className={styles.heroActions}>
               <a className={styles.primaryAction} href="#visa-database">
@@ -163,40 +161,52 @@ export default function VisaLanding({
                 Jasa pembuatan visa
               </Link>
             </div>
-            <Link className={styles.intelligenceLink} href="/visa-intelligence">
-              Powered by Sundaf Visa Intelligence
-            </Link>
           </div>
 
           <dl className={styles.heroFacts} aria-label="Ringkasan database visa">
             <div className={styles.heroFact}>
-              <dt>Negara tercatat</dt>
+              <dt>Panduan visa</dt>
               <dd>{entries.length} negara</dd>
             </div>
             <div className={styles.heroFact}>
-              <dt>Status data</dt>
+              <dt>Terakhir diperbarui</dt>
               <dd>{newestVerification(entries)}</dd>
-            </div>
-            <div className={styles.heroFact}>
-              <dt>Hasil visa</dt>
-              <dd>Ditentukan otoritas terkait</dd>
             </div>
           </dl>
         </div>
       </section>
 
       <div id="visa-main" tabIndex={-1}>
+        <section
+          className={`${styles.section} ${styles.databaseSection}`}
+          id="visa-database"
+          aria-labelledby="visa-database-title"
+        >
+          <div className={styles.shell}>
+            <div className={styles.sectionHeader}>
+              <p className={styles.eyebrow}>Negara tujuan</p>
+              <h2 className={styles.sectionTitle} id="visa-database-title">
+                Cari negara tujuan
+              </h2>
+              <p className={styles.sectionLede}>
+                Gunakan nama negara, wilayah, atau jenis visa. Informasi detail tetap
+                perlu dikonfirmasi menjelang pengajuan karena ketentuan dapat berubah.
+              </p>
+            </div>
+            <VisaCountryDirectory entries={entries} />
+          </div>
+        </section>
+
         {featured.length > 0 && (
           <section className={styles.section} aria-labelledby="featured-visa-title">
             <div className={styles.shell}>
               <div className={styles.sectionHeader}>
                 <p className={styles.eyebrow}>Layanan visa pilihan</p>
                 <h2 className={styles.sectionTitle} id="featured-visa-title">
-                  Mulai dari layanan yang tersedia sekarang
+                  Layanan visa populer
                 </h2>
                 <p className={styles.sectionLede}>
-                  Kartu ini memakai data negara dan biaya yang sudah tercatat di
-                  database. Buka detail untuk memastikan persyaratan sebelum mengajukan.
+                  Lihat pilihan layanan dan persyaratan pengajuan.
                 </p>
               </div>
 
@@ -231,7 +241,7 @@ export default function VisaLanding({
                           <dd>{country.stay}</dd>
                         </div>
                         <div>
-                          <dt>Biaya tercatat</dt>
+                          <dt>{country.servicePrice?.trim() ? "Biaya layanan" : country.officialFee?.trim() ? "Biaya resmi" : "Biaya tercatat"}</dt>
                           <dd>{feeLabel(country)}</dd>
                         </div>
                       </dl>
@@ -300,25 +310,6 @@ export default function VisaLanding({
           </div>
         </section>
 
-        <section
-          className={`${styles.section} ${styles.databaseSection}`}
-          id="visa-database"
-          aria-labelledby="visa-database-title"
-        >
-          <div className={styles.shell}>
-            <div className={styles.sectionHeader}>
-              <p className={styles.eyebrow}>Database visa</p>
-              <h2 className={styles.sectionTitle} id="visa-database-title">
-                Cari aturan untuk negara tujuanmu
-              </h2>
-              <p className={styles.sectionLede}>
-                Gunakan nama negara, wilayah, atau jenis visa. Informasi detail tetap
-                perlu dikonfirmasi menjelang pengajuan karena ketentuan dapat berubah.
-              </p>
-            </div>
-            <VisaCountryDirectory entries={entries} />
-          </div>
-        </section>
 
         {faqs.length > 0 && (
           <section className={styles.section} aria-labelledby="visa-faq-title">
@@ -326,10 +317,10 @@ export default function VisaLanding({
               <div className={styles.sectionHeader}>
                 <p className={styles.eyebrow}>Pertanyaan visa</p>
                 <h2 className={styles.sectionTitle} id="visa-faq-title">
-                  Jawaban yang sudah dipublikasikan
+                  Pertanyaan umum
                 </h2>
                 <p className={styles.sectionLede}>
-                  Jawaban berikut berasal dari FAQ visa aktif di sistem Sundaf Trip.
+                  Informasi proses, dokumen, dan biaya pengajuan visa.
                 </p>
               </div>
 
@@ -373,7 +364,7 @@ export default function VisaLanding({
               </a>
               <Link className={styles.secondaryAction} href="/visa/faq">
                 <FileCheck2 size={17} aria-hidden="true" />
-                Baca FAQ teknis
+                Baca FAQ visa
               </Link>
             </div>
           </div>

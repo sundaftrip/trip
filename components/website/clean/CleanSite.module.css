@@ -2252,82 +2252,50 @@
   .tourTrack,
   .catalogGrid {
     margin-top: 24px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(8px, 2.8vw, 12px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
   }
-  .tourCard { border-radius: 16px !important; }
-  .tourPhoto { border-radius: 14px 14px 0 0 !important; }
+  .tourCard { border-radius: 18px !important; }
+  .tourPhoto { border-radius: 16px 16px 0 0 !important; }
   .tourPhoto,
-  .tourCardCompact .tourPhoto { aspect-ratio: 1.36 / 1; }
+  .tourCardCompact .tourPhoto { aspect-ratio: 1.75 / 1; }
   .tourStatus {
-    top: 8px;
-    left: 8px;
-    max-width: calc(100% - 16px);
-    padding: 4px 7px;
-    border-radius: 999px !important;
-    font-size: 8px;
-    font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: .035em;
-    white-space: normal;
-  }
-  .tourMeta {
-    min-height: 35px;
-    margin: 9px 10px 0;
-    gap: 5px;
-    overflow: hidden;
-    font-size: 10.5px;
-    font-weight: 600;
-    line-height: 1.25;
-  }
-  .tourTitle {
-    right: 10px;
-    bottom: 9px;
-    left: 10px;
-    margin: 0;
-    overflow: hidden;
-    display: -webkit-box;
-    font-size: 14px;
-    line-height: 1.22;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-  .tourMeta svg {
-    width: 12px;
-    height: 12px;
-    flex-basis: 12px;
-    margin-top: 1px;
-  }
-  .tourMeta small {
-    margin-top: 1px;
-    font-size: 9.5px;
+    top: 12px;
+    left: 12px;
+    padding: 6px 10px;
+    font-size: 11px;
     line-height: 1.2;
   }
+  .tourTitle {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  .tourMeta {
+    min-height: 0;
+    margin: 14px 16px 0;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .tourMeta svg,
+  .tourFact svg { width: 16px; height: 16px; flex-basis: 16px; }
+  .tourMeta small { font-size: 12px; line-height: 1.4; }
   .tourFacts,
   .tourCardCompact .tourFacts {
-    min-height: 34px;
-    margin: 8px 10px 0;
-    gap: 5px;
-    overflow: hidden;
-    font-size: 11px;
-    line-height: 1.25;
+    min-height: 0;
+    margin: 12px 16px 0;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.4;
   }
-  .tourFact { gap: 5px; }
-  .tourFact svg { width: 12px; height: 12px; flex-basis: 12px; margin-top: 1px; }
-  .tourFact span {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-  .priceRow {
-    margin: 9px 10px 10px;
-    padding-top: 8px;
-    display: block;
-  }
-  .priceLabel { margin-bottom: 2px; font-size: 10px; }
-  .price { display: block; font-size: 14px; line-height: 1.15; white-space: nowrap; }
-  .price small { display: block; margin-top: 2px; font-size: 10px; }
+  .tourFact { gap: 8px; }
+  .priceRow { margin: 16px; padding-top: 14px; }
+  .priceLabel { margin-bottom: 4px; font-size: 12px; }
+  .price { font-size: 22px; line-height: 1.2; }
+  .price small { font-size: 12px; }
   .cardArrow { display: none; }
   .reasons { grid-template-columns: 1fr; }
   .destinationGrid {

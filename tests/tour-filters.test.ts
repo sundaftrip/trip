@@ -197,3 +197,9 @@ test("filters and sorts by the displayed total including mandatory costs", () =>
     ["crosses-20m"],
   );
 });
+
+test("already-departed tours leave the booking catalog before the trip ends", () => {
+  const ongoing = { ...tours[0], tripDate: "2026-07-20", duration: "11 hari" };
+  assert.equal(getCatalogTripType(ongoing, NOW), "archive");
+  assert.deepEqual(filterCatalogTours([ongoing], DEFAULT_CATALOG_FILTERS, NOW), []);
+});

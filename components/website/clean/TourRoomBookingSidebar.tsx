@@ -138,7 +138,7 @@ export default function TourRoomBookingSidebar({
 
       {unavailable ? (
         <div className={styles.detailUnavailableCta}>
-          {isExpired ? "Trip ini sudah selesai" : "Kapasitas saat ini penuh"}
+          {bookingMode === "departed" ? "Keberangkatan ini sudah dimulai" : isExpired ? "Trip ini sudah selesai" : "Kapasitas saat ini penuh"}
         </div>
       ) : (
         <TourBookingCTA

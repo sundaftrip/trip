@@ -7,6 +7,7 @@ export type CommerceTourStatus =
   | "sold_out"
   | "waitlist"
   | "completed"
+  | "departed"
   | "flexible";
 
 export type CommerceTripType = "open_trip" | "private_land_tour" | "custom";
@@ -31,7 +32,7 @@ export type CompatibleDeparture = {
   id: string;
   startDate: string;
   price?: number;
-  status: Exclude<CommerceTourStatus, "flexible" | "completed">;
+  status: Exclude<CommerceTourStatus, "flexible" | "completed" | "departed">;
   seatsRemaining?: number;
 };
 
@@ -74,6 +75,7 @@ export function getCommerceTourStatus(
       completionBoundary.getUTCDate() + Math.max(1, parseDurationDays(tour.duration) || 1),
     );
     if (completionBoundary.getTime() <= now.getTime()) return "completed";
+    if (departure.getTime() <= now.getTime()) return "departed";
   }
   if (/\b(waitlist|daftar tunggu)\b/i.test(text)) return "waitlist";
   if (tour.status === "FULL" || /\b(penuh|sold out)\b/i.test(text)) return "sold_out";
@@ -98,7 +100,7 @@ export function getCompatibleDeparture(
 ): CompatibleDeparture | null {
   const date = validDate(tour.tripDate);
   const status = getCommerceTourStatus(tour, now);
-  if (!date || status === "completed" || status === "flexible") return null;
+  if (!date || status === "completed" || status === "departed" || status === "flexible") return null;
 
   return {
     id: `${tour.id || tour.slug || "tour"}-${date.toISOString().slice(0, 10)}`,

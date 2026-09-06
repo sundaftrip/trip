@@ -174,30 +174,6 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.intelligenceLink {
-  width: fit-content;
-  min-height: 28px;
-  margin-top: 10px;
-  padding: 3px 1px;
-  display: inline-flex;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.035em;
-  line-height: 1.4;
-  text-decoration-line: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.24);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  transition: color 180ms ease, text-decoration-color 180ms ease;
-}
-
-.intelligenceLink:hover {
-  color: rgba(255, 255, 255, 0.84);
-  text-decoration-color: rgba(255, 255, 255, 0.58);
-}
-
 .heroFacts {
   display: grid;
   gap: 1px;
@@ -1228,6 +1204,19 @@ textarea.formField {
   line-height: 1.55;
 }
 
+@media (max-width: 639px) {
+  .hero { padding: 36px 0; }
+  .heroGrid { gap: 24px; }
+  .heroTitle { max-width: 16ch; font-size: 38px; }
+  .heroLede { margin-top: 16px; font-size: 15px; }
+  .heroFacts { grid-template-columns: 1fr 1.5fr; border-radius: 12px; box-shadow: none; }
+  .heroFact { padding: 12px; }
+  .heroFact dt { font-size: 9px; letter-spacing: .08em; }
+  .heroFact dd { margin-top: 4px; font-size: 13px; }
+  .section, .sectionPlain { padding: 48px 0; }
+  .databaseSection { padding-top: 36px; }
+}
+
 @media (min-width: 640px) {
   .heroActions,
   .ctaActions {
@@ -1241,7 +1230,7 @@ textarea.formField {
   }
 
   .heroFacts {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .steps,

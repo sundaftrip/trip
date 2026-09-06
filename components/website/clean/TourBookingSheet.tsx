@@ -16,7 +16,7 @@ export type BookingDeparture = {
   availabilityLabel: string;
 };
 
-export type BookingMode = "available" | "sold_out" | "completed" | "flexible";
+export type BookingMode = "available" | "sold_out" | "completed" | "departed" | "flexible";
 
 export type BookingRoomOption = {
   value: string;
