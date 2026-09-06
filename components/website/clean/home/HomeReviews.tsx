@@ -56,7 +56,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
                 key={item.id}
               >
                 <span className="sr-only">
-                  Cerita {index + 1} dari {items.length}: {item.name}
+                  Cerita {index + 1} dari {items.length}: <span data-no-translate translate="no">{item.name}</span>
                 </span>
                 <div className={styles.reviewTopline}>
                   {validRating ? (
@@ -92,13 +92,14 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
                 </div>
 
                 <footer className={styles.reviewer}>
-                  <span className={styles.reviewerAvatar} aria-hidden="true">
+                  <span className={styles.reviewerAvatar} aria-hidden="true" data-no-translate translate="no">
                     {initials(item.name)}
                   </span>
                   <span>
-                    <strong>{item.name}</strong>
+                    <strong data-no-translate translate="no">{item.name}</strong>
                     <small>
-                      {[item.role || "Peserta Sundaf Trip", date].filter(Boolean).join(" · ")}
+                      {item.role || "Peserta Sundaf Trip"}
+                      {date ? <> · {date}</> : null}
                     </small>
                   </span>
                 </footer>

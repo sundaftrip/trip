@@ -46,3 +46,30 @@ test("removes long dashes from cached and generated English copy", () => {
   assert.equal(normalizeEnglishTranslation("14–23 January 2027"), "14 to 23 January 2027");
   assert.equal(normalizeEnglishTranslation("Visa—subject to approval"), "Visa, subject to approval");
 });
+
+test("translates the actual split hero nodes without an external provider", () => {
+  assert.equal(reviewedEnglishFor("Jelajahi Rusia, Asia Tengah &"), "Explore Russia, Central Asia &");
+  assert.equal(reviewedEnglishFor("Aurora."), "the Northern Lights.");
+});
+
+test("handles standalone dates, exact amounts, and contact identifiers deterministically", () => {
+  assert.equal(reviewedEnglishFor("10 November 2026"), "10 November 2026");
+  assert.equal(reviewedEnglishFor("April 2027"), "April 2027");
+  assert.equal(reviewedEnglishFor("14–23 Januari 2027"), "14–23 January 2027");
+  for (const value of ["Rp\u00a033.500.000", "Rp 2.500.000", "info@sundaftrip.com", "WhatsApp 6281775202759", "Instagram @sundaf.trip", "· NIB 1601260060842"]) {
+    assert.equal(reviewedEnglishFor(value), value);
+  }
+  assert.equal(reviewedEnglishFor("Rp 2.500.000 belum termasuk visa"), undefined);
+  assert.equal(reviewedEnglishFor("Perjalanan khusus yang belum ditinjau"), undefined);
+  assert.equal(reviewedEnglishFor("Peserta trip Rusia"), undefined);
+  assert.equal(reviewedEnglishFor("Vietnam Privat"), "Private Vietnam trip");
+});
+
+test("localizes known visa labels without treating unknown descriptions as English", () => {
+  assert.equal(reviewedEnglishFor("Mulai Rp 1.650.000"), "From Rp 1.650.000");
+  assert.equal(reviewedEnglishFor("Terakhir diverifikasi 29 Jun 2026"), "Last verified 29 Jun 2026");
+  assert.equal(reviewedEnglishFor("Bendera Korea Selatan"), "Flag of South Korea");
+  assert.equal(reviewedEnglishFor("Lihat informasi visa Singapura"), "View visa information for Singapore");
+  assert.equal(reviewedEnglishFor("Bendera negara yang belum ditinjau"), undefined);
+  assert.equal(reviewedEnglishFor("Mulai Rp 1.650.000 dengan layanan tambahan"), undefined);
+});

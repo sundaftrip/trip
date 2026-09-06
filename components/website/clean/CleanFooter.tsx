@@ -43,7 +43,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             </p>
             {(legalName || officeAddress) && (
               <div className={styles.companyBlock}>
-                {legalName && <strong>{legalName}</strong>}
+                {legalName && <strong data-no-translate translate="no">{legalName}</strong>}
                 <address>
                   <span className={styles.appointmentLabel}>{APPOINTMENT_ONLY_LABEL}</span>
                   {officeAddress}

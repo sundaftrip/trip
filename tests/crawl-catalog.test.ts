@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatCrawlTour, formatCrawlVisaFees } from "../lib/crawl-catalog";
+import { formatCrawlTour, formatCrawlVisaFees, isCrawlTourBookable } from "../lib/crawl-catalog";
 
 const tour = {
   id: "tour-1", slug: "russia-tour", title: "Rusia Aurora", country: "Rusia",
@@ -42,4 +42,11 @@ test("crawler room-tier prices stay authoritative over a conflicting legacy prom
   }, now);
   assert.match(line, /46\.300\.000/);
   assert.doesNotMatch(line, /44\.400\.000/);
+});
+
+test("crawler availability respects sold-out and waitlist badges", () => {
+  assert.equal(isCrawlTourBookable({ ...tour, badge: "Daftar tunggu" }, now), false);
+  assert.equal(isCrawlTourBookable({ ...tour, badge: "Penuh" }, now), false);
+  assert.equal(isCrawlTourBookable({ ...tour, badge: "Pasti berangkat" }, now), true);
+  assert.match(formatCrawlTour({ ...tour, badge: "Daftar tunggu" }, now), /daftar tunggu/);
 });

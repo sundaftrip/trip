@@ -60,11 +60,16 @@ type CrawlTour = {
   addOns: unknown;
   hotel?: unknown;
   status: string;
+  badge?: string | null;
 };
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
   day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta",
 });
+
+export function isCrawlTourBookable(tour: CrawlTour, now = new Date()) {
+  return ["available", "last_seats", "confirmed", "flexible"].includes(getCommerceTourStatus(tour, now));
+}
 
 export function formatCrawlTour(tour: CrawlTour, now = new Date()) {
   const mandatoryTotal = mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(tour.addOns, tour.slug));
@@ -81,7 +86,7 @@ export function formatCrawlTour(tour: CrawlTour, now = new Date()) {
     tour.duration,
     tour.tripDate ? `keberangkatan ${DATE_FORMATTER.format(tour.tripDate)}` : "land tour privat, tanggal sesuai permintaan",
     basePrice > 0 ? `mulai ${formatCurrency(total)}/orang${mandatoryTotal > 0 ? `, termasuk ${formatCurrency(mandatoryTotal)} biaya wajib` : ""}` : "harga sesuai permintaan",
-    status === "completed" ? "trip selesai, arsip" : departed ? "sudah berangkat, tidak tersedia untuk pemesanan" : status === "sold_out" ? "penuh" : null,
+    status === "completed" ? "trip selesai, arsip" : departed ? "sudah berangkat, tidak tersedia untuk pemesanan" : status === "sold_out" ? "penuh" : status === "waitlist" ? "daftar tunggu" : null,
   ].filter(Boolean).join("; ");
   return `- [${tour.title}](https://sundaftrip.com${canonicalTourPath(tour)}): ${facts}.`;
 }
