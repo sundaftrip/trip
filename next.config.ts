@@ -31,6 +31,15 @@ const scriptSrc = [
 ].join(" ");
 
 const nextConfig: NextConfig = {
+  outputFileTracingExcludes: {
+    // The PDF route's dynamic public-file lookup traces the whole directory,
+    // but mimeForFile accepts only JPG/JPEG/PNG. Keep those images (including
+    // CMS-selected files and fallback logos) and omit unsupported public assets
+    // from this function bundle. Static website assets remain deployed normally.
+    "/tours/\\[id\\]/pdf": [
+      "./public/**/*.{webp,avif,gif,svg,ico,pdf,css,js,html,txt,woff,woff2,mp4}",
+    ],
+  },
   // Tree-shake lucide-react & icon libraries — cut JS bundle signifikan.
   // Tanpa ini, import { Foo } dari "lucide-react" akan bawa seluruh barrel.
   experimental: {
