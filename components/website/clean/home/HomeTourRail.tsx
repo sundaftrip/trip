@@ -70,6 +70,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
   ) {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const attributedHref = appendCampaignToPath(href, window.location.search);
     if (attributedHref === href) return;
     event.preventDefault();
@@ -102,51 +103,53 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
               <Link
                 href={href}
                 scroll={false}
-                className={styles.tourMedia}
+                className={styles.tourLink}
                 data-analytics-event="tour_card_click"
                 data-tour-id={tour.id}
                 aria-label={`Lihat ${tour.title}`}
                 onClick={(event) => preserveCampaign(event, href)}
               >
-                <Image
-                  src={cldThumb(getTourProductImage(tour), 760, 510)}
-                  alt={`Pemandangan destinasi untuk ${tour.title}`}
-                  fill
-                  sizes="(max-width: 699px) 82vw, (max-width: 1199px) 44vw, 360px"
-                />
-                <span className={styles.tourMediaShade} aria-hidden="true" />
-                <span className={styles.tourBadge}>{statusLabel(tour)}</span>
-                <h3 className={styles.tourMediaTitle}>{tour.title}</h3>
-              </Link>
-
-              <div className={styles.tourBody}>
-                <p className={styles.tourMeta}>{tripMeta(tour)}</p>
-                <p className={styles.routeLine}>
-                  <MapPin aria-hidden="true" />
-                  <span>{routeHighlight(tour.cityHighlight || tour.country)}</span>
-                </p>
-                <p className={styles.departureLine}>
-                  <Calendar aria-hidden="true" />
-                  <span>{departureLabel(tour)}</span>
-                </p>
-                <div className={styles.tourPrice}>
-                  <span>{price > 0 ? (mandatoryTotal > 0 ? "Total wajib" : "Harga paket") : "Harga"}</span>
-                  <strong>
-                    {price > 0 ? (
-                      <>
-                        {formatCurrency(price)} <small>/orang</small>
-                      </>
-                    ) : (
-                      "Hubungi tim"
-                    )}
-                  </strong>
-                  {mandatoryTotal > 0 ? (
-                    <small className={styles.tourMandatoryNote}>
-                      Termasuk {formatCurrency(mandatoryTotal)} biaya wajib
-                    </small>
-                  ) : null}
+                <div className={styles.tourMedia}>
+                  <Image
+                    src={cldThumb(getTourProductImage(tour), 760, 510)}
+                    alt={`Pemandangan destinasi untuk ${tour.title}`}
+                    fill
+                    sizes="(max-width: 699px) 82vw, (max-width: 1199px) 44vw, 360px"
+                  />
+                  <span className={styles.tourMediaShade} aria-hidden="true" />
+                  <span className={styles.tourBadge}>{statusLabel(tour)}</span>
+                  <h3 className={styles.tourMediaTitle}>{tour.title}</h3>
                 </div>
-              </div>
+
+                <div className={styles.tourBody}>
+                  <p className={styles.tourMeta}>{tripMeta(tour)}</p>
+                  <p className={styles.routeLine}>
+                    <MapPin aria-hidden="true" />
+                    <span>{routeHighlight(tour.cityHighlight || tour.country)}</span>
+                  </p>
+                  <p className={styles.departureLine}>
+                    <Calendar aria-hidden="true" />
+                    <span>{departureLabel(tour)}</span>
+                  </p>
+                  <div className={styles.tourPrice}>
+                    <span>{price > 0 ? (mandatoryTotal > 0 ? "Total wajib" : "Harga paket") : "Harga"}</span>
+                    <strong>
+                      {price > 0 ? (
+                        <>
+                          {formatCurrency(price)} <small>/orang</small>
+                        </>
+                      ) : (
+                        "Hubungi tim"
+                      )}
+                    </strong>
+                    {mandatoryTotal > 0 ? (
+                      <small className={styles.tourMandatoryNote}>
+                        Termasuk {formatCurrency(mandatoryTotal)} biaya wajib
+                      </small>
+                    ) : null}
+                  </div>
+                </div>
+              </Link>
             </article>
           );
         })}
