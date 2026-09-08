@@ -32,7 +32,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "vistadome": 3850000
           },
           "roomNote": "5 kamar berdua untuk peserta.",
-          "landOnlyFrom": 26000000
+          "landOnlyFrom": 30900000
         },
         {
           "groupSize": 15,
@@ -42,7 +42,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "vistadome": 3850000
           },
           "roomNote": "7 kamar berdua + 1 kamar bersama tour leader untuk peserta ke-15.",
-          "landOnlyFrom": 22300000
+          "landOnlyFrom": 27200000
         },
         {
           "groupSize": 20,
@@ -52,7 +52,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "vistadome": 3850000
           },
           "roomNote": "10 kamar berdua untuk peserta.",
-          "landOnlyFrom": 22100000
+          "landOnlyFrom": 27000000
         }
       ]
     },
