@@ -13,7 +13,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
           "id": "hotel-4",
           "name": "Upgrade hotel 4★",
           "amount": 2680000,
-          "description": "Untuk seluruh grup, termasuk kamar sendiri yang tercantum dalam susunan kamar paket."
+          "description": "Upgrade untuk seluruh grup, sesuai susunan kamar paket."
         },
         {
           "id": "vistadome",
@@ -31,16 +31,18 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "hotel-4": 2920000,
             "vistadome": 3850000
           },
-          "roomNote": "5 kamar berdua untuk peserta."
+          "roomNote": "5 kamar berdua untuk peserta.",
+          "landOnlyFrom": 26000000
         },
         {
           "groupSize": 15,
-          "from": 67000000,
+          "from": 64700000,
           "optionPrices": {
-            "hotel-4": 2920000,
+            "hotel-4": 2600000,
             "vistadome": 3850000
           },
-          "roomNote": "7 kamar berdua + 1 kamar sendiri untuk peserta."
+          "roomNote": "7 kamar berdua + 1 kamar bersama tour leader untuk peserta ke-15.",
+          "landOnlyFrom": 22300000
         },
         {
           "groupSize": 20,
@@ -49,7 +51,8 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "hotel-4": 2680000,
             "vistadome": 3850000
           },
-          "roomNote": "10 kamar berdua untuk peserta."
+          "roomNote": "10 kamar berdua untuk peserta.",
+          "landOnlyFrom": 22100000
         }
       ]
     },
@@ -88,7 +91,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
       },
       {
         "title": "Cusco → Lima → perjalanan pulang",
-        "description": "Transfer bandara dan penerbangan kembali ke Lima untuk sambungan internasional. Jam terbang dipilih dengan waktu transit yang memadai.",
+        "description": "Transfer ke bandara Cusco untuk penerbangan ke Lima dan sambungan pulang. Layanan darat selesai di bandara Cusco. Tiket penerbangan termasuk pada paket dengan tiket pesawat; untuk land tour only, tiket dipesan terpisah.",
         "overnight": "Perjalanan pulang"
       }
     ],
@@ -97,8 +100,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
       "Transfer bandara dan transportasi untuk rangkaian kunjungan; beberapa layanan bersifat gabungan.",
       "Pemandu lokal berbahasa Inggris/Spanyol dan 1 tour leader dari Indonesia.",
       "Kereta standar, bus Machu Picchu dan tiket masuk sesuai sirkuit yang tersedia.",
-      "Kunjungan Lima, Cusco, Sacred Valley dan Vinicunca; makan yang disebut dalam itinerary.",
-      "Tiket internasional Jakarta–Lima PP dan domestik Lima–Cusco PP."
+      "Kunjungan Lima, Cusco, Sacred Valley dan Vinicunca; makan yang disebut dalam itinerary."
     ],
     "excluded": [
       "Makan yang tidak disebut, minuman, tip dan pengeluaran pribadi.",
@@ -142,7 +144,17 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
     ],
     "flightRoute": "Jakarta → Doha → Madrid → Lima · Lima ↔ Cusco",
     "flightNote": "Prioritas Qatar Airways untuk penerbangan jarak jauh, dengan maskapai partner pada sambungan ke Peru. Wi-Fi mengikuti pesawat dan operator setiap segmen; akses sepanjang perjalanan tidak dijamin.",
-    "englishSummary": "Travel from Jakarta to Lima, Cusco, the Sacred Valley, Machu Picchu and Vinicunca. The programme includes six hotel nights, international and domestic flights, local guides and an Indonesian tour leader. Groups of 10, 15 or 20 travellers are welcome. Some local services are shared. Final dates, hotels and availability are confirmed in your written quotation."
+    "englishSummary": "Explore Lima, Cusco, the Sacred Valley, Machu Picchu and Rainbow Mountain. Choose a 10-day package from Jakarta with flights or a 7-day land-only tour with 6 hotel nights. Both include local guides and an Indonesian tour leader, for groups of 10, 15 or 20 travellers. Land-only excludes all participant flights, including Lima–Cusco and the return connection via Lima. Final arrangements are confirmed in your written quotation.",
+    "flightInclusions": "Tiket internasional Jakarta–Lima PP dan domestik Lima–Cusco PP.",
+    "landTour": {
+      "duration": "7 hari di Peru · 6 malam hotel",
+      "meetingPoint": "Bandara Lima (LIM)",
+      "finishPoint": "Bandara Cusco (CUZ)",
+      "flightSectors": [
+        "Lima → Cusco",
+        "Cusco → Lima untuk sambungan pulang"
+      ]
+    }
   },
   "empat-negara": {
     "duration": "16 hari dari Jakarta · 12 malam hotel",
@@ -156,7 +168,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
           "id": "hotel-4",
           "name": "Upgrade hotel 4★",
           "amount": 6390000,
-          "description": "Untuk seluruh grup, mengikuti susunan kamar yang dipilih. Pilihan hotel mengikuti ketersediaan."
+          "description": "Upgrade untuk seluruh grup, sesuai susunan kamar paket."
         },
         {
           "id": "vistadome",
@@ -181,17 +193,19 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "vistadome": 1630000,
             "palcoyo": 1830000
           },
-          "roomNote": "5 kamar berdua untuk peserta."
+          "roomNote": "5 kamar berdua untuk peserta.",
+          "landOnlyFrom": 78000000
         },
         {
           "groupSize": 15,
-          "from": 158500000,
+          "from": 155500000,
           "optionPrices": {
-            "hotel-4": 7570000,
+            "hotel-4": 7100000,
             "vistadome": 1630000,
             "palcoyo": 1830000
           },
-          "roomNote": "7 kamar berdua + 1 kamar sendiri untuk peserta."
+          "roomNote": "7 kamar berdua + 1 kamar bersama tour leader untuk peserta ke-15.",
+          "landOnlyFrom": 52000000
         },
         {
           "groupSize": 20,
@@ -201,7 +215,8 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
             "vistadome": 1630000,
             "palcoyo": 1830000
           },
-          "roomNote": "10 kamar berdua untuk peserta."
+          "roomNote": "10 kamar berdua untuk peserta.",
+          "landOnlyFrom": 49100000
         }
       ]
     },
@@ -268,7 +283,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
       },
       {
         "title": "São Paulo → perjalanan pulang",
-        "description": "Transfer hotel ke bandara GRU untuk memulai penerbangan kembali ke Jakarta.",
+        "description": "Transfer hotel ke bandara GRU. Layanan darat berakhir di bandara; lanjutkan penerbangan pulang sesuai rencana perjalananmu.",
         "overnight": "Perjalanan pulang"
       }
     ],
@@ -277,8 +292,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
       "Transfer privat, kendaraan kunjungan dan pemandu lokal berbahasa Inggris sesuai itinerary.",
       "1 tour leader dari Indonesia, mendampingi perjalanan grup.",
       "Kereta Expedition PP, bus serta tiket Machu Picchu sesuai sirkuit yang tersedia.",
-      "Kunjungan dan tiket yang tercantum pada itinerary, termasuk Iguazu sisi Brasil.",
-      "Tiket Jakarta–São Paulo PP dan 7 penerbangan regional untuk rangkaian empat negara."
+      "Kunjungan dan tiket yang tercantum pada itinerary, termasuk Iguazu sisi Brasil."
     ],
     "excluded": [
       "Makan siang, makan malam, minuman, tip dan pengeluaran pribadi.",
@@ -343,6 +357,21 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
     ],
     "flightRoute": "Jakarta ↔ Doha ↔ São Paulo · GRU–BOG–LIM–CUZ–SCL–GIG–IGU–GRU",
     "flightNote": "Prioritas Qatar Airways untuk Jakarta–Doha–São Paulo. Penerbangan regional memakai operator yang melayani tiap rute. Bagasi, waktu transit dan Wi-Fi diperiksa per segmen; stopover Bogotá membutuhkan jadwal yang memadai.",
-    "englishSummary": "Explore Brazil, Colombia, Peru and Chile in 16 days from Jakarta, with 12 hotel nights and a daytime visit in Bogotá. International and regional flights, local guides and an Indonesian tour leader are included. Choose a group of 10, 15 or 20 travellers. The Bogotá visit depends on the flight schedule; final arrangements are confirmed in your written quotation."
+    "englishSummary": "Explore Brazil, Colombia, Peru and Chile. Choose a 16-day package from Jakarta with flights or a 13-day land-only tour starting and ending in São Paulo, with 12 hotel nights. Both include local guides and an Indonesian tour leader, for groups of 10, 15 or 20 travellers. Land-only excludes all participant flights, including the seven regional sectors. The Bogotá visit depends on the flight schedule; final arrangements are confirmed in your written quotation.",
+    "flightInclusions": "Tiket Jakarta–São Paulo PP dan 7 penerbangan regional untuk rangkaian empat negara.",
+    "landTour": {
+      "duration": "13 hari di Amerika Selatan · 12 malam hotel",
+      "meetingPoint": "Bandara São Paulo (GRU)",
+      "finishPoint": "Bandara São Paulo (GRU)",
+      "flightSectors": [
+        "São Paulo → Bogotá",
+        "Bogotá → Lima",
+        "Lima → Cusco",
+        "Cusco → Santiago",
+        "Santiago → Rio de Janeiro",
+        "Rio de Janeiro → Foz do Iguaçu",
+        "Foz do Iguaçu → São Paulo"
+      ]
+    }
   }
 };

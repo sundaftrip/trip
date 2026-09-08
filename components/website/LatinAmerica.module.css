@@ -149,14 +149,6 @@
 .priceHeading p:not(.eyebrow) { font-size: 13px; color: #536169; margin-top: 10px; }
 .airBadge { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 12px; padding: 10px 12px; border-radius: 30px; background: #dcefe6; color: #245344; }
 .priceBasis { color: #536169; max-width: 890px; margin: 18px 0 23px; font-size: 14px; }
-.priceBreakdown { border-block: 1px solid #cddfd7; }
-.priceBreakdown summary { min-height: 54px; padding: 17px 0; cursor: pointer; font-size: 14px; font-weight: 600; }
-.priceBreakdown dl { margin: 0; padding-bottom: 8px; }
-.priceBreakdown dl > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 25px; padding: 14px 0; border-top: 1px solid #e0e9e4; }
-.priceBreakdown dt { font-size: 14px; }
-.priceBreakdown dt small { display: block; font-size: 12px; color: #596971; max-width: 620px; margin-top: 5px; line-height: 1.5; }
-.priceBreakdown dd { white-space: nowrap; margin: 0; font-size: 15px; font-weight: 550; }
-.priceBreakdown > p { font-size: 12px; color: #596971; padding-bottom: 16px; }
 .optionList { border: 0; margin: 26px 0 0; padding: 0; min-width: 0; }
 .optionList legend { width: 100%; font-size: 17px; font-weight: 600; margin-bottom: 13px; }
 .optionList legend > span { font-size: 12px; font-weight: 400; color: #596971; margin-left: 10px; }
@@ -206,9 +198,6 @@
   .priceHeading h2 { font-size: 31px; }
   .priceTotal { align-items: stretch; }
   .priceTotal a { width: 100%; }
-  .priceBreakdown dl > div { gap: 13px; }
-  .priceBreakdown dt { font-size: 13px; }
-  .priceBreakdown dd { font-size: 13px; }
   .option { grid-template-columns: 18px minmax(0,1fr); gap: 10px; padding: 16px 13px; }
   .option b { grid-column: 2; }
   .inclusionsGrid { grid-template-columns: 1fr; gap: 40px; }
@@ -234,4 +223,20 @@
   .groupChoice > span { padding: .85rem .5rem; }
   .groupChoice strong { font-size: .84rem; }
   .groupChoice small { font-size: .73rem; }
+}
+
+.modeList { border: 0; padding: 0; margin: 0 0 28px; min-width: 0; }
+.modeList legend { font-weight: 750; font-size: 1.05rem; margin-bottom: .85rem; }
+.modeChoices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.modeCoverage { margin-top: 20px; padding: 18px 20px; border-left: 3px solid #86b5a5; background: #fff; color: #42575f; }
+.modeCoverage p { font-size: 13px; line-height: 1.65; margin: 0; }
+.modeCoverage p + p { margin-top: 10px; }
+.packageComparison { margin-top: 28px; padding: 22px; background: #fff; border: 1px solid #d6e3de; border-radius: 12px; }
+.packageComparison h3 { font-size: 17px; margin: 0 0 12px; }
+.packageComparison p { font-size: 14px; line-height: 1.65; color: #42575f; margin-top: 10px; }
+.landStartingPrice { font-size: 14px; color: #075d63; margin-top: 12px; }
+@media (max-width: 480px) {
+  .modeChoices { gap: .5rem; }
+  .modeCoverage { padding: 14px; }
+  .airBadge { white-space: normal; }
 }

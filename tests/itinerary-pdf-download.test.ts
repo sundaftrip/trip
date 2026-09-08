@@ -23,6 +23,8 @@ function workerHarness() {
       `${origin}/tours/russia-aurora/pdf`, `${origin}/tours/canada/pdf?v=old`,
       `${origin}/tours/asia/pdf/`, `${origin}/api/tours`,
       `${origin}/logo.png`, `${origin}/sundaftrip-company-profile.pdf`,
+      `${origin}/downloads/sundaf-trip-peru-south-america-2027.pdf`,
+      `${origin}/downloads/sundaf-trip-peru-south-america-2027.pdf?v=old`,
       "https://unrelated.example/tours/russia/pdf",
     ])],
     ["static-image-assets", new Set([`${origin}/trip-photos/trip-1.jpg`])],
@@ -74,7 +76,7 @@ test("only generated customer itinerary paths match the no-cache policy", () => 
 
 test("worker routes versioned and old PDF addresses network-only in every request mode", () => {
   const { config, origin } = workerHarness();
-  for (const pathname of ["/tours/id/pdf", "/tours/id/pdf?v=clean-2026-08", "/tours/id/pdf/"]) {
+  for (const pathname of ["/tours/id/pdf", "/tours/id/pdf?v=clean-2026-08", "/tours/id/pdf/", "/downloads/sundaf-trip-peru-south-america-2027.pdf", "/downloads/sundaf-trip-peru-south-america-2027.pdf?v=old"]) {
     for (const mode of ["navigate", "cors", "same-origin", "no-cors"]) {
       const input = { sameOrigin: true, url: new URL(pathname, origin), request: { mode, destination: mode === "navigate" ? "document" : "", headers: new Headers() } };
       const route = config.runtimeCaching.find((item) => item.matcher(input));
@@ -89,6 +91,7 @@ test("offline PDF requests cannot turn into a cached document fallback", () => {
   const matcher = config.fallbacks.entries[0].matcher;
   const request = { url: `${origin}/tours/id/pdf?v=old`, mode: "navigate", destination: "document", headers: new Headers() };
   assert.equal(matcher({ request }), false);
+  assert.equal(matcher({ request: { ...request, url: `${origin}/downloads/sundaf-trip-peru-south-america-2027.pdf` } }), false);
   assert.equal(matcher({ request: { ...request, url: `${origin}/tours` } }), true);
 });
 
