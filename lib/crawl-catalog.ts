@@ -36,7 +36,7 @@ export const CRAWL_PROFILE = `# Sundaf Trip
 - [Kerja sama operasional](https://sundaftrip.com/partnership-relation)
 
 ## Peru dan Amerika Latin 2027
-Sundaf Trip menyediakan katalog perjalanan Peru serta Brasil, Kolombia, Peru dan Chile untuk grup 10, 15 atau 20 peserta dari Indonesia. Paket mencakup penerbangan dari Jakarta, hotel dan pendampingan tour leader. Harga serta ketersediaan dikonfirmasi sebelum pemesanan.
+Sundaf Trip menyediakan katalog perjalanan Peru serta Brasil, Kolombia, Peru dan Chile untuk grup 10, 15 atau 20 peserta dari Indonesia. Tersedia paket dengan tiket pesawat dari Jakarta atau land tour only. Keduanya mencakup hotel dan pendampingan tour leader. Land tour only tidak mencakup tiket pesawat peserta, termasuk penerbangan domestik dan regional. Harga serta ketersediaan dikonfirmasi sebelum pemesanan.
 - [Katalog Amerika Latin](https://sundaftrip.com/amerika-latin)
 - [Paket Peru](https://sundaftrip.com/peru-amerika-selatan)
 - [Paket Brasil, Kolombia, Peru dan Chile](https://sundaftrip.com/amerika-latin/brasil-kolombia-peru-chile)

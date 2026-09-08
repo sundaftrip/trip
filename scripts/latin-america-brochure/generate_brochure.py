@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Build Sundaf Trip's five-page customer catalogue for groups of 10, 15 and 20.
+"""Build Sundaf Trip's six-page group catalogue with flight and land-only choices.
 
 Input is a JSON object mapping ``peru`` and ``empat-negara`` to PackageDetails.
 Only selling totals, customer inclusions and optional upgrades are printed.
-Each package requires price.groups with groupSize, from, optionPrices and optional
-roomNote. The 20-person selling total must match price.from. No cost methodology
-or component breakdown is accepted in the public price data.
+Each package requires price.groups with groupSize, from, landOnlyFrom,
+optionPrices and roomNote, plus landTour and flightInclusions. The 20-person
+flight-inclusive selling total must match price.from. The included list holds
+ground services common to both modes. No internal cost breakdown is accepted.
 Requires reportlab and Pillow, plus the repository's bundled fonts and HD photos.
 The PDF skill's artifact-operation marker must be run by the caller before the
 first PDF creation/edit. This script deliberately does not run that marker.
@@ -159,65 +160,81 @@ class Brochure:
     def overview(self, key, page):
         p = self.data[key]
         peru = key == 'peru'
-        self.header('DARI JAKARTA / PERJALANAN GRUP')
-        self.photo('machu-picchu-panorama' if peru else 'rio-de-janeiro-sunrise', M, 89, CW, 170, focus=(.5, .15 if peru else .55))
-        self.box(M, 203, CW, 56, INK)
-        self.text('PERU' if peru else 'BRASIL · KOLOMBIA · PERU · CHILE', M+15, 214,
+        self.header('PILIHAN PAKET / PERJALANAN GRUP')
+        offset = 80
+        self.photo('machu-picchu-panorama' if peru else 'rio-de-janeiro-sunrise', M, 89, CW, 250, focus=(.5, .85 if peru else .55))
+        self.box(M, 203+offset, CW, 56, INK)
+        self.text('PERU' if peru else 'BRASIL · KOLOMBIA · PERU · CHILE', M+15, 214+offset,
                   25 if peru else 17, 'DisplayBold', white)
         self.text('Lima, Sacred Valley & Machu Picchu' if peru else 'Machu Picchu, Rio & Iguazu dalam satu perjalanan',
-                  M+16, 243, 8.5, color=white)
+                  M+16, 243+offset, 8.5, color=white)
 
-        self.text(p['duration'], M, 274, 12, 'BodyBold')
-        self.text('ESTIMASI HARGA MULAI DARI / PER ORANG', M, 302, 8.5, 'BodyBold', TEAL)
+        self.text('Dengan pesawat: '+p['duration'], M, 274+offset, 10.8, 'BodyBold')
+        self.text('Land tour: '+p['landTour']['duration'], M, 292+offset, 9.4, color=MUTED)
+        self.text('ESTIMASI HARGA MULAI DARI / PER ORANG', M, 316+offset, 8.5, 'BodyBold', TEAL)
         groups = sorted(p['price']['groups'], key=lambda group: group['groupSize'])
-        gap = 10
-        card_w = (CW-2*gap)/3
+        label_w = 122
+        col_w = (CW-label_w)/3
+        self.box(M, 335+offset, CW, 26, INK, 5)
+        self.text('PILIHAN PAKET', M+11, 343+offset, 7.8, 'BodyBold', white)
         for index, group in enumerate(groups):
-            x = M+index*(card_w+gap)
-            self.box(x, 322, card_w, 94, PALE, 7)
-            self.text(f"{group['groupSize']} PESERTA", x+12, 332, 8.6, 'BodyBold', TEAL)
-            self.para(millions(group['from']), x+12, 351, card_w-24, size=18.3,
-                      leading=22, bold=True, limit=23)
-            self.para(group.get('roomNote') or 'Susunan kamar dikonfirmasi saat pemesanan.',
-                      x+12, 384, card_w-24, size=7.1, leading=9.4, color=MUTED, limit=29)
-        self.para('Termasuk pesawat PP Jakarta, penerbangan domestik/regional sesuai rute, dan pendampingan 1 tour leader Indonesia.',
-                  M, 429, CW, size=8.7, leading=12.1, limit=25)
+            x = M+label_w+index*col_w
+            self.text(f"{group['groupSize']} PESERTA", x+10, 343+offset, 8.2, 'BodyBold', white)
+        for row, (label, field) in enumerate((('Termasuk pesawat', 'from'), ('Land tour saja', 'landOnlyFrom'))):
+            top = 361+offset+row*43
+            self.box(M, top, CW, 43, PALE if row == 0 else white)
+            self.para(label, M+11, top+13, label_w-21, size=8.9, leading=12, bold=True, limit=25)
+            for index, group in enumerate(groups):
+                x = M+label_w+index*col_w
+                self.para(millions(group[field]), x+10, top+11, col_w-18,
+                          size=15.3, leading=21, bold=True, color=INK if row == 0 else TEAL, limit=22)
+        room_text = ' '.join(f"{group['groupSize']} peserta: {group['roomNote']}" for group in groups)
+        top = 459+offset
+        top += self.para(room_text, M, top, CW, size=7.9, leading=11.2, color=MUTED, limit=45)+10
+        top += self.para('<b>Paket dengan pesawat:</b> '+esc(p['flightInclusions']), M, top, CW,
+                         size=8.4, leading=12, markup=True, limit=37)+7
+        top += self.para('<b>Land tour:</b> tidak termasuk seluruh tiket pesawat peserta, termasuk penerbangan domestik '
+                         'dan regional yang diperlukan dalam itinerary. Rute penerbangan dan titik temu ada di halaman 5.',
+                         M, top, CW, size=8.4, leading=12, markup=True, limit=37)+14
+        self.text('TERMASUK PADA KEDUA PILIHAN', M, top, 9, 'BodyBold', TEAL)
+        top += 23
+        gap = 23
+        col_w = (CW-gap)/2
+        split = (len(p['included'])+1)//2
+        left_end = self.bullets(p['included'][:split], M, top, col_w, size=8.5, leading=12, gap=5)
+        right_end = self.bullets(p['included'][split:], M+col_w+gap, top, col_w, size=8.5, leading=12, gap=5)
+        note_top = max(left_end, right_end)+8
+        self.para('Harga akhir, jadwal, hotel dan ketersediaan dikonfirmasi dalam penawaran tertulis. '
+                  'Pilihan tambahan dan detail pemesanan ada di halaman 5.', M, note_top, CW,
+                  size=7.7, leading=10.8, color=MUTED, limit=23)
+        self.footer(page)
 
-        left_w = 306
-        right_x = M+329
-        right_w = CW-329
-        self.text('SUDAH TERMASUK', M, 469, 9, 'BodyBold', TEAL)
-        left_end = self.bullets(p['included'], M, 491, left_w, size=8.5, leading=12, gap=5)
-        self.text('PILIHAN TAMBAHAN', right_x, 469, 9, 'BodyBold', TEAL)
-        top = 492
+    def options(self, p, x, top, width):
+        groups = sorted(p['price']['groups'], key=lambda group: group['groupSize'])
         for option in p['price']['options']:
-            top += self.para(option['name'], right_x, top, right_w, size=9.2, leading=12.6, bold=True)
+            top += self.para(option['name'], x, top, width, size=9.2, leading=12.6, bold=True)
             top += 4
             amounts = [group['optionPrices'].get(option['id'], option['amount']) for group in groups]
             if option['id'] == 'hotel-4' or len(set(amounts)) > 1:
-                option_col_w = right_w/3
+                option_col_w = width/3
                 for index, (group, amount) in enumerate(zip(groups, amounts)):
-                    x = right_x+index*option_col_w
-                    self.text(f"{group['groupSize']} peserta", x, top, 7.0, 'BodyBold', MUTED)
-                    self.para('+'+rupiah(amount), x, top+12, option_col_w-3, size=7.25,
+                    cell_x = x+index*option_col_w
+                    self.text(f"{group['groupSize']} peserta", cell_x, top, 7.0, 'BodyBold', MUTED)
+                    self.para('+'+rupiah(amount), cell_x, top+12, option_col_w-3, size=7.5,
                               leading=9.3, color=TEAL, bold=True, limit=10)
                 top += 28
-                self.text('tambahan per orang', right_x, top, 7.2, color=MUTED)
+                self.text('tambahan per orang', x, top, 7.2, color=MUTED)
                 top += 15
             else:
                 amount = f"+ {rupiah(amounts[0])} / orang" if amounts[0] > 0 else 'Penawaran terpisah'
-                self.text(amount, right_x, top, 9.3, 'BodyBold', TEAL)
+                self.text(amount, x, top, 9.3, 'BodyBold', TEAL)
                 top += 18
-            top += self.para(option['description'], right_x, top, right_w, size=8.1, leading=11.4, color=MUTED)
+            top += self.para(option['description'], x, top, width, size=8.1, leading=11.4, color=MUTED)
             top += 12
         if not p['price']['options']:
             top += self.para('Kamar single, layanan privat dan tambahan malam tersedia melalui penawaran terpisah.',
-                             right_x, top, right_w, size=8.6, leading=12, color=MUTED)
-        note_top = max(left_end, top)+4
-        note = ('Harga estimasi untuk perjalanan 2027. Susunan kamar mengikuti ukuran grup di atas. '
-                'Belum ada tanggal keberangkatan tetap. Harga akhir, hotel dan ketersediaan dikonfirmasi dalam penawaran tertulis.')
-        self.para(note, M, note_top, CW, size=7.8, leading=10.8, color=MUTED, limit=33)
-        self.footer(page)
+                             x, top, width, size=8.6, leading=12, color=MUTED)
+        return top
 
     def day(self, day, number, x, top, width, size=8.4, leading=11.7, gap=11):
         self.text(f'{number:02}', x, top, 12.5, 'DisplayBold', TEAL)
@@ -281,6 +298,53 @@ class Brochure:
                 raise ValueError(f'Four-country itinerary column {col} overflow: {top}')
         self.footer(4)
 
+    def land_and_options(self):
+        self.header('LAND TOUR / PILIHAN TAMBAHAN')
+        self.title('ATUR PERJALANAN SESUAI KEBUTUHAN', 'Bergabung langsung di destinasi')
+        top = 151
+        top += self.para('Land tour mencakup hotel, layanan darat dan 1 tour leader Indonesia. '
+                         'Seluruh tiket pesawat peserta dibeli terpisah: menuju titik temu, dari titik akhir, '
+                         'serta antarkota atau antarnegara dalam itinerary.', M, top, CW, size=9, leading=13, limit=40)+19
+        gap = 25
+        col_w = (CW-gap)/2
+        bottom = []
+        for index, (key, label) in enumerate((('peru', 'PERU'), ('empat-negara', 'EMPAT NEGARA'))):
+            p = self.data[key]
+            land = p['landTour']
+            x = M+index*(col_w+gap)
+            y = top
+            self.text(label, x, y, 10.1, 'BodyBold', TEAL)
+            y += 22
+            y += self.para(land['duration'], x, y, col_w, size=9.1, leading=12.4, bold=True)+12
+            y += self.para('<b>Titik temu:</b> '+esc(land['meetingPoint']), x, y, col_w,
+                           size=8.4, leading=12, markup=True)+8
+            y += self.para('<b>Titik akhir:</b> '+esc(land['finishPoint']), x, y, col_w,
+                           size=8.4, leading=12, markup=True)+12
+            y += self.para('Penerbangan dalam rute, dibeli terpisah:', x, y, col_w,
+                           size=8.4, leading=12, bold=True)+5
+            y += self.para(' · '.join(land['flightSectors']), x, y, col_w,
+                           size=8.1, leading=11.6, color=MUTED)
+            bottom.append(y)
+        top = max(bottom)+20
+        self.c.setStrokeColor(LINE)
+        self.c.line(M, H-top, W-M, H-top)
+        top += 16
+        self.text('PILIHAN TAMBAHAN / HARGA PER ORANG', M, top, 9.2, 'BodyBold', TEAL)
+        top += 24
+        bottom = []
+        for index, (key, label) in enumerate((('peru', 'PERU'), ('empat-negara', 'EMPAT NEGARA'))):
+            x = M+index*(col_w+gap)
+            self.text(label, x, top, 9, 'BodyBold', MUTED)
+            bottom.append(self.options(self.data[key], x, top+23, col_w))
+        top = max(bottom)+7
+        top += self.para('Harga pilihan tambahan berlaku pada kedua jenis paket. Peserta land tour perlu '
+                         'mencocokkan jadwal penerbangannya dengan Sundaf sebelum membeli tiket agar seluruh '
+                         'rangkaian perjalanan dapat diikuti.', M, top, CW, size=8.3, leading=12, limit=37)+9
+        self.para('Seluruh harga merupakan estimasi perjalanan 2027. Belum ada tanggal keberangkatan tetap; '
+                  'harga akhir, layanan, jadwal dan ketersediaan dikonfirmasi dalam penawaran tertulis.',
+                  M, top, CW, size=8, leading=11.6, color=MUTED, limit=35)
+        self.footer(5)
+
     def trade(self):
         peru, multi = self.data['peru'], self.data['empat-negara']
         self.header('TRAVEL DETAILS / ENGLISH TRADE BRIEF')
@@ -303,18 +367,18 @@ class Brochure:
         flight_text = (
             '<b>Peru:</b> '+esc(peru['flightRoute'])+'. <b>Four countries:</b> '+esc(multi['flightRoute'])+'. '
             'Qatar Airways is preferred for long-haul sectors, with partner airlines where required. '
-            'Return flights from Jakarta and domestic/regional flights along the itinerary are included. '
+            'The flight-inclusive package includes return travel from Jakarta and domestic/regional flights along the itinerary. '
+            'Land-only packages exclude all participant flights, including those required during the tour. '
             'Flight schedules, baggage and transit times are confirmed in the final written offer. '
             'Wi-Fi depends on the operating airline and aircraft; continuous access is not guaranteed.'
         )
         top += self.para(flight_text, M, top, CW, size=8.0, leading=11.5, markup=True)
         top += 13
         trade_text = (
-            '<b>Indonesian outbound groups.</b> Peru: 7 local days / 6 hotel nights, from '+esc(millions(peru['price']['from']))+
-            '. Four countries: 13 local days / 12 hotel nights, from '+esc(millions(multi['price']['from']))+'. '
-            'The lowest listed estimates are per guest for a group of 20, with twin/double sharing. '
-            'Prices for groups of 10 and 15 are shown on each programme page. '
-            'Both programmes include international and domestic/regional flights and an Indonesian tour leader. '
+            '<b>Indonesian outbound groups.</b> Peru covers 7 local days and 6 hotel nights; the four-country journey covers '
+            '13 local days and 12 hotel nights. Both packages are offered with flights or as land-only tours, '
+            'with group prices for 10, 15 and 20 participants and one Indonesian tour leader. '
+            'For a group of 15, participant 15 shares a room with the tour leader. '
             'International travel adds days. Bogotá is a transit visit, subject to the flight schedule. '
             'There are no fixed departure dates. The final 2027 price, hotels, transport and admission availability are confirmed in a written offer.'
         )
@@ -338,13 +402,14 @@ class Brochure:
                       f'<link href="{escape(item["licenseUrl"])}" color="#008D93">{esc(item["license"])}</link>. '
                       'Resized and cropped for this layout; no generative edits.')
             top += self.para(credit, M, top, CW, size=7.0, leading=9.7, color=MUTED, markup=True)+4
-        self.footer(5, 'TRADE / ID + EN')
+        self.footer(6, 'TRADE / ID + EN')
 
     def build(self):
         self.overview('peru', 1)
         self.peru_itinerary()
         self.overview('empat-negara', 3)
         self.four_itinerary()
+        self.land_and_options()
         self.trade()
         self.c.save()
 
@@ -365,6 +430,12 @@ def validate(data):
         for group in groups:
             if not isinstance(group['from'], (int, float)) or group['from'] <= 0:
                 raise ValueError(f'{key}: all group prices must be positive')
+            if not isinstance(group.get('landOnlyFrom'), (int, float)) or not 0 < group['landOnlyFrom'] < group['from']:
+                raise ValueError(f'{key}: each land-only price must be positive and below the flight-inclusive price')
+            if not isinstance(group.get('roomNote'), str) or not group['roomNote'].strip():
+                raise ValueError(f'{key}: a customer room arrangement is required for every group')
+            if group['groupSize'] == 15 and 'tour leader' not in group['roomNote'].lower():
+                raise ValueError(f'{key}: the 15-person room note must explain sharing with the tour leader')
             if group['groupSize'] == 20 and group['from'] != p['price']['from']:
                 raise ValueError(f'{key}: the 20-person price must equal the headline price')
             if not isinstance(group.get('optionPrices'), dict):
@@ -382,11 +453,21 @@ def validate(data):
             raise ValueError(f'{key}: expected {expected_nights} hotel nights')
         if len(p['price']['options']) > 3:
             raise ValueError(f'{key}: at most 3 priced options fit the overview page')
+        land = p.get('landTour', {})
+        for name in ('duration', 'meetingPoint', 'finishPoint'):
+            if not isinstance(land.get(name), str) or not land[name].strip():
+                raise ValueError(f'{key}: landTour.{name} is required')
+        if not isinstance(land.get('flightSectors'), list) or not land['flightSectors']:
+            raise ValueError(f'{key}: landTour.flightSectors must list the participant flights to buy separately')
+        if not all(isinstance(sector, str) and sector.strip() for sector in land['flightSectors']):
+            raise ValueError(f'{key}: flight sectors must be nonempty customer-facing strings')
+        if not isinstance(p.get('flightInclusions'), str) or not p['flightInclusions'].strip():
+            raise ValueError(f'{key}: flightInclusions is required for the flight-inclusive package')
         # Catch stale internal copy before any PDF file is created. No strings are
         # silently altered; the public source data must be corrected explicitly.
         public_copy = json.dumps({name: p[name] for name in (
             'duration', 'travelNote', 'included', 'excluded', 'days', 'hotels',
-            'flightNote', 'englishSummary')}, ensure_ascii=False).lower()
+            'flightNote', 'englishSummary', 'landTour', 'flightInclusions')}, ensure_ascii=False).lower()
         public_copy += json.dumps({name: p['price'][name] for name in (
             'basisNote', 'options', 'groups')}, ensure_ascii=False).lower()
         for phrase in ('rata-rata', 'sampel', 'markup', 'mark up', 'supplier', 'alokasi',

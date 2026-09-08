@@ -17,8 +17,18 @@ export type PackagePrice = {
 export type PackageGroupPrice = {
   groupSize: number;
   from: number;
+  landOnlyFrom: number;
   optionPrices: Record<string, number>;
   roomNote: string;
+};
+
+export type PackageMode = "with-flights" | "land-only";
+
+export type LandTourDetails = {
+  duration: string;
+  meetingPoint: string;
+  finishPoint: string;
+  flightSectors: string[];
 };
 
 export type PackageDay = {
@@ -30,6 +40,8 @@ export type PackageDay = {
 
 export type PackageDetails = {
   duration: string;
+  landTour: LandTourDetails;
+  flightInclusions: string;
   travelNote: string;
   price: PackagePrice;
   days: PackageDay[];
@@ -48,10 +60,11 @@ export function packageGroup(price: PackagePrice, groupSize = price.groupSize) {
   return group;
 }
 
-export function packageTotal(price: PackagePrice, selected: readonly string[] = [], groupSize = price.groupSize) {
+export function packageTotal(price: PackagePrice, selected: readonly string[] = [], groupSize = price.groupSize, mode: PackageMode = "with-flights") {
   const group = packageGroup(price, groupSize);
   const chosen = new Set(selected);
-  return group.from + price.options.reduce((total, option) => total + (chosen.has(option.id) ? group.optionPrices[option.id] : 0), 0);
+  const base = mode === "land-only" ? group.landOnlyFrom : group.from;
+  return base + price.options.reduce((total, option) => total + (chosen.has(option.id) ? group.optionPrices[option.id] : 0), 0);
 }
 
 export function rupiah(amount: number) {
