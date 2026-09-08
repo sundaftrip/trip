@@ -22,6 +22,7 @@ import {
   getCatalogTripType,
   getUpcomingDepartureMonths,
   parseCatalogFilters,
+  resolveCatalogFilters,
   serializeCatalogFilters,
   type CatalogAvailability,
   type CatalogDuration,
@@ -111,15 +112,15 @@ export default function CleanToursCatalog({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const now = useMemo(() => new Date(generatedAt), [generatedAt]);
   const filters = useMemo(
-    () => parseCatalogFilters(new URLSearchParams(initialSearch)),
-    [initialSearch],
+    () => resolveCatalogFilters(tours, new URLSearchParams(initialSearch), now),
+    [initialSearch, now, tours],
   );
   const campaignQuery = useMemo(
     () => campaignParamsFromSearch(initialSearch).toString(),
     [initialSearch],
   );
-  const now = useMemo(() => new Date(generatedAt), [generatedAt]);
   const filterKey = serializeCatalogFilters(filters);
   const [pagination, setPagination] = useState({ key: filterKey, count: PAGE_SIZE });
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -156,10 +157,13 @@ export default function CleanToursCatalog({
       Object.fromEntries(
         categoryTabs.map(({ value }) => [
           value,
-          tours.filter((tour) => getCatalogTripType(tour, now) === value).length,
+          tours.filter((tour) =>
+            getCatalogTripType(tour, now) === value
+            && (filters.destination === "all" || getCatalogDestination(tour) === filters.destination),
+          ).length,
         ]),
       ) as Record<CatalogTripType, number>,
-    [now, tours],
+    [filters.destination, now, tours],
   );
 
   const results = useMemo(
@@ -289,7 +293,7 @@ export default function CleanToursCatalog({
         </div>
       </section>
 
-      <LatinAmericaCollection />
+      {filters.destination === "all" ? <LatinAmericaCollection /> : null}
 
       <section
         className={`${styles.resultsSection} ${showPrivatePreview ? styles.resultsWithPrivatePreview : ""}`}

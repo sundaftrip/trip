@@ -6,6 +6,7 @@ import {
   getCatalogTripType,
   getUpcomingDepartureMonths,
   parseCatalogFilters,
+  resolveCatalogFilters,
   serializeCatalogFilters,
 } from "../lib/tour-filters";
 
@@ -69,6 +70,66 @@ test("serializes only meaningful catalog filter state and parses legacy region",
     price: "under-10",
   });
   assert.equal(parseCatalogFilters({ region: "asia-tengah" }).destination, "asia-tengah");
+});
+
+test("destination entry links show matching land tours when no open trip is available", () => {
+  for (const input of [
+    new URLSearchParams("destination=vietnam"),
+    { region: "Vietnam" },
+    { destination: ["vietnam"], type: "invalid" },
+  ]) {
+    const filters = resolveCatalogFilters(tours, input, NOW);
+    assert.equal(filters.type, "private");
+    assert.equal(filters.destination, "vietnam");
+    assert.deepEqual(filterCatalogTours(tours, filters, NOW).map((tour) => tour.id), ["private"]);
+  }
+});
+
+test("an explicit category survives URL navigation even when it has no destination results", () => {
+  for (const type of ["open-trip", "open", "land-tour", "private", "archive", "completed"]) {
+    const input = new URLSearchParams({ destination: "vietnam", type });
+    const filters = resolveCatalogFilters(tours, input, NOW);
+    assert.equal(filters.type, parseCatalogFilters(input).type);
+    assert.deepEqual(resolveCatalogFilters(tours, new URLSearchParams(serializeCatalogFilters(filters)), NOW), filters);
+  }
+  assert.equal(
+    serializeCatalogFilters({ ...DEFAULT_CATALOG_FILTERS, destination: "vietnam" }),
+    "type=open-trip&destination=vietnam",
+  );
+});
+
+test("automatic category selection retains matching open trips and never substitutes another destination", () => {
+  assert.equal(resolveCatalogFilters(tours, { destination: "rusia" }, NOW).type, "open");
+  const bothTypes = [...tours, { ...tours[0], id: "vietnam-open", title: "Vietnam departure", country: "Vietnam" }];
+  const vietnamFilters = resolveCatalogFilters(bothTypes, { destination: "vietnam" }, NOW);
+  assert.equal(vietnamFilters.type, "open");
+  assert.deepEqual(filterCatalogTours(bothTypes, vietnamFilters, NOW).map((tour) => tour.id), ["vietnam-open"]);
+  assert.deepEqual(resolveCatalogFilters(tours, {}, NOW), DEFAULT_CATALOG_FILTERS);
+  for (const destination of ["missing-country", "asia-tengah"]) {
+    const filters = resolveCatalogFilters(tours, { destination }, NOW);
+    assert.equal(filters.type, "open");
+    assert.deepEqual(filterCatalogTours(tours, filters, NOW), []);
+  }
+  const canada = [{ ...tours[2], id: "canada", title: "Canadian Rockies", country: "Canada" }];
+  assert.equal(resolveCatalogFilters(canada, { destination: "canada" }, NOW).type, "private");
+});
+
+test("automatic land-tour selection respects price, duration, month, availability and sorting", () => {
+  const filters = resolveCatalogFilters(tours, {
+    destination: "vietnam", price: "under-10", duration: "short", sort: "price",
+  }, NOW);
+  assert.equal(filters.type, "private");
+  assert.equal(filters.price, "under-10");
+  assert.equal(filters.duration, "short");
+  assert.equal(filters.sort, "price");
+  for (const extra of [
+    { price: "20-plus" }, { duration: "long" }, { month: "2026-12" }, { availability: "confirmed" },
+  ]) {
+    const input = { destination: "vietnam", ...extra };
+    const filtered = resolveCatalogFilters(tours, input, NOW);
+    assert.deepEqual(filtered, parseCatalogFilters(input));
+    assert.deepEqual(filterCatalogTours(tours, filtered, NOW), []);
+  }
 });
 
 test("keeps future sold-out departures in open trip and past records in archive", () => {
