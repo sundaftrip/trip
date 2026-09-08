@@ -1,0 +1,220 @@
+[
+  {
+    "id": "machu-picchu-panorama",
+    "title": "Machu Picchu (Peru)",
+    "author": "Lunaloop",
+    "source": "https://commons.wikimedia.org/wiki/File:Machu_Picchu_(Peru).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/45/Machu_Picchu_%28Peru%29.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "assignment": "Peru destination card and Peru hero",
+    "alt": "Teras batu Machu Picchu dan puncak Huayna Picchu di Peru",
+    "originalDimensions": [
+      5037,
+      3377
+    ],
+    "originalBytes": 2042138,
+    "variants": [
+      {
+        "file": "machu-picchu-panorama.webp",
+        "width": 2560,
+        "height": 1716,
+        "bytes": 1009388,
+        "quality": 82
+      },
+      {
+        "file": "machu-picchu-panorama-1280.webp",
+        "width": 1280,
+        "height": 858,
+        "bytes": 251848,
+        "quality": 80
+      }
+    ],
+    "changes": "Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.",
+    "verifiedAt": "2026-09-09",
+    "originalSha256": "5345ec33dff811c3e3718572c7582ede338b2911733d28a0852004c33cd95132",
+    "objectPosition": "50% 52%"
+  },
+  {
+    "id": "rio-de-janeiro-sunrise",
+    "title": "Sugarloaf Sunrise 2",
+    "author": "Donatas Dabravolskas",
+    "source": "https://commons.wikimedia.org/wiki/File:Sugarloaf_Sunrise_2.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Sugarloaf_Sunrise_2.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "assignment": "Latin America destination card and four-country hero",
+    "alt": "Matahari terbit di Rio de Janeiro dengan Sugarloaf dan teluk di kejauhan",
+    "originalDimensions": [
+      5927,
+      3957
+    ],
+    "originalBytes": 10140062,
+    "variants": [
+      {
+        "file": "rio-de-janeiro-sunrise.webp",
+        "width": 2560,
+        "height": 1709,
+        "bytes": 179968,
+        "quality": 82
+      },
+      {
+        "file": "rio-de-janeiro-sunrise-1280.webp",
+        "width": 1280,
+        "height": 855,
+        "bytes": 56622,
+        "quality": 80
+      }
+    ],
+    "changes": "Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.",
+    "verifiedAt": "2026-09-09",
+    "originalSha256": "bb598fe3741d4a8c832722c4115620b870d7982aeef9b75e29ae6f6eb0685c6c",
+    "objectPosition": "50% 54%"
+  },
+  {
+    "id": "cusco-plaza",
+    "title": "Iglesia de la Compañía de Jesús, Plaza de Armas, Cusco, Perú, 2015-07-31, DD 58",
+    "author": "Diego Delso",
+    "authorUrl": "https://delso.photo",
+    "source": "https://commons.wikimedia.org/wiki/File:Iglesia_de_la_Compa%C3%B1%C3%ADa_de_Jes%C3%BAs,_Plaza_de_Armas,_Cusco,_Per%C3%BA,_2015-07-31,_DD_58.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Iglesia_de_la_Compa%C3%B1%C3%ADa_de_Jes%C3%BAs%2C_Plaza_de_Armas%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_58.JPG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "assignment": "Peru gallery, Cusco itinerary",
+    "alt": "Bangunan balkon kayu dan Gereja Compañía de Jesús di Plaza de Armas, Cusco",
+    "creditNote": "Display Diego Delso, delso.photo, License CC BY-SA 4.0 legibly with image or linked gallery credits.",
+    "originalDimensions": [
+      7614,
+      4012
+    ],
+    "originalBytes": 11976026,
+    "variants": [
+      {
+        "file": "cusco-plaza.webp",
+        "width": 2560,
+        "height": 1349,
+        "bytes": 432390,
+        "quality": 82
+      },
+      {
+        "file": "cusco-plaza-1280.webp",
+        "width": 1280,
+        "height": 674,
+        "bytes": 118958,
+        "quality": 80
+      }
+    ],
+    "changes": "Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.",
+    "verifiedAt": "2026-09-09",
+    "originalSha256": "50948a981339f277725021d8e4695b90840c1228e11a9a8a6955251d9beadec3",
+    "objectPosition": "65% 50%"
+  },
+  {
+    "id": "ollantaytambo",
+    "title": "View of Ollantaytambo from Temple Hill",
+    "author": "Steve FUNG",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Ollantaytambo_from_Temple_Hill.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/bd/View_of_Ollantaytambo_from_Temple_Hill.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "assignment": "Peru gallery, Sacred Valley itinerary",
+    "alt": "Teras batu dan kota Ollantaytambo di Sacred Valley dengan latar pegunungan",
+    "originalDimensions": [
+      8064,
+      6048
+    ],
+    "originalBytes": 23267180,
+    "variants": [
+      {
+        "file": "ollantaytambo.webp",
+        "width": 2560,
+        "height": 1920,
+        "bytes": 1410450,
+        "quality": 82
+      },
+      {
+        "file": "ollantaytambo-1280.webp",
+        "width": 1280,
+        "height": 960,
+        "bytes": 338674,
+        "quality": 80
+      }
+    ],
+    "changes": "Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.",
+    "verifiedAt": "2026-09-09",
+    "originalSha256": "d535f076082708d1220514d6759483121cfc2984bcf97c6e25ccad4a55c414d1",
+    "objectPosition": "50% 50%"
+  },
+  {
+    "id": "iguazu-falls",
+    "title": "Cataratas Iguacu Iguazu Falls",
+    "author": "Christhian Almir Gruhn",
+    "source": "https://commons.wikimedia.org/wiki/File:Cataratas_Iguacu_Iguazu_Falls.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Cataratas_Iguacu_Iguazu_Falls.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "assignment": "Four-country gallery, Iguazu itinerary",
+    "alt": "Air terjun Iguazu di antara pepohonan dan tebing hijau",
+    "originalDimensions": [
+      4928,
+      3264
+    ],
+    "originalBytes": 8554523,
+    "variants": [
+      {
+        "file": "iguazu-falls.webp",
+        "width": 2560,
+        "height": 1696,
+        "bytes": 532252,
+        "quality": 82
+      },
+      {
+        "file": "iguazu-falls-1280.webp",
+        "width": 1280,
+        "height": 848,
+        "bytes": 175564,
+        "quality": 80
+      }
+    ],
+    "changes": "Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.",
+    "verifiedAt": "2026-09-09",
+    "originalSha256": "6062cd866e3c3638f491baa00091274b6bd90eccaeb233fbd0b1f8923c04ff77",
+    "objectPosition": "50% 50%"
+  },
+  {
+    "id": "lima-plaza",
+    "title": "Plaza mayor de Lima",
+    "author": "Pitxiquin",
+    "source": "https://commons.wikimedia.org/wiki/File:Plaza_mayor_de_Lima.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/42/Plaza_mayor_de_Lima.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "assignment": "Peru and four-country gallery, Lima itinerary",
+    "alt": "Bangunan kuning dengan balkon kayu dan pohon palem di Plaza Mayor, Lima",
+    "originalDimensions": [
+      3879,
+      2909
+    ],
+    "originalBytes": 2472278,
+    "variants": [
+      {
+        "file": "lima-plaza.webp",
+        "width": 2560,
+        "height": 1920,
+        "bytes": 618756,
+        "quality": 82
+      },
+      {
+        "file": "lima-plaza-1280.webp",
+        "width": 1280,
+        "height": 960,
+        "bytes": 178852,
+        "quality": 80
+      }
+    ],
+    "changes": "Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.",
+    "verifiedAt": "2026-09-09",
+    "originalSha256": "68825b83cc75890680831812fba5e8da2b47d748fb29bec4f553003ea30d0685",
+    "objectPosition": "50% 50%"
+  }
+]

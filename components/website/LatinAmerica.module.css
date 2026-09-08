@@ -111,3 +111,109 @@
   .cardBottom { align-items: flex-start; flex-direction: column; }
 }
 @media (prefers-reduced-motion: reduce) { .cardImage img { transition: none; } }
+
+.tripFacts { list-style: none; padding: 0; margin: 22px 0; display: grid; gap: 10px; color: #42575f; font-size: 14px; }
+.tripFacts li { display: flex; gap: 10px; align-items: center; }
+.tripFacts svg { flex-shrink: 0; color: #075d63; }
+.heroPrice { margin-top: 28px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px 12px; }
+.heroPrice > span { flex-basis: 100%; font-size: 12px; color: #536169; }
+.heroPrice strong { font-size: clamp(30px, 3.5vw, 43px); line-height: 1.2; letter-spacing: -.04em; color: #075d63; }
+.heroPrice small { font-size: 12px; color: #536169; }
+.packageNav { background: #fff; border-bottom: 1px solid #dfe7e6; position: sticky; top: 68px; z-index: 10; }
+.packageNav > div { display: flex; gap: 30px; overflow-x: auto; }
+.packageNav a { display: inline-flex; align-items: center; flex-shrink: 0; min-height: 58px; font-size: 13px; font-weight: 650; color: #42575f; }
+.packageNav a:hover { color: #075d63; text-decoration: underline; text-underline-offset: 8px; }
+.page section[id], .pricePanel[id] { scroll-margin-top: 145px; }
+.itinerary { border-top: 1px solid #dfe7e6; }
+.itinerary details { border-bottom: 1px solid #dfe7e6; }
+.itinerary summary { list-style: none; display: flex; align-items: center; gap: 24px; min-height: 76px; padding: 18px 4px; cursor: pointer; }
+.itinerary summary::-webkit-details-marker { display: none; }
+.dayNumber { font-size: 11px; letter-spacing: .08em; color: #075d63; flex: 0 0 64px; font-weight: 650; }
+.itinerary summary strong { font-size: 18px; font-weight: 550; }
+.dayToggle { margin-left: auto; font-size: 24px; font-weight: 400; color: #075d63; }
+.itinerary details[open] .dayToggle { transform: rotate(45deg); }
+.dayContent { padding: 0 40px 25px 92px; max-width: 920px; }
+.dayContent p { margin: 0 0 15px; color: #536169; font-size: 15px; }
+.dayContent > span, .dayContent small { display: inline-flex; gap: 6px; align-items: center; margin-right: 22px; color: #075d63; font-size: 12px; }
+.gallery { width: min(1180px, calc(100% - 40px)); margin: 0 auto; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+.gallery figure { margin: 0; min-width: 0; }
+.gallery figure > div { position: relative; height: 240px; border-radius: 12px; overflow: hidden; }
+.gallery img { object-fit: cover; }
+.gallery figcaption { padding-top: 12px; font-size: 10px; line-height: 1.5; color: #596971; }
+.gallery figcaption strong { display: block; font-size: 13px; color: #132b3a; margin-bottom: 5px; }
+.gallery figcaption a { text-decoration: underline; text-underline-offset: 2px; }
+.pricePanel { background: #f6f9f7; border: 1px solid #c4d9d1; border-radius: 18px; padding: 38px; }
+.priceHeading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.priceHeading h2 { color: #075d63; font-size: clamp(29px, 3.5vw, 45px); }
+.priceHeading .eyebrow { margin-bottom: 10px; }
+.priceHeading p:not(.eyebrow) { font-size: 13px; color: #536169; margin-top: 10px; }
+.airBadge { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 12px; padding: 10px 12px; border-radius: 30px; background: #dcefe6; color: #245344; }
+.priceBasis { color: #536169; max-width: 890px; margin: 18px 0 23px; font-size: 14px; }
+.priceBreakdown { border-block: 1px solid #cddfd7; }
+.priceBreakdown summary { min-height: 54px; padding: 17px 0; cursor: pointer; font-size: 14px; font-weight: 600; }
+.priceBreakdown dl { margin: 0; padding-bottom: 8px; }
+.priceBreakdown dl > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 25px; padding: 14px 0; border-top: 1px solid #e0e9e4; }
+.priceBreakdown dt { font-size: 14px; }
+.priceBreakdown dt small { display: block; font-size: 12px; color: #596971; max-width: 620px; margin-top: 5px; line-height: 1.5; }
+.priceBreakdown dd { white-space: nowrap; margin: 0; font-size: 15px; font-weight: 550; }
+.priceBreakdown > p { font-size: 12px; color: #596971; padding-bottom: 16px; }
+.optionList { border: 0; margin: 26px 0 0; padding: 0; min-width: 0; }
+.optionList legend { width: 100%; font-size: 17px; font-weight: 600; margin-bottom: 13px; }
+.optionList legend > span { font-size: 12px; font-weight: 400; color: #596971; margin-left: 10px; }
+.option { display: grid; grid-template-columns: 20px minmax(0,1fr) auto; gap: 14px; align-items: start; background: #fff; border: 1px solid #dce6e0; border-radius: 10px; padding: 17px 18px; margin-top: 10px; cursor: pointer; }
+.option:has(input:checked) { border-color: #075d63; background: #edf7f1; }
+.option input { width: 18px; height: 18px; margin-top: 3px; accent-color: #075d63; }
+.option strong { display: block; font-size: 14px; font-weight: 600; }
+.option small { display: block; font-size: 12px; line-height: 1.5; color: #596971; margin-top: 5px; }
+.option b { font-size: 14px; font-weight: 550; white-space: nowrap; }
+.priceTotal { display: flex; justify-content: space-between; align-items: center; gap: 25px; margin-top: 28px; padding-top: 25px; border-top: 1px solid #cddfd7; }
+.priceTotal span { display: block; font-size: 12px; color: #536169; margin-bottom: 5px; }
+.priceTotal strong { font-size: clamp(25px,3vw,34px); letter-spacing: -.03em; }
+.priceFootnote { display: flex; gap: 9px; align-items: flex-start; margin: 23px 0 0; font-size: 11px; color: #536169; max-width: 970px; }
+.priceFootnote svg { flex-shrink: 0; margin-top: 3px; }
+.inclusionsGrid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 70px; }
+.inclusionsGrid h2 { font-size: 32px; }
+.includedList, .excludedList { padding: 0; margin: 28px 0 0; list-style: none; display: grid; gap: 18px; }
+.includedList li { display: flex; gap: 12px; align-items: flex-start; color: #42575f; font-size: 14px; line-height: 1.65; }
+.includedList svg { flex-shrink: 0; margin-top: 3px; color: #075d63; }
+.excludedList li { color: #536169; font-size: 14px; line-height: 1.65; padding-left: 17px; border-left: 2px solid #d3c6b8; }
+.hotelGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+.hotelGrid article { border: 1px solid #dfe7e6; border-radius: 12px; padding: 24px; }
+.hotelGrid article > span { font-size: 10px; color: #075d63; letter-spacing: .1em; font-weight: 650; }
+.hotelGrid h3 { font-size: 23px; margin-top: 13px; }
+.hotelGrid p { color: #536169; font-size: 13px; margin-top: 10px; }
+.flightSection { background: #f2f6f5; padding-block: 60px; }
+.flightSection p { color: #536169; font-size: 15px; margin-top: 20px; }
+.flightSection .caption { font-size: 12px; }
+.flightRoute { color: #075d63 !important; font-size: 17px !important; font-weight: 550; }
+.flightSection p svg { vertical-align: middle; margin-right: 5px; }
+.cardBottom .catalogPrice { color: #075d63; font-size: 24px; letter-spacing: -.03em; }
+.page input:focus-visible { outline: 3px solid #b45d37; outline-offset: 4px; }
+@media (max-width: 760px) {
+  .heroGrid { gap: 30px; }
+  .heroPhoto { height: 350px; }
+  .packageNav > div { gap: 24px; }
+  .packageNav a { font-size: 12px; min-height: 52px; }
+  .itinerary summary { gap: 13px; }
+  .itinerary summary strong { font-size: 16px; }
+  .dayNumber { flex-basis: 54px; font-size: 10px; }
+  .dayContent { padding-left: 4px; padding-right: 8px; }
+  .gallery { width: calc(100% - 32px); grid-template-columns: repeat(3,82vw); overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 14px; }
+  .gallery figure { scroll-snap-align: start; }
+  .gallery figure > div { height: 245px; }
+  .pricePanel { padding: 25px 20px; }
+  .priceHeading, .priceTotal { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .priceHeading h2 { font-size: 31px; }
+  .priceTotal { align-items: stretch; }
+  .priceTotal a { width: 100%; }
+  .priceBreakdown dl > div { gap: 13px; }
+  .priceBreakdown dt { font-size: 13px; }
+  .priceBreakdown dd { font-size: 13px; }
+  .option { grid-template-columns: 18px minmax(0,1fr); gap: 10px; padding: 16px 13px; }
+  .option b { grid-column: 2; }
+  .inclusionsGrid { grid-template-columns: 1fr; gap: 40px; }
+  .hotelGrid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .hotelGrid article { padding: 20px 16px; }
+  .hotelGrid h3 { font-size: 20px; }
+  .flightSection { padding-block: 48px; }
+}

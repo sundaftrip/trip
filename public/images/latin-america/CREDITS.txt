@@ -1,3 +1,48 @@
+Machu Picchu (Peru)
+Photographer: Lunaloop
+Source: https://commons.wikimedia.org/wiki/File:Machu_Picchu_(Peru).jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/4/45/Machu_Picchu_%28Peru%29.jpg
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.
+
+Sugarloaf Sunrise 2
+Photographer: Donatas Dabravolskas
+Source: https://commons.wikimedia.org/wiki/File:Sugarloaf_Sunrise_2.jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/b/b2/Sugarloaf_Sunrise_2.jpg
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.
+
+Iglesia de la Compañía de Jesús, Plaza de Armas, Cusco, Perú, 2015-07-31, DD 58
+Photographer: Diego Delso (https://delso.photo)
+Source: https://commons.wikimedia.org/wiki/File:Iglesia_de_la_Compa%C3%B1%C3%ADa_de_Jes%C3%BAs,_Plaza_de_Armas,_Cusco,_Per%C3%BA,_2015-07-31,_DD_58.JPG
+Original: https://upload.wikimedia.org/wikipedia/commons/c/cb/Iglesia_de_la_Compa%C3%B1%C3%ADa_de_Jes%C3%BAs%2C_Plaza_de_Armas%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_58.JPG
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.
+
+View of Ollantaytambo from Temple Hill
+Photographer: Steve FUNG
+Source: https://commons.wikimedia.org/wiki/File:View_of_Ollantaytambo_from_Temple_Hill.jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/b/bd/View_of_Ollantaytambo_from_Temple_Hill.jpg
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.
+
+Cataratas Iguacu Iguazu Falls
+Photographer: Christhian Almir Gruhn
+Source: https://commons.wikimedia.org/wiki/File:Cataratas_Iguacu_Iguazu_Falls.jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/5/5a/Cataratas_Iguacu_Iguazu_Falls.jpg
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.
+
+Plaza mayor de Lima
+Photographer: Pitxiquin
+Source: https://commons.wikimedia.org/wiki/File:Plaza_mayor_de_Lima.jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/4/42/Plaza_mayor_de_Lima.jpg
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Resized proportionally and converted to WebP; no generative changes or retouching. Responsive CSS may crop.
+
+These are destination photographs, not documentation of Sundaf departures. Sources and licences checked 2026-09-09.
+
+Legacy files retained for existing URLs (not used by the updated catalogue):
 Machu Picchu 2019-10-13-5
 Photographer: Alexey Komarov
 Source: https://commons.wikimedia.org/wiki/File:Machu_Picchu_2019-10-13-5.jpg

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { buildWhatsAppHref } from "./utils";
 
 export const LATIN_AMERICA_BROCHURE = "/downloads/sundaf-trip-peru-south-america-2027.pdf";
-export const LATIN_AMERICA_STATUS = "Perjalanan grup · Penawaran sesuai permintaan";
+export const LATIN_AMERICA_STATUS = "Paket grup · Keberangkatan sesuai permintaan";
 
 export type LatinAmericaProgramme = {
   id: string;
@@ -25,10 +25,10 @@ export const LATIN_AMERICA_PROGRAMMES: LatinAmericaProgramme[] = [
     href: "/peru-amerika-selatan",
     title: "Peru: Lima, Cusco & Machu Picchu",
     eyebrow: "Peru",
-    summary: "Kunjungi Lima dan Cusco, lalu naik kereta ke Aguas Calientes untuk bermalam sebelum perjalanan ke Machu Picchu.",
-    image: "/images/latin-america/machu-picchu.webp",
+    summary: "Dua malam di Lima, kota Cusco, Sacred Valley, dan kereta menuju Machu Picchu. Perjalanan dilengkapi kunjungan Vinicunca / Rainbow Mountain.",
+    image: "/images/latin-america/machu-picchu-panorama.webp",
     imageAlt: "Situs Machu Picchu di antara pegunungan Peru",
-    route: ["Lima", "Cusco", "Ollantaytambo", "Aguas Calientes", "Machu Picchu", "Cusco"],
+    route: ["Lima", "Cusco", "Sacred Valley", "Aguas Calientes", "Machu Picchu", "Vinicunca", "Cusco"],
     introduction: "Mulai dari Lima, lalu terbang ke Cusco. Dari sana, perjalanan darat menuju Ollantaytambo dilanjutkan dengan kereta ke Aguas Calientes. Setelah bermalam dan mengunjungi Machu Picchu, kembali melalui Ollantaytambo dan Cusco.",
     stages: [
       { title: "Lima", description: "Kunjungan kota ke Plaza de Armas dan Huaca Pucllana, sebelum melanjutkan perjalanan dengan penerbangan ke Cusco." },
@@ -45,7 +45,7 @@ export const LATIN_AMERICA_PROGRAMMES: LatinAmericaProgramme[] = [
     title: "Brasil, Kolombia, Peru & Chile",
     eyebrow: "Empat negara",
     summary: "São Paulo dan Bogotá, lalu Peru dan Chile. Kembali ke Brasil untuk Rio de Janeiro dan air terjun Iguazu.",
-    image: "/images/latin-america/rio-de-janeiro.webp",
+    image: "/images/latin-america/rio-de-janeiro-sunrise.webp",
     imageAlt: "Pemandangan kota dan pegunungan Rio de Janeiro, Brasil",
     route: ["São Paulo", "Bogotá", "Lima", "Cusco & Machu Picchu", "Santiago", "Rio de Janeiro", "Iguazu", "São Paulo"],
     introduction: "Rute dimulai dan berakhir di São Paulo. Di antaranya, singgah di Bogotá, kunjungi Lima dan Machu Picchu, lalu lanjutkan ke Santiago. Bagian akhir perjalanan kembali ke Brasil untuk Rio de Janeiro dan air terjun Iguazu.",
@@ -69,7 +69,7 @@ export function latinAmericaMetadata(title: string, description: string, path: s
     title,
     description,
     alternates: { canonical: `https://sundaftrip.com${path}` },
-    openGraph: { title: `${title} · Sundaf Trip`, description, url: `https://sundaftrip.com${path}`, siteName: "Sundaf Trip", locale: "id_ID", type: "website", images: [{ url: "/images/latin-america/machu-picchu.webp", width: 1600, height: 1067, alt: "Machu Picchu, Peru" }] },
-    twitter: { card: "summary_large_image", title, description, images: ["/images/latin-america/machu-picchu.webp"] },
+    openGraph: { title: `${title} · Sundaf Trip`, description, url: `https://sundaftrip.com${path}`, siteName: "Sundaf Trip", locale: "id_ID", type: "website", images: [{ url: "/images/latin-america/machu-picchu-panorama.webp", width: 2560, height: 1716, alt: "Machu Picchu, Peru" }] },
+    twitter: { card: "summary_large_image", title, description, images: ["/images/latin-america/machu-picchu-panorama.webp"] },
   };
 }

@@ -180,6 +180,9 @@
   gap: 18px;
 }
 
+.photoCredits { margin: 22px 0 0; color: var(--destination-copy); font-size: 10px; line-height: 1.6; }
+.photoCredits a { text-decoration: underline; text-underline-offset: 2px; }
+
 .regionCard {
   min-width: 0;
   overflow: hidden;

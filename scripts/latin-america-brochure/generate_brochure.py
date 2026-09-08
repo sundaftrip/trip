@@ -1,191 +1,358 @@
 #!/usr/bin/env python3
-"""Build the public bilingual Sundaf Trip Peru / South America brochure.
+"""Build Sundaf Trip's public five-page priced Peru / South America catalogue.
 
-Requires reportlab and the bundled files in assets/. All drawing is vector
-apart from the supplied Sundaf logo. Font licences are bundled in assets/.
-Run: python3 generate_brochure.py --output /path/to/brochure.pdf
+Input is a JSON object mapping ``peru`` and ``empat-negara`` to PackageDetails.
+Only public retail figures are used; procurement calculations do not belong here.
+Requires reportlab and Pillow, plus the repository's bundled fonts and HD photos.
+The PDF skill's artifact-operation marker must be run by the caller before the
+first PDF creation/edit. This script deliberately does not run that marker.
 """
-from pathlib import Path
+from __future__ import annotations
+
 import argparse
-from reportlab.pdfgen import canvas
+import json
+from io import BytesIO
+from pathlib import Path
+from xml.sax.saxutils import escape
+
+from PIL import Image
 from reportlab.lib.colors import HexColor, white
 from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.styles import ParagraphStyle
+from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 
-ROOT = Path(__file__).resolve().parent
-for name, filename in [('Body', 'NotoSans-Regular.ttf'), ('BodyBold', 'NotoSans-Bold.ttf'), ('Display', 'Rubik-Regular.ttf'), ('DisplayBold', 'Rubik-Bold.ttf')]:
-    candidate = ROOT / 'assets' / filename
-    if not candidate.is_file():
-        raise FileNotFoundError(f'Required bundled font is missing: assets/{filename}')
-    pdfmetrics.registerFont(TTFont(name, str(candidate)))
-pdfmetrics.registerFontFamily('Body', normal='Body', bold='BodyBold')
-
 W, H = A4
+M = 36
+CW = W - M * 2
 INK = HexColor('#132B3A')
-TEAL = HexColor('#009EA6')
-DEEPTEAL = HexColor('#087C82')
-AMBER = HexColor('#F2AC3A')
+TEAL = HexColor('#008D93')
+PALE = HexColor('#EAF4F1')
 IVORY = HexColor('#FBF8F1')
-MUTED = HexColor('#52656D')
-LINE = HexColor('#D6E2E1')
-PALE = HexColor('#ECF6F3')
+MUTED = HexColor('#50626B')
+LINE = HexColor('#D4DEDB')
+AMBER = HexColor('#FFD170')
 WEB = 'https://sundaftrip.com/amerika-latin'
-PERU = 'https://sundaftrip.com/peru-amerika-selatan'
-MULTI = 'https://sundaftrip.com/amerika-latin/brasil-kolombia-peru-chile'
-WHATSAPP = 'https://wa.me/6281775202759?text=Halo%20Sundaf%20Trip%2C%20saya%20berminat%20program%20Peru%20dan%20Amerika%20Latin%202027.'
+WHATSAPP = 'https://wa.me/6281775202759'
+PAGE_END = H - 64
 
-def rect(c, x, top, width, height, color, radius=0, stroke=None):
-    c.setFillColor(color)
-    c.setStrokeColor(stroke or color)
-    if radius:
-        c.roundRect(x, H-top-height, width, height, radius, stroke=int(stroke is not None), fill=1)
-    else:
-        c.rect(x, H-top-height, width, height, stroke=int(stroke is not None), fill=1)
 
-def text(c, value, x, top, size=10, font='Body', color=INK):
-    c.setFillColor(color)
-    c.setFont(font, size)
-    c.drawString(x, H-top-size, value)
+def clean(value):
+    return (str(value).replace('\u2011', '-').replace('\u2013', '-').replace('\u2014', '-')
+            .replace('→', '-').replace('↔', '-').replace('★', ' bintang'))
 
-def para(c, value, x, top, width, size=10.2, leading=15, color=INK, font='Body', limit=None):
-    style = ParagraphStyle('p', fontName=font, fontSize=size, leading=leading, textColor=color, spaceAfter=0)
-    p = Paragraph(value, style)
-    _, height = p.wrap(width, H)
-    if limit is not None and height > limit:
-        raise ValueError(f'Paragraph exceeds reserved space: {height}>{limit}: {value[:100]}')
-    p.drawOn(c, x, H-top-height)
-    return height
 
-def link(c, value, x, top, url, size=9.5, color=DEEPTEAL):
-    text(c, value, x, top, size, 'BodyBold', color)
-    width = pdfmetrics.stringWidth(value, 'BodyBold', size)
-    c.linkURL(url, (x, H-top-size-3, x+width, H-top+2), relative=0, thickness=0)
+def esc(value):
+    return escape(clean(value))
 
-def header(c, subtitle):
-    rect(c, 0, 0, W, H, IVORY)
-    logo = ROOT / 'assets' / 'sundaf-logo.png'
-    c.drawImage(str(logo), 40, H-74, width=135, height=38.5, mask='auto', preserveAspectRatio=True)
-    text(c, subtitle, 321, 43, 8.5, 'BodyBold', MUTED)
-    c.setStrokeColor(LINE)
-    c.line(40, H-88, W-40, H-88)
 
-def footer(c, page, language):
-    c.setStrokeColor(LINE)
-    c.line(40, 47, W-40, 47)
-    text(c, 'SUNDAF TRIP  /  CV Sundaf Holiday Group', 40, H-37, 7.5, 'BodyBold', MUTED)
-    text(c, f'SEP 2026  |  {language}  |  {page:02}', W-173, H-37, 7.2, 'Body', MUTED)
+def rupiah(amount):
+    return 'Rp' + f'{int(amount):,}'.replace(',', '.')
 
-def mountain(c, x, top):
-    """Abstract vector motif, not a photograph or geographic map."""
-    pts = [(0,110),(26,74),(47,91),(79,33),(113,78),(139,50),(168,110)]
-    p = c.beginPath()
-    p.moveTo(x, H-top-pts[0][1])
-    for px,py in pts[1:]: p.lineTo(x+px,H-top-py)
-    c.setStrokeColor(TEAL); c.setLineWidth(2)
-    c.drawPath(p, stroke=1, fill=0)
-    c.setStrokeColor(HexColor('#315365')); c.setLineWidth(.7)
-    for offset in (10,20,30):
-        p=c.beginPath(); p.moveTo(x,H-top-110-offset)
-        for px,py in pts[1:]: p.lineTo(x+px,H-top-py-offset)
-        c.drawPath(p,stroke=1,fill=0)
-    c.setFillColor(AMBER); c.circle(x+143,H-top-19,10,stroke=0,fill=1)
 
-def route(c, x, top, width, names, dark=False):
-    color = white if dark else INK
-    step=width/(len(names)-1)
-    c.setStrokeColor(TEAL); c.setLineWidth(1.25)
-    c.line(x,H-top,x+width,H-top)
-    for i,name in enumerate(names):
-        xx=x+i*step
-        c.setFillColor(AMBER if i==len(names)-1 else TEAL)
-        c.circle(xx,H-top,3.5,stroke=0,fill=1)
-        words=name.split('|')
-        for j,line in enumerate(words):
-            fs=8.2
-            ww=pdfmetrics.stringWidth(line,'BodyBold',fs)
-            text(c,line,xx-ww/2,top+9+j*11,fs,'BodyBold',color)
+def millions(amount):
+    value = f'{amount / 1_000_000:.2f}'.rstrip('0').rstrip('.').replace('.', ',')
+    return 'Rp' + value + ' juta'
 
-def public_indonesian(c):
-    header(c, 'KATALOG TOUR 2027  /  INDONESIA')
-    rect(c,0,105,W,173,INK)
-    text(c,'PERJALANAN GRUP',40,123,9.5,'BodyBold',AMBER)
-    text(c,'Peru &',40,144,37,'DisplayBold',white)
-    text(c,'Amerika Selatan',40,187,31,'DisplayBold',white)
-    text(c,'Untuk grup sendiri, dengan harga sesuai permintaan',41,239,10.5,'Body',white)
-    mountain(c,401,119)
 
-    rect(c,40,296,W-80,161,white,10,LINE)
-    text(c,'01  /  PERU',57,310,8.5,'BodyBold',DEEPTEAL)
-    text(c,'Lima, Cusco & Machu Picchu',57,329,20,'DisplayBold')
-    route(c,76,374,441,['Lima','Cusco','Ollantaytambo','Aguas|Calientes','Machu|Picchu'])
-    para(c,'City tour Lima, lanjut ke Cusco dan Ollantaytambo. Naik kereta ke Aguas Calientes, bermalam, lalu mengunjungi Machu Picchu.',57,413,477,9,13,color=MUTED,limit=27)
+class Brochure:
+    def __init__(self, repo_root: Path, data: dict, output: Path):
+        self.repo_root = repo_root
+        self.assets = repo_root / 'scripts' / 'latin-america-brochure' / 'assets'
+        self.photos = repo_root / 'public' / 'images' / 'latin-america'
+        self.data = data
+        self.metadata = {item['id']: item for item in json.loads((self.photos / 'metadata.json').read_text())}
+        for name, filename in [('Body', 'NotoSans-Regular.ttf'), ('BodyBold', 'NotoSans-Bold.ttf'),
+                               ('Display', 'Rubik-Regular.ttf'), ('DisplayBold', 'Rubik-Bold.ttf')]:
+            pdfmetrics.registerFont(TTFont(name, str(self.assets / filename)))
+        pdfmetrics.registerFontFamily('Body', normal='Body', bold='BodyBold')
+        output.parent.mkdir(parents=True, exist_ok=True)
+        self.c = canvas.Canvas(str(output), pagesize=A4, pageCompression=1)
+        self.c.setTitle('Sundaf Trip | Peru & Amerika Selatan 2027')
+        self.c.setAuthor('Sundaf Trip - CV Sundaf Holiday Group')
+        self.c.setSubject('Indicative retail group tours from Jakarta: Peru and four-country South America')
+        self.c.setKeywords('Sundaf Trip, Peru, South America, Amerika Latin, 2027, group travel, catalogue')
 
-    rect(c,40,473,W-80,138,white,10,LINE)
-    text(c,'02  /  EMPAT NEGARA',57,487,8.5,'BodyBold',DEEPTEAL)
-    text(c,'Brasil - Kolombia - Peru - Chile',57,506,18.5,'DisplayBold')
-    para(c,'Rute indikatif: São Paulo - Bogotá - Lima - Cusco / Machu Picchu - Santiago - Rio de Janeiro - Iguazu - São Paulo.',57,539,477,10,14,limit=30)
-    para(c,'Kunjungan Bogotá mengikuti waktu transit. Urutan kota dan jumlah malam disesuaikan dengan jadwal penerbangan grup.',57,577,477,8.8,12.5,color=MUTED,limit=26)
+    def box(self, x, top, width, height, color, radius=0):
+        self.c.setFillColor(color)
+        if radius:
+            self.c.roundRect(x, H-top-height, width, height, radius, fill=1, stroke=0)
+        else:
+            self.c.rect(x, H-top-height, width, height, fill=1, stroke=0)
 
-    para(c,'<b>Pilihan layanan:</b> hotel 3/4 bintang, transfer privat, pemandu berbahasa Inggris, kereta dan kunjungan Machu Picchu sesuai ketersediaan.',40,629,W-80,9.6,14,limit=30)
+    def text(self, value, x, top, size=10, font='Body', color=INK):
+        self.c.setFillColor(color)
+        self.c.setFont(font, size)
+        self.c.drawString(x, H-top-size, clean(value))
 
-    rect(c,40,674,W-80,104,PALE,10)
-    text(c,'Tanya itinerary & harga',57,687,16.5,'DisplayBold')
-    link(c,'sundaftrip.com/amerika-latin',57,714,WEB,10)
-    link(c,'WhatsApp +62 817 7520 2759',301,714,WHATSAPP,9.3)
-    para(c,'Program 2027 sedang kami susun; belum ada tanggal keberangkatan tetap. Penawaran tertulis memuat itinerary, hotel, tiket, harga, ketersediaan, dan biaya yang dibayar terpisah.',57,739,478,8,11,limit=33)
-    footer(c,1,'ID')
-    c.showPage()
+    def para(self, value, x, top, width, size=9.1, leading=13, color=INK,
+             bold=False, limit=None, markup=False):
+        style = ParagraphStyle('catalogue', fontName='BodyBold' if bold else 'Body',
+                               fontSize=size, leading=leading, textColor=color,
+                               spaceBefore=0, spaceAfter=0)
+        paragraph = Paragraph(clean(value) if markup else esc(value), style)
+        _, height = paragraph.wrap(width, H)
+        if limit is not None and height > limit + 0.01:
+            raise ValueError(f'Paragraph exceeds reserved area ({height:.1f} > {limit:.1f}): {value[:100]}')
+        if top + height > PAGE_END:
+            raise ValueError(f'Paragraph crosses page footer at {top + height:.1f}: {value[:100]}')
+        paragraph.drawOn(self.c, x, H-top-height)
+        return height
 
-def trade_english(c):
-    header(c, 'TRADE PRODUCT BRIEF  /  ENGLISH')
-    text(c,'INDONESIAN OUTBOUND MARKET',40,112,9.2,'BodyBold',DEEPTEAL)
-    text(c,'Peru & South America',40,137,29,'DisplayBold')
-    text(c,'Tailor-made group travel for 2027',40,176,17,'Display',MUTED)
-    para(c,'We are adding Peru and South America to our outbound portfolio for Indonesian groups. Since August 2026, we have requested quotations and received detailed proposals for a four-country itinerary.',40,212,W-80,11,16.5,limit=51)
+    def link(self, label, url, x, top, size=9, color=TEAL):
+        self.text(label, x, top, size, 'BodyBold', color)
+        width = pdfmetrics.stringWidth(clean(label), 'BodyBold', size)
+        self.c.linkURL(url, (x, H-top-size-3, x+width, H-top+2), relative=0, thickness=0)
 
-    rect(c,40,282,247,177,white,10,LINE)
-    text(c,'PERU PROGRAMME',57,298,9,'BodyBold',DEEPTEAL)
-    text(c,'A dedicated Peru journey',57,320,15,'DisplayBold')
-    para(c,'Lima - Cusco - Ollantaytambo - Aguas Calientes - Machu Picchu, returning via Cusco.',57,351,212,10,15,limit=46)
-    para(c,'Adapted from the Peru segment of the wider programme. A standalone supplier quotation is required.',57,408,212,9.2,13.4,color=MUTED,limit=41)
+    def photo(self, photo_id, x, top, width, height, focus=(.5, .5)):
+        image_path = self.photos / f'{photo_id}.webp'
+        with Image.open(image_path) as im:
+            image = im.convert('RGB')
+            iw, ih = image.size
+            encoded = BytesIO()
+            image.save(encoded, format='JPEG', quality=92, subsampling=0, optimize=True)
+            encoded.seek(0)
+            scale = max(width / iw, height / ih)
+            drawn_w, drawn_h = iw * scale, ih * scale
+            dx = (drawn_w - width) * focus[0]
+            dy = (drawn_h - height) * focus[1]
+            self.c.saveState()
+            clip = self.c.beginPath()
+            clip.rect(x, H-top-height, width, height)
+            self.c.clipPath(clip, stroke=0)
+            self.c.drawImage(ImageReader(encoded), x-dx, H-top-height-dy, drawn_w, drawn_h)
+            self.c.restoreState()
 
-    rect(c,303,282,252,177,white,10,LINE)
-    text(c,'FOUR-COUNTRY PROGRAMME',320,298,9,'BodyBold',DEEPTEAL)
-    text(c,'Brazil, Colombia, Peru, Chile',320,320,13.1,'DisplayBold')
-    para(c,'Indicative stops: São Paulo, Bogotá, Lima, Cusco / Machu Picchu, Santiago, Rio de Janeiro and Iguazu.',320,351,215,10,15,limit=46)
-    para(c,'Supplier proposals received. Final sequencing, duration and flight connections remain under review.',320,408,215,9.2,13.4,color=MUTED,limit=41)
+    def header(self, right):
+        self.box(0, 0, W, H, IVORY)
+        self.c.drawImage(str(self.assets / 'sundaf-logo.png'), M, H-58, 112, 32,
+                         mask='auto', preserveAspectRatio=True)
+        self.text(right, 304, 35, 8.1, 'BodyBold', MUTED)
+        self.c.setStrokeColor(LINE)
+        self.c.setLineWidth(.5)
+        self.c.line(M, H-73, W-M, H-73)
 
-    text(c,'SERVICES OPEN FOR DISCUSSION',40,481,9,'BodyBold',DEEPTEAL)
-    para(c,'3- or 4-star hotels; private transfers; English-speaking guides; rail arrangements and Machu Picchu visits, subject to availability. Land services and regional and Indonesia-origin flights will be defined in the final quotation.',40,503,W-80,10.2,15,limit=46)
+    def footer(self, page, label='KATALOG 2027'):
+        self.c.setStrokeColor(LINE)
+        self.c.line(M, 46, W-M, 46)
+        self.text('SUNDAF TRIP / CV Sundaf Holiday Group', M, H-35, 7.1, 'BodyBold', MUTED)
+        self.text(f'{label}  /  {page:02}', W-157, H-35, 7.1, 'Body', MUTED)
+        self.c.showPage()
 
-    rect(c,40,568,W-80,83,INK,10)
-    text(c,'Group enquiries',57,583,16,'DisplayBold',white)
-    para(c,'We accept group enquiries for 2027. Programmes are under development; no fixed departure date is available. Dates, duration, prices and services are confirmed in a written offer.',57,611,477,9.2,13,color=white,limit=39)
+    def bullets(self, items, x, top, width, size=8.6, leading=12, gap=5):
+        for item in items:
+            self.box(x, top+5, 3, 3, TEAL)
+            height = self.para(item, x+11, top, width-11, size=size, leading=leading)
+            top += height+gap
+        return top
 
-    text(c,'SUNDAF TRIP',40,676,12,'DisplayBold')
-    text(c,'CV Sundaf Holiday Group  |  Indonesia',40,697,9.6,'Body',MUTED)
-    link(c,'info@sundaftrip.com',40,722,'mailto:info@sundaftrip.com',10)
-    link(c,'WhatsApp +62 817 7520 2759',297,722,WHATSAPP,9.5)
-    link(c,'Explore the catalogue',40,748,WEB,9.5)
-    link(c,'Peru programme',220,748,PERU,9.5)
-    link(c,'Four-country programme',381,748,MULTI,9.3)
-    footer(c,2,'EN')
-    c.showPage()
+    def title(self, small, large, top=93):
+        self.text(small, M, top, 8.7, 'BodyBold', TEAL)
+        self.text(large, M, top+20, 25, 'DisplayBold')
+
+    def overview(self, key, page):
+        p = self.data[key]
+        peru = key == 'peru'
+        self.header('DARI JAKARTA / PERJALANAN GRUP')
+        self.photo('machu-picchu-panorama' if peru else 'rio-de-janeiro-sunrise', M, 89, CW, 205, focus=(.5, .15 if peru else .55))
+        self.box(M, 238, CW, 56, INK)
+        self.text('PERU' if peru else 'BRASIL · KOLOMBIA · PERU · CHILE', M+15, 249,
+                  25 if peru else 17, 'DisplayBold', white)
+        self.text('Lima, Sacred Valley & Machu Picchu' if peru else 'Machu Picchu, Rio & Iguazu dalam satu perjalanan',
+                  M+16, 278, 8.5, color=white)
+
+        self.text(p['duration'], M, 309, 12, 'BodyBold')
+        self.box(M, 337, CW, 89, PALE, 8)
+        self.text('ESTIMASI MULAI DARI', M+15, 349, 8.5, 'BodyBold', TEAL)
+        self.text(millions(p['price']['from']), M+15, 368, 31, 'DisplayBold')
+        self.text('per orang · kamar twin/double', M+17, 407, 8.4, color=MUTED)
+        self.para('Termasuk anggaran pesawat PP Jakarta, penerbangan regional/domestik, dan 1 tour leader Indonesia.',
+                  M+302, 350, CW-319, size=8.7, leading=12.3, limit=51)
+        self.text('Basis 20 peserta membayar + 1 tour leader', M+302, 405, 7.2, 'BodyBold', TEAL)
+
+        left_w = 306
+        right_x = M+329
+        right_w = CW-329
+        self.text('SUDAH TERMASUK', M, 445, 9, 'BodyBold', TEAL)
+        left_end = self.bullets(p['included'], M, 467, left_w, size=8.5, leading=12, gap=5)
+        self.text('PILIHAN TAMBAHAN', right_x, 445, 9, 'BodyBold', TEAL)
+        top = 468
+        for option in p['price']['options']:
+            top += self.para(option['name'], right_x, top, right_w, size=9.2, leading=12.6, bold=True)
+            top += 4
+            amount = f"+ {rupiah(option['amount'])} / orang" if option['amount'] > 0 else 'Penawaran terpisah'
+            self.text(amount, right_x, top, 9.3, 'BodyBold', TEAL)
+            top += 18
+            top += self.para(option['description'], right_x, top, right_w, size=8.1, leading=11.4, color=MUTED)
+            top += 16
+        if not p['price']['options']:
+            top += self.para('Kamar single, layanan privat dan tambahan malam tersedia melalui penawaran terpisah.',
+                             right_x, top, right_w, size=8.6, leading=12, color=MUTED)
+        note_top = max(left_end, top)+7
+        if note_top > 728:
+            raise ValueError(f'Overview content too long for {key}: note starts at {note_top}')
+        note = (f"Harga indikatif untuk perjalanan 2027; diperbarui {p['price']['updated']}. "
+                'Belum ada tanggal keberangkatan tetap. Harga dan ketersediaan dikonfirmasi dalam penawaran untuk tanggal pilihanmu.')
+        self.para(note, M, note_top, CW, size=8.0, leading=11.1, color=MUTED, limit=34)
+        self.footer(page)
+
+    def day(self, day, number, x, top, width, size=8.4, leading=11.7, gap=11):
+        self.text(f'{number:02}', x, top, 12.5, 'DisplayBold', TEAL)
+        tx = x+29
+        tw = width-29
+        height = self.para(day['title'], tx, top, tw, size=9.3, leading=12.3, bold=True)
+        top += height+4
+        top += self.para(day['description'], tx, top, tw, size=size, leading=leading)
+        top += 3
+        stay = ('Malam: '+day['overnight']) if day['overnight'] != 'Perjalanan pulang' else 'Perjalanan pulang'
+        if day.get('meals'):
+            stay += ' · '+day['meals']
+        top += self.para(stay, tx, top, tw, size=7.4, leading=10.2, color=TEAL)
+        return top+gap
+
+    def hotel_list(self, p, x, top, width, compact=False):
+        self.text('TEMPAT MENGINAP', x, top, 9, 'BodyBold', TEAL)
+        top += 22
+        for hotel in p['hotels']:
+            label = f"{hotel['city']} · {hotel['nights']} malam"
+            top += self.para(label, x, top, width, size=8.6 if compact else 9, leading=11.6, bold=True)
+            top += 2
+            top += self.para(hotel['note'], x, top, width, size=7.7 if compact else 8.1,
+                             leading=10.4 if compact else 11.2, color=MUTED)
+            top += 7 if compact else 12
+        return top
+
+    def peru_itinerary(self):
+        p = self.data['peru']
+        self.header('PERU / RENCANA PERJALANAN')
+        self.title('7 HARI LOKAL · 6 MALAM HOTEL', 'Dari Lima ke pegunungan Inca')
+        self.para(p['travelNote'], M, 151, CW, size=8.6, leading=12.2, color=MUTED, limit=37)
+        top = 201
+        for n, day in enumerate(p['days'], 1):
+            top = self.day(day, n, M, top, 333, size=8.4, leading=11.7, gap=12)
+        if top > PAGE_END+12:
+            raise ValueError(f'Peru itinerary overflow: {top}')
+        right_x = M+355
+        right_w = CW-355
+        top = self.hotel_list(p, right_x, 202, right_w)
+        self.text('DI LUAR HARGA', right_x, top+4, 9, 'BodyBold', TEAL)
+        top = self.bullets(p['excluded'], right_x, top+26, right_w, size=7.9, leading=11.2, gap=6)
+        top += 9
+        self.para(p['price']['basisNote'], right_x, top, right_w, size=7.9, leading=11.2, color=MUTED)
+        self.footer(2)
+
+    def four_itinerary(self):
+        p = self.data['empat-negara']
+        self.header('EMPAT NEGARA / RENCANA PERJALANAN')
+        self.title('13 HARI LOKAL · 12 MALAM HOTEL', 'Dari Brasil, melintasi Andes')
+        self.para(p['travelNote'], M, 151, CW, size=8.5, leading=12, color=MUTED, limit=37)
+        gap = 21
+        col_w = (CW-gap)/2
+        for col, entries in enumerate((p['days'][:7], p['days'][7:])):
+            top = 202
+            for offset, day in enumerate(entries):
+                number = offset+1 if col == 0 else offset+8
+                top = self.day(day, number, M+col*(col_w+gap), top, col_w,
+                               size=8.05, leading=11.15, gap=9)
+            if top > PAGE_END+9:
+                raise ValueError(f'Four-country itinerary column {col} overflow: {top}')
+        self.footer(4)
+
+    def trade(self):
+        peru, multi = self.data['peru'], self.data['empat-negara']
+        self.header('TRAVEL DETAILS / ENGLISH TRADE BRIEF')
+        self.title('BRASIL · KOLOMBIA · PERU · CHILE', 'Your South America journey')
+        left_w = 244
+        right_x = M+269
+        right_w = CW-269
+        top = self.hotel_list(multi, M, 158, left_w, compact=True)
+        self.text('DI LUAR HARGA EMPAT NEGARA', right_x, 158, 8.6, 'BodyBold', TEAL)
+        right_top = self.bullets(multi['excluded'], right_x, 180, right_w, size=8.0, leading=11.3, gap=5)
+        right_top += 7
+        right_top += self.para(multi['price']['basisNote'], right_x, right_top, right_w,
+                               size=7.9, leading=11.2, color=MUTED)
+        top = max(top, right_top)+12
+        self.c.setStrokeColor(LINE)
+        self.c.line(M, H-top, W-M, H-top)
+        top += 14
+        self.text('FLIGHTS & BOOKING', M, top, 9, 'BodyBold', TEAL)
+        top += 22
+        flight_text = (
+            '<b>Peru:</b> '+esc(peru['flightRoute'])+'. <b>Four countries:</b> '+esc(multi['flightRoute'])+'. '
+            'Qatar Airways is preferred for long-haul sectors, with partner airlines where required. '
+            'Airfare is a planning allowance, not held inventory. Flights, baggage and transit times are confirmed for the travel dates. '
+            'Wi-Fi depends on the operating airline and aircraft; continuous access is not guaranteed.'
+        )
+        top += self.para(flight_text, M, top, CW, size=8.0, leading=11.5, markup=True)
+        top += 13
+        trade_text = (
+            '<b>Indonesian outbound groups.</b> Peru: 7 local days / 6 hotel nights, from '+esc(millions(peru['price']['from']))+
+            '. Four countries: 13 local days / 12 hotel nights, from '+esc(millions(multi['price']['from']))+'. '
+            'Both indicative retail prices are per paying guest, based on 20 paying guests plus one Indonesian tour leader, '
+            'with twin/double sharing and international plus domestic/regional airfare allowances. '
+            'International travel adds days. Bogotá is a transit visit, subject to the flight schedule. '
+            'There are no fixed departure dates; 2027 rates, hotels, transport and admission availability require reconfirmation.'
+        )
+        top += self.para(trade_text, M, top, CW, size=8.0, leading=11.5, markup=True)
+        top += 16
+        self.box(M, top, CW, 45, PALE, 7)
+        self.text('Minta itinerary & harga untuk grupmu', M+12, top+8, 11.4, 'DisplayBold')
+        self.link('sundaftrip.com/amerika-latin', WEB, M+12, top+29, size=8.5)
+        self.link('+62 817 7520 2759', WHATSAPP, M+329, top+14, size=9.1)
+        self.link('info@sundaftrip.com', 'mailto:info@sundaftrip.com', M+329, top+29, size=8.5)
+        top += 58
+        self.text('PHOTO CREDITS', M, top, 7.1, 'BodyBold', MUTED)
+        top += 15
+        for photo_id in ('machu-picchu-panorama', 'rio-de-janeiro-sunrise'):
+            item = self.metadata[photo_id]
+            author = esc(item['author'])
+            if item.get('authorUrl'):
+                author += f", <link href=\"{escape(item['authorUrl'])}\" color=\"#008D93\">{esc(item['authorUrl'])}</link>"
+            credit = (f'{esc(item["title"])} - {author}. '
+                      f'<link href="{escape(item["source"])}" color="#008D93">Wikimedia Commons source</link>. '
+                      f'<link href="{escape(item["licenseUrl"])}" color="#008D93">{esc(item["license"])}</link>. '
+                      'Resized and cropped for this layout; no generative edits.')
+            top += self.para(credit, M, top, CW, size=7.0, leading=9.7, color=MUTED, markup=True)+4
+        self.footer(5, 'TRADE / ID + EN')
+
+    def build(self):
+        self.overview('peru', 1)
+        self.peru_itinerary()
+        self.overview('empat-negara', 3)
+        self.four_itinerary()
+        self.trade()
+        self.c.save()
+
+
+def validate(data):
+    for key, expected_days, expected_nights in [('peru', 7, 6), ('empat-negara', 13, 12)]:
+        p = data[key]
+        if not isinstance(p['price']['from'], (int, float)) or p['price']['from'] <= 0:
+            raise ValueError(f'{key}: a positive final indicative retail price is required')
+        if p['price']['groupSize'] != 20:
+            raise ValueError(f'{key}: this catalogue layout requires a 20 paying guests + 1 TL basis')
+        if len(p['days']) != expected_days:
+            raise ValueError(f'{key}: expected {expected_days} local days')
+        if sum(h['nights'] for h in p['hotels']) != expected_nights:
+            raise ValueError(f'{key}: expected {expected_nights} hotel nights')
+        if len(p['price']['options']) > 3:
+            raise ValueError(f'{key}: at most 3 priced options fit the overview page')
+
 
 def main():
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--output',type=Path,default=ROOT/'sundaf-trip-peru-south-america-2027.pdf')
-    args=parser.parse_args()
-    args.output.parent.mkdir(parents=True,exist_ok=True)
-    c=canvas.Canvas(str(args.output),pagesize=A4,pageCompression=1)
-    c.setTitle('Sundaf Trip | Peru & South America 2027')
-    c.setAuthor('Sundaf Trip - CV Sundaf Holiday Group')
-    c.setSubject('Peru and South America group travel: Indonesian catalogue and English trade brief')
-    c.setKeywords('Sundaf Trip, Peru, South America, Amerika Latin, 2027, programme development')
-    public_indonesian(c); trade_english(c); c.save()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--data-file', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--repo-root', type=Path, required=True)
+    args = parser.parse_args()
+    data = json.loads(args.data_file.read_text())
+    validate(data)
+    Brochure(args.repo_root, data, args.output).build()
     print(args.output)
 
-if __name__=='__main__': main()
+
+if __name__ == '__main__':
+    main()
