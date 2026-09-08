@@ -76,6 +76,16 @@ function isOneOf<T extends string>(value: string | undefined, options: readonly 
   return Boolean(value && options.includes(value as T));
 }
 
+function normalizeDestination(value: string) {
+  const normalized = value.toLowerCase();
+  return normalized === "kanada" ? "canada" : normalized;
+}
+
+export function hasExplicitCatalogTripType(input: CatalogFilterInput) {
+  const rawType = input instanceof URLSearchParams ? input.get("type") : one(input.type);
+  return Boolean(rawType && Object.hasOwn(QUERY_TO_TRIP_TYPE, rawType));
+}
+
 export function parseCatalogFilters(
   input: CatalogFilterInput,
 ): CatalogFilterState {
@@ -92,7 +102,7 @@ export function parseCatalogFilters(
 
   return {
     type: (rawType && QUERY_TO_TRIP_TYPE[rawType]) || DEFAULT_CATALOG_FILTERS.type,
-    destination: /^[a-z0-9-]+$/i.test(destination) ? destination.toLowerCase() : "all",
+    destination: /^[a-z0-9-]+$/i.test(destination) ? normalizeDestination(destination) : "all",
     month: month === "all" || /^\d{4}-(0[1-9]|1[0-2])$/.test(month) ? month : "all",
     duration: isOneOf(duration, ["all", "short", "medium", "long"] as const)
       ? duration
@@ -155,7 +165,7 @@ export function getCatalogDestination(tour: CatalogFilterTour) {
   if (/(jepang|japan|tokyo|hokkaido|osaka|kyoto|sapporo|otaru)/i.test(text)) {
     return "jepang";
   }
-  return slugify(tour.country || tour.cityHighlight || "lainnya") || "lainnya";
+  return normalizeDestination(slugify(tour.country || tour.cityHighlight || "lainnya")) || "lainnya";
 }
 
 export function getCatalogTripType(
@@ -291,11 +301,8 @@ export function resolveCatalogFilters<T extends CatalogFilterTour>(
   now = new Date(),
 ): CatalogFilterState {
   const filters = parseCatalogFilters(input);
-  const rawType = input instanceof URLSearchParams ? input.get("type") : one(input.type);
-  const hasExplicitType = Boolean(rawType && QUERY_TO_TRIP_TYPE[rawType]);
-
   if (
-    hasExplicitType
+    hasExplicitCatalogTripType(input)
     || filters.destination === "all"
     || filterCatalogTours(tours, filters, now).length > 0
   ) {

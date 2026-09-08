@@ -4,6 +4,7 @@ import LatinAmericaCollection from "@/components/website/LatinAmericaCollection"
 
 import {
   type FormEvent,
+  type SetStateAction,
   useCallback,
   useMemo,
   useState,
@@ -21,6 +22,7 @@ import {
   getCatalogDestination,
   getCatalogTripType,
   getUpcomingDepartureMonths,
+  hasExplicitCatalogTripType,
   parseCatalogFilters,
   resolveCatalogFilters,
   serializeCatalogFilters,
@@ -81,11 +83,14 @@ const destinationLabels: Record<string, string> = {
   "asia-tengah": "Asia Tengah",
   vietnam: "Vietnam",
   jepang: "Jepang",
+  canada: "Kanada",
   lainnya: "Destinasi lainnya",
 };
 
-function queryHref(pathname: string, state: CatalogFilterState, campaignQuery = "") {
+function queryHref(pathname: string, state: CatalogFilterState, campaignQuery = "", explicitType = true) {
   const params = new URLSearchParams(serializeCatalogFilters(state));
+  if (!explicitType) params.delete("type");
+  else if (state.type === "open") params.set("type", "open-trip");
   new URLSearchParams(campaignQuery).forEach((value, key) => params.set(key, value));
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
@@ -124,7 +129,11 @@ export default function CleanToursCatalog({
   const filterKey = serializeCatalogFilters(filters);
   const [pagination, setPagination] = useState({ key: filterKey, count: PAGE_SIZE });
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [draft, setDraft] = useState<CatalogFilterState>(filters);
+  const [draftState, setDraftState] = useState({
+    filters,
+    typeExplicit: hasExplicitCatalogTripType(new URLSearchParams(initialSearch)),
+  });
+  const draft = draftState.filters;
 
   const destinations = useMemo(() => {
     const values = Array.from(new Set(tours.map(getCatalogDestination)));
@@ -235,12 +244,30 @@ export default function CleanToursCatalog({
   }
 
   function openSheet() {
-    setDraft(filters);
+    setDraftState({
+      filters,
+      typeExplicit: hasExplicitCatalogTripType(new URLSearchParams(initialSearch)),
+    });
     setSheetOpen(true);
     trackSundafEvent("tour_filter_open", { trip_type: filters.type });
   }
 
   const closeSheet = useCallback(() => setSheetOpen(false), []);
+
+  function changeDraft(action: SetStateAction<CatalogFilterState>) {
+    setDraftState((current) => {
+      const next = typeof action === "function" ? action(current.filters) : action;
+      const typeExplicit = next === DEFAULT_CATALOG_FILTERS
+        ? false
+        : current.typeExplicit || next.type !== current.filters.type;
+      if (!typeExplicit) {
+        const query = new URLSearchParams(serializeCatalogFilters(next));
+        query.delete("type");
+        return { filters: resolveCatalogFilters(tours, query, now), typeExplicit };
+      }
+      return { filters: next, typeExplicit };
+    });
+  }
 
   function applyFilters(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -254,7 +281,7 @@ export default function CleanToursCatalog({
       availability: String(form.get("availability") || ""),
       sort: String(form.get("sort") || ""),
     });
-    const nextHref = queryHref(pathname, next, campaignQuery);
+    const nextHref = queryHref(pathname, next, campaignQuery, draftState.typeExplicit);
     trackSundafEvent("tour_filter_apply", {
       trip_type: next.type,
       destination: next.destination,
@@ -486,7 +513,7 @@ export default function CleanToursCatalog({
           priceOptions={priceOptions}
           availabilityOptions={availabilityOptions}
           sortOptions={sortOptions}
-          onDraftChange={setDraft}
+          onDraftChange={changeDraft}
           onClose={closeSheet}
           onSubmit={applyFilters}
         />

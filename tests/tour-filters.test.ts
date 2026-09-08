@@ -4,6 +4,7 @@ import {
   DEFAULT_CATALOG_FILTERS,
   filterCatalogTours,
   getCatalogTripType,
+  getCatalogDestination,
   getUpcomingDepartureMonths,
   parseCatalogFilters,
   resolveCatalogFilters,
@@ -70,6 +71,15 @@ test("serializes only meaningful catalog filter state and parses legacy region",
     price: "under-10",
   });
   assert.equal(parseCatalogFilters({ region: "asia-tengah" }).destination, "asia-tengah");
+});
+
+test("Canada destination links match catalogue country names in either language", () => {
+  const canada = [{ ...tours[0], title: "Canadian Rockies", country: "Kanada" }];
+  assert.equal(getCatalogDestination(canada[0]), "canada");
+  for (const destination of ["canada", "kanada", "Canada", "Kanada"]) {
+    const filters = resolveCatalogFilters(canada, { destination }, NOW);
+    assert.deepEqual(filterCatalogTours(canada, filters, NOW), canada);
+  }
 });
 
 test("destination entry links show matching land tours when no open trip is available", () => {
