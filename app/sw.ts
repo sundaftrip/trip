@@ -38,6 +38,11 @@ function isSensitivePathname(pathname: string) {
   );
 }
 
+function isLivePdfPathname(pathname: string) {
+  return isItineraryPdfPathname(pathname)
+    || pathname === "/downloads/sundaf-trip-peru-south-america-2027.pdf";
+}
+
 function isPageDataRequest(request: Request) {
   return request.mode === "navigate"
     || request.destination === "document"
@@ -61,7 +66,7 @@ const livePageNetworkOnly: RuntimeCaching = {
 // Never let them fall through to Serwist's "others" cache, including offline.
 const itineraryPdfNetworkOnly: RuntimeCaching = {
   matcher: ({ sameOrigin, url: { pathname } }) =>
-    sameOrigin && isItineraryPdfPathname(pathname),
+    sameOrigin && isLivePdfPathname(pathname),
   handler: new NetworkOnly({ fetchOptions: { cache: "no-store" } }),
 };
 
@@ -81,7 +86,7 @@ const serwist = new Serwist({
         matcher: ({ request }) => {
           const { pathname } = new URL(request.url);
           return request.destination === "document" && !isSensitivePathname(pathname)
-            && !isItineraryPdfPathname(pathname);
+            && !isLivePdfPathname(pathname);
         },
       },
     ],
@@ -108,7 +113,7 @@ self.addEventListener("activate", (event) => {
             requests.map((request) => {
               const url = new URL(request.url);
               if (url.origin === self.location.origin
-                && (isSensitivePathname(url.pathname) || isItineraryPdfPathname(url.pathname))) {
+                && (isSensitivePathname(url.pathname) || isLivePdfPathname(url.pathname))) {
                 return cache.delete(request);
               }
               return Promise.resolve(false);
