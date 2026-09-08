@@ -4,11 +4,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "@/components/website/clean/PreserveScrollLink";
 import {
   Building2, MapPin, Compass, CheckCircle2, Phone, Mail, Download, ShieldCheck,
 } from "lucide-react";
 import { lora } from "@/lib/fonts";
 import { APPOINTMENT_ONLY_OFFICE_ADDRESS } from "@/lib/business-identity";
+import { LATIN_AMERICA_BROCHURE } from "@/lib/latin-america";
 
 type Lang = "en" | "ru";
 type Bi = { en: string; ru: string };
@@ -103,8 +105,8 @@ const DESTINATIONS: { label: Bi; detail: Bi }[] = [
   {
     label: { en: "Expanding To", ru: "Расширяемся" },
     detail: {
-      en: "Western Europe and Scandinavia",
-      ru: "Западная Европа и Скандинавия",
+      en: "Western Europe and Scandinavia; Peru and South America programmes in development for 2027",
+      ru: "Западная Европа и Скандинавия; программы по Перу и Южной Америке на 2027 год в разработке",
     },
   },
 ];
@@ -294,6 +296,15 @@ export default function CompanyProfileContent({ proofPhotos = [] }: { proofPhoto
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-4 rounded-xl border border-teal-200 bg-teal-50 p-5 text-slate-800" lang="en">
+          <h3 className="font-bold">Peru & South America · Programme development 2027</h3>
+          <p className="mt-2 text-sm leading-relaxed">We are developing Peru and multi-country group programmes for Indonesian travellers. Regional supplier proposals have been received. Final dates, duration, pricing and availability are confirmed by quotation; the standalone Peru programme requires a separate quotation.</p>
+          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-teal-800">
+            <Link scroll data-scroll-reset-after-navigation href="/amerika-latin" className="underline underline-offset-4">Explore the programme catalogue</Link>
+            <a href={LATIN_AMERICA_BROCHURE} download className="underline underline-offset-4">Download the ID / EN brochure</a>
+          </div>
         </div>
 
         {/* ── Why ── */}

@@ -35,6 +35,13 @@ export const CRAWL_PROFILE = `# Sundaf Trip
 - [Panduan perjalanan](https://sundaftrip.com/blog)
 - [Kerja sama operasional](https://sundaftrip.com/partnership-relation)
 
+## Peru dan Amerika Latin 2027
+Sundaf Trip sedang mengembangkan program grup Peru dan Brasil, Kolombia, Peru, Chile untuk pasar Indonesia. Proposal supplier regional telah diterima. Permintaan penawaran dibuka; tanggal, durasi total, harga, dan ketersediaan belum dikonfirmasi. Program Peru terpisah memerlukan penawaran baru. Halaman ini tidak menyatakan riwayat keberangkatan Peru atau Amerika Selatan.
+- [Katalog Amerika Latin](https://sundaftrip.com/amerika-latin)
+- [Rancangan Peru](https://sundaftrip.com/peru-amerika-selatan)
+- [Rancangan Brasil, Kolombia, Peru dan Chile](https://sundaftrip.com/amerika-latin/brasil-kolombia-peru-chile)
+- [Brosur produk Indonesia dan Inggris](https://sundaftrip.com/downloads/sundaf-trip-peru-south-america-2027.pdf)
+
 ## Visa
 Sundaf Trip membantu persiapan dokumen dan pengajuan visa. Persetujuan ditentukan kedutaan, konsulat, atau otoritas imigrasi. Harga layanan dan biaya resmi ditampilkan terpisah bila tersedia; jangan menjumlahkan keduanya tanpa memeriksa cakupan layanan pada halaman negara. Persyaratan perlu diperiksa kembali pada sumber resmi sebelum pengajuan.
 - [Negara, persyaratan, dan biaya layanan](https://sundaftrip.com/visa)

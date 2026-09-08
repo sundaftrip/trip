@@ -7,6 +7,7 @@ import { comparePublicTourCatalogOrder, getPublicTourState } from "@/lib/tour-or
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import ToursCatalog from "@/components/website/ToursCatalog";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import LatinAmericaCollection from "@/components/website/LatinAmericaCollection";
 import CleanToursCatalog from "@/components/website/clean/CleanToursCatalog";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { buildWhatsAppHref } from "@/lib/utils";
@@ -197,6 +198,7 @@ export default async function ToursPage({
            tidak berubah tapi hierarki heading tetap benar (h1 → h2). */}
         <h1 className="sr-only">Jadwal Tour dan Dokumentasi Sundaf Trip</h1>
         <ToursCatalog tours={tours} theme={theme} showFilter split />
+        <LatinAmericaCollection />
       </div>
     </div>
   );

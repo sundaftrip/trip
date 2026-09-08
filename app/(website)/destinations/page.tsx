@@ -4,6 +4,7 @@ import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, ArrowUpRight, Compass, MapPin } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import LatinAmericaCollection from "@/components/website/LatinAmericaCollection";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
@@ -13,7 +14,7 @@ export const revalidate = 3600;
 
 const PAGE_TITLE = "Destinasi Pilihan · Sundaf Trip";
 const PAGE_DESC =
-  "Jelajahi hub perjalanan Rusia dan Aurora, Asia Tengah, Vietnam, dan Jepang, serta panduan destinasi Sundaf Trip untuk traveler Indonesia.";
+  "Jelajahi Rusia dan Aurora, Asia Tengah, Vietnam, Jepang, serta rancangan perjalanan Peru dan Amerika Latin 2027 bersama Sundaf Trip.";
 
 export const metadata: Metadata = {
   title: "Destinasi Pilihan",
@@ -217,6 +218,8 @@ export default function DestinationsPage() {
           </div>
         </div>
       </section>
+
+      <LatinAmericaCollection />
 
       <section className={styles.guideSection} aria-labelledby="guide-title">
         <div className={`${styles.shell} ${styles.guideLayout}`}>
