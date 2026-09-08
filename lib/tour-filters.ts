@@ -22,6 +22,10 @@ export type CatalogFilterState = {
   sort: CatalogSort;
 };
 
+type CatalogFilterInput =
+  | URLSearchParams
+  | Record<string, string | string[] | null | undefined>;
+
 export type CatalogFilterTour = {
   id: string;
   title: string;
@@ -72,10 +76,18 @@ function isOneOf<T extends string>(value: string | undefined, options: readonly 
   return Boolean(value && options.includes(value as T));
 }
 
+function normalizeDestination(value: string) {
+  const normalized = value.toLowerCase();
+  return normalized === "kanada" ? "canada" : normalized;
+}
+
+export function hasExplicitCatalogTripType(input: CatalogFilterInput) {
+  const rawType = input instanceof URLSearchParams ? input.get("type") : one(input.type);
+  return Boolean(rawType && Object.hasOwn(QUERY_TO_TRIP_TYPE, rawType));
+}
+
 export function parseCatalogFilters(
-  input:
-    | URLSearchParams
-    | Record<string, string | string[] | null | undefined>,
+  input: CatalogFilterInput,
 ): CatalogFilterState {
   const get = (key: string) =>
     input instanceof URLSearchParams ? input.get(key) || undefined : one(input[key]) || undefined;
@@ -90,7 +102,7 @@ export function parseCatalogFilters(
 
   return {
     type: (rawType && QUERY_TO_TRIP_TYPE[rawType]) || DEFAULT_CATALOG_FILTERS.type,
-    destination: /^[a-z0-9-]+$/i.test(destination) ? destination : "all",
+    destination: /^[a-z0-9-]+$/i.test(destination) ? normalizeDestination(destination) : "all",
     month: month === "all" || /^\d{4}-(0[1-9]|1[0-2])$/.test(month) ? month : "all",
     duration: isOneOf(duration, ["all", "short", "medium", "long"] as const)
       ? duration
@@ -113,7 +125,9 @@ export function parseCatalogFilters(
 export function serializeCatalogFilters(state: CatalogFilterState) {
   const params = new URLSearchParams();
 
-  if (state.type !== DEFAULT_CATALOG_FILTERS.type) {
+  // Destination-only links choose a category from the available inventory.
+  // Preserve an explicit open-trip selection when navigating between tabs.
+  if (state.type !== DEFAULT_CATALOG_FILTERS.type || state.destination !== "all") {
     params.set("type", TRIP_TYPE_TO_QUERY[state.type]);
   }
   if (state.destination !== "all") params.set("destination", state.destination);
@@ -151,7 +165,7 @@ export function getCatalogDestination(tour: CatalogFilterTour) {
   if (/(jepang|japan|tokyo|hokkaido|osaka|kyoto|sapporo|otaru)/i.test(text)) {
     return "jepang";
   }
-  return slugify(tour.country || tour.cityHighlight || "lainnya") || "lainnya";
+  return normalizeDestination(slugify(tour.country || tour.cityHighlight || "lainnya")) || "lainnya";
 }
 
 export function getCatalogTripType(
@@ -278,4 +292,23 @@ export function filterCatalogTours<T extends CatalogFilterTour>(
       (aDate ?? Number.POSITIVE_INFINITY) - (bDate ?? Number.POSITIVE_INFINITY)
     );
   });
+}
+
+/** Resolve destination entry links without changing explicitly chosen filters. */
+export function resolveCatalogFilters<T extends CatalogFilterTour>(
+  tours: T[],
+  input: CatalogFilterInput,
+  now = new Date(),
+): CatalogFilterState {
+  const filters = parseCatalogFilters(input);
+  if (
+    hasExplicitCatalogTripType(input)
+    || filters.destination === "all"
+    || filterCatalogTours(tours, filters, now).length > 0
+  ) {
+    return filters;
+  }
+
+  const landFilters: CatalogFilterState = { ...filters, type: "private" };
+  return filterCatalogTours(tours, landFilters, now).length > 0 ? landFilters : filters;
 }
