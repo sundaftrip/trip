@@ -9,11 +9,16 @@ export type PackagePrice = {
   from: number;
   groupSize: number;
   hotel: string;
-  updated: string;
-  components: { label: string; amount: number; description: string }[];
   options: PackageOption[];
-  airfareNote: string;
   basisNote: string;
+  groups: PackageGroupPrice[];
+};
+
+export type PackageGroupPrice = {
+  groupSize: number;
+  from: number;
+  optionPrices: Record<string, number>;
+  roomNote: string;
 };
 
 export type PackageDay = {
@@ -37,9 +42,16 @@ export type PackageDetails = {
   englishSummary: string;
 };
 
-export function packageTotal(price: PackagePrice, selected: readonly string[] = []) {
+export function packageGroup(price: PackagePrice, groupSize = price.groupSize) {
+  const group = price.groups.find((group) => group.groupSize === groupSize);
+  if (!group) throw new RangeError(`Unsupported group size: ${groupSize}`);
+  return group;
+}
+
+export function packageTotal(price: PackagePrice, selected: readonly string[] = [], groupSize = price.groupSize) {
+  const group = packageGroup(price, groupSize);
   const chosen = new Set(selected);
-  return price.from + price.options.reduce((total, option) => total + (chosen.has(option.id) ? option.amount : 0), 0);
+  return group.from + price.options.reduce((total, option) => total + (chosen.has(option.id) ? group.optionPrices[option.id] : 0), 0);
 }
 
 export function rupiah(amount: number) {

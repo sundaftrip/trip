@@ -217,3 +217,21 @@
   .hotelGrid h3 { font-size: 20px; }
   .flightSection { padding-block: 48px; }
 }
+
+.groupList { border: 0; padding: 0; margin: 1.6rem 0 0; min-width: 0; }
+.groupList legend { font-weight: 750; font-size: 1.05rem; margin-bottom: .85rem; }
+.groupChoices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+.groupChoice { position: relative; cursor: pointer; min-width: 0; }
+.groupChoice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.groupChoice > span { display: flex; flex-direction: column; gap: .45rem; padding: 1rem .8rem; border: 1px solid #bed2ce; border-radius: 12px; background: #fff; height: 100%; }
+.groupChoice strong { font-size: 1rem; }
+.groupChoice small { color: #4b626b; font-size: .82rem; line-height: 1.5; }
+.groupChoice input:checked + span { border-color: #086a6e; box-shadow: 0 0 0 1px #086a6e; background: #e7f3ee; }
+.groupChoice input:focus-visible + span { outline: 3px solid #0d7c82; outline-offset: 3px; }
+.roomNote { margin: 1rem 0 .5rem; font-size: .9rem; font-weight: 650; color: #243f49; }
+@media (max-width: 480px) {
+  .groupChoices { gap: .45rem; }
+  .groupChoice > span { padding: .85rem .5rem; }
+  .groupChoice strong { font-size: .84rem; }
+  .groupChoice small { font-size: .73rem; }
+}

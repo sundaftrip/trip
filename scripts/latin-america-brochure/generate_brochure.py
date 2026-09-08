@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Build Sundaf Trip's public five-page priced Peru / South America catalogue.
+"""Build Sundaf Trip's five-page customer catalogue for groups of 10, 15 and 20.
 
 Input is a JSON object mapping ``peru`` and ``empat-negara`` to PackageDetails.
-Only public retail figures are used; procurement calculations do not belong here.
+Only selling totals, customer inclusions and optional upgrades are printed.
+Each package requires price.groups with groupSize, from, optionPrices and optional
+roomNote. The 20-person selling total must match price.from. No cost methodology
+or component breakdown is accepted in the public price data.
 Requires reportlab and Pillow, plus the repository's bundled fonts and HD photos.
 The PDF skill's artifact-operation marker must be run by the caller before the
 first PDF creation/edit. This script deliberately does not run that marker.
@@ -157,46 +160,63 @@ class Brochure:
         p = self.data[key]
         peru = key == 'peru'
         self.header('DARI JAKARTA / PERJALANAN GRUP')
-        self.photo('machu-picchu-panorama' if peru else 'rio-de-janeiro-sunrise', M, 89, CW, 205, focus=(.5, .15 if peru else .55))
-        self.box(M, 238, CW, 56, INK)
-        self.text('PERU' if peru else 'BRASIL · KOLOMBIA · PERU · CHILE', M+15, 249,
+        self.photo('machu-picchu-panorama' if peru else 'rio-de-janeiro-sunrise', M, 89, CW, 170, focus=(.5, .15 if peru else .55))
+        self.box(M, 203, CW, 56, INK)
+        self.text('PERU' if peru else 'BRASIL · KOLOMBIA · PERU · CHILE', M+15, 214,
                   25 if peru else 17, 'DisplayBold', white)
         self.text('Lima, Sacred Valley & Machu Picchu' if peru else 'Machu Picchu, Rio & Iguazu dalam satu perjalanan',
-                  M+16, 278, 8.5, color=white)
+                  M+16, 243, 8.5, color=white)
 
-        self.text(p['duration'], M, 309, 12, 'BodyBold')
-        self.box(M, 337, CW, 89, PALE, 8)
-        self.text('ESTIMASI MULAI DARI', M+15, 349, 8.5, 'BodyBold', TEAL)
-        self.text(millions(p['price']['from']), M+15, 368, 31, 'DisplayBold')
-        self.text('per orang · kamar twin/double', M+17, 407, 8.4, color=MUTED)
-        self.para('Termasuk anggaran pesawat PP Jakarta, penerbangan regional/domestik, dan 1 tour leader Indonesia.',
-                  M+302, 350, CW-319, size=8.7, leading=12.3, limit=51)
-        self.text('Basis 20 peserta membayar + 1 tour leader', M+302, 405, 7.2, 'BodyBold', TEAL)
+        self.text(p['duration'], M, 274, 12, 'BodyBold')
+        self.text('ESTIMASI HARGA MULAI DARI / PER ORANG', M, 302, 8.5, 'BodyBold', TEAL)
+        groups = sorted(p['price']['groups'], key=lambda group: group['groupSize'])
+        gap = 10
+        card_w = (CW-2*gap)/3
+        for index, group in enumerate(groups):
+            x = M+index*(card_w+gap)
+            self.box(x, 322, card_w, 94, PALE, 7)
+            self.text(f"{group['groupSize']} PESERTA", x+12, 332, 8.6, 'BodyBold', TEAL)
+            self.para(millions(group['from']), x+12, 351, card_w-24, size=18.3,
+                      leading=22, bold=True, limit=23)
+            self.para(group.get('roomNote') or 'Susunan kamar dikonfirmasi saat pemesanan.',
+                      x+12, 384, card_w-24, size=7.1, leading=9.4, color=MUTED, limit=29)
+        self.para('Termasuk pesawat PP Jakarta, penerbangan domestik/regional sesuai rute, dan pendampingan 1 tour leader Indonesia.',
+                  M, 429, CW, size=8.7, leading=12.1, limit=25)
 
         left_w = 306
         right_x = M+329
         right_w = CW-329
-        self.text('SUDAH TERMASUK', M, 445, 9, 'BodyBold', TEAL)
-        left_end = self.bullets(p['included'], M, 467, left_w, size=8.5, leading=12, gap=5)
-        self.text('PILIHAN TAMBAHAN', right_x, 445, 9, 'BodyBold', TEAL)
-        top = 468
+        self.text('SUDAH TERMASUK', M, 469, 9, 'BodyBold', TEAL)
+        left_end = self.bullets(p['included'], M, 491, left_w, size=8.5, leading=12, gap=5)
+        self.text('PILIHAN TAMBAHAN', right_x, 469, 9, 'BodyBold', TEAL)
+        top = 492
         for option in p['price']['options']:
             top += self.para(option['name'], right_x, top, right_w, size=9.2, leading=12.6, bold=True)
             top += 4
-            amount = f"+ {rupiah(option['amount'])} / orang" if option['amount'] > 0 else 'Penawaran terpisah'
-            self.text(amount, right_x, top, 9.3, 'BodyBold', TEAL)
-            top += 18
+            amounts = [group['optionPrices'].get(option['id'], option['amount']) for group in groups]
+            if option['id'] == 'hotel-4' or len(set(amounts)) > 1:
+                option_col_w = right_w/3
+                for index, (group, amount) in enumerate(zip(groups, amounts)):
+                    x = right_x+index*option_col_w
+                    self.text(f"{group['groupSize']} peserta", x, top, 7.0, 'BodyBold', MUTED)
+                    self.para('+'+rupiah(amount), x, top+12, option_col_w-3, size=7.25,
+                              leading=9.3, color=TEAL, bold=True, limit=10)
+                top += 28
+                self.text('tambahan per orang', right_x, top, 7.2, color=MUTED)
+                top += 15
+            else:
+                amount = f"+ {rupiah(amounts[0])} / orang" if amounts[0] > 0 else 'Penawaran terpisah'
+                self.text(amount, right_x, top, 9.3, 'BodyBold', TEAL)
+                top += 18
             top += self.para(option['description'], right_x, top, right_w, size=8.1, leading=11.4, color=MUTED)
-            top += 16
+            top += 12
         if not p['price']['options']:
             top += self.para('Kamar single, layanan privat dan tambahan malam tersedia melalui penawaran terpisah.',
                              right_x, top, right_w, size=8.6, leading=12, color=MUTED)
-        note_top = max(left_end, top)+7
-        if note_top > 728:
-            raise ValueError(f'Overview content too long for {key}: note starts at {note_top}')
-        note = (f"Harga indikatif untuk perjalanan 2027; diperbarui {p['price']['updated']}. "
-                'Belum ada tanggal keberangkatan tetap. Harga dan ketersediaan dikonfirmasi dalam penawaran untuk tanggal pilihanmu.')
-        self.para(note, M, note_top, CW, size=8.0, leading=11.1, color=MUTED, limit=34)
+        note_top = max(left_end, top)+4
+        note = ('Harga estimasi untuk perjalanan 2027. Susunan kamar mengikuti ukuran grup di atas. '
+                'Belum ada tanggal keberangkatan tetap. Harga akhir, hotel dan ketersediaan dikonfirmasi dalam penawaran tertulis.')
+        self.para(note, M, note_top, CW, size=7.8, leading=10.8, color=MUTED, limit=33)
         self.footer(page)
 
     def day(self, day, number, x, top, width, size=8.4, leading=11.7, gap=11):
@@ -283,7 +303,8 @@ class Brochure:
         flight_text = (
             '<b>Peru:</b> '+esc(peru['flightRoute'])+'. <b>Four countries:</b> '+esc(multi['flightRoute'])+'. '
             'Qatar Airways is preferred for long-haul sectors, with partner airlines where required. '
-            'Airfare is a planning allowance, not held inventory. Flights, baggage and transit times are confirmed for the travel dates. '
+            'Return flights from Jakarta and domestic/regional flights along the itinerary are included. '
+            'Flight schedules, baggage and transit times are confirmed in the final written offer. '
             'Wi-Fi depends on the operating airline and aircraft; continuous access is not guaranteed.'
         )
         top += self.para(flight_text, M, top, CW, size=8.0, leading=11.5, markup=True)
@@ -291,10 +312,11 @@ class Brochure:
         trade_text = (
             '<b>Indonesian outbound groups.</b> Peru: 7 local days / 6 hotel nights, from '+esc(millions(peru['price']['from']))+
             '. Four countries: 13 local days / 12 hotel nights, from '+esc(millions(multi['price']['from']))+'. '
-            'Both indicative retail prices are per paying guest, based on 20 paying guests plus one Indonesian tour leader, '
-            'with twin/double sharing and international plus domestic/regional airfare allowances. '
+            'The lowest listed estimates are per guest for a group of 20, with twin/double sharing. '
+            'Prices for groups of 10 and 15 are shown on each programme page. '
+            'Both programmes include international and domestic/regional flights and an Indonesian tour leader. '
             'International travel adds days. Bogotá is a transit visit, subject to the flight schedule. '
-            'There are no fixed departure dates; 2027 rates, hotels, transport and admission availability require reconfirmation.'
+            'There are no fixed departure dates. The final 2027 price, hotels, transport and admission availability are confirmed in a written offer.'
         )
         top += self.para(trade_text, M, top, CW, size=8.0, leading=11.5, markup=True)
         top += 16
@@ -333,13 +355,46 @@ def validate(data):
         if not isinstance(p['price']['from'], (int, float)) or p['price']['from'] <= 0:
             raise ValueError(f'{key}: a positive final indicative retail price is required')
         if p['price']['groupSize'] != 20:
-            raise ValueError(f'{key}: this catalogue layout requires a 20 paying guests + 1 TL basis')
+            raise ValueError(f'{key}: the headline price must correspond to 20 guests')
+        if 'components' in p['price'] or 'airfareNote' in p['price']:
+            raise ValueError(f'{key}: remove internal components and airfareNote from public price data')
+        groups = p['price'].get('groups', [])
+        if sorted(group['groupSize'] for group in groups) != [10, 15, 20]:
+            raise ValueError(f'{key}: exactly one price each for groups of 10, 15 and 20 is required')
+        option_ids = {option['id'] for option in p['price']['options']}
+        for group in groups:
+            if not isinstance(group['from'], (int, float)) or group['from'] <= 0:
+                raise ValueError(f'{key}: all group prices must be positive')
+            if group['groupSize'] == 20 and group['from'] != p['price']['from']:
+                raise ValueError(f'{key}: the 20-person price must equal the headline price')
+            if not isinstance(group.get('optionPrices'), dict):
+                raise ValueError(f'{key}: every group requires an optionPrices object')
+            for option_id, amount in group['optionPrices'].items():
+                if option_id not in option_ids or not isinstance(amount, (int, float)) or amount < 0:
+                    raise ValueError(f'{key}: invalid group option price for {option_id}')
+            if 'hotel-4' in option_ids and 'hotel-4' not in group['optionPrices']:
+                raise ValueError(f'{key}: an explicit hotel upgrade price is required for each group size')
+        if p['price']['from'] != min(group['from'] for group in groups):
+            raise ValueError(f'{key}: the headline must be the lowest of the three group prices')
         if len(p['days']) != expected_days:
             raise ValueError(f'{key}: expected {expected_days} local days')
         if sum(h['nights'] for h in p['hotels']) != expected_nights:
             raise ValueError(f'{key}: expected {expected_nights} hotel nights')
         if len(p['price']['options']) > 3:
             raise ValueError(f'{key}: at most 3 priced options fit the overview page')
+        # Catch stale internal copy before any PDF file is created. No strings are
+        # silently altered; the public source data must be corrected explicitly.
+        public_copy = json.dumps({name: p[name] for name in (
+            'duration', 'travelNote', 'included', 'excluded', 'days', 'hotels',
+            'flightNote', 'englishSummary')}, ensure_ascii=False).lower()
+        public_copy += json.dumps({name: p['price'][name] for name in (
+            'basisNote', 'options', 'groups')}, ensure_ascii=False).lower()
+        for phrase in ('rata-rata', 'sampel', 'markup', 'mark up', 'supplier', 'alokasi',
+                       'cadangan biaya', 'airfare allowance', 'flight allowance',
+                       'cost basis', 'quoted ground', 'planning allowance',
+                       'shared across', 'regular-fare', 'buffer'):
+            if phrase in public_copy:
+                raise ValueError(f'{key}: internal pricing phrase remains in public copy: {phrase}')
 
 
 def main():
