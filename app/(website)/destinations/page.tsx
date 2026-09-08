@@ -4,7 +4,7 @@ import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, ArrowUpRight, Compass, MapPin } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
-import LatinAmericaCollection from "@/components/website/LatinAmericaCollection";
+import LatinAmericaPhotoCredit from "@/components/website/LatinAmericaPhotoCredit";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 const PAGE_TITLE = "Destinasi Pilihan · Sundaf Trip";
 const PAGE_DESC =
-  "Jelajahi Rusia dan Aurora, Asia Tengah, Vietnam, Jepang, serta rancangan perjalanan Peru dan Amerika Latin 2027 bersama Sundaf Trip.";
+  "Pilih perjalanan Rusia dan Aurora, Asia Tengah, Vietnam, Jepang, Peru, atau Amerika Latin bersama Sundaf Trip.";
 
 export const metadata: Metadata = {
   title: "Destinasi Pilihan",
@@ -74,6 +74,24 @@ const REGIONAL_HUBS = [
     image: PEXELS_TOUR_IMAGES.japanHokkaido,
     imageAlt: "Lanskap musim dingin Hokkaido, Jepang",
   },
+  {
+    href: "/peru-amerika-selatan",
+    name: "Peru",
+    region: "Lima, Cusco, Sacred Valley & Machu Picchu",
+    description:
+      "Dari pesisir Lima ke kota Inca dan Machu Picchu. Lihat itinerary, hotel, biaya perjalanan dari Jakarta, dan pilihan tambahannya.",
+    image: "/images/latin-america/machu-picchu-panorama.webp",
+    imageAlt: "Machu Picchu di antara pegunungan Andes, Peru",
+  },
+  {
+    href: "/amerika-latin",
+    name: "Amerika Latin",
+    region: "Brasil, Kolombia, Peru & Chile",
+    description:
+      "Rio de Janeiro, Machu Picchu, Santiago, dan air terjun Iguazu. Jelajahi paket lintas negara beserta rincian perjalanan dan biayanya.",
+    image: "/images/latin-america/rio-de-janeiro-sunrise.webp",
+    imageAlt: "Rio de Janeiro dan Sugarloaf saat matahari terbit",
+  },
 ] as const;
 
 const EXISTING_GUIDES = [
@@ -132,10 +150,10 @@ export default function DestinationsPage() {
         <div className={`${styles.shell} ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>DESTINASI SUNDAF</p>
-            <h1 id="destinations-title">Pilih kawasan. Mulai dari informasi yang tepat.</h1>
+            <h1 id="destinations-title">Mau pergi ke mana?</h1>
             <p className={styles.heroLead}>
-              Masuk lewat hub regional untuk membandingkan jadwal aktif, gambaran
-              rute, dokumentasi, panduan, dan informasi visa yang tersedia.
+              Pilih destinasi untuk melihat rute, biaya, dan pilihan perjalanan.
+              Dari Vietnam dan Jepang sampai Peru dan Amerika Latin.
             </p>
             <div className={styles.heroActions}>
               <a className={styles.primaryAction} href="#hub-regional">
@@ -149,10 +167,11 @@ export default function DestinationsPage() {
           </div>
 
           <div className={styles.heroMosaic} aria-hidden="true">
-            {REGIONAL_HUBS.map((destination, index) => (
+            {[REGIONAL_HUBS[0], REGIONAL_HUBS[2], REGIONAL_HUBS[4], REGIONAL_HUBS[5]].map((destination, index) => (
               <div className={styles.heroTile} key={destination.href}>
                 <Image
                   src={destination.image}
+                  quality={destination.image.startsWith("/images/latin-america/") ? 90 : 75}
                   alt=""
                   fill
                   priority={index === 0}
@@ -161,6 +180,7 @@ export default function DestinationsPage() {
               </div>
             ))}
           </div>
+          <p className={styles.photoCredits}>Foto Peru: <LatinAmericaPhotoCredit image="machu-picchu-panorama.webp" />. Amerika Latin: <LatinAmericaPhotoCredit image="rio-de-janeiro-sunrise.webp" />. Foto diubah ukuran/format; tampilan mengikuti layar.</p>
         </div>
       </section>
 
@@ -172,12 +192,12 @@ export default function DestinationsPage() {
         <div className={styles.shell}>
           <div className={styles.sectionHeading}>
             <div>
-              <p className={styles.eyebrow}>EMPAT HUB REGIONAL</p>
-              <h2 id="regional-title">Satu tempat untuk memahami tiap kawasan.</h2>
+              <p className={styles.eyebrow}>ENAM PILIHAN DESTINASI</p>
+              <h2 id="regional-title">Pilih perjalananmu.</h2>
             </div>
             <p>
-              Setiap hub menghubungkan informasi perjalanan yang relevan tanpa
-              mengubah jadwal, harga, atau data tour yang sudah dipublikasikan.
+              Buka destinasi untuk melihat itinerary, layanan yang termasuk,
+              dan informasi sebelum berangkat.
             </p>
           </div>
 
@@ -185,13 +205,15 @@ export default function DestinationsPage() {
             {REGIONAL_HUBS.map((destination) => (
               <article className={styles.regionCard} key={destination.href}>
                 <Link
+                  scroll data-scroll-reset-after-navigation
                   className={styles.regionLink}
                   href={destination.href}
-                  aria-label={`Jelajahi hub ${destination.name}`}
+                  aria-label={`Jelajahi ${destination.name}`}
                 >
                   <div className={styles.regionImage}>
                     <Image
                       src={destination.image}
+                      quality={destination.image.startsWith("/images/latin-america/") ? 90 : 75}
                       alt={destination.imageAlt}
                       fill
                       sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1100px) 50vw, 560px"
@@ -208,7 +230,7 @@ export default function DestinationsPage() {
                     <h3>{destination.name}</h3>
                     <p>{destination.description}</p>
                     <span className={styles.textLink}>
-                      Buka hub regional
+                      Lihat perjalanan
                       <ArrowRight size={15} aria-hidden="true" />
                     </span>
                   </div>
@@ -218,8 +240,6 @@ export default function DestinationsPage() {
           </div>
         </div>
       </section>
-
-      <LatinAmericaCollection />
 
       <section className={styles.guideSection} aria-labelledby="guide-title">
         <div className={`${styles.shell} ${styles.guideLayout}`}>

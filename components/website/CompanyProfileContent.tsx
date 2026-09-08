@@ -300,7 +300,7 @@ export default function CompanyProfileContent({ proofPhotos = [] }: { proofPhoto
 
         <div className="mt-4 rounded-xl border border-teal-200 bg-teal-50 p-5 text-slate-800" lang="en">
           <h3 className="font-bold">Peru & South America · Group travel 2027</h3>
-          <p className="mt-2 text-sm leading-relaxed">Since August 2026, we have requested group quotations and received detailed proposals for Brazil, Colombia, Peru and Chile. We accept enquiries from Indonesian groups for 2027 while developing routes and services. A standalone Peru quotation is still required; final dates, duration, pricing and availability are confirmed in writing.</p>
+          <p className="mt-2 text-sm leading-relaxed">Our catalogue presents a seven-day Peru itinerary and a thirteen-day Brazil, Colombia, Peru and Chile itinerary, with indicative retail pricing including airfare allowances from Jakarta. Regional supplier proposals and published supplier rates support our planning. We accept Indonesian group enquiries for 2027; current group quotations, services and availability are reconfirmed in writing before booking.</p>
           <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-teal-800">
             <Link scroll data-scroll-reset-after-navigation href="/amerika-latin" className="underline underline-offset-4">Explore the programme catalogue</Link>
             <a href={LATIN_AMERICA_BROCHURE} download className="underline underline-offset-4">Download the ID / EN brochure</a>

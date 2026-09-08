@@ -37,4 +37,4 @@ The four font binaries were copied without modification from the LibreOffice bun
 
 ## Sundaf logo
 
-`sundaf-logo.png` is the existing Sundaf Trip project brand asset, copied without modification. It is not part of the font software and is not covered by the font licences. The illustration in the brochure is an original vector motif generated in `generate_brochure.py`.
+`sundaf-logo.png` is the existing Sundaf Trip project brand asset, copied without modification. It is not part of the font software and is not covered by the font licences. The destination photographs have separate licences recorded in `public/images/latin-america/CREDITS.txt` and on the brochure's final page.

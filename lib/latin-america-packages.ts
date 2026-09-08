@@ -1,0 +1,97 @@
+import type { PackageDetails } from "./latin-america-package-types";
+
+// Customer-facing package figures only. Procurement calculations are kept outside this public repository.
+export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
+  peru: {
+    duration: "10 hari dari Jakarta · 6 malam hotel",
+    travelNote: "Acuan penerbangan memberi 10 hari kalender dari Jakarta: 7 hari di Peru, 6 malam hotel dan 3 malam dalam perjalanan. Hari 01–07 di bawah dihitung sejak tiba di Lima. Jadwal lengkap mengikuti tanggal dan koneksi penerbangan pilihanmu.",
+    price: {
+      from: 64_500_000, groupSize: 20, hotel: "Hotel 3★", updated: "9 September 2026",
+      components: [
+        { label: "Hotel, kunjungan & layanan di Peru", amount: 19_971_421, description: "6 malam, transportasi, kereta, pemandu lokal, tiket kunjungan serta alokasi akomodasi tour leader." },
+        { label: "Penerbangan domestik Peru", amount: 8_914_708, description: "Anggaran Lima–Cusco pulang-pergi; dikonfirmasi ulang bersama tanggal perjalanan." },
+        { label: "Penerbangan Jakarta–Lima PP", amount: 33_548_833, description: "Rata-rata tiga sampel tarif reguler Qatar Airways dan maskapai partner, Economy Classic." },
+        { label: "Pembagian tiket 1 tour leader", amount: 2_065_038, description: "Tiket internasional dan domestik satu tour leader dibagi ke 20 peserta." },
+      ],
+      options: [
+        { id: "hotel-4", name: "Upgrade hotel 4★", amount: 2_680_000, description: "Untuk seluruh grup 20 peserta, kamar berdua. Kamar single dihitung terpisah." },
+        { id: "vistadome", name: "Kereta Vistadome PP", amount: 3_850_000, description: "Upgrade kereta peserta pada dua arah. Jadwal dan tempat duduk dikonfirmasi kembali." },
+      ],
+      airfareNote: "Sampel Jakarta–Lima PP: 14–21 April, 12–19 Mei dan 4–11 Agustus 2027; diteliti 9 September 2026 tanpa kode promo. Ini rata-rata sampel untuk perencanaan, belum tarif grup atau kursi yang ditahan. Anggaran domestik merupakan cadangan biaya, bukan rata-rata tarif pasar.",
+      basisNote: "Layanan lokal dapat digabung dengan peserta lain. Layanan privat dan kamar single dihitung terpisah.",
+    },
+    days: [
+      { title: "Tiba di Lima", description: "Penjemputan di bandara dan transfer ke hotel kawasan Miraflores. Sisa hari untuk beristirahat setelah penerbangan panjang.", overnight: "Lima" },
+      { title: "Lima: pusat kota & pesisir", description: "Kunjungi pusat kolonial Lima, kompleks San Francisco dan kawasan Miraflores. Kembali ke hotel di Lima.", overnight: "Lima" },
+      { title: "Lima → Cusco", description: "Terbang ke Cusco, transfer hotel, lalu kunjungan kota sesuai waktu dan kondisi peserta. Beri waktu untuk menyesuaikan diri dengan ketinggian.", overnight: "Cusco" },
+      { title: "Sacred Valley → Aguas Calientes", description: "Pisac, makan siang di Urubamba, lalu Ollantaytambo. Naik kereta Voyager atau Expedition menuju Aguas Calientes.", overnight: "Aguas Calientes", meals: "Makan siang" },
+      { title: "Machu Picchu → Cusco", description: "Bus menuju pintu masuk, kunjungan bersama pemandu, lalu kembali dengan bus dan kereta. Transfer dari Ollantaytambo ke Cusco.", overnight: "Cusco" },
+      { title: "Vinicunca / Rainbow Mountain", description: "Perjalanan ke pegunungan Vinicunca, termasuk sarapan dan makan siang. Aktivitas melibatkan pendakian di ketinggian; peserta dapat memilih beristirahat di Cusco tanpa potongan otomatis.", overnight: "Cusco", meals: "Sarapan & makan siang" },
+      { title: "Cusco → Lima → perjalanan pulang", description: "Transfer bandara dan penerbangan kembali ke Lima untuk sambungan internasional. Jam terbang dipilih dengan waktu transit yang memadai.", overnight: "Perjalanan pulang" },
+    ],
+    included: ["6 malam hotel 3★, kamar twin/double untuk peserta.", "Transfer bandara dan transportasi untuk rangkaian kunjungan; beberapa layanan bersifat gabungan.", "Pemandu lokal berbahasa Inggris/Spanyol dan 1 tour leader dari Indonesia.", "Kereta standar, bus Machu Picchu dan tiket masuk sesuai sirkuit yang tersedia.", "Kunjungan Lima, Cusco, Sacred Valley dan Vinicunca; makan yang disebut dalam itinerary.", "Anggaran tiket internasional Jakarta–Lima PP dan domestik Lima–Cusco PP.", "Alokasi perjalanan dan akomodasi tour leader."],
+    excluded: ["Makan yang tidak disebut, minuman, tip dan pengeluaran pribadi.", "Asuransi perjalanan, visa atau dokumen transit bila diperlukan.", "Kamar single peserta, layanan privat, tambahan malam dan perubahan rute.", "Kelebihan bagasi serta biaya Wi-Fi yang tidak termasuk tarif maskapai."],
+    hotels: [{ city: "Lima", nights: 2, note: "Kawasan Miraflores" }, { city: "Cusco", nights: 3, note: "Hotel kategori 3★" }, { city: "Aguas Calientes", nights: 1, note: "Bermalam sebelum Machu Picchu" }],
+    gallery: [
+      { src: "/images/latin-america/lima-plaza-1280.webp", alt: "Plaza Mayor dengan bangunan kolonial di Lima", caption: "Lima · Plaza Mayor" },
+      { src: "/images/latin-america/cusco-plaza-1280.webp", alt: "Gereja bersejarah dan Plaza de Armas di Cusco", caption: "Cusco · Plaza de Armas" },
+      { src: "/images/latin-america/ollantaytambo-1280.webp", alt: "Teras batu Inca di Ollantaytambo, Sacred Valley", caption: "Sacred Valley · Ollantaytambo" },
+    ],
+    flightRoute: "Jakarta → Doha → Madrid → Lima · Lima ↔ Cusco",
+    flightNote: "Prioritas Qatar Airways untuk penerbangan jarak jauh, dengan maskapai partner pada sambungan ke Peru. Wi-Fi mengikuti pesawat dan operator setiap segmen; akses sepanjang perjalanan tidak dijamin.",
+    englishSummary: "Our Peru programme combines six hotel nights in Lima, Cusco and Aguas Calientes with the Sacred Valley, Machu Picchu and Vinicunca. The indicative Indonesian retail price includes international and domestic airfare allowances and the allocation for one Indonesian tour leader across 20 paying guests. Some local services are shared. Dates, accommodation, transport, admission inventory and the final group quotation are reconfirmed before booking.",
+  },
+  "empat-negara": {
+    duration: "16 hari dari Jakarta · 12 malam hotel",
+    travelNote: "Acuan penerbangan memberi 16 hari kalender dari Jakarta: 13 hari di Amerika Selatan, 12 malam hotel dan 3 malam dalam perjalanan. Hari 01–13 di bawah dihitung sejak tiba di São Paulo. Jadwal akhir mengikuti koneksi internasional dan regional.",
+    price: {
+      from: 152_600_000, groupSize: 20, hotel: "Hotel 3★/setara", updated: "9 September 2026",
+      components: [
+        { label: "Hotel, kunjungan & 7 penerbangan regional", amount: 107_271_065, description: "12 malam, rangkaian layanan darat dan penerbangan antarnegara/kota sesuai rute." },
+        { label: "Penerbangan Jakarta–São Paulo PP", amount: 40_565_467, description: "Rata-rata tiga sampel tarif reguler Qatar Airways Economy Classic melalui Doha." },
+        { label: "Pembagian tiket 1 tour leader", amount: 4_763_468, description: "Tiket internasional dan tujuh penerbangan regional satu tour leader dibagi ke 20 peserta." },
+      ],
+      options: [
+        { id: "hotel-4", name: "Upgrade hotel 4★", amount: 6_390_000, description: "Untuk seluruh grup 20 peserta, kamar berdua. Pilihan hotel mengikuti ketersediaan." },
+        { id: "vistadome", name: "Kereta Vistadome PP", amount: 1_630_000, description: "Upgrade kereta peserta pada dua arah, sesuai jadwal yang tersedia." },
+        { id: "palcoyo", name: "Tur Palcoyo", amount: 1_830_000, description: "Mengisi hari bebas di Cusco. Detail layanan dan jumlah peserta dikonfirmasi kembali." },
+      ],
+      airfareNote: "Sampel Jakarta–São Paulo PP: 12–25 Mei, 9–22 Juni dan 4–17 Agustus 2027; diteliti 9 September 2026 tanpa kode promo. Ini rata-rata sampel untuk perencanaan, belum tarif grup atau kursi yang ditahan. Tarif regional, pajak dan bagasi perlu konfirmasi ulang.",
+      basisNote: "Kendaraan kunjungan untuk grup sendiri; kereta, bus situs dan cable car menggunakan layanan umum.",
+    },
+    days: [
+      { title: "Tiba di São Paulo", description: "Penjemputan di GRU, transfer privat ke hotel, dan istirahat sebelum rangkaian lintas negara.", overnight: "São Paulo" },
+      { title: "São Paulo → Bogotá → Lima", description: "Terbang melalui Bogotá. City tour saat stopover bila koneksi menyediakan waktu yang cukup, lalu penerbangan ke Lima dan transfer hotel larut malam.", overnight: "Lima" },
+      { title: "Lima → Cusco", description: "City tour Lima ke Plaza de Armas dan Huaca Pucllana. Transfer bandara, terbang ke Cusco, lalu ke hotel.", overnight: "Cusco" },
+      { title: "Cusco → Aguas Calientes", description: "Perjalanan darat ke stasiun Ollantaytambo dilanjutkan kereta Expedition. Bermalam di Aguas Calientes sebelum kunjungan Machu Picchu.", overnight: "Aguas Calientes" },
+      { title: "Machu Picchu → Cusco", description: "Kunjungan Machu Picchu bersama pemandu, termasuk bus dan tiket masuk. Kembali dengan kereta dan transfer ke Cusco.", overnight: "Cusco" },
+      { title: "Sehari di Cusco", description: "Hari bebas untuk istirahat atau menikmati kota. Tur Palcoyo tersedia sebagai pilihan tambahan dengan biaya terpisah.", overnight: "Cusco" },
+      { title: "Cusco → Santiago", description: "Transfer bandara, penerbangan menuju Chile, lalu penjemputan dan transfer ke hotel di Santiago.", overnight: "Santiago" },
+      { title: "Trekking di Andes", description: "Trekking sehari dengan pemandu ke kawasan Embalse el Yeso / Laguna Negra. Peserta perlu siap berjalan kaki di pegunungan. Rute dan akses mengikuti cuaca, kondisi jalan dan kemampuan grup.", overnight: "Santiago" },
+      { title: "Santiago → Rio de Janeiro", description: "Penerbangan pagi ke Rio. Rangkaian kunjungan mencakup Maracanã, Sugarloaf, Copacabana dan Ipanema, disesuaikan jam kedatangan.", overnight: "Rio de Janeiro" },
+      { title: "Rio de Janeiro", description: "Christ the Redeemer, Selarón, Botanical Garden, Royal Portuguese Reading Room dan Metropolitan Cathedral dalam rangkaian city tour.", overnight: "Rio de Janeiro" },
+      { title: "Rio → Iguazu", description: "Terbang ke Foz do Iguaçu, transfer hotel, lalu kunjungan air terjun sisi Brasil. Sisi Argentina tidak masuk paket dasar.", overnight: "Foz do Iguaçu" },
+      { title: "Iguazu → São Paulo", description: "Penerbangan kembali ke São Paulo, transfer dan city tour sebelum malam terakhir di Brasil.", overnight: "São Paulo" },
+      { title: "São Paulo → perjalanan pulang", description: "Transfer hotel ke bandara GRU untuk memulai penerbangan kembali ke Jakarta.", overnight: "Perjalanan pulang" },
+    ],
+    included: ["12 malam hotel, kamar twin/double peserta, dengan sarapan sesuai jadwal dan jam layanan hotel.", "Transfer privat, kendaraan kunjungan dan pemandu lokal berbahasa Inggris sesuai itinerary.", "1 tour leader dari Indonesia, termasuk alokasi tiket internasional dan regionalnya.", "Kereta Expedition PP, bus serta tiket Machu Picchu sesuai sirkuit yang tersedia.", "Kunjungan dan tiket yang tercantum pada itinerary, termasuk Iguazu sisi Brasil.", "Anggaran tiket Jakarta–São Paulo PP dan 7 penerbangan regional untuk rangkaian empat negara."],
+    excluded: ["Makan siang, makan malam, minuman, tip dan pengeluaran pribadi.", "Asuransi perjalanan, visa atau dokumen transit bila diperlukan.", "Palcoyo, upgrade hotel/kereta, kamar single peserta dan tambahan malam.", "Iguazu sisi Argentina; perlu rute dan tambahan malam tersendiri.", "Kelebihan bagasi serta biaya Wi-Fi yang tidak termasuk tarif maskapai."],
+    hotels: [
+      { city: "São Paulo", nights: 2, note: "Slim Frei Caneca atau setara" },
+      { city: "Lima", nights: 1, note: "Casa Andina Standard San Antonio atau setara" },
+      { city: "Cusco", nights: 3, note: "Jose Antonio Cusco atau setara" },
+      { city: "Aguas Calientes", nights: 1, note: "Casa Andina Standard Machu Picchu atau setara" },
+      { city: "Santiago", nights: 2, note: "Hampton by Hilton Las Condes atau setara" },
+      { city: "Rio de Janeiro", nights: 2, note: "Windsor Martinique atau setara" },
+      { city: "Foz do Iguaçu", nights: 1, note: "Viale Tower atau setara" },
+    ],
+    gallery: [
+      { src: "/images/latin-america/iguazu-falls-1280.webp", alt: "Air terjun Iguazu dilihat dari sisi Brasil", caption: "Brasil · Iguazu" },
+      { src: "/images/latin-america/machu-picchu-panorama-1280.webp", alt: "Machu Picchu dengan puncak Huayna Picchu", caption: "Peru · Machu Picchu" },
+      { src: "/images/latin-america/rio-de-janeiro-sunrise-1280.webp", alt: "Rio de Janeiro dan Sugarloaf saat matahari terbit", caption: "Brasil · Rio de Janeiro" },
+    ],
+    flightRoute: "Jakarta ↔ Doha ↔ São Paulo · GRU–BOG–LIM–CUZ–SCL–GIG–IGU–GRU",
+    flightNote: "Prioritas Qatar Airways untuk Jakarta–Doha–São Paulo. Penerbangan regional memakai operator yang melayani tiap rute. Bagasi, waktu transit dan Wi-Fi diperiksa per segmen; stopover Bogotá membutuhkan jadwal yang memadai.",
+    englishSummary: "Our Brazil, Colombia, Peru and Chile programme covers 13 local days and 12 hotel nights, with a daytime Bogotá stopover. The indicative Indonesian retail price includes the quoted ground itinerary, seven regional flight allowances, a regular-fare Jakarta–São Paulo return allowance and flight costs for one tour leader shared across 20 paying guests. Supplier proposals form the cost basis; a renewed group quotation, flight schedule, baggage and admission availability are required before booking.",
+  },
+};
