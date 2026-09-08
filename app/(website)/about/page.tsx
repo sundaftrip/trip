@@ -350,6 +350,32 @@ export default async function AboutPage() {
           </div>
         </div>
 
+        <section id="sundaf-group" aria-labelledby="sundaf-group-title" className="mb-12 scroll-mt-28">
+          <h2
+            id="sundaf-group-title"
+            data-no-translate
+            translate="no"
+            className={`${isAtlas ? supportStyles.sectionHeading : ""} text-2xl font-black mb-4 ${!isOutlined ? "text-gray-900 dark:text-white" : ""}`}
+            style={isOutlined ? { color: headClr } : undefined}>
+            SUNDAF Holiday Group
+          </h2>
+          <div
+            className={`max-w-2xl space-y-3 text-sm leading-relaxed ${!isOutlined ? "text-gray-600 dark:text-gray-400" : ""}`}
+            style={isOutlined ? { color: subClr } : undefined}>
+            <p>
+              SUNDAF Trip dan SUNDAF DMC berada dalam payung brand SUNDAF Holiday Group, dengan layanan yang saling melengkapi.
+            </p>
+            <p>
+              SUNDAF Trip melayani wisatawan melalui open trip, perjalanan privat, dan bantuan visa. SUNDAF DMC membantu agen dan operator perjalanan merancang perjalanan di Indonesia.
+            </p>
+            <a
+              href="https://sundafdmc.com/"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4">
+              Kenali SUNDAF DMC untuk mitra perjalanan
+            </a>
+          </div>
+        </section>
+
         {/* ── Company information ───────────────────────────────── */}
         <div className="mb-12">
           <h2
