@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { buildWhatsAppHref } from "./utils";
 
 export const LATIN_AMERICA_BROCHURE = "/downloads/sundaf-trip-peru-south-america-2027.pdf";
-export const LATIN_AMERICA_STATUS = "Pengembangan program 2027";
+export const LATIN_AMERICA_STATUS = "Perjalanan grup · Penawaran sesuai permintaan";
 
 export type LatinAmericaProgramme = {
   id: string;
@@ -24,44 +24,44 @@ export const LATIN_AMERICA_PROGRAMMES: LatinAmericaProgramme[] = [
     id: "peru",
     href: "/peru-amerika-selatan",
     title: "Peru: Lima, Cusco & Machu Picchu",
-    eyebrow: "Fokus satu negara",
-    summary: "Rancang perjalanan grup yang berfokus pada Peru, dari Lima hingga kawasan Andes dan Machu Picchu.",
+    eyebrow: "Peru",
+    summary: "Kunjungi Lima dan Cusco, lalu naik kereta ke Aguas Calientes untuk bermalam sebelum perjalanan ke Machu Picchu.",
     image: "/images/latin-america/machu-picchu.webp",
     imageAlt: "Situs Machu Picchu di antara pegunungan Peru",
     route: ["Lima", "Cusco", "Ollantaytambo", "Aguas Calientes", "Machu Picchu", "Cusco"],
-    introduction: "Mulai dari suasana kota Lima, lanjutkan ke Cusco dan perjalanan kereta menuju Aguas Calientes. Rangkaian kunjungan Machu Picchu menjadi bagian utama rancangan Peru ini. Sampaikan waktu dan kebutuhan grupmu untuk menyusun durasi serta ritme perjalanan yang sesuai.",
+    introduction: "Mulai dari Lima, lalu terbang ke Cusco. Dari sana, perjalanan darat menuju Ollantaytambo dilanjutkan dengan kereta ke Aguas Calientes. Setelah bermalam dan mengunjungi Machu Picchu, kembali melalui Ollantaytambo dan Cusco.",
     stages: [
-      { title: "Lima", description: "Rancangan kunjungan kota mencakup Plaza de Armas dan Huaca Pucllana. Waktu kedatangan dan penerbangan lanjutan menentukan susunan agenda." },
-      { title: "Cusco & Ollantaytambo", description: "Lanjutkan ke Cusco, lalu menuju stasiun Ollantaytambo. Alokasi waktu istirahat, perjalanan darat, dan jadwal kereta akan disesuaikan dalam penawaran." },
-      { title: "Aguas Calientes & Machu Picchu", description: "Perjalanan kereta menuju Aguas Calientes, rencana menginap, dan kunjungan Machu Picchu dengan pemandu lokal. Tiket masuk, sirkuit, serta kereta menunggu konfirmasi ketersediaan." },
-      { title: "Kembali ke Cusco", description: "Perjalanan kembali melalui Ollantaytambo dan Cusco. Rute kepulangan atau tambahan destinasi dapat dimintakan sesuai kebutuhan grup." },
+      { title: "Lima", description: "Kunjungan kota ke Plaza de Armas dan Huaca Pucllana, sebelum melanjutkan perjalanan dengan penerbangan ke Cusco." },
+      { title: "Cusco & Ollantaytambo", description: "Dari Cusco, perjalanan darat menuju stasiun Ollantaytambo. Di sini perjalanan berganti ke kereta menuju Aguas Calientes." },
+      { title: "Aguas Calientes & Machu Picchu", description: "Bermalam di Aguas Calientes sebelum mengunjungi Machu Picchu bersama pemandu lokal. Setelah kunjungan, kembali dengan kereta ke Ollantaytambo." },
+      { title: "Kembali ke Cusco", description: "Transfer kembali ke Cusco. Waktu luang atau tambahan malam bisa dimasukkan sebelum perjalanan pulang." },
     ],
-    planningNote: "Rancangan Peru ini dikembangkan dari segmen Peru dalam proposal Amerika Selatan yang telah diterima. Program Peru terpisah memerlukan penawaran baru; durasi, penerbangan, hotel, dan biaya akhirnya akan dikonfirmasi sesuai permintaan.",
-    englishSummary: "Sundaf Trip is developing a Peru-focused group programme for Indonesian travellers, drawing on the Peru segment of regional supplier proposals already received. The indicative route covers Lima, Cusco, Ollantaytambo, Aguas Calientes and Machu Picchu. A standalone Peru quotation is required; final dates, duration, services and availability will be confirmed for each enquiry.",
+    planningNote: "Contoh rute untuk perjalanan 2027. Jadwal harian, jumlah malam, hotel, tiket Machu Picchu dan harga disusun sesuai tanggal serta jumlah peserta. Belum ada tanggal keberangkatan tetap.",
+    englishSummary: "We are adding Peru to Sundaf Trip’s outbound portfolio for Indonesian groups in 2027. Our proposed route connects Lima, Cusco, Ollantaytambo, Aguas Calientes and Machu Picchu. It is based on the Peru segment of South America supplier proposals received in August 2026. A standalone Peru quotation is still required. We accept tailored group enquiries; dates, duration and prices are confirmed in a written offer.",
   },
   {
     id: "empat-negara",
     href: "/amerika-latin/brasil-kolombia-peru-chile",
     title: "Brasil, Kolombia, Peru & Chile",
-    eyebrow: "Eksplorasi empat negara",
-    summary: "Gabungkan kota-kota Amerika Selatan, Machu Picchu, Rio de Janeiro, dan air terjun Iguazu dalam satu rancangan perjalanan grup.",
+    eyebrow: "Empat negara",
+    summary: "São Paulo dan Bogotá, lalu Peru dan Chile. Kembali ke Brasil untuk Rio de Janeiro dan air terjun Iguazu.",
     image: "/images/latin-america/rio-de-janeiro.webp",
     imageAlt: "Pemandangan kota dan pegunungan Rio de Janeiro, Brasil",
     route: ["São Paulo", "Bogotá", "Lima", "Cusco & Machu Picchu", "Santiago", "Rio de Janeiro", "Iguazu", "São Paulo"],
-    introduction: "Satu rancangan lintas negara dengan Peru sebagai bagian utama perjalanan. Dari São Paulo dan singgah di Bogotá, rute berlanjut ke Lima, Cusco dan Machu Picchu, lalu Santiago, Rio de Janeiro serta Iguazu sebelum kembali ke São Paulo.",
+    introduction: "Rute dimulai dan berakhir di São Paulo. Di antaranya, singgah di Bogotá, kunjungi Lima dan Machu Picchu, lalu lanjutkan ke Santiago. Bagian akhir perjalanan kembali ke Brasil untuk Rio de Janeiro dan air terjun Iguazu.",
     stages: [
-      { title: "Brasil & Kolombia", description: "Awali rute di São Paulo, lalu singgah di Bogotá dalam perjalanan menuju Lima. Kunjungan kota Bogotá bergantung pada jadwal penerbangan dan waktu transit yang memadai." },
-      { title: "Peru", description: "Rangkaian Lima, Cusco, Ollantaytambo, Aguas Calientes dan Machu Picchu. Perjalanan kereta serta kunjungan situs dimintakan dalam penawaran supplier." },
-      { title: "Chile", description: "Lanjutkan ke Santiago. Pilihan aktivitas sekitar kota dan kawasan pegunungan disesuaikan dengan musim, kebutuhan grup serta kelayakan operasional." },
-      { title: "Rio de Janeiro & Iguazu", description: "Rancangan kunjungan Rio mencakup Christ the Redeemer dan Sugarloaf, dilanjutkan air terjun Iguazu sisi Brasil, lalu kembali ke São Paulo untuk perjalanan pulang." },
+      { title: "São Paulo & Bogotá", description: "Tiba di São Paulo, lalu terbang melalui Bogotá menuju Lima. Kunjungan kota Bogotá bisa masuk jika waktu transit mencukupi." },
+      { title: "Lima, Cusco & Machu Picchu", description: "City tour Lima, penerbangan ke Cusco, lalu perjalanan darat dan kereta ke Aguas Calientes. Bermalam sebelum kunjungan Machu Picchu, kemudian kembali ke Cusco." },
+      { title: "Santiago", description: "Dari Cusco, lanjutkan ke Santiago. Kunjungan sekitar kota atau perjalanan ke kawasan pegunungan dipilih sesuai musim dan kebutuhan grup." },
+      { title: "Rio de Janeiro & Iguazu", description: "Christ the Redeemer, Sugarloaf, Copacabana dan Ipanema dalam rangkaian Rio. Lanjutkan ke air terjun Iguazu sisi Brasil sebelum kembali ke São Paulo." },
     ],
-    planningNote: "Proposal supplier untuk program empat negara telah diterima. Durasi total dari Indonesia, susunan penerbangan, waktu transit, jumlah malam, serta harga akhir masih diselaraskan. Rancangan ini belum memiliki tanggal keberangkatan terkonfirmasi.",
-    englishSummary: "Sundaf Trip is developing Brazil, Colombia, Peru and Chile group programmes for the Indonesian market in 2027. Detailed regional supplier proposals have been received and are being reviewed. The indicative itinerary includes São Paulo, Bogotá, Lima, Cusco, Machu Picchu, Santiago, Rio de Janeiro and Iguazu. Departure dates, total duration, air routing, pricing and availability remain subject to quotation and operational confirmation.",
+    planningNote: "Contoh rute untuk perjalanan 2027. Urutan kota, waktu transit dan jumlah malam mengikuti jadwal penerbangan. Harga mencakup layanan yang disepakati dalam penawaran; belum ada tanggal keberangkatan tetap.",
+    englishSummary: "Since August 2026, we have requested group quotations and received detailed proposals for Brazil, Colombia, Peru and Chile. The itinerary includes Lima, Cusco and Machu Picchu, alongside São Paulo, Bogotá, Santiago, Rio de Janeiro and Iguazu. We are reviewing ground services and regional flights for Indonesian groups travelling in 2027, and accept enquiries for tailored quotations. Final dates, duration, prices and availability are confirmed in writing.",
   },
 ];
 
-export function latinAmericaEnquiryHref(programme = "Peru & Amerika Latin 2027") {
-  return buildWhatsAppHref("6281775202759", `Halo Sundaf Trip, saya ingin meminta rancangan dan penawaran ${programme}.\n\nNama:\nPerkiraan bulan perjalanan:\nJumlah peserta:\nKota keberangkatan:\nKebutuhan atau anggaran:\n\nSaya memahami tanggal, harga, dan ketersediaan akan dikonfirmasi melalui penawaran.`);
+export function latinAmericaEnquiryHref(programme = "Peru & Amerika Latin") {
+  return buildWhatsAppHref("6281775202759", `Halo Sundaf Trip, saya ingin tanya perjalanan ${programme} untuk 2027.\n\nRencana bulan:\nJumlah peserta:\nBerangkat dari:\nKebutuhan lainnya:`);
 }
 
 export function latinAmericaMetadata(title: string, description: string, path: string): Metadata {

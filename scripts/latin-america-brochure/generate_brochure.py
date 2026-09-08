@@ -109,33 +109,33 @@ def route(c, x, top, width, names, dark=False):
             text(c,line,xx-ww/2,top+9+j*11,fs,'BodyBold',color)
 
 def public_indonesian(c):
-    header(c, 'KATALOG PROGRAM 2027  /  INDONESIA')
+    header(c, 'KATALOG TOUR 2027  /  INDONESIA')
     rect(c,0,105,W,173,INK)
-    text(c,'JELAJAH AMERIKA LATIN',40,123,9.5,'BodyBold',AMBER)
+    text(c,'PERJALANAN GRUP',40,123,9.5,'BodyBold',AMBER)
     text(c,'Peru &',40,144,37,'DisplayBold',white)
     text(c,'Amerika Selatan',40,187,31,'DisplayBold',white)
-    text(c,'Program grup 2027 dalam pengembangan',41,239,10.5,'Body',white)
+    text(c,'Untuk grup sendiri, dengan harga sesuai permintaan',41,239,10.5,'Body',white)
     mountain(c,401,119)
 
     rect(c,40,296,W-80,161,white,10,LINE)
     text(c,'01  /  PERU',57,310,8.5,'BodyBold',DEEPTEAL)
     text(c,'Lima, Cusco & Machu Picchu',57,329,20,'DisplayBold')
     route(c,76,374,441,['Lima','Cusco','Ollantaytambo','Aguas|Calientes','Machu|Picchu'])
-    para(c,'Kembali melalui Cusco. Rancangan Peru tersendiri dikembangkan dari segmen program Amerika Selatan; memerlukan quotation khusus.',57,413,477,9,13,color=MUTED,limit=27)
+    para(c,'City tour Lima, lanjut ke Cusco dan Ollantaytambo. Naik kereta ke Aguas Calientes, bermalam, lalu mengunjungi Machu Picchu.',57,413,477,9,13,color=MUTED,limit=27)
 
     rect(c,40,473,W-80,138,white,10,LINE)
     text(c,'02  /  EMPAT NEGARA',57,487,8.5,'BodyBold',DEEPTEAL)
     text(c,'Brasil - Kolombia - Peru - Chile',57,506,18.5,'DisplayBold')
     para(c,'Rute indikatif: São Paulo - Bogotá - Lima - Cusco / Machu Picchu - Santiago - Rio de Janeiro - Iguazu - São Paulo.',57,539,477,10,14,limit=30)
-    para(c,'Pengembangan didukung proposal dari supplier regional. Urutan akhir, durasi dan koneksi penerbangan disesuaikan melalui quotation.',57,577,477,8.8,12.5,color=MUTED,limit=26)
+    para(c,'Kunjungan Bogotá mengikuti waktu transit. Urutan kota dan jumlah malam disesuaikan dengan jadwal penerbangan grup.',57,577,477,8.8,12.5,color=MUTED,limit=26)
 
-    para(c,'<b>Pilihan yang dapat diminta:</b> hotel 3/4 bintang, transfer privat, pemandu berbahasa Inggris, kereta dan kunjungan Machu Picchu sesuai ketersediaan.',40,629,W-80,9.6,14,limit=30)
+    para(c,'<b>Pilihan layanan:</b> hotel 3/4 bintang, transfer privat, pemandu berbahasa Inggris, kereta dan kunjungan Machu Picchu sesuai ketersediaan.',40,629,W-80,9.6,14,limit=30)
 
     rect(c,40,674,W-80,104,PALE,10)
-    text(c,'Minta rancangan & penawaran',57,687,16.5,'DisplayBold')
+    text(c,'Tanya itinerary & harga',57,687,16.5,'DisplayBold')
     link(c,'sundaftrip.com/amerika-latin',57,714,WEB,10)
     link(c,'WhatsApp +62 817 7520 2759',301,714,WHATSAPP,9.3)
-    para(c,'Tanggal, harga dan ketersediaan dikonfirmasi melalui penawaran. Layanan darat, penerbangan regional dan penerbangan dari Indonesia mengikuti proposal final. Belum ada keberangkatan yang dikonfirmasi.',57,739,478,8,11,limit=33)
+    para(c,'Program 2027 sedang kami susun; belum ada tanggal keberangkatan tetap. Penawaran tertulis memuat itinerary, hotel, tiket, harga, ketersediaan, dan biaya yang dibayar terpisah.',57,739,478,8,11,limit=33)
     footer(c,1,'ID')
     c.showPage()
 
@@ -143,8 +143,8 @@ def trade_english(c):
     header(c, 'TRADE PRODUCT BRIEF  /  ENGLISH')
     text(c,'INDONESIAN OUTBOUND MARKET',40,112,9.2,'BodyBold',DEEPTEAL)
     text(c,'Peru & South America',40,137,29,'DisplayBold')
-    text(c,'2027 programme development',40,176,17,'Display',MUTED)
-    para(c,'Sundaf Trip is developing group journeys for Indonesian travellers. Detailed proposals received from regional suppliers support the development of a Brazil, Colombia, Peru and Chile programme.',40,212,W-80,11,16.5,limit=51)
+    text(c,'Tailor-made group travel for 2027',40,176,17,'Display',MUTED)
+    para(c,'We are adding Peru and South America to our outbound portfolio for Indonesian groups. Since August 2026, we have requested quotations and received detailed proposals for a four-country itinerary.',40,212,W-80,11,16.5,limit=51)
 
     rect(c,40,282,247,177,white,10,LINE)
     text(c,'PERU PROGRAMME',57,298,9,'BodyBold',DEEPTEAL)
@@ -162,8 +162,8 @@ def trade_english(c):
     para(c,'3- or 4-star hotels; private transfers; English-speaking guides; rail arrangements and Machu Picchu visits, subject to availability. Land services and regional and Indonesia-origin flights will be defined in the final quotation.',40,503,W-80,10.2,15,limit=46)
 
     rect(c,40,568,W-80,83,INK,10)
-    text(c,'Enquiries welcome',57,583,16,'DisplayBold',white)
-    para(c,'Dates, the final route and duration, pricing and availability are confirmed by quotation. No departure has been confirmed. Partner discussions and tailored group enquiries are welcome.',57,611,477,9.2,13,color=white,limit=39)
+    text(c,'Group enquiries',57,583,16,'DisplayBold',white)
+    para(c,'We accept group enquiries for 2027. Programmes are under development; no fixed departure date is available. Dates, duration, prices and services are confirmed in a written offer.',57,611,477,9.2,13,color=white,limit=39)
 
     text(c,'SUNDAF TRIP',40,676,12,'DisplayBold')
     text(c,'CV Sundaf Holiday Group  |  Indonesia',40,697,9.6,'Body',MUTED)
@@ -183,7 +183,7 @@ def main():
     c=canvas.Canvas(str(args.output),pagesize=A4,pageCompression=1)
     c.setTitle('Sundaf Trip | Peru & South America 2027')
     c.setAuthor('Sundaf Trip - CV Sundaf Holiday Group')
-    c.setSubject('Public product-development brochure: Indonesian customer catalogue and English trade brief')
+    c.setSubject('Peru and South America group travel: Indonesian catalogue and English trade brief')
     c.setKeywords('Sundaf Trip, Peru, South America, Amerika Latin, 2027, programme development')
     public_indonesian(c); trade_english(c); c.save()
     print(args.output)

@@ -6,9 +6,9 @@ export default function LatinAmericaCollection() {
   return (
     <aside className={styles.collection} aria-label="Katalog Amerika Latin 2027">
       <div>
-        <span className={styles.eyebrow}>RUTE BARU · PENGEMBANGAN 2027</span>
+        <span className={styles.eyebrow}>TOUR GRUP · 2027</span>
         <h2>Peru & Amerika Latin</h2>
-        <p>Jelajahi rancangan Peru dan perjalanan empat negara. Tanggal dan harga sesuai penawaran.</p>
+        <p>Lima, Cusco dan Machu Picchu, atau sekaligus Brasil, Kolombia dan Chile. Itinerary dan harga untuk grup sendiri.</p>
       </div>
       <Link scroll data-scroll-reset-after-navigation href="/amerika-latin" className={styles.primary}>Lihat katalog <ArrowUpRight size={18} aria-hidden="true" /></Link>
     </aside>
