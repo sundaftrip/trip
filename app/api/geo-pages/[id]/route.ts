@@ -8,6 +8,8 @@ import { requiredPermissionsForMutation } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
+import { GEO_CMS_ROUTES, validateGeoRouteMutation } from "@/lib/geo-cms-routes";
+import { validateGeoCmsStructuredInput } from "@/lib/geo-cms-input";
 
 const FIELDS = [
   "routePath",
@@ -36,24 +38,10 @@ function pickGeoInput(body: Record<string, unknown>) {
   return data;
 }
 
-function normalizeRoutePath(value: unknown): string {
-  if (typeof value !== "string") return "";
-  const trimmed = value.trim();
-  if (!trimmed) return "";
-  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
-}
-
 function validate(data: Record<string, unknown>): string | null {
-  if ("routePath" in data) data.routePath = normalizeRoutePath(data.routePath);
-  if ("routePath" in data && (!data.routePath || typeof data.routePath !== "string")) return "Route path wajib diisi.";
   if ("title" in data && (typeof data.title !== "string" || !data.title.trim())) return "Title wajib diisi.";
   if ("answer" in data && (typeof data.answer !== "string" || !data.answer.trim())) return "Jawaban singkat wajib diisi.";
-  if ("sections" in data && !Array.isArray(data.sections)) return "Konten tambahan harus berupa data valid.";
-  if ("faqs" in data && !Array.isArray(data.faqs)) return "FAQ harus berupa data valid.";
-  if ("content" in data && data.content !== null && (typeof data.content !== "object" || Array.isArray(data.content))) {
-    return "Konten halaman harus berupa data valid.";
-  }
-  return null;
+  return validateGeoCmsStructuredInput(data);
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -63,7 +51,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   const page = await prisma.geoPage.findFirst({
     where: {
       OR: [{ id }, { routePath: id.startsWith("/") ? id : `/${id}` }],
-      ...(!canReadDrafts ? { published: true } : {}),
+      ...(!canReadDrafts ? { published: true, routePath: { in: GEO_CMS_ROUTES.map((route) => route.routePath) } } : {}),
     },
   });
   if (!page) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -81,6 +69,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try { body = await req.json(); } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return NextResponse.json({ error: "Data halaman tidak valid." }, { status: 400 });
 
   const data = pickGeoInput(body);
   const isPublishOnly = "published" in data && Object.keys(data).length === 1;
@@ -99,6 +89,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (error) return NextResponse.json({ error }, { status: 422 });
 
   try {
+    const existing = await prisma.geoPage.findUnique({ where: { id }, select: { routePath: true } });
+    if (!existing) return NextResponse.json({ error: "Halaman GEO tidak ditemukan." }, { status: 404 });
+    const routeError = validateGeoRouteMutation(data, existing.routePath);
+    if (routeError) return NextResponse.json({ error: routeError }, { status: 422 });
     const page = await prisma.geoPage.update({
       where: { id },
       data: data as unknown as Prisma.GeoPageUncheckedUpdateInput,
@@ -111,7 +105,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       resource: "GEO",
       resourceId: page.id,
       resourceName: page.title,
-      detail: isPublishOnly ? (body.published ? "Dipublish" : "Di-unpublish") : undefined,
+      detail: isPublishOnly ? (body.published ? "Konten CMS diaktifkan" : "Konten CMS dinonaktifkan; halaman memakai konten bawaan jika tersedia") : undefined,
     });
     revalidatePublicContent();
     return NextResponse.json(page);

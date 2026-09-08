@@ -60,7 +60,7 @@ test("public blog reads expose published records while persisted users may read 
   assert.match(detailGet, /prisma\.blog\.findFirst/);
 });
 
-test("public GEO reads expose published records while persisted users may read drafts", () => {
+test("public GEO reads expose supported published records while persisted users may read drafts", () => {
   const collectionSource = readSource("app/api/geo-pages/route.ts");
   const detailSource = readSource("app/api/geo-pages/[id]/route.ts");
   const collectionGet = sourceBetween(
@@ -82,12 +82,12 @@ test("public GEO reads expose published records while persisted users may read d
 
   assert.match(
     collectionGet,
-    /where: canReadDrafts \? undefined : \{ published: true \}/,
+    /where: canReadDrafts \? undefined : \{ published: true, routePath: \{ in: GEO_CMS_ROUTES\.map\(\(route\) => route\.routePath\) \} \}/,
   );
   assert.match(collectionGet, /prisma\.geoPage\.findMany/);
   assert.match(
     detailGet,
-    /\.\.\.\(!canReadDrafts \? \{ published: true \} : \{\}\)/,
+    /\.\.\.\(!canReadDrafts \? \{ published: true, routePath: \{ in: GEO_CMS_ROUTES\.map\(\(route\) => route\.routePath\) \} \} : \{\}\)/,
   );
   assert.match(detailGet, /prisma\.geoPage\.findFirst/);
 });
