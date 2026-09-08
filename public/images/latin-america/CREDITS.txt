@@ -1,0 +1,15 @@
+Machu Picchu 2019-10-13-5
+Photographer: Alexey Komarov
+Source: https://commons.wikimedia.org/wiki/File:Machu_Picchu_2019-10-13-5.jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/e/e4/Machu_Picchu_2019-10-13-5.jpg
+
+Sugarloaf Sunrise 2 (Rio de Janeiro)
+Photographer: Donatas Dabravolskas
+Source: https://commons.wikimedia.org/wiki/File:Sugarloaf_Sunrise_2.jpg
+Original: https://upload.wikimedia.org/wikipedia/commons/b/b2/Sugarloaf_Sunrise_2.jpg
+
+Both photos and the resized WebP versions are licensed CC BY-SA 4.0:
+https://creativecommons.org/licenses/by-sa/4.0/
+Changes: resized/cropped to 1600 x 1067 and converted to WebP for web delivery.
+Responsive display may crop the image. These are destination photographs, not
+documentation of Sundaf departures. Source and licence checked 2026-09-09.

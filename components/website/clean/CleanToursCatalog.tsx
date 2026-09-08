@@ -1,5 +1,7 @@
 "use client";
 
+import LatinAmericaCollection from "@/components/website/LatinAmericaCollection";
+
 import {
   type FormEvent,
   useCallback,
@@ -286,6 +288,8 @@ export default function CleanToursCatalog({
           </div>
         </div>
       </section>
+
+      <LatinAmericaCollection />
 
       <section
         className={`${styles.resultsSection} ${showPrivatePreview ? styles.resultsWithPrivatePreview : ""}`}

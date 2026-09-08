@@ -59,6 +59,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
                 <Link href="/tours">Jadwal Tour</Link>
                 <Link href="/custom-trip">Private Trip</Link>
                 <Link href="/destinations">Destinasi</Link>
+                <Link scroll data-scroll-reset-after-navigation href="/amerika-latin">Amerika Latin & Peru 2027</Link>
                 <Link href="/visa">Layanan Visa</Link>
               </nav>
             </section>
