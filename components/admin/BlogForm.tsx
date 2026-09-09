@@ -6,6 +6,7 @@ import ImageUpload from "./ImageUpload";
 import RichTextEditor from "./RichTextEditor";
 import StickyFormActions from "./StickyFormActions";
 import slugify from "slugify";
+import { adminActionError, omitUnchangedFields, requestAdminAction } from "@/lib/admin-action";
 
 interface BlogData {
   id?: string;
@@ -24,6 +25,7 @@ export default function BlogForm({ post }: { post?: BlogData }) {
   const router = useRouter();
   const isEdit = !!post?.id;
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState<BlogData>({
     slug: post?.slug ?? "",
     title: post?.title ?? "",
@@ -49,18 +51,28 @@ export default function BlogForm({ post }: { post?: BlogData }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    const res = await fetch(isEdit ? `/api/blog/${post!.id}` : "/api/blog", {
-      method: isEdit ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setLoading(false);
-    if (res.ok) router.push("/admin/blog");
+    setError("");
+    const payload = isEdit ? omitUnchangedFields(form, { published: post?.published ?? false }, ["published"]) : form;
+    try {
+      await requestAdminAction(isEdit ? `/api/blog/${post!.id}` : "/api/blog", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }, "Artikel belum tersimpan. Coba lagi.");
+      router.push("/admin/blog");
+      router.refresh();
+    } catch (error) {
+      setError(adminActionError(error, "Artikel belum tersimpan. Coba lagi."));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+      {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">{error}</p>}
       <StickyFormActions
         loading={loading}
         primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Artikel"}

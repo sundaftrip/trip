@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, MessageCircle } from "lucide-react";
+import { adminActionError, requestAdminAction } from "@/lib/admin-action";
 
 type Inquiry = {
   id: string;
@@ -39,25 +40,42 @@ export default function InquiryRow({
   const router = useRouter();
   const [status, setStatus] = useState(inquiry.status);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
   async function changeStatus(next: string) {
+    if (busy) return;
+    const previous = status;
     setBusy(true);
+    setError("");
     setStatus(next);
-    await fetch(`/api/inquiries/${inquiry.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next }),
-    }).catch(() => {});
-    setBusy(false);
-    router.refresh();
+    try {
+      await requestAdminAction(`/api/inquiries/${inquiry.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      }, "Status belum tersimpan. Coba lagi.");
+      router.refresh();
+    } catch (error) {
+      setStatus(previous);
+      setError(adminActionError(error, "Status belum tersimpan. Coba lagi."));
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function remove() {
+    if (busy) return;
     if (!confirm(`Hapus lead dari ${inquiry.name}?`)) return;
     setBusy(true);
-    await fetch(`/api/inquiries/${inquiry.id}`, { method: "DELETE" }).catch(() => {});
-    setBusy(false);
-    router.refresh();
+    setError("");
+    try {
+      await requestAdminAction(`/api/inquiries/${inquiry.id}`, { method: "DELETE" }, "Lead belum terhapus. Coba lagi.");
+      router.refresh();
+    } catch (error) {
+      setError(adminActionError(error, "Lead belum terhapus. Coba lagi."));
+    } finally {
+      setBusy(false);
+    }
   }
 
   const date = new Date(inquiry.createdAt).toLocaleDateString("id-ID", {
@@ -85,6 +103,7 @@ export default function InquiryRow({
       <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{date}</td>
       <td className="px-4 py-3">
         <select
+          aria-label={`Status lead ${inquiry.name}`}
           value={status}
           disabled={busy}
           onChange={(e) => changeStatus(e.target.value)}
@@ -94,9 +113,10 @@ export default function InquiryRow({
             <option key={val} value={val}>{label}</option>
           ))}
         </select>
+        {error && <p role="alert" className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
       </td>
       <td className="px-4 py-3 text-right">
-        <button onClick={remove} disabled={busy}
+        <button type="button" onClick={remove} disabled={busy} aria-label={`Hapus lead ${inquiry.name}`}
           className="text-gray-400 hover:text-red-500 transition p-1" title="Hapus">
           <Trash2 size={15} />
         </button>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
+import { adminActionError, omitUnchangedFields, requestAdminAction } from "@/lib/admin-action";
 
 type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
@@ -541,6 +542,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     setError("");
     const paymentPlanForSubmit = normalizePaymentPlanForSubmit(form.paymentPlan);
@@ -549,36 +551,41 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       setError(paymentPlanForSubmit.error);
       return;
     }
-    const payload = {
-      ...form,
-      price: Number(form.price),
-      promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
-      priceLandTour: form.priceLandTour ? Number(form.priceLandTour) : null,
-      seatsLeft: Number(form.seatsLeft),
-      tripDate: form.tripDate ? new Date(form.tripDate).toISOString() : null,
-      paymentPlan: paymentPlanForSubmit.value,
-    };
-    const res = await fetch(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
-      method: isEdit ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    setLoading(false);
-    if (res.ok) {
+    try {
+      const payload = {
+        ...form,
+        price: Number(form.price),
+        promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
+        priceLandTour: form.priceLandTour ? Number(form.priceLandTour) : null,
+        seatsLeft: Number(form.seatsLeft),
+        tripDate: form.tripDate ? new Date(form.tripDate).toISOString() : null,
+        paymentPlan: paymentPlanForSubmit.value,
+      };
+      await requestAdminAction(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(isEdit ? omitUnchangedFields(payload, { status: initialForm.status }, ["status"]) : payload),
+      }, "Tour belum tersimpan. Coba lagi.");
       suppressDraftPersistRef.current = true;
       latestDraftRef.current = null;
-      window.localStorage.removeItem(draftKey);
+      try {
+        window.localStorage.removeItem(draftKey);
+      } catch {
+        // The server save succeeded; unavailable draft storage must not report a failed save.
+      }
       router.push(returnHref);
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Gagal menyimpan. Coba lagi.");
+      router.refresh();
+    } catch (error) {
+      setError(adminActionError(error, "Tour belum tersimpan. Coba lagi."));
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
+        <div role="alert" className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
           ⛔ {error}
         </div>
       )}
