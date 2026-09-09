@@ -4,7 +4,7 @@ import { useEffect, useRef, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { CalendarDays, Check, ChevronDown, X } from "lucide-react";
 import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
-import TourVisaServiceToggle from "./TourVisaServiceToggle";
+import TourVisaServiceToggle, { TourVisaGroupPrice } from "./TourVisaServiceToggle";
 import styles from "./TourDetailInteractive.module.css";
 
 export type BookingDeparture = {
@@ -319,6 +319,7 @@ export default function TourBookingSheet({
             {addOnPreference && <div><dt>Add-on</dt><dd>{addOnPreference}</dd></div>}
             <div><dt>{selectedPriceCaption}</dt><dd>{selectedPriceLabel}/orang</dd></div>
           </dl>
+          <TourVisaGroupPrice />
         </div>
 
         <footer className={styles.bookingSheetFooter}>

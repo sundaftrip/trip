@@ -6,6 +6,28 @@
  * consistent across pages.
  */
 export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
+  // Country-aware catalog visa guidance and per-applicant assistance.
+  "Informasi dan bantuan visa": "Visa information and assistance",
+  "Paspor biasa Indonesia · perjalanan wisata": "Ordinary Indonesian passport · tourism",
+  "Ketentuan mengikuti negara tujuan, lama tinggal, dan dokumen Anda.": "Requirements depend on your destinations, length of stay, and travel documents.",
+  "Perlu bantuan pengurusan visa? Pilih Ya untuk peserta yang memerlukan bantuan. Pilih Tidak jika visa yang dimiliki sudah sesuai negara tujuan, masa berlaku, dan jumlah masuk yang diperlukan.": "Need help with a visa application? Choose Yes for travelers who need assistance. Choose No if an existing visa covers the destinations, travel dates, and number of entries required.",
+  "Bantuan visa terpisah dari harga paket per orang. Atur jumlah peserta saat cek ketersediaan.": "Visa assistance is separate from the per-person package price. Set your group size when checking availability.",
+  "Bantuan visa untuk grup": "Visa assistance for the group",
+  "Biaya ini terpisah dari harga paket per orang.": "This cost is separate from the per-person package price.",
+  "Per orang, di luar bantuan visa": "Per person, excluding visa assistance",
+  "Peserta yang perlu bantuan": "Travelers needing assistance",
+  "Lihat layanan visa": "View visa service",
+  "Konsultasikan kebutuhan visa": "Discuss visa requirements",
+  "Ketentuan dan sumber": "Conditions and sources",
+  "Rujukan ketentuan": "Requirements reference",
+  "Hal yang perlu dikonfirmasi": "Details to confirm",
+  "Rute dan kebutuhan visa perlu dikonfirmasi bersama tim Sundaf.": "Please confirm the route and visa requirements with the Sundaf team.",
+  "Bantuan visa sudah termasuk paket. Tidak perlu ditambahkan lagi.": "Visa assistance is already included in the package. No additional selection is needed.",
+  "Biaya visa tercantum pada rincian paket. Jangan ditambahkan dua kali.": "Visa charges are listed in the package breakdown. Do not add them twice.",
+  "Visa saat kedatangan": "Visa on arrival",
+  "Visa elektronik": "Electronic visa",
+  "Sesuai kondisi traveler": "Depends on traveler circumstances",
+  "Perlu konfirmasi": "Confirmation needed",
   // Shared shell
   "Langsung ke konten utama": "Skip to main content",
   "Sundaf Trip, beranda": "Sundaf Trip, home",
