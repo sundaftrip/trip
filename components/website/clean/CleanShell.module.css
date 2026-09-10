@@ -1097,6 +1097,12 @@
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .desktopNav a {
+    --nav-link-padding: 9px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .drawerLayer,
   .header::after,

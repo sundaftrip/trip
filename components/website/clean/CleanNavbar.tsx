@@ -22,6 +22,7 @@ const destinationLinks = [
 ];
 
 const secondaryLinks = [
+  { href: "/russia", label: "Layanan Rusia" },
   { href: "/custom-trip", label: "Private Trip" },
   { href: "/visa", label: "Layanan Visa" },
   { href: "/blog", label: "Jurnal" },

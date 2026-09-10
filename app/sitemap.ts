@@ -11,6 +11,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, changeFrequency: "daily", priority: 1 },
     // /tours listing — penting sebagai kandidat sitelink "Semua Paket Tour"
     { url: `${base}/tours`, changeFrequency: "daily", priority: 0.95 },
+    { url: `${base}/russia`, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/russia/catering`, changeFrequency: "monthly", priority: 0.85 },
     { url: `${base}/amerika-latin`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/peru-amerika-selatan`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/amerika-latin/brasil-kolombia-peru-chile`, changeFrequency: "monthly", priority: 0.8 },

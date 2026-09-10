@@ -65,6 +65,8 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
               <h2>Perjalanan</h2>
               <nav aria-label="Tautan perjalanan">
                 <Link href="/tours">Jadwal Tour</Link>
+                <Link href="/russia">Layanan Rusia</Link>
+                <Link href="/russia/catering">Katering Halal Rusia</Link>
                 <Link href="/custom-trip">Private Trip</Link>
                 <Link href="/destinations">Destinasi</Link>
                 <Link scroll data-scroll-reset-after-navigation href="/amerika-latin">Amerika Latin & Peru 2027</Link>
