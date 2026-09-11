@@ -10,7 +10,7 @@ import styles from "@/components/website/clean/RussiaServices.module.css";
 
 export const revalidate = 300;
 const title = "Layanan Perjalanan Rusia — Tanya SUNDAF";
-const description = "Katering halal, pembayaran tiket dan hotel, transportasi, tiket sirkus dan balet, guide berbahasa Indonesia, serta SIM card Rusia. Tanya SUNDAF.";
+const description = "Katering halal, pembayaran tiket dan hotel, transportasi, tiket sirkus dan balet, guide berbahasa Indonesia, serta akses internet selama di Rusia. Tanya SUNDAF.";
 
 export const metadata: Metadata = {
   title,
@@ -27,7 +27,7 @@ const services: { motion: RussiaServiceMotion; title: string; description: strin
   { motion: "luggage", title: "Tambahan bagasi", description: "Tiket sudah ada? Tanyakan bantuan pembayaran bagasi sesuai maskapai dan penerbangan Anda.", message: "pembayaran tambahan bagasi penerbangan Rusia" },
   { motion: "show", title: "Tiket sirkus & balet", description: "Bantuan pembayaran tiket sirkus dan balet di Rusia. Sampaikan pertunjukan, tanggal, dan jumlah penonton yang Anda inginkan.", message: "pembayaran tiket sirkus atau balet di Rusia" },
   { motion: "guide", title: "Guide lokal berbahasa Indonesia", description: "Guide lokal untuk menemani perjalanan Anda dalam bahasa Indonesia. Sampaikan kota, tanggal, dan kebutuhan pendampingan.", message: "layanan guide lokal berbahasa Indonesia di Rusia" },
-  { motion: "sim", title: "SIM card Rusia", description: "Butuh koneksi selama di Rusia? Tanyakan pilihan SIM card, paket data, dan proses aktivasi sesuai kebutuhan perjalanan Anda.", message: "SIM card dan paket data untuk perjalanan di Rusia" },
+  { motion: "internet", title: "Internet selama di Rusia", description: "Tetap terhubung selama perjalanan. Tanyakan pilihan akses internet sesuai durasi, kota tujuan, dan perangkat yang Anda gunakan.", message: "akses internet selama perjalanan di Rusia" },
 ];
 
 export default async function RussiaServicesPage() {

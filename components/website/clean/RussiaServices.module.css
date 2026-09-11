@@ -336,8 +336,8 @@
   .serviceGrid article[data-motion="guide"] [data-part="body"] { animation-name: compassFloat; }
   .serviceGrid article[data-motion="guide"] [data-part="detail"] { animation-name: guideWave; transform-origin: 10% 90%; }
   .serviceGrid article[data-motion="guide"] [data-part="bubble"] { animation-name: speechBounce; }
-  .serviceGrid article[data-motion="sim"] [data-part="body"] { animation-name: suitcaseRock; }
-  .serviceGrid article[data-motion="sim"] [data-part="signal"] { animation-name: signalPulse; transform-origin: 0% 100%; }
+  .serviceGrid article[data-motion="internet"] [data-part="body"] { animation-name: suitcaseRock; }
+  .serviceGrid article[data-motion="internet"] [data-part="signal"] { animation-name: signalPulse; transform-origin: 0% 100%; }
   .serviceGrid article[data-motion="compass"] [data-part="body"] { animation-name: compassFloat; }
   .serviceGrid article[data-motion="compass"] [data-part="detail"] { animation-name: needleSwing; }
 

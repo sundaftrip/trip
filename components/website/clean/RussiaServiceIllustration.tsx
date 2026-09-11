@@ -9,7 +9,7 @@ export type RussiaIllustrationKind =
   | "luggage"
   | "show"
   | "guide"
-  | "sim"
+  | "internet"
   | "compass"
   | "ruble";
 
@@ -22,7 +22,7 @@ const palettes: Record<RussiaIllustrationKind, [string, string, string, string]>
   luggage: ["#FFA97F", "#ED704D", "#FFE7B0", "#F2C060"],
   show: ["#FF8B9D", "#DE3E64", "#FFE394", "#F1B749"],
   guide: ["#70DED4", "#22AAA5", "#FFE3B8", "#E7A86C"],
-  sim: ["#AC9AFB", "#7560DC", "#FFE79E", "#E6B94F"],
+  internet: ["#AC9AFB", "#7560DC", "#FFE79E", "#E6B94F"],
   compass: ["#74B8FF", "#3B75D1", "#FFDF8E", "#EAB35D"],
   ruble: ["#7ADDB4", "#25A77D", "#FFE78E", "#EEB642"],
 };
@@ -209,16 +209,17 @@ function Artwork({ kind, main, accent, glass }: { kind: RussiaIllustrationKind; 
         </g>
         <g data-part="spark"><Star x={15} y={17} size={4} /><circle cx="10" cy="40" r="2" fill="#B7A5EC" /></g>
       </>;
-    case "sim":
+    case "internet":
       return <>
         <ellipse data-part="shadow" cx="38" cy="69" rx="23" ry="4" fill="#BFB4DF" opacity=".25" />
         <g data-part="body">
-          <path d="M24 16H43L58 31V61C58 65 55 68 51 68H24C20 68 17 65 17 61V23C17 19 20 16 24 16Z" fill={main} />
-          <path d="M43 17V26C43 30 46 32 50 32H57" fill="#C5B9FF" />
-          <path d="M22 29V23C22 22 23 21 25 21H36" fill="none" stroke="#D7CFFF" strokeWidth="2.5" strokeLinecap="round" />
-          <rect x="25" y="39" width="25" height="21" rx="5" fill={accent} />
-          <rect x="32" y="44" width="11" height="11" rx="2" fill="#FFEDAE" stroke="#CD9E42" strokeWidth="1.3" />
-          <path d="M25 46h7M25 53h7M43 46h7M43 53h7M37 39v5M37 55v5" stroke="#C99A43" strokeWidth="1.4" />
+          <rect x="18" y="13" width="38" height="55" rx="8" fill={main} />
+          <rect x="22" y="18" width="30" height="44" rx="5" fill={glass} />
+          <path d="M31 18H43" stroke="#8B75DE" strokeWidth="3" strokeLinecap="round" />
+          <path d="M32 64H42" stroke="#D9CFFD" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="37" cy="41" r="12" fill={accent} />
+          <ellipse cx="37" cy="41" rx="5.5" ry="12" fill="none" stroke="#BE903B" strokeWidth="1.4" />
+          <path d="M25 41H49M28 34C34 37 40 37 46 34M28 48C34 45 40 45 46 48" fill="none" stroke="#BE903B" strokeWidth="1.4" />
         </g>
         <g data-part="signal" fill="none" strokeLinecap="round">
           <path d="M53 10C63 10 71 18 71 28" stroke="#65CFC4" strokeWidth="3.5" />

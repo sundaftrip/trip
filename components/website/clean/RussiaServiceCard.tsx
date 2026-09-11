@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-export type RussiaServiceMotion = "catering" | "flight" | "train" | "hotel" | "bus" | "luggage" | "show" | "guide" | "sim" | "compass";
+export type RussiaServiceMotion = "catering" | "flight" | "train" | "hotel" | "bus" | "luggage" | "show" | "guide" | "internet" | "compass";
 
 export default function RussiaServiceCard({ motion, children }: { motion: RussiaServiceMotion; children: ReactNode }) {
   const cardRef = useRef<HTMLElement>(null);
