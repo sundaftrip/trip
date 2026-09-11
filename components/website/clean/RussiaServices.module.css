@@ -85,7 +85,7 @@
 .serviceGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: 30px;
+  margin-top: 4px;
   border-block: 1px solid var(--line);
 }
 
@@ -110,42 +110,58 @@
   border-top: 1px solid var(--line);
 }
 
+.motionControls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.motionControls button {
+  min-height: 44px;
+  padding: 8px 0 8px 14px;
+  border: 0;
+  background: #ffffff;
+  color: var(--primary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.motionControls button:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.motionControls button:focus-visible {
+  outline: 3px solid #35b8aa;
+  outline-offset: 3px;
+}
+
 .serviceTitle {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
 }
 
 .serviceIcon {
-  position: relative;
   display: block;
   flex: 0 0 auto;
-  width: 25px;
-  height: 25px;
-  margin-top: 1px;
-  color: var(--primary);
+  width: 64px;
+  height: 64px;
 }
 
-.serviceIcon > svg:first-child {
+.serviceIcon > svg {
   display: block;
   width: 100%;
   height: 100%;
-  stroke-width: 1.65;
+  overflow: visible;
+}
+
+.serviceIcon [data-part] {
+  transform-box: fill-box;
   transform-origin: center;
-}
-
-.serviceIcon > svg.steam {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.35;
-  stroke-linecap: round;
-  opacity: 0;
-  pointer-events: none;
 }
 
 .serviceTitle h2 {
@@ -237,8 +253,8 @@
     line-height: 1.62;
   }
 
-  .serviceGrid {
-    margin-top: 26px;
+  .motionControls {
+    margin-top: 10px;
   }
 
   .serviceGrid article {
@@ -246,15 +262,12 @@
   }
 
   .serviceTitle {
-    min-height: 38px;
-    align-items: center;
-    gap: 7px;
+    gap: 10px;
   }
 
   .serviceIcon {
-    width: 17px;
-    height: 17px;
-    margin-top: 0;
+    width: 52px;
+    height: 52px;
   }
 
   .serviceTitle h2 {
@@ -280,124 +293,142 @@
   }
 }
 
-/* Each interaction runs once; the resting icon and page layout stay unchanged. */
+/* Motion runs only for visible service cards and can be paused as a group. */
 @media (prefers-reduced-motion: no-preference) {
-  .serviceGrid article[data-motion="catering"][data-motion-active="true"] .steam {
-    animation: steamRise 850ms ease-out 1 both;
+  .serviceIcon [data-part] {
+    animation-duration: 3.2s;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1);
+    animation-iteration-count: infinite;
+    animation-delay: var(--motion-phase, 0s);
+    animation-play-state: paused;
   }
 
-  .serviceGrid article[data-motion="flight"][data-motion-active="true"] .serviceIcon > svg:first-child {
-    animation: planeFlight 780ms ease-in-out 1 both;
+  .serviceGrid article:nth-child(2) { --motion-phase: -0.4s; }
+  .serviceGrid article:nth-child(3) { --motion-phase: -0.8s; }
+  .serviceGrid article:nth-child(4) { --motion-phase: -1.2s; }
+  .serviceGrid article:nth-child(5) { --motion-phase: -1.6s; }
+  .serviceGrid article:nth-child(6) { --motion-phase: -2s; }
+  .serviceGrid article:nth-child(7) { --motion-phase: -2.4s; }
+
+  .serviceGrid article[data-motion] [data-part="shadow"] { animation-name: shadowBreathe; }
+  .serviceGrid article[data-motion] [data-part="spark"] { animation-name: sparkle; }
+  .serviceGrid article[data-motion="catering"] [data-part="body"] { animation-name: servingBounce; }
+  .serviceGrid article[data-motion="catering"] [data-part="steam"] { animation-name: warmSteam; }
+  .serviceGrid article[data-motion="flight"] [data-part="body"] { animation-name: planeSoar; }
+  .serviceGrid article[data-motion="flight"] [data-part="trail"] { animation-name: passingTrail; }
+  .serviceGrid article[data-motion="train"] [data-part="body"] { animation-name: trainCruise; }
+  .serviceGrid article[data-motion="train"] [data-part="detail"] { animation-name: wheelBounce; }
+  .serviceGrid article[data-motion="hotel"] [data-part="body"] { animation-name: hotelBounce; }
+  .serviceGrid article[data-motion="hotel"] [data-part="detail"] { animation-name: windowGleam; }
+  .serviceGrid article[data-motion="bus"] [data-part="body"] { animation-name: busCruise; }
+  .serviceGrid article[data-motion="bus"] [data-part="detail"] { animation-name: wheelBounce; }
+  .serviceGrid article[data-motion="luggage"] [data-part="body"] { animation-name: suitcaseRock; }
+  .serviceGrid article[data-motion="luggage"] [data-part="detail"] { animation-name: wheelBounce; }
+  .serviceGrid article[data-motion="compass"] [data-part="body"] { animation-name: compassFloat; }
+  .serviceGrid article[data-motion="compass"] [data-part="detail"] { animation-name: needleSwing; }
+
+  .serviceGrid article[data-motion-visible="true"] .serviceIcon [data-part] {
+    animation-play-state: running;
   }
 
-  .serviceGrid article[data-motion="train"][data-motion-active="true"] .serviceIcon > svg:first-child {
-    animation: trainGlide 700ms ease-in-out 1 both;
-  }
-
-  .serviceGrid article[data-motion="hotel"][data-motion-active="true"] .serviceIcon > svg:first-child {
-    animation: hotelPulse 720ms ease-in-out 1 both;
-  }
-
-  .serviceGrid article[data-motion="bus"][data-motion-active="true"] .serviceIcon > svg:first-child {
-    animation: busTravel 800ms ease-in-out 1 both;
-  }
-
-  .serviceGrid article[data-motion="luggage"][data-motion-active="true"] .serviceIcon > svg:first-child {
-    animation: luggageRock 820ms ease-in-out 1 both;
-  }
-
-  .serviceGrid article[data-motion="compass"][data-motion-active="true"] .serviceIcon > svg:first-child {
-    animation: compassTurn 850ms ease-in-out 1 both;
+  .serviceGrid[data-motion-paused="true"] article .serviceIcon [data-part],
+  .serviceGrid[data-page-hidden="true"] article .serviceIcon [data-part] {
+    animation-play-state: paused;
   }
 }
 
-@keyframes steamRise {
-  0% {
-    opacity: 0;
-    transform: translateY(-1px);
-  }
-  25% {
-    opacity: 0.65;
-    transform: translateY(-3px);
-  }
-  70% {
-    opacity: 0.35;
-    transform: translateY(-6px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
+@media (prefers-reduced-motion: reduce) {
+  .motionControls { display: none; }
+  .serviceGrid { margin-top: 30px; }
 }
 
-@keyframes planeFlight {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  45% {
-    transform: translate(4px, -3px) rotate(-5deg);
-  }
+@keyframes servingBounce {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  28% { transform: translateY(-5px) rotate(-4deg); }
+  55% { transform: translateY(1px) rotate(3deg); }
+  76% { transform: translateY(-2px) rotate(0); }
 }
 
-@keyframes trainGlide {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  40% {
-    transform: translateX(3px);
-  }
-  70% {
-    transform: translateX(1px);
-  }
+@keyframes warmSteam {
+  0% { opacity: 0; transform: translateY(5px) scale(0.8); }
+  22% { opacity: 0.9; }
+  75% { opacity: 0.55; }
+  100% { opacity: 0; transform: translateY(-9px) scale(1.12); }
 }
 
-@keyframes hotelPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  45% {
-    transform: scale(1.07);
-  }
+@keyframes planeSoar {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  22% { transform: translate(-5px, 4px) rotate(-9deg); }
+  56% { transform: translate(8px, -9px) rotate(8deg); }
+  80% { transform: translate(3px, -3px) rotate(-3deg); }
 }
 
-@keyframes busTravel {
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  30% {
-    transform: translate(2px, -1px);
-  }
-  55% {
-    transform: translate(3px, 0);
-  }
-  75% {
-    transform: translate(1px, -0.5px);
-  }
+@keyframes passingTrail {
+  0%, 100% { opacity: 0; transform: translateX(4px) scaleX(0.5); }
+  30% { opacity: 0.8; }
+  75% { opacity: 0; transform: translateX(-7px) scaleX(1.2); }
 }
 
-@keyframes luggageRock {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  28% {
-    transform: rotate(-7deg);
-  }
-  55% {
-    transform: rotate(5deg);
-  }
-  78% {
-    transform: rotate(-2deg);
-  }
+@keyframes trainCruise {
+  0%, 100% { transform: translateX(0); }
+  24% { transform: translate(-7px, 1px) rotate(-3deg); }
+  60% { transform: translate(7px, -2px) rotate(2deg); }
+  82% { transform: translate(2px, 0) rotate(0); }
 }
 
-@keyframes compassTurn {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  40% {
-    transform: rotate(18deg);
-  }
-  70% {
-    transform: rotate(-8deg);
-  }
+@keyframes hotelBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  24% { transform: translateY(2px) scale(1.04, 0.96); }
+  52% { transform: translateY(-6px) scale(0.98, 1.04); }
+  77% { transform: translateY(0) scale(1.02, 0.98); }
+}
+
+@keyframes windowGleam {
+  0%, 100% { opacity: 1; }
+  34% { opacity: 0.45; }
+  65% { opacity: 1; }
+}
+
+@keyframes busCruise {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  22% { transform: translate(-6px, 1px) rotate(-4deg); }
+  50% { transform: translate(6px, -4px) rotate(3deg); }
+  74% { transform: translate(3px, 1px) rotate(-2deg); }
+}
+
+@keyframes wheelBounce {
+  0%, 100% { transform: translateY(0); }
+  25%, 65% { transform: translateY(-1.8px); }
+  45%, 80% { transform: translateY(1px); }
+}
+
+@keyframes suitcaseRock {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  20% { transform: rotate(-14deg) translateY(-2px); }
+  45% { transform: rotate(13deg) translateY(-7px); }
+  70% { transform: rotate(-8deg) translateY(-2px); }
+  86% { transform: rotate(4deg) translateY(0); }
+}
+
+@keyframes compassFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(6deg); }
+}
+
+@keyframes needleSwing {
+  0%, 100% { transform: rotate(0); }
+  28% { transform: rotate(38deg); }
+  58% { transform: rotate(-28deg); }
+  80% { transform: rotate(12deg); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(-8deg); }
+  45% { opacity: 1; transform: scale(1.14) rotate(10deg); }
+  75% { opacity: 0.55; transform: scale(0.9) rotate(0); }
+}
+
+@keyframes shadowBreathe {
+  0%, 100% { opacity: 0.75; transform: scaleX(1); }
+  50% { opacity: 0.35; transform: scaleX(0.78); }
 }
