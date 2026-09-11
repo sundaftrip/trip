@@ -3,6 +3,7 @@ import Link from "@/components/website/clean/PreserveScrollLink";
 import RussiaServiceCard, { type RussiaServiceMotion } from "@/components/website/clean/RussiaServiceCard";
 import RussiaServiceIllustration from "@/components/website/clean/RussiaServiceIllustration";
 import RussiaServiceGrid from "@/components/website/clean/RussiaServiceGrid";
+import RussiaSkyline from "@/components/website/clean/RussiaSkyline";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { getConfiguredWhatsAppNumber } from "@/lib/referrals";
 import { buildWhatsAppHref, toWaNumber } from "@/lib/utils";
@@ -40,9 +41,13 @@ export default async function RussiaServicesPage() {
       </nav>
       <section className={`${styles.services} ${styles.shell}`} aria-labelledby="russia-services-title">
         <header className={styles.sectionHeading}>
-          <p className={styles.eyebrow}>LAYANAN RUSIA SUNDAF</p>
-          <h1 id="russia-services-title">Butuh apa di Rusia?<br />Tanya SUNDAF.</h1>
-          <p>Dari satu kebutuhan sampai perjalanan lengkap. Untuk wisatawan Indonesia, rombongan, dan mitra agen perjalanan.</p>
+          <div className={styles.headingCopy}>
+            <p className={styles.eyebrow}>LAYANAN RUSIA SUNDAF</p>
+            <h1 id="russia-services-title">Butuh apa di Rusia?<br />Tanya SUNDAF.</h1>
+            <p className={styles.sectionIntro}>Dari satu kebutuhan sampai perjalanan lengkap. Untuk wisatawan Indonesia, rombongan, dan mitra agen perjalanan.</p>
+            <p className={styles.locations}><span>Moscow</span><span aria-hidden="true">·</span><span>Saint Petersburg</span></p>
+          </div>
+          <div className={styles.skyline}><RussiaSkyline /></div>
         </header>
         <RussiaServiceGrid>
           <RussiaServiceCard motion="catering">
