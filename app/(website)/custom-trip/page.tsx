@@ -12,7 +12,7 @@ export const revalidate = 300;
 
 const PAGE_TITLE = "Private & Custom Trip";
 const PAGE_DESC =
-  "Rancang land tour privat Thailand, Rusia, dan destinasi pilihanmu. Tentukan tanggal, rute, durasi, jumlah peserta, budget, dan layanan sesuai kebutuhan.";
+  "Rancang liburan privat ke destinasi impianmu bersama SUNDAF. Pilih waktu, rute, penginapan, dan pengalaman sesuai keinginan serta budget.";
 
 const destinationLabels = new Map([
   ["rusia", "Rusia & Aurora"],
@@ -79,9 +79,9 @@ export default async function CustomTripPage({
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
             <p>PRIVATE &amp; CUSTOM TRIP</p>
-            <h1>Thailand, Rusia, dan rute pilihanmu. Bebas rancang private trip.</h1>
-            <span>Tentukan tanggal, rute, durasi, jumlah peserta, dan kisaran budget. Kamu bisa mengajukan perjalanan di luar paket yang ditampilkan, dengan pilihan hotel, transportasi, guide, dan aktivitas sesuai kebutuhan.</span>
-            <span>Sudah punya tiket atau sebagian rencana? Ceritakan layanan yang kamu perlukan, mulai dari satu kebutuhan sampai perjalanan lengkap.</span>
+            <h1>Destinasi impianmu. Liburan dengan caramu.</h1>
+            <span>Pergi bersama keluarga, pasangan, atau teman terdekat. Pilih destinasi dan waktu keberangkatanmu; SUNDAF membantu merancang rute, penginapan, dan pengalaman sesuai keinginan serta budget.</span>
+            <a className={styles.heroAction} href="#rancang-liburan">Rancang liburan saya</a>
           </div>
           <div className={styles.heroPhoto}>
             <Image

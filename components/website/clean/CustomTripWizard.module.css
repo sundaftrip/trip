@@ -77,8 +77,37 @@
   object-fit: cover;
 }
 
+.heroAction {
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #075d63;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+}
+
+.heroAction:hover {
+  background: #05484d;
+}
+
+.heroAction:focus-visible,
+.wizard:focus-visible {
+  outline: 3px solid #20b8b5;
+  outline-offset: 4px;
+}
+
 .wizard {
   max-width: 820px;
+  /* The public shell already supplies 92px of sticky-header scroll padding. */
+  scroll-margin-top: 8px;
   overflow: hidden;
   border: 1px solid #dce4e3;
   border-radius: 22px;

@@ -233,7 +233,7 @@ export default function CustomTripWizard({
   );
 
   return (
-    <section className={styles.wizard} aria-labelledby="custom-step-title">
+    <section id="rancang-liburan" className={styles.wizard} tabIndex={-1} aria-labelledby="custom-step-title">
       <div className={styles.progressHeader}>
         <div>
           <span>Langkah {step + 1} dari {steps.length}</span>
@@ -247,7 +247,7 @@ export default function CustomTripWizard({
         {step === 0 && (
           <>
             <h2 id="custom-step-title" tabIndex={-1}>Kamu ingin pergi ke mana?</h2>
-            <p>Pilih tujuan, lalu ceritakan kota atau rute yang kamu inginkan. Untuk Thailand, Rusia, maupun tujuan lain, kamu bisa mengajukan rencana di luar paket yang ditampilkan.</p>
+            <p>Pilih destinasi, lalu ceritakan kota atau rute yang kamu inginkan. Kamu juga bisa mengajukan rencana di luar paket yang ditampilkan.</p>
             {errorSummary}
             <fieldset
               className={styles.choiceGrid}
