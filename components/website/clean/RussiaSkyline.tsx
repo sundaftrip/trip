@@ -1,0 +1,43 @@
+/** Decorative, original line drawing inspired by Moscow and Saint Petersburg. */
+export default function RussiaSkyline() {
+  return (
+    <svg viewBox="0 0 480 200" width="480" height="200" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 179H466" />
+        <g>
+          <path d="M40 178V145H75V178M45 145V133H70V145" />
+          <path d="M45 133C30 121 41 108 57 98C60 111 79 118 70 133Z" />
+          <path d="M57 98V89M53 93H61M52 178V161Q57 151 63 161V178" />
+          <path d="M80 178V124H106V178M77 124L93 110L109 124" />
+          <path d="M84 110V99H102V110M84 99C73 88 84 80 93 72C95 82 113 88 102 99Z" />
+          <path d="M93 72V64M89 68H97" />
+          <path d="M106 178V107H145V178M103 107L125 56L148 107M111 107L125 77L140 107" />
+          <path d="M118 57V45H132V57M118 45C109 35 119 30 125 22C127 31 140 36 132 45Z" />
+          <path d="M125 22V13M121 17H129M114 122H137M117 178V152Q125 138 134 152V178" />
+          <path d="M149 178V133H178V178M146 133L164 118L181 133M155 118V107H173V118" />
+          <path d="M155 107C143 94 153 84 164 76C167 86 184 96 173 107Z" />
+          <path d="M164 76V67M160 71H168M157 178V155Q164 144 171 155V178" />
+          <path d="M183 178V150H213V178M188 150V137H208V150" />
+          <path d="M188 137C177 128 186 117 198 108C200 118 218 128 208 137Z" />
+          <path d="M198 108V100M194 104H202" />
+        </g>
+        <g>
+          <path d="M281 178V147H441V178M277 147H445M290 147V136H432V147" />
+          <path d="M303 136L361 113L419 136ZM308 142V174M320 142V174M333 142V174M347 142V174M375 142V174M389 142V174M402 142V174M414 142V174" />
+          <path d="M353 178V155Q361 142 369 155V178M291 154V170M431 154V170" />
+          <path d="M327 125V105H395V125M323 105H399M323 100H399" />
+          <path d="M327 100C327 78 340 62 361 62C382 62 395 78 395 100" />
+          <path d="M341 100C341 77 351 64 361 62C371 64 381 77 381 100M361 63V100" />
+          <path d="M335 108V121M345 108V119M377 108V119M387 108V121" />
+          <path d="M354 62V48H368V62M352 48Q361 32 370 48ZM361 40V27M357 32H365" />
+          <path d="M292 136V116H307V133M415 133V116H430V136M289 116Q299 96 310 116M412 116Q422 96 433 116" />
+        </g>
+        <g opacity=".5">
+          <path d="M20 172H35M221 173H239M245 173H274M449 171H460" />
+          <path d="M49 127L66 119M85 94L100 86M157 101L172 91M190 132L204 122" />
+          <path d="M88 140H97M88 150H97M120 129H131M189 159H204M286 184H435M34 184H220" />
+        </g>
+      </g>
+    </svg>
+  );
+}
