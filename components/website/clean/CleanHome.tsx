@@ -262,16 +262,15 @@ export default function CleanHome({
               <p>{heroBody}</p>
             </div>
           </div>
-        </section>
-
-        <div className={styles.finderZone}>
-          <div className={styles.shell}>
-            <HomeSearchForm
-              destinations={destinationOptions}
-              months={monthOptions}
-            />
+          <div className={styles.finderZone}>
+            <div className={styles.shell}>
+              <HomeSearchForm
+                destinations={destinationOptions}
+                months={monthOptions}
+              />
+            </div>
           </div>
-        </div>
+        </section>
 
         <section className={`${styles.section} ${styles.tourSection}`} aria-labelledby="active-tours-title">
           <div className={styles.shell}>

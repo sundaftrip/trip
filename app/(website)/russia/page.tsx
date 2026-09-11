@@ -45,7 +45,6 @@ export default async function RussiaServicesPage() {
             <p className={styles.eyebrow}>LAYANAN RUSIA SUNDAF</p>
             <h1 id="russia-services-title">Butuh apa di Rusia?<br />Tanya SUNDAF.</h1>
             <p className={styles.sectionIntro}>Dari satu kebutuhan sampai perjalanan lengkap. Untuk wisatawan Indonesia, rombongan, dan mitra agen perjalanan.</p>
-            <p className={styles.locations}><span>Moscow</span><span aria-hidden="true">·</span><span>Saint Petersburg</span></p>
           </div>
           <div className={styles.skyline}><RussiaSkyline /></div>
         </header>

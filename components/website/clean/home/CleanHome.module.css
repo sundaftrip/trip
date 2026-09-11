@@ -153,29 +153,29 @@
 }
 
 .finderZone {
-  position: relative;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 24px;
   z-index: 3;
-  margin-top: -78px;
-  background: var(--home-paper);
 }
 
 .finderCard {
   min-height: 0;
-  padding: 16px;
+  padding: 7px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-  gap: 12px;
+  gap: 8px;
   align-items: stretch;
-  border: 1px solid var(--home-line);
-  border-radius: 18px !important;
-  background: var(--home-white);
-  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 999px !important;
+  background: linear-gradient(110deg, #ffffff 0%, #f5fbfa 48%, #dcefeb 100%);
+  box-shadow: 0 8px 28px rgba(4, 20, 23, 0.16);
 }
 
 .finderField {
   min-width: 0;
-  min-height: 60px;
-  padding: 0 12px;
+  min-height: 48px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   border: 0;
@@ -186,20 +186,25 @@
 }
 
 .finderField + .finderField {
-  padding-left: 24px;
+  padding-left: 20px;
   border-left: 1px solid var(--home-line);
 }
 
 .finderField > span {
+  position: relative;
   width: 100%;
   min-width: 0;
   display: block;
 }
 
 .finderField small {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  pointer-events: none;
   display: block;
   color: var(--home-muted);
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 550;
   line-height: 1.3;
   letter-spacing: 0.1em;
@@ -207,8 +212,9 @@
 
 .finderField select {
   width: 100%;
+  height: 48px;
   min-height: 44px;
-  padding: 0 26px 0 0;
+  padding: 14px 26px 0 0;
   border: 0;
   background: transparent;
   color: var(--home-ink);
@@ -227,7 +233,7 @@
   justify-content: center;
   align-self: center;
   border: 0;
-  border-radius: 12px !important;
+  border-radius: 999px !important;
   background: var(--home-primary);
   color: var(--home-white);
   font-size: 15px;
@@ -1258,7 +1264,7 @@
 
 @media (min-width: 760px) {
   .finderZone .shell {
-    width: min(860px, calc(100% - 64px));
+    width: min(760px, calc(100% - 64px));
   }
 
   .destinationMosaic {
@@ -1300,14 +1306,6 @@
 @media (max-width: 1040px) {
   .shell {
     width: min(100% - 48px, 900px);
-  }
-
-  .finderCard {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .finderCard > button {
-    grid-column: 1 / 3;
   }
 
   .tourRail {
@@ -1380,8 +1378,10 @@
   }
 
   .hero {
-    height: 456px;
-    min-height: 456px;
+    height: auto;
+    min-height: 580px;
+    display: flex;
+    flex-direction: column;
   }
 
   .heroImage {
@@ -1398,6 +1398,8 @@
   }
 
   .heroShell {
+    height: auto;
+    flex: 1;
     align-items: flex-start;
   }
 
@@ -1427,32 +1429,28 @@
   }
 
   .finderZone {
-    display: flow-root;
-    margin-top: 0;
-    background: var(--home-paper);
+    position: relative;
+    inset: auto;
+    margin-top: 40px;
+    padding-bottom: 24px;
   }
 
   .finderCard {
-    min-height: 0;
-    margin-top: -58px;
-    padding: 16px;
-    grid-template-columns: 1fr;
-    gap: 0;
-    box-shadow: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    border-radius: 28px !important;
   }
 
   .finderField {
-    min-height: 0;
-    padding: 0 0 8px;
+    padding: 0 8px;
   }
 
   .finderField + .finderField {
-    padding: 10px 0 12px;
-    border-left: 0;
-    border-top: 1px solid var(--home-line);
+    padding: 0 8px;
   }
 
   .finderField select {
+    padding-right: 0;
     font-size: 16px;
     font-weight: 450;
   }
@@ -1460,7 +1458,7 @@
   .finderCard > button {
     min-width: 0;
     min-height: 48px;
-    grid-column: auto;
+    grid-column: 1 / -1;
     font-weight: 550;
   }
 
@@ -1818,6 +1816,15 @@
 
   .heroCopy h1 {
     font-size: 38px;
+  }
+
+  .finderCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .finderField + .finderField {
+    border-left: 0;
+    border-top: 1px solid var(--home-line);
   }
 
   .tourRail,
