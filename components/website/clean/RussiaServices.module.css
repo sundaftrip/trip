@@ -116,13 +116,36 @@
   gap: 10px;
 }
 
-.serviceTitle svg {
+.serviceIcon {
+  position: relative;
+  display: block;
   flex: 0 0 auto;
   width: 25px;
   height: 25px;
   margin-top: 1px;
   color: var(--primary);
+}
+
+.serviceIcon > svg:first-child {
+  display: block;
+  width: 100%;
+  height: 100%;
   stroke-width: 1.65;
+  transform-origin: center;
+}
+
+.serviceIcon > svg.steam {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .serviceTitle h2 {
@@ -228,7 +251,7 @@
     gap: 7px;
   }
 
-  .serviceTitle svg {
+  .serviceIcon {
     width: 17px;
     height: 17px;
     margin-top: 0;
@@ -254,5 +277,127 @@
 @media (max-width: 370px) {
   .shell {
     width: calc(100% - 32px);
+  }
+}
+
+/* Each interaction runs once; the resting icon and page layout stay unchanged. */
+@media (prefers-reduced-motion: no-preference) {
+  .serviceGrid article[data-motion="catering"][data-motion-active="true"] .steam {
+    animation: steamRise 850ms ease-out 1 both;
+  }
+
+  .serviceGrid article[data-motion="flight"][data-motion-active="true"] .serviceIcon > svg:first-child {
+    animation: planeFlight 780ms ease-in-out 1 both;
+  }
+
+  .serviceGrid article[data-motion="train"][data-motion-active="true"] .serviceIcon > svg:first-child {
+    animation: trainGlide 700ms ease-in-out 1 both;
+  }
+
+  .serviceGrid article[data-motion="hotel"][data-motion-active="true"] .serviceIcon > svg:first-child {
+    animation: hotelPulse 720ms ease-in-out 1 both;
+  }
+
+  .serviceGrid article[data-motion="bus"][data-motion-active="true"] .serviceIcon > svg:first-child {
+    animation: busTravel 800ms ease-in-out 1 both;
+  }
+
+  .serviceGrid article[data-motion="luggage"][data-motion-active="true"] .serviceIcon > svg:first-child {
+    animation: luggageRock 820ms ease-in-out 1 both;
+  }
+
+  .serviceGrid article[data-motion="compass"][data-motion-active="true"] .serviceIcon > svg:first-child {
+    animation: compassTurn 850ms ease-in-out 1 both;
+  }
+}
+
+@keyframes steamRise {
+  0% {
+    opacity: 0;
+    transform: translateY(-1px);
+  }
+  25% {
+    opacity: 0.65;
+    transform: translateY(-3px);
+  }
+  70% {
+    opacity: 0.35;
+    transform: translateY(-6px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes planeFlight {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  45% {
+    transform: translate(4px, -3px) rotate(-5deg);
+  }
+}
+
+@keyframes trainGlide {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  70% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes hotelPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.07);
+  }
+}
+
+@keyframes busTravel {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(2px, -1px);
+  }
+  55% {
+    transform: translate(3px, 0);
+  }
+  75% {
+    transform: translate(1px, -0.5px);
+  }
+}
+
+@keyframes luggageRock {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  28% {
+    transform: rotate(-7deg);
+  }
+  55% {
+    transform: rotate(5deg);
+  }
+  78% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes compassTurn {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(18deg);
+  }
+  70% {
+    transform: rotate(-8deg);
   }
 }
