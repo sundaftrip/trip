@@ -5,7 +5,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
     "duration": "10 hari dari Jakarta · 6 malam hotel",
     "travelNote": "Perjalanan berlangsung sekitar 10 hari kalender dari Jakarta: 7 hari di Peru, 6 malam hotel dan 3 malam dalam perjalanan. Hari 01–07 di bawah dihitung sejak tiba di Lima. Jadwal lengkap mengikuti tanggal dan koneksi penerbangan pilihanmu.",
     "price": {
-      "from": 64500000,
+      "from": 55000000,
       "groupSize": 20,
       "hotel": "Hotel 3★",
       "options": [
@@ -46,7 +46,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
         },
         {
           "groupSize": 20,
-          "from": 64500000,
+          "from": 55000000,
           "optionPrices": {
             "hotel-4": 2680000,
             "vistadome": 3850000
@@ -160,7 +160,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
     "duration": "16 hari dari Jakarta · 12 malam hotel",
     "travelNote": "Perjalanan berlangsung sekitar 16 hari kalender dari Jakarta: 13 hari di Amerika Selatan, 12 malam hotel dan 3 malam dalam perjalanan. Hari 01–13 di bawah dihitung sejak tiba di São Paulo. Jadwal akhir mengikuti koneksi internasional dan regional.",
     "price": {
-      "from": 152600000,
+      "from": 88000000,
       "groupSize": 20,
       "hotel": "Hotel 3★/setara",
       "options": [
@@ -209,7 +209,7 @@ export const LATIN_AMERICA_PACKAGES: Record<string, PackageDetails> = {
         },
         {
           "groupSize": 20,
-          "from": 152600000,
+          "from": 88000000,
           "optionPrices": {
             "hotel-4": 6390000,
             "vistadome": 1630000,
