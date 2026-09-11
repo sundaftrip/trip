@@ -11,6 +11,7 @@ export type RussiaIllustrationKind =
   | "guide"
   | "internet"
   | "compass"
+  | "insurance"
   | "ruble";
 
 const palettes: Record<RussiaIllustrationKind, [string, string, string, string]> = {
@@ -24,6 +25,7 @@ const palettes: Record<RussiaIllustrationKind, [string, string, string, string]>
   guide: ["#70DED4", "#22AAA5", "#FFE3B8", "#E7A86C"],
   internet: ["#AC9AFB", "#7560DC", "#FFE79E", "#E6B94F"],
   compass: ["#74B8FF", "#3B75D1", "#FFDF8E", "#EAB35D"],
+  insurance: ["#8DE3CD", "#26AA95", "#9ECEFF", "#548DDF"],
   ruble: ["#7ADDB4", "#25A77D", "#FFE78E", "#EEB642"],
 };
 
@@ -248,6 +250,21 @@ function Artwork({ kind, main, accent, glass }: { kind: RussiaIllustrationKind; 
           </g>
         </g>
         <g data-part="spark"><Star x={66} y={19} color="#9BCCEA" size={4} /><circle cx="12" cy="56" r="2" fill="#E6C884" /></g>
+      </>;
+    case "insurance":
+      return <>
+        <ellipse data-part="shadow" cx="40" cy="68" rx="24" ry="4" fill="#A3D3CC" opacity=".25" />
+        <g data-part="body">
+          <path d="M40 10C32 16 24 19 16 20V37C16 51 25 61 40 67C55 61 64 51 64 37V20C56 19 48 16 40 10Z" fill={accent} />
+          <path d="M40 14C33 19 27 21 21 23V37C21 49 28 57 40 62C52 57 59 49 59 37V23C53 21 47 19 40 14Z" fill={main} />
+          <path d="M26 27C31 25 35 23 39 20" fill="none" stroke="#D8FFF1" strokeWidth="3" strokeLinecap="round" />
+          <path d="M40 18V58C50 53 55 46 55 37V26C49 24 44 21 40 18Z" fill="#FFFFFF" opacity=".12" />
+          <g data-part="detail">
+            <circle cx="40" cy="39" r="13" fill={glass} />
+            <path d="M33 39l5 5 9-10" fill="none" stroke="#219E89" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <g data-part="spark"><Star x={66} y={16} size={5} /><Star x={14} y={51} color="#A8CBF5" size={3} /><circle cx="12" cy="29" r="2" fill="#BDE8D9" /></g>
       </>;
     case "ruble":
       return <>

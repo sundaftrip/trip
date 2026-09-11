@@ -73,6 +73,21 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/blog/trip-rusia-murah-total-biaya-travel-indonesia",
+        destination: "/blog/mengenal-budaya-rusia-moskow-saint-petersburg",
+        permanent: true,
+      },
+      {
+        source: "/blog/panduan-trip-rusia-mandiri-pembayaran-sapsan-katering",
+        destination: "/blog/makanan-khas-rusia-dan-budaya-minum-teh",
+        permanent: true,
+      },
+      {
+        source: "/blog/trip-amerika-latin-dari-indonesia-rute-biaya-dokumen",
+        destination: "/blog/budaya-kuliner-amerika-latin-peru-brasil-kolombia-chile",
+        permanent: true,
+      },
+      {
         source: "/:path*",
         has: [{ type: "host", value: "www.sundaftrip.com" }],
         destination: "https://sundaftrip.com/:path*",

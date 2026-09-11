@@ -23,6 +23,13 @@ import { serializeJsonLd } from "@/lib/safe-json-ld";
 // canonical/OG/JSON-LD jangan sampai menunjuk localhost.
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 
+// These culture and food stories are editorial, including after a slug change.
+const editorialBlogIds = new Set([
+  "cmtxci1h10000habtreaeovl8",
+  "cmtxcme740002habtggkzoaek",
+  "cmtxcr1ly0004habt2k9ref3m",
+]);
+
 async function getSiteInfo() {
   try {
     const rows = await prisma.companyInfo.findMany({
@@ -440,7 +447,7 @@ export default async function BlogDetailPage({
         />
 
         {/* ── #3: Tour CTA ───────────────────────────────────────────── */}
-        {upcomingTours.length > 0 && (
+        {!editorialBlogIds.has(post.id) && upcomingTours.length > 0 && (
           <div className="mt-14">
             {divider}
             <div className="pt-8">

@@ -11,7 +11,7 @@ import styles from "@/components/website/clean/RussiaServices.module.css";
 
 export const revalidate = 300;
 const title = "Layanan Perjalanan Rusia — Tanya SUNDAF";
-const description = "Katering halal, pembayaran tiket dan hotel, transportasi, tiket sirkus dan balet, guide berbahasa Indonesia, serta akses internet selama di Rusia. Tanya SUNDAF.";
+const description = "Katering halal, bantuan berbagai pembayaran di Rusia, transportasi, guide berbahasa Indonesia, akses internet, dan asuransi perjalanan. Tanya SUNDAF.";
 
 export const metadata: Metadata = {
   title,
@@ -26,7 +26,7 @@ const services: { motion: RussiaServiceMotion; title: string; description: strin
   { motion: "hotel", title: "Pembayaran hotel", description: "Sudah punya pilihan hotel? Sampaikan hotel, tanggal menginap, dan kebutuhan kamar kepada tim.", message: "pembayaran hotel di Rusia" },
   { motion: "bus", title: "Transfer bus & luxury", description: "Rencanakan penjemputan dan transportasi untuk kebutuhan pribadi maupun rombongan.", message: "transfer bus atau kendaraan luxury di Rusia" },
   { motion: "luggage", title: "Tambahan bagasi", description: "Tiket sudah ada? Tanyakan bantuan pembayaran bagasi sesuai maskapai dan penerbangan Anda.", message: "pembayaran tambahan bagasi penerbangan Rusia" },
-  { motion: "show", title: "Tiket sirkus & balet", description: "Bantuan pembayaran tiket sirkus dan balet di Rusia. Sampaikan pertunjukan, tanggal, dan jumlah penonton yang Anda inginkan.", message: "pembayaran tiket sirkus atau balet di Rusia" },
+  { motion: "show", title: "Tiket & pembayaran di Rusia", description: "Bantuan pembayaran tiket sirkus, balet, atraksi, dan berbagai kebutuhan lainnya di Rusia. Kirim detail atau tautan pembayaran, kami bantu cek proses dan biayanya.", message: "tiket dan kebutuhan pembayaran lainnya di Rusia" },
   { motion: "guide", title: "Guide lokal berbahasa Indonesia", description: "Guide lokal untuk menemani perjalanan Anda dalam bahasa Indonesia. Sampaikan kota, tanggal, dan kebutuhan pendampingan.", message: "layanan guide lokal berbahasa Indonesia di Rusia" },
   { motion: "internet", title: "Internet selama di Rusia", description: "Tetap terhubung selama perjalanan. Tanyakan pilihan akses internet sesuai durasi, kota tujuan, dan perangkat yang Anda gunakan.", message: "akses internet selama perjalanan di Rusia" },
 ];
@@ -71,6 +71,11 @@ export default async function RussiaServicesPage() {
             <p>Informasi layanan rubel akan tersedia setelah persiapannya selesai.</p>
             <span className={styles.comingSoon}>Coming soon</span>
           </article>
+          <RussiaServiceCard motion="insurance">
+            <div className={styles.serviceTitle}><span className={styles.serviceIcon}><RussiaServiceIllustration kind="insurance" /></span><h2>Asuransi perjalanan</h2></div>
+            <p>Mulai Rp300.000. Tanyakan pilihan asuransi, manfaat, dan cakupan perlindungan sesuai tujuan serta durasi perjalanan Anda.</p>
+            <a className={styles.serviceLink} href={buildWhatsAppHref(whatsapp, "Halo SUNDAF, saya ingin menanyakan asuransi perjalanan mulai Rp300.000. Mohon informasi manfaat, cakupan, dan biaya sesuai tujuan serta durasi perjalanan saya.")} target="_blank" rel="noopener noreferrer" aria-label="Tanyakan asuransi perjalanan ke SUNDAF">Tanyakan asuransi</a>
+          </RussiaServiceCard>
         </RussiaServiceGrid>
       </section>
     </div>
