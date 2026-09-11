@@ -297,7 +297,11 @@ export default function CleanTourFilterSheet({
             <button type="button" onClick={() => onDraftChange(DEFAULT_CATALOG_FILTERS)}>
               Reset
             </button>
-            <button type="submit">Tampilkan {draftCount} perjalanan</button>
+            <button type="submit">
+              {draft.type === "private"
+                ? draftCount ? `Lihat ${draftCount} inspirasi rute` : "Lihat pilihan custom trip"
+                : `Tampilkan ${draftCount} perjalanan`}
+            </button>
           </footer>
         </form>
       </div>
