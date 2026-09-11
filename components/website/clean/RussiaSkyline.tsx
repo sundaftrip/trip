@@ -2,7 +2,7 @@
 export default function RussiaSkyline() {
   return (
     <svg viewBox="0 0 480 200" width="480" height="200" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-      <g stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <g stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 179H466" />
         <g>
           <path d="M40 178V145H75V178M45 145V133H70V145" />
