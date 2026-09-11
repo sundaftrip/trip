@@ -298,7 +298,9 @@
 }
 
 .page .menu-item {
+  position: relative;
   display: flex;
+  flex-direction: column;
   min-width: 0;
   overflow: hidden;
   scroll-snap-align: start;
@@ -311,24 +313,6 @@
 .page .menu-item:hover {
   border-color: #b8cece;
   box-shadow: 0 7px 22px rgb(19 43 58 / 5%);
-}
-
-.page .product-select {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  width: 100%;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  border-radius: inherit;
-  background: #ffffff;
-  color: var(--ink);
-  text-align: left;
-}
-
-.page .product-select:focus-visible {
-  outline-offset: -3px;
 }
 
 .page .menu-photo {
@@ -405,10 +389,31 @@
 }
 
 .page .product-action {
+  padding: 0;
+  border: 0;
+  background: #ffffff;
+  text-align: left;
   color: var(--primary);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.7;
+}
+
+/* Stretch the action over the card while keeping headings and descriptions semantic. */
+.page .product-action::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+}
+
+.page .product-action:focus-visible {
+  outline: none;
+}
+
+.page .product-action:focus-visible::after {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
 }
 
 .page .menu-bottom-note {

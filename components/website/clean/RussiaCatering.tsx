@@ -83,7 +83,6 @@ export default function RussiaCatering({ whatsapp }: { whatsapp: string }) {
         <div className={styles["menu-rail"]} role="region" aria-roledescription="carousel" aria-labelledby="menu-title" aria-describedby="menu-scroll-hint" tabIndex={0}>
           {cateringPackages.map((item) => (
             <article className={styles["menu-item"]} key={item.id}>
-              <button className={styles["product-select"]} type="button" onClick={() => selectMenu(item.id, item.name)} aria-label={`Pilih ${item.name}, paket ${item.tier}, ${formatCateringPrice(item.price)} RUB per porsi`} aria-describedby={`menu-description-${item.id}`}>
                 <div className={styles["menu-photo"]}>
                   <Image src={cateringImage(item.image)} alt={`${item.name}: ${item.composition}`} width={1024} height={1365} sizes="(max-width: 759px) 82vw, (max-width: 1040px) 47vw, 360px" />
                   <span className={styles["menu-type"]}>PAKET {item.tier.toUpperCase()}</span>
@@ -93,13 +92,11 @@ export default function RussiaCatering({ whatsapp }: { whatsapp: string }) {
                   <p className={styles["menu-description"]} id={`menu-description-${item.id}`}>{item.composition}</p>
                   <p className={styles["menu-benefit"]}>{item.benefit}</p>
                   <p className={styles["menu-price"]}>{formatCateringPrice(item.price)} <small>RUB / porsi</small></p>
-                  <span className={styles["product-action"]}>Pilih paket</span>
+                  <button className={styles["product-action"]} type="button" onClick={() => selectMenu(item.id, item.name)} aria-label={`Pilih ${item.name}, paket ${item.tier}, ${formatCateringPrice(item.price)} RUB per porsi`} aria-describedby={`menu-description-${item.id}`}>Pilih paket</button>
                 </div>
-              </button>
             </article>
           ))}
           <article className={styles["menu-item"]}>
-            <button className={styles["product-select"]} type="button" onClick={() => selectMenu("Lauk Rumahan Nusantara", "Lauk Rumahan Nusantara")} aria-label="Tanyakan pilihan Lauk Rumahan Nusantara">
               <div className={styles["menu-photo"]}>
                 <Image src={cateringImage("03-lauk-rumahan.png")} alt="Pilihan ayam suwir berbumbu, telur bumbu merah, serta tumis tahu dan sayuran." width={1024} height={1365} sizes="(max-width: 759px) 82vw, (max-width: 1040px) 47vw, 360px" />
                 <span className={styles["menu-type"]}>PILIHAN LAUK</span>
@@ -109,9 +106,8 @@ export default function RussiaCatering({ whatsapp }: { whatsapp: string }) {
                 <p className={styles["menu-description"]}>Ayam suwir berbumbu, telur bumbu merah, tumis tahu dan sayuran.</p>
                 <p className={styles["menu-benefit"]}>Tambahkan lauk untuk melengkapi menu rombongan.</p>
                 <p className={styles["menu-price"]}>Sesuai pilihan</p>
-                <span className={styles["product-action"]}>Tanyakan pilihan lauk</span>
+                <button className={styles["product-action"]} type="button" onClick={() => selectMenu("Lauk Rumahan Nusantara", "Lauk Rumahan Nusantara")} aria-label="Tanyakan pilihan Lauk Rumahan Nusantara">Tanyakan pilihan lauk</button>
               </div>
-            </button>
           </article>
         </div>
         <div className={styles["menu-bottom-note"]}><p>Contoh menu; komposisi akhir dikonfirmasi saat pemesanan. Sampaikan pilihan lauk, tingkat kepedasan, dan alergi saat berkonsultasi.</p></div>
