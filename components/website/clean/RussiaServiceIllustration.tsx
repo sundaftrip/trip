@@ -7,6 +7,9 @@ export type RussiaIllustrationKind =
   | "hotel"
   | "bus"
   | "luggage"
+  | "show"
+  | "guide"
+  | "internet"
   | "compass"
   | "ruble";
 
@@ -17,6 +20,9 @@ const palettes: Record<RussiaIllustrationKind, [string, string, string, string]>
   hotel: ["#B59AF7", "#7861CC", "#FFE59B", "#F4B849"],
   bus: ["#70DED4", "#22AAA5", "#D1F5FC", "#84C7DE"],
   luggage: ["#FFA97F", "#ED704D", "#FFE7B0", "#F2C060"],
+  show: ["#FF8B9D", "#DE3E64", "#FFE394", "#F1B749"],
+  guide: ["#70DED4", "#22AAA5", "#FFE3B8", "#E7A86C"],
+  internet: ["#AC9AFB", "#7560DC", "#FFE79E", "#E6B94F"],
   compass: ["#74B8FF", "#3B75D1", "#FFDF8E", "#EAB35D"],
   ruble: ["#7ADDB4", "#25A77D", "#FFE78E", "#EEB642"],
 };
@@ -145,6 +151,82 @@ function Artwork({ kind, main, accent, glass }: { kind: RussiaIllustrationKind; 
           <g transform="rotate(13 53 34)"><path d="M49 24v5" stroke="#FFF2CB" strokeWidth="1.5" strokeLinecap="round" /><rect x="47" y="28" width="12" height="15" rx="3" fill={accent} /><path d="M51 33h4M51 37h3" stroke="#B28143" strokeWidth="1.5" strokeLinecap="round" /></g>
         </g>
         <g data-part="spark"><Star x={65} y={18} color="#F0C572" size={4} /><Star x={14} y={45} color="#AAD6D7" size={3.5} /></g>
+      </>;
+    case "show":
+      return <>
+        <ellipse data-part="shadow" cx="40" cy="68" rx="29" ry="4" fill="#D8B1BE" opacity=".25" />
+        <g data-part="body">
+          <path d="M31 21V8" stroke="#CF9345" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M32 8H45L41 12L45 16H32Z" fill={main} />
+          <path d="M12 37H52V63H12Z" fill="#FFF3D7" />
+          <path d="M12 37H20V63H12ZM28 37H36V63H28ZM44 37H52V63H44Z" fill={main} />
+          <path d="M8 38L31 18L56 38Z" fill={main} />
+          <path d="M19 38L31 18L30 38ZM40 38L31 18L48 38Z" fill="#FFF0D1" />
+          <path d="M8 38H56" stroke="#F0BB58" strokeWidth="3.5" strokeLinecap="round" />
+          <path d="M24 64V52C24 42 40 42 40 52V64Z" fill="#8D4368" />
+          <path d="M10 64H54" stroke="#D44D6C" strokeWidth="3" strokeLinecap="round" />
+          <g data-part="detail">
+            <path d="M53 28C58 22 64 26 59 33L54 40M65 30C61 21 69 20 69 26L65 43" fill="none" stroke="#E778A6" strokeWidth="2" strokeLinecap="round" />
+            <g transform="rotate(18 53 51)">
+              <rect x="47" y="37" width="12" height="28" rx="6" fill="#E884AD" />
+              <rect x="49" y="39" width="8" height="14" rx="4" fill="#FFE9ED" />
+              <path d="M49 43l8 7M57 43l-8 7M49 60h8" stroke="#C96791" strokeWidth="1.5" strokeLinecap="round" />
+            </g>
+            <g transform="rotate(-13 65 53)">
+              <rect x="59" y="39" width="12" height="28" rx="6" fill="#F3A9C6" />
+              <rect x="61" y="41" width="8" height="14" rx="4" fill="#FFF0F3" />
+              <path d="M61 45l8 7M69 45l-8 7M61 62h8" stroke="#D17C9E" strokeWidth="1.5" strokeLinecap="round" />
+            </g>
+          </g>
+          <circle cx="31" cy="34" r="3" fill={accent} />
+        </g>
+        <g data-part="spark"><Star x={62} y={13} size={4} /><Star x={10} y={22} color="#B2A1E4" size={3.5} /></g>
+      </>;
+    case "guide":
+      return <>
+        <ellipse data-part="shadow" cx="39" cy="69" rx="26" ry="4" fill="#ACCFC9" opacity=".25" />
+        <g data-part="body">
+          <path d="M16 64C16 49 23 44 35 44C47 44 54 50 54 64V67H16Z" fill={main} />
+          <path d="M22 60C22 52 26 50 29 49" stroke="#B3F0E3" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M30 41V47C30 52 40 52 40 47V41" fill={accent} />
+          <ellipse cx="35" cy="30" rx="12" ry="14" fill={accent} />
+          <path d="M23 30C20 17 27 12 35 12C46 12 50 20 47 29L43 23C36 25 31 20 29 19L26 30Z" fill="#644B43" />
+          <path d="M27 19C31 15 36 15 40 17" stroke="#947369" strokeWidth="2" strokeLinecap="round" />
+          <g fill="#614E49"><circle cx="30" cy="30" r="1.3" /><circle cx="40" cy="30" r="1.3" /></g>
+          <path d="M31 36Q35 40 39 36" fill="none" stroke="#B76F56" strokeWidth="1.7" strokeLinecap="round" />
+          <path d="M29 48L35 57L41 48" fill="none" stroke="#F4FCFA" strokeWidth="2" strokeLinejoin="round" />
+          <rect x="31" y="56" width="9" height="8" rx="2" fill="#F5FAF6" />
+          <path d="M33 58h5" stroke="#E96B6B" strokeWidth="2" strokeLinecap="round" />
+          <g data-part="detail">
+            <path d="M50 55Q62 54 62 40" fill="none" stroke="#E7A86C" strokeWidth="8" strokeLinecap="round" />
+            <path d="M58 43L55 36M60 41L59 32M63 41L64 32M66 42L69 35" fill="none" stroke="#F8D2A2" strokeWidth="3.5" strokeLinecap="round" />
+            <ellipse cx="62" cy="41" rx="5" ry="6" fill={accent} />
+          </g>
+        </g>
+        <g data-part="bubble">
+          <path d="M55 8H69C73 8 75 10 75 14V23C75 27 73 29 69 29H60L54 34V28C50 28 49 25 49 22V14C49 10 51 8 55 8Z" fill="#8CACED" />
+          <path d="M57 14v9M64 14v9h2c6 0 6-9 0-9Z" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g data-part="spark"><Star x={15} y={17} size={4} /><circle cx="10" cy="40" r="2" fill="#B7A5EC" /></g>
+      </>;
+    case "internet":
+      return <>
+        <ellipse data-part="shadow" cx="38" cy="69" rx="23" ry="4" fill="#BFB4DF" opacity=".25" />
+        <g data-part="body">
+          <rect x="18" y="13" width="38" height="55" rx="8" fill={main} />
+          <rect x="22" y="18" width="30" height="44" rx="5" fill={glass} />
+          <path d="M31 18H43" stroke="#8B75DE" strokeWidth="3" strokeLinecap="round" />
+          <path d="M32 64H42" stroke="#D9CFFD" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="37" cy="41" r="12" fill={accent} />
+          <ellipse cx="37" cy="41" rx="5.5" ry="12" fill="none" stroke="#BE903B" strokeWidth="1.4" />
+          <path d="M25 41H49M28 34C34 37 40 37 46 34M28 48C34 45 40 45 46 48" fill="none" stroke="#BE903B" strokeWidth="1.4" />
+        </g>
+        <g data-part="signal" fill="none" strokeLinecap="round">
+          <path d="M53 10C63 10 71 18 71 28" stroke="#65CFC4" strokeWidth="3.5" />
+          <path d="M53 18C59 18 63 22 63 28" stroke="#3DAFAB" strokeWidth="3.5" />
+          <circle cx="54" cy="27" r="2.8" fill="#278E99" stroke="none" />
+        </g>
+        <g data-part="spark"><Star x={66} y={52} size={4} /><circle cx="12" cy="38" r="2" fill="#B3DAD5" /></g>
       </>;
     case "compass":
       return <>

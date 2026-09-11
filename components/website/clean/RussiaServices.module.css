@@ -110,6 +110,10 @@
   border-top: 1px solid var(--line);
 }
 
+.serviceGrid article:last-child {
+  border-right: 0;
+}
+
 .motionControls {
   display: flex;
   justify-content: flex-end;
@@ -309,6 +313,9 @@
   .serviceGrid article:nth-child(5) { --motion-phase: -1.6s; }
   .serviceGrid article:nth-child(6) { --motion-phase: -2s; }
   .serviceGrid article:nth-child(7) { --motion-phase: -2.4s; }
+  .serviceGrid article:nth-child(8) { --motion-phase: -2.8s; }
+  .serviceGrid article:nth-child(9) { --motion-phase: -0.6s; }
+  .serviceGrid article:nth-child(10) { --motion-phase: -1.4s; }
 
   .serviceGrid article[data-motion] [data-part="shadow"] { animation-name: shadowBreathe; }
   .serviceGrid article[data-motion] [data-part="spark"] { animation-name: sparkle; }
@@ -324,6 +331,13 @@
   .serviceGrid article[data-motion="bus"] [data-part="detail"] { animation-name: wheelBounce; }
   .serviceGrid article[data-motion="luggage"] [data-part="body"] { animation-name: suitcaseRock; }
   .serviceGrid article[data-motion="luggage"] [data-part="detail"] { animation-name: wheelBounce; }
+  .serviceGrid article[data-motion="show"] [data-part="body"] { animation-name: servingBounce; }
+  .serviceGrid article[data-motion="show"] [data-part="detail"] { animation-name: balletSway; transform-origin: 50% 15%; }
+  .serviceGrid article[data-motion="guide"] [data-part="body"] { animation-name: compassFloat; }
+  .serviceGrid article[data-motion="guide"] [data-part="detail"] { animation-name: guideWave; transform-origin: 10% 90%; }
+  .serviceGrid article[data-motion="guide"] [data-part="bubble"] { animation-name: speechBounce; }
+  .serviceGrid article[data-motion="internet"] [data-part="body"] { animation-name: suitcaseRock; }
+  .serviceGrid article[data-motion="internet"] [data-part="signal"] { animation-name: signalPulse; transform-origin: 0% 100%; }
   .serviceGrid article[data-motion="compass"] [data-part="body"] { animation-name: compassFloat; }
   .serviceGrid article[data-motion="compass"] [data-part="detail"] { animation-name: needleSwing; }
 
@@ -426,6 +440,31 @@
   0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(-8deg); }
   45% { opacity: 1; transform: scale(1.14) rotate(10deg); }
   75% { opacity: 0.55; transform: scale(0.9) rotate(0); }
+}
+
+@keyframes balletSway {
+  0%, 100% { transform: rotate(0); }
+  26% { transform: rotate(-13deg) translateY(-2px); }
+  58% { transform: rotate(10deg); }
+  80% { transform: rotate(-5deg); }
+}
+
+@keyframes guideWave {
+  0%, 100% { transform: rotate(0); }
+  20%, 52% { transform: rotate(-16deg); }
+  36%, 68% { transform: rotate(12deg); }
+}
+
+@keyframes speechBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-4px) scale(1.06); }
+  65% { transform: translateY(1px) scale(0.98); }
+}
+
+@keyframes signalPulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.8); }
+  48% { opacity: 1; transform: scale(1.08); }
+  78% { opacity: 0.7; transform: scale(0.96); }
 }
 
 @keyframes shadowBreathe {
