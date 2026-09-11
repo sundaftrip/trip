@@ -39,16 +39,9 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             </Link>
             <h2 id="footer-brand-title" className="sr-only">Sundaf Trip</h2>
             <p className={styles.footerDescription}>
-              Perjalanan Rusia, Asia Tengah, aurora, dan private trip yang dirancang untuk traveler Indonesia.
+              Perjalanan Rusia, Asia Tengah, aurora, dan private trip yang dirancang untuk traveler Indonesia.{" "}
+              <span data-no-translate translate="no">Your B2B partner.</span>
             </p>
-            <div className={styles.brandFamily}>
-              <Link href="/about#sundaf-group">
-                Bagian dari <span data-no-translate translate="no">SUNDAF Holiday Group</span>
-              </Link>
-              <a href="https://sundafdmc.com/">
-                Untuk agen &amp; operator perjalanan: <span data-no-translate translate="no">SUNDAF DMC</span>
-              </a>
-            </div>
             {(legalName || officeAddress) && (
               <div className={styles.companyBlock}>
                 {legalName && <strong data-no-translate translate="no">{legalName}</strong>}
