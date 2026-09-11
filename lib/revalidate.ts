@@ -17,4 +17,6 @@ export function revalidatePublicContent() {
     rTag(tag);
   }
   rPath("/", "layout");
+  // Metadata route handlers are not pages beneath the root layout.
+  rPath("/sitemap.xml");
 }
