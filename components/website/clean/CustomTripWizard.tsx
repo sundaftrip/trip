@@ -90,6 +90,7 @@ export default function CustomTripWizard({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [validationAttempt, setValidationAttempt] = useState(0);
   const [restoredDestination, setRestoredDestination] = useState<string | null>(null);
+  const [restoredChoice, setRestoredChoice] = useState("");
   const [sourceUrl, setSourceUrl] = useState("https://sundaftrip.com/custom-trip");
   const [campaign, setCampaign] = useState("");
   const destinationInputRef = useRef<HTMLInputElement>(null);
@@ -103,6 +104,7 @@ export default function CustomTripWizard({
         const saved = window.sessionStorage.getItem("sundaf-custom-trip");
         if (saved) {
           const { entryDestination, ...savedState } = JSON.parse(saved);
+          if (typeof savedState.destination === "string") setRestoredChoice(savedState.destination);
           setState({
             ...initialState,
             ...savedState,
@@ -139,9 +141,9 @@ export default function CustomTripWizard({
     }
   }, [initialDestination, restoredDestination, state]);
 
-  const destinationOptions = state.destination && !destinations.includes(state.destination)
-    ? [...destinations, state.destination]
-    : destinations;
+  const destinationOptions = Array.from(new Set(
+    [...destinations, initialDestination, restoredChoice, state.destination].filter(Boolean),
+  ));
 
   const progress = ((step + 1) / steps.length) * 100;
   const message = useMemo(
