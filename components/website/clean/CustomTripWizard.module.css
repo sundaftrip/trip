@@ -28,11 +28,14 @@
 }
 
 .hero {
-  max-width: 790px;
   margin-bottom: 42px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  align-items: center;
+  gap: clamp(28px, 4vw, 48px);
 }
 
-.hero > p,
+.heroCopy > p,
 .aftercare > div > p {
   margin: 0 0 12px;
   color: #075d63;
@@ -51,13 +54,27 @@
   line-height: 1.03;
 }
 
-.hero > span {
+.heroCopy > span {
   max-width: 690px;
   margin-top: 20px;
   display: block;
   color: #5d686f;
   font-size: 17px;
   line-height: 1.65;
+}
+
+.heroPhoto {
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: 24px;
+  background: #edf4f7;
+}
+
+.heroPhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .wizard {
@@ -366,6 +383,22 @@
   clip-path: inset(50%);
 }
 
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .heroPhoto {
+    width: min(100%, 420px);
+    aspect-ratio: 4 / 3;
+  }
+
+  .heroPhoto img {
+    object-position: 50% 68%;
+  }
+}
+
 @media (max-width: 700px) {
   .page {
     padding: 92px 0 64px;
@@ -383,7 +416,7 @@
     font-size: 38px;
   }
 
-  .hero > span {
+  .heroCopy > span {
     font-size: 15px;
   }
 
