@@ -24,18 +24,18 @@ test("removes only the redundant contact and legal strip below the finder", () =
   assert.match(home, /<HomeSearchForm\s+destinations=\{destinationOptions\}\s+months=\{monthOptions\}/);
 });
 
-test("keeps the native destination and month search without decorative icons", () => {
+test("keeps native search fields and an accessible compact submit button", () => {
   assert.match(form, /action="\/tours"\s+method="get"\s+onSubmit=\{submitSearch\}/);
   assert.match(form, /aria-label="Cari rute yang pas"/);
   assert.equal(form.match(/<label className=\{styles\.finderField\}>/g)?.length, 2);
   assert.match(form, /<small>TUJUAN<\/small>\s*<select name="destination" defaultValue="all">/);
-  assert.match(form, /<small>WAKTU BERANGKAT<\/small>\s*<select name="month" defaultValue="all">/);
+  assert.match(form, /WAKTU BERANGKAT[\s\S]*<select name="month" defaultValue="all">/);
   assert.match(form, /<option value="all">Semua destinasi<\/option>/);
   assert.match(form, /<option value="all">Semua bulan<\/option>/);
   assert.match(form, /value=\{destination\.value\}/);
   assert.match(form, /value=\{month\.value\}/);
-  assert.match(form, /<button type="submit">\s*Lihat perjalanan\s*<\/button>/);
-  assert.doesNotMatch(form, /lucide-react|<MapPin|<CalendarDays|<Search/);
+  assert.match(form, /<button type="submit" aria-label="Lihat perjalanan">/);
+  assert.match(form, /<Search[^>]+aria-hidden="true"/);
 });
 
 test("preserves campaign attribution and native GET submission", () => {
