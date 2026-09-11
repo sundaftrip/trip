@@ -9,7 +9,9 @@ import styles from "./CustomTripWizard.module.css";
 
 type CustomTripState = {
   destination: string;
+  route: string;
   dateStart: string;
+  duration: string;
   flexibility: string;
   adults: number;
   children: number;
@@ -22,7 +24,9 @@ type CustomTripState = {
 
 const initialState: CustomTripState = {
   destination: "",
+  route: "",
   dateStart: "",
+  duration: "",
   flexibility: "Fleksibel ±3 hari",
   adults: 2,
   children: 0,
@@ -43,9 +47,11 @@ const steps = [
 
 const destinations = [
   "Rusia & Aurora",
+  "Thailand",
   "Asia Tengah",
   "Vietnam",
   "Jepang",
+  "Destinasi lainnya",
   "Belum yakin",
 ];
 
@@ -54,7 +60,9 @@ function buildMessage(state: CustomTripState, sourceUrl: string, campaign: strin
     "Halo Sundaf Trip, saya ingin merancang private trip:",
     "",
     `Destinasi: ${state.destination}`,
+    `Kota atau rute: ${state.route || "Perlu rekomendasi"}`,
     `Tanggal mulai: ${state.dateStart || "Belum ditentukan"}`,
+    `Durasi: ${state.duration || "Belum ditentukan"}`,
     `Fleksibilitas: ${state.flexibility}`,
     `Peserta: ${state.adults} dewasa, ${state.children} anak`,
     `Budget: ${state.budget || "Perlu rekomendasi"}`,
@@ -70,12 +78,19 @@ function buildMessage(state: CustomTripState, sourceUrl: string, campaign: strin
   ].join("\n");
 }
 
-export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
+export default function CustomTripWizard({
+  whatsapp,
+  initialDestination = "",
+}: {
+  whatsapp: string;
+  initialDestination?: string;
+}) {
   const [step, setStep] = useState(0);
-  const [state, setState] = useState<CustomTripState>(initialState);
+  const [state, setState] = useState<CustomTripState>({ ...initialState, destination: initialDestination });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [validationAttempt, setValidationAttempt] = useState(0);
-  const [restored, setRestored] = useState(false);
+  const [restoredDestination, setRestoredDestination] = useState<string | null>(null);
+  const [restoredChoice, setRestoredChoice] = useState("");
   const [sourceUrl, setSourceUrl] = useState("https://sundaftrip.com/custom-trip");
   const [campaign, setCampaign] = useState("");
   const destinationInputRef = useRef<HTMLInputElement>(null);
@@ -87,15 +102,27 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
     const frame = window.requestAnimationFrame(() => {
       try {
         const saved = window.sessionStorage.getItem("sundaf-custom-trip");
-        if (saved) setState({ ...initialState, ...JSON.parse(saved) });
+        if (saved) {
+          const { entryDestination, ...savedState } = JSON.parse(saved);
+          if (typeof savedState.destination === "string") setRestoredChoice(savedState.destination);
+          setState({
+            ...initialState,
+            ...savedState,
+            ...(initialDestination && entryDestination !== initialDestination
+              ? { destination: initialDestination }
+              : {}),
+          });
+        } else if (initialDestination) {
+          setState((current) => ({ ...current, destination: initialDestination }));
+        }
       } catch {
         // A disabled storage API should not block the form.
       } finally {
-        setRestored(true);
+        setRestoredDestination(initialDestination);
       }
     });
     return () => window.cancelAnimationFrame(frame);
-  }, []);
+  }, [initialDestination]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -106,13 +133,17 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
   }, []);
 
   useEffect(() => {
-    if (!restored) return;
+    if (restoredDestination !== initialDestination) return;
     try {
-      window.sessionStorage.setItem("sundaf-custom-trip", JSON.stringify(state));
+      window.sessionStorage.setItem("sundaf-custom-trip", JSON.stringify({ ...state, entryDestination: initialDestination }));
     } catch {
       // The WhatsApp fallback still works without persistence.
     }
-  }, [restored, state]);
+  }, [initialDestination, restoredDestination, state]);
+
+  const destinationOptions = Array.from(new Set(
+    [...destinations, initialDestination, restoredChoice, state.destination].filter(Boolean),
+  ));
 
   const progress = ((step + 1) / steps.length) * 100;
   const message = useMemo(
@@ -216,7 +247,7 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
         {step === 0 && (
           <>
             <h2 id="custom-step-title" tabIndex={-1}>Kamu ingin pergi ke mana?</h2>
-            <p>Pilih wilayah utama. Kota dan rute detail bisa dibahas setelah tim melihat tanggal serta jumlah peserta.</p>
+            <p>Pilih tujuan, lalu ceritakan kota atau rute yang kamu inginkan. Untuk Thailand, Rusia, maupun tujuan lain, kamu bisa mengajukan rencana di luar paket yang ditampilkan.</p>
             {errorSummary}
             <fieldset
               className={styles.choiceGrid}
@@ -224,7 +255,7 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
               aria-describedby={errors.destination ? "destination-error" : undefined}
             >
               <legend className={styles.srOnly}>Destinasi</legend>
-              {destinations.map((destination) => (
+              {destinationOptions.map((destination) => (
                 <label key={destination} data-selected={state.destination === destination}>
                   <input
                     ref={destination === destinations[0] ? destinationInputRef : undefined}
@@ -239,16 +270,24 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
               ))}
             </fieldset>
             {errors.destination && <span className={styles.error} id="destination-error">{errors.destination}</span>}
+            <label className={styles.field}>
+              <span>Kota atau rute pilihan (opsional)</span>
+              <input value={state.route} onChange={(event) => update("route", event.target.value)} placeholder="Contoh: Bangkok–Pattaya atau Moskow–St Petersburg" />
+            </label>
           </>
         )}
 
         {step === 1 && (
           <>
             <h2 id="custom-step-title" tabIndex={-1}>Kapan rencananya berangkat?</h2>
-            <p>Tanggal perkiraan sudah cukup. Harga final selalu mengikuti ketersediaan aktual.</p>
+            <p>Tentukan tanggal dan durasi sesuai rencanamu. Perkiraan awal juga cukup untuk mulai menyusun pilihan perjalanan.</p>
             <label className={styles.field}>
               <span>Tanggal mulai</span>
               <input type="date" value={state.dateStart} onChange={(event) => update("dateStart", event.target.value)} />
+            </label>
+            <label className={styles.field}>
+              <span>Durasi perjalanan (opsional)</span>
+              <input value={state.duration} onChange={(event) => update("duration", event.target.value)} placeholder="Contoh: 5 hari, 10 hari, atau masih fleksibel" />
             </label>
             <label className={styles.field}>
               <span>Fleksibilitas</span>
@@ -266,11 +305,11 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
         {step === 2 && (
           <>
             <h2 id="custom-step-title" tabIndex={-1}>Siapa saja yang ikut?</h2>
-            <p>Jumlah dan komposisi peserta memengaruhi kendaraan, kamar, serta ritme itinerary.</p>
+            <p>Berangkat sendiri, bersama pasangan, keluarga, teman, atau rombongan. Jumlah peserta membantu kami menyesuaikan kendaraan, kamar, dan ritme perjalanan.</p>
             {errorSummary}
             <div className={styles.counterGrid}>
-              <label><span>Dewasa</span><input ref={adultsInputRef} type="number" min="1" max="40" value={state.adults} onChange={(event) => update("adults", Number(event.target.value))} aria-invalid={Boolean(errors.adults)} aria-describedby={errors.adults ? "custom-adults-error" : undefined} /></label>
-              <label><span>Anak</span><input type="number" min="0" max="20" value={state.children} onChange={(event) => update("children", Number(event.target.value))} /></label>
+              <label><span>Dewasa</span><input ref={adultsInputRef} type="number" min="1" value={state.adults} onChange={(event) => update("adults", Number(event.target.value))} aria-invalid={Boolean(errors.adults)} aria-describedby={errors.adults ? "custom-adults-error" : undefined} /></label>
+              <label><span>Anak</span><input type="number" min="0" value={state.children} onChange={(event) => update("children", Number(event.target.value))} /></label>
             </div>
             {errors.adults && <span className={styles.error} id="custom-adults-error">{errors.adults}</span>}
           </>
@@ -279,7 +318,7 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
         {step === 3 && (
           <>
             <h2 id="custom-step-title" tabIndex={-1}>Budget dan kenyamanan seperti apa?</h2>
-            <p>Kisaran budget membantu tim menghindari rute yang tidak realistis sejak awal.</p>
+            <p>Sampaikan kisaran budget dan pilihan hotel. Kamu bisa meminta perjalanan lengkap atau layanan tertentu, seperti transportasi, guide, dan aktivitas; tuliskan kebutuhannya di langkah berikutnya.</p>
             <label className={styles.field}>
               <span>Kisaran budget per orang</span>
               <select value={state.budget} onChange={(event) => update("budget", event.target.value)}>
@@ -320,12 +359,14 @@ export default function CustomTripWizard({ whatsapp }: { whatsapp: string }) {
               {errors.phone && <small className={styles.error} id="custom-phone-error">{errors.phone}</small>}
             </label>
             <label className={styles.field}>
-              <span>Kebutuhan khusus atau catatan</span>
-              <textarea value={state.notes} onChange={(event) => update("notes", event.target.value)} rows={4} placeholder="Contoh: makanan halal, mobilitas orang tua, perlu tour leader dari Jakarta…" />
+              <span>Layanan yang dibutuhkan dan catatan</span>
+              <textarea value={state.notes} onChange={(event) => update("notes", event.target.value)} rows={4} placeholder="Contoh: tiket sudah ada, perlu hotel dan mobil dengan guide; perjalanan santai bersama orang tua; makanan halal…" />
             </label>
             <dl className={styles.summary}>
               <div><dt>Destinasi</dt><dd>{state.destination}</dd></div>
+              <div><dt>Rute</dt><dd>{state.route || "Perlu rekomendasi"}</dd></div>
               <div><dt>Waktu</dt><dd>{state.dateStart || state.flexibility}</dd></div>
+              <div><dt>Durasi</dt><dd>{state.duration || "Belum ditentukan"}</dd></div>
               <div><dt>Peserta</dt><dd>{state.adults} dewasa, {state.children} anak</dd></div>
               <div><dt>Budget</dt><dd>{state.budget || "Perlu rekomendasi"}</dd></div>
             </dl>

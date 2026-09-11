@@ -82,6 +82,7 @@ const destinationLabels: Record<string, string> = {
   rusia: "Rusia & Aurora",
   "asia-tengah": "Asia Tengah",
   vietnam: "Vietnam",
+  thailand: "Thailand",
   jepang: "Jepang",
   canada: "Kanada",
   lainnya: "Destinasi lainnya",
@@ -238,6 +239,9 @@ export default function CleanToursCatalog({
     { ...DEFAULT_CATALOG_FILTERS, type: "private" },
     campaignQuery,
   );
+  const customTripParams = new URLSearchParams(campaignQuery);
+  if (filters.destination !== "all") customTripParams.set("destination", filters.destination);
+  const customTripHref = `/custom-trip${customTripParams.size ? `?${customTripParams}` : ""}`;
 
   function navigate(next: CatalogFilterState) {
     router.push(queryHref(pathname, next, campaignQuery), { scroll: false });
@@ -312,7 +316,9 @@ export default function CleanToursCatalog({
                   scroll={false}
                 >
                   <span>{tab.label}</span>
-                  <strong>{categoryCounts[tab.value]}</strong>
+                  <strong className={tab.value === "private" ? styles.customBadge : undefined}>
+                    {tab.value === "private" ? "Custom" : categoryCounts[tab.value]}
+                  </strong>
                 </Link>
               ))}
             </nav>
@@ -329,7 +335,9 @@ export default function CleanToursCatalog({
         <div className={styles.shell}>
           <div className={styles.resultsToolbar}>
             <div aria-live="polite" aria-atomic="true">
-              <strong>{results.length}</strong> perjalanan ditemukan
+              {filters.type === "private" ? (
+                results.length ? <><strong>{results.length}</strong> inspirasi rute privat</> : "Rute privat sesuai permintaan"
+              ) : <><strong>{results.length}</strong> perjalanan ditemukan</>}
             </div>
             <button
               type="button"
@@ -378,6 +386,25 @@ export default function CleanToursCatalog({
             </div>
           </div>
 
+          {filters.type === "private" ? (
+            <div className={styles.customOffer}>
+              <p className={styles.eyebrow}>BEBAS TENTUKAN PERJALANANMU</p>
+              <h3>Thailand, Rusia, atau rute pilihanmu.</h3>
+              <p>
+                Land tour privat bisa dirancang sesuai tanggal, durasi, kota tujuan,
+                jumlah peserta, dan kisaran budgetmu. Pergi bersama keluarga, teman,
+                atau rombongan sendiri dengan ritme perjalanan yang kamu pilih.
+              </p>
+              <p>
+                Sudah punya tiket pesawat atau sebagian rencana? Pilih bantuan yang
+                kamu butuhkan, mulai dari hotel, transportasi, guide, hingga aktivitas.
+                Rute di katalog bisa menjadi inspirasi; kamu juga bebas mengajukan rute baru.
+              </p>
+              <Link href={customTripHref} scroll={false}>Rancang private trip</Link>
+              <span>Harga disusun sesuai kebutuhan dan dikonfirmasi bersama detail perjalanan.</span>
+            </div>
+          ) : null}
+
           {displayedTours.length ? (
             <>
               <div className={styles.grid}>
@@ -406,7 +433,7 @@ export default function CleanToursCatalog({
                 </div>
               ) : null}
             </>
-          ) : (
+          ) : filters.type === "private" ? null : (
             <div className={styles.empty}>
               <h3>Belum ada perjalanan yang cocok.</h3>
               <p>
@@ -420,7 +447,7 @@ export default function CleanToursCatalog({
                 >
                   Reset filter
                 </button>
-                <Link href="/custom-trip" scroll={false}>Rancang private trip</Link>
+                <Link href={customTripHref} scroll={false}>Rancang private trip</Link>
               </div>
             </div>
           )}
@@ -463,8 +490,9 @@ export default function CleanToursCatalog({
             <StableDetails>
               <summary>Bagaimana jika tanggal open trip belum cocok?</summary>
               <p>
-                Pilih land tour privat untuk membicarakan tanggal, jumlah peserta, dan rute
-                yang lebih fleksibel.
+                Kamu bisa mengajukan land tour privat Thailand, Rusia, atau destinasi
+                pilihanmu. Tentukan tanggal, durasi, rute, jumlah peserta, dan budget.
+                Tim akan menyusun pilihan layanan serta estimasi biaya sesuai kebutuhanmu.
               </p>
             </StableDetails>
             <StableDetails>
