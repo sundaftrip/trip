@@ -155,10 +155,6 @@
   border-top: 1px solid var(--line);
 }
 
-.serviceGrid article:last-child {
-  border-right: 0;
-}
-
 .serviceTitle {
   display: flex;
   flex-direction: column;
@@ -351,6 +347,7 @@
   .serviceGrid article:nth-child(8) { --motion-phase: -2.8s; }
   .serviceGrid article:nth-child(9) { --motion-phase: -0.6s; }
   .serviceGrid article:nth-child(10) { --motion-phase: -1.4s; }
+  .serviceGrid article:nth-child(12) { --motion-phase: -1.8s; }
 
   .serviceGrid article[data-motion] [data-part="shadow"] { animation-name: shadowBreathe; }
   .serviceGrid article[data-motion] [data-part="spark"] { animation-name: sparkle; }
@@ -375,6 +372,8 @@
   .serviceGrid article[data-motion="internet"] [data-part="signal"] { animation-name: signalPulse; transform-origin: 0% 100%; }
   .serviceGrid article[data-motion="compass"] [data-part="body"] { animation-name: compassFloat; }
   .serviceGrid article[data-motion="compass"] [data-part="detail"] { animation-name: needleSwing; }
+  .serviceGrid article[data-motion="insurance"] [data-part="body"] { animation-name: compassFloat; }
+  .serviceGrid article[data-motion="insurance"] [data-part="detail"] { animation-name: windowGleam; }
 
   .serviceGrid article[data-motion-visible="true"] .serviceIcon [data-part] {
     animation-play-state: running;
