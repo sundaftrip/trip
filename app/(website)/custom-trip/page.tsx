@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
@@ -76,10 +77,23 @@ export default async function CustomTripPage({
           <Link href="/">Beranda</Link><span aria-hidden="true">/</span><span>Private &amp; Custom Trip</span>
         </nav>
         <header className={styles.hero}>
-          <p>PRIVATE &amp; CUSTOM TRIP</p>
-          <h1>Thailand, Rusia, dan rute pilihanmu. Bebas rancang private trip.</h1>
-          <span>Tentukan tanggal, rute, durasi, jumlah peserta, dan kisaran budget. Kamu bisa mengajukan perjalanan di luar paket yang ditampilkan, dengan pilihan hotel, transportasi, guide, dan aktivitas sesuai kebutuhan.</span>
-          <span>Sudah punya tiket atau sebagian rencana? Ceritakan layanan yang kamu perlukan, mulai dari satu kebutuhan sampai perjalanan lengkap.</span>
+          <div className={styles.heroCopy}>
+            <p>PRIVATE &amp; CUSTOM TRIP</p>
+            <h1>Thailand, Rusia, dan rute pilihanmu. Bebas rancang private trip.</h1>
+            <span>Tentukan tanggal, rute, durasi, jumlah peserta, dan kisaran budget. Kamu bisa mengajukan perjalanan di luar paket yang ditampilkan, dengan pilihan hotel, transportasi, guide, dan aktivitas sesuai kebutuhan.</span>
+            <span>Sudah punya tiket atau sebagian rencana? Ceritakan layanan yang kamu perlukan, mulai dari satu kebutuhan sampai perjalanan lengkap.</span>
+          </div>
+          <div className={styles.heroPhoto}>
+            <Image
+              src="/images/custom-trip/reindeer-snow.webp"
+              alt="Wisatawan bersama rusa kutub di hutan bersalju"
+              width={960}
+              height={1280}
+              sizes="(max-width: 460px) calc(100vw - 40px), (max-width: 900px) 420px, 360px"
+              quality={90}
+              priority
+            />
+          </div>
         </header>
         <CustomTripWizard whatsapp={whatsapp} initialDestination={initialDestination} />
         <section className={styles.aftercare} aria-labelledby="custom-process-title">
