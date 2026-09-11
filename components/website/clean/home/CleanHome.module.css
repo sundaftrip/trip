@@ -246,6 +246,11 @@
   background: var(--home-primary-strong);
 }
 
+.finderSubmitIcon,
+.finderMonthShort {
+  display: none;
+}
+
 .section {
   padding-block: clamp(60px, 6.5vw, 84px);
 }
@@ -1436,9 +1441,10 @@
   }
 
   .finderCard {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    border-radius: 28px !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 44px;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 999px !important;
   }
 
   .finderField {
@@ -1449,16 +1455,35 @@
     padding: 0 8px;
   }
 
+  .finderMonthFull,
+  .finderSubmitLabel {
+    display: none;
+  }
+
+  .finderMonthShort {
+    display: inline;
+  }
+
+  .finderSubmitIcon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+  }
+
   .finderField select {
     padding-right: 0;
     font-size: 16px;
     font-weight: 450;
+    text-overflow: ellipsis;
   }
 
   .finderCard > button {
-    min-width: 0;
-    min-height: 48px;
-    grid-column: 1 / -1;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
     font-weight: 550;
   }
 
@@ -1816,15 +1841,6 @@
 
   .heroCopy h1 {
     font-size: 38px;
-  }
-
-  .finderCard {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .finderField + .finderField {
-    border-left: 0;
-    border-top: 1px solid var(--home-line);
   }
 
   .tourRail,

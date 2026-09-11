@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent } from "react";
+import { Search } from "lucide-react";
 import { trackSundafEvent } from "@/lib/analytics-events";
 import styles from "./CleanHome.module.css";
 
@@ -49,7 +50,7 @@ export default function HomeSearchForm({
         <span>
           <small>TUJUAN</small>
           <select name="destination" defaultValue="all">
-            <option value="all">Semua destinasi</option>
+            <option value="all">Semua</option>
             {destinations.map((destination) => (
               <option key={destination.value} value={destination.value}>
                 {destination.label}
@@ -61,9 +62,9 @@ export default function HomeSearchForm({
 
       <label className={styles.finderField}>
         <span>
-          <small>WAKTU BERANGKAT</small>
+          <small><span className={styles.finderMonthFull}>WAKTU BERANGKAT</span><span className={styles.finderMonthShort}>BULAN</span></small>
           <select name="month" defaultValue="all">
-            <option value="all">Semua bulan</option>
+            <option value="all">Semua</option>
             {months.map((month) => (
               <option key={month.value} value={month.value}>
                 {month.label}
@@ -73,8 +74,9 @@ export default function HomeSearchForm({
         </span>
       </label>
 
-      <button type="submit">
-        Lihat perjalanan
+      <button type="submit" aria-label="Lihat perjalanan">
+        <span className={styles.finderSubmitLabel}>Lihat perjalanan</span>
+        <Search className={styles.finderSubmitIcon} aria-hidden="true" />
       </button>
     </form>
   );
