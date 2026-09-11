@@ -10,7 +10,7 @@ import styles from "@/components/website/clean/RussiaServices.module.css";
 
 export const revalidate = 300;
 const title = "Layanan Perjalanan Rusia — Tanya SUNDAF";
-const description = "Butuh katering halal, pembayaran pesawat domestik Rusia, Sapsan, hotel, bagasi, atau transfer bus dan luxury? Pilih kebutuhan perjalanan Anda bersama SUNDAF.";
+const description = "Katering halal, pembayaran tiket dan hotel, transportasi, tiket sirkus dan balet, guide berbahasa Indonesia, serta SIM card Rusia. Tanya SUNDAF.";
 
 export const metadata: Metadata = {
   title,
@@ -25,6 +25,9 @@ const services: { motion: RussiaServiceMotion; title: string; description: strin
   { motion: "hotel", title: "Pembayaran hotel", description: "Sudah punya pilihan hotel? Sampaikan hotel, tanggal menginap, dan kebutuhan kamar kepada tim.", message: "pembayaran hotel di Rusia" },
   { motion: "bus", title: "Transfer bus & luxury", description: "Rencanakan penjemputan dan transportasi untuk kebutuhan pribadi maupun rombongan.", message: "transfer bus atau kendaraan luxury di Rusia" },
   { motion: "luggage", title: "Tambahan bagasi", description: "Tiket sudah ada? Tanyakan bantuan pembayaran bagasi sesuai maskapai dan penerbangan Anda.", message: "pembayaran tambahan bagasi penerbangan Rusia" },
+  { motion: "show", title: "Tiket sirkus & balet", description: "Bantuan pembayaran tiket sirkus dan balet di Rusia. Sampaikan pertunjukan, tanggal, dan jumlah penonton yang Anda inginkan.", message: "pembayaran tiket sirkus atau balet di Rusia" },
+  { motion: "guide", title: "Guide lokal berbahasa Indonesia", description: "Guide lokal untuk menemani perjalanan Anda dalam bahasa Indonesia. Sampaikan kota, tanggal, dan kebutuhan pendampingan.", message: "layanan guide lokal berbahasa Indonesia di Rusia" },
+  { motion: "sim", title: "SIM card Rusia", description: "Butuh koneksi selama di Rusia? Tanyakan pilihan SIM card, paket data, dan proses aktivasi sesuai kebutuhan perjalanan Anda.", message: "SIM card dan paket data untuk perjalanan di Rusia" },
 ];
 
 export default async function RussiaServicesPage() {
