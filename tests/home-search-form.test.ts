@@ -30,8 +30,7 @@ test("keeps native search fields and an accessible compact submit button", () =>
   assert.equal(form.match(/<label className=\{styles\.finderField\}>/g)?.length, 2);
   assert.match(form, /<small>TUJUAN<\/small>\s*<select name="destination" defaultValue="all">/);
   assert.match(form, /WAKTU BERANGKAT[\s\S]*<select name="month" defaultValue="all">/);
-  assert.match(form, /<option value="all">Semua destinasi<\/option>/);
-  assert.match(form, /<option value="all">Semua bulan<\/option>/);
+  assert.equal(form.match(/<option value="all">Semua<\/option>/g)?.length, 2);
   assert.match(form, /value=\{destination\.value\}/);
   assert.match(form, /value=\{month\.value\}/);
   assert.match(form, /<button type="submit" aria-label="Lihat perjalanan">/);

@@ -50,7 +50,7 @@ export default function HomeSearchForm({
         <span>
           <small>TUJUAN</small>
           <select name="destination" defaultValue="all">
-            <option value="all">Semua destinasi</option>
+            <option value="all">Semua</option>
             {destinations.map((destination) => (
               <option key={destination.value} value={destination.value}>
                 {destination.label}
@@ -64,7 +64,7 @@ export default function HomeSearchForm({
         <span>
           <small><span className={styles.finderMonthFull}>WAKTU BERANGKAT</span><span className={styles.finderMonthShort}>BULAN</span></small>
           <select name="month" defaultValue="all">
-            <option value="all">Semua bulan</option>
+            <option value="all">Semua</option>
             {months.map((month) => (
               <option key={month.value} value={month.value}>
                 {month.label}
