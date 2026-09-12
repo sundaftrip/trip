@@ -1,9 +1,10 @@
 import { canonicalTourPath, isSubstantialArchivedTour, type TourIndexabilityInput } from "./seo-routes";
 import { isPublicTourVisible } from "./public-tours";
 import { visaSlug } from "./visa-slug";
+import { isRussiaGuideTour, RUSSIA_GUIDE_PATH, type RussiaTourCandidate } from "./russia-tour-summary";
 
 export type PublicContentChange = { paths: string[]; changedAt?: Date };
-type Tour = TourIndexabilityInput & { id: string; status?: string | null; updatedAt?: Date };
+type Tour = TourIndexabilityInput & RussiaTourCandidate & { id: string; updatedAt?: Date };
 type Blog = { slug: string; published: boolean; updatedAt?: Date };
 type Visa = { en: string; updatedAt?: Date };
 type Geo = { routePath: string; published: boolean; updatedAt?: Date };
@@ -15,11 +16,18 @@ const GEO_PUBLIC_PATHS = new Set([
   "/destinations/murmansk", "/destinations/teriberka",
 ]);
 
-export function tourContentChange(before: Tour | null, after: Tour | null): PublicContentChange {
-  const path = (tour: Tour | null) => tour && isPublicTourVisible(tour) && isSubstantialArchivedTour(tour)
+export function tourContentChange(before: Tour | null, after: Tour | null, now = new Date()): PublicContentChange {
+  const path = (tour: Tour | null) => tour && isPublicTourVisible(tour) && isSubstantialArchivedTour(tour, now)
     ? canonicalTourPath(tour) : null;
   const paths = [path(before), path(after)].filter((value): value is string => !!value);
-  return { paths: paths.length ? [...new Set(["/", "/tours", ...paths])] : [], changedAt: after?.updatedAt };
+  const guideChanged = [before, after].some((tour) => tour && isRussiaGuideTour(tour, now));
+  return {
+    paths: [...new Set([
+      ...(paths.length ? ["/", "/tours", ...paths] : []),
+      ...(guideChanged ? [RUSSIA_GUIDE_PATH] : []),
+    ])],
+    changedAt: after?.updatedAt,
+  };
 }
 
 export function blogContentChange(before: Blog | null, after: Blog | null): PublicContentChange {
