@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 export const revalidate = 300;
 
 import type { Metadata } from "next";
@@ -27,12 +28,12 @@ import {
 
 const SITE_URL = "https://sundaftrip.com";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Media Kit dan Profil Resmi Sundaf Trip",
   description:
     "Media kit Sundaf Trip berisi profil resmi, identitas legal, kontak, spesialisasi, dan halaman rujukan untuk direktori, partner, dan media.",
   alternates: { canonical: `${SITE_URL}/media-kit` },
-};
+});
 
 const getData = unstable_cache(
   async () => {

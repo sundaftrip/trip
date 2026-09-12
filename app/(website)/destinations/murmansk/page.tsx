@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "@/components/website/clean/PreserveScrollLink";
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = geoContent.metaTitle || "Wisata Murmansk & Aurora Borealis dari Indonesia, Sundaftrip";
   const description = geoContent.metaDescription || DEFAULT_META_DESCRIPTION;
 
-  return {
+  return withPageSocialMetadata({
     title,
     description,
     keywords: [
@@ -42,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Aurora borealis di Murmansk, Rusia bersama Sundaf Trip" }],
     },
     alternates: { canonical: "https://sundaftrip.com/destinations/murmansk" },
-  };
+  });
 }
 
 async function getData() {

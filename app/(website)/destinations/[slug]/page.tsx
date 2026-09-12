@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "@/components/website/clean/PreserveScrollLink";
@@ -116,7 +117,7 @@ export async function generateMetadata({
   const destination = DESTINATIONS[slug];
   if (!destination) notFound();
   const title = `${destination.name} · Destinasi Sundaf Trip`;
-  return {
+  return withPageSocialMetadata({
     title,
     description: destination.intro,
     alternates: { canonical: `https://sundaftrip.com/destinations/${slug}` },
@@ -129,7 +130,7 @@ export async function generateMetadata({
       type: "website",
       images: [{ url: destination.hero, alt: destination.imageAlt }],
     },
-  };
+  });
 }
 
 export default async function DestinationHubPage({

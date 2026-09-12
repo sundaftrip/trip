@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import {
@@ -29,7 +30,7 @@ import styles from "./VisaIntelligence.module.css";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Sundaf Visa Intelligence untuk Paspor Indonesia",
   description:
     "Snapshot status visa dalam database Sundaf Trip untuk paspor Indonesia, dengan rujukan tersimpan, batasan data, serta akses JSON dan RSS.",
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
     url: VISA_INTELLIGENCE_CANONICAL_URL,
     type: "website",
   },
-};
+});
 
 const dateFormatter = new Intl.DateTimeFormat("id-ID", {
   day: "numeric",

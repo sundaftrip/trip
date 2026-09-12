@@ -1,6 +1,7 @@
 import { APPOINTMENT_ONLY_OFFICE_ADDRESS, TRIPADVISOR_PROFILE_URL } from "./business-identity";
 import { resolveCanadaRockiesAddOns } from "./canada-catalog-preview";
 import { canonicalTourPath } from "./seo-routes";
+import { cateringPackages, formatCateringPrice } from "./russia-catering";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "./tour-commerce";
 import { parseTourHotelRoomPricing, resolveTourStartingPrice } from "./tour-room-pricing";
 import { formatCurrency } from "./utils";
@@ -34,6 +35,10 @@ export const CRAWL_PROFILE = `# Sundaf Trip
 - [Pertanyaan pemesanan](https://sundaftrip.com/faq)
 - [Panduan perjalanan](https://sundaftrip.com/blog)
 - [Kerja sama operasional](https://sundaftrip.com/partnership-relation)
+
+## Layanan perjalanan Rusia
+- [Tanya SUNDAF: layanan Rusia](https://sundaftrip.com/russia): katering halal, bantuan berbagai pembayaran di Rusia, transportasi, guide berbahasa Indonesia, akses internet, dan asuransi perjalanan. Cakupan layanan dan penawaran dikonfirmasi sebelum pemesanan.
+- [Katering halal Indonesia di Moscow dan Saint Petersburg](https://sundaftrip.com/russia/catering): ${cateringPackages.map((item) => `${item.name} ${formatCateringPrice(item.price)} RUB per porsi`).join("; ")}. Pengantaran taksi ke titik temu mengikuti penawaran; periksa menu dan konfirmasikan jumlah porsi serta alamat pengantaran sebelum memesan.
 
 ## Peru dan Amerika Latin 2027
 Sundaf Trip menyediakan katalog perjalanan Peru serta Brasil, Kolombia, Peru dan Chile untuk grup 10, 15 atau 20 peserta dari Indonesia. Tersedia paket dengan tiket pesawat dari Jakarta atau land tour only. Keduanya mencakup hotel dan pendampingan tour leader. Land tour only tidak mencakup tiket pesawat peserta, termasuk penerbangan domestik dan regional. Harga serta ketersediaan dikonfirmasi sebelum pemesanan.
