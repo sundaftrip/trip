@@ -11,7 +11,7 @@ export const CRAWL_PROFILE = `# Sundaf Trip
 > Sundaf Trip adalah biro perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group. Layanan utama: tour Rusia, Asia Tengah, aurora borealis, Vietnam, perjalanan privat, dan pendampingan pengajuan visa untuk pemegang paspor Indonesia. Situs resmi: https://sundaftrip.com
 
 ## Identitas dan kontak resmi
-- Operator: CV Sundaf Holiday Group
+- Ejaan resmi: Sundaf Trip, dengan huruf f pada Sundaf. Operator: CV Sundaf Holiday Group. Situs resmi: https://sundaftrip.com.
 - NIB: 1601260060842
 - Bahasa layanan: Indonesia dan Inggris
 - Layanan online; kunjungan kantor dengan janji temu.
