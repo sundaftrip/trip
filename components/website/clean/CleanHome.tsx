@@ -2,9 +2,7 @@ import Image from "next/image";
 import Link from "./PreserveScrollLink";
 import {
   ArrowRight,
-  Clock,
   Compass,
-  FileCheck,
   MessageCircle,
 } from "lucide-react";
 import {
@@ -18,6 +16,8 @@ import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
 import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import type { CleanTour } from "./CleanTourCard";
 import HomeFaqs from "./home/HomeFaqs";
+import HomeBenefitGrid from "./home/HomeBenefitGrid";
+import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
@@ -377,36 +377,36 @@ export default function CleanHome({
               <h2 id="benefits-title">Persiapan dan pendampingan perjalanan</h2>
             </div>
 
-            <div className={styles.benefitGrid}>
-              <article>
+            <HomeBenefitGrid>
+              <article data-motion="documents">
                 <div className={styles.benefitTitle}>
-                  <FileCheck aria-hidden="true" />
+                  <span className={styles.benefitIcon}><RussiaServiceIllustration kind="documents" /></span>
                   <h3>Visa &amp; dokumen dibantu</h3>
                 </div>
                 <p>Kami cek kebutuhan dokumen dan menjelaskan alurnya sebelum pengajuan dimulai.</p>
               </article>
-              <article>
+              <article data-motion="compass">
                 <div className={styles.benefitTitle}>
-                  <Clock aria-hidden="true" />
+                  <span className={styles.benefitIcon}><RussiaServiceIllustration kind="compass" /></span>
                   <h3>Rute dan jadwal jelas</h3>
                 </div>
                 <p>Lihat aktivitas, perpindahan kota, dan akomodasi sebelum memesan.</p>
               </article>
-              <article>
+              <article data-motion="luggage">
                 <div className={styles.benefitTitle}>
-                  <MessageCircle aria-hidden="true" />
+                  <span className={styles.benefitIcon}><RussiaServiceIllustration kind="luggage" /></span>
                   <h3>Persiapan dari awal</h3>
                 </div>
                 <p>Info keberangkatan, kebutuhan cuaca, dan detail pertemuan dibagikan sebelum hari H.</p>
               </article>
-              <article>
+              <article data-motion="guide">
                 <div className={styles.benefitTitle}>
-                  <Compass aria-hidden="true" />
+                  <span className={styles.benefitIcon}><RussiaServiceIllustration kind="guide" /></span>
                   <h3>Didampingi selama perjalanan</h3>
                 </div>
                 <p>Tour leader membantu koordinasi grup, supaya kamu bisa fokus pada pengalaman di perjalanan.</p>
               </article>
-            </div>
+            </HomeBenefitGrid>
           </div>
         </section>
 
