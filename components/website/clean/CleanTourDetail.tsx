@@ -425,9 +425,7 @@ export default function CleanTourDetail({
 
           {itinerary.length > 0 && (
             <section className={styles.detailContentSection} id="itinerary" aria-labelledby="itinerary-title">
-              <p className={styles.detailSectionKicker}>Rencana perjalanan</p>
               <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary {tour.title}</h2>
-              <p className={styles.detailSectionLede}>Pilih hari untuk melihat aktivitas, akomodasi, dan perpindahan.</p>
               <div className={styles.detailItinerary}>
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);
@@ -518,27 +516,6 @@ export default function CleanTourDetail({
             </section>
           )}
 
-          <section className={styles.detailContentSection} aria-labelledby="suitability-title">
-            <p className={styles.detailSectionKicker}>Sebelum mengambil keputusan</p>
-            <h2 className={styles.detailSectionTitle} id="suitability-title">Apakah perjalanan ini sesuai?</h2>
-            <div className={styles.detailSuitabilityGrid}>
-              <article>
-                <span>TANGGAL</span>
-                <h3>{isFlexibleDate ? "Diajukan sesuai kebutuhan grup" : departureLabel || "Dikonfirmasi tim"}</h3>
-                <p>{isFlexibleDate ? "Tanggal final mengikuti ketersediaan layanan dan akomodasi." : "Gunakan tanggal yang tertera sebagai dasar permintaan ketersediaan."}</p>
-              </article>
-              <article>
-                <span>RITME</span>
-                <h3>{itinerary.length ? `${itinerary.length} hari itinerary ditampilkan` : tour.duration || "Durasi dikonfirmasi"}</h3>
-                <p>Baca aktivitas harian dan sampaikan kebutuhan mobilitas atau ritme perjalanan saat konsultasi.</p>
-              </article>
-              <article>
-                <span>TRANSPARANSI HARGA</span>
-                <h3>{mandatoryAddOns.length ? `${mandatoryAddOns.length} biaya wajib ditampilkan` : "Tidak ada add-on wajib tercatat"}</h3>
-                <p>Periksa fasilitas yang termasuk, biaya di luar paket, subtotal, dan tambahan opsional sebelum melanjutkan ke pembayaran.</p>
-              </article>
-            </div>
-          </section>
 
           {tour.hotel && Object.keys(tour.hotel).length > 0 && (
             <section className={styles.detailContentSection} id="hotel" aria-labelledby="hotel-title">

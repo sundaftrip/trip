@@ -1872,28 +1872,8 @@
 .detailInfoGrid p { margin: 0 0 10px; color: var(--clean-muted); font-size: 13px; line-height: 1.6; }
 .detailInfoGrid p:last-child { margin-bottom: 0; }
 
-.detailSuitabilityGrid {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
 
-.detailSuitabilityGrid article {
-  padding: 24px;
-  border: 1px solid var(--clean-line);
-  border-radius: 14px;
-  background: #fff;
-}
 
-.detailSuitabilityGrid article > span {
-  color: var(--clean-teal-dark);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: .12em;
-}
-.detailSuitabilityGrid h3 { margin: 11px 0 9px; color: var(--clean-navy); font-size: 17px; line-height: 1.35; }
-.detailSuitabilityGrid p { margin: 0; color: var(--clean-muted); font-size: 13px; line-height: 1.6; }
 
 .detailPaymentIntro {
   margin-top: 24px;
@@ -2406,17 +2386,6 @@
   .detailHotelGrid,
   .detailInfoGrid,
   .detailReviewGrid { grid-template-columns: 1fr; }
-  .detailSuitabilityGrid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .detailSuitabilityGrid article {
-    padding: 16px 18px;
-    border-radius: 11px;
-  }
-  .detailSuitabilityGrid article > span { font-size: 8px; }
-  .detailSuitabilityGrid h3 { margin: 6px 0 5px; font-size: 15px; }
-  .detailSuitabilityGrid p { font-size: 12px; line-height: 1.45; }
   .detailHighlightRail {
     width: calc(100vw - 20px);
     margin-right: -20px;
