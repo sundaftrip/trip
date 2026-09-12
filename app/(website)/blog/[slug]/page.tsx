@@ -1,3 +1,4 @@
+import { getMetadataTitleAlias } from "@/lib/metadata-title-aliases";
 // ISR 5 menit: artikel blog jarang berubah, force-dynamic bikin TTFB lambat
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
 export const revalidate = 300;
@@ -193,16 +194,17 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await prisma.blog.findFirst({
     where: { slug, published: true },
-    select: { title: true, excerpt: true, cover: true, date: true },
+    select: { id: true, title: true, excerpt: true, cover: true, date: true },
   });
   if (!post) notFound();
+  const title = getMetadataTitleAlias(`blog:${post.id}`, post.title) ?? post.title;
 
   return {
-    title: post.title,
+    title,
     description: post.excerpt ?? undefined,
     alternates: { canonical: `${siteUrl}/blog/${slug}` },
     openGraph: {
-      title: post.title,
+      title,
       description: post.excerpt ?? undefined,
       url: `${siteUrl}/blog/${slug}`,
       type: "article",
@@ -213,7 +215,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
+      title,
       description: post.excerpt ?? undefined,
       ...(post.cover ? { images: [post.cover] } : {}),
     },

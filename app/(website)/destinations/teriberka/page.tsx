@@ -1,3 +1,4 @@
+import { getMetadataTitleAlias } from "@/lib/metadata-title-aliases";
 import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -30,7 +31,8 @@ const QUICK_FACT_ICONS = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const geoContent = await getGeoPageContent(ROUTE_PATH);
-  const title = geoContent.metaTitle || "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip";
+  const sourceTitle = geoContent.metaTitle || "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip";
+  const title = getMetadataTitleAlias(ROUTE_PATH, sourceTitle) ?? sourceTitle;
   const description = geoContent.metaDescription || DEFAULT_META_DESCRIPTION;
 
   return withPageSocialMetadata({

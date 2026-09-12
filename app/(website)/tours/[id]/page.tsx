@@ -1,3 +1,4 @@
+import { getMetadataTitleAlias } from "@/lib/metadata-title-aliases";
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import type React from "react";
@@ -386,7 +387,8 @@ export async function generateMetadata({
   }
 
   const companyName = companyRow?.value ?? "Sundaftrip";
-  const title = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
+  const displayTitle = normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title);
+  const title = getMetadataTitleAlias(`tour:${tour.id}`, tour.title) ?? displayTitle;
   const metadataMandatoryTotal = mandatoryAddOnsTotal(tour.addOns);
   const { roomPrices: metadataRoomPrices } = parseTourHotelRoomPricing(
     tour.hotel,
@@ -419,7 +421,7 @@ export async function generateMetadata({
       url: `${siteUrl}${canonicalPath}`,
       type: "website",
       siteName: companyName,
-      images: [{ url: productImage, width: 1200, height: 630, alt: title }],
+      images: [{ url: productImage, width: 1200, height: 630, alt: displayTitle }],
     },
     twitter: {
       card: "summary_large_image",
