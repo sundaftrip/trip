@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowDown, ArrowRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import Link from "@/components/website/clean/PreserveScrollLink";
@@ -127,15 +127,15 @@ export default function CompanyProfile({ content, reviews }: CompanyProfileProps
 
       <header className={styles.hero}>
         <div className={styles.heroInner}>
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb"><Link href="/">Beranda</Link><span aria-hidden="true">/</span><span aria-current="page">{content.title}</span></nav>
+          <nav className={styles.breadcrumb} aria-label="Breadcrumb"><Link href="/"><span className={styles.markerText}>Beranda</span></Link><span aria-hidden="true">/</span><span aria-current="page">{content.title}</span></nav>
           <div className={styles.heroLayout}>
             <div className={styles.heroCopy}>
               <p className={styles.eyebrow}>{content.eyebrow}</p>
               <h1>{content.title}</h1>
               <p className={styles.heroDescription}><LinkedText text={content.answer} /></p>
               <div className={styles.heroActions}>
-                <Link href={primaryCta.href} className={styles.primaryButton}>{primaryCta.label}<ArrowRight size={18} aria-hidden="true" /></Link>
-                {secondaryCta && <Link href={secondaryCta.href} className={styles.secondaryLink}>{secondaryCta.label}<ArrowRight size={17} aria-hidden="true" /></Link>}
+                <Link href={primaryCta.href} className={styles.primaryButton}>{primaryCta.label}</Link>
+                {secondaryCta && <Link href={secondaryCta.href} className={styles.secondaryLink}><span className={styles.markerText}>{secondaryCta.label}</span></Link>}
               </div>
             </div>
             {content.sections.length > 0 && (
@@ -144,7 +144,7 @@ export default function CompanyProfile({ content, reviews }: CompanyProfileProps
                 <ol>
                   {content.sections.map((section, index) => (
                     <li key={`${index}-${section.title}`}>
-                      <a href={`#${SECTION_IDS[index] || `bagian-${index + 1}`}`}><span className={styles.contentsNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span>{section.title}</span><ArrowDown size={15} aria-hidden="true" /></a>
+                      <a href={`#${SECTION_IDS[index] || `bagian-${index + 1}`}`}><span className={styles.contentsNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span>{section.title}</span></a>
                     </li>
                   ))}
                 </ol>
@@ -160,7 +160,7 @@ export default function CompanyProfile({ content, reviews }: CompanyProfileProps
         <section className={styles.reviews} aria-labelledby="participant-reviews-title">
           <div className={styles.reviewsHeader}>
             <h2 id="participant-reviews-title">Dari peserta perjalanan</h2>
-            <Link href="/reviews" className={styles.secondaryLink}>Baca semua ulasan<ArrowRight size={17} aria-hidden="true" /></Link>
+            <Link href="/reviews" className={styles.secondaryLink}><span className={styles.markerText}>Baca semua ulasan</span></Link>
           </div>
           <div className={styles.quotes}>
             {reviews.map((review) => (
@@ -191,8 +191,8 @@ export default function CompanyProfile({ content, reviews }: CompanyProfileProps
       <section className={styles.closing} aria-labelledby="next-step-title">
         <h2 id="next-step-title">Mulai dari rencana Anda.</h2>
         <div className={styles.closingActions}>
-          <Link href={primaryCta.href} className={styles.primaryButton}>{primaryCta.label}<ArrowRight size={18} aria-hidden="true" /></Link>
-          {secondaryCta && <Link href={secondaryCta.href} className={styles.secondaryLink}>{secondaryCta.label}<ArrowRight size={17} aria-hidden="true" /></Link>}
+          <Link href={primaryCta.href} className={styles.primaryButton}>{primaryCta.label}</Link>
+          {secondaryCta && <Link href={secondaryCta.href} className={styles.secondaryLink}><span className={styles.markerText}>{secondaryCta.label}</span></Link>}
         </div>
       </section>
     </div>
