@@ -1,6 +1,6 @@
 # Official identity asset
 
-`oss-indonesia.svg` is the unmodified OSS Indonesia logo served by the official OSS website, retrieved on 2026-09-12.
+`oss-indonesia.svg` is the OSS Indonesia logo with unchanged artwork (line endings normalized) served by the official OSS website, retrieved on 2026-09-12.
 
 - Source page: https://oss.go.id/id
 - Asset: https://s3.oss.go.id/oss/cms/OSS-LOGO-NEW-2024-ID-c39d5a64d376bdcb60bae5f61ce15848.svg
