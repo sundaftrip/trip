@@ -184,7 +184,7 @@ export default function TourBookingExperience({
             Lihat itinerary perjalanan
           </a>
         )}
-        <div className={styles.mobileBookingBar} role="region" aria-label="Itinerary perjalanan">
+        <div className={styles.mobileBookingBar} role="region" aria-label="Itinerary perjalanan" data-mobile-booking-bar>
           <div><span>{mode === "departed" ? "Sudah berangkat" : "Trip selesai"}</span><strong>Itinerary perjalanan</strong></div>
           <a href={completedTourHref}>Lihat itinerary</a>
         </div>
@@ -212,7 +212,7 @@ export default function TourBookingExperience({
           {triggerLabel}
         </button>
       )}
-      <div className={styles.mobileBookingBar} role="region" aria-label="Pemesanan cepat">
+      <div className={styles.mobileBookingBar} role="region" aria-label="Pemesanan cepat" data-mobile-booking-bar>
         <div>
           <span>{mode === "sold_out" ? "Kapasitas" : selectedPriceCaption}</span>
           <strong>{mode === "sold_out" ? availabilityLabel : selectedPriceLabel}</strong>
