@@ -9,7 +9,7 @@ import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { CleanTour } from "../CleanTourCard";
 import { appendCampaignToPath } from "@/lib/campaign-attribution";
-import { TOUR_COST_DETAILS_NOTE, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import styles from "./CleanHome.module.css";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
@@ -148,7 +148,6 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                         Tambahan wajib terhitung: {formatCurrency(mandatoryTotal)}
                       </small>
                     ) : null}
-                    <small className={styles.tourMandatoryNote}>{TOUR_COST_DETAILS_NOTE}</small>
                   </div>
                 </div>
               </Link>
