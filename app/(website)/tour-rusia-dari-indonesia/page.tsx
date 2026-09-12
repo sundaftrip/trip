@@ -18,10 +18,10 @@ const getTours = unstable_cache(
     select: {
       id: true, slug: true, title: true, country: true, cityHighlight: true,
       price: true, promoPrice: true, seatsLeft: true, tripDate: true,
-      duration: true, badge: true, status: true, addOns: true, hotel: true,
+      duration: true, badge: true, status: true, addOns: true, hotel: true, exclusions: true,
     },
   }),
-  ["russia-guide-tours-v1"],
+  ["russia-guide-tours-v2"],
   // Tour CMS mutations already invalidate this shared public catalog tag.
   { revalidate: 300, tags: ["home-data"] },
 );
