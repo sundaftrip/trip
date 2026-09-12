@@ -26,6 +26,7 @@ export type RussiaSummaryTour = RussiaTourCandidate & {
   promoPrice: number | null;
   addOns: unknown;
   hotel: unknown;
+  exclusions?: readonly string[] | null;
 };
 
 const RUSSIA_COUNTRY = /\b(rusia|russia|russian federation)\b/i;
@@ -67,13 +68,23 @@ function statusLabel(tour: RussiaTourCandidate, now: Date) {
 }
 
 export function formatRussiaTourSummary(tour: RussiaSummaryTour, now = new Date()) {
-  const mandatoryTotal = mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(tour.addOns, tour.slug));
+  const addOns = resolveCanadaRockiesAddOns(tour.addOns, tour.slug);
+  const mandatoryTotal = mandatoryAddOnsTotal(addOns);
+  const paidMandatoryAddOns = Array.isArray(addOns)
+    ? addOns.filter((item) => mandatoryAddOnsTotal([item]) > 0)
+    : [];
+  // Use the specific baggage label only for recognized baggage-only charges.
+  // Unknown or combined services keep the general mandatory-addition label.
+  const baggageOnly = paidMandatoryAddOns.length > 0 && paidMandatoryAddOns.every((item) => (
+    typeof item.name === "string" && /^bagasi(?: pesawat)? domestik(?: rusia)?$/i.test(item.name.trim())
+  ));
+  const mandatoryLabel = baggageOnly ? "bagasi wajib" : "tambahan wajib";
   const { roomPrices } = parseTourHotelRoomPricing(tour.hotel, mandatoryTotal);
   const startingPrice = resolveTourStartingPrice(
     Number(tour.promoPrice ?? tour.price), mandatoryTotal, roomPrices,
   );
   const price = startingPrice.headlinePrice > 0
-    ? `${mandatoryTotal > 0 ? "Total wajib" : "Harga paket"} mulai ${formatCurrency(startingPrice.mandatoryTotalPrice)}/orang${mandatoryTotal > 0 ? ` (termasuk ${formatCurrency(mandatoryTotal)} biaya wajib)` : ""}`
+    ? `${mandatoryTotal > 0 ? `Subtotal paket + ${mandatoryLabel}` : "Harga paket"} mulai ${formatCurrency(startingPrice.mandatoryTotalPrice)}/orang${mandatoryTotal > 0 ? ` (${mandatoryLabel} ${formatCurrency(mandatoryTotal)})` : ""}`
     : "Konfirmasi harga";
   const facts = [
     normalizeTourDisplayTitle(tour.title),
@@ -83,7 +94,16 @@ export function formatRussiaTourSummary(tour: RussiaSummaryTour, now = new Date(
     statusLabel(tour, now),
     price,
   ].filter(Boolean).join(" · ");
-  return `${facts}. Lihat detail: ${canonicalTourPath(tour)}`;
+  const exclusions = tour.exclusions?.map((item) => item.trim()).filter(Boolean) ?? [];
+  const excludedCosts = exclusions.length
+    ? `Belum termasuk dalam harga paket: ${exclusions.join("; ")}.`
+    : "Periksa rincian fasilitas dan biaya yang belum termasuk pada halaman paket.";
+  const subtotalClarification = startingPrice.headlinePrice > 0 && mandatoryTotal > 0
+    ? `${baggageOnly ? "Bagasi wajib" : "Tambahan wajib"} di atas sudah dihitung dalam subtotal.`
+    : "";
+  return [
+    `${facts}.`, excludedCosts, subtotalClarification, `Lihat detail: ${canonicalTourPath(tour)}`,
+  ].filter(Boolean).join(" ");
 }
 
 export function buildRussiaTourSummarySection(tours: readonly RussiaSummaryTour[] | null, now = new Date()) {

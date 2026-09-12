@@ -17,6 +17,13 @@ const tour: RussiaSummaryTour = {
   seatsLeft: 16, badge: null, price: 30_000_000, promoPrice: 27_000_000,
   addOns: [{ name: "Bagasi domestik", price: 2_500_000, tag: "wajib" }, { name: "Aktivitas", price: 1_500_000, tag: "opsional" }],
   hotel: null,
+  exclusions: [
+    "Visa Rusia (dapat dibantu melalui layanan visa Sundaf Trip)",
+    "Bagasi pesawat domestik Rusia",
+    "Tipping untuk tour leader, guide, dan pengemudi",
+    "Optional tour",
+    "Makan selain sarapan",
+  ],
 };
 
 test("Russia summaries require geographical evidence and respect an explicit country", () => {
@@ -64,8 +71,11 @@ test("selection takes the nearest three after filtering, with stable ties and no
 
 test("summary uses promo plus mandatory fees once, excluding optional costs", () => {
   const summary = formatRussiaTourSummary(tour, NOW).replaceAll("\u00a0", " ");
-  assert.match(summary, /Total wajib mulai Rp 29\.500\.000\/orang/);
-  assert.match(summary, /termasuk Rp 2\.500\.000 biaya wajib/);
+  assert.match(summary, /Subtotal paket \+ bagasi wajib mulai Rp 29\.500\.000\/orang/);
+  assert.match(summary, /\(bagasi wajib Rp 2\.500\.000\)/);
+  assert.ok(summary.includes(`Belum termasuk dalam harga paket: ${tour.exclusions!.join("; ")}.`));
+  assert.match(summary, /Bagasi wajib di atas sudah dihitung dalam subtotal/);
+  assert.doesNotMatch(summary, /Total wajib|all.in/i);
   assert.doesNotMatch(summary, /31\.000\.000|32\.000\.000/);
   assert.match(summary, /14 Januari 2027/);
   assert.match(summary, /10 Hari 7 Malam/);
@@ -79,8 +89,35 @@ test("room-tier authority follows the catalog, even when promo or another tier i
     ...tour, promoPrice: 10_000_000,
     hotel: { __room_price_quad: 40_000_000, __room_price_twin: 35_000_000 },
   }, NOW).replaceAll("\u00a0", " ");
-  assert.match(summary, /Total wajib mulai Rp 42\.500\.000\/orang/);
+  assert.match(summary, /Subtotal paket \+ bagasi wajib mulai Rp 42\.500\.000\/orang/);
   assert.doesNotMatch(summary, /12\.500\.000|37\.500\.000|45\.000\.000/);
+});
+
+test("mixed or unrecognized mandatory services use a general subtotal label", () => {
+  for (const name of ["Tipping", "Bagasi domestik + visa", "", undefined]) {
+    const summary = formatRussiaTourSummary({
+      ...tour,
+      addOns: [
+        { name: "Bagasi domestik Rusia", price: 2_500_000, tag: "wajib" },
+        { name, price: 300_000, tag: "wajib" },
+        { name: "Aktivitas", price: 1_500_000, tag: "opsional" },
+      ],
+    }, NOW).replaceAll("\u00a0", " ");
+    assert.match(summary, /Subtotal paket \+ tambahan wajib mulai Rp 29\.800\.000\/orang/);
+    assert.match(summary, /\(tambahan wajib Rp 2\.800\.000\)/);
+    assert.match(summary, /Tambahan wajib di atas sudah dihitung dalam subtotal/);
+    assert.doesNotMatch(summary, /Subtotal paket \+ bagasi wajib|31\.300\.000/);
+  }
+});
+
+test("missing exclusions direct readers to package details without inventing costs", () => {
+  for (const exclusions of [undefined, null, [], ["", "  "]]) {
+    const summary = formatRussiaTourSummary({ ...tour, exclusions, addOns: [] }, NOW)
+      .replaceAll("\u00a0", " ");
+    assert.match(summary, /Harga paket mulai Rp 27\.000\.000\/orang/);
+    assert.match(summary, /Periksa rincian fasilitas dan biaya yang belum termasuk pada halaman paket\./);
+    assert.doesNotMatch(summary, /Subtotal|sudah dihitung|Visa Rusia|Tipping|Makan selain sarapan/);
+  }
 });
 
 test("summary preserves uncertainty, canonical fallback, and Jakarta date formatting", () => {
