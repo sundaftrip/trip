@@ -5,7 +5,7 @@ import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { PublicTourState } from "@/lib/tour-order";
 import { getCommerceTourStatus } from "@/lib/tour-commerce";
-import { TOUR_COST_DETAILS_NOTE, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import styles from "./CleanSite.module.css";
 
 export type CleanTour = {
@@ -125,7 +125,6 @@ export default function CleanTourCard({
                 Tambahan wajib terhitung: {formatCurrency(mandatoryTotal)}
               </small>
             ) : null}
-            <small className={styles.priceNote}>{TOUR_COST_DETAILS_NOTE}</small>
           </div>
           <span className={styles.cardArrow} aria-hidden="true">→</span>
         </div>

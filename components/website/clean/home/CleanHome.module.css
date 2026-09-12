@@ -75,6 +75,41 @@
   transform: none;
 }
 
+.heroBoundary {
+  position: relative;
+}
+
+/* Keep the handwritten note outside the hero's clipped photo layer. */
+.heroNoteRail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 4;
+  height: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.heroNote {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  width: 190px;
+  margin: 0;
+  color: #f5b83d;
+  line-height: 0;
+  letter-spacing: -0.02em;
+  transform: translateY(-34%) rotate(-5deg);
+}
+
+.heroNote > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-weight: 700;
+}
+
 .hero {
   position: relative;
   height: clamp(560px, 72svh, 720px);
@@ -155,7 +190,7 @@
 .finderZone {
   position: absolute;
   inset-inline: 0;
-  bottom: 24px;
+  bottom: 40px;
   z-index: 3;
 }
 
@@ -1390,6 +1425,11 @@
     width: min(100% - 40px, 560px);
   }
 
+  .heroNote {
+    right: 64px;
+    width: 150px;
+  }
+
   .hero {
     height: auto;
     min-height: 580px;
@@ -1445,7 +1485,7 @@
     position: relative;
     inset: auto;
     margin-top: 40px;
-    padding-bottom: 24px;
+    padding-bottom: 40px;
   }
 
   .finderCard {

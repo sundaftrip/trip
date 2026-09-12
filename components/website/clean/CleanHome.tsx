@@ -21,6 +21,7 @@ import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
+import HeroChalkNote from "./home/HeroChalkNote";
 import styles from "./home/CleanHome.module.css";
 
 export type CleanHomeTestimonial = {
@@ -237,40 +238,45 @@ export default function CleanHome({
   return (
     <div className={styles.home}>
       <div id="main-content" tabIndex={-1}>
-        <section className={styles.hero} aria-labelledby="home-hero-title">
-          <Image
-            src={resolvedHeroImage}
-            alt={resolvedHeroAlt}
-            fill
-            priority
-            fetchPriority="high"
-            quality={90}
-            sizes="100vw"
-            className={styles.heroImage}
-          />
-          <div className={styles.heroOverlay} aria-hidden="true" />
-          <div className={`${styles.shell} ${styles.heroShell}`}>
-            <div className={styles.heroCopy}>
-              <p className={styles.eyebrowLight}>{heroEyebrow}</p>
-              <h1 id="home-hero-title">
-                <TextWithAuroraAccent
-                  text={heroTitle}
-                  phrase="Aurora."
-                  glow
+        <div className={styles.heroBoundary}>
+          <section className={styles.hero} aria-labelledby="home-hero-title">
+            <Image
+              src={resolvedHeroImage}
+              alt={resolvedHeroAlt}
+              fill
+              priority
+              fetchPriority="high"
+              quality={90}
+              sizes="100vw"
+              className={styles.heroImage}
+            />
+            <div className={styles.heroOverlay} aria-hidden="true" />
+            <div className={`${styles.shell} ${styles.heroShell}`}>
+              <div className={styles.heroCopy}>
+                <p className={styles.eyebrowLight}>{heroEyebrow}</p>
+                <h1 id="home-hero-title">
+                  <TextWithAuroraAccent
+                    text={heroTitle}
+                    phrase="Aurora."
+                    glow
+                  />
+                </h1>
+                <p>{heroBody}</p>
+              </div>
+            </div>
+            <div className={styles.finderZone}>
+              <div className={styles.shell}>
+                <HomeSearchForm
+                  destinations={destinationOptions}
+                  months={monthOptions}
                 />
-              </h1>
-              <p>{heroBody}</p>
+              </div>
             </div>
+          </section>
+          <div className={`${styles.shell} ${styles.heroNoteRail}`}>
+            <HeroChalkNote />
           </div>
-          <div className={styles.finderZone}>
-            <div className={styles.shell}>
-              <HomeSearchForm
-                destinations={destinationOptions}
-                months={monthOptions}
-              />
-            </div>
-          </div>
-        </section>
+        </div>
 
         <section className={`${styles.section} ${styles.tourSection}`} aria-labelledby="active-tours-title">
           <div className={styles.shell}>
@@ -278,7 +284,6 @@ export default function CleanHome({
               <div className={styles.sectionHeading}>
                 <p className={styles.eyebrow}>JADWAL TERDEKAT</p>
                 <h2 id="active-tours-title">Jadwal open trip</h2>
-                <p>Bandingkan tanggal, rute, dan biaya sebelum memilih perjalanan.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
                 Lihat semua jadwal <ArrowRight aria-hidden="true" />
