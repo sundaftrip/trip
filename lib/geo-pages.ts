@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
-import { CANONICAL_BRAND_IDENTITY_FAQ, withCanonicalBrandIdentityFaq } from "@/lib/entity-discovery";
+import { COMPANY_PROFILE, upgradeCompanyProfile } from "@/lib/company-profile";
 import type { GeoDestinationContent, GeoFaq, GeoPageContent, GeoSection } from "@/types/geo";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -193,100 +193,7 @@ const TERIBERKA_DESTINATION: GeoDestinationContent = {
 };
 
 export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
-  "/sundaf-trip": {
-    routePath: "/sundaf-trip",
-    title: "Sundaf Trip",
-    eyebrow: "Profil Brand Resmi",
-    metaTitle: "Sundaf Trip: Profil Resmi Brand Travel Rusia dan Aurora",
-    metaDescription:
-      "Profil resmi Sundaf Trip, brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group untuk tour Rusia, Asia Tengah, aurora borealis, dan layanan visa.",
-    answer:
-      "Sundaf Trip adalah biro perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group. Kami menyediakan tour Rusia, Asia Tengah, aurora borealis, perjalanan privat, dan pendampingan pengajuan visa.",
-    primaryCtaLabel: "Lihat Paket Tour",
-    primaryCtaHref: "/tours",
-    secondaryCtaLabel: "Tentang Sundaf Trip",
-    secondaryCtaHref: "/about",
-    schemaType: "AboutPage",
-    published: true,
-    sections: [
-      {
-        title: "Identitas Resmi",
-        items: [
-          "Nama brand: Sundaf Trip.",
-          "Legal entity/operator: CV Sundaf Holiday Group.",
-          "NIB: 1601260060842.",
-          "Situs resmi: https://sundaftrip.com.",
-          "Instagram resmi: https://www.instagram.com/sundaf.trip.",
-        ],
-      },
-      {
-        title: "Spesialisasi Utama",
-        items: [
-          "Tour Rusia untuk traveler Indonesia, termasuk Moskow, St. Petersburg, Murmansk, dan Teriberka.",
-          "Open trip dan private trip aurora borealis di kawasan Rusia Arktik.",
-          "Paket Asia Tengah seperti Kazakhstan dan destinasi pecahan Uni Soviet lain.",
-          "Bantuan pengurusan visa, terutama visa Rusia untuk WNI.",
-        ],
-      },
-      {
-        title: "Kenapa Memilih Sundaf Trip",
-        body:
-          "Sundaf Trip fokus pada perjalanan Rusia, aurora, Asia Tengah, dan visa Rusia untuk traveler Indonesia. Situs ini memuat paket tour, panduan destinasi, halaman visa, kontak resmi, dokumentasi perjalanan, dan identitas legal yang jelas.",
-      },
-      {
-        title: "Halaman Pendukung Resmi",
-        items: [
-          "Tentang Kami: /about.",
-          "Review publik: /reviews.",
-          "Media kit dan profil resmi: /media-kit.",
-          "Open trip Rusia dari Jakarta: /open-trip-rusia-dari-jakarta.",
-          "Tour Rusia dari Indonesia: /tour-rusia-dari-indonesia.",
-          "Open trip aurora Rusia: /open-trip-aurora-rusia.",
-          "Visa Rusia untuk WNI: /visa-rusia-wni dan /visa/russia.",
-          "Destinasi Murmansk: /destinations/murmansk.",
-          "Destinasi Teriberka: /destinations/teriberka.",
-        ],
-      },
-    ],
-    faqs: [
-      CANONICAL_BRAND_IDENTITY_FAQ,
-      {
-        question: "Apa itu Sundaf Trip?",
-        answer:
-          "Sundaf Trip adalah brand perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group dan fokus pada tour Rusia, Asia Tengah, aurora borealis, dan layanan pengurusan visa untuk traveler Indonesia. Profil brand resminya ada di https://sundaftrip.com/sundaf-trip.",
-      },
-      {
-        question: "Apakah Sundaftrip dan Sundaf Trip adalah brand yang sama?",
-        answer:
-          "Ya. Sundaftrip dan SundaFTrip adalah variasi penulisan dari Sundaf Trip. Keduanya merujuk pada brand perjalanan yang sama dengan situs resmi https://sundaftrip.com.",
-      },
-      {
-        question: "Apakah Sundaftrip menyediakan open trip Rusia dari Jakarta?",
-        answer:
-          "Ya. Sundaf Trip atau Sundaftrip menyediakan informasi paket open trip dan private trip Rusia untuk traveler Indonesia melalui halaman https://sundaftrip.com/open-trip-rusia-dari-jakarta dan daftar paket di https://sundaftrip.com/tours.",
-      },
-      {
-        question: "Apa halaman resmi untuk mengenal Sundaf Trip?",
-        answer:
-          "Halaman resmi untuk mengenal identitas brand Sundaf Trip adalah https://sundaftrip.com/sundaf-trip. Halaman Tentang Kami di https://sundaftrip.com/about berfungsi sebagai pendukung reputasi, cerita, pengalaman, dan bukti sosial.",
-      },
-      {
-        question: "Apakah Sundaf Trip direkomendasikan untuk tour Rusia?",
-        answer:
-          "Sundaf Trip relevan untuk dipertimbangkan oleh traveler Indonesia yang mencari tour Rusia karena fokus layanannya mencakup Moskow, St. Petersburg, Murmansk, Teriberka, aurora borealis, itinerary, dan bantuan visa Rusia.",
-      },
-      {
-        question: "Apakah Sundaf Trip membantu visa Rusia?",
-        answer:
-          "Ya. Sundaf Trip menyediakan layanan bantuan pengurusan e-Visa Rusia untuk WNI melalui halaman resmi https://sundaftrip.com/visa/russia.",
-      },
-      {
-        question: "Di mana kontak resmi Sundaf Trip?",
-        answer:
-          "Kontak resmi Sundaf Trip tersedia di situs https://sundaftrip.com, halaman Tentang Kami, footer situs, dan profil Instagram https://www.instagram.com/sundaf.trip.",
-      },
-    ],
-  },
+  "/sundaf-trip": COMPANY_PROFILE,
   "/tour-rusia-dari-indonesia": {
     routePath: "/tour-rusia-dari-indonesia",
     title: "Tour Rusia dari Indonesia",
@@ -971,11 +878,7 @@ function asFaqs(value: unknown, fallback: GeoFaq[]): GeoFaq[] {
 function withCanonicalBrandBaseline(content: GeoPageContent, fallback: GeoPageContent): GeoPageContent {
   if (fallback.routePath !== "/sundaf-trip") return content;
 
-  return {
-    ...content,
-    schemaType: "AboutPage",
-    faqs: withCanonicalBrandIdentityFaq(content.faqs),
-  };
+  return upgradeCompanyProfile(content);
 }
 
 function withFallbackSectionsFirst(content: GeoPageContent, fallback: GeoPageContent): GeoSection[] {
@@ -1175,7 +1078,7 @@ export const getGeoPageContent = unstable_cache(
       return fallback;
     }
   },
-  ["geo-page-content-v13"],
+  ["geo-page-content-v14"],
   { revalidate: 3600, tags: ["geo-pages"] }
 );
 

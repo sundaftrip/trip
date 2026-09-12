@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import GeoPageForm from "@/components/admin/GeoPageForm";
+import { upgradeCompanyProfile } from "@/lib/company-profile";
 import { GEO_FALLBACKS } from "@/lib/geo-pages";
 import { prisma } from "@/lib/prisma";
 
@@ -26,7 +27,7 @@ export default async function EditGeoPage({ params }: { params: Promise<{ id: st
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit GEO</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">{page.routePath}</p>
       </div>
-      <GeoPageForm page={formPage} />
+      <GeoPageForm page={upgradeCompanyProfile(formPage)} />
     </div>
   );
 }
