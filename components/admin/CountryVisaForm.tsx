@@ -91,6 +91,19 @@ function emptyVariant(): VisaVariantEntry {
   return { name: "", priceIDR: null, processingTime: "", notes: "" };
 }
 
+function serializeVariants(variants: VisaVariantEntry[]) {
+  return variants.map((v, i) => ({
+    sortOrder: i,
+    name: v.name.trim(),
+    priceIDR:
+      typeof v.priceIDR === "number" && Number.isFinite(v.priceIDR) && v.priceIDR >= 0
+        ? v.priceIDR
+        : null,
+    processingTime: v.processingTime.trim(),
+    notes: v.notes.trim(),
+  }));
+}
+
 export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry }) {
   const router = useRouter();
   const isEdit = Boolean(entry?.id);
@@ -108,6 +121,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
   }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [initialVariants] = useState(() => JSON.stringify(serializeVariants(entry?.variants ?? [])));
 
   function set<K extends keyof CountryVisaEntry>(key: K, value: CountryVisaEntry[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -147,6 +161,10 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
     setError(null);
     setLoading(true);
 
+    const variantPayload = serializeVariants(form.variants ?? []);
+    // The API replaces variants when this field is present. Omit unchanged
+    // values so editorial saves preserve their IDs and concurrent price edits.
+    const variantsChanged = JSON.stringify(variantPayload) !== initialVariants;
     const payload = {
       sortOrder: Number(form.sortOrder) || 0,
       flag: form.flag.trim(),
@@ -162,16 +180,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       conditions: (form.conditions ?? []).map((c) => c.trim()).filter(Boolean),
       sourceUrl: form.sourceUrl.trim(),
       lastVerifiedAt: form.lastVerifiedAt,
-      variants: (form.variants ?? []).map((v, i) => ({
-        sortOrder: i,
-        name: v.name.trim(),
-        priceIDR:
-          typeof v.priceIDR === "number" && Number.isFinite(v.priceIDR) && v.priceIDR >= 0
-            ? v.priceIDR
-            : null,
-        processingTime: v.processingTime.trim(),
-        notes: v.notes.trim(),
-      })),
+      ...(!isEdit || variantsChanged ? { variants: variantPayload } : {}),
       eligibility: (form.eligibility ?? []).map((e) => e.trim()).filter(Boolean),
       documents: (form.documents ?? [])
         .map((d) => ({ name: d.name.trim(), hint: d.hint.trim() }))

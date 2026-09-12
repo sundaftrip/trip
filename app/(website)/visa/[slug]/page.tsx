@@ -178,7 +178,8 @@ export default async function VisaDetailPage({ params }: PageProps) {
 
   const isRussia = slug === "russia" || country.en.toLowerCase() === "russia";
   if (isRussia) {
-    countryFaqs = russiaVisaFaqs(costMain, processTime, country.stay);
+    const serviceEstimate = country.variants.find((variant) => /e[\s-]?visa/i.test(variant.name))?.processingTime?.trim() || null;
+    countryFaqs = russiaVisaFaqs(costMain, serviceEstimate, country.stay);
   }
 
   // FAQPage JSON-LD dari FAQ per-negara yang sama dengan yang dirender
@@ -418,18 +419,27 @@ export default async function VisaDetailPage({ params }: PageProps) {
             aria-labelledby="documents-title"
           >
             <h2 id="documents-title" className="text-xl font-bold mb-1.5 text-gray-900 dark:text-white">
-              Dokumen Wajib
+              {isRussia ? "Dokumen dan persiapan e-Visa" : "Dokumen Wajib"}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-2xl leading-relaxed">
-              Kamu cukup siapkan dokumen pribadi. Yang bertanda
-              {" "}<span
-                className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
-                style={{
-                  background: "color-mix(in srgb, var(--site-accent,#075d63) 10%, #fff)",
-                  color: "color-mix(in srgb, var(--site-accent,#075d63) 62%, #000)",
-                }}
-              ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
-             , seperti formulir, itinerary, dan booking akomodasi, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
+              {isRussia ? (
+                <>
+                  Siapkan dokumen sesuai persyaratan e-Visa Rusia. Surat undangan dan konfirmasi hotel bukan lampiran wajib pengajuan e-Visa; persiapan perjalanan dan dokumen masuk dapat berbeda.{" "}
+                  <a href="https://evisa.kdmid.ru/Home/Instruction" className="underline underline-offset-2">Baca petunjuk resmi e-Visa Rusia.</a>
+                </>
+              ) : (
+                <>
+                  Kamu cukup siapkan dokumen pribadi. Yang bertanda
+                  {" "}<span
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full align-middle"
+                    style={{
+                      background: "color-mix(in srgb, var(--site-accent,#075d63) 10%, #fff)",
+                      color: "color-mix(in srgb, var(--site-accent,#075d63) 62%, #000)",
+                    }}
+                  ><CheckCircle2 size={11} /> Kami bantu</span>{" "}
+                  , seperti formulir, itinerary, dan booking akomodasi, Sundaf yang siapkan & susun. Kamu tidak mengerjakannya sendiri.
+                </>
+              )}
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
               {documents.map((doc, i) => {
@@ -794,7 +804,7 @@ function formatVerified(value: Date | string | null): string | null {
   }).format(date);
 }
 
-function russiaVisaFaqs(costLabel: string, processTime: string | null, stay: string): VisaFaq[] {
+function russiaVisaFaqs(costLabel: string, serviceEstimate: string | null, stay: string): VisaFaq[] {
   return [
     {
       question: "Apakah WNI perlu visa untuk ke Rusia?",
@@ -812,7 +822,7 @@ function russiaVisaFaqs(costLabel: string, processTime: string | null, stay: str
     },
     {
       question: "Berapa lama proses e-Visa Rusia?",
-      answer: `Estimasi proses e-Visa Rusia yang ditampilkan di situs Sundaf Trip adalah ${processTime ?? "mengikuti estimasi sistem pengajuan"}. Untuk perjalanan yang sudah dekat, sebaiknya konsultasi lebih awal agar ada waktu koreksi dokumen.`,
+      answer: `Menurut petunjuk Kementerian Luar Negeri Rusia, permohonan unified e-Visa diproses paling lama 4 hari kalender sejak permohonan lengkap dikirim untuk diproses. Jika dikembalikan untuk koreksi, waktu dihitung ulang sejak permohonan yang diperbaiki dikirim kembali.${serviceEstimate ? ` Estimasi layanan Sundaf Trip yang tercatat adalah ${serviceEstimate}; ini merupakan estimasi layanan, bukan batas waktu resmi otoritas atau jaminan visa terbit.` : " Konfirmasikan estimasi layanan Sundaf Trip sebelum pengajuan."} Rujukan: https://evisa.kdmid.ru/Home/Instruction (butir 13–14).`,
     },
     {
       question: "Berapa lama masa tinggal dengan e-Visa Rusia?",
