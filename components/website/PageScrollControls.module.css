@@ -1,0 +1,77 @@
+.controls {
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  bottom: calc(20px + max(var(--booking-bar-height, 0px), env(safe-area-inset-bottom)));
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.controls[hidden] {
+  display: none;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 44px;
+  min-width: 88px;
+  padding: 8px 13px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid #e5e9e9;
+  border-radius: 999px;
+  background: #fff;
+  color: #132b3a;
+  box-shadow: 0 4px 18px rgb(19 43 58 / 9%);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.button:disabled {
+  color: #96a3a7;
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 2px solid #075d63;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background: #eff7f6;
+    color: #075d63;
+  }
+}
+
+@media (min-width: 1024px) {
+  .controls {
+    left: 32px;
+    bottom: 32px;
+  }
+}
+
+/* Keep page controls out of modal focus and touch interactions. The menu's
+   closed dialog stays mounted inside an aria-hidden container. */
+:global(body:has([aria-modal="true"]:not([aria-hidden="true"], [aria-hidden="true"] *, [hidden], [hidden] *))) .controls {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}
+
+@media print {
+  .controls {
+    display: none;
+  }
+}

@@ -178,6 +178,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
       document.querySelector<HTMLElement>("main"),
       document.querySelector<HTMLElement>("[data-clean-footer]"),
       document.querySelector<HTMLElement>("[data-sticky-whatsapp]"),
+      document.querySelector<HTMLElement>("[data-page-scroll-controls]"),
     ].filter((target): target is HTMLElement => Boolean(target));
     const backgroundState = backgroundTargets.map((target) => ({
       target,

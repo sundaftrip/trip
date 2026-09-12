@@ -6,6 +6,7 @@ import OrganizationSchema from "@/components/website/OrganizationSchema";
 import AutoTranslate from "@/components/website/AutoTranslate";
 import ReferralCapture from "@/components/website/ReferralCapture";
 import RouteScrollReset from "@/components/website/RouteScrollReset";
+import PageScrollControls from "@/components/website/PageScrollControls";
 import CleanNavbar from "@/components/website/clean/CleanNavbar";
 import CleanFooter from "@/components/website/clean/CleanFooter";
 import CleanThemeBoundary from "@/components/website/clean/CleanThemeBoundary";
@@ -126,6 +127,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
           </div>
         </div>
         <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
+        <PageScrollControls />
         <AutoTranslate />
         <ReferralCapture />
       </>
@@ -146,6 +148,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         <main id="website-main" className="flex-1" data-theme="atlas" tabIndex={-1}>{children}</main>
         <CleanFooter logo={logo} company={company} />
         <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
+        <PageScrollControls />
         <AutoTranslate />
         <ReferralCapture />
       </CleanThemeBoundary>
@@ -164,6 +167,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
       <main className={`flex-1 ${isTeri ? "teri-bg" : ""}`} data-theme={theme}>{children}</main>
       <Footer theme={theme} />
       <StickyWhatsApp phone={whatsapp} />
+      <PageScrollControls />
       <AutoTranslate />
       <ReferralCapture />
     </>
