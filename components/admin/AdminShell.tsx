@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,10 +8,10 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Info, ExternalLink, Wallet, Database, Inbox, Globe2,
+  Users, Settings, FileText, Moon, Sun, LogOut, Menu, X, Shield, Activity, MessageSquareQuote, Info, ExternalLink, Wallet, Database, Inbox, Globe2,
   Handshake,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import styles from "./AdminWorkspace.module.css";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -24,6 +24,7 @@ const navItems = [
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/geo", label: "GEO", icon: Globe2 },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
+  { href: "/admin/content", label: "Konten publik", icon: FileText },
   { href: "/admin/texts", label: "Teks Website", icon: Type },
   { href: "/admin/receipts", label: "Receipt", icon: Receipt },
   { href: "/admin/keuangan", label: "Keuangan", icon: Wallet },
@@ -48,37 +49,29 @@ interface Props {
 
 function NavLinks({ pathname, role, onClose }: { pathname: string; role: string; onClose?: () => void }) {
   return (
-    <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-      <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</p>
+    <nav className={styles.navigation} aria-label="Navigasi CMS">
+      <p className={styles.navHeading}>Menu</p>
       {navItems.map((item) => {
         const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
         return (
           <Link key={item.href} href={item.href} onClick={onClose}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-              active
-                ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-            )}>
-            <item.icon size={18} />
+            aria-current={active ? "page" : undefined}
+            className={styles.navLink}>
+            <item.icon size={18} aria-hidden="true" />
             {item.label}
           </Link>
         );
       })}
       {role === "SUPERADMIN" && (
         <>
-          <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-4 mb-2">Admin</p>
+          <p className={styles.navHeading}>Admin</p>
           {adminItems.map((item) => {
             const active = pathname.startsWith(item.href);
             return (
               <Link key={item.href} href={item.href} onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  active
-                    ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                )}>
-                <item.icon size={18} />
+                aria-current={active ? "page" : undefined}
+                className={styles.navLink}>
+                <item.icon size={18} aria-hidden="true" />
                 {item.label}
               </Link>
             );
@@ -94,6 +87,10 @@ export default function AdminShell({ role, user, logo, children }: Props) {
   const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  const mainPaneRef = useRef<HTMLDivElement>(null);
   const currentItem = [...navItems, ...adminItems]
     .filter((item) => pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href)))
     .sort((a, b) => b.href.length - a.href.length)[0];
@@ -102,89 +99,128 @@ export default function AdminShell({ role, user, logo, children }: Props) {
     return () => window.clearTimeout(id);
   }, []);
 
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const drawer = drawerRef.current;
+    const mainPane = mainPaneRef.current;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : menuButtonRef.current;
+    const previousInert = mainPane?.inert ?? false;
+    const previousOverflow = document.body.style.overflow;
+    if (mainPane) mainPane.inert = true;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus({ preventScroll: true });
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSidebarOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !drawer) return;
+      const items = Array.from(drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"]'))
+        .filter((item) => item.getClientRects().length > 0);
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (!first || !last) { event.preventDefault(); return; }
+      if (!drawer.contains(document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus({ preventScroll: true });
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus({ preventScroll: true });
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus({ preventScroll: true });
+      }
+    }
+
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeAtDesktop = () => { if (desktop.matches) setSidebarOpen(false); };
+    desktop.addEventListener("change", closeAtDesktop);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      desktop.removeEventListener("change", closeAtDesktop);
+      document.removeEventListener("keydown", handleKeyDown);
+      if (mainPane) mainPane.inert = previousInert;
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected && previousFocus.getClientRects().length) previousFocus.focus({ preventScroll: true });
+    };
+  }, [sidebarOpen]);
+
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+    <div className={styles.workspace}>
 
       {/* Sidebar — desktop */}
-      <aside className="hidden lg:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-col shrink-0">
-        <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
+      <aside className={styles.sidebar}>
+        <div className={styles.brand}>
           <Image src={logo || "/logo.png"} alt="Logo" width={120} height={36} className="h-8 w-auto object-contain dark:brightness-0 dark:invert" />
         </div>
         <NavLinks pathname={pathname} role={role} />
-        <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-center text-gray-400">Travel CMS</p>
-        </div>
+        <p className={styles.sidebarFooter}>Sundaf Trip CMS</p>
       </aside>
 
       {/* Sidebar overlay — mobile */}
       {sidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 flex">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="relative z-50 w-72 bg-white dark:bg-gray-800 flex flex-col h-full shadow-xl">
-            <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
+        <div className={styles.mobileLayer}>
+          <div className={styles.mobileBackdrop} aria-hidden="true" onClick={() => setSidebarOpen(false)} />
+          <aside ref={drawerRef} id="admin-mobile-navigation" className={styles.mobileDrawer} role="dialog" aria-modal="true" aria-label="Menu CMS">
+            <div className={styles.brand}>
               <Image src={logo || "/logo.png"} alt="Logo" width={100} height={30} className="h-7 w-auto object-contain dark:brightness-0 dark:invert" />
-              <button onClick={() => setSidebarOpen(false)} className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <X size={18} />
+              <button ref={closeButtonRef} type="button" aria-label="Tutup menu CMS" onClick={() => setSidebarOpen(false)} className={styles.headerButton}>
+                <X size={18} aria-hidden="true" />
               </button>
             </div>
             <NavLinks pathname={pathname} role={role} onClose={() => setSidebarOpen(false)} />
-            <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs text-center text-gray-400">Travel CMS</p>
-            </div>
+            <p className={styles.sidebarFooter}>Sundaf Trip CMS</p>
           </aside>
         </div>
       )}
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div ref={mainPaneRef} className={styles.mainPane}>
         {/* Header */}
-        <header className="h-14 sm:h-16 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between px-3 sm:px-6 shrink-0">
-          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <header className={styles.header}>
+          <div className={styles.headerTitle}>
             {/* Hamburger — mobile only */}
-            <button onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-              <Menu size={20} />
+            <button ref={menuButtonRef} type="button" aria-label="Buka menu CMS" aria-expanded={sidebarOpen} aria-controls="admin-mobile-navigation" onClick={() => setSidebarOpen(true)}
+              className={`${styles.headerButton} ${styles.menuButton}`}>
+              <Menu size={20} aria-hidden="true" />
             </button>
             <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold text-gray-900 dark:text-white sm:text-base">
+              <h2>
                 {currentItem?.label ?? "Admin CMS"}
               </h2>
-              <p className="hidden text-xs text-gray-500 dark:text-gray-400 sm:block">Admin CMS</p>
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-4">
+          <div className={styles.headerActions}>
             <a href="/" target="_blank" rel="noopener noreferrer"
               title="Buka website di tab baru"
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition">
-              <ExternalLink size={16} />
-              <span className="hidden sm:inline">Buka Website</span>
+              aria-label="Buka website di tab baru"
+              className={styles.headerButton}>
+              <ExternalLink size={16} aria-hidden="true" />
+              <span>Buka website</span>
             </a>
 
-            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+            <button type="button" aria-label={mounted && theme === "dark" ? "Gunakan tampilan terang" : "Gunakan tampilan gelap"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className={styles.headerButton}>
               {mounted ? (theme === "dark" ? <Sun size={18} /> : <Moon size={18} />) : <Moon size={18} />}
             </button>
 
-            <div className="flex items-center gap-2 text-sm">
-              <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center shrink-0">
-                <User size={16} className="text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="hidden sm:block">
-                <p className="font-medium text-gray-900 dark:text-white leading-none text-xs">{user.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{user.role}</p>
-              </div>
+            <div className={styles.account}>
+              <p>{user.name}</p>
+              <p>{user.role}</p>
             </div>
 
-            <button onClick={() => signOut({ callbackUrl: "/admin/login" })}
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition">
-              <LogOut size={16} />
-              <span className="hidden sm:inline">Keluar</span>
+            <button type="button" aria-label="Keluar dari CMS" onClick={() => signOut({ callbackUrl: "/admin/login" })}
+              className={styles.headerButton}>
+              <LogOut size={16} aria-hidden="true" />
+              <span>Keluar</span>
             </button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-3 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:p-6">{children}</main>
+        <main className={styles.content}>{children}</main>
       </div>
     </div>
   );

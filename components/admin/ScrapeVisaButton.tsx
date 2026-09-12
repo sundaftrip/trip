@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Loader2, ArrowRight, CheckCircle2, AlertCircle, X } from "lucide-react";
+import { RefreshCw, Loader2, ArrowRight, CheckCircle2, AlertCircle, X } from "lucide-react";
 import { FlagIcon } from "@/lib/flag-icon";
+import styles from "./AdminWorkspace.module.css";
 
 interface DiffChange {
   field: "visa" | "stay";
@@ -111,7 +112,7 @@ export default function ScrapeVisaButton() {
         type="button"
         onClick={runScrape}
         disabled={loading}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition shadow-sm"
+        className={styles.secondaryButton}
       >
         {loading ? (
           <>
@@ -120,20 +121,17 @@ export default function ScrapeVisaButton() {
           </>
         ) : (
           <>
-            <Sparkles size={16} />
+            <RefreshCw size={16} aria-hidden="true" />
             Scraping Visa
           </>
         )}
       </button>
 
       {(result || error) && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-8 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="w-full max-w-3xl bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-8 bg-black/60 overflow-y-auto">
+          <div className="w-full max-w-3xl bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700">
             <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0">
-                  <Sparkles size={18} className="text-white" />
-                </div>
                 <div>
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                     Hasil Scraping Visa
@@ -144,6 +142,8 @@ export default function ScrapeVisaButton() {
                 </div>
               </div>
               <button
+                type="button"
+                aria-label="Tutup hasil scraping visa"
                 onClick={dismiss}
                 className="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
               >
@@ -243,7 +243,7 @@ export default function ScrapeVisaButton() {
                                       type="button"
                                       onClick={() => applyDiff(d, ch)}
                                       disabled={isApplying}
-                                      className="ml-auto px-3 py-1.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white text-xs font-semibold rounded-lg transition"
+                                      className={`${styles.primaryButton} ml-auto`}
                                     >
                                       {isApplying ? "Menerapkan..." : "Terapkan"}
                                     </button>

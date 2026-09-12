@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { Inbox } from "lucide-react";
 import InquiryRow from "./InquiryRow";
+import styles from "@/components/admin/AdminWorkspace.module.css";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW: "Baru",
@@ -17,13 +18,10 @@ export default async function InquiriesPage() {
   const newCount = items.filter((i) => i.status === "NEW").length;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shrink-0 shadow-sm">
-          <Inbox size={20} className="text-white" />
-        </div>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
         <div>
-          <h1 className="text-xl font-black text-gray-900 dark:text-white">Lead Masuk</h1>
+          <h1 className="text-gray-900 dark:text-white">Lead Masuk</h1>
           <p className="text-sm text-gray-500">
             {items.length} total · {newCount} belum dihubungi
           </p>
@@ -36,8 +34,9 @@ export default async function InquiriesPage() {
           <p className="text-sm">Belum ada lead masuk dari formulir konsultasi.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
-          <table className="w-full text-sm">
+        <div className={styles.tablePanel}>
+          <div className="overflow-x-auto">
+          <table aria-label="Lead masuk" className="w-full min-w-[840px] text-sm">
             <thead className="bg-gray-50 dark:bg-gray-900 text-left text-xs uppercase tracking-wider text-gray-500">
               <tr>
                 <th className="px-4 py-3 font-semibold">Kontak</th>
@@ -69,6 +68,7 @@ export default async function InquiriesPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

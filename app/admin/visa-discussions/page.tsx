@@ -8,6 +8,7 @@ import { checkPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { visaDiscussionTableAvailable } from "@/lib/visa-discussions";
 import VisaDiscussionRow from "./VisaDiscussionRow";
+import styles from "@/components/admin/AdminWorkspace.module.css";
 
 const STATUS_LABEL: Record<string, string> = {
   PENDING: "Menunggu",
@@ -82,13 +83,10 @@ export default async function AdminVisaDiscussionsPage({
   ]);
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-sm">
-          <MessageSquareText size={20} className="text-white" />
-        </div>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
         <div>
-          <h1 className="text-xl font-black text-gray-900 dark:text-white">Diskusi Visa</h1>
+          <h1 className="text-gray-900 dark:text-white">Diskusi Visa</h1>
           <p className="text-sm text-gray-500">
             {items.length} kiriman · {pendingCount} menunggu tinjauan
           </p>

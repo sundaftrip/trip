@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Children, cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
+import styles from "./AdminWorkspace.module.css";
 
 type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
@@ -576,7 +577,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
+    <form onSubmit={handleSubmit} className={styles.form}>
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
           ⛔ {error}
@@ -607,7 +608,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         </div>
       )}
       {/* Basic Info */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Informasi Dasar</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Judul Tour *">
@@ -657,7 +658,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Pricing */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Harga</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Field label="Harga Normal *">
@@ -673,7 +674,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Payment Plan */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="font-semibold text-gray-900 dark:text-white">Skema Pembayaran</h2>
@@ -824,13 +825,13 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Hero Image */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Gambar Hero</h2>
         <ImageUpload value={form.heroImg ?? ""} onChange={(url) => set("heroImg", url)} folder="tours/hero" />
       </div>
 
       {/* Gallery */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Galeri</h2>
         <ImageUpload
           value=""
@@ -843,7 +844,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
             <div key={i} className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="w-20 h-20 object-cover rounded-lg" />
-              <button type="button" onClick={() => set("gallery", form.gallery!.filter((_, j) => j !== i))}
+              <button type="button" aria-label={`Hapus gambar galeri ${i + 1}`} onClick={() => set("gallery", form.gallery!.filter((_, j) => j !== i))}
                 className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">×</button>
             </div>
           ))}
@@ -851,7 +852,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Inclusions & Exclusions */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Termasuk & Tidak Termasuk</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -860,7 +861,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
               <input className="input flex-1" value={inclusionInput} onChange={(e) => setInclusionInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitInclusion(); }}}
                 placeholder={editingInclusionIdx !== null ? "Edit lalu Enter / Simpan" : "Tekan Enter untuk tambah"} />
-              <button type="button" onClick={commitInclusion}
+              <button type="button" aria-label={editingInclusionIdx !== null ? "Simpan item termasuk" : "Tambah item termasuk"} onClick={commitInclusion}
                 className={`px-3 py-2 text-white rounded-lg text-sm whitespace-nowrap ${editingInclusionIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"}`}>
                 {editingInclusionIdx !== null ? "Simpan" : "+"}</button>
               {editingInclusionIdx !== null && (
@@ -892,7 +893,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
               <input className="input flex-1" value={exclusionInput} onChange={(e) => setExclusionInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitExclusion(); }}}
                 placeholder={editingExclusionIdx !== null ? "Edit lalu Enter / Simpan" : "Tekan Enter untuk tambah"} />
-              <button type="button" onClick={commitExclusion}
+              <button type="button" aria-label={editingExclusionIdx !== null ? "Simpan item tidak termasuk" : "Tambah item tidak termasuk"} onClick={commitExclusion}
                 className={`px-3 py-2 text-white rounded-lg text-sm whitespace-nowrap ${editingExclusionIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-red-500 hover:bg-red-600"}`}>
                 {editingExclusionIdx !== null ? "Simpan" : "+"}</button>
               {editingExclusionIdx !== null && (
@@ -922,7 +923,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Itinerary */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Itinerary</h2>
 
         {editingItineraryIdx === null && (
@@ -1015,23 +1016,23 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Add Ons */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Add Ons <span className="font-normal text-gray-400 text-sm">(tidak wajib / opsional)</span></h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
           Layanan tambahan di luar paket. Klik badge tiap item untuk menandai:
           <span className="mx-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white">WAJIB</span>(harus dibeli, mis. bagasi domestik) atau
           <span className="mx-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-500 text-white">REKOMENDASI</span>(sangat disarankan). Klik lagi untuk netral.
         </p>
-        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-1">
+        <div className={styles.addOnLabels}>
           <label className="label text-xs">Nama Add-On</label>
           <label className="label text-xs">Harga (Rp)</label>
           <span />
         </div>
-        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-2">
-          <input placeholder="cth: Airport Transfer" className="input" value={addOnItem.name}
+        <div className={styles.addOnFields}>
+          <input aria-label="Nama Add-On" placeholder="cth: Airport Transfer" className="input" value={addOnItem.name}
             onChange={(e) => setAddOnItem((p) => ({ ...p, name: e.target.value }))}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.currentTarget.nextElementSibling as HTMLInputElement | null)?.focus(); }}} />
-          <input type="number" min={0} placeholder="0" className="input" value={addOnItem.price}
+          <input aria-label="Harga Add-On (Rp)" type="number" min={0} placeholder="0" className="input" value={addOnItem.price}
             onChange={(e) => setAddOnItem((p) => ({ ...p, price: e.target.value }))} />
           <button type="button"
             onClick={() => { if (addOnItem.name) { set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0, desc: addOnItem.desc.trim() || undefined }]); setAddOnItem({ name: "", price: "", desc: "" }); }}}
@@ -1042,7 +1043,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         <div className="space-y-2">
           {(form.addOns ?? []).map((item, i) => (
             <div key={i} className="bg-gray-50 dark:bg-gray-700 px-4 py-2.5 rounded-lg text-sm">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-medium text-gray-900 dark:text-white min-w-0 break-words">{item.name}</span>
                 <div className="flex items-center gap-3 shrink-0">
                   <button type="button" onClick={() => cycleAddOnTag(i)}
@@ -1057,7 +1058,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                     {item.tag === "wajib" ? "WAJIB" : item.tag === "recommended" ? "REKOMENDASI" : "+ Badge"}
                   </button>
                   <span className="text-gray-600 dark:text-gray-400">Rp {Number(item.price).toLocaleString("id-ID")}</span>
-                  <button type="button" onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
+                  <button type="button" aria-label={`Hapus add-on ${item.name}`} onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
                 </div>
               </div>
               <textarea
@@ -1071,7 +1072,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Deskripsi Tour (evocative copy untuk kartu + halaman detail) */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Deskripsi Tour</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
           Tampil di kartu tour beranda (excerpt 140 char) dan halaman detail (lengkap). Tulis konkret: rute utama, tempo perjalanan, musim, tipe peserta, dan hal yang benar-benar termasuk. Hindari klaim generik seperti &quot;menakjubkan&quot;, &quot;perjalanan impian&quot;, atau &quot;tak terlupakan&quot; tanpa detail pendukung. Tambahkan bonus &amp; opsional di baris bawah dengan prefix <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">+</code> atau <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">&amp;</code>.
@@ -1087,7 +1088,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
       </div>
 
       {/* Catatan Penting & Visa */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className={styles.formSection}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Catatan Penting & Visa</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Catatan Penting">
@@ -1104,10 +1105,19 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const fieldId = useId();
+  const items = Children.toArray(children);
+  const fieldIndex = items.findIndex((child) => isValidElement(child) && typeof child.type === "string" && ["input", "select", "textarea"].includes(child.type));
+  const fields = items.map((child, index) => {
+    if (index === fieldIndex && isValidElement<{ id?: string }>(child)) {
+      return cloneElement(child, { id: fieldId });
+    }
+    return child;
+  });
   return (
     <div>
-      <label className="label mb-1">{label}</label>
-      {children}
+      <label className="label mb-1" htmlFor={fieldIndex >= 0 ? fieldId : undefined}>{label}</label>
+      {fields}
     </div>
   );
 }
@@ -1134,6 +1144,7 @@ function ItineraryItemFields({
       <div className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
         <input
           type="number"
+          aria-label="Hari itinerary"
           min={1}
           placeholder="Hari"
           className="input text-center"
@@ -1141,6 +1152,7 @@ function ItineraryItemFields({
           onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
         />
         <input
+          aria-label="Judul hari itinerary"
           placeholder="Judul"
           className="input"
           value={item.title}
@@ -1158,6 +1170,7 @@ function ItineraryItemFields({
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             data-itinerary-description
+            aria-label="Deskripsi hari itinerary"
             placeholder="Deskripsi"
             className="input min-w-0 flex-1"
             value={item.description}

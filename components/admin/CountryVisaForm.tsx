@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Children, cloneElement, isValidElement, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import StickyFormActions from "./StickyFormActions";
+import styles from "./AdminWorkspace.module.css";
 
 interface VisaVariantEntry {
   id?: string;
@@ -200,7 +201,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
   const variants = form.variants ?? [];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className={styles.form}>
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
           {error}
@@ -212,7 +213,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         cancelHref="/admin/database-visa"
       />
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <div className={`${styles.formSection} space-y-4`}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-2">Identitas Negara</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -269,7 +270,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      <div className={`${styles.formSection} space-y-4`}>
         <h2 className="font-semibold text-gray-900 dark:text-white mb-2">Persyaratan Visa</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -379,8 +380,8 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       />
 
       {/* ─── VARIANTS ─── */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-        <div className="flex items-center justify-between gap-3">
+      <div className={`${styles.formSection} space-y-4`}>
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="font-semibold text-gray-900 dark:text-white">Layanan &amp; Harga (Variants)</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -408,7 +409,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         {variants.map((v, i) => (
           <div
             key={i}
-            className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50/40 dark:bg-gray-900/30 space-y-3"
+            className={`${styles.formRow} space-y-3`}
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
@@ -448,6 +449,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
               <div className="sm:col-span-2">
                 <label className="label">Nama varian *</label>
                 <input
+                  aria-label={`Nama varian ${i + 1}`}
                   className="input"
                   value={v.name}
                   onChange={(e) => setVariant(i, { name: e.target.value })}
@@ -458,6 +460,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
               <div>
                 <label className="label">Harga (Rp)</label>
                 <input
+                  aria-label={`Harga varian ${i + 1} (Rp)`}
                   className="input"
                   type="number"
                   min={0}
@@ -476,6 +479,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
               <div>
                 <label className="label">Estimasi proses</label>
                 <input
+                  aria-label={`Estimasi proses varian ${i + 1}`}
                   className="input"
                   value={v.processingTime}
                   onChange={(e) => setVariant(i, { processingTime: e.target.value })}
@@ -485,6 +489,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
               <div>
                 <label className="label">Catatan (opsional)</label>
                 <input
+                  aria-label={`Catatan varian ${i + 1}`}
                   className="input"
                   value={v.notes}
                   onChange={(e) => setVariant(i, { notes: e.target.value })}
@@ -518,8 +523,8 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       />
 
       {/* ─── DOCUMENTS ─── */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-        <div className="flex items-center justify-between gap-3">
+      <div className={`${styles.formSection} space-y-4`}>
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="font-semibold text-gray-900 dark:text-white">Dokumen Wajib</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -544,11 +549,12 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         {(form.documents ?? []).map((d, i) => (
           <div
             key={i}
-            className="grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto] gap-3 items-end rounded-xl border border-gray-200 dark:border-gray-700 p-3 bg-gray-50/40 dark:bg-gray-900/30"
+            className={`${styles.formRow} grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto] gap-3 items-end`}
           >
             <div>
               <label className="label text-xs">Nama dokumen *</label>
               <input
+                aria-label={`Nama dokumen ${i + 1}`}
                 className="input"
                 value={d.name}
                 onChange={(e) =>
@@ -565,6 +571,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
             <div>
               <label className="label text-xs">Hint singkat (opsional)</label>
               <input
+                aria-label={`Petunjuk dokumen ${i + 1}`}
                 className="input"
                 value={d.hint}
                 onChange={(e) =>
@@ -595,8 +602,8 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
       </div>
 
       {/* ─── FAQS ─── */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-        <div className="flex items-center justify-between gap-3">
+      <div className={`${styles.formSection} space-y-4`}>
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="font-semibold text-gray-900 dark:text-white">FAQ Khusus Negara</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -621,12 +628,13 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
         {(form.faqs ?? []).map((f, i) => (
           <div
             key={i}
-            className="rounded-xl border border-gray-200 dark:border-gray-700 p-3 bg-gray-50/40 dark:bg-gray-900/30 space-y-2"
+            className={`${styles.formRow} space-y-2`}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <label className="label text-xs">Pertanyaan *</label>
                 <input
+                  aria-label={`Pertanyaan ${i + 1}`}
                   className="input"
                   value={f.question}
                   onChange={(e) =>
@@ -653,6 +661,7 @@ export default function CountryVisaForm({ entry }: { entry?: CountryVisaEntry })
             <div>
               <label className="label text-xs">Jawaban *</label>
               <textarea
+                aria-label={`Jawaban ${i + 1}`}
                 className="input min-h-[80px]"
                 value={f.answer}
                 onChange={(e) =>
@@ -683,11 +692,20 @@ function Field({
   hint?: string;
   children: React.ReactNode;
 }) {
+  const fieldId = useId();
+  const items = Children.toArray(children);
+  const fieldIndex = items.findIndex((child) => isValidElement(child) && typeof child.type === "string" && ["input", "select", "textarea"].includes(child.type));
+  const fields = items.map((child, index) => {
+    if (index === fieldIndex && isValidElement<{ id?: string; "aria-describedby"?: string }>(child)) {
+      return cloneElement(child, { id: fieldId, "aria-describedby": hint ? `${fieldId}-hint` : undefined });
+    }
+    return child;
+  });
   return (
     <div>
-      <label className="label">{label}</label>
-      {children}
-      {hint && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{hint}</p>}
+      <label className="label" htmlFor={fieldIndex >= 0 ? fieldId : undefined}>{label}</label>
+      {fields}
+      {hint && <p id={`${fieldId}-hint`} className="text-xs text-gray-500 dark:text-gray-400 mt-1">{hint}</p>}
     </div>
   );
 }
@@ -712,8 +730,8 @@ function ArraySection({
   placeholder?: string;
 }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-      <div className="flex items-center justify-between gap-3">
+    <div className={`${styles.formSection} space-y-4`}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="font-semibold text-gray-900 dark:text-white">{title}</h2>
           {hint && (
@@ -736,6 +754,7 @@ function ArraySection({
       {items.map((value, i) => (
         <div key={i} className="flex items-start gap-2">
           <input
+            aria-label={`${title}, item ${i + 1}`}
             className="input flex-1"
             value={value}
             onChange={(e) => onChange(i, e.target.value)}
