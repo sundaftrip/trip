@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 export const revalidate = 300;
 
 import type { Metadata } from "next";
@@ -8,14 +9,14 @@ import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { toWaNumber } from "@/lib/utils";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: {
     absolute: "FAQ Sundaf Trip | Tour, Visa, Pembayaran, Refund & Keberangkatan",
   },
   description:
     "Temukan jawaban seputar paket tour Sundaf Trip, bantuan visa, pembayaran, deposit, refund, keamanan perjalanan, tour leader, private trip, dan keberangkatan grup.",
   alternates: { canonical: "https://sundaftrip.com/faq" },
-};
+});
 
 async function getChromeData() {
   try {

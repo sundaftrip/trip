@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "@/components/website/clean/PreserveScrollLink";
@@ -32,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = geoContent.metaTitle || "Wisata Teriberka, Desa di Ujung Dunia & Laut Barents, Sundaftrip";
   const description = geoContent.metaDescription || DEFAULT_META_DESCRIPTION;
 
-  return {
+  return withPageSocialMetadata({
     title,
     description,
     keywords: [
@@ -47,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Teriberka di tepi Laut Barents, Rusia bersama Sundaf Trip" }],
     },
     alternates: { canonical: "https://sundaftrip.com/destinations/teriberka" },
-  };
+  });
 }
 
 async function getData() {

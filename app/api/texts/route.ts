@@ -35,6 +35,6 @@ export async function PUT(req: NextRequest) {
     detail: `Update ${Object.keys(body).join(", ")}`,
   });
 
-  revalidatePublicContent();
+  await revalidatePublicContent({ paths: ["/", "/about", "/contact", "/faq", "/tours", "/visa"] });
   return NextResponse.json({ success: true });
 }

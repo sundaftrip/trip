@@ -1,3 +1,4 @@
+import { geoContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 
@@ -103,7 +104,7 @@ export async function POST(req: NextRequest) {
       resourceId: page.id,
       resourceName: page.title,
     });
-    revalidatePublicContent();
+    await revalidatePublicContent(geoContentChange(null, page));
     return NextResponse.json(page, { status: 201 });
   } catch (err) {
     return apiError(err, { duplicate: "Route path GEO sudah dipakai." });

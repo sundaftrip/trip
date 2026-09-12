@@ -1,3 +1,6 @@
+import { isInternalCompanyInfoKey, publicCompanyInfoWhere } from "@/lib/company-info";
+import { notifyIndexNowChange } from "@/lib/indexnow-server";
+import { settingsContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -65,12 +68,13 @@ async function hasPersistedAuthenticatedSession() {
 export async function GET() {
   const authenticated = await hasPersistedAuthenticatedSession();
   const items = await prisma.companyInfo.findMany({
-    ...(authenticated ? {} : { where: { key: { in: [...PUBLIC_SETTING_KEYS] } } }),
+    ...(authenticated ? { where: publicCompanyInfoWhere } : { where: { key: { in: [...PUBLIC_SETTING_KEYS] } } }),
     select: { key: true, value: true },
   });
   const result: Record<string, string> = {};
   items.forEach((item) => {
     if (isSecretSettingKey(item.key)) return;
+    if (isInternalCompanyInfoKey(item.key)) return;
     if (!authenticated && !PUBLIC_SETTING_KEY_SET.has(item.key)) return;
     result[item.key] = item.value;
   });
@@ -86,6 +90,9 @@ export async function PUT(req: NextRequest) {
   let body: Record<string, string>;
   try { body = await req.json(); } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
+  }
+  if (Object.keys(body).some(isInternalCompanyInfoKey)) {
+    return NextResponse.json({ error: "Pengaturan internal tidak dapat diubah melalui CMS." }, { status: 400 });
   }
   // Hanya nilai string yang diterima (kolom CompanyInfo.value bertipe String)
   for (const k of Object.keys(body)) {
@@ -120,6 +127,11 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
   try {
+    const previous = await prisma.companyInfo.findMany({
+      where: { key: { in: Object.keys(body).filter((key) => key.startsWith("company_") || key.startsWith("about_")) } },
+      select: { key: true, value: true },
+    });
+    const discoveryChange = settingsContentChange(Object.fromEntries(previous.map((row) => [row.key, row.value])), body);
     await Promise.all(
       Object.entries(body).map(([key, value]) =>
         prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
@@ -141,6 +153,7 @@ export async function PUT(req: NextRequest) {
       detail: isColorChange ? "Update warna/tema" : "Update info perusahaan",
     });
 
+    await notifyIndexNowChange(discoveryChange);
     return NextResponse.json({ success: true });
   } catch (err) {
     return apiError(err);

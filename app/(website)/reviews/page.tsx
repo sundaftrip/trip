@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 export const revalidate = 300;
 
 import type { Metadata } from "next";
@@ -11,12 +12,12 @@ import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Review Sundaf Trip dari Traveler Indonesia",
   description:
     "Review publik Sundaf Trip dari traveler Indonesia untuk perjalanan Rusia, aurora, Asia Tengah, dan layanan visa. Data diambil dari testimonial yang dipublikasikan.",
   alternates: { canonical: `${SITE_URL}/reviews` },
-};
+});
 
 const dateFmt = new Intl.DateTimeFormat("id-ID", {
   day: "numeric",

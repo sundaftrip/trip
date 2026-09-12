@@ -1,4 +1,6 @@
 import { revalidateTag, revalidatePath } from "next/cache";
+import { notifyIndexNowChange } from "./indexnow-server";
+import type { PublicContentChange } from "./indexnow-content";
 
 // Next mengetik revalidateTag/Path agak ketat di beberapa versi; cast aman.
 const rTag = revalidateTag as unknown as (t: string) => void;
@@ -12,11 +14,12 @@ const rPath = revalidatePath as unknown as (p: string, t?: "page" | "layout") =>
  * schema) lalu revalidatePath("/", "layout") agar seluruh route di bawah layout
  * publik ikut segar. Pola ini identik dengan /api/settings yang sudah instan.
  */
-export function revalidatePublicContent() {
-  for (const tag of ["home-data", "footer-data", "site-org-schema", "company-info"]) {
+export async function revalidatePublicContent(change?: PublicContentChange) {
+  for (const tag of ["home-data", "footer-data", "site-org-schema", "company-info", "geo-pages"]) {
     rTag(tag);
   }
   rPath("/", "layout");
   // Metadata route handlers are not pages beneath the root layout.
   rPath("/sitemap.xml");
+  if (change) await notifyIndexNowChange(change);
 }

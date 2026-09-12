@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
+import { CANONICAL_BRAND_IDENTITY_FAQ, withCanonicalBrandIdentityFaq } from "@/lib/entity-discovery";
 import type { GeoDestinationContent, GeoFaq, GeoPageContent, GeoSection } from "@/types/geo";
 
 const SITE_URL = "https://sundaftrip.com";
@@ -248,6 +249,7 @@ export const GEO_FALLBACKS: Record<string, GeoPageContent> = {
       },
     ],
     faqs: [
+      CANONICAL_BRAND_IDENTITY_FAQ,
       {
         question: "Apa itu Sundaf Trip?",
         answer:
@@ -972,6 +974,7 @@ function withCanonicalBrandBaseline(content: GeoPageContent, fallback: GeoPageCo
   return {
     ...content,
     schemaType: "AboutPage",
+    faqs: withCanonicalBrandIdentityFaq(content.faqs),
   };
 }
 
@@ -1172,7 +1175,7 @@ export const getGeoPageContent = unstable_cache(
       return fallback;
     }
   },
-  ["geo-page-content-v12"],
+  ["geo-page-content-v13"],
   { revalidate: 3600, tags: ["geo-pages"] }
 );
 

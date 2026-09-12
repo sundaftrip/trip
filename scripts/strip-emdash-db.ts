@@ -1,3 +1,4 @@
+import { publicCompanyInfoWhere } from "../lib/company-info";
 /**
  * Bersihkan em-dash (—) dari konten DB user-facing → ganti koma (prosa).
  * Mode default DRY-RUN (cuma laporan). Jalankan dgn argumen "apply" utk eksekusi.
@@ -52,7 +53,7 @@ const specs: Spec[] = [
   { model: "Faq", fields: ["question", "answer", "section"],
     find: () => prisma.faq.findMany(), update: (id, d) => prisma.faq.update({ where: { id }, data: d }) },
   { model: "CompanyInfo", fields: ["value"],
-    find: () => prisma.companyInfo.findMany(), update: (id, d) => prisma.companyInfo.update({ where: { id }, data: d }) },
+    find: () => prisma.companyInfo.findMany({ where: publicCompanyInfoWhere }), update: (id, d) => prisma.companyInfo.update({ where: { id }, data: d }) },
   { model: "SiteText", fields: ["valueId", "valueEn"],
     find: () => prisma.siteText.findMany(), update: (id, d) => prisma.siteText.update({ where: { id }, data: d }) },
   { model: "Tour", fields: ["title", "cityHighlight", "duration", "visaInfo", "badge", "notes", "description", "inclusions", "exclusions", "itinerary", "hotel", "addOns"],

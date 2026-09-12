@@ -1,3 +1,4 @@
+import { tourContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -157,7 +158,7 @@ export async function POST(req: NextRequest) {
       resourceId: tour.id, resourceName: tour.title,
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent(tourContentChange(null, tour));
     return NextResponse.json(tour, { status: 201 });
   } catch (err) {
     return apiError(err, { duplicate: "Slug tour sudah dipakai." });

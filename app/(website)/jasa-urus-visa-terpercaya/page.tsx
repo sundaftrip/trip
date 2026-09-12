@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 
 import GeoPage from "../geo-page";
@@ -8,7 +9,7 @@ const PAGE_URL = `${SITE_URL}${CANONICAL_PATH}`;
 const description =
   "Jasa pembuatan dan pengurusan visa untuk WNI: konsultasi jalur, checklist, review dokumen, formulir, itinerary, serta arahan submission secara online.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Jasa Pembuatan Visa untuk WNI",
   description,
   alternates: { canonical: CANONICAL_PATH },
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     title: "Jasa Pembuatan Visa untuk WNI | Sundaf Trip",
     description,
   },
-};
+});
 
 const faqs = [
   {

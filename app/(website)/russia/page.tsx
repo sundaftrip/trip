@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import RussiaServiceCard, { type RussiaServiceMotion } from "@/components/website/clean/RussiaServiceCard";
@@ -13,12 +14,12 @@ export const revalidate = 300;
 const title = "Layanan Perjalanan Rusia — Tanya SUNDAF";
 const description = "Katering halal, bantuan berbagai pembayaran di Rusia, transportasi, guide berbahasa Indonesia, akses internet, dan asuransi perjalanan. Tanya SUNDAF.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title,
   description,
   alternates: { canonical: "https://sundaftrip.com/russia" },
   openGraph: { title, description, url: "https://sundaftrip.com/russia", siteName: "Sundaf Trip", locale: "id_ID", type: "website" },
-};
+});
 
 const services: { motion: RussiaServiceMotion; title: string; description: string; message: string }[] = [
   { motion: "flight", title: "Pesawat domestik Rusia", description: "Bantuan pembayaran tiket penerbangan domestik sesuai rute dan tanggal perjalanan Anda.", message: "pembayaran tiket pesawat domestik Rusia" },

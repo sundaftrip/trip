@@ -1,13 +1,14 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Clock, MessageCircle, ChevronRight, Plane, Thermometer, Camera, Wallet, Calendar } from "lucide-react";
 import { formatCurrency, toWaNumber, cldOptimize } from "@/lib/utils";
-import { getTourProductImage } from "@/lib/tour-product-images";
+import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import StableDetails from "@/components/website/clean/StableDetails";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Wisata Kazakhstan dari Indonesia, Almaty, Astana & Alam Liar, Sundaftrip",
   description:
     "Panduan lengkap wisata Kazakhstan untuk traveler Indonesia: visa, penerbangan dari Jakarta, Almaty, Astana, Danau Kaindy, Charyn Canyon, estimasi budget rupiah, dan paket tur tersedia.",
@@ -20,10 +21,10 @@ export const metadata: Metadata = {
     title: "Wisata Kazakhstan, Almaty, Astana & Alam Liar, Sundaftrip",
     description: "Panduan wisata Kazakhstan untuk traveler Indonesia. Visa gratis 30 hari, alam epik, dan kota modern.",
     type: "article",
-    images: [{ url: "https://picsum.photos/seed/kazakhstan-almaty/1200/630", width: 1200, height: 630 }],
+    images: [{ url: PEXELS_TOUR_IMAGES.centralAsiaAlmaty, alt: "Almaty, Kazakhstan" }],
   },
   alternates: { canonical: "https://sundaftrip.com/destinations/kazakhstan" },
-};
+});
 
 async function getData() {
   const [companyRows, tours, relatedPosts] = await Promise.all([

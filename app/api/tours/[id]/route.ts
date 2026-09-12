@@ -1,3 +1,5 @@
+import { INDEXNOW_TOUR_SELECT } from "@/lib/indexnow-server";
+import { tourContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -115,6 +117,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 
   try {
+    const previous = await prisma.tour.findUnique({ where: { id }, select: INDEXNOW_TOUR_SELECT });
     const tour = await prisma.tour.update({
       where: { id },
       data: data as unknown as Prisma.TourUncheckedUpdateInput,
@@ -127,7 +130,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       detail: isStatusOnly ? `Status → ${data.status}` : undefined,
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent(tourContentChange(previous, tour));
     return NextResponse.json(tour);
   } catch (err) {
     return apiError(err, { duplicate: "Slug tour sudah dipakai." });
@@ -142,7 +145,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params;
   try {
-    const tour = await prisma.tour.findUnique({ where: { id }, select: { title: true } });
+    const tour = await prisma.tour.findUnique({ where: { id }, select: { ...INDEXNOW_TOUR_SELECT, title: true } });
     await prisma.tour.delete({ where: { id } });
 
     await logActivity({
@@ -151,7 +154,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
       resourceId: id, resourceName: tour?.title,
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent(tourContentChange(tour, null));
     return NextResponse.json({ success: true });
   } catch (err) {
     return apiError(err);
