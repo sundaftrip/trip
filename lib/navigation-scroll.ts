@@ -3,6 +3,17 @@ export function normalizeNavigationPath(pathname: string) {
   return pathname.replace(/\/+$/, "") || "/";
 }
 
+export function shouldResetScrollOnPathChange(
+  previousPathname: string,
+  pathname: string,
+  { hash = "", historyPathname = null }: { hash?: string; historyPathname?: string | null } = {},
+) {
+  const nextPath = normalizeNavigationPath(pathname);
+  return normalizeNavigationPath(previousPathname) !== nextPath
+    && !hash
+    && (historyPathname === null || normalizeNavigationPath(historyPathname) !== nextPath);
+}
+
 export function shouldScrollLinkToFragment(href: unknown) {
   if (typeof href === "string") return href.includes("#");
   if (!href || typeof href !== "object" || !("hash" in href)) return false;

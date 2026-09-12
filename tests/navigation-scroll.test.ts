@@ -8,9 +8,32 @@ import {
   resetDocumentScrollAfterNavigation,
   shouldScrollLinkToFragment,
   shouldResetScrollForNavigation,
+  shouldResetScrollOnPathChange,
 } from "../lib/navigation-scroll";
 
 const current = "https://sundaftrip.com/tours/vietnam#ulasan";
+
+test("starts each committed destination at the top regardless of navigation source", () => {
+  assert.equal(shouldResetScrollOnPathChange("/", "/blog"), true);
+  assert.equal(shouldResetScrollOnPathChange("/blog", "/tours/russia-aurora"), true);
+  assert.equal(shouldResetScrollOnPathChange("/tours/russia-aurora", "/"), true);
+});
+
+test("does not reset the initial page, filters, or same-page navigation", () => {
+  assert.equal(shouldResetScrollOnPathChange("/", "/"), false);
+  assert.equal(shouldResetScrollOnPathChange("/tours", "/tours"), false);
+  assert.equal(shouldResetScrollOnPathChange("/tours/", "/tours"), false);
+});
+
+test("lets cross-page fragment links reach their requested section", () => {
+  assert.equal(shouldResetScrollOnPathChange("/", "/tours/russia-aurora", { hash: "#itinerary" }), false);
+});
+
+test("preserves Back and Forward restoration but not unrelated later navigation", () => {
+  assert.equal(shouldResetScrollOnPathChange("/blog", "/", { historyPathname: "/" }), false);
+  assert.equal(shouldResetScrollOnPathChange("/", "/blog", { historyPathname: "/blog/" }), false);
+  assert.equal(shouldResetScrollOnPathChange("/", "/visa", { historyPathname: "/blog" }), true);
+});
 
 test("resets scroll for internal navigation to another page", () => {
   assert.equal(shouldResetScrollForNavigation(current, "/visa"), true);
