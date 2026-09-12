@@ -55,20 +55,13 @@ test("keeps intentional public hash navigation working", () => {
   assert.match(consoleSidebar, /\/#contact/);
 });
 
-test("opens the tour destination guide at the top of its page", () => {
+test("opts the tour destination guide into native route scrolling", () => {
   const cleanDetail = source("components/website/clean/CleanTourDetail.tsx");
-  const routeReset = source("components/website/RouteScrollReset.tsx");
 
   assert.match(
     cleanDetail,
     /className=\{styles\.detailDestinationLink\}[\s\S]{0,160}?href=\{destinationHref\}[\s\S]{0,160}?scroll=\{true\}[\s\S]{0,160}?data-scroll-reset-after-navigation/,
   );
-  assert.match(routeReset, /desktopOnly: !anchor\.hasAttribute\(RESET_AFTER_NAVIGATION_ATTRIBUTE\)/);
-  assert.match(routeReset, /pathname: normalizeNavigationPath/);
-  assert.match(routeReset, /if \(!event\.defaultPrevented\) resetOnNextPathRef\.current = pendingReset/);
-  assert.match(routeReset, /resetDocumentScrollAfterNavigation\(\)/);
-  assert.match(routeReset, /pendingReset\?\.pathname === normalizeNavigationPath\(pathname\)/);
-  assert.equal(routeReset.match(/resetDocumentScroll\(\)/g)?.length, 1);
 });
 
 test("uses stable details across every public expandable section", () => {
@@ -88,7 +81,7 @@ test("uses stable details across every public expandable section", () => {
   assert.deepEqual(nativeDetailsOutsideWrapper, []);
 });
 
-test("keeps primary tour-card and search navigation at the current scroll position", () => {
+test("leaves outgoing tour-card and search pages still until their destination commits", () => {
   const tourCard = source("components/website/clean/CleanTourCard.tsx");
   const themedTourSection = source("components/website/ToursSection.tsx");
   const globalSearch = source("components/website/clean/CleanGlobalSearch.tsx");
