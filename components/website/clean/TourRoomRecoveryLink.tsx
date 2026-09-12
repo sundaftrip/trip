@@ -1,6 +1,7 @@
 "use client";
 
 import { buildWhatsAppBookingHref } from "@/lib/tour-commerce";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
@@ -13,6 +14,7 @@ type TourRoomRecoveryLinkProps = {
   departureLabel: string | null;
   bookingMode: BookingMode;
   analyticsPlacement: string;
+  hasMandatoryAddOns: boolean;
 };
 
 export default function TourRoomRecoveryLink({
@@ -23,6 +25,7 @@ export default function TourRoomRecoveryLink({
   departureLabel,
   bookingMode,
   analyticsPlacement,
+  hasMandatoryAddOns,
 }: TourRoomRecoveryLinkProps) {
   const {
     selectedRoom,
@@ -36,7 +39,7 @@ export default function TourRoomRecoveryLink({
         tourName,
         departureDate: departureLabel,
         formattedPrice: formatCurrency(totalPrice),
-        priceCaption: hasOptionalServices ? "Total per orang" : "Total wajib",
+        priceCaption: tourSubtotalLabel(hasMandatoryAddOns, optionalServicesTotal > 0),
         roomPreference: selectedRoom?.label,
         addOnPreference: optionalServicesPreference,
         intent: bookingMode === "flexible" ? "private" : "booking",

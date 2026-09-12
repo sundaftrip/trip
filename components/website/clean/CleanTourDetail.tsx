@@ -21,6 +21,7 @@ import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
+import { formatPackageCostDisclosure, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import {
   resolveItineraryDayImage,
@@ -260,7 +261,7 @@ export default function CleanTourDetail({
   const status = bookingStatus(tour, commerceStatus);
   const unavailable = ["completed", "departed", "sold_out", "waitlist"].includes(commerceStatus);
   const hasPrice = basePrice > 0;
-  const priceCaption = mandatoryAddOns.length > 0 ? "Total wajib" : "Harga paket";
+  const priceCaption = tourSubtotalLabel(mandatoryAddOns.length > 0);
   const selectableAddOn = optionalAddOns.find((item) => (
     item.tag === "recommended"
     && /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
@@ -318,10 +319,10 @@ export default function CleanTourDetail({
             : "destinasi Sundaf";
   const tourFaqs = [
     {
-      question: "Apakah harga sudah memasukkan seluruh biaya wajib?",
+      question: "Apa yang dihitung dalam subtotal?",
       answer: mandatoryAddOns.length
-        ? `${roomPrices.length > 0 ? "Total wajib mulai" : "Total wajib saat ini"} ${formatCurrency(startingTotal)} per orang sudah menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal.`
-        : "Tidak ada biaya tambahan berlabel wajib pada data tour ini. Tim tetap mengonfirmasi rincian final sebelum pembayaran.",
+        ? `${priceCaption}${roomPrices.length > 0 ? " mulai" : " saat ini"} ${formatCurrency(startingTotal)} per orang menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal. ${formatPackageCostDisclosure(tour.exclusions, true)}`
+        : `Tidak ada tambahan berlabel wajib yang tercatat pada data tour ini. ${formatPackageCostDisclosure(tour.exclusions, false)} Tim mengonfirmasi rincian final sebelum pembayaran.`,
     },
     {
       question: "Apakah kursi langsung terpesan setelah mengirim WhatsApp?",
@@ -534,7 +535,7 @@ export default function CleanTourDetail({
               <article>
                 <span>TRANSPARANSI HARGA</span>
                 <h3>{mandatoryAddOns.length ? `${mandatoryAddOns.length} biaya wajib ditampilkan` : "Tidak ada add-on wajib tercatat"}</h3>
-                <p>Periksa bagian termasuk, belum termasuk, dan total wajib sebelum melanjutkan ke pembayaran.</p>
+                <p>Periksa fasilitas yang termasuk, biaya di luar paket, subtotal, dan tambahan opsional sebelum melanjutkan ke pembayaran.</p>
               </article>
             </div>
           </section>
@@ -571,7 +572,7 @@ export default function CleanTourDetail({
               <p className={styles.detailSectionKicker}>Skema pembayaran</p>
               <h2 className={styles.detailSectionTitle} id="pembayaran-title">Pembayaran dan booking kursi</h2>
               <div className={styles.detailPaymentIntro}>
-                <div><span>Total per orang</span><strong>{paymentPlan.totalLabel}</strong></div>
+                <div><span>Jumlah dalam skema pembayaran per orang</span><strong>{paymentPlan.totalLabel}</strong></div>
                 <p>{paymentPlan.intro}</p>
               </div>
               <div
@@ -646,6 +647,7 @@ export default function CleanTourDetail({
                 departureLabel={departureLabel}
                 bookingMode={bookingMode}
                 analyticsPlacement="detail-mobile-pdf-recovery"
+                hasMandatoryAddOns={mandatoryAddOns.length > 0}
               />.
             </p>
             {disclosureOptionalAddOns.length > 0 && (
@@ -719,6 +721,7 @@ export default function CleanTourDetail({
                 departureLabel={departureLabel}
                 bookingMode={bookingMode}
                 analyticsPlacement="detail-pdf-recovery"
+                hasMandatoryAddOns={mandatoryAddOns.length > 0}
               />.
             </p>
             <p className={styles.detailBookingNote}>Konsultasi awal gratis. Tim akan mengonfirmasi harga, jadwal, dan ketersediaan terbaru.</p>

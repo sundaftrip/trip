@@ -2,6 +2,7 @@
 
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import { applyOptionalServicesToDepartures } from "@/lib/tour-optional-pricing";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import { formatCurrency } from "@/lib/utils";
 import type { BookingDeparture, BookingMode } from "./TourBookingSheet";
 import TourBookingExperience from "./TourBookingExperience";
@@ -67,7 +68,7 @@ export default function TourRoomBookingPanel({
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
   const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
   const selectedTotalPrice = selectedMandatoryTotalPrice + optionalServicesTotal;
-  const selectedCaption = hasOptionalServices ? "Total per orang" : priceCaption;
+  const selectedCaption = optionalServicesTotal > 0 ? tourSubtotalLabel(mandatoryAddOns.length > 0, true) : priceCaption;
   const selectedPriceLabel = hasPrice ? formatCurrency(selectedTotalPrice) : priceLabel;
   const roomOptions = roomPrices.map((room) => ({
     value: room.code,
@@ -114,7 +115,7 @@ export default function TourRoomBookingPanel({
                     <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
                   </div>
                   <div>
-                    <dt>{hasOptionalServices ? "Total per orang" : "Total wajib per orang"}</dt>
+                    <dt>{selectedCaption}</dt>
                     <dd>{formatCurrency(displayedTotal)}</dd>
                   </div>
                 </dl>
@@ -152,7 +153,7 @@ export default function TourRoomBookingPanel({
               </div>
             ))}
             <div className={interactiveStyles.dateTotal}>
-              <dt>{hasOptionalServices ? "Total per orang" : "Total wajib per orang"}</dt>
+              <dt>{selectedCaption}</dt>
               <dd>{hasPrice ? formatCurrency(selectedTotalPrice) : "Dikonfirmasi tim"}</dd>
             </div>
             {paymentInitialAmountLabel && (

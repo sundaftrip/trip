@@ -39,6 +39,7 @@ import {
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 import { tourEntityIdentity } from "@/lib/entity-discovery";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import { formatPackageCostDisclosure, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import {
   parseTourHotelRoomPricing,
   resolveTourStartingPrice,
@@ -666,7 +667,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
       (mandatoryTotal > 0
         ? `\n\nRincian harga:\n• Paket: ${formatCurrency(basePrice)}` +
           mandatoryAddOns.map((a) => `\n• ${a.name} (wajib): ${formatCurrency(a.price)}`).join("") +
-          `\n• Estimasi total: ${formatCurrency(startingTotal)} / orang`
+          `\n• Subtotal paket + tambahan wajib: ${formatCurrency(startingTotal)} / orang`
         : "")
   );
   const bookingWaHref = `https://wa.me/${waNumber}?text=${waMessage}`;
@@ -676,7 +677,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     mandatoryTotal > 0
       ? `Paket: ${formatCurrency(basePrice)}` +
         mandatoryAddOns.map((a) => ` · ${a.name} (wajib): ${formatCurrency(a.price)}`).join("") +
-        ` · Estimasi total: ${formatCurrency(startingTotal)}/orang`
+        ` · Subtotal paket + tambahan wajib: ${formatCurrency(startingTotal)}/orang`
       : `Harga paket: ${formatCurrency(basePrice)}/orang`;
 
   const secTitle = isOutlined
@@ -707,6 +708,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const durationDays = displayDuration?.match(/(\d+)\s*hari/i)?.[1];
   const isoDuration = durationDays ? `P${durationDays}D` : null;
   const canonicalTourUrl = `${siteUrl}${canonicalTourPath(tour)}`;
+  const offerCostDescription = `${tourSubtotalLabel(mandatoryTotal > 0)}. ${formatPackageCostDisclosure(displayExclusions, mandatoryTotal > 0)}`;
   const tourJsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
@@ -721,6 +723,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         "@type": "Offer",
         price: String(startingTotal),
         priceCurrency: "IDR",
+        description: offerCostDescription,
         availability: isPurchasable
           ? "https://schema.org/InStock"
           : "https://schema.org/SoldOut",
@@ -746,6 +749,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         "@type": "Offer",
         price: String(startingTotal),
         priceCurrency: "IDR",
+        description: offerCostDescription,
         availability: isPurchasable ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
         url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
       },
@@ -1109,7 +1113,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   {isOutlined && <Users size={18} />} Harga Berdasarkan Isi Kamar
                 </h2>
                 <p className="mb-4 text-sm text-gray-500 dark:text-gray-400" style={isOutlined ? { color: tSub } : undefined}>
-                  Harga per orang. Total wajib sudah menambahkan seluruh komponen berlabel wajib.
+                  Harga per orang. Subtotal mencakup paket dan tambahan berlabel wajib yang ditampilkan; periksa biaya di luar paket dan tambahan opsional.
                 </p>
                 <div className="grid gap-3 sm:grid-cols-3">
                   {roomPrices.map((room, index) => (
@@ -1128,7 +1132,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                       </p>
                       <p className="text-[11px] text-gray-500" style={isOutlined ? { color: tSub } : undefined}>Harga posting/orang</p>
                       <div className="mt-3 border-t border-solid border-gray-200 pt-3 dark:border-gray-700" style={isOutlined ? { borderColor: tBdr } : undefined}>
-                        <p className="text-[11px] text-gray-500" style={isOutlined ? { color: tSub } : undefined}>Total wajib/orang</p>
+                        <p className="text-[11px] text-gray-500" style={isOutlined ? { color: tSub } : undefined}>{tourSubtotalLabel(mandatoryTotal > 0)}</p>
                         <p className="font-black text-gray-900 dark:text-white" style={isOutlined ? { color: tText } : undefined}>
                           {formatCurrency(room.mandatoryTotalPrice)}
                         </p>
@@ -1224,7 +1228,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                       <span>{room.label}</span>
                       <span className="text-right">
                         <strong className="block text-gray-900 dark:text-white" style={isOutlined ? { color: tText } : undefined}>{formatCurrency(room.headlinePrice)}</strong>
-                        <small>Total wajib {formatCurrency(room.mandatoryTotalPrice)}</small>
+                        <small>{tourSubtotalLabel(mandatoryTotal > 0)} {formatCurrency(room.mandatoryTotalPrice)}</small>
                       </span>
                     </div>
                   ))}
@@ -1250,7 +1254,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                   ))}
                   <div className={`flex justify-between mt-2 pt-2 font-black text-gray-900 dark:text-white ${isOutlined ? "border-t-2 border-solid" : "border-t border-gray-200 dark:border-gray-700"}`}
                     style={isOutlined ? { borderColor: tBdr } : undefined}>
-                    <span>Total wajib</span>
+                    <span>{tourSubtotalLabel(mandatoryTotal > 0)}</span>
                     <span>{formatCurrency(startingTotal)}</span>
                   </div>
                   <p className="mt-1 text-[10px] text-gray-400">Sudah termasuk item wajib di atas, per orang.</p>
@@ -1324,7 +1328,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
 
-              {/* Add Ons — hanya yang opsional (WAJIB sudah dilipat ke Total wajib di atas) */}
+              {/* Add Ons — hanya yang opsional (WAJIB sudah masuk subtotal di atas) */}
               {optionalAddOns.length > 0 && (
                 <div className={`mt-4 pt-4 ${isOutlined ? "border-t-2 border-solid" : "border-t border-gray-100 dark:border-gray-800"}`}
                   style={isOutlined ? { borderColor: tBdr } : undefined}>
