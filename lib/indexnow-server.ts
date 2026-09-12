@@ -8,6 +8,7 @@ import { blogContentChange, geoContentChange, tourContentChange, visaContentChan
 
 export const INDEXNOW_TOUR_SELECT = {
   id: true, slug: true, status: true, updatedAt: true, tripDate: true,
+  title: true, country: true, cityHighlight: true, badge: true, duration: true,
   description: true, notes: true, gallery: true, itinerary: true, inclusions: true,
 } as const;
 

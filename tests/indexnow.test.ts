@@ -91,6 +91,48 @@ test("tour notifications follow public visibility and archive noindex policy", (
   assert.deepEqual(tourContentChange(current, null).paths, ["/", "/tours", "/tours/canada-trip"]);
 });
 
+test("Russia guide notifications retain before-state eligibility through removal or recategorization", () => {
+  const now = new Date("2026-09-12T06:00:00Z");
+  const guide = "/tour-rusia-dari-indonesia";
+  const current = {
+    id: "russia1", slug: "rusia-januari", title: "Rusia Aurora", country: "Russia",
+    cityHighlight: "Moskow", status: "ACTIVE", tripDate: new Date("2027-01-14"),
+    badge: null as string | null, duration: "10 hari", updatedAt: now,
+  };
+  assert.ok(tourContentChange(null, current, now).paths.includes(guide));
+  for (const after of [
+    null, { ...current, status: "DRAFT" }, { ...current, status: "FULL" },
+    { ...current, status: "CANCELLED" }, { ...current, badge: "Daftar tunggu" },
+    { ...current, country: "Canada" }, { ...current, tripDate: new Date("2020-01-01") },
+  ]) {
+    const change = tourContentChange(current, after, now);
+    assert.ok(change.paths.includes(guide), JSON.stringify(after));
+    assert.ok(change.paths.includes("/tours/rusia-januari"));
+    assert.equal(change.paths.filter((path) => path === guide).length, 1);
+  }
+  const renamed = tourContentChange(current, { ...current, slug: "rusia-baru" }, now);
+  assert.ok(renamed.paths.includes("/tours/rusia-januari"));
+  assert.ok(renamed.paths.includes("/tours/rusia-baru"));
+  assert.ok(renamed.paths.includes(guide));
+  assert.equal(renamed.changedAt, now);
+  assert.ok(tourContentChange({ ...current, country: "Canada" }, current, now).paths.includes(guide));
+});
+
+test("irrelevant or unavailable tours do not notify the Russia guide", () => {
+  const now = new Date("2026-09-12T06:00:00Z");
+  const current = {
+    id: "russia1", slug: "russia-aurora", title: "Aurora", country: "Russia",
+    status: "ACTIVE", tripDate: new Date("2027-01-14"),
+  };
+  for (const row of [
+    { ...current, country: "Canada" }, { ...current, country: "Finland" },
+    { ...current, status: "DRAFT" }, { ...current, status: "CANCELLED" },
+    { ...current, status: "FULL" }, { ...current, badge: "Penuh" },
+    { ...current, badge: "Daftar tunggu" }, { ...current, tripDate: null },
+    { ...current, tripDate: new Date("2020-01-01") },
+  ]) assert.ok(!tourContentChange(null, row, now).paths.includes("/tour-rusia-dari-indonesia"), JSON.stringify(row));
+});
+
 test("visa renames and deletes retain their previous canonical slug", () => {
   assert.deepEqual(visaContentChange({ en: "Saudi Arabia" }, { en: "Saudi" }).paths, ["/visa", "/visa-intelligence", "/visa/saudi-arabia", "/visa/saudi"]);
   assert.deepEqual(visaContentChange({ en: "Russia" }, null).paths, ["/visa", "/visa-intelligence", "/visa/russia"]);
