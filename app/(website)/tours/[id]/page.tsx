@@ -36,6 +36,7 @@ import {
   getTourVisualOverride,
 } from "@/lib/tour-product-images";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
+import { tourEntityIdentity } from "@/lib/entity-discovery";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "@/lib/tour-commerce";
 import {
   parseTourHotelRoomPricing,
@@ -703,9 +704,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   // Kalau angka sebelum "hari" tak ketemu, duration di-skip (string bebas invalid).
   const durationDays = displayDuration?.match(/(\d+)\s*hari/i)?.[1];
   const isoDuration = durationDays ? `P${durationDays}D` : null;
+  const canonicalTourUrl = `${siteUrl}${canonicalTourPath(tour)}`;
   const tourJsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
+    ...tourEntityIdentity(canonicalTourUrl, companyName),
     name: displayTitle,
     description: displayDescription ?? displayNotes ?? displayVisaInfo ?? undefined,
     image: [absoluteProductHeroImage],
@@ -719,14 +722,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         availability: isPurchasable
           ? "https://schema.org/InStock"
           : "https://schema.org/SoldOut",
-        url: `${siteUrl}/tours/${tour.slug ?? tour.id}`,
+        url: canonicalTourUrl,
       },
     } : {}),
-    provider: {
-      "@type": "Organization",
-      name: companyName,
-      url: siteUrl,
-    },
   };
 
   /* ── Product schema dgn AggregateRating + Review (HANYA jika ada ulasan asli).
