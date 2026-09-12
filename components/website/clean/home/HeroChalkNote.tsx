@@ -1,7 +1,7 @@
 import { Kalam } from "next/font/google";
 import styles from "./CleanHome.module.css";
 
-const kalam = Kalam({ weight: "400", subsets: ["latin"], display: "swap", preload: false });
+const kalam = Kalam({ weight: "700", subsets: ["latin"], display: "swap", preload: false });
 
 export default function HeroChalkNote() {
   return (

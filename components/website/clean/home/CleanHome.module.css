@@ -96,7 +96,7 @@
   right: 4px;
   width: 190px;
   margin: 0;
-  color: #b47718;
+  color: #f5b83d;
   line-height: 0;
   letter-spacing: -0.02em;
   transform: translateY(-34%) rotate(-5deg);
@@ -107,7 +107,7 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .hero {
