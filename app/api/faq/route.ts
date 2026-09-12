@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         order: order ?? 0, active: active ?? true,
       },
     });
-    revalidatePublicContent(); // /faq & /visa/faq kini ISR — segarkan langsung
+    await revalidatePublicContent({ paths: faq.active ? ["/", "/faq", "/visa/faq"] : [], changedAt: faq.updatedAt }); // /faq & /visa/faq kini ISR — segarkan langsung
     return NextResponse.json(faq, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Gagal membuat FAQ" }, { status: 500 });

@@ -1,3 +1,4 @@
+import { publicCompanyInfoWhere } from "@/lib/company-info";
 // ISR, homepage di-revalidate setiap 5 menit lewat unstable_cache di getData().
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
 export const revalidate = 60;
@@ -61,7 +62,7 @@ const getData = unstable_cache(async () => {
         readTime: true,
       },
     }),
-    prisma.companyInfo.findMany(),
+    prisma.companyInfo.findMany({ where: publicCompanyInfoWhere }),
     prisma.testimonial.findMany({
       where: { published: true, category: "trip" },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],

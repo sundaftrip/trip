@@ -1,3 +1,4 @@
+import { blogContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
       resourceId: post.id, resourceName: post.title,
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent(blogContentChange(null, post));
     return NextResponse.json(post, { status: 201 });
   } catch (err) {
     return apiError(err, { duplicate: "Slug post sudah dipakai." });

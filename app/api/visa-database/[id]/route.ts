@@ -1,3 +1,4 @@
+import { visaContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -125,6 +126,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const variantData = normalizeVariants(body.variants);
 
   // Atomic: update country + replace variants (delete-then-create) dalam 1 transaksi.
+  const previous = await prisma.countryVisa.findUnique({ where: { id }, select: { en: true, updatedAt: true } });
   const result = await prisma.$transaction(async (tx) => {
     const updated = await tx.countryVisa.update({ where: { id }, data });
     if (variantData !== null) {
@@ -141,7 +143,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   });
 
-  revalidatePublicContent(); // /visa & /visa/[slug] kini ISR — segarkan langsung
+  await revalidatePublicContent(visaContentChange(previous, result)); // /visa & /visa/[slug] kini ISR — segarkan langsung
   return NextResponse.json(result);
 }
 
@@ -151,7 +153,8 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params;
   // VisaVariant otomatis ke-cascade lewat onDelete: Cascade di schema.
+  const previous = await prisma.countryVisa.findUnique({ where: { id }, select: { en: true, updatedAt: true } });
   await prisma.countryVisa.delete({ where: { id } });
-  revalidatePublicContent();
+  await revalidatePublicContent(visaContentChange(previous, null));
   return NextResponse.json({ success: true });
 }

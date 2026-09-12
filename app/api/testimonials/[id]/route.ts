@@ -19,6 +19,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Nama dan isi testimoni wajib diisi." }, { status: 422 });
 
   try {
+    const previous = await prisma.testimonial.findUnique({ where: { id }, select: { published: true } });
     const item = await prisma.testimonial.update({
       where: { id },
       data: {
@@ -41,7 +42,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       resourceId: item.id, resourceName: item.name, detail: "Edit testimoni",
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent({ paths: previous?.published || item.published ? ["/", "/reviews", "/visa"] : [], changedAt: item.updatedAt });
     return NextResponse.json(item);
   } catch (err) {
     return apiError(err);
@@ -62,7 +63,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       resourceId: id, resourceName: item.name, detail: "Hapus testimoni",
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent({ paths: item.published ? ["/", "/reviews", "/visa"] : [] });
     return NextResponse.json({ success: true });
   } catch (err) {
     return apiError(err);

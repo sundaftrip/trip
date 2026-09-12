@@ -1,3 +1,4 @@
+import { blogContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -50,6 +51,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Status publish harus bernilai benar/salah." }, { status: 422 });
 
   try {
+    const previous = await prisma.blog.findUnique({ where: { id }, select: { slug: true, published: true, updatedAt: true } });
     const post = await prisma.blog.update({
       where: { id },
       data: data as unknown as Prisma.BlogUncheckedUpdateInput,
@@ -62,7 +64,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       detail: isPublishOnly ? (body.published ? "Dipublish" : "Di-unpublish") : undefined,
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent(blogContentChange(previous, post));
     return NextResponse.json(post);
   } catch (err) {
     return apiError(err, { duplicate: "Slug post sudah dipakai." });
@@ -77,7 +79,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params;
   try {
-    const post = await prisma.blog.findUnique({ where: { id }, select: { title: true } });
+    const post = await prisma.blog.findUnique({ where: { id }, select: { slug: true, published: true, updatedAt: true, title: true } });
     await prisma.blog.delete({ where: { id } });
 
     await logActivity({
@@ -86,7 +88,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
       resourceId: id, resourceName: post?.title,
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent(blogContentChange(post, null));
     return NextResponse.json({ success: true });
   } catch (err) {
     return apiError(err);
