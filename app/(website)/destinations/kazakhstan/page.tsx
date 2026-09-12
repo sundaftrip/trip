@@ -9,7 +9,7 @@ import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-imag
 import StableDetails from "@/components/website/clean/StableDetails";
 
 export const metadata: Metadata = withPageSocialMetadata({
-  title: "Wisata Kazakhstan dari Indonesia, Almaty, Astana & Alam Liar, Sundaftrip",
+  title: "Wisata Kazakhstan: Almaty, Astana & Alam Liar",
   description:
     "Panduan lengkap wisata Kazakhstan untuk traveler Indonesia: visa, penerbangan dari Jakarta, Almaty, Astana, Danau Kaindy, Charyn Canyon, estimasi budget rupiah, dan paket tur tersedia.",
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = withPageSocialMetadata({
     "tour asia tengah", "sundaftrip kazakhstan",
   ],
   openGraph: {
-    title: "Wisata Kazakhstan, Almaty, Astana & Alam Liar, Sundaftrip",
+    title: "Wisata Kazakhstan: Almaty, Astana & Alam Liar",
     description: "Panduan wisata Kazakhstan untuk traveler Indonesia. Visa gratis 30 hari, alam epik, dan kota modern.",
     type: "article",
     images: [{ url: PEXELS_TOUR_IMAGES.centralAsiaAlmaty, alt: "Almaty, Kazakhstan" }],
