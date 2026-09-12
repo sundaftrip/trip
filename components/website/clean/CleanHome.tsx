@@ -237,40 +237,58 @@ export default function CleanHome({
   return (
     <div className={styles.home}>
       <div id="main-content" tabIndex={-1}>
-        <section className={styles.hero} aria-labelledby="home-hero-title">
-          <Image
-            src={resolvedHeroImage}
-            alt={resolvedHeroAlt}
-            fill
-            priority
-            fetchPriority="high"
-            quality={90}
-            sizes="100vw"
-            className={styles.heroImage}
-          />
-          <div className={styles.heroOverlay} aria-hidden="true" />
-          <div className={`${styles.shell} ${styles.heroShell}`}>
-            <div className={styles.heroCopy}>
-              <p className={styles.eyebrowLight}>{heroEyebrow}</p>
-              <h1 id="home-hero-title">
-                <TextWithAuroraAccent
-                  text={heroTitle}
-                  phrase="Aurora."
-                  glow
+        <div className={styles.heroBoundary}>
+          <section className={styles.hero} aria-labelledby="home-hero-title">
+            <Image
+              src={resolvedHeroImage}
+              alt={resolvedHeroAlt}
+              fill
+              priority
+              fetchPriority="high"
+              quality={90}
+              sizes="100vw"
+              className={styles.heroImage}
+            />
+            <div className={styles.heroOverlay} aria-hidden="true" />
+            <div className={`${styles.shell} ${styles.heroShell}`}>
+              <div className={styles.heroCopy}>
+                <p className={styles.eyebrowLight}>{heroEyebrow}</p>
+                <h1 id="home-hero-title">
+                  <TextWithAuroraAccent
+                    text={heroTitle}
+                    phrase="Aurora."
+                    glow
+                  />
+                </h1>
+                <p>{heroBody}</p>
+              </div>
+            </div>
+            <div className={styles.finderZone}>
+              <div className={styles.shell}>
+                <HomeSearchForm
+                  destinations={destinationOptions}
+                  months={monthOptions}
                 />
-              </h1>
-              <p>{heroBody}</p>
+              </div>
             </div>
+          </section>
+          <div className={`${styles.shell} ${styles.heroNoteRail}`}>
+            <p className={styles.heroNote} lang="id" translate="no" data-no-translate>
+              <span>Semua bisa</span>{" "}
+              <span className={styles.heroNoteLastLine}>
+                jalan
+                <svg viewBox="0 0 150 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M5 9C35 4 88 3 145 5M24 14C57 10 101 9 130 10"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+            </p>
           </div>
-          <div className={styles.finderZone}>
-            <div className={styles.shell}>
-              <HomeSearchForm
-                destinations={destinationOptions}
-                months={monthOptions}
-              />
-            </div>
-          </div>
-        </section>
+        </div>
 
         <section className={`${styles.section} ${styles.tourSection}`} aria-labelledby="active-tours-title">
           <div className={styles.shell}>
