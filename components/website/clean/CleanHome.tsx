@@ -284,7 +284,6 @@ export default function CleanHome({
               <div className={styles.sectionHeading}>
                 <p className={styles.eyebrow}>JADWAL TERDEKAT</p>
                 <h2 id="active-tours-title">Jadwal open trip</h2>
-                <p>Bandingkan tanggal, rute, dan biaya sebelum memilih perjalanan.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
                 Lihat semua jadwal <ArrowRight aria-hidden="true" />
