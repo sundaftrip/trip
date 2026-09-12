@@ -21,6 +21,7 @@ import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
+import HeroChalkNote from "./home/HeroChalkNote";
 import styles from "./home/CleanHome.module.css";
 
 export type CleanHomeTestimonial = {
@@ -273,20 +274,7 @@ export default function CleanHome({
             </div>
           </section>
           <div className={`${styles.shell} ${styles.heroNoteRail}`}>
-            <p className={styles.heroNote} lang="id" translate="no" data-no-translate>
-              <span>Semua bisa</span>{" "}
-              <span className={styles.heroNoteLastLine}>
-                jalan
-                <svg viewBox="0 0 150 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M5 9C35 4 88 3 145 5M24 14C57 10 101 9 130 10"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
-            </p>
+            <HeroChalkNote />
           </div>
         </div>
 

@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { Roboto } from "next/font/google";
+import WhatsAppIcon from "../WhatsAppIcon";
 import Link from "./PreserveScrollLink";
-import { Building2, FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
+import { FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
 import {
   APPOINTMENT_ONLY_LABEL,
   appointmentOnlyOfficeAddress,
@@ -19,14 +21,7 @@ function InstagramIcon() {
   );
 }
 
-function WhatsAppIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-      <path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3 20.7l1.4-4.8a8.5 8.5 0 1 1 16.1-4.1Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      <path d="M8.4 7.5c-.4 0-1 .7-1 1.6 0 2.3 3.6 5.9 5.9 5.9.9 0 1.6-.6 1.6-1l-1.8-1-1 .7a8.2 8.2 0 0 1-3.1-3.1l.6-.9-1.2-2.2Z" fill="currentColor" />
-    </svg>
-  );
-}
+const roboto = Roboto({ weight: ["400", "500", "700"], subsets: ["latin"], variable: "--font-footer-roboto", display: "swap", preload: false });
 
 export default function CleanFooter({ logo, company }: { logo?: string; company: Record<string, string> }) {
   const logoSrc = cldFit(logo || "/logo.png", 320);
@@ -45,7 +40,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
     .trim();
 
   return (
-    <footer className={styles.footer} data-clean-footer>
+    <footer className={`${styles.footer} ${roboto.variable}`} data-clean-footer>
       <div className={styles.shell}>
         <div className={styles.top}>
           <section className={styles.brand} aria-labelledby="footer-brand-title">
@@ -118,10 +113,15 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <Link className={styles.textLink} href="/partner">Kenali kemitraan SUNDAF</Link>
             {(legalName || nib) && (
               <Link className={styles.identity} href="/legalitas-dan-keamanan" aria-label="Lihat identitas dan legalitas usaha Sundaf">
-                <Building2 aria-hidden="true" />
+                {nib && (
+                  <span className={styles.ossMark}>
+                    <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={90} height={27} />
+                  </span>
+                )}
                 <span>
                   {legalName ? <strong data-no-translate translate="no">{legalName}</strong> : <strong>Identitas usaha Sundaf</strong>}
                   {nib && <small data-no-translate translate="no">NIB {nib}</small>}
+                  {nib && <span className={styles.issuer}>Perizinan melalui OSS</span>}
                 </span>
               </Link>
             )}
