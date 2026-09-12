@@ -1,3 +1,4 @@
+import { publicCompanyInfoWhere } from "@/lib/company-info";
 export const revalidate = 300;
 
 import type { CSSProperties } from "react";
@@ -38,7 +39,7 @@ const getData = unstable_cache(
   async () => {
     const [texts, companyRows] = await Promise.all([
       prisma.siteText.findMany(),
-      prisma.companyInfo.findMany(),
+      prisma.companyInfo.findMany({ where: publicCompanyInfoWhere }),
     ]);
 
     const textMap: Record<string, { id?: string; en?: string }> = {};

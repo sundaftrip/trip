@@ -17,6 +17,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const body = await req.json();
     const { group, section, question, answer, service, order, active } = body;
 
+    const previous = await prisma.faq.findUnique({ where: { id }, select: { active: true } });
     const faq = await prisma.faq.update({
       where: { id },
       data: {
@@ -29,7 +30,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         ...(active    !== undefined && { active }),
       },
     });
-    revalidatePublicContent(); // /faq & /visa/faq kini ISR — segarkan langsung
+    await revalidatePublicContent({ paths: previous?.active || faq.active ? ["/", "/faq", "/visa/faq"] : [], changedAt: faq.updatedAt }); // /faq & /visa/faq kini ISR — segarkan langsung
     return NextResponse.json(faq);
   } catch {
     return NextResponse.json({ error: "Gagal mengupdate FAQ" }, { status: 500 });
@@ -46,8 +47,8 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
 
   const { id } = await params;
   try {
-    await prisma.faq.delete({ where: { id } });
-    revalidatePublicContent();
+    const deleted = await prisma.faq.delete({ where: { id } });
+    await revalidatePublicContent({ paths: deleted.active ? ["/", "/faq", "/visa/faq"] : [] });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Gagal menghapus FAQ" }, { status: 500 });

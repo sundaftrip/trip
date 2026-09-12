@@ -1,3 +1,5 @@
+import { INDEXNOW_TOUR_SELECT } from "@/lib/indexnow-server";
+import { tourContentChange } from "@/lib/indexnow-content";
 /* POST /api/tours/import — buat banyak tour sekaligus (mis. arsip trip selesai).
    Body: { tours: [{ title, country, tripDate?, duration?, heroImg?, price? }, ...] } */
 import { NextRequest, NextResponse } from "next/server";
@@ -43,7 +45,8 @@ export async function POST(req: NextRequest) {
   if (data.length === 0)
     return NextResponse.json({ error: "Tidak ada baris valid (judul & negara wajib diisi)" }, { status: 400 });
 
-  const result = await prisma.tour.createMany({ data });
+  const created = await prisma.tour.createManyAndReturn({ data, select: INDEXNOW_TOUR_SELECT });
+  const result = { count: created.length };
 
   await logActivity({
     userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
@@ -51,6 +54,9 @@ export async function POST(req: NextRequest) {
     detail: `Import massal ${result.count} tour`,
   });
 
-  revalidatePublicContent();
+  const changes = created.map((tour) => tourContentChange(null, tour));
+  for (let offset = 0; offset < changes.length; offset += 25) {
+    await revalidatePublicContent({ paths: [...new Set(changes.slice(offset, offset + 25).flatMap((change) => change.paths))] });
+  }
   return NextResponse.json({ created: result.count }, { status: 201 });
 }

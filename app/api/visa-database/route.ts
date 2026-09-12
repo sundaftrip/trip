@@ -1,3 +1,4 @@
+import { visaContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -70,6 +71,6 @@ export async function POST(req: NextRequest) {
   }
 
   const entry = await prisma.countryVisa.create({ data });
-  revalidatePublicContent(); // /visa & /visa/[slug] kini ISR — segarkan langsung
+  await revalidatePublicContent(visaContentChange(null, entry)); // /visa & /visa/[slug] kini ISR — segarkan langsung
   return NextResponse.json(entry, { status: 201 });
 }

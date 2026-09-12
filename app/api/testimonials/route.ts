@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       detail: "Tambah testimoni",
     });
 
-    revalidatePublicContent();
+    await revalidatePublicContent({ paths: item.published ? ["/", "/reviews", "/visa"] : [], changedAt: item.updatedAt });
     return NextResponse.json(item);
   } catch (err) {
     return apiError(err);

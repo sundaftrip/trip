@@ -1,3 +1,4 @@
+import { revalidatePublicContent } from "@/lib/revalidate";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -30,6 +31,7 @@ export async function PUT(req: NextRequest) {
       ? await prisma.termsCondition.update({ where: { id: existing.id }, data: { bodyId, bodyEn } })
       : await prisma.termsCondition.create({ data: { bodyId, bodyEn } });
 
+    await revalidatePublicContent({ paths: ["/terms"], changedAt: terms.updatedAt });
     return NextResponse.json(terms);
   } catch (err) {
     return apiError(err);

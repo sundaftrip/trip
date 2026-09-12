@@ -1,3 +1,4 @@
+import { geoContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 
@@ -99,6 +100,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (error) return NextResponse.json({ error }, { status: 422 });
 
   try {
+    const previous = await prisma.geoPage.findUnique({ where: { id }, select: { routePath: true, published: true, updatedAt: true } });
     const page = await prisma.geoPage.update({
       where: { id },
       data: data as unknown as Prisma.GeoPageUncheckedUpdateInput,
@@ -113,7 +115,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       resourceName: page.title,
       detail: isPublishOnly ? (body.published ? "Dipublish" : "Di-unpublish") : undefined,
     });
-    revalidatePublicContent();
+    await revalidatePublicContent(geoContentChange(previous, page));
     return NextResponse.json(page);
   } catch (err) {
     return apiError(err, { duplicate: "Route path GEO sudah dipakai." });
@@ -128,7 +130,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params;
   try {
-    const page = await prisma.geoPage.findUnique({ where: { id }, select: { title: true } });
+    const page = await prisma.geoPage.findUnique({ where: { id }, select: { routePath: true, published: true, updatedAt: true, title: true } });
     await prisma.geoPage.delete({ where: { id } });
     await logActivity({
       userId: session.user.id!,
@@ -139,7 +141,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
       resourceId: id,
       resourceName: page?.title,
     });
-    revalidatePublicContent();
+    await revalidatePublicContent(geoContentChange(page, null));
     return NextResponse.json({ success: true });
   } catch (err) {
     return apiError(err);
