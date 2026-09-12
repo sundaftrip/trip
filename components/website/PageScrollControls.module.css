@@ -4,8 +4,6 @@
   bottom: calc(20px + max(var(--booking-bar-height, 0px), env(safe-area-inset-bottom)));
   z-index: 45;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .controls[hidden] {
@@ -34,18 +32,13 @@
   transition: background-color 150ms ease, color 150ms ease;
 }
 
-.button:disabled {
-  color: #96a3a7;
-  cursor: default;
-}
-
 .button:focus-visible {
   outline: 2px solid #075d63;
   outline-offset: 3px;
 }
 
 @media (hover: hover) {
-  .button:hover:not(:disabled) {
+  .button:hover {
     background: #eff7f6;
     color: #075d63;
   }

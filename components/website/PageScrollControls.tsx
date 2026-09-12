@@ -10,7 +10,6 @@ export default function PageScrollControls() {
   const [position, setPosition] = useState({
     canScroll: false,
     atTop: true,
-    atBottom: false,
     bookingHeight: 0,
   });
 
@@ -25,13 +24,11 @@ export default function PageScrollControls() {
       const next = {
         canScroll: maxScroll > 4,
         atTop: page.scrollTop <= 4,
-        atBottom: page.scrollTop >= maxScroll - 4,
         bookingHeight: bookingBar?.getBoundingClientRect().height ?? 0,
       };
       setPosition((previous) => (
         previous.canScroll === next.canScroll
         && previous.atTop === next.atTop
-        && previous.atBottom === next.atBottom
         && previous.bookingHeight === next.bookingHeight
           ? previous
           : next
@@ -77,22 +74,13 @@ export default function PageScrollControls() {
       <button
         type="button"
         className={styles.button}
-        aria-label="Kembali ke atas halaman"
-        disabled={position.atTop}
-        onClick={() => scrollToEdge("top")}
+        aria-label={position.atTop ? "Ke bagian bawah halaman" : "Kembali ke atas halaman"}
+        onClick={() => scrollToEdge(position.atTop ? "bottom" : "top")}
       >
-        <ChevronUp size={16} strokeWidth={2.5} aria-hidden="true" />
-        <span>Atas</span>
-      </button>
-      <button
-        type="button"
-        className={styles.button}
-        aria-label="Ke bagian bawah halaman"
-        disabled={position.atBottom}
-        onClick={() => scrollToEdge("bottom")}
-      >
-        <ChevronDown size={16} strokeWidth={2.5} aria-hidden="true" />
-        <span>Bawah</span>
+        {position.atTop
+          ? <ChevronDown size={16} strokeWidth={2.5} aria-hidden="true" />
+          : <ChevronUp size={16} strokeWidth={2.5} aria-hidden="true" />}
+        <span>{position.atTop ? "Bawah" : "Atas"}</span>
       </button>
     </aside>
   );
