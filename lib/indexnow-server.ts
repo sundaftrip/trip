@@ -78,7 +78,8 @@ export async function notifyIndexNowChange(change: PublicContentChange) {
   } catch {
     // A queue/storage failure must not turn a completed CMS write into a false
     // save error. Reconciliation can recover current records, but cannot recreate
-    // an old deleted URL if storage failed before its first queue entry.
+    // an old URL removed by deletion, rename, or visibility change if storage
+    // failed before that removal was queued.
     console.warn("IndexNow enqueue failed; content was saved. Check queue capacity/storage.");
   }
 }
