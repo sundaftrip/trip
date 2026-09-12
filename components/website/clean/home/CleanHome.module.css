@@ -674,22 +674,30 @@
   border-right: 0;
 }
 
-.benefitGrid svg {
-  width: 25px;
-  height: 25px;
-  color: var(--home-primary);
-  stroke-width: 1.65;
+.benefitIcon {
+  display: block;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+}
+
+.benefitIcon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.benefitIcon [data-part] {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .benefitTitle {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
-}
-
-.benefitTitle svg {
-  flex: 0 0 auto;
-  margin-top: 1px;
+  gap: 12px;
 }
 
 .benefitGrid h3 {
@@ -1629,19 +1637,14 @@
     padding-right: 0;
   }
 
-  .benefitGrid svg {
-    width: 17px;
-    height: 17px;
+  .benefitIcon {
+    width: 52px;
+    height: 52px;
   }
 
   .benefitTitle {
-    min-height: 38px;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .benefitTitle svg {
-    margin-top: 0;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .benefitGrid h3 {
@@ -1867,4 +1870,84 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Match the Russia service illustrations' cadence, with motion only on screen. */
+@media (prefers-reduced-motion: no-preference) {
+  .benefitIcon [data-part] {
+    animation-duration: 3.2s;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1);
+    animation-iteration-count: infinite;
+    animation-delay: var(--benefit-motion-phase, 0s);
+    animation-play-state: paused;
+  }
+
+  .benefitGrid article:nth-child(2) { --benefit-motion-phase: -0.4s; }
+  .benefitGrid article:nth-child(3) { --benefit-motion-phase: -0.8s; }
+  .benefitGrid article:nth-child(4) { --benefit-motion-phase: -1.2s; }
+
+  .benefitIcon [data-part="body"] { animation-name: benefitFloat; }
+  .benefitIcon [data-part="shadow"] { animation-name: benefitShadow; }
+  .benefitIcon [data-part="spark"] { animation-name: benefitSparkle; }
+  .benefitGrid [data-motion="documents"] [data-part="detail"] { animation-name: benefitCheck; }
+  .benefitGrid [data-motion="compass"] [data-part="detail"] { animation-name: benefitNeedle; }
+  .benefitGrid [data-motion="luggage"] [data-part="body"] { animation-name: benefitSuitcase; }
+  .benefitGrid [data-motion="guide"] [data-part="detail"] {
+    animation-name: benefitWave;
+    transform-origin: 10% 90%;
+  }
+  .benefitGrid [data-motion="guide"] [data-part="bubble"] { animation-name: benefitSpeech; }
+
+  .benefitGrid[data-motion-active="true"] .benefitIcon [data-part] {
+    animation-play-state: running;
+  }
+}
+
+@keyframes benefitFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(6deg); }
+}
+
+@keyframes benefitCheck {
+  0%, 100% { transform: scale(1); }
+  35% { transform: scale(1.13); }
+  65% { transform: scale(0.96); }
+}
+
+@keyframes benefitNeedle {
+  0%, 100% { transform: rotate(0); }
+  28% { transform: rotate(38deg); }
+  58% { transform: rotate(-28deg); }
+  80% { transform: rotate(12deg); }
+}
+
+@keyframes benefitSuitcase {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  20% { transform: rotate(-14deg) translateY(-2px); }
+  45% { transform: rotate(13deg) translateY(-7px); }
+  70% { transform: rotate(-8deg) translateY(-2px); }
+  86% { transform: rotate(4deg) translateY(0); }
+}
+
+@keyframes benefitWave {
+  0%, 100% { transform: rotate(0); }
+  20%, 52% { transform: rotate(-16deg); }
+  36%, 68% { transform: rotate(12deg); }
+}
+
+@keyframes benefitSpeech {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-4px) scale(1.06); }
+  65% { transform: translateY(1px) scale(0.98); }
+}
+
+@keyframes benefitSparkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(-8deg); }
+  45% { opacity: 1; transform: scale(1.14) rotate(10deg); }
+  75% { opacity: 0.55; transform: scale(0.9) rotate(0); }
+}
+
+@keyframes benefitShadow {
+  0%, 100% { opacity: 0.75; transform: scaleX(1); }
+  50% { opacity: 0.35; transform: scaleX(0.78); }
 }

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 export type RussiaIllustrationKind =
+  | "documents"
   | "catering"
   | "flight"
   | "train"
@@ -15,6 +16,7 @@ export type RussiaIllustrationKind =
   | "ruble";
 
 const palettes: Record<RussiaIllustrationKind, [string, string, string, string]> = {
+  documents: ["#B5A0FA", "#7B64CC", "#8AE1CD", "#27AA96"],
   catering: ["#FFE783", "#F6B62D", "#FFAB60", "#E16A35"],
   flight: ["#74C8FF", "#337DE3", "#ECF8FF", "#B0DCFF"],
   train: ["#FF927F", "#E64557", "#83B8ED", "#37639F"],
@@ -35,6 +37,23 @@ function Star({ x, y, color = "#F3BF5D", size = 5 }: { x: number; y: number; col
 
 function Artwork({ kind, main, accent, glass }: { kind: RussiaIllustrationKind; main: string; accent: string; glass: string }): ReactNode {
   switch (kind) {
+    case "documents":
+      return <>
+        <ellipse data-part="shadow" cx="40" cy="68" rx="25" ry="4" fill="#BFB4DF" opacity=".25" />
+        <g data-part="body">
+          <rect x="17" y="17" width="39" height="48" rx="6" fill={main} transform="rotate(-9 36 41)" />
+          <path d="M29 12H49L61 24V60C61 64 59 66 55 66H29C25 66 23 64 23 60V18C23 14 25 12 29 12Z" fill={glass} />
+          <path d="M49 12V21C49 24 51 25 54 25H61Z" fill="#C4B6EF" />
+          <path d="M30 31H48M30 38H45M30 45H39" stroke="#A5B6C9" strokeWidth="3" strokeLinecap="round" />
+          <path d="M28 19V26" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" />
+          <g data-part="detail">
+            <circle cx="56" cy="54" r="15" fill={accent} />
+            <circle cx="56" cy="54" r="11.5" fill="none" stroke="#D9FFF1" strokeWidth="1.5" />
+            <path d="M50 54L54 58L63 49" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <g data-part="spark"><Star x={66} y={16} size={4} /><circle cx="12" cy="39" r="2" fill="#9DD9D2" /></g>
+      </>;
     case "catering":
       return <>
         <ellipse data-part="shadow" cx="40" cy="65" rx="27" ry="4" fill="#D6B886" opacity=".2" />
