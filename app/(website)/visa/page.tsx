@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
@@ -8,12 +9,12 @@ import VisaLanding from "./VisaLanding";
 // ISR: database visa jarang berubah — edit dari admin tampil maksimal 5 menit.
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Info Visa Paspor Indonesia dan Jasa Urus Visa",
   description:
     "Database persyaratan visa 88 negara dan layanan jasa urus visa untuk pemegang paspor Indonesia, dikurasi dari sumber resmi oleh Sundaf Trip.",
   alternates: { canonical: "https://sundaftrip.com/visa" },
-};
+});
 
 export default async function VisaPage() {
   // Keep the index payload deliberately compact. Rich country fields remain

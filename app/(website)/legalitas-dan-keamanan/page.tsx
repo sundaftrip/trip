@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 export const revalidate = 300;
 
 import type { Metadata } from "next";
@@ -30,12 +31,12 @@ const SITE_URL = "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
   "This website is owned and operated by CV Sundaf Holiday Group, operating under the Sundaf Trip brand.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Legalitas dan Keamanan Sundaf Trip",
   description:
     "Halaman verifikasi legalitas, kontak resmi, kanal komunikasi, dan panduan keamanan pemesanan Sundaf Trip.",
   alternates: { canonical: `${SITE_URL}/legalitas-dan-keamanan` },
-};
+});
 
 const getCompany = unstable_cache(
   async () => {

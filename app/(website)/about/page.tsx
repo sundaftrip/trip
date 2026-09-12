@@ -1,3 +1,4 @@
+import { withPageSocialMetadata } from "@/lib/site-metadata";
 // ISR: konten CMS jarang berubah; revalidatePublicContent() me-revalidate on-write.
 export const revalidate = 300;
 import fs from "node:fs";
@@ -37,11 +38,11 @@ function getGalleryImages(): string[] {
   }
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withPageSocialMetadata({
   title: "Tentang Kami",
   description: "Cerita Sundaf Trip, spesialis perjalanan Rusia, Asia Tengah, dan aurora untuk traveler Indonesia yang ingin berangkat tanpa drama yang tidak perlu.",
   alternates: { canonical: "https://sundaftrip.com/about" },
-};
+});
 
 /* ── Default fallbacks (dipakai kalau admin belum mengisi CMS) ── */
 const DEFAULT_DESTINATIONS = [
