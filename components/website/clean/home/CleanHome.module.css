@@ -1448,6 +1448,7 @@
   }
 
   .heroNote {
+    right: 64px;
     width: 142px;
     font-size: 28px;
   }
