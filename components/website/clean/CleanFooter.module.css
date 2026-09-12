@@ -68,7 +68,7 @@
 .bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 48px; margin-top: 48px; padding-top: 26px; border-top: 1px solid var(--footer-line); color: var(--footer-muted); }
 .bottom address { max-width: 680px; font-size: 12px; font-style: normal; line-height: 1.7; }
 .appointment { display: block; margin-bottom: 5px; color: var(--footer-text); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
-.bottom > p { flex: 0 0 auto; margin: 0; font-size: 12px; line-height: 1.7; text-align: right; }
+.bottom > p { flex: 0 0 auto; margin: 0; padding-right: 156px; font-size: 12px; line-height: 1.7; text-align: right; }
 .bottom > p > span { display: block; }
 
 @media (max-width: 1119px) {
@@ -83,6 +83,8 @@
   .contact { grid-column: 1 / -1; }
   .contact > p { max-width: 420px; }
   .contactLinks { display: flex; flex-wrap: wrap; gap: 0 28px; }
+  .bottom { display: grid; gap: 24px; }
+  .bottom > p { padding-right: 0; text-align: left; }
 }
 
 @media (max-width: 639px) {
