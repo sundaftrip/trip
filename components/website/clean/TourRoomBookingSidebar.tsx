@@ -2,6 +2,7 @@
 
 import TourBookingCTA from "@/components/website/TourBookingCTA";
 import { buildWhatsAppBookingHref } from "@/lib/tour-commerce";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
@@ -62,7 +63,7 @@ export default function TourRoomBookingSidebar({
   const selectedHeadlinePrice = selectedRoom?.headlinePrice ?? basePrice;
   const selectedMandatoryTotalPrice = selectedRoom?.mandatoryTotalPrice ?? startingTotal;
   const selectedTotalPrice = selectedMandatoryTotalPrice + optionalServicesTotal;
-  const selectedPriceCaption = hasOptionalServices ? "Total per orang" : "Total wajib";
+  const selectedPriceCaption = tourSubtotalLabel(mandatoryAddOns.length > 0, optionalServicesTotal > 0);
   const selectedBookingWaHref = selectedRoom || hasOptionalServices
     ? buildWhatsAppBookingHref(bookingPhone, {
         tourName,
@@ -127,7 +128,7 @@ export default function TourRoomBookingSidebar({
               <span>
                 <b>{formatCurrency(room.headlinePrice)}</b>
                 <small>
-                  {hasOptionalServices ? "Total per orang" : "Total wajib"}{" "}
+                  {selectedPriceCaption}{" "}
                   {formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal)}
                 </small>
               </span>

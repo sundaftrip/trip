@@ -110,6 +110,21 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Total wajib": "Total required cost",
   "Total wajib per orang": "Total required cost per guest",
   "Total per orang": "Total per guest",
+  "Subtotal paket + tambahan wajib": "Package subtotal + required additions",
+  "Subtotal pilihan per orang": "Selected services subtotal per guest",
+  "Tambahan wajib terhitung:": "Required additions counted:",
+  "Apa yang dihitung dalam subtotal?": "What is included in the subtotal?",
+  "Jumlah dalam skema pembayaran per orang": "Payment plan amount per guest",
+  "Periksa rincian fasilitas, biaya di luar paket, dan pilihan tambahan pada halaman paket.":
+    "Check the package page for included services, excluded costs and optional additions.",
+  "Tambahan wajib yang ditampilkan sudah dihitung dalam subtotal.":
+    "The required additions shown are already included in the subtotal.",
+  "Tambahan opsional yang belum dipilih tidak termasuk subtotal.":
+    "Optional additions that have not been selected are not included in the subtotal.",
+  "Periksa fasilitas yang termasuk, biaya di luar paket, subtotal, dan tambahan opsional sebelum melanjutkan ke pembayaran.":
+    "Check included services, excluded costs, the subtotal and optional additions before proceeding with payment.",
+  "Harga per orang. Subtotal mencakup paket dan tambahan berlabel wajib yang ditampilkan; periksa biaya di luar paket dan tambahan opsional.":
+    "Price per guest. The subtotal includes the package and the displayed required additions; check excluded costs and optional additions.",
   "DIREKOMENDASIKAN": "RECOMMENDED",
   "Termasuk": "Included",
   "Tidak termasuk": "Not included",

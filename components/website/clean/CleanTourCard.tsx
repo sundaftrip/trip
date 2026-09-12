@@ -5,6 +5,7 @@ import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { PublicTourState } from "@/lib/tour-order";
 import { getCommerceTourStatus } from "@/lib/tour-commerce";
+import { TOUR_COST_DETAILS_NOTE, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import styles from "./CleanSite.module.css";
 
 export type CleanTour = {
@@ -108,7 +109,7 @@ export default function CleanTourCard({
         <div className={styles.priceRow}>
           <div>
             <span className={styles.priceLabel}>
-              {price > 0 ? (mandatoryTotal > 0 ? "Total wajib" : "Harga paket") : "Harga"}
+              {price > 0 ? tourSubtotalLabel(mandatoryTotal > 0) : "Harga"}
             </span>
             <span className={styles.price}>
               {price > 0 ? (
@@ -121,9 +122,10 @@ export default function CleanTourCard({
             </span>
             {mandatoryTotal > 0 ? (
               <small className={styles.priceNote}>
-                Termasuk {formatCurrency(mandatoryTotal)} biaya wajib
+                Tambahan wajib terhitung: {formatCurrency(mandatoryTotal)}
               </small>
             ) : null}
+            <small className={styles.priceNote}>{TOUR_COST_DETAILS_NOTE}</small>
           </div>
           <span className={styles.cardArrow} aria-hidden="true">→</span>
         </div>

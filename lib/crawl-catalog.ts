@@ -5,6 +5,7 @@ import { cateringPackages, formatCateringPrice } from "./russia-catering";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "./tour-commerce";
 import { parseTourHotelRoomPricing, resolveTourStartingPrice } from "./tour-room-pricing";
 import { formatCurrency } from "./utils";
+import { formatOptionalActivityDisclosure, formatPackageCostDisclosure, tourSubtotalLabel } from "./tour-cost-disclosure";
 
 export const CRAWL_PROFILE = `# Sundaf Trip
 
@@ -71,6 +72,7 @@ type CrawlTour = {
   promoPrice: number | null;
   addOns: unknown;
   hotel?: unknown;
+  exclusions?: readonly string[] | null;
   status: string;
   badge?: string | null;
 };
@@ -84,7 +86,8 @@ export function isCrawlTourBookable(tour: CrawlTour, now = new Date()) {
 }
 
 export function formatCrawlTour(tour: CrawlTour, now = new Date()) {
-  const mandatoryTotal = mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(tour.addOns, tour.slug));
+  const addOns = resolveCanadaRockiesAddOns(tour.addOns, tour.slug);
+  const mandatoryTotal = mandatoryAddOnsTotal(addOns);
   const { roomPrices } = parseTourHotelRoomPricing(tour.hotel, mandatoryTotal);
   const { headlinePrice: basePrice, mandatoryTotalPrice: total } = resolveTourStartingPrice(
     tour.promoPrice ?? tour.price,
@@ -97,10 +100,12 @@ export function formatCrawlTour(tour: CrawlTour, now = new Date()) {
     tour.country,
     tour.duration,
     tour.tripDate ? `keberangkatan ${DATE_FORMATTER.format(tour.tripDate)}` : "land tour privat, tanggal sesuai permintaan",
-    basePrice > 0 ? `mulai ${formatCurrency(total)}/orang${mandatoryTotal > 0 ? `, termasuk ${formatCurrency(mandatoryTotal)} biaya wajib` : ""}` : "harga sesuai permintaan",
+    basePrice > 0 ? `${tourSubtotalLabel(mandatoryTotal > 0)} mulai ${formatCurrency(total)}/orang${mandatoryTotal > 0 ? `, tambahan wajib terhitung ${formatCurrency(mandatoryTotal)}` : ""}` : "harga sesuai permintaan",
     status === "completed" ? "trip selesai, arsip" : departed ? "sudah berangkat, tidak tersedia untuk pemesanan" : status === "sold_out" ? "penuh" : status === "waitlist" ? "daftar tunggu" : null,
   ].filter(Boolean).join("; ");
-  return `- [${tour.title}](https://sundaftrip.com${canonicalTourPath(tour)}): ${facts}.`;
+  const disclosure = formatPackageCostDisclosure(tour.exclusions, basePrice > 0 && mandatoryTotal > 0);
+  const optionalActivities = formatOptionalActivityDisclosure(addOns);
+  return [`- [${tour.title}](https://sundaftrip.com${canonicalTourPath(tour)}): ${facts}.`, disclosure, optionalActivities].filter(Boolean).join(" ");
 }
 
 export function formatCrawlVisaFees(country: {

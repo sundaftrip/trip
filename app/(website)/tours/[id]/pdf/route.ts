@@ -12,8 +12,11 @@ import {
   pdfImageBytesToDataUrl,
   validatePdfImageDataUrl,
 } from "@/lib/safe-image-url";
-import { localizePdfTour } from "@/lib/itinerary-pdf-localization";
+import { localizePdfText, localizePdfTour } from "@/lib/itinerary-pdf-localization";
 import { ITINERARY_PDF_HEADERS } from "@/lib/itinerary-pdf-download";
+import { preparePdfVisaAddOns } from "@/lib/itinerary-pdf-visa-offers";
+import { normalizeTourDisplayTitle } from "@/lib/tour-display";
+import type { VisaServiceCatalogEntry } from "@/lib/tour-visa-offers";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
 import { buildTourPaymentPlan } from "@/lib/tour-payment-plan";
@@ -24,6 +27,7 @@ import {
   selectCanadaRockiesTourSource,
 } from "@/lib/canada-catalog-preview";
 import { ItineraryPDF, type ItineraryDay, type PdfAddOn } from "@/components/pdf/ItineraryPDF";
+import visaSeed from "@/prisma/visa-seed.json";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,6 +43,15 @@ const PDF_GALLERY_FALLBACKS = [
   "/trip-photos/cp-2.jpg",
 ];
 const MAX_PDF_GALLERY_IMAGES = 7;
+const previewVisaCountries: VisaServiceCatalogEntry[] = visaSeed.map((entry) => ({
+  name: entry.name,
+  en: entry.en,
+  region: entry.region,
+  visa: entry.visa,
+  servicePrice: entry.servicePrice ?? null,
+  sortOrder: entry.id,
+  variants: [],
+}));
 
 function slugify(s: string) {
   return s.normalize("NFKD").replace(/[^\w\s-]/g, "").trim()
@@ -186,7 +199,7 @@ export async function GET(
 
   const previewTour = getCanadaRockiesPreviewTour(id);
   const standalonePreview = Boolean(previewTour && !process.env.DATABASE_URL);
-  const [databaseTour, companyRows] = standalonePreview ? [null, []] : await Promise.all([
+  const [databaseTour, companyRows, visaCountries] = standalonePreview ? [null, [], previewVisaCountries] : await Promise.all([
     prisma.tour.findFirst({ where: { OR: [{ id }, { slug: id }] } }),
     prisma.companyInfo.findMany({
       where: { key: { in: [
@@ -195,6 +208,25 @@ export async function GET(
         "company_instagram", "about_tagline", "about_story",
       ] } },
     }),
+    prisma.countryVisa.findMany({
+      select: {
+        name: true,
+        en: true,
+        region: true,
+        visa: true,
+        servicePrice: true,
+        sortOrder: true,
+        variants: {
+          orderBy: { sortOrder: "asc" },
+          select: {
+            name: true,
+            priceIDR: true,
+            processingTime: true,
+            sortOrder: true,
+          },
+        },
+      },
+    }).catch(() => []),
   ]);
   const tour = selectCanadaRockiesTourSource(databaseTour, previewTour);
 
@@ -281,7 +313,12 @@ export async function GET(
     gallery: uniqueImages(gallery),
     visaInfo: tour.visaInfo,
     notes: resolveCanadaRockiesPdfNotes(tour.notes, tour.slug),
-    addOns: normalizedAddOns,
+    addOns: preparePdfVisaAddOns(normalizedAddOns, {
+      title: normalizeTourDisplayTitle(localizePdfText(tour.title) ?? tour.title),
+      slug: tour.slug,
+      country: localizePdfText(tour.country) ?? tour.country,
+      cityHighlight: localizePdfText(tour.cityHighlight),
+    }, visaCountries),
   });
   const localizedMandatoryAddOns = (pdfTour.addOns ?? [])
     .filter((item) => item.tag === "wajib");

@@ -3,6 +3,7 @@ import { Fragment, type ComponentProps } from "react";
 import type { ItineraryPDFProps } from "./ItineraryPDF";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeTourServiceTerms } from "@/lib/tour-service-terms";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 
 // Plain text is kept in full. In particular, do not use buildItineraryDisplay:
 // it removes meal/stay metadata that this layout intentionally does not repeat.
@@ -182,17 +183,18 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
           </View>
         ))}
         <View style={styles.total} wrap={false}>
-          <Text style={styles.totalLabel}>Total wajib per orang</Text>
+          <Text style={styles.totalLabel}>{tourSubtotalLabel(mandatoryAddOns.length > 0)}</Text>
           <Text style={styles.totalValue}>{pdfText(inclusivePriceLabel)}</Text>
         </View>
         {!!priceCoretLabel && <Text style={styles.quiet}>Harga normal paket: {pdfText(priceCoretLabel)}</Text>}
-        {!!inclusivePriceCoretLabel && <Text style={styles.quiet}>Harga normal total: {pdfText(inclusivePriceCoretLabel)}</Text>}
+        {!!inclusivePriceCoretLabel && <Text style={styles.quiet}>Subtotal harga normal: {pdfText(inclusivePriceCoretLabel)}</Text>}
+        <Text style={styles.quiet}>{mandatoryAddOns.length > 0 ? "Tambahan wajib yang dirinci di atas sudah dihitung dalam subtotal. " : ""}Periksa biaya di luar harga paket pada bagian detail paket; pilihan tambahan dibayar terpisah.</Text>
         {!!landTourLabel && <Text style={styles.quiet}>Land tour: {pdfText(landTourLabel)}</Text>}
         {tour.seatsLeft > 0 && ["available", "last_seats", "confirmed"].includes(commerceStatus) && <Text style={styles.quiet}>{tour.seatsLeft} kursi tersedia saat katalog diterbitkan.</Text>}
         {optional.length > 0 && (
           <>
             <Text style={styles.subheading} minPresenceAhead={40}>Pilihan tambahan</Text>
-            <Text style={styles.quiet}>Opsional, belum masuk total di atas.</Text>
+            <Text style={styles.quiet}>Opsional, belum masuk subtotal di atas.</Text>
             {optional.map((item, index) => (
               <View key={index} style={styles.row}>
                 <View style={styles.rowLabel}>
@@ -233,7 +235,7 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
               <List items={tour.inclusions} />
             </>}
             {tour.exclusions.length > 0 && <>
-              <Text style={styles.columnTitle} minPresenceAhead={32}>Belum termasuk</Text>
+              <Text style={styles.columnTitle} minPresenceAhead={32}>Belum termasuk harga paket</Text>
               <List items={tour.exclusions} />
             </>}
           </> : <View wrap={false}>
@@ -244,7 +246,7 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
                 <List items={tour.inclusions} />
               </View>}
               {tour.exclusions.length > 0 && <View style={styles.column}>
-                <Text style={styles.columnTitle} minPresenceAhead={32}>Belum termasuk</Text>
+                <Text style={styles.columnTitle} minPresenceAhead={32}>Belum termasuk harga paket</Text>
                 <List items={tour.exclusions} />
               </View>}
             </View>
@@ -268,7 +270,7 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
               <Text style={styles.paymentAmount}>{pdfText(step.amountLabel)}</Text>
             </View>
           ))}
-          <Text style={styles.quiet}>Total pembayaran per orang: {pdfText(paymentPlan.totalLabel)}</Text>
+          <Text style={styles.quiet}>Jumlah dalam skema pembayaran per orang: {pdfText(paymentPlan.totalLabel)}</Text>
           <Paragraphs text={paymentPlan.finePrint} />
         </> : <Text style={styles.paragraph}>Jadwal dan nominal pembayaran mengikuti invoice resmi Sundaf Trip.</Text>}
         <Text style={styles.quiet}>DP dan pelunasan mengikuti invoice resmi. Layanan opsional dibayar terpisah setelah dikonfirmasi. Kirim bukti transfer agar pembayaran dapat dicek. Keterlambatan pembayaran dapat memengaruhi ketersediaan tiket, hotel, dan layanan.</Text>

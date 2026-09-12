@@ -38,7 +38,7 @@ test("keeps raw meal and stay metadata, complete descriptions, notes and contact
   const text = collectText(ItineraryPDF(props)).replace(/\s+/g, " ");
   for (const value of ["(B,L)", "Makan: sarapan dan makan siang", "Bermalam: Hotel A", "Kalimat penutup tetap utuh.", "Catatan lengkap.", "08111620207"]) assert.ok(text.includes(value), value);
   assert.equal(text.match(/Rp 45\.300\.000/g)?.length, 1);
-  assert.ok(text.includes("Opsional, belum masuk total di atas."));
+  assert.ok(text.includes("Opsional, belum masuk subtotal di atas."));
   assert.ok(text.includes("Asuransi (direkomendasikan)"));
   assert.ok(text.includes("Premi sesuai usia."));
   assert.ok(text.includes("Biaya dikonfirmasi saat tiket grup dikunci."));

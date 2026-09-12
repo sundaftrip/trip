@@ -9,6 +9,7 @@ import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { CleanTour } from "../CleanTourCard";
 import { appendCampaignToPath } from "@/lib/campaign-attribution";
+import { TOUR_COST_DETAILS_NOTE, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import styles from "./CleanHome.module.css";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
@@ -132,7 +133,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                     <span>{departureLabel(tour)}</span>
                   </p>
                   <div className={styles.tourPrice}>
-                    <span>{price > 0 ? (mandatoryTotal > 0 ? "Total wajib" : "Harga paket") : "Harga"}</span>
+                    <span>{price > 0 ? tourSubtotalLabel(mandatoryTotal > 0) : "Harga"}</span>
                     <strong>
                       {price > 0 ? (
                         <>
@@ -144,9 +145,10 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                     </strong>
                     {mandatoryTotal > 0 ? (
                       <small className={styles.tourMandatoryNote}>
-                        Termasuk {formatCurrency(mandatoryTotal)} biaya wajib
+                        Tambahan wajib terhitung: {formatCurrency(mandatoryTotal)}
                       </small>
                     ) : null}
+                    <small className={styles.tourMandatoryNote}>{TOUR_COST_DETAILS_NOTE}</small>
                   </div>
                 </div>
               </Link>
