@@ -58,12 +58,12 @@
 .ossMark img { display: block; width: 90px; height: auto; }
 .ahuMark { padding-block: 5px; }
 .ahuMark img { display: block; width: 36px; height: 36px; object-fit: contain; }
+.ossMark:hover,
 .ahuMark:hover { background: #f4d39b; }
 .identity span { min-width: 0; }
 .identity strong { display: block; font-size: 13px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
 .identity small { display: block; margin-top: 3px; color: var(--footer-text); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .issuer { display: block; margin-top: 3px; color: var(--footer-muted); font-size: 10px; line-height: 1.4; }
-.identity:hover { background: #394458; }
 .registrationDetails { min-width: 0; }
 .registrationDetails strong { display: block; color: var(--footer-ink); font-size: 13px; font-weight: 600; line-height: 1.5; }
 .registrationNumber { display: block; margin-top: 3px; color: var(--footer-text); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }

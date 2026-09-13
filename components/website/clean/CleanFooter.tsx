@@ -114,18 +114,18 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <Link className={styles.textLink} href="/partner">Kenali kemitraan SUNDAF</Link>
             <div className={styles.registrations}>
               {(legalName || nib) && (
-                <Link className={styles.identity} href="/legalitas-dan-keamanan" aria-label="Lihat identitas dan legalitas usaha Sundaf">
+                <div className={styles.identity} role="group" aria-label="Perizinan usaha melalui OSS">
                   {nib && (
-                    <span className={styles.ossMark}>
+                    <a className={styles.ossMark} href="https://oss.go.id/id" target="_blank" rel="noopener noreferrer" aria-label="Buka situs resmi OSS (buka di tab baru)" title="Buka situs resmi OSS">
                       <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={90} height={27} />
-                    </span>
+                    </a>
                   )}
                   <span>
                     {legalName ? <strong data-no-translate translate="no">{legalName}</strong> : <strong>Identitas usaha Sundaf</strong>}
                     {nib && <small data-no-translate translate="no">NIB {nib}</small>}
                     {nib && <span className={styles.issuer}>Perizinan melalui OSS</span>}
                   </span>
-                </Link>
+                </div>
               )}
               <div className={styles.registration} role="group" aria-label="Pendaftaran badan usaha di AHU">
                 <a className={styles.ahuMark} href={SUNDAF_AHU_REGISTRATION.verificationUrl} target="_blank" rel="noopener noreferrer" aria-label={`Cek pendaftaran ${SUNDAF_AHU_REGISTRATION.legalName} di AHU (buka di tab baru)`} title="Cek pendaftaran di AHU">
