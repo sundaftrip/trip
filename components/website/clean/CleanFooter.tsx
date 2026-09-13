@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Roboto } from "next/font/google";
 import WhatsAppIcon from "../WhatsAppIcon";
 import Link from "./PreserveScrollLink";
 import { FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
@@ -10,6 +9,7 @@ import {
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
+import { roboto } from "@/lib/fonts";
 import styles from "./CleanFooter.module.css";
 
 function InstagramIcon() {
@@ -21,8 +21,6 @@ function InstagramIcon() {
     </svg>
   );
 }
-
-const roboto = Roboto({ weight: ["400", "500", "700"], subsets: ["latin"], variable: "--font-footer-roboto", display: "swap", preload: false });
 
 export default function CleanFooter({ logo, company }: { logo?: string; company: Record<string, string> }) {
   const logoSrc = cldFit(logo || "/logo.png", 320);

@@ -82,6 +82,14 @@
 .bottom > p { flex: 0 0 auto; margin: 0; padding-right: 156px; font-size: 12px; line-height: 1.5; text-align: right; }
 .bottom > p > span { display: block; }
 
+@media (min-width: 960px) {
+  .partner,
+  .contact { display: flex; flex-direction: column; }
+  .partner > .textLink { align-self: flex-start; flex-shrink: 0; margin-bottom: 10px; }
+  .registrations,
+  .contactLinks { margin-top: auto; }
+}
+
 @media (max-width: 1119px) {
   .top { grid-template-columns: 1fr; gap: 22px; }
   .brand > p { max-width: 480px; }
