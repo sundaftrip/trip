@@ -127,7 +127,9 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
               </Link>
             )}
             <div className={styles.registration} role="group" aria-label="Pendaftaran badan usaha di AHU">
-              <span className={styles.ahuMark} aria-hidden="true" data-no-translate translate="no">AHU</span>
+              <span className={styles.ahuMark}>
+                <Image src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={64} height={64} />
+              </span>
               <div className={styles.registrationDetails}>
                 <strong>Terdaftar di AHU</strong>
                 <span className={styles.registrationName} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.legalName}</span>
