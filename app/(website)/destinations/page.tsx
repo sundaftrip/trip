@@ -4,7 +4,6 @@ import Link from "@/components/website/clean/PreserveScrollLink";
 import { ArrowRight, ArrowUpRight, Compass, MapPin } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
-import LatinAmericaPhotoCredit from "@/components/website/LatinAmericaPhotoCredit";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
@@ -180,7 +179,6 @@ export default function DestinationsPage() {
               </div>
             ))}
           </div>
-          <p className={styles.photoCredits}>Foto Peru: <LatinAmericaPhotoCredit image="machu-picchu-panorama.webp" />. Amerika Latin: <LatinAmericaPhotoCredit image="rio-de-janeiro-sunrise.webp" />. Foto diubah ukuran/format; tampilan mengikuti layar.</p>
         </div>
       </section>
 
@@ -281,6 +279,9 @@ export default function DestinationsPage() {
           </Link>
         </div>
       </section>
+      <div className={styles.shell}>
+        <Link className={styles.photoCredits} href="/amerika-latin#kredit-foto" scroll>Kredit foto</Link>
+      </div>
     </div>
   );
 }
