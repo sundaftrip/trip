@@ -13,7 +13,6 @@ export const SUNDAF_AHU_REGISTRATION = {
   number: "AHU-0001183-AH.01.14 Tahun 2026",
   verificationUrl:
     "https://sab.ahu.go.id/cv/pendaftaran/info/no/AHU-0001183-AH.01.14+Tahun+2026/id/2785088",
-  documentUrl: "/legalitas/surat-keterangan-terdaftar-ahu-sundaf-holiday-group-2026.pdf",
 } as const;
 
 export function appointmentOnlyOfficeAddress(configuredAddress?: string) {

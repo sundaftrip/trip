@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Roboto } from "next/font/google";
 import WhatsAppIcon from "../WhatsAppIcon";
 import Link from "./PreserveScrollLink";
-import { ExternalLink, FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
+import { FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
 import {
   APPOINTMENT_ONLY_LABEL,
   SUNDAF_AHU_REGISTRATION,
@@ -112,36 +112,29 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <h2 id="footer-partner-title">Untuk mitra perjalanan</h2>
             <p>Kebutuhan tamu Anda, dari satu layanan di Rusia hingga perjalanan grup. Mari bekerja sama.</p>
             <Link className={styles.textLink} href="/partner">Kenali kemitraan SUNDAF</Link>
-            {(legalName || nib) && (
-              <Link className={styles.identity} href="/legalitas-dan-keamanan" aria-label="Lihat identitas dan legalitas usaha Sundaf">
-                {nib && (
-                  <span className={styles.ossMark}>
-                    <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={90} height={27} />
+            <div className={styles.registrations}>
+              {(legalName || nib) && (
+                <Link className={styles.identity} href="/legalitas-dan-keamanan" aria-label="Lihat identitas dan legalitas usaha Sundaf">
+                  {nib && (
+                    <span className={styles.ossMark}>
+                      <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={90} height={27} />
+                    </span>
+                  )}
+                  <span>
+                    {legalName ? <strong data-no-translate translate="no">{legalName}</strong> : <strong>Identitas usaha Sundaf</strong>}
+                    {nib && <small data-no-translate translate="no">NIB {nib}</small>}
+                    {nib && <span className={styles.issuer}>Perizinan melalui OSS</span>}
                   </span>
-                )}
-                <span>
-                  {legalName ? <strong data-no-translate translate="no">{legalName}</strong> : <strong>Identitas usaha Sundaf</strong>}
-                  {nib && <small data-no-translate translate="no">NIB {nib}</small>}
-                  {nib && <span className={styles.issuer}>Perizinan melalui OSS</span>}
-                </span>
-              </Link>
-            )}
-            <div className={styles.registration} role="group" aria-label="Pendaftaran badan usaha di AHU">
-              <span className={styles.ahuMark}>
-                <Image src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={64} height={64} />
-              </span>
-              <div className={styles.registrationDetails}>
-                <strong>Terdaftar di AHU</strong>
-                <span className={styles.registrationName} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.legalName}</span>
-                <span className={styles.registrationNumber} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.number}</span>
-                <span className={styles.issuer}>Ditjen AHU · Kementerian Hukum RI</span>
-                <div className={styles.registrationLinks}>
-                  <a href={SUNDAF_AHU_REGISTRATION.verificationUrl} target="_blank" rel="noopener noreferrer" aria-label="Cek di AHU untuk CV Sundaf Holiday Group (buka di tab baru)">
-                    Cek di AHU <ExternalLink aria-hidden="true" size={12} />
-                  </a>
-                  <a href={SUNDAF_AHU_REGISTRATION.documentUrl} target="_blank" rel="noopener noreferrer" aria-label="Surat (PDF), Keterangan Terdaftar AHU CV Sundaf Holiday Group (buka di tab baru)">
-                    Surat (PDF)
-                  </a>
+                </Link>
+              )}
+              <div className={styles.registration} role="group" aria-label="Pendaftaran badan usaha di AHU">
+                <a className={styles.ahuMark} href={SUNDAF_AHU_REGISTRATION.verificationUrl} target="_blank" rel="noopener noreferrer" aria-label={`Cek pendaftaran ${SUNDAF_AHU_REGISTRATION.legalName} di AHU (buka di tab baru)`} title="Cek pendaftaran di AHU">
+                  <Image src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={36} height={36} />
+                </a>
+                <div className={styles.registrationDetails}>
+                  <strong>Terdaftar di AHU</strong>
+                  <span className={styles.registrationNumber} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.number}</span>
+                  <span className={styles.issuer}>Kementerian Hukum RI</span>
                 </div>
               </div>
             </div>
