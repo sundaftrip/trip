@@ -6,6 +6,16 @@ export const APPOINTMENT_ONLY_OFFICE_ADDRESS =
 
 export const APPOINTMENT_ONLY_LABEL = "Appointment only";
 
+// The certificate QR opens this public AHU record; its registration details
+// were matched with the issued certificate before publication.
+export const SUNDAF_AHU_REGISTRATION = {
+  legalName: "CV Sundaf Holiday Group",
+  number: "AHU-0001183-AH.01.14 Tahun 2026",
+  verificationUrl:
+    "https://sab.ahu.go.id/cv/pendaftaran/info/no/AHU-0001183-AH.01.14+Tahun+2026/id/2785088",
+  documentUrl: "/legalitas/surat-keterangan-terdaftar-ahu-sundaf-holiday-group-2026.pdf",
+} as const;
+
 export function appointmentOnlyOfficeAddress(configuredAddress?: string) {
   const address = configuredAddress?.trim() || APPOINTMENT_ONLY_OFFICE_ADDRESS;
 

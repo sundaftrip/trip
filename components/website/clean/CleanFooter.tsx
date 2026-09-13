@@ -2,9 +2,10 @@ import Image from "next/image";
 import { Roboto } from "next/font/google";
 import WhatsAppIcon from "../WhatsAppIcon";
 import Link from "./PreserveScrollLink";
-import { FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
+import { ExternalLink, FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
 import {
   APPOINTMENT_ONLY_LABEL,
+  SUNDAF_AHU_REGISTRATION,
   appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
@@ -125,6 +126,23 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
                 </span>
               </Link>
             )}
+            <div className={styles.registration} role="group" aria-label="Pendaftaran badan usaha di AHU">
+              <span className={styles.ahuMark} aria-hidden="true" data-no-translate translate="no">AHU</span>
+              <div className={styles.registrationDetails}>
+                <strong>Terdaftar di AHU</strong>
+                <span className={styles.registrationName} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.legalName}</span>
+                <span className={styles.registrationNumber} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.number}</span>
+                <span className={styles.issuer}>Ditjen AHU · Kementerian Hukum RI</span>
+                <div className={styles.registrationLinks}>
+                  <a href={SUNDAF_AHU_REGISTRATION.verificationUrl} target="_blank" rel="noopener noreferrer" aria-label="Cek di AHU untuk CV Sundaf Holiday Group (buka di tab baru)">
+                    Cek di AHU <ExternalLink aria-hidden="true" size={12} />
+                  </a>
+                  <a href={SUNDAF_AHU_REGISTRATION.documentUrl} target="_blank" rel="noopener noreferrer" aria-label="Surat (PDF), Keterangan Terdaftar AHU CV Sundaf Holiday Group (buka di tab baru)">
+                    Surat (PDF)
+                  </a>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section className={styles.contact} aria-labelledby="footer-contact-title">

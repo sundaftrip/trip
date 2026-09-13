@@ -58,6 +58,16 @@
 .identity small { display: block; margin-top: 3px; color: var(--footer-text); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .issuer { display: block; margin-top: 3px; color: var(--footer-muted); font-size: 10px; line-height: 1.4; }
 .identity:hover { background: #394458; }
+.registration { display: flex; align-items: flex-start; gap: 12px; margin-top: 10px; padding: 12px; border: 1px solid #ffffff15; border-radius: 10px; background: #293445; }
+.ahuMark { display: grid; place-items: center; flex: 0 0 48px; min-height: 40px; border: 1px solid #d9bf8255; border-radius: 5px; color: #f4d39b; font-size: 15px; font-weight: 700; letter-spacing: .04em; }
+.registrationDetails { min-width: 0; }
+.registrationDetails strong { display: block; color: var(--footer-ink); font-size: 13px; font-weight: 600; line-height: 1.5; }
+.registrationName,
+.registrationNumber { display: block; margin-top: 3px; color: var(--footer-text); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.registrationLinks { display: flex; flex-wrap: wrap; column-gap: 16px; margin-top: 4px; }
+.registrationLinks a { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; color: #f4d39b; font-size: 12px; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+.registrationLinks a:hover { color: #ffe8be; }
+.registrationLinks svg { flex-shrink: 0; }
 .socials { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 8px; }
 .socials a { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #ffffff06; border-radius: 10px; background: #354052; color: #fff; }
 .socials a:hover { background: #465269; }
@@ -104,7 +114,8 @@
   .badge { width: 38px; height: 38px; flex-basis: 38px; border-radius: 12px; }
   .partner h2,
   .contact h2 { font-size: 17px; }
-  .identity { max-width: 400px; }
+  .identity,
+  .registration { max-width: 400px; }
   .ossMark { flex-basis: 88px; padding: 9px 6px; }
   .ossMark img { width: 76px; }
   .contact { grid-column: auto; }
