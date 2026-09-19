@@ -1,8 +1,6 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
 // ISR: konten CMS jarang berubah; revalidatePublicContent() me-revalidate on-write.
 export const revalidate = 300;
-import fs from "node:fs";
-import path from "node:path";
 import type { Metadata } from "next";
 import React from "react";
 import { prisma } from "@/lib/prisma";
@@ -14,29 +12,7 @@ import GalleryZoom from "@/components/website/GalleryZoom";
 import InquiryForm from "@/components/website/InquiryForm";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
-
-/* Daftar foto galeri: nama file dibaca dari /public/about-gallery, tapi yang
-   DISAJIKAN versi medium ber-watermark (/about-gallery-md, maks 1366px) supaya
-   original 2560px tak pernah ikut ter-download. Fallback ke original bila md
-   belum ada. */
-function getGalleryImages(): string[] {
-  try {
-    const mdDir = path.join(process.cwd(), "public", "about-gallery-md");
-    const hasMd = fs.existsSync(mdDir);
-    return fs
-      .readdirSync(path.join(process.cwd(), "public", "about-gallery"))
-      .filter((f) => /\.(webp|jpe?g|png)$/i.test(f))
-      .sort()
-      .map((f) => {
-        const dir = hasMd && fs.existsSync(path.join(mdDir, f))
-          ? "about-gallery-md"
-          : "about-gallery";
-        return `/${dir}/${encodeURIComponent(f)}`;
-      });
-  } catch {
-    return [];
-  }
-}
+import { ABOUT_GALLERY_IMAGES } from "@/lib/static-gallery-manifests";
 
 export const metadata: Metadata = withPageSocialMetadata({
   title: "Tentang Kami",
@@ -104,7 +80,7 @@ async function getData() {
 
 export default async function AboutPage() {
   const { theme, company, tourCount, blogCount, story, values, destinations, tagline } = await getData();
-  const gallery = getGalleryImages();
+  const gallery = [...ABOUT_GALLERY_IMAGES];
 
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";

@@ -36,11 +36,11 @@ test("all non-queue CompanyInfo collection readers declare a key boundary", () =
   }
 });
 
-test("cron is authenticated, dynamic, and scheduled separately from the scraper", () => {
+test("IndexNow cron is authenticated, dynamic, and the scraper is not scheduled", () => {
   const route = fs.readFileSync("app/api/cron/indexnow/route.ts", "utf8");
   assert.ok(route.indexOf("isIndexNowCronAuthorized(req.headers") < route.indexOf("await drainIndexNowQueue"));
   assert.match(route, /export const dynamic = "force-dynamic"/);
   const config = JSON.parse(fs.readFileSync("vercel.json", "utf8"));
   assert.equal(config.crons.filter((cron: { path: string }) => cron.path === "/api/cron/indexnow").length, 1);
-  assert.equal(config.crons.filter((cron: { path: string }) => cron.path === "/api/cron/daily-scrape").length, 1);
+  assert.equal(config.crons.filter((cron: { path: string }) => cron.path === "/api/cron/daily-scrape").length, 0);
 });

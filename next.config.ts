@@ -31,11 +31,15 @@ const scriptSrc = [
 ].join(" ");
 
 const nextConfig: NextConfig = {
+  // Keep file tracing scoped to this project. Local Codex worktrees live under
+  // a parent directory that also has a lockfile; without an explicit root,
+  // Next can resolve tracing globs against that parent and leave public assets
+  // in server-function bundles.
+  outputFileTracingRoot: process.cwd(),
   outputFileTracingExcludes: {
-    // The PDF route's dynamic public-file lookup traces the whole directory,
-    // but mimeForFile accepts only JPG/JPEG/PNG. Keep those images (including
-    // CMS-selected files and fallback logos) and omit unsupported public assets
-    // from this function bundle. Static website assets remain deployed normally.
+    // Defense in depth: the PDF route now allows only explicit local fallbacks.
+    // Omit unsupported public formats if a future dependency starts tracing a
+    // wider path again. Static website assets remain deployed normally.
     "/tours/\\[id\\]/pdf": [
       "./public/**/*.{webp,avif,gif,svg,ico,pdf,css,js,html,txt,woff,woff2,mp4}",
     ],
