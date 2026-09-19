@@ -1,6 +1,6 @@
 /* GET /tours/[id]/pdf, generates a branded itinerary PDF on the fly
    from the Tour record and streams it back as a one-click download. */
-import { readFile, realpath, stat } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { createElement } from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
@@ -40,6 +40,69 @@ const PDF_GALLERY_FALLBACKS = [
 ];
 const MAX_PDF_GALLERY_IMAGES = 7;
 
+type LocalPdfImage = {
+  filePath: string;
+  mime: "image/jpeg" | "image/png";
+};
+
+// PDF images stored by the CMS use remote HTTPS URLs. Only these bundled
+// fallback files may be read locally; accepting arbitrary public paths makes
+// Next.js trace the entire public directory into this server function.
+const LOCAL_PDF_IMAGES = new Map<string, LocalPdfImage>([
+  ["/logo.png", {
+    filePath: path.join(process.cwd(), "public", "logo.png"),
+    mime: "image/png",
+  }],
+  ["/vietnam/assets/logo-dark.png", {
+    filePath: path.join(process.cwd(), "public", "vietnam", "assets", "logo-dark.png"),
+    mime: "image/png",
+  }],
+  ["/vietnam/assets/hero-sapa.jpg", {
+    filePath: path.join(process.cwd(), "public", "vietnam", "assets", "hero-sapa.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/vietnam/assets/hanoi-street.jpg", {
+    filePath: path.join(process.cwd(), "public", "vietnam", "assets", "hanoi-street.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/vietnam/assets/halong-sunset.jpg", {
+    filePath: path.join(process.cwd(), "public", "vietnam", "assets", "halong-sunset.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/trip-1.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-1.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/trip-2.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-2.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/trip-3.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-3.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/trip-4.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-4.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/trip-5.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-5.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/trip-6.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-6.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/cp-1.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "cp-1.jpg"),
+    mime: "image/jpeg",
+  }],
+  ["/trip-photos/cp-2.jpg", {
+    filePath: path.join(process.cwd(), "public", "trip-photos", "cp-2.jpg"),
+    mime: "image/jpeg",
+  }],
+]);
+
 function slugify(s: string) {
   return s.normalize("NFKD").replace(/[^\w\s-]/g, "").trim()
     .replace(/\s+/g, "-").replace(/-+/g, "-").slice(0, 70) || "itinerary";
@@ -59,13 +122,6 @@ function fallbackHeroForTour(tour: { title: string; country: string; cityHighlig
   if (text.includes("vietnam") && text.includes("sapa")) return "/vietnam/assets/hero-sapa.jpg";
   if (text.includes("vietnam") && text.includes("hanoi")) return "/vietnam/assets/hanoi-street.jpg";
   if (text.includes("vietnam")) return "/vietnam/assets/halong-sunset.jpg";
-  return null;
-}
-
-function mimeForFile(filePath: string) {
-  const ext = path.extname(filePath).toLowerCase();
-  if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
-  if (ext === ".png") return "image/png";
   return null;
 }
 
@@ -120,22 +176,15 @@ async function toPdfImageSrc(
   }
   if (!src.startsWith("/")) return null;
 
+  const localImage = LOCAL_PDF_IMAGES.get(src);
+  if (!localImage) return null;
+
   try {
-    const publicDir = await realpath(path.resolve(process.cwd(), "public"));
-    const requestedPath = path.resolve(publicDir, src.replace(/^\/+/, ""));
-    if (!requestedPath.startsWith(`${publicDir}${path.sep}`)) return null;
-
-    const filePath = await realpath(requestedPath);
-    if (!filePath.startsWith(`${publicDir}${path.sep}`)) return null;
-
-    const mime = mimeForFile(filePath);
-    if (!mime) return null;
-
-    const fileStats = await stat(filePath);
+    const fileStats = await stat(localImage.filePath);
     if (!fileStats.isFile() || fileStats.size > PDF_IMAGE_MAX_BYTES) return null;
 
-    const bytes = await readFile(filePath);
-    return pdfImageBytesToDataUrl(bytes, mime);
+    const bytes = await readFile(localImage.filePath);
+    return pdfImageBytesToDataUrl(bytes, localImage.mime);
   } catch {
     return null;
   }
