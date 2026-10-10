@@ -14,6 +14,7 @@ import { resolveCanadaRockiesAddOns } from "@/lib/canada-catalog-preview";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanTourCard from "@/components/website/clean/CleanTourCard";
 import StableDetails from "@/components/website/clean/StableDetails";
+import RussiaGuideLinks from "@/components/website/clean/RussiaGuideLinks";
 import styles from "@/components/website/clean/DestinationHub.module.css";
 
 export const revalidate = 300;
@@ -233,6 +234,7 @@ export default async function DestinationHubPage({
           ) : (
             <div className={styles.empty}><p>Belum ada jadwal tetap yang cocok untuk hub ini.</p><Link href="/custom-trip">Rancang private trip</Link></div>
           )}
+          {slug === "rusia-aurora" && <RussiaGuideLinks />}
         </div>
       </section>
 

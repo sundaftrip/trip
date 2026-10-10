@@ -22,6 +22,7 @@ interface GeoPageProps {
   sections: Array<{ title: string; body?: string; items?: string[] }>;
   faqs: GeoFaq[];
   schema?: Record<string, unknown>;
+  children?: React.ReactNode;
 }
 
 const SITE_URL = "https://sundaftrip.com";
@@ -103,6 +104,7 @@ export default function GeoPage({
   sections,
   faqs,
   schema,
+  children,
 }: GeoPageProps) {
   const pageUrl = `${SITE_URL}${canonicalPath}`;
   const faqSchema = {
@@ -165,6 +167,8 @@ export default function GeoPage({
           )}
         </div>
       </section>
+
+      {children}
 
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
         <div className="grid gap-4 md:grid-cols-2">

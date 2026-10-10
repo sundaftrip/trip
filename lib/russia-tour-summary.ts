@@ -60,14 +60,18 @@ export function selectRussiaGuideTours<T extends RussiaTourCandidate & { id: str
   )).slice(0, 3);
 }
 
-function statusLabel(tour: RussiaTourCandidate, now: Date) {
+export function formatRussiaTourDate(date: Date | string) {
+  return DATE_FORMATTER.format(new Date(date));
+}
+
+export function russiaTourStatusLabel(tour: RussiaTourCandidate, now: Date) {
   const status = getCommerceTourStatus(tour, now);
   if (status === "confirmed") return "Pasti berangkat";
   if (status === "last_seats") return "Kursi terakhir";
   return (tour.seatsLeft ?? 0) > 0 ? "Tersedia" : "Cek ketersediaan";
 }
 
-export function formatRussiaTourSummary(tour: RussiaSummaryTour, now = new Date()) {
+export function getRussiaTourPricing(tour: RussiaSummaryTour) {
   const addOns = resolveCanadaRockiesAddOns(tour.addOns, tour.slug);
   const mandatoryTotal = mandatoryAddOnsTotal(addOns);
   const paidMandatoryAddOns = Array.isArray(addOns)
@@ -83,15 +87,21 @@ export function formatRussiaTourSummary(tour: RussiaSummaryTour, now = new Date(
   const startingPrice = resolveTourStartingPrice(
     Number(tour.promoPrice ?? tour.price), mandatoryTotal, roomPrices,
   );
+  return { ...startingPrice, mandatoryTotal, baggageOnly, mandatoryLabel };
+}
+
+export function formatRussiaTourSummary(tour: RussiaSummaryTour, now = new Date()) {
+  const startingPrice = getRussiaTourPricing(tour);
+  const { mandatoryTotal, baggageOnly, mandatoryLabel } = startingPrice;
   const price = startingPrice.headlinePrice > 0
     ? `${mandatoryTotal > 0 ? `Subtotal paket + ${mandatoryLabel}` : "Harga paket"} mulai ${formatCurrency(startingPrice.mandatoryTotalPrice)}/orang${mandatoryTotal > 0 ? ` (${mandatoryLabel} ${formatCurrency(mandatoryTotal)})` : ""}`
     : "Konfirmasi harga";
   const facts = [
     normalizeTourDisplayTitle(tour.title),
-    DATE_FORMATTER.format(new Date(tour.tripDate!)),
+    formatRussiaTourDate(tour.tripDate!),
     tour.duration,
     tour.cityHighlight || tour.country,
-    statusLabel(tour, now),
+    russiaTourStatusLabel(tour, now),
     price,
   ].filter(Boolean).join(" · ");
   const exclusions = tour.exclusions?.map((item) => item.trim()).filter(Boolean) ?? [];
