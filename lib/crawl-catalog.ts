@@ -1,3 +1,5 @@
+import { SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
+
 import { APPOINTMENT_ONLY_OFFICE_ADDRESS, TRIPADVISOR_PROFILE_URL } from "./business-identity";
 import { resolveCanadaRockiesAddOns } from "./canada-catalog-preview";
 import { canonicalTourPath } from "./seo-routes";
@@ -16,6 +18,7 @@ export const CRAWL_PROFILE = `# Sundaf Trip
 - NIB: 1601260060842
 - Bahasa layanan: Indonesia dan Inggris
 - Layanan online; kunjungan kantor dengan janji temu.
+- ${SUNDAF_TRANSFER_INSTRUCTIONS.id}
 - Alamat kantor: ${APPOINTMENT_ONLY_OFFICE_ADDRESS}
 - [Instagram](https://www.instagram.com/sundaf.trip)
 - [Tripadvisor](${TRIPADVISOR_PROFILE_URL})

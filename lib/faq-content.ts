@@ -1,3 +1,5 @@
+import { SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
+
 export type FaqLink = {
   label: string;
   href: string;
@@ -123,8 +125,8 @@ export const FAQ_SECTIONS: FaqSection[] = [
         id: "rekening-resmi",
         question: "Apakah pembayaran dilakukan ke rekening resmi?",
         answer: [
-          "Pembayaran hanya boleh dilakukan melalui channel pembayaran resmi yang dikonfirmasi oleh Sundaf Trip. Untuk keamanan transaksi, peserta disarankan mengikuti instruksi pembayaran dari kontak resmi Sundaf Trip dan menyimpan bukti pembayaran.",
-          "Jika ada perubahan instruksi pembayaran, minta konfirmasi tertulis dari admin resmi sebelum melakukan transfer.",
+          SUNDAF_TRANSFER_INSTRUCTIONS.id,
+          "Simpan bukti pembayaran. Jika instruksi transfer tidak sesuai dengan rekening ini, minta konfirmasi tertulis dari admin resmi sebelum membayar.",
         ],
         relatedLinks: [{ label: "Syarat & Ketentuan", href: "/terms" }],
       },
@@ -344,8 +346,8 @@ export const FAQ_SECTIONS: FaqSection[] = [
         id: "metode-pembayaran",
         question: "Metode pembayaran apa yang diterima?",
         answer: [
-          "Pembayaran dilakukan melalui channel pembayaran resmi yang dikonfirmasi oleh Sundaf Trip. Untuk keamanan transaksi, peserta disarankan hanya mengikuti instruksi pembayaran dari kontak resmi Sundaf Trip.",
-          "Jika ada metode pembayaran baru atau instruksi berbeda, minta konfirmasi tertulis dari admin resmi sebelum membayar.",
+          SUNDAF_TRANSFER_INSTRUCTIONS.id,
+          "Nominal dan batas waktu pembayaran mengikuti invoice atau konfirmasi booking. Jika instruksi transfer berbeda, konfirmasi melalui kontak resmi Sundaf Trip sebelum membayar.",
         ],
         relatedLinks: [
           { label: "Kontak resmi", href: "/#contact" },

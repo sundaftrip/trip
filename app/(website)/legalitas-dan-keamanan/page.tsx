@@ -1,3 +1,5 @@
+import CompanyTransferDetails from "@/components/website/CompanyTransferDetails";
+
 import { withPageSocialMetadata } from "@/lib/site-metadata";
 export const revalidate = 300;
 
@@ -234,6 +236,9 @@ export default async function LegalitasKeamananPage() {
           <div className="at-card p-6 lg:p-8">
             <AlertTriangle aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
             <h2 id="booking-safety-title" className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Cek sebelum transfer atau kirim dokumen</h2>
+            <div className="mt-5" style={{ color: "var(--at-subtext)" }}>
+              <CompanyTransferDetails />
+            </div>
             <ul className="mt-5 space-y-3">
               {safeSteps.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
