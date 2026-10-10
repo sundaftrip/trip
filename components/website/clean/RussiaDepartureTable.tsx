@@ -28,7 +28,9 @@ export default function RussiaDepartureTable({
         biaya lain yang belum termasuk serta pilihan opsional perlu diperiksa sebelum memesan.
       </p>
       {selected.length ? (
-        <div className={styles.scroll} role="region" aria-label="Tabel jadwal dan biaya Rusia; geser untuk melihat seluruh kolom" tabIndex={0}>
+        <>
+          <p className={styles.scrollHint}>Geser tabel ke samping untuk melihat rincian biaya.</p>
+          <div className={styles.scroll} role="region" aria-label="Tabel jadwal dan biaya Rusia; geser untuk melihat seluruh kolom" tabIndex={0}>
           <table>
             <caption className="sr-only">Keberangkatan mendatang, harga paket, tambahan wajib terhitung, dan subtotal per orang</caption>
             <thead>
@@ -73,7 +75,8 @@ export default function RussiaDepartureTable({
               );
             })}
           </table>
-        </div>
+          </div>
+        </>
       ) : (
         <p className={styles.empty}>
           {tours === null

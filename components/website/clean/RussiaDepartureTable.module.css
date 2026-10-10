@@ -9,6 +9,7 @@
 .intro, .note, .empty { color: var(--at-subtext); font-size: .875rem; line-height: 1.7; }
 .intro { max-width: 54rem; margin-bottom: 1.25rem; }
 .note { margin-top: 1rem; }
+.scrollHint { display: none; color: var(--at-subtext); margin-bottom: .75rem; font-size: .8rem; }
 .scroll { overflow-x: auto; border: 1px solid var(--at-border, #d9e2e7); border-radius: 1rem; }
 .scroll:focus-visible { outline: 2px solid var(--site-accent); outline-offset: 3px; }
 .scroll table { width: 100%; min-width: 52rem; border-collapse: collapse; font-size: .875rem; }
@@ -27,3 +28,4 @@
 
 @media (min-width: 640px) { .section { padding-inline: 1.5rem; } }
 @media (min-width: 1024px) { .section { padding-inline: 2rem; } }
+@media (max-width: 639px) { .scrollHint { display: block; } }
