@@ -1,0 +1,6 @@
+.nav { margin-top: 1.5rem; color: var(--site-text, #172a3a); }
+.nav p { margin-bottom: .75rem; font-size: .875rem; font-weight: 700; }
+.nav div { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; }
+.nav a { font-size: .875rem; line-height: 1.7; text-decoration: underline; text-underline-offset: 4px; }
+.nav a:hover { color: var(--site-accent); }
+.nav a:focus-visible { outline: 2px solid var(--site-accent); outline-offset: 4px; }

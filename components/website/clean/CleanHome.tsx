@@ -22,6 +22,7 @@ import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
 import HeroChalkNote from "./home/HeroChalkNote";
+import RussiaGuideLinks from "./RussiaGuideLinks";
 import styles from "./home/CleanHome.module.css";
 
 export type CleanHomeTestimonial = {
@@ -316,7 +317,7 @@ export default function CleanHome({
             </div>
 
             <div className={styles.destinationMosaic}>
-              <Link className={styles.destinationLead} href="/tours?destination=rusia">
+              <Link className={styles.destinationLead} href="/destinations/rusia-aurora">
                 <Image
                   src={russiaImage}
                   alt="Aurora di langit malam Rusia"
@@ -372,6 +373,7 @@ export default function CleanHome({
                 </span>
               </Link>
             </div>
+            <RussiaGuideLinks />
           </div>
         </section>
 
