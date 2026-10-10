@@ -1,3 +1,5 @@
+import { SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
+
 export type HomeFaqItem = {
   id?: string;
   question: string;
@@ -13,7 +15,7 @@ export function getHomeFaqs(nib: string, legalName: string): HomeFaqItem[] {
     {
       question: "Apa yang kamu terima sebelum membayar?",
       answer:
-        "Kami akan mengirimkan rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui.",
+        `Kami akan mengirimkan rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui. ${SUNDAF_TRANSFER_INSTRUCTIONS.id}`,
     },
     {
       question: "Harga yang tampil sudah mencakup apa saja?",

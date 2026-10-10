@@ -1,3 +1,5 @@
+import { SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
+
 /**
  * English copy reviewed for the public language switcher.
  *
@@ -6,6 +8,17 @@
  * consistent across pages.
  */
 export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
+  // Company transfer details must keep the receiving-account strings exact.
+  [SUNDAF_TRANSFER_INSTRUCTIONS.id]: SUNDAF_TRANSFER_INSTRUCTIONS.en,
+  "Transfer Perusahaan (BCA saja)": "Company Transfers (BCA only)",
+  "Rekening transfer perusahaan": "Company transfer account",
+  "Salin nomor rekening": "Copy account number",
+  "Simpan bukti pembayaran. Jika instruksi transfer tidak sesuai dengan rekening ini, minta konfirmasi tertulis dari admin resmi sebelum membayar.":
+    "Keep your proof of payment. If the transfer instructions do not match this account, request written confirmation from our official team before paying.",
+  "Nominal dan batas waktu pembayaran mengikuti invoice atau konfirmasi booking. Jika instruksi transfer berbeda, konfirmasi melalui kontak resmi Sundaf Trip sebelum membayar.":
+    "The amount and payment deadline follow your invoice or booking confirmation. If the transfer instructions differ, check with Sundaf Trip through its official contacts before paying.",
+  [`Kami akan mengirimkan rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui. ${SUNDAF_TRANSFER_INSTRUCTIONS.id}`]:
+    `We will send the itinerary, departure dates, included services, required charges, optional costs, and payment terms. Your booking is processed after you agree to these details. ${SUNDAF_TRANSFER_INSTRUCTIONS.en}`,
   // Shared shell
   "Langsung ke konten utama": "Skip to main content",
   "Sundaf Trip, beranda": "Sundaf Trip, home",

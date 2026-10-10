@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import CompanyTransferDetails from "@/components/website/CompanyTransferDetails";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
 
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
@@ -142,6 +143,13 @@ export default async function TermsPage({
           className={`${isAtlas ? supportStyles.softSurface : ""} mb-8 ${isOutlined ? "border-2 p-4" : "rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/60"}`}
           style={isOutlined ? { background: cardBg, borderColor: bdrClr, color: subClr } : undefined}>
           <p className="text-sm leading-relaxed">{LEGAL_ENTITY_STATEMENT}</p>
+        </div>
+
+        <div
+          className={`${isAtlas ? supportStyles.softSurface : "rounded-xl border border-gray-200 dark:border-gray-800"} mb-8 p-4`}
+          style={{ background: cardBg, borderColor: bdrClr, color: headClr }}
+        >
+          <CompanyTransferDetails lang={lang} />
         </div>
 
         {/* Language toggle, only shown when English content exists */}

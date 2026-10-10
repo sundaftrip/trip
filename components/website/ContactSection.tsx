@@ -5,6 +5,8 @@ import {
   appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
+import { SUNDAF_TRANSFER_ACCOUNT } from "@/lib/company-transfer";
+import CopyButton from "./CopyButton";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -58,9 +60,9 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     if (!val) return fallback;
     return val.id || val.en || fallback;
   };
-  const bankName   = texts["payment_bank_name"]?.id || "";
-  const bankAcc    = texts["payment_bank_acc"]?.id || "";
-  const bankHolder = texts["payment_bank_holder"]?.id || "";
+  const bankName = SUNDAF_TRANSFER_ACCOUNT.bank;
+  const bankAcc = SUNDAF_TRANSFER_ACCOUNT.number;
+  const bankHolder = SUNDAF_TRANSFER_ACCOUNT.holder;
 
   const wa      = toWaNumber(company["company_whatsapp"]);
   const email   = company["company_email"] || "";
@@ -84,7 +86,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   ].filter(Boolean) as ContactItem[];
 
   const headLabel = "Hubungi Kami";
-  const bankLabel = "Rekening Pembayaran";
+  const bankLabel = "Transfer Perusahaan (BCA saja)";
 
   /* ── FUMAYO ── */
   if (theme === "fumayo") return (
@@ -122,9 +124,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="fb-card p-5" style={{ fontFamily: "var(--fb-font)" }}>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--fb-subink)" }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--fb-subink)" }}>{bankName}</p>}
-                <p className="text-xl font-bold font-mono" style={{ color: "var(--fb-ink)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--fb-subink)" }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--fb-subink)" }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-bold font-mono" style={{ color: "var(--fb-ink)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--fb-subink)" }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -172,9 +175,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="gl-card p-5" style={{ background: "var(--gl-amber)" }}>
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--gl-on-amber)", opacity: 0.7 }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--gl-on-amber)", opacity: 0.8 }}>{bankName}</p>}
-                <p className="text-xl font-black font-mono" style={{ color: "var(--gl-on-amber)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--gl-on-amber)", opacity: 0.8 }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--gl-on-amber)", opacity: 0.8 }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-black font-mono" style={{ color: "var(--gl-on-amber)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--gl-on-amber)", opacity: 0.8 }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -208,9 +212,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="border-t pt-6" style={{ borderColor: "var(--at-border)" }}>
                 <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--at-subtext)" }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--at-subtext)" }}>{bankName}</p>}
-                <p className="text-xl font-bold font-mono" style={{ color: "var(--at-text)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--at-subtext)" }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--at-subtext)" }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-bold font-mono" style={{ color: "var(--at-text)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--at-subtext)" }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -260,9 +265,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="mp-card p-5" style={{ background: "var(--mp-rust)" }}>
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--mp-on-rust)", opacity: 0.7 }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--mp-on-rust)", opacity: 0.8 }}>{bankName}</p>}
-                <p className="text-xl font-black font-mono" style={{ color: "var(--mp-on-rust)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--mp-on-rust)", opacity: 0.8 }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--mp-on-rust)", opacity: 0.8 }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-black font-mono" style={{ color: "var(--mp-on-rust)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--mp-on-rust)", opacity: 0.8 }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -305,9 +311,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="kw-card p-5" style={{ background: "var(--kw-sky)" }}>
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--kw-subtext)" }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--kw-subtext)" }}>{bankName}</p>}
-                <p className="text-xl font-black font-mono" style={{ color: "var(--kw-text)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--kw-subtext)" }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--kw-subtext)" }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-black font-mono" style={{ color: "var(--kw-text)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--kw-subtext)" }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -370,9 +377,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="teri-card p-5">
                 <p className="text-[10px] font-extrabold uppercase tracking-widest mb-3" style={{ color: "var(--teri-sub)" }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--teri-sub)" }}>{bankName}</p>}
-                <p className="text-xl font-black font-mono" style={{ color: "var(--teri-ink)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--teri-sub)" }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--teri-sub)" }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-black font-mono" style={{ color: "var(--teri-ink)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--teri-sub)" }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -416,9 +424,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="tr-card p-5" style={{ background: "var(--tr-sun)" }}>
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--tr-subtext)" }}>{bankLabel}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--tr-subtext)" }}>{bankName}</p>}
-                <p className="text-xl font-black font-mono" style={{ color: "var(--tr-text)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--tr-subtext)" }}>a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--tr-subtext)" }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-black font-mono" style={{ color: "var(--tr-text)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--tr-subtext)" }}>a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -469,9 +478,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="px-card p-4 sm:p-5" style={{ background: "var(--px-card)" }}>
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankLabel.toUpperCase()}</p>
-                {bankName && <p className="text-xs mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankName}</p>}
-                <p className="text-xl font-black font-mono" style={{ color: "var(--px-text)" }}>{bankAcc}</p>
-                {bankHolder && <p className="text-xs mt-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>A/N {bankHolder.toUpperCase()}</p>}
+                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>{bankName}</p>}
+                <p translate="no" className="text-xl font-black font-mono" style={{ color: "var(--px-text)" }}>{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--px-subtext)", fontFamily: "monospace" }}>A/N {bankHolder.toUpperCase()}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
@@ -513,9 +523,10 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
             {bankAcc && (
               <div className="pt-2">
                 <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-3">{bankLabel}</p>
-                {bankName && <p className="text-xs text-gray-500 mb-0.5">{bankName}</p>}
-                <p className="text-xl font-bold text-gray-900 dark:text-white font-mono">{bankAcc}</p>
-                {bankHolder && <p className="text-xs text-gray-400 mt-0.5">a/n {bankHolder}</p>}
+                {bankName && <p translate="no" className="text-xs text-gray-500 mb-0.5">{bankName}</p>}
+                <p translate="no" className="text-xl font-bold text-gray-900 dark:text-white font-mono">{bankAcc}</p>
+                {bankHolder && <p translate="no" className="text-xs text-gray-400 mt-0.5">a/n {bankHolder}</p>}
+                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
               </div>
             )}
           </div>
