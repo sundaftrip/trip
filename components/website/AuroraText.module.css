@@ -6,10 +6,10 @@
 
 .glow {
   /* Photo-backed headings use a lighter version of the same restrained tint. */
-  --aurora-text-color: #d5e9dd;
-  --aurora-text-start: #c6e1d1;
-  --aurora-text-middle: #a2caba;
-  --aurora-text-end: #edf5ef;
+  --aurora-text-color: #f3f8f5;
+  --aurora-text-start: #f3f8f5;
+  --aurora-text-middle: #e8f3ed;
+  --aurora-text-end: #ffffff;
 }
 
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {

@@ -2340,7 +2340,7 @@
     border-radius: 0 0 26px 26px;
   }
   .detailHeroShade {
-    background: linear-gradient(0deg, rgb(3 17 20 / 94%) 0%, rgb(3 17 20 / 48%) 62%, rgb(3 17 20 / 10%) 100%);
+    background: linear-gradient(0deg, rgb(3 17 20 / 94%) 0%, rgb(3 17 20 / 60%) 62%, rgb(3 17 20 / 20%) 100%);
   }
   .detailHeroOverlay { padding: 76px 20px 20px; }
   .detailHeroHeading { gap: 16px; }
