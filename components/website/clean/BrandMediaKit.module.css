@@ -10,8 +10,8 @@
 .resources small { font-size: 10px; letter-spacing: .1em; color: var(--brand-teal); }
 .resources strong { font-size: clamp(22px, 3vw, 30px); letter-spacing: -.035em; font-weight: 400; }
 .resources span span { font-size: 14px; line-height: 1.5; color: #4d5c57; }
-.resources svg { flex-shrink: 0; width: 28px; height: 28px; transition: transform 200ms ease; }
-.resources a:hover svg { transform: translate(3px, -3px); }
+.resources svg { flex-shrink: 0; width: 28px; height: 28px; transition: transform 220ms cubic-bezier(.2, .65, .2, 1); }
+.resources a:hover svg, .resources a:focus-visible svg { transform: translate(4px, -4px); }
 .kit a:focus-visible { outline: 3px solid var(--brand-teal); outline-offset: 5px; }
 .foundations { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; margin-top: 64px; }
 .logoPanel img { width: min(100%, 400px); height: auto; margin-block: 30px 40px; }
@@ -27,3 +27,4 @@
 .typeSpecimen > div:first-child p { font-family: var(--font-source-serif), Georgia, serif; }
 .note { max-width: 700px; margin-top: 28px; font-size: 12px; }
 @media(max-width: 759px) { .kit { padding-inline: 20px; } .foundations, .typeSpecimen { grid-template-columns: 1fr; gap: 40px; margin-top: 40px; } .resources > a { padding-block: 24px; } }
+@media(prefers-reduced-motion: reduce) { .resources svg { transition: none; } .resources a:hover svg, .resources a:focus-visible svg { transform: none; } }

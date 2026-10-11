@@ -12,11 +12,14 @@ export default function BrandMediaKit() {
         <p>Identitas visual yang tenang, terbuka, dan mudah dikenali. Panduan dan aset untuk menjaga setiap cerita tetap terasa seperti Sundaf.</p>
       </div>
       <div className={styles.resources}>
+        <a href="/brand/SUNDAF-Brand-Guidelines-v1.pdf" download>
+          <span><small>01 / PANDUAN RINGKAS</small><strong>Unduh brand guidelines PDF</strong><span>Delapan halaman tentang warna, huruf, foto, dan gerak.</span></span><Download aria-hidden="true" />
+        </a>
         <a href="https://www.figma.com/design/FeIZhRRkEwpOCrnprdEGMn" target="_blank" rel="noreferrer">
-          <span><small>01 / PANDUAN & TEMPLATE</small><strong>Brand guidelines di Figma</strong><span>Warna, tipografi, komposisi, dan template sosial.</span></span><ArrowUpRight aria-hidden="true" />
+          <span><small>02 / PANDUAN & TEMPLATE</small><strong>Brand guidelines di Figma</strong><span>Warna, tipografi, komposisi, dan template sosial.</span></span><ArrowUpRight aria-hidden="true" />
         </a>
         <a href="https://drive.google.com/drive/folders/1BWKWxNnSjQ2O_Ty1rzNyMeHe4yhRt8ad" target="_blank" rel="noreferrer">
-          <span><small>02 / UNTUK MITRA KREATIF</small><strong>Folder media SUNDAF</strong><span>Panduan PDF, logo, dan berkas untuk agency. Akses folder dikelola oleh SUNDAF.</span></span><ArrowUpRight aria-hidden="true" />
+          <span><small>03 / UNTUK MITRA KREATIF</small><strong>Folder media SUNDAF</strong><span>Panduan PDF, logo, dan berkas untuk agency. Akses folder dikelola oleh SUNDAF.</span></span><ArrowUpRight aria-hidden="true" />
         </a>
       </div>
       <div className={styles.foundations}>
