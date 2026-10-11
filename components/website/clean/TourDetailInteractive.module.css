@@ -7,12 +7,6 @@
   backdrop-filter: blur(12px);
 }
 
-.heroGallery {
-  position: absolute;
-  inset: 0;
-  height: 100%;
-}
-
 .dateGrid {
   margin-top: 22px;
 }
@@ -529,10 +523,6 @@
 }
 
 @media (max-width: 700px) {
-  .heroGallery {
-    margin: 0;
-  }
-
   .dateCard {
     padding: 20px;
   }

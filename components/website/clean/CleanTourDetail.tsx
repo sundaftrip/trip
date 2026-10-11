@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "./PreserveScrollLink";
 import {
   ArrowRight,
@@ -15,18 +14,14 @@ import {
   X,
 } from "lucide-react";
 import TourShareButtons from "@/components/website/TourShareButtons";
-import { TextWithAuroraAccent } from "@/components/website/AuroraText";
-import { cldThumb, formatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
 import { formatPackageCostDisclosure, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
-import {
-  resolveItineraryDayImage,
-  type ItineraryDisplayDay,
-} from "@/lib/itinerary-insights";
+import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import type { TourVisaOffer } from "@/lib/tour-visa-offers";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
@@ -38,7 +33,6 @@ import TourRoomBookingSidebar from "./TourRoomBookingSidebar";
 import TourRoomRecoveryLink from "./TourRoomRecoveryLink";
 import { TourRoomSelectionProvider } from "./TourRoomSelectionContext";
 import styles from "./CleanSite.module.css";
-import interactiveStyles from "./TourDetailInteractive.module.css";
 
 type TourAddOn = {
   name: string;
@@ -254,8 +248,8 @@ export default function CleanTourDetail({
   const summaryParagraphs = cleanParagraphs(tour.description);
   const visaParagraphs = cleanParagraphs(tour.visaInfo).map(naturalizeVisaParagraph);
   const noteParagraphs = cleanParagraphs(tour.notes);
-  const heroImage = tour.heroImg || tour.gallery[0] || "/about-gallery-md/01-aurora.webp";
-  const heroImages = [heroImage, ...tour.gallery];
+  const heroImages = [tour.heroImg, ...tour.gallery]
+    .filter((image): image is string => Boolean(image?.trim()));
   const route = tour.cityHighlight || tour.country;
   const commerceStatus = getCommerceTourStatus(tour);
   const status = bookingStatus(tour, commerceStatus);
@@ -335,6 +329,12 @@ export default function CleanTourDetail({
         : `Status saat ini: ${status}. Tim memeriksa kembali ketersediaan sebelum peserta melakukan pembayaran.`,
     },
   ];
+  const destinationGallery = heroImages.length > 0 ? (
+    <div className={styles.detailGallery}>
+      <TourHeroGallery images={heroImages} title={tour.title} variant="itinerary" />
+      <p>Foto untuk gambaran destinasi. Rincian kegiatan mengikuti itinerary.</p>
+    </div>
+  ) : null;
 
   return (
     <div className={styles.tourDetail}>
@@ -348,47 +348,31 @@ export default function CleanTourDetail({
             <span aria-current="page">{tour.title}</span>
           </nav>
 
-          <div className={styles.detailHeroStage}>
-            <div className={interactiveStyles.heroGallery}>
-              <TourHeroGallery images={heroImages} title={tour.title} variant="immersive" />
+          <div className={styles.detailHeroHeading}>
+            <div>
+              <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
+              <h1 id="tour-title">{tour.title}</h1>
+              <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
             </div>
-            <div className={styles.detailHeroShade} aria-hidden="true" />
-
-            <div className={styles.detailHeroOverlay}>
-              <div className={styles.detailHeroHeading}>
-                <div>
-                  <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
-                  <h1 id="tour-title">
-                    <TextWithAuroraAccent
-                      text={tour.title}
-                      phrase="Aurora"
-                      glow
-                    />
-                  </h1>
-                </div>
-                <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
+            <div className={styles.detailHeroCommerce}>
+              <div className={styles.detailHeroPriceBlock}>
+                <span>{status}</span>
+                <small>{hasPrice ? "Mulai dari" : "Harga"}</small>
+                <strong>{priceLabel}</strong>
+                {hasPrice && <small>per orang</small>}
               </div>
-
-              <div className={styles.detailHeroCommerce}>
-                <div className={styles.detailHeroPriceBlock}>
-                  <span>{status}</span>
-                  <small>{hasPrice ? "Mulai dari" : "Harga"}</small>
-                  <strong>{priceLabel}</strong>
-                  {hasPrice && <small>per orang</small>}
-                </div>
-                <a className={styles.detailHeroCta} href="#harga-tanggal">
-                  {unavailable ? "Lihat detail perjalanan" : "Lihat harga & tanggal"}
-                  <ArrowRight aria-hidden="true" />
-                </a>
-              </div>
-
-              <div className={styles.detailHeroFacts} role="group" aria-label="Ringkasan perjalanan">
-                <span><MapPin aria-hidden="true" />{route}</span>
-                {tour.duration && <span><Clock aria-hidden="true" />{tour.duration}</span>}
-                {departureLabel && <span><Calendar aria-hidden="true" />{departureLabel}</span>}
-                <span><Users aria-hidden="true" />{capacityLabel}</span>
-              </div>
+              <a className={styles.detailHeroCta} href="#harga-tanggal">
+                {unavailable ? "Lihat detail perjalanan" : "Lihat harga & tanggal"}
+                <ArrowRight aria-hidden="true" />
+              </a>
             </div>
+          </div>
+
+          <div className={styles.detailHeroFacts} role="group" aria-label="Ringkasan perjalanan">
+            <span><MapPin aria-hidden="true" />{route}</span>
+            {tour.duration && <span><Clock aria-hidden="true" />{tour.duration}</span>}
+            {departureLabel && <span><Calendar aria-hidden="true" />{departureLabel}</span>}
+            <span><Users aria-hidden="true" />{capacityLabel}</span>
           </div>
         </div>
       </section>
@@ -424,14 +408,14 @@ export default function CleanTourDetail({
           </section>
 
           {itinerary.length > 0 && (
-            <section className={styles.detailContentSection} id="itinerary" aria-labelledby="itinerary-title">
+            <section className={`${styles.detailContentSection} ${styles.detailItinerarySection}`} id="itinerary" aria-labelledby="itinerary-title">
+              {destinationGallery}
               <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary {tour.title}</h2>
               <div className={styles.detailItinerary}>
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);
                   const paragraphs = cleanParagraphs(item.description);
                   const dayTitle = normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`;
-                  const dayImage = resolveItineraryDayImage(item, index, heroImages);
                   return (
                     <StableDetails className={styles.detailDay} key={`${item.day}-${item.title}`} open={index === 0}>
                       <summary>
@@ -443,20 +427,16 @@ export default function CleanTourDetail({
                         <span className={styles.detailDayToggle} aria-hidden="true" />
                       </summary>
                       <div className={styles.detailDayBody}>
-                        <div className={styles.detailDayImage}>
-                          <Image
-                            src={cldThumb(dayImage, 960, 640)}
-                            alt={`Gambaran perjalanan Hari ${item.day}: ${dayTitle}`}
-                            fill
-                            quality={70}
-                            sizes="(max-width: 700px) calc(100vw - 76px), 760px"
-                          />
-                        </div>
                         {paragraphs.map((paragraph, paragraphIndex) => <p key={`${paragraph.slice(0, 32)}-${paragraphIndex}`}>{paragraph}</p>)}
                         {item.insights.length > 0 && (
-                          <div className={styles.detailDayTags}>
-                            {item.insights.map((insight) => <span key={`${insight.kind}-${insight.value}`}>{insight.value}</span>)}
-                          </div>
+                          <dl className={styles.detailDayFacts}>
+                            {item.insights.map((insight) => (
+                              <div key={`${insight.kind}-${insight.value}`}>
+                                <dt>{insight.label}</dt>
+                                <dd>{insight.value}</dd>
+                              </div>
+                            ))}
+                          </dl>
                         )}
                       </div>
                     </StableDetails>
@@ -465,6 +445,8 @@ export default function CleanTourDetail({
               </div>
             </section>
           )}
+
+          {itinerary.length === 0 && destinationGallery}
 
           <section className={styles.detailContentSection} id="harga-tanggal" aria-labelledby="harga-tanggal-title">
             <p className={styles.detailSectionKicker}>Harga &amp; tanggal</p>

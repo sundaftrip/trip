@@ -91,8 +91,8 @@ test("keeps aurora accents restrained to dark hero headings", () => {
   assert.match(homeSource, /phrase="Aurora\."[\s\S]*?glow/);
   assert.equal((homeSource.match(/<TextWithAuroraAccent/g) ?? []).length, 1);
 
-  assert.match(tourDetailSource, /<h1 id="tour-title">[\s\S]*?phrase="Aurora"[\s\S]*?glow/);
-  assert.equal((tourDetailSource.match(/<TextWithAuroraAccent/g) ?? []).length, 1);
+  assert.match(tourDetailSource, /<h1 id="tour-title">\{tour\.title\}<\/h1>/);
+  assert.doesNotMatch(tourDetailSource, /TextWithAuroraAccent/);
 
   for (const destinationSource of [teriberkaSource, murmanskSource]) {
     assert.match(destinationSource, /<AuroraText glow>\{destination\.hero\.titleLine2\}<\/AuroraText>/);

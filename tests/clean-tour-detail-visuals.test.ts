@@ -56,13 +56,16 @@ test("keeps one complete itinerary without a duplicate highlights rail", () => {
   assert.match(source, /itinerary\.map\(\(item, index\)/);
 });
 
-test("renders the resolved image inside every itinerary day", () => {
-  assert.match(source, /const dayImage = resolveItineraryDayImage\(item, index, heroImages\)/);
-  assert.match(source, /className=\{styles\.detailDayImage\}/);
-  assert.match(source, /Gambaran perjalanan Hari \$\{item\.day\}: \$\{dayTitle\}/);
+test("keeps itinerary days informational without assigning destination photos to activities", () => {
+  assert.doesNotMatch(source, /resolveItineraryDayImage|detailDayImage|Gambaran perjalanan Hari/);
+  assert.match(source, /paragraphs\.map/);
+  assert.match(source, /<time dateTime=\{date\.iso\}>\{date\.label\}<\/time>/);
+  assert.match(source, /<dt>\{insight\.label\}<\/dt>/);
+  assert.match(source, /<dd>\{insight\.value\}<\/dd>/);
 });
 
-test("does not repeat the hero gallery before the itinerary", () => {
+test("uses one destination gallery while retaining itinerary and booking links", () => {
+  assert.equal(source.match(/<TourHeroGallery\b/g)?.length, 1);
   assert.doesNotMatch(source, /GalleryZoom/);
   assert.doesNotMatch(source, /id="galeri"/);
   assert.doesNotMatch(source, /Dokumentasi &amp; gambaran perjalanan/);
