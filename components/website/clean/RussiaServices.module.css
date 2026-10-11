@@ -111,7 +111,13 @@
 }
 
 .serviceGrid article {
+  --card-wash: 0;
+  --card-heading: var(--ink);
+  --card-mark: 0;
+  --card-icon-scale: 1;
+  --card-arrow-offset: 0px;
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -122,23 +128,29 @@
 .serviceGrid article[data-motion]::before {
   content: "";
   position: absolute;
-  top: -1px;
-  right: 0;
-  left: 0;
-  height: 1px;
-  background: var(--primary);
-  opacity: 0;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(125deg, #e4f4ec, #f2faf6 75%, #ffffff);
+  opacity: var(--card-wash);
   pointer-events: none;
 }
 
-.serviceGrid article[data-motion]:focus-within::before,
-.serviceGrid article[data-motion]:active::before {
-  opacity: .65;
+.serviceGrid article[data-motion]:focus-within,
+.serviceGrid article[data-motion]:active {
+  --card-wash: 1;
+  --card-heading: var(--primary);
+  --card-mark: 1;
+  --card-icon-scale: 1.08;
+  --card-arrow-offset: 4px;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .serviceGrid article[data-motion]:hover::before {
-    opacity: .65;
+  .serviceGrid article[data-motion]:hover {
+    --card-wash: 1;
+    --card-heading: var(--primary);
+    --card-mark: 1;
+    --card-icon-scale: 1.08;
+    --card-arrow-offset: 4px;
   }
 }
 
@@ -167,6 +179,8 @@
   flex: 0 0 auto;
   width: 64px;
   height: 64px;
+  transform: scale(var(--card-icon-scale));
+  transform-origin: center bottom;
 }
 
 .serviceIcon > svg {
@@ -182,16 +196,32 @@
 }
 
 .serviceTitle h2 {
+  position: relative;
   margin: 0;
-  color: var(--ink);
+  color: var(--card-heading);
   font-size: 17px;
   font-weight: 720;
   line-height: 1.32;
   letter-spacing: 0.01em;
 }
 
+/* Two imperfect strokes sit below the label, keeping every word readable. */
+.serviceGrid article[data-motion] .serviceTitle h2::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 9px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M3 5C42 0 104 2 196 4M12 10C68 6 127 10 182 7' fill='none' stroke='%23d5a63d' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  opacity: var(--card-mark);
+  transform: scaleX(var(--card-mark));
+  transform-origin: left center;
+  pointer-events: none;
+}
+
 .serviceGrid article > p {
-  margin: 8px 0 18px;
+  margin: 14px 0 18px;
   color: var(--text);
   font-size: 13px;
   line-height: 1.55;
@@ -209,6 +239,22 @@
   font-weight: 500;
   line-height: 1.55;
   text-decoration: none;
+}
+
+.serviceLink {
+  max-width: 100%;
+  padding-right: 4px;
+}
+
+.serviceLink::after {
+  content: "";
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+  margin-left: 8px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10h13M11 4l6 6-6 6' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: translateX(var(--card-arrow-offset));
 }
 
 .comingSoon {
@@ -307,7 +353,7 @@
   }
 
   .serviceGrid article > p {
-    margin-top: 6px;
+    margin-top: 12px;
     font-size: 12px;
     line-height: 1.48;
   }
@@ -327,7 +373,20 @@
 /* Motion runs only for visible cards while the page is active. */
 @media (prefers-reduced-motion: no-preference) {
   .serviceGrid article[data-motion]::before {
-    transition: opacity .18s ease;
+    transition: opacity .2s ease;
+  }
+
+  .serviceTitle h2 {
+    transition: color .18s ease;
+  }
+
+  .serviceGrid article[data-motion] .serviceTitle h2::after {
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1), opacity .16s ease;
+  }
+
+  .serviceIcon,
+  .serviceLink::after {
+    transition: transform .24s cubic-bezier(.22, 1, .36, 1);
   }
 
   .serviceIcon [data-part] {
