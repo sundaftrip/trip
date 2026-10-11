@@ -24,6 +24,10 @@
 .logo { width: 180px; height: 50px; object-fit: contain; filter: brightness(0) invert(1); }
 .brand > p { max-width: 29ch; margin: 12px 0 6px; color: var(--footer-text); font-size: 13px; line-height: 1.5; }
 .brandNote { color: var(--footer-muted); font-size: 12px; }
+.payment { max-width: 29ch; margin-top: 20px; }
+.paymentLogo { display: block; width: 80px; height: 25px; object-fit: contain; }
+.payment p { margin: 9px 0 4px; color: var(--footer-text); font-size: 12px; line-height: 1.5; }
+.payment > span { display: block; color: var(--footer-muted); font-size: 10px; line-height: 1.5; }
 .navigation { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .group { min-width: 0; }
 .group h2 { margin: 5px 0 8px; color: var(--footer-ink); font-size: 12px; font-weight: 600; line-height: 1.5; letter-spacing: .025em; text-transform: uppercase; }

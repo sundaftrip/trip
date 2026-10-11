@@ -9,6 +9,7 @@ import {
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
+import { SUNDAF_TRANSFER_ACCOUNT } from "@/lib/company-transfer";
 import styles from "./CleanFooter.module.css";
 
 function InstagramIcon() {
@@ -48,6 +49,18 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <h2 id="footer-brand-title" className="sr-only">Sundaf Trip</h2>
             <p>Perjalanan Rusia, Asia Tengah, aurora, dan private trip untuk traveler Indonesia.</p>
             <span className={styles.brandNote} data-no-translate translate="no">Your B2B partner.</span>
+            <div className={styles.payment} role="group" aria-label="Rekening transfer perusahaan">
+              <Image
+                className={styles.paymentLogo}
+                src="/brand/bca-white.svg"
+                alt="BCA"
+                title="Logo BCA merupakan merek terdaftar milik PT Bank Central Asia Tbk."
+                width={80}
+                height={25}
+              />
+              <p>{`Transfer perusahaan hanya melalui ${SUNDAF_TRANSFER_ACCOUNT.bank}.`}</p>
+              <span data-no-translate translate="no">{SUNDAF_TRANSFER_ACCOUNT.holder}</span>
+            </div>
           </section>
 
           <div className={styles.navigation}>
