@@ -25,8 +25,8 @@
   background: var(--support-canvas) !important;
   background-image: none !important;
   color: var(--support-ink);
-  font-weight: 300;
-  letter-spacing: 0.012em;
+  font-weight: 400;
+  letter-spacing: 0;
   font-family: var(
     --site-font-family,
     var(--font-jost),

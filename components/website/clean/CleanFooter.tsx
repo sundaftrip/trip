@@ -9,7 +9,6 @@ import {
 } from "@/lib/business-identity";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
-import { roboto } from "@/lib/fonts";
 import styles from "./CleanFooter.module.css";
 
 function InstagramIcon() {
@@ -39,7 +38,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
     .trim();
 
   return (
-    <footer className={`${styles.footer} ${roboto.variable}`} data-clean-footer>
+    <footer className={styles.footer} data-clean-footer>
       <div className={styles.shell}>
         <div className={styles.top}>
           <section className={styles.brand} aria-labelledby="footer-brand-title">

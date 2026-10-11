@@ -52,7 +52,13 @@ test("accents one literal phrase case-insensitively without hiding readable text
 });
 
 test("keeps an accessible solid-color fallback when gradient text is unsupported", () => {
-  assert.match(stylesSource, /\.auroraText \{[\s\S]*?color: #f4fffd;/);
+  const fallback = stylesSource.match(/\.auroraText \{[\s\S]*?color: var\(--aurora-text-color, (#[\da-f]{6})\);/i)?.[1];
+  assert.ok(fallback, "gradient text needs a solid fallback before @supports");
+  const luminance = [1, 3, 5].map((index) => {
+    const channel = Number.parseInt(fallback.slice(index, index + 2), 16) / 255;
+    return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  }).reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
+  assert.ok(1.05 / (luminance + 0.05) >= 4.5, "default accent must remain readable on a white page");
   assert.match(
     stylesSource,
     /@supports \(\(background-clip: text\) or \(-webkit-background-clip: text\)\) \{[\s\S]*?-webkit-text-fill-color: transparent;/,
@@ -62,14 +68,15 @@ test("keeps an accessible solid-color fallback when gradient text is unsupported
 test("animates slowly only on motion-enabled non-mobile viewports", () => {
   assert.match(
     stylesSource,
-    /@media \(prefers-reduced-motion: no-preference\) and \(min-width: 640px\) \{[\s\S]*?animation: aurora-text-drift 18s/,
+    /@media \(prefers-reduced-motion: no-preference\) and \(min-width: 640px\) \{[\s\S]*?animation: aurora-text-drift/,
   );
   const activeAnimations = [...stylesSource.matchAll(/animation:\s*([^;]+);/g)]
     .map((match) => match[1].trim())
     .filter((value) => value !== "none");
-  assert.deepEqual(activeAnimations, [
-    "aurora-text-drift 18s ease-in-out infinite alternate",
-  ]);
+  assert.equal(activeAnimations.length, 1);
+  assert.match(activeAnimations[0], /^aurora-text-drift \d+s ease-in-out infinite alternate$/);
+  const duration = Number(activeAnimations[0].match(/(\d+)s/)?.[1]);
+  assert.ok(duration >= 24, "the restrained accent should drift slowly without a short loop");
   assert.doesNotMatch(stylesSource, /opacity\s*:/);
 });
 
