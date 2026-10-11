@@ -13,9 +13,9 @@ export function getHomeFaqs(nib: string, legalName: string): HomeFaqItem[] {
       answer: `Sundaf Trip dioperasikan oleh ${legalName} dan tercatat dengan NIB ${nib}. Sebelum membayar, kamu akan menerima konfirmasi perjalanan, rincian biaya, dan instruksi pembayaran melalui kanal resmi Sundaf Trip.`,
     },
     {
-      question: "Apa yang kamu terima sebelum membayar?",
+      question: "Pembayaran Sundaf melalui rekening apa?",
       answer:
-        `Kami akan mengirimkan rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui. ${SUNDAF_TRANSFER_INSTRUCTIONS.id}`,
+        `${SUNDAF_TRANSFER_INSTRUCTIONS.id} Sundaf tidak menggunakan rekening bank lain untuk transfer perusahaan. Sebelum membayar, kamu akan menerima rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui. Jika instruksi transfer berbeda, konfirmasi melalui kontak resmi Sundaf Trip sebelum membayar.`,
     },
     {
       question: "Harga yang tampil sudah mencakup apa saja?",

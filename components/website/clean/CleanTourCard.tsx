@@ -6,7 +6,6 @@ import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { PublicTourState } from "@/lib/tour-order";
 import { getCommerceTourStatus } from "@/lib/tour-commerce";
 import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
-import { roboto } from "@/lib/fonts";
 import styles from "./CleanSite.module.css";
 
 export type CleanTour = {
@@ -96,7 +95,7 @@ export default function CleanTourCard({
         <h3 className={styles.tourTitle}>{tour.title}</h3>
       </Link>
 
-      <div className={`${styles.tourBody} ${roboto.variable}`}>
+      <div className={styles.tourBody}>
         <div className={styles.tourFacts}>
           <div className={styles.tourFact}><MapPin size={16} aria-hidden="true" /><span>{tour.cityHighlight || tour.country}</span></div>
         </div>

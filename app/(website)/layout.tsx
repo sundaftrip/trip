@@ -70,10 +70,9 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
   // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
 
-  // Identitas editorial Sundaf memakai satu keluarga huruf agar heading,
-  // navigasi, dan kartu terasa konsisten. Pengaturan font CMS tetap disimpan
-  // untuk kompatibilitas data, tetapi tidak lagi mengganti tipografi publik.
-  const fontFamily = 'var(--font-jost), "Helvetica Neue", Arial, sans-serif';
+  // Share the DMC's DM Sans typography across the public site while retaining
+  // the existing Trip templates and the saved CMS font settings.
+  const fontFamily = 'var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif';
   // Atlas is the canonical public brand. Lock its palette here so an older
   // saved CMS preset (for example forest green or electric blue) cannot leak
   // back into the live website. Other preview themes remain configurable.

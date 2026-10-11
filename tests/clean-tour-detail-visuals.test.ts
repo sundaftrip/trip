@@ -218,6 +218,6 @@ test("offers only the visas required by the selected trip and keeps them optiona
   );
   assert.match(
     interactiveStylesSource,
-    /\.bookingSheet \{[\s\S]*?font-family: var\(--font-plus-jakarta\)[\s\S]*?font-weight: 400;[\s\S]*?letter-spacing: 0;/,
+    /\.bookingSheet \{[\s\S]*?font-family: var\(--site-font-family,[\s\S]*?font-weight: 400;[\s\S]*?letter-spacing: 0;/,
   );
 });

@@ -1,4 +1,4 @@
-import { SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
+import { SUNDAF_TRANSFER_ACCOUNT, SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
 
 /**
  * English copy reviewed for the public language switcher.
@@ -17,8 +17,11 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
     "Keep your proof of payment. If the transfer instructions do not match this account, request written confirmation from our official team before paying.",
   "Nominal dan batas waktu pembayaran mengikuti invoice atau konfirmasi booking. Jika instruksi transfer berbeda, konfirmasi melalui kontak resmi Sundaf Trip sebelum membayar.":
     "The amount and payment deadline follow your invoice or booking confirmation. If the transfer instructions differ, check with Sundaf Trip through its official contacts before paying.",
-  [`Kami akan mengirimkan rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui. ${SUNDAF_TRANSFER_INSTRUCTIONS.id}`]:
-    `We will send the itinerary, departure dates, included services, required charges, optional costs, and payment terms. Your booking is processed after you agree to these details. ${SUNDAF_TRANSFER_INSTRUCTIONS.en}`,
+  "Pembayaran Sundaf melalui rekening apa?": "Which account does Sundaf use for payments?",
+  [`Transfer perusahaan hanya melalui ${SUNDAF_TRANSFER_ACCOUNT.bank}.`]:
+    `Company transfers are accepted only through ${SUNDAF_TRANSFER_ACCOUNT.bank}.`,
+  [`${SUNDAF_TRANSFER_INSTRUCTIONS.id} Sundaf tidak menggunakan rekening bank lain untuk transfer perusahaan. Sebelum membayar, kamu akan menerima rencana perjalanan, tanggal keberangkatan, fasilitas yang termasuk, biaya wajib, biaya opsional, dan ketentuan pembayaran. Booking baru diproses setelah detailnya kamu setujui. Jika instruksi transfer berbeda, konfirmasi melalui kontak resmi Sundaf Trip sebelum membayar.`]:
+    `${SUNDAF_TRANSFER_INSTRUCTIONS.en} Sundaf does not use any other bank account for company transfers. Before paying, you will receive the itinerary, departure dates, included services, required charges, optional costs, and payment terms. Your booking is processed after you agree to these details. If the transfer instructions differ, check with Sundaf Trip through its official contacts before paying.`,
   // Shared shell
   "Langsung ke konten utama": "Skip to main content",
   "Sundaf Trip, beranda": "Sundaf Trip, home",
