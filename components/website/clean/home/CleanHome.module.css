@@ -146,10 +146,6 @@
 }
 
 .heroCopy {
-  --aurora-text-color: #d5e9dd;
-  --aurora-text-start: #c6e1d1;
-  --aurora-text-middle: #a2caba;
-  --aurora-text-end: #edf5ef;
   max-width: 690px;
   padding-bottom: 154px;
 }
