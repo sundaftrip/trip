@@ -11,8 +11,9 @@ import {
   replaceLegacyHomepageCopy,
 } from "@/lib/home-copy";
 import { getHomeFaqs, type HomeFaqItem } from "@/lib/home-faqs";
-import { getTourProductImage } from "@/lib/tour-product-images";
+import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
+import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import type { CleanTour } from "./CleanTourCard";
 import HomeFaqs from "./home/HomeFaqs";
 import HomeBenefitGrid from "./home/HomeBenefitGrid";
@@ -20,7 +21,7 @@ import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
-import HomeMotion from "./home/HomeMotion";
+import HeroChalkNote from "./home/HeroChalkNote";
 import RussiaGuideLinks from "./RussiaGuideLinks";
 import styles from "./home/CleanHome.module.css";
 
@@ -141,6 +142,14 @@ function getDestinationOptions(tours: CleanTour[]) {
   return Array.from(options.values());
 }
 
+function destinationImage(
+  destinations: DestinationOption[],
+  value: string,
+  fallback: string,
+) {
+  return destinations.find((destination) => destination.value === value)?.image || fallback;
+}
+
 function getMonthOptions(tours: CleanTour[]): HomeSearchOption[] {
   return Array.from(
     new Set(
@@ -210,46 +219,54 @@ export default function CleanHome({
     ["home_hero_image_alt"],
     "Rombongan Sundaf Trip menyaksikan Aurora di Murmansk",
   );
-  const titleParts = heroTitle.startsWith("Jelajahi ")
-    ? { opening: "Jelajahi", rest: heroTitle.slice("Jelajahi ".length) }
-    : null;
+
+  const russiaImage = destinationImage(
+    destinationOptions,
+    "rusia",
+    PEXELS_TOUR_IMAGES.russiaAuroraSea,
+  );
+  const centralAsiaImage = destinationImage(
+    destinationOptions,
+    "asia-tengah",
+    PEXELS_TOUR_IMAGES.centralAsiaKazakhstanLake,
+  );
+  const vietnamImage = destinationImage(
+    destinationOptions,
+    "vietnam",
+    PEXELS_TOUR_IMAGES.vietnamNinhBinh,
+  );
 
   return (
     <div className={styles.home}>
-      <HomeMotion />
       <div id="main-content" tabIndex={-1}>
         <div className={styles.heroBoundary}>
           <section className={styles.hero} aria-labelledby="home-hero-title">
+            <Image
+              src={resolvedHeroImage}
+              alt={resolvedHeroAlt}
+              fill
+              priority
+              fetchPriority="high"
+              quality={90}
+              sizes="100vw"
+              className={styles.heroImage}
+            />
+            <div className={styles.heroOverlay} aria-hidden="true" />
             <div className={`${styles.shell} ${styles.heroShell}`}>
               <div className={styles.heroCopy}>
-                <p className={styles.eyebrow}>{heroEyebrow}</p>
+                <p className={styles.eyebrowLight}>{heroEyebrow}</p>
                 <h1 id="home-hero-title">
-                  {titleParts ? <><span className={styles.heroSerif}>{titleParts.opening}</span>{" "}{titleParts.rest}</> : heroTitle}
+                  <TextWithAuroraAccent
+                    text={heroTitle}
+                    phrase="Aurora."
+                    glow
+                  />
                 </h1>
                 <p>{heroBody}</p>
-                <Link className={styles.heroLink} href="#active-tours-title" scroll>
-                  Temukan perjalananmu <ArrowRight aria-hidden="true" />
-                </Link>
               </div>
-              <figure className={styles.heroFigure}>
-                <div className={styles.heroMedia}>
-                  <Image
-                    src={resolvedHeroImage}
-                    alt={resolvedHeroAlt}
-                    fill
-                    priority
-                    fetchPriority="high"
-                    quality={75}
-                    sizes="(max-width: 759px) calc(100vw - 40px), (max-width: 1040px) 44vw, 520px"
-                    className={styles.heroImage}
-                  />
-                </div>
-                <figcaption><span>Semua bisa jalan!</span><span>SUNDAF TRIP</span></figcaption>
-              </figure>
             </div>
             <div className={styles.finderZone}>
               <div className={styles.shell}>
-                <p className={styles.finderIntro}>Perjalanan berikutnya,<br /><span>mulai dari sini.</span></p>
                 <HomeSearchForm
                   destinations={destinationOptions}
                   months={monthOptions}
@@ -257,6 +274,9 @@ export default function CleanHome({
               </div>
             </div>
           </section>
+          <div className={`${styles.shell} ${styles.heroNoteRail}`}>
+            <HeroChalkNote />
+          </div>
         </div>
 
         <section className={`${styles.section} ${styles.tourSection}`} aria-labelledby="active-tours-title">
@@ -296,20 +316,62 @@ export default function CleanHome({
               <p>Jelajahi rute Rusia, Asia Tengah, dan Vietnam bersama Sundaf Trip.</p>
             </div>
 
-            <div className={styles.destinationList}>
-              {[
-                { href: "/destinations/rusia-aurora", title: "Rusia & Aurora", detail: "Lihat rute Rusia" },
-                { href: "/tours?destination=asia-tengah", title: "Asia Tengah", detail: "Jelajahi Asia Tengah" },
-                { href: "/tours?destination=vietnam", title: "Vietnam", detail: "Lihat rute Vietnam" },
-                { href: "/custom-trip", title: "Private & Custom Trip", detail: "Rancang perjalanan privat" },
-              ].map((destination, index) => (
-                <Link key={destination.href} href={destination.href}>
-                  <span className={styles.destinationIndex} aria-hidden="true">0{index + 1}</span>
-                  <strong>{destination.title}</strong>
-                  <small>{destination.detail}</small>
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              ))}
+            <div className={styles.destinationMosaic}>
+              <Link className={styles.destinationLead} href="/destinations/rusia-aurora">
+                <Image
+                  src={russiaImage}
+                  alt="Aurora di langit malam Rusia"
+                  fill
+                  sizes="(max-width: 759px) calc(100vw - 40px), 58vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Rusia &amp; Aurora</strong>
+                  <small>Lihat rute Rusia</small>
+                </span>
+              </Link>
+
+              <Link href="/tours?destination=asia-tengah">
+                <Image
+                  src={centralAsiaImage}
+                  alt="Pegunungan dan danau di Asia Tengah"
+                  fill
+                  sizes="(max-width: 759px) calc(50vw - 25px), 27vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Asia Tengah</strong>
+                  <small>Jelajahi Asia Tengah</small>
+                </span>
+              </Link>
+
+              <Link href="/tours?destination=vietnam">
+                <Image
+                  src={vietnamImage}
+                  alt="Lanskap hijau Ninh Binh, Vietnam"
+                  fill
+                  sizes="(max-width: 759px) calc(50vw - 25px), 27vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Vietnam</strong>
+                  <small>Lihat rute Vietnam</small>
+                </span>
+              </Link>
+
+              <Link className={styles.destinationPrivate} href="/custom-trip">
+                <Image
+                  src={PEXELS_TOUR_IMAGES.vietnamGoldenBridge}
+                  alt="Pemandangan pegunungan untuk inspirasi private trip"
+                  fill
+                  sizes="(max-width: 759px) calc(100vw - 40px), 58vw"
+                />
+                <span className={styles.destinationShade} aria-hidden="true" />
+                <span className={styles.destinationLabel}>
+                  <strong>Private &amp; Custom Trip</strong>
+                  <small>Rancang perjalanan privat</small>
+                </span>
+              </Link>
             </div>
             <RussiaGuideLinks />
           </div>

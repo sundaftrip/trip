@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Anonymous_Pro, Caveat, Source_Serif_4 } from "next/font/google";
+import { Jost, Plus_Jakarta_Sans, DM_Sans, Outfit, Nunito, Playfair_Display, Raleway, Poppins, Anonymous_Pro, Caveat } from "next/font/google";
 import "./globals.css";
-import "./brand-tokens.css";
 import Providers from "@/components/Providers";
 import Analytics from "@/components/Analytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -23,12 +22,10 @@ const raleway      = Raleway({ subsets: ["latin"], variable: "--font-raleway", d
 const poppins      = Poppins({ weight: ["400","500","600","700","800","900"], subsets: ["latin"], variable: "--font-poppins", display: "swap", preload: false });
 const caveat       = Caveat({ weight: ["400","600","700"], subsets: ["latin"], variable: "--font-caveat", display: "swap", preload: false });
 
-const sourceSerif = Source_Serif_4({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-source-serif", display: "swap", preload: false });
-
 const ALL_FONT_VARS = [
   jost.variable, plusJakarta.variable, dmSans.variable, outfit.variable,
   nunito.variable, playfair.variable, raleway.variable, poppins.variable,
-  anonymousPro.variable, caveat.variable, sourceSerif.variable,
+  anonymousPro.variable, caveat.variable,
 ].join(" ");
 
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";

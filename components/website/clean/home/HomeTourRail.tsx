@@ -119,10 +119,10 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                   />
                   <span className={styles.tourMediaShade} aria-hidden="true" />
                   <span className={styles.tourBadge}>{statusLabel(tour)}</span>
+                  <h3 className={styles.tourMediaTitle}>{tour.title}</h3>
                 </div>
 
                 <div className={styles.tourBody}>
-                  <h3 className={styles.tourMediaTitle}>{tour.title}</h3>
                   <p className={styles.tourMeta}>{tripMeta(tour)}</p>
                   <p className={styles.routeLine}>
                     <MapPin aria-hidden="true" />
