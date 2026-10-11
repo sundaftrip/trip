@@ -10,6 +10,11 @@
 }
 
 .public-site-shell {
+  --at-bg: var(--brand-paper);
+  --at-text: var(--brand-ink);
+  --at-subtext: #4d5c57;
+  --at-border: var(--brand-line);
+  --at-muted: var(--brand-mist);
   background: var(--brand-paper);
   color: var(--brand-ink);
 }
