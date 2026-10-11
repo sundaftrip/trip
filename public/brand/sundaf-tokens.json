@@ -1,0 +1,72 @@
+{
+  "name": "SUNDAF Brand System",
+  "version": "1.0",
+  "date": "2026-10-12",
+  "color": {
+    "ink": {
+      "name": "Ink",
+      "hex": "#182624"
+    },
+    "teal": {
+      "name": "SUNDAF Teal",
+      "hex": "#075D63"
+    },
+    "paper": {
+      "name": "Paper",
+      "hex": "#F6F5EF"
+    },
+    "mist": {
+      "name": "Mist",
+      "hex": "#D8E8E3"
+    },
+    "clay": {
+      "name": "Clay",
+      "hex": "#CF7854"
+    },
+    "line": {
+      "name": "Line",
+      "hex": "#D7DCD8"
+    },
+    "logoCyan": {
+      "name": "Logo Cyan",
+      "hex": "#00ADB5"
+    }
+  },
+  "typography": {
+    "body": "DM Sans",
+    "display": "Source Serif 4",
+    "fallbackBody": "Arial, sans-serif",
+    "fallbackDisplay": "Georgia, serif"
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96
+  ],
+  "radius": {
+    "panel": 2,
+    "control": 999
+  },
+  "motion": {
+    "enterMs": 680,
+    "imageRevealMs": 900,
+    "interactionMs": 220,
+    "distancePx": 14,
+    "easing": "cubic-bezier(0.2, 0.65, 0.2, 1)",
+    "reducedMotion": "Disable decorative transitions; keep all content visible."
+  },
+  "usage": {
+    "teal": "Main brand color and interactive text.",
+    "paper": "Primary background.",
+    "ink": "Primary text.",
+    "mist": "Supporting sections.",
+    "clay": "Small decorative accents; never body text on paper.",
+    "logoCyan": "Reserved for the original logo and small graphic accents; never small text on paper."
+  }
+}

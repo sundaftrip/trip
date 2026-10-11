@@ -1,0 +1,28 @@
+/* SUNDAF Brand System 1.0. Keep in sync with public/brand/sundaf-tokens.json. */
+:root {
+  --brand-ink: #182624;
+  --brand-teal: #075d63;
+  --brand-paper: #f6f5ef;
+  --brand-mist: #d8e8e3;
+  --brand-clay: #cf7854;
+  --brand-line: #d7dcd8;
+  --brand-logo-cyan: #00adb5;
+}
+
+.public-site-shell {
+  background: var(--brand-paper);
+  color: var(--brand-ink);
+}
+
+.public-site-shell .at-grid-bg {
+  background-image: none;
+}
+
+.public-site-shell .at-card {
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.public-site-shell .at-card:hover {
+  box-shadow: none;
+}

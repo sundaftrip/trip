@@ -13,7 +13,6 @@ import {
 import { getHomeFaqs, type HomeFaqItem } from "@/lib/home-faqs";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
-import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import type { CleanTour } from "./CleanTourCard";
 import HomeFaqs from "./home/HomeFaqs";
 import HomeBenefitGrid from "./home/HomeBenefitGrid";
@@ -21,7 +20,7 @@ import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
-import HeroChalkNote from "./home/HeroChalkNote";
+import HomeMotion from "./home/HomeMotion";
 import RussiaGuideLinks from "./RussiaGuideLinks";
 import styles from "./home/CleanHome.module.css";
 
@@ -219,6 +218,9 @@ export default function CleanHome({
     ["home_hero_image_alt"],
     "Rombongan Sundaf Trip menyaksikan Aurora di Murmansk",
   );
+  const titleParts = heroTitle.startsWith("Jelajahi ")
+    ? { opening: "Jelajahi", rest: heroTitle.slice("Jelajahi ".length) }
+    : null;
 
   const russiaImage = destinationImage(
     destinationOptions,
@@ -238,35 +240,40 @@ export default function CleanHome({
 
   return (
     <div className={styles.home}>
+      <HomeMotion />
       <div id="main-content" tabIndex={-1}>
         <div className={styles.heroBoundary}>
           <section className={styles.hero} aria-labelledby="home-hero-title">
-            <Image
-              src={resolvedHeroImage}
-              alt={resolvedHeroAlt}
-              fill
-              priority
-              fetchPriority="high"
-              quality={90}
-              sizes="100vw"
-              className={styles.heroImage}
-            />
-            <div className={styles.heroOverlay} aria-hidden="true" />
             <div className={`${styles.shell} ${styles.heroShell}`}>
               <div className={styles.heroCopy}>
-                <p className={styles.eyebrowLight}>{heroEyebrow}</p>
+                <p className={styles.eyebrow}>{heroEyebrow}</p>
                 <h1 id="home-hero-title">
-                  <TextWithAuroraAccent
-                    text={heroTitle}
-                    phrase="Aurora."
-                    glow
-                  />
+                  {titleParts ? <><span className={styles.heroSerif}>{titleParts.opening}</span>{" "}{titleParts.rest}</> : heroTitle}
                 </h1>
                 <p>{heroBody}</p>
+                <Link className={styles.heroLink} href="#active-tours-title" scroll>
+                  Temukan perjalananmu <ArrowRight aria-hidden="true" />
+                </Link>
               </div>
+              <figure className={styles.heroFigure}>
+                <div className={styles.heroMedia}>
+                  <Image
+                    src={resolvedHeroImage}
+                    alt={resolvedHeroAlt}
+                    fill
+                    priority
+                    fetchPriority="high"
+                    quality={75}
+                    sizes="(max-width: 759px) calc(100vw - 40px), (max-width: 1040px) 44vw, 520px"
+                    className={styles.heroImage}
+                  />
+                </div>
+                <figcaption><span>Semua bisa jalan!</span><span>SUNDAF TRIP</span></figcaption>
+              </figure>
             </div>
             <div className={styles.finderZone}>
               <div className={styles.shell}>
+                <p className={styles.finderIntro}>Perjalanan berikutnya,<br /><span>mulai dari sini.</span></p>
                 <HomeSearchForm
                   destinations={destinationOptions}
                   months={monthOptions}
@@ -274,9 +281,6 @@ export default function CleanHome({
               </div>
             </div>
           </section>
-          <div className={`${styles.shell} ${styles.heroNoteRail}`}>
-            <HeroChalkNote />
-          </div>
         </div>
 
         <section className={`${styles.section} ${styles.tourSection}`} aria-labelledby="active-tours-title">
