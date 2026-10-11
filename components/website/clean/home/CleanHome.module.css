@@ -507,67 +507,8 @@
   font-weight: 750;
 }
 
-.destinationMosaic {
-  margin-top: 36px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: 270px 270px;
-  gap: 14px;
-}
-
 .destinationSection {
   background: var(--home-paper);
-}
-
-.destinationMosaic > a {
-  position: relative;
-  min-height: 220px;
-  overflow: hidden;
-  border-radius: 2px !important;
-  isolation: isolate;
-  background: var(--home-primary-strong);
-}
-
-.destinationMosaic > a > img {
-  z-index: -2;
-  object-fit: cover;
-  transition: transform 650ms var(--site-motion-ease);
-}
-
-.destinationShade {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(0deg, rgba(7, 29, 32, 0.78) 0%, rgba(7, 29, 32, 0.08) 70%);
-}
-
-.destinationLabel {
-  position: absolute;
-  right: 24px;
-  bottom: 22px;
-  left: 24px;
-  color: var(--home-white);
-  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.destinationLabel strong,
-.destinationLabel small {
-  display: block;
-}
-
-.destinationLabel strong {
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: 0.012em;
-  transition: color 200ms ease;
-}
-
-.destinationLabel small {
-  margin-top: 5px;
-  color: rgba(255, 255, 255, 0.84);
-  font-size: 12px;
-  font-weight: 650;
 }
 
 .benefitSection {
@@ -1166,10 +1107,6 @@
     color: var(--home-primary);
   }
 
-  .destinationMosaic > a:hover .destinationLabel strong {
-    color: #d8fff8;
-  }
-
   .tourCard:hover .tourPrice strong {
     color: var(--home-accent);
   }
@@ -1182,28 +1119,8 @@
     scroll-padding-inline: 20px;
   }
 
-  .tourCard:hover .tourMedia img,
-  .destinationMosaic > a:hover > img {
+  .tourCard:hover .tourMedia img {
     transform: scale(1.025);
-  }
-
-  .destinationMosaic > a:hover .destinationLabel {
-    transform: translateY(-2px);
-  }
-}
-
-@media (min-width: 760px) {
-
-  .destinationMosaic {
-    grid-template-columns: 1.18fr 0.82fr 0.82fr;
-  }
-
-  .destinationLead {
-    grid-row: 1 / 3;
-  }
-
-  .destinationPrivate {
-    grid-column: 2 / 4;
   }
 }
 
@@ -1414,42 +1331,6 @@
 
   .tourPrice strong {
     font-size: 18px;
-  }
-
-  .destinationMosaic {
-    margin-top: 28px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 230px 170px 210px;
-    gap: 10px;
-  }
-
-  .destinationMosaic > a {
-    min-height: 0;
-    border-radius: 2px !important;
-  }
-
-  .destinationLead,
-  .destinationPrivate {
-    grid-column: 1 / 3;
-  }
-
-  .destinationLabel {
-    right: 16px;
-    bottom: 15px;
-    left: 16px;
-  }
-
-  .destinationLabel strong {
-    font-size: 20px;
-  }
-
-  .destinationMosaic > a:nth-child(2) .destinationLabel strong,
-  .destinationMosaic > a:nth-child(3) .destinationLabel strong {
-    font-size: 16px;
-  }
-
-  .destinationLabel small {
-    font-size: 10.5px;
   }
 
   .benefitGrid {
@@ -1867,3 +1748,13 @@
  .tourMediaTitle { font-size: 22px; margin-bottom: 14px; }
  .tourBody { padding-inline: 0; }
 }
+
+.destinationList { margin-top: 40px; border-top: 1px solid var(--brand-line); }
+.destinationList > a { display: grid; grid-template-columns: 48px 1fr auto 28px; align-items: center; gap: 28px; min-height: 116px; padding-block: 24px; border-bottom: 1px solid var(--brand-line); color: var(--brand-ink); }
+.destinationIndex { font-size: 11px; letter-spacing: .12em; color: var(--brand-teal); }
+.destinationList strong { font-size: clamp(28px, 3.8vw, 48px); line-height: 1.2; font-weight: 400; letter-spacing: -.04em; }
+.destinationList small { font-size: 13px; color: #4d5c57; }
+.destinationList svg { width: 22px; height: 22px; color: var(--brand-teal); transition: transform 220ms var(--site-motion-ease); }
+.destinationList > a:hover svg { transform: translateX(4px); }
+.destinationList > a:hover strong { color: var(--brand-teal); }
+@media(max-width:759px) { .destinationList > a { grid-template-columns: 24px 1fr 22px; gap: 16px; min-height: 92px; } .destinationList small { display: none; } .destinationList strong { font-size: 28px; } }

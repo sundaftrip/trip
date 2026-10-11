@@ -85,6 +85,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
               <h2>Kenali Sundaf</h2>
               <nav aria-label="Tautan tentang Sundaf">
                 <Link href="/about">Tentang Sundaf</Link>
+                <Link href="/media-kit">Media & Brand Kit</Link>
                 <Link href="/blog">Jurnal</Link>
                 <Link href="/reviews">Cerita Peserta</Link>
                 <Link href="/faq">Pertanyaan Umum</Link>
