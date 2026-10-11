@@ -1,21 +1,20 @@
 .home {
-  --home-ink: #132b3a;
-  --home-ink-soft: #42515a;
-  --home-muted: #66737a;
-  --home-primary: #075d63;
+  --home-ink: var(--brand-ink);
+  --home-ink-soft: #4d5c57;
+  --home-muted: #606c67;
+  --home-primary: var(--brand-teal);
   --home-primary-strong: #05484d;
-  --home-accent: #075d63;
-  --home-aurora: #20b8b5;
-  --home-ice: #f3f5f2;
-  --home-sand: #f3efe7;
-  --home-paper: #FFFFFF;
+  --home-accent: var(--brand-teal);
+  --home-aurora: var(--brand-teal);
+  --home-ice: var(--brand-mist);
+  --home-sand: var(--brand-paper);
+  --home-paper: var(--brand-paper);
   --home-white: #ffffff;
-  --home-line: #e1e7e6;
+  --home-line: var(--brand-line);
   --home-success: #16794f;
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  padding-top: 94px;
   contain: paint;
   overflow-x: hidden;
   background: var(--home-paper);
@@ -29,6 +28,7 @@
     Arial,
     sans-serif
   );
+  padding-top: 94px;
 }
 
 .home,
@@ -52,8 +52,8 @@
 }
 
 .shell {
-  width: min(1180px, calc(100% - 64px));
   margin-inline: auto;
+  width: min(1280px, calc(100% - 80px));
 }
 
 .skipLink {
@@ -75,81 +75,6 @@
   transform: none;
 }
 
-.heroBoundary {
-  position: relative;
-}
-
-/* Keep the handwritten note outside the hero's clipped photo layer. */
-.heroNoteRail {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  z-index: 4;
-  height: 0;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.heroNote {
-  position: absolute;
-  top: 0;
-  right: 4px;
-  width: 190px;
-  margin: 0;
-  color: #f5b83d;
-  line-height: 0;
-  letter-spacing: -0.02em;
-  transform: translateY(-34%) rotate(-5deg);
-}
-
-.heroNote > svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-  font-weight: 700;
-}
-
-.hero {
-  position: relative;
-  height: clamp(560px, 72svh, 720px);
-  min-height: 560px;
-  isolation: isolate;
-  overflow: hidden;
-  background: var(--home-primary-strong);
-  color: var(--home-white);
-}
-
-.heroImage {
-  z-index: -2;
-  object-fit: cover;
-  object-position: 50% 52%;
-}
-
-.heroOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    90deg,
-    rgba(10, 29, 32, 0.84) 0%,
-    rgba(10, 29, 32, 0.54) 42%,
-    rgba(10, 29, 32, 0.16) 74%,
-    rgba(10, 29, 32, 0.06) 100%
-  );
-}
-
-.heroShell {
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-}
-
-.heroCopy {
-  max-width: 690px;
-  padding-bottom: 154px;
-}
-
 .eyebrow,
 .eyebrowLight {
   margin: 0 0 14px;
@@ -168,44 +93,18 @@
   color: rgba(255, 255, 255, 0.84);
 }
 
-.heroCopy h1 {
-  max-width: 10ch;
-  margin: 0;
-  font-size: clamp(52px, 6.2vw, 76px);
-  font-weight: 500;
-  line-height: 1.08;
-  letter-spacing: -0.045em;
-  text-wrap: balance;
-}
-
-.heroCopy > p:last-child {
-  max-width: 580px;
-  margin: 18px 0 0;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 17px;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1.6;
-}
-
-.finderZone {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 40px;
-  z-index: 3;
-}
-
 .finderCard {
   min-height: 0;
-  padding: 7px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-  gap: 8px;
   align-items: stretch;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: 999px !important;
-  background: linear-gradient(110deg, #ffffff 0%, #fafcfb 60%, #eef4f0 100%);
-  box-shadow: 0 8px 28px rgba(4, 20, 23, 0.16);
+  border: 0;
+  border-bottom: 1px solid var(--home-line);
+  border-radius: 0 !important;
+  background: transparent;
+  box-shadow: none;
+  padding: 10px 0;
+  gap: 12px;
 }
 
 .finderField {
@@ -288,7 +187,7 @@
 }
 
 .section {
-  padding-block: clamp(60px, 6.5vw, 84px);
+  padding-block: clamp(64px, 7.5vw, 110px);
 }
 
 .sectionHeading {
@@ -300,11 +199,11 @@
 .finalLayout h2 {
   margin: 0;
   color: var(--home-ink);
-  font-size: clamp(31px, 4.1vw, 49px);
-  font-weight: 500;
   line-height: 1.14;
-  letter-spacing: -0.035em;
   text-wrap: balance;
+  font-weight: 400;
+  font-size: clamp(34px, 4.1vw, 56px);
+  letter-spacing: -0.045em;
 }
 
 .sectionHeading > p:last-child {
@@ -398,13 +297,14 @@
   display: flex;
   flex-direction: column;
   scroll-snap-align: start;
-  border: 1px solid var(--home-line);
-  border-radius: 20px !important;
-  background: var(--home-white);
+  border-radius: 2px !important;
   transition:
     border-color 180ms ease,
     transform 360ms var(--site-motion-ease),
     box-shadow 360ms ease;
+  border: 0;
+  border-bottom: 1px solid var(--home-line);
+  background: transparent;
 }
 
 .tourLink {
@@ -445,23 +345,24 @@
     rgba(5, 25, 29, 0.68)
   );
   pointer-events: none;
+  display: none;
 }
 
 .tourMediaTitle {
-  position: absolute;
   right: 16px;
   bottom: 15px;
   left: 16px;
   z-index: 2;
-  margin: 0;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.18;
-  letter-spacing: 0.01em;
-  text-shadow: 0 2px 12px rgba(4, 20, 23, 0.42);
   text-wrap: balance;
   transition: color 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  position: static;
+  color: var(--home-ink);
+  text-shadow: none;
+  font-size: 23px;
+  line-height: 1.25;
+  margin: 0 0 16px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
 }
 
 .tourCard[data-state="sold"] .tourMedia img {
@@ -491,17 +392,17 @@
 }
 
 .tourCard[data-state="sold"] .tourBadge {
-  background: #132b3a;
+  background: var(--brand-ink);
   color: var(--home-white);
 }
 
 .tourBody {
   min-height: 245px;
-  padding: 20px;
   display: flex;
   flex: 1;
   flex-direction: column;
   background: #fff;
+  padding: 24px 0;
 }
 
 .tourMeta {
@@ -589,7 +490,7 @@
   margin-top: 32px;
   padding: 30px;
   border: 1px solid var(--home-line);
-  border-radius: 18px;
+  border-radius: 2px;
   background: var(--home-ice);
 }
 
@@ -606,67 +507,8 @@
   font-weight: 750;
 }
 
-.destinationMosaic {
-  margin-top: 36px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: 270px 270px;
-  gap: 14px;
-}
-
 .destinationSection {
   background: var(--home-paper);
-}
-
-.destinationMosaic > a {
-  position: relative;
-  min-height: 220px;
-  overflow: hidden;
-  border-radius: 24px !important;
-  isolation: isolate;
-  background: var(--home-primary-strong);
-}
-
-.destinationMosaic > a > img {
-  z-index: -2;
-  object-fit: cover;
-  transition: transform 650ms var(--site-motion-ease);
-}
-
-.destinationShade {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(0deg, rgba(7, 29, 32, 0.78) 0%, rgba(7, 29, 32, 0.08) 70%);
-}
-
-.destinationLabel {
-  position: absolute;
-  right: 24px;
-  bottom: 22px;
-  left: 24px;
-  color: var(--home-white);
-  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.destinationLabel strong,
-.destinationLabel small {
-  display: block;
-}
-
-.destinationLabel strong {
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: 0.012em;
-  transition: color 200ms ease;
-}
-
-.destinationLabel small {
-  margin-top: 5px;
-  color: rgba(255, 255, 255, 0.84);
-  font-size: 12px;
-  font-weight: 650;
 }
 
 .benefitSection {
@@ -785,8 +627,9 @@
   gap: 16px;
   scroll-snap-align: start;
   border: 1px solid #e5dfd2;
-  border-radius: 24px !important;
   background: var(--home-white);
+  border-radius: 2px;
+  box-shadow: none;
 }
 
 .reviewTopline {
@@ -999,7 +842,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 54px;
-  border-radius: 24px;
+  border-radius: 2px;
   background: var(--home-primary-strong);
   color: var(--home-white);
 }
@@ -1065,9 +908,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--home-line);
-  border-radius: 18px;
-  background: var(--home-white);
+  border-radius: 2px;
+  border: 0;
+  border-bottom: 1px solid var(--home-line);
+  background: transparent;
 }
 
 .journalMedia {
@@ -1104,10 +948,10 @@
 
 .journalBody {
   min-height: 300px;
-  padding: 20px;
   display: flex;
   flex: 1;
   flex-direction: column;
+  padding: 24px 0;
 }
 
 .journalMeta {
@@ -1263,11 +1107,6 @@
     color: var(--home-primary);
   }
 
-  .tourCard:hover .tourMediaTitle,
-  .destinationMosaic > a:hover .destinationLabel strong {
-    color: #d8fff8;
-  }
-
   .tourCard:hover .tourPrice strong {
     color: var(--home-accent);
   }
@@ -1275,72 +1114,13 @@
 
 @media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .tourRail {
-    /* Let rounded shadows fade inside the scrollport without moving the cards. */
     margin: -14px -18px -20px;
     padding: 16px 20px 36px;
     scroll-padding-inline: 20px;
   }
 
-  .tourCard:hover {
-    border-color: rgba(10, 101, 112, 0.38);
-    box-shadow:
-      0 3px 8px -3px rgba(18, 51, 55, 0.07),
-      0 12px 22px -9px rgba(18, 51, 55, 0.09);
-    transform: translateY(-2px);
-  }
-
-  .tourCard:hover .tourMedia img,
-  .destinationMosaic > a:hover > img {
+  .tourCard:hover .tourMedia img {
     transform: scale(1.025);
-  }
-
-  .tourCard:hover .tourMediaTitle {
-    transform: translateY(-2px);
-  }
-
-  .destinationMosaic > a:hover .destinationLabel {
-    transform: translateY(-2px);
-  }
-}
-
-@media (min-width: 760px) {
-  .finderZone .shell {
-    width: min(760px, calc(100% - 64px));
-  }
-
-  .destinationMosaic {
-    grid-template-columns: 1.18fr 0.82fr 0.82fr;
-  }
-
-  .destinationLead {
-    grid-row: 1 / 3;
-  }
-
-  .destinationPrivate {
-    grid-column: 2 / 4;
-  }
-}
-
-@media (min-width: 921px) {
-  .hero {
-    height: clamp(640px, 76svh, 780px);
-    min-height: 640px;
-  }
-
-  .heroImage {
-    object-position: 50% 64%;
-  }
-
-  .heroShell {
-    align-items: center;
-  }
-
-  .heroCopy {
-    padding: 40px 0 96px;
-  }
-
-  .heroCopy h1 {
-    max-width: 15ch;
   }
 }
 
@@ -1418,42 +1198,6 @@
     width: min(100% - 40px, 560px);
   }
 
-  .heroNote {
-    right: 64px;
-    width: 150px;
-  }
-
-  .hero {
-    height: auto;
-    min-height: 580px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .heroImage {
-    object-position: 58% 50%;
-  }
-
-  .heroOverlay {
-    background: linear-gradient(
-      180deg,
-      rgba(10, 29, 32, 0.72) 0%,
-      rgba(10, 29, 32, 0.28) 56%,
-      rgba(10, 29, 32, 0.66) 100%
-    );
-  }
-
-  .heroShell {
-    height: auto;
-    flex: 1;
-    align-items: flex-start;
-  }
-
-  .heroCopy {
-    max-width: 350px;
-    padding: 54px 0 0;
-  }
-
   .eyebrow,
   .eyebrowLight {
     margin-bottom: 11px;
@@ -1461,31 +1205,11 @@
     letter-spacing: 0.145em;
   }
 
-  .heroCopy h1 {
-    max-width: 12ch;
-    font-size: clamp(40px, 11.1vw, 44px);
-    line-height: 1.1;
-  }
-
-  .heroCopy > p:last-child {
-    max-width: 330px;
-    margin-top: 17px;
-    font-size: 15px;
-    line-height: 1.53;
-  }
-
-  .finderZone {
-    position: relative;
-    inset: auto;
-    margin-top: 40px;
-    padding-bottom: 40px;
-  }
-
   .finderCard {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 44px;
     gap: 4px;
     padding: 6px;
-    border-radius: 999px !important;
+    border-radius: 0 !important !important;
   }
 
   .finderField {
@@ -1590,7 +1314,7 @@
   }
 
   .tourCard {
-    border-radius: 18px !important;
+    border-radius: 2px !important;
   }
 
   .tourBody {
@@ -1607,42 +1331,6 @@
 
   .tourPrice strong {
     font-size: 18px;
-  }
-
-  .destinationMosaic {
-    margin-top: 28px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 230px 170px 210px;
-    gap: 10px;
-  }
-
-  .destinationMosaic > a {
-    min-height: 0;
-    border-radius: 18px !important;
-  }
-
-  .destinationLead,
-  .destinationPrivate {
-    grid-column: 1 / 3;
-  }
-
-  .destinationLabel {
-    right: 16px;
-    bottom: 15px;
-    left: 16px;
-  }
-
-  .destinationLabel strong {
-    font-size: 20px;
-  }
-
-  .destinationMosaic > a:nth-child(2) .destinationLabel strong,
-  .destinationMosaic > a:nth-child(3) .destinationLabel strong {
-    font-size: 16px;
-  }
-
-  .destinationLabel small {
-    font-size: 10.5px;
   }
 
   .benefitGrid {
@@ -1718,7 +1406,7 @@
     justify-content: flex-start;
     gap: 10px;
     border-color: #ddd7cb;
-    border-radius: 24px !important;
+    border-radius: 2px !important;
   }
 
   .reviewCard blockquote {
@@ -1807,7 +1495,7 @@
     min-height: 0;
     padding: 34px 26px;
     gap: 28px;
-    border-radius: 22px;
+    border-radius: 2px;
   }
 
   .privatePanel > div > p:last-child {
@@ -1871,14 +1559,6 @@
     width: min(100% - 32px, 560px);
   }
 
-  .heroCopy {
-    padding-top: 46px;
-  }
-
-  .heroCopy h1 {
-    font-size: 38px;
-  }
-
   .tourRail,
   .reviewRail {
     width: calc(100% + 16px);
@@ -1907,15 +1587,11 @@
 
 /* Small, slow movements keep the existing illustrations calm and readable. */
 @media (prefers-reduced-motion: no-preference) {
-  .heroCopy {
-    animation: hero-arrive 700ms var(--site-motion-ease) both;
-  }
 
   .finderCard {
     animation: hero-arrive 600ms var(--site-motion-ease) 140ms both;
   }
 
-  .heroCopy:focus-within,
   .finderCard:focus-within {
     animation: none;
   }
@@ -2017,3 +1693,68 @@
   0%, 100% { opacity: 0.75; transform: scaleX(1); }
   50% { opacity: 0.5; transform: scaleX(0.9); }
 }
+
+
+/* SUNDAF / Open Horizons. A typographic opening with one honest photograph. */
+.heroBoundary { position: relative; }
+.hero { background: var(--brand-paper); color: var(--brand-ink); }
+.heroShell { display: grid; grid-template-columns: 1.12fr 0.88fr; gap: clamp(40px, 6vw, 88px); align-items: center; padding-block: 40px 56px; }
+.heroCopy { min-width: 0; padding-block: 8px; }
+.heroCopy .eyebrow { margin-bottom: 26px; font-size: 10px; letter-spacing: 0.13em; }
+.heroCopy h1 { margin: 0; max-width: 12ch; font-size: clamp(60px, 6.4vw, 92px); font-weight: 400; line-height: 0.99; letter-spacing: -0.065em; text-wrap: balance; }
+.heroSerif { display: block; font-family: var(--font-source-serif), Georgia, serif; font-weight: 400; font-style: italic; letter-spacing: -0.065em; color: var(--brand-teal); }
+.heroCopy > p:not(.eyebrow) { max-width: 430px; margin: 28px 0 0; font-size: 16px; line-height: 1.65; color: #4d5c57; }
+.heroLink { display: inline-flex; align-items: center; gap: 28px; min-height: 48px; margin-top: 18px; border-bottom: 1px solid var(--brand-teal); color: var(--brand-teal); font-size: 14px; font-weight: 500; }
+.heroLink svg { width: 18px; height: 18px; transition: transform 220ms var(--site-motion-ease); }
+.heroLink:hover svg { transform: translateX(4px); }
+.heroFigure { min-width: 0; margin: 0; }
+.heroMedia { position: relative; overflow: hidden; height: clamp(430px, 40vw, 540px); background: var(--brand-mist); }
+.heroImage { object-fit: cover; object-position: 60% center; }
+.heroFigure figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 0 0; color: var(--brand-teal); }
+.heroFigure figcaption span:first-child { font-family: var(--font-source-serif), Georgia, serif; font-size: 21px; font-style: italic; }
+.heroFigure figcaption span:last-child { font-size: 9px; letter-spacing: 0.16em; }
+.finderZone { border-block: 1px solid var(--brand-line); background: var(--brand-mist); }
+.finderZone > .shell { display: grid; grid-template-columns: 1fr 2fr; gap: 56px; align-items: center; padding-block: 22px; }
+.finderIntro { margin: 0; font-size: 19px; line-height: 1.4; letter-spacing: -0.03em; }
+.finderIntro span { color: #4d5c57; }
+@media (prefers-reduced-motion: no-preference) {
+ .heroCopy { animation: brand-enter 680ms var(--site-motion-ease) both; }
+ .heroMedia { animation: brand-mask 900ms var(--site-motion-ease) both; }
+ .reveal { animation: brand-enter 650ms var(--site-motion-ease) both; }
+}
+@keyframes brand-enter { from { transform: translateY(14px); } to { transform: translateY(0); } }
+@keyframes brand-mask { from { clip-path: inset(0 0 8% 0); } to { clip-path: inset(0); } }
+@media (max-width: 1040px) {
+ .heroShell { gap: 36px; }
+ .heroCopy h1 { font-size: clamp(56px, 6.6vw, 74px); }
+ .heroMedia { height: 480px; }
+ .finderZone > .shell { gap: 28px; grid-template-columns: 0.8fr 2fr; }
+ .finderIntro { font-size: 16px; }
+}
+@media (max-width: 759px) {
+ .heroShell { display: flex; flex-direction: column; align-items: stretch; gap: 32px; padding-block: 35px 28px; }
+ .heroCopy h1 { max-width: 12ch; font-size: clamp(48px, 12vw, 76px); line-height: 1.02; }
+ .heroCopy .eyebrow { margin-bottom: 20px; font-size: 9px; letter-spacing: 0.11em; }
+ .heroCopy > p:not(.eyebrow) { margin-top: 22px; max-width: 440px; font-size: 15px; }
+ .heroLink { margin-top: 12px; }
+ .heroMedia { height: auto; aspect-ratio: 4 / 3; }
+ .heroImage { object-position: 50% 55%; }
+ .heroFigure figcaption { padding-top: 12px; }
+ .heroFigure figcaption span:first-child { font-size: 19px; }
+ .finderZone > .shell { display: block; padding-block: 22px; }
+ .finderIntro { margin: 0 0 12px; font-size: 16px; }
+ .finderIntro br { display: none; }
+ .finderIntro span::before { content: ' '; }
+ .tourMediaTitle { font-size: 22px; margin-bottom: 14px; }
+ .tourBody { padding-inline: 0; }
+}
+
+.destinationList { margin-top: 40px; border-top: 1px solid var(--brand-line); }
+.destinationList > a { display: grid; grid-template-columns: 48px 1fr auto 28px; align-items: center; gap: 28px; min-height: 116px; padding-block: 24px; border-bottom: 1px solid var(--brand-line); color: var(--brand-ink); }
+.destinationIndex { font-size: 11px; letter-spacing: .12em; color: var(--brand-teal); }
+.destinationList strong { font-size: clamp(28px, 3.8vw, 48px); line-height: 1.2; font-weight: 400; letter-spacing: -.04em; }
+.destinationList small { font-size: 13px; color: #4d5c57; }
+.destinationList svg { width: 22px; height: 22px; color: var(--brand-teal); transition: transform 220ms var(--site-motion-ease); }
+.destinationList > a:hover svg { transform: translateX(4px); }
+.destinationList > a:hover strong { color: var(--brand-teal); }
+@media(max-width:759px) { .destinationList > a { grid-template-columns: 24px 1fr 22px; gap: 16px; min-height: 92px; } .destinationList small { display: none; } .destinationList strong { font-size: 28px; } }

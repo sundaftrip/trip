@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
+import BrandMediaKit from "@/components/website/clean/BrandMediaKit";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import {
   APPOINTMENT_ONLY_LABEL,
@@ -208,7 +209,7 @@ export default async function MediaKitPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className="min-h-screen pt-24" style={{ backgroundColor: "var(--brand-paper)" }}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -221,13 +222,15 @@ export default async function MediaKitPage() {
         <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
           Rujukan Resmi
         </span>
-        <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
+        <h1 className="max-w-4xl text-4xl lg:text-6xl font-normal leading-tight tracking-[-0.04em]" style={{ color: "var(--at-text)" }}>
           Media Kit dan Profil Resmi Sundaf Trip
         </h1>
         <p className="mt-6 max-w-3xl text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
           Halaman ini merangkum data resmi Sundaf Trip untuk direktori, partner, media, dan marketplace travel yang membutuhkan rujukan brand yang konsisten.
         </p>
       </section>
+
+      <BrandMediaKit />
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

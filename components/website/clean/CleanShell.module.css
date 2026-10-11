@@ -1,13 +1,13 @@
 .header,
 .footer {
-  --shell-ink: #132b3a;
+  --shell-ink: var(--brand-ink);
   --shell-ink-soft: #42515a;
   --shell-muted: #66737a;
-  --shell-primary: #075d63;
+  --shell-primary: var(--brand-teal);
   --shell-primary-strong: #05484d;
   --shell-aurora: #20b8b5;
   --shell-ice: #f3f5f2;
-  --shell-line: #e1e7e6;
+  --shell-line: var(--brand-line);
   --shell-paper: #FFFFFF;
   --shell-white: #fff;
   color: var(--shell-ink);
@@ -48,7 +48,7 @@
   height: 68px;
   margin-bottom: -68px;
   isolation: isolate;
-  background: var(--shell-white);
+  background: var(--brand-paper);
 }
 
 .header::after {

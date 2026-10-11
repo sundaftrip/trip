@@ -14,12 +14,12 @@ import cleanShellStyles from "@/components/website/clean/CleanShell.module.css";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
-// SUNDAF public identity: petrol teal, midnight navy, and warm ivory.
+// SUNDAF public identity: teal, ink, paper, and mist.
 const COLOR_DEFAULTS: Record<string, string> = {
-  color_hero: "#132B3A",
-  color_heading: "#132B3A",
-  color_tour_title: "#132B3A",
-  color_blog_title: "#132B3A",
+  color_hero: "#182624",
+  color_heading: "#182624",
+  color_tour_title: "#182624",
+  color_blog_title: "#182624",
   color_accent: "#075D63",
   color_eyebrow: "#075D63",
 };
@@ -85,13 +85,13 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     ` --site-accent: ${accent};` +
     // Aksen aman-kontras untuk dipakai sebagai teks (light = aksen apa adanya)
     ` --site-accent-ink: ${accent};` +
-    ` --site-aurora: #20B8B5;` +
-    ` --site-warm-accent: #E58A68;` +
+    ` --site-aurora: #075D63;` +
+    ` --site-warm-accent: #CF7854;` +
     ` --site-font-family: ${fontFamily};` +
-    ` --background: #FFFFFF;` +
-    ` --foreground: #132B3A;` +
-    ` --site-bg: #FFFFFF;` +
-    ` --site-bg-soft: #F3EFE7;` +
+    ` --background: #F6F5EF;` +
+    ` --foreground: #182624;` +
+    ` --site-bg: #F6F5EF;` +
+    ` --site-bg-soft: #D8E8E3;` +
     ` --site-surface: #FFFFFF;`;
 
   const styleBlock = (
