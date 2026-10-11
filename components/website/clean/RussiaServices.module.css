@@ -140,8 +140,8 @@
   --card-wash: 1;
   --card-heading: var(--primary);
   --card-mark: 1;
-  --card-icon-scale: 1.08;
-  --card-arrow-offset: 4px;
+  --card-icon-scale: 1.025;
+  --card-arrow-offset: 2px;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -149,8 +149,8 @@
     --card-wash: 1;
     --card-heading: var(--primary);
     --card-mark: 1;
-    --card-icon-scale: 1.08;
-    --card-arrow-offset: 4px;
+    --card-icon-scale: 1.025;
+    --card-arrow-offset: 2px;
   }
 }
 
@@ -221,7 +221,7 @@
 }
 
 .serviceGrid article > p {
-  margin: 14px 0 18px;
+  margin: 8px 0 18px;
   color: var(--text);
   font-size: 13px;
   line-height: 1.55;
@@ -254,6 +254,7 @@
   margin-left: 8px;
   background: currentColor;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10h13M11 4l6 6-6 6' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: var(--card-mark);
   transform: translateX(var(--card-arrow-offset));
 }
 
@@ -353,7 +354,7 @@
   }
 
   .serviceGrid article > p {
-    margin-top: 12px;
+    margin-top: 6px;
     font-size: 12px;
     line-height: 1.48;
   }
@@ -386,7 +387,7 @@
 
   .serviceIcon,
   .serviceLink::after {
-    transition: transform .24s cubic-bezier(.22, 1, .36, 1);
+    transition: transform .24s var(--site-motion-ease), opacity .16s ease;
   }
 
   .serviceIcon [data-part] {
