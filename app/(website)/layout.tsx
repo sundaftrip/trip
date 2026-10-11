@@ -14,7 +14,7 @@ import cleanShellStyles from "@/components/website/clean/CleanShell.module.css";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
-// SUNDAF public identity: petrol teal, midnight navy, and warm ivory.
+// SUNDAF public identity: teal, ink, paper, and mist.
 const COLOR_DEFAULTS: Record<string, string> = {
   color_hero: "#182624",
   color_heading: "#182624",
@@ -98,7 +98,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     <style>{`
       :root { ${cssVars} }
       .dark {
-        --site-accent: #075D63;
+        --site-accent: #20B8B5;
         --site-hero: #ffffff;
         --site-heading: #f9fafb;
         --site-tour-title: #f3f4f6;
