@@ -46,7 +46,7 @@ test("public pages use DM Sans, except the hero chalk note and B2B titles", () =
 });
 
 test("homepage motion stays optional and calm", () => {
-  const reveal = read("components/website/clean/home/HomeReveal.tsx");
+  const reveal = read("components/website/clean/ScrollReveal.tsx");
   assert.match(reveal, /prefers-reduced-motion: reduce/);
   assert.match(reveal, /dataset\.revealed = "instant"/);
 

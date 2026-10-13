@@ -166,6 +166,10 @@
   transform: none;
 }
 
+.tabLabelShort {
+  display: none;
+}
+
 .mobileBookingBar {
   position: fixed;
   inset: auto 0 0;
@@ -523,6 +527,24 @@
 }
 
 @media (max-width: 700px) {
+  /* Phones: four short labels spread over one row, nothing hidden off screen. */
+  .tabBar > div {
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .tabBar a {
+    min-height: 50px;
+  }
+
+  .tabLabel {
+    display: none;
+  }
+
+  .tabLabelShort {
+    display: inline;
+  }
+
   .dateCard {
     padding: 20px;
   }

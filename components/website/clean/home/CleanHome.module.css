@@ -2094,7 +2094,7 @@
     animation: none;
   }
 
-  /* Scroll reveal (HomeReveal): sections and cards further down rise in calmly.
+  /* Scroll reveal (ScrollReveal): sections and cards further down rise in calmly.
      Nothing is hidden before the script is ready or for content already on screen. */
   .home [data-reveal-ready] [data-reveal]:not([data-reveal="group"]),
   .home [data-reveal-ready] [data-reveal="group"] > * {

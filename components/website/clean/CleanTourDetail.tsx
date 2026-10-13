@@ -1,35 +1,18 @@
 import Link from "./PreserveScrollLink";
-import {
-  ArrowRight,
-  BedDouble,
-  Calendar,
-  CalendarDays,
-  CircleCheck,
-  CircleHelp,
-  CircleX,
-  Clock,
-  Compass,
-  Download,
-  Info,
-  ListChecks,
-  MapPin,
-  Route,
-  Star,
-  Users,
-  Wallet,
-} from "lucide-react";
+import { Check, Download, Star, X } from "lucide-react";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { formatCurrency } from "@/lib/utils";
 import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
-import { formatPackageCostDisclosure, tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
+import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import type { ItineraryDisplayDay } from "@/lib/itinerary-insights";
 import type { TourPaymentPlan } from "@/lib/tour-payment-plan";
 import type { TourVisaOffer } from "@/lib/tour-visa-offers";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
+import ScrollReveal from "./ScrollReveal";
 import StableDetails from "./StableDetails";
 import TourDetailTabs from "./TourDetailTabs";
 import TourHeroGallery from "./TourHeroGallery";
@@ -253,13 +236,24 @@ export default function CleanTourDetail({
     item !== selectableAddOn
     && !(visaOffers.length > 0 && /visa/i.test(item.name))
   ));
-  const hasFacilities = tour.inclusions.length > 0 || tour.exclusions.length > 0;
-  const hasNotes = visaParagraphs.length > 0 || noteParagraphs.length > 0;
+  const hotelEntries = tour.hotel ? Object.entries(tour.hotel) : [];
+  const hasInclusionLists = tour.inclusions.length > 0 || tour.exclusions.length > 0;
+  const hasFacilities = hasInclusionLists || hotelEntries.length > 0;
+  const hasPaymentTerms = Boolean(paymentPlan) || noteParagraphs.length > 0;
+  const hasTerms = hasPaymentTerms || visaParagraphs.length > 0;
+  // Four parts, in the order a traveller decides: programme, price & date,
+  // what is (not) included, and how to pay.
   const sectionTabs = [
     { id: "itinerary", label: "Itinerary", show: itinerary.length > 0 },
-    { id: "harga-tanggal", label: "Harga & Tanggal", show: true },
-    { id: "ulasan", label: "Ulasan", show: reviews.length > 0 },
-  ].filter((item) => item.show).map(({ id, label }) => ({ id, label }));
+    { id: "harga-tanggal", label: "Harga & Tanggal", shortLabel: "Harga", show: true },
+    { id: "fasilitas", label: "Include & Exclude", shortLabel: "Include/Exclude", show: hasFacilities },
+    {
+      id: "pembayaran",
+      label: hasPaymentTerms ? "Term Pembayaran" : "Ketentuan",
+      shortLabel: hasPaymentTerms ? "Pembayaran" : "Ketentuan",
+      show: hasTerms,
+    },
+  ].filter((item) => item.show).map(({ id, label, shortLabel }) => ({ id, label, shortLabel }));
   const bookingMode = commerceStatus === "completed" || commerceStatus === "departed"
     ? commerceStatus
     : commerceStatus === "sold_out" || commerceStatus === "waitlist"
@@ -299,27 +293,21 @@ export default function CleanTourDetail({
           : destinationSlug === "jepang"
             ? "Jepang"
             : "destinasi Sundaf";
-  const tourFaqs = [
-    {
-      question: "Apa yang dihitung dalam subtotal?",
-      answer: mandatoryAddOns.length
-        ? `${priceCaption}${roomPrices.length > 0 ? " mulai" : " saat ini"} ${formatCurrency(startingTotal)} per orang menggabungkan harga paket dan ${mandatoryAddOns.length} komponen wajib yang ditampilkan di bagian Harga & Tanggal. ${formatPackageCostDisclosure(tour.exclusions, true)}`
-        : `Tidak ada tambahan berlabel wajib yang tercatat pada data tour ini. ${formatPackageCostDisclosure(tour.exclusions, false)} Tim mengonfirmasi rincian final sebelum pembayaran.`,
-    },
-    {
-      question: "Apakah kursi langsung terpesan setelah mengirim WhatsApp?",
-      answer: "Belum. Pesan WhatsApp adalah permintaan ketersediaan. Kursi baru mengikuti konfirmasi tertulis dan instruksi pembayaran dari tim Sundaf.",
-    },
-    {
-      question: isFlexibleDate ? "Apakah tanggal dapat disesuaikan?" : "Bagaimana status keberangkatan dikonfirmasi?",
-      answer: isFlexibleDate
-        ? "Tanggal diajukan lebih dulu dan dikonfirmasi berdasarkan ketersediaan layanan, akomodasi, serta kebutuhan grup."
-        : `Status saat ini: ${status}. Tim memeriksa kembali ketersediaan sebelum peserta melakukan pembayaran.`,
-    },
-  ];
+  const optionalAddOnList = (
+    <div>
+      {disclosureOptionalAddOns.map((item) => (
+        <article key={item.name}>
+          <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
+          {item.desc && <small>{item.desc}</small>}
+          {item.visaHref && <Link href={item.visaHref} scroll={false}>Lihat bantuan visa →</Link>}
+        </article>
+      ))}
+    </div>
+  );
 
   return (
-    <div className={styles.tourDetail}>
+    <div className={styles.tourDetail} id="tour-detail">
+      <ScrollReveal rootId="tour-detail" key={tour.id} />
       <a className={styles.skipLink} href="#tour-content">Langsung ke detail perjalanan</a>
 
       {/* Photos first, then the information as plain, readable text. */}
@@ -342,26 +330,19 @@ export default function CleanTourDetail({
               <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
               <h1 id="tour-title">{tour.title}</h1>
             </div>
-            <div className={styles.detailHeroCommerce}>
-              <div className={styles.detailHeroPriceBlock}>
-                <span>{status}</span>
-                <small>{hasPrice ? "Mulai dari" : "Harga"}</small>
-                <strong>{priceLabel}</strong>
-                {hasPrice && <small>per orang</small>}
-              </div>
-              <a className={styles.detailHeroCta} href="#harga-tanggal">
-                {unavailable ? "Lihat detail perjalanan" : "Lihat harga & tanggal"}
-                <ArrowRight aria-hidden="true" />
-              </a>
-            </div>
+            <p className={styles.detailHeroPrice}>
+              <small>{hasPrice ? "Mulai dari" : "Harga"}</small>
+              <strong>{priceLabel}</strong>
+              {hasPrice && <small>per orang</small>}
+              <span className={unavailable ? styles.detailHeroStatusUnavailable : undefined}>{status}</span>
+            </p>
           </div>
 
-          <div className={styles.detailHeroFacts} role="group" aria-label="Ringkasan perjalanan">
-            <span><MapPin aria-hidden="true" />{route}</span>
-            {tour.duration && <span><Clock aria-hidden="true" />{tour.duration}</span>}
-            {departureLabel && <span><Calendar aria-hidden="true" />{departureLabel}</span>}
-            <span><Users aria-hidden="true" />{capacityLabel}</span>
-          </div>
+          <dl className={styles.detailHeroFacts}>
+            <div><dt>Rute</dt><dd>{route}</dd></div>
+            {tour.duration && <div><dt>Durasi</dt><dd>{tour.duration}</dd></div>}
+            {departureLabel && <div><dt>Keberangkatan</dt><dd>{departureLabel}</dd></div>}
+          </dl>
         </div>
       </section>
 
@@ -374,35 +355,31 @@ export default function CleanTourDetail({
       >
         <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
-          <section className={styles.detailContentSection} id="ringkasan" aria-labelledby="ringkasan-title">
-            <h2 className={styles.detailSectionTitle} id="ringkasan-title"><Compass aria-hidden="true" />Ringkasan perjalanan</h2>
-            <div className={styles.detailSummary}>
-              {summaryParagraphs.length > 0 ? summaryParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>) : (
-                <p>{copy.heroSupport}</p>
-              )}
-              <div className={styles.detailRouteLine}><strong>Rute utama</strong><span>{route}</span></div>
-              <Link
-                className={styles.detailDestinationLink}
-                href={destinationHref}
-                scroll={true}
-                data-scroll-reset-after-navigation
-              >
-                Baca panduan {destinationLabel} →
-              </Link>
-            </div>
-          </section>
+          <div className={styles.detailIntro} id="ringkasan">
+            {summaryParagraphs.length > 0 ? summaryParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>) : (
+              <p>{copy.heroSupport}</p>
+            )}
+            <Link
+              className={styles.detailDestinationLink}
+              href={destinationHref}
+              scroll={true}
+              data-scroll-reset-after-navigation
+            >
+              Baca panduan {destinationLabel} →
+            </Link>
+          </div>
 
           {itinerary.length > 0 && (
-            <section className={`${styles.detailContentSection} ${styles.detailItinerarySection}`} id="itinerary" aria-labelledby="itinerary-title">
-              <h2 className={styles.detailSectionTitle} id="itinerary-title"><Route aria-hidden="true" />Itinerary hari per hari</h2>
+            <section className={styles.detailContentSection} id="itinerary" aria-labelledby="itinerary-title">
+              <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary</h2>
               <ol className={styles.detailItinerary}>
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);
                   const paragraphs = cleanParagraphs(item.description);
                   const dayTitle = normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`;
                   return (
-                    <li className={styles.detailDay} key={`${item.day}-${item.title}-${index}`}>
-                      <p className={styles.detailDayPill}>
+                    <li className={styles.detailDay} key={`${item.day}-${item.title}-${index}`} data-reveal>
+                      <p className={styles.detailDayLabel}>
                         <span>Hari {item.day}</span>
                         {date ? <time dateTime={date.iso}>{date.label}</time> : null}
                       </p>
@@ -425,133 +402,8 @@ export default function CleanTourDetail({
             </section>
           )}
 
-          <section className={styles.detailContentSection} id="harga-tanggal" aria-labelledby="harga-tanggal-title">
-            <h2 className={styles.detailSectionTitle} id="harga-tanggal-title">
-              <CalendarDays aria-hidden="true" />
-              {isFlexibleDate ? "Rancang tanggal perjalanan" : "Harga & tanggal keberangkatan"}
-            </h2>
-            <TourRoomBookingPanel
-              roomPrices={roomPrices}
-              mandatoryAddOns={mandatoryAddOns}
-              paymentInitialAmountLabel={paymentPlan?.steps[0]?.amountLabel}
-              status={status}
-              departureLabel={departureLabel}
-              unavailable={unavailable}
-              hasPrice={hasPrice}
-              basePrice={basePrice}
-              startingTotal={startingTotal}
-              bookingPhone={bookingPhone}
-              tourId={tour.id}
-              tourName={tour.title}
-              priceLabel={priceLabel}
-              priceCaption={priceCaption}
-              availabilityLabel={status}
-              bookingMode={bookingMode}
-              bookingDepartures={bookingDepartures}
-              completedTourHref={itinerary.length > 0 ? "#itinerary" : "#ringkasan"}
-            />
-          </section>
-
-          {hasFacilities && (
-            <section className={styles.detailContentSection} id="fasilitas" aria-labelledby="fasilitas-title">
-              <h2 className={styles.detailSectionTitle} id="fasilitas-title"><ListChecks aria-hidden="true" />Termasuk &amp; tidak termasuk</h2>
-              <div className={styles.detailIncludedGrid}>
-                {tour.inclusions.length > 0 && (
-                  <div className={styles.detailIncludedBox}>
-                    <h3><CircleCheck aria-hidden="true" />Termasuk</h3>
-                    <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
-                  </div>
-                )}
-                {tour.exclusions.length > 0 && (
-                  <div className={styles.detailExcludedBox}>
-                    <h3><CircleX aria-hidden="true" />Tidak termasuk</h3>
-                    <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
-
-
-          {tour.hotel && Object.keys(tour.hotel).length > 0 && (
-            <section className={styles.detailContentSection} id="hotel" aria-labelledby="hotel-title">
-              <h2 className={styles.detailSectionTitle} id="hotel-title"><BedDouble aria-hidden="true" />Akomodasi</h2>
-              <dl className={styles.detailHotelList}>
-                {Object.entries(tour.hotel).map(([label, value]) => (
-                  <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
-                ))}
-              </dl>
-            </section>
-          )}
-
-          {hasNotes && (
-            <section className={styles.detailContentSection} id="catatan" aria-labelledby="catatan-title">
-              <h2 className={styles.detailSectionTitle} id="catatan-title"><Info aria-hidden="true" />Catatan penting</h2>
-              <div className={styles.detailNoteBox}>
-                {visaParagraphs.length > 0 && (
-                  <div><h3>Informasi visa</h3>{visaParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}</div>
-                )}
-                {noteParagraphs.length > 0 && (
-                  <div><h3>Ketentuan paket</h3>{noteParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}</div>
-                )}
-              </div>
-            </section>
-          )}
-
-          {paymentPlan && (
-            <section className={styles.detailContentSection} id="pembayaran" aria-labelledby="pembayaran-title">
-              <h2 className={styles.detailSectionTitle} id="pembayaran-title"><Wallet aria-hidden="true" />Pembayaran</h2>
-              <div className={styles.detailPaymentIntro}>
-                <div><span>Jumlah dalam skema pembayaran per orang</span><strong>{paymentPlan.totalLabel}</strong></div>
-                <p>{paymentPlan.intro}</p>
-              </div>
-              <div
-                className={styles.detailPaymentTableWrap}
-                role="region"
-                aria-label="Rincian tahap pembayaran, geser untuk melihat semua kolom"
-                tabIndex={0}
-              >
-                <table className={styles.detailPaymentTable}>
-                  <thead><tr><th>Tahap</th><th>Jatuh tempo</th><th>Nominal</th></tr></thead>
-                  <tbody>{paymentPlan.steps.map((step, index) => <tr key={`${step.label}-${index}`}><td>{step.label}</td><td>{step.dueDateLabel}</td><td>{step.amountLabel}</td></tr>)}</tbody>
-                </table>
-              </div>
-              {paymentPlan.finePrint && <p className={styles.detailFinePrint}>{paymentPlan.finePrint}</p>}
-            </section>
-          )}
-
-          <section className={styles.detailContentSection} aria-labelledby="tour-faq-title">
-            <h2 className={styles.detailSectionTitle} id="tour-faq-title"><CircleHelp aria-hidden="true" />Pertanyaan umum</h2>
-            <div className={styles.detailFaqs}>
-              {tourFaqs.map((item, index) => (
-                <StableDetails key={item.question} open={index === 0}>
-                  <summary>{item.question}</summary>
-                  <p>{item.answer}</p>
-                </StableDetails>
-              ))}
-            </div>
-          </section>
-
-          {reviews.length > 0 && (
-            <section className={styles.detailContentSection} id="ulasan" aria-labelledby="ulasan-title">
-              <div className={styles.detailReviewHeading}>
-                <h2 className={styles.detailSectionTitle} id="ulasan-title"><Star aria-hidden="true" />Ulasan peserta</h2>
-                <span><strong>{ratingValue.toFixed(1)}</strong><Star aria-hidden="true" />{reviews.length} ulasan</span>
-              </div>
-              <div className={styles.detailReviewGrid}>
-                {reviews.map((review) => (
-                  <article key={review.id}>
-                    <div role="img" aria-label={`Rating ${review.rating} dari 5`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} aria-hidden="true" className={index < review.rating ? styles.detailStarActive : ""} />)}</div>
-                    <blockquote>“{review.content}”</blockquote>
-                    <p><strong>{review.name}</strong>{review.role && <span> · {review.role}</span>}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
-
-          <section className={styles.detailMobileUtilities} aria-labelledby="mobile-trip-tools-title">
-            <h2 id="mobile-trip-tools-title">Simpan dan bandingkan detail</h2>
+          {/* Phones: the PDF sits right after the programme (desktop has it in the sidebar). */}
+          <div className={styles.detailMobilePdf}>
             <a
               href={itineraryPdfHref(tour.id)}
               download
@@ -576,20 +428,133 @@ export default function CleanTourDetail({
                 hasMandatoryAddOns={mandatoryAddOns.length > 0}
               />.
             </p>
+          </div>
+
+          {/* No reveal motion here: the fixed mobile booking bar lives inside this section. */}
+          <section className={styles.detailContentSection} id="harga-tanggal" aria-labelledby="harga-tanggal-title">
+            <h2 className={styles.detailSectionTitle} id="harga-tanggal-title">
+              {isFlexibleDate ? "Rancang tanggal perjalanan" : "Harga & tanggal"}
+            </h2>
+            <TourRoomBookingPanel
+              roomPrices={roomPrices}
+              mandatoryAddOns={mandatoryAddOns}
+              paymentInitialAmountLabel={paymentPlan?.steps[0]?.amountLabel}
+              status={status}
+              departureLabel={departureLabel}
+              unavailable={unavailable}
+              hasPrice={hasPrice}
+              basePrice={basePrice}
+              startingTotal={startingTotal}
+              bookingPhone={bookingPhone}
+              tourId={tour.id}
+              tourName={tour.title}
+              priceLabel={priceLabel}
+              priceCaption={priceCaption}
+              availabilityLabel={status}
+              bookingMode={bookingMode}
+              bookingDepartures={bookingDepartures}
+              completedTourHref={itinerary.length > 0 ? "#itinerary" : "#ringkasan"}
+            />
             {disclosureOptionalAddOns.length > 0 && (
-              <StableDetails>
+              <StableDetails className={styles.detailMobileAddOns}>
                 <summary>Tambahan opsional <span>{disclosureOptionalAddOns.length}</span></summary>
-                <div>
-                  {disclosureOptionalAddOns.map((item) => (
-                    <article key={item.name}>
-                      <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
-                      {item.desc && <small>{item.desc}</small>}
-                      {item.visaHref && <Link href={item.visaHref} scroll={false}>Lihat bantuan visa →</Link>}
-                    </article>
-                  ))}
-                </div>
+                {optionalAddOnList}
               </StableDetails>
             )}
+          </section>
+
+          {hasFacilities && (
+            <section className={styles.detailContentSection} id="fasilitas" aria-labelledby="fasilitas-title" data-reveal>
+              <h2 className={styles.detailSectionTitle} id="fasilitas-title">Include &amp; exclude</h2>
+              {hasInclusionLists && (
+                <div className={styles.detailIncludedGrid}>
+                  {tour.inclusions.length > 0 && (
+                    <div className={styles.detailIncludedBox}>
+                      <h3>Termasuk</h3>
+                      <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}><Check aria-hidden="true" />{item}</li>)}</ul>
+                    </div>
+                  )}
+                  {tour.exclusions.length > 0 && (
+                    <div className={styles.detailExcludedBox}>
+                      <h3>Tidak termasuk</h3>
+                      <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}><X aria-hidden="true" />{item}</li>)}</ul>
+                    </div>
+                  )}
+                </div>
+              )}
+              {hotelEntries.length > 0 && (
+                <div className={styles.detailSubsection} id="hotel">
+                  <h3>Akomodasi</h3>
+                  <dl className={styles.detailHotelList}>
+                    {hotelEntries.map(([label, value]) => (
+                      <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+                    ))}
+                  </dl>
+                </div>
+              )}
+            </section>
+          )}
+
+          {hasTerms && (
+            <section className={styles.detailContentSection} id="pembayaran" aria-labelledby="pembayaran-title" data-reveal>
+              <h2 className={styles.detailSectionTitle} id="pembayaran-title">{hasPaymentTerms ? "Term pembayaran" : "Ketentuan"}</h2>
+              {paymentPlan && (
+                <div className={styles.detailPayment}>
+                  <p className={styles.detailPaymentTotal}>
+                    <span>Jumlah dalam skema pembayaran per orang</span>
+                    <strong>{paymentPlan.totalLabel}</strong>
+                  </p>
+                  {paymentPlan.intro && <p>{paymentPlan.intro}</p>}
+                  <ol className={styles.detailPaymentSteps}>
+                    {paymentPlan.steps.map((step, index) => (
+                      <li key={`${step.label}-${index}`}>
+                        <span>{step.label}</span>
+                        <strong>{step.amountLabel}</strong>
+                        <small>Jatuh tempo {step.dueDateLabel}</small>
+                      </li>
+                    ))}
+                  </ol>
+                  {(paymentPlan.paymentMethodsLabel || paymentPlan.finePrint) && (
+                    <p className={styles.detailFinePrint}>
+                      {[paymentPlan.paymentMethodsLabel, paymentPlan.finePrint].filter(Boolean).join(" ")}
+                    </p>
+                  )}
+                </div>
+              )}
+              {noteParagraphs.length > 0 && (
+                <div className={styles.detailSubsection} id="catatan">
+                  <h3>Ketentuan paket</h3>
+                  {noteParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}
+                </div>
+              )}
+              {visaParagraphs.length > 0 && (
+                <div className={styles.detailSubsection}>
+                  <h3>Visa</h3>
+                  {visaParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}
+                </div>
+              )}
+            </section>
+          )}
+
+          {reviews.length > 0 && (
+            <section className={styles.detailContentSection} id="ulasan" aria-labelledby="ulasan-title" data-reveal>
+              <div className={styles.detailReviewHeading}>
+                <h2 className={styles.detailSectionTitle} id="ulasan-title">Ulasan peserta</h2>
+                <span><strong>{ratingValue.toFixed(1)}</strong><Star aria-hidden="true" />{reviews.length} ulasan</span>
+              </div>
+              <div className={styles.detailReviewGrid}>
+                {reviews.map((review) => (
+                  <article key={review.id}>
+                    <div role="img" aria-label={`Rating ${review.rating} dari 5`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} aria-hidden="true" className={index < review.rating ? styles.detailStarActive : ""} />)}</div>
+                    <blockquote>“{review.content}”</blockquote>
+                    <p><strong>{review.name}</strong>{review.role && <span> · {review.role}</span>}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div className={styles.detailMobileShare}>
             <TourShareButtons
               tourTitle={tour.title}
               isOutlined
@@ -600,7 +565,7 @@ export default function CleanTourDetail({
               tBdr="#e2e7e8"
               tSub="#606b72"
             />
-          </section>
+          </div>
         </div>
 
         <aside className={styles.detailBookingSidebar} aria-label="Informasi pemesanan">
@@ -661,15 +626,7 @@ export default function CleanTourDetail({
             {disclosureOptionalAddOns.length > 0 && (
               <StableDetails className={styles.detailBookingDisclosure}>
                 <summary>Tambahan opsional <span>{disclosureOptionalAddOns.length}</span></summary>
-                <div>
-                  {disclosureOptionalAddOns.map((item) => (
-                    <article key={item.name}>
-                      <p><strong>{item.name}</strong><span>+{formatCurrency(item.price)}</span></p>
-                      {item.desc && <small>{item.desc}</small>}
-                      {item.visaHref && <Link href={item.visaHref} scroll={false}>Lihat bantuan visa →</Link>}
-                    </article>
-                  ))}
-                </div>
+                {optionalAddOnList}
               </StableDetails>
             )}
 
@@ -693,14 +650,11 @@ export default function CleanTourDetail({
       {relatedTours.length > 0 && (
         <section className={styles.detailRelated} aria-labelledby="related-title">
           <div className={styles.shell}>
-            <div className={styles.detailRelatedHeading}>
-              <div>
-                <h2 className={styles.detailSectionTitle} id="related-title">Masih ingin membandingkan?</h2>
-                <p>Bandingkan destinasi, durasi, tanggal, dan harga sebelum menentukan perjalanan yang paling sesuai.</p>
-              </div>
+            <div className={styles.detailRelatedHeading} data-reveal>
+              <h2 className={styles.detailSectionTitle} id="related-title">Jadwal lainnya</h2>
               <Link href="/tours" scroll={false}>Lihat semua jadwal →</Link>
             </div>
-            <div className={styles.detailRelatedGrid}>{relatedTours.map((item) => <CleanTourCard key={item.id} tour={item} compact />)}</div>
+            <div className={styles.detailRelatedGrid} data-reveal="group">{relatedTours.map((item) => <CleanTourCard key={item.id} tour={item} compact catalog />)}</div>
           </div>
         </section>
       )}
