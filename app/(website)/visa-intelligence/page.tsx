@@ -10,7 +10,6 @@ import {
   ExternalLink,
   FileJson,
   MessageCircle,
-  MessagesSquare,
   Radio,
   ShieldCheck,
 } from "lucide-react";
@@ -22,10 +21,8 @@ import {
   VISA_INTELLIGENCE_JSON_URL,
   VISA_INTELLIGENCE_RSS_URL,
 } from "@/lib/visa-intelligence";
-import { loadVisaDiscussionPublicState } from "@/lib/visa-discussions";
 import { loadVisaIntelligencePageData } from "@/lib/visa-intelligence-server";
 import { buildWhatsAppHref } from "@/lib/utils";
-import VisaDiscussion from "./VisaDiscussion";
 import styles from "./VisaIntelligence.module.css";
 
 export const revalidate = 3600;
@@ -58,10 +55,7 @@ function displayDate(value: string | null) {
 }
 
 export default async function VisaIntelligencePage() {
-  const [{ dataset, whatsapp }, discussionState] = await Promise.all([
-    loadVisaIntelligencePageData(),
-    loadVisaDiscussionPublicState(),
-  ]);
+  const { dataset, whatsapp } = await loadVisaIntelligencePageData();
   const correctionHref = buildWhatsAppHref(
     whatsapp,
     "Halo Sundaf Trip, saya menemukan data di Sundaf Visa Intelligence yang perlu diperiksa atau dikoreksi.",
@@ -152,10 +146,6 @@ export default async function VisaIntelligencePage() {
                 <Radio size={17} aria-hidden="true" />
                 Ikuti RSS
               </Link>
-              <a className={styles.secondaryAction} href="#diskusi-visa">
-                <MessagesSquare size={17} aria-hidden="true" />
-                Diskusi visa
-              </a>
             </div>
           </div>
 
@@ -280,28 +270,6 @@ export default async function VisaIntelligencePage() {
                 Cari seluruh database visa <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
-          </div>
-        </section>
-
-        <section className={styles.discussionSection} id="diskusi-visa" aria-labelledby="discussion-title">
-          <div className={styles.shell}>
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.eyebrow}>Ruang diskusi visa</p>
-                <h2 className={styles.sectionTitle} id="discussion-title">
-                  Ada konteks yang tidak tertulis di tabel?
-                </h2>
-              </div>
-              <p className={styles.sectionIntro}>
-                Ceritakan masalah visa yang kamu hadapi. Komunitas dapat berbagi pengalaman,
-                sementara Tim Sundaf membantu membedakan pengalaman pribadi dari informasi
-                yang masih perlu diverifikasi.
-              </p>
-            </div>
-            <VisaDiscussion
-              state={discussionState}
-              countries={dataset.records.map((record) => record.country.name_id)}
-            />
           </div>
         </section>
 

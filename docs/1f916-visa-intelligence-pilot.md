@@ -7,7 +7,7 @@
 - Dokumen ini adalah bahan review internal, bukan instruksi publikasi.
 - Belum ada izin untuk mendaftarkan agent Sundaf Trip di 1F916.
 - Belum ada izin untuk menerbitkan post, komentar, balasan, atau pesan di 1F916.
-- Belum ada izin untuk mengaktifkan penulisan publik di ruang diskusi visa.
+- Ruang diskusi visa sudah dihapus dari website dan CMS (Oktober 2026). Bagian diskusi di bawah ini hanya arsip keputusan; tabel lama tetap ada di database.
 - Publikasi atau pendaftaran hanya boleh dilakukan setelah persetujuan terpisah dan eksplisit atas payload final. Perubahan material setelah persetujuan memerlukan preview dan persetujuan baru.
 
 ## Tujuan pilot
@@ -48,38 +48,9 @@ Sundaf Visa Intelligence adalah **snapshot status yang sedang tersimpan di datab
 
 Jangan mengubah batasan ini menjadi klaim seperti “data resmi”, “selalu terbaru”, “terverifikasi pemerintah”, atau “termurah/terlengkap di pasar”.
 
-## Model diskusi manusia
+## Diskusi manusia (dihapus)
 
-Tujuan ruang diskusi adalah menampung pertanyaan, koreksi, dan pengalaman kontekstual dari manusia. Konten komunitas tidak boleh diperlakukan sebagai fakta resmi atau pengganti verifikasi mandiri.
-
-Alur yang direncanakan:
-
-1. Pengunjung mengirim pertanyaan atau balasan sebagai teks biasa.
-2. Kiriman masuk dengan status `PENDING` dan belum tampil ke publik.
-3. Moderator di `/admin/visa-discussions` memilih `PUBLISHED` atau `REJECTED`.
-4. Balasan komunitas tetap melalui antrean moderasi.
-5. Balasan staf diterbitkan oleh akun berizin dan ditandai sebagai balasan Tim Sundaf; label tersebut tidak berarti verifikasi pemerintah.
-6. Laporan atas konten yang sudah terbit masuk ke antrean admin dan tidak otomatis menghapus konten. Moderator dapat membaca alasan/detail laporan, memfilter laporan terbuka, lalu menandainya sebagai `RESOLVED` atau `DISMISSED` dengan jejak waktu dan akun peninjau internal.
-
-Nama, pertanyaan, pengalaman, dan rujukan komunitas tidak boleh dibuat-buat untuk memberikan kesan ramai. Bila diperlukan pengantar, gunakan akun staf yang berlabel jelas dan jangan menyamarkannya sebagai pengunjung.
-
-## Gerbang aktivasi diskusi
-
-Penulisan publik harus tetap nonaktif sampai **semua** gerbang berikut terpenuhi dan hasilnya dicatat:
-
-- [ ] Perubahan schema `VisaDiscussion` dan `VisaDiscussionReport` telah direview, memiliki rencana pemulihan/backup, lalu migrasi database disetujui secara terpisah sebelum diterapkan. PR atau preview ini sendiri bukan izin migrasi database produksi.
-- [ ] `VISA_DISCUSSION_WRITES_ENABLED=true` hanya dipasang pada environment yang memang disetujui untuk menerima kiriman.
-- [ ] `NEXT_PUBLIC_TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` valid untuk domain yang tepat, lalu alur berhasil/gagal Turnstile diuji.
-- [ ] `AUTH_SECRET` atau `NEXTAUTH_SECRET` tersedia untuk fingerprint rate-limit berbasis HMAC.
-- [ ] Moderasi admin dan permission `visa_discussion_moderate` diuji dengan akun berizin serta akun tanpa izin.
-- [ ] Kiriman baru dan balasan terbukti tetap `PENDING` sampai moderator menerbitkannya.
-- [ ] Proteksi same-origin, batas ukuran body, honeypot, deteksi duplikasi, rate limit persisten, validasi URL, dan penolakan data sensitif diuji.
-- [ ] Tombol/alur pelaporan konten tersedia bagi pengunjung; alasan/detail tampil di antrean moderator; perubahan status penanganan laporan diuji end-to-end sebelum diskusi disebut siap publik.
-- [ ] Kebijakan privasi diperbarui sebelum aktivasi. Kebijakan harus menjelaskan data yang diterima—termasuk nama tampilan, isi kiriman, tautan opsional, dan fingerprint HMAC yang diturunkan dari alamat IP—beserta tujuan, akses moderator, masa simpan, hak pengguna, dan kanal permintaan penghapusan.
-- [ ] Moderator aktif telah ditunjuk dengan target review, eskalasi informasi visa yang meragukan, dan prosedur penghapusan data pribadi.
-- [ ] Halaman dan endpoint telah lolos pengujian keamanan, aksesibilitas, lint, test, dan preview build.
-
-Jika satu gerbang gagal, diskusi tetap dalam mode preview. Jangan mengatasi kegagalan dengan mematikan moderasi atau melewati Turnstile.
+Ruang diskusi, API `/api/visa-discussions`, dan moderasi `/admin/visa-discussions` dihapus pada Oktober 2026 agar CMS lebih sederhana. Koreksi data tetap masuk lewat tombol WhatsApp di halaman. Model `VisaDiscussion` dan `VisaDiscussionReport` tetap di schema sebagai arsip data. Bila diskusi publik ingin dibuka lagi, mulai dari desain baru beserta moderasi, kebijakan privasi, dan persetujuan terpisah.
 
 ## Aturan distribusi dan integritas
 

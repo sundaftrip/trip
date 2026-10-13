@@ -9,7 +9,6 @@ import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Map, BookOpen, Type, Receipt,
   Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Info, ExternalLink, Wallet, Database, Inbox, Globe2,
-  Handshake,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +17,7 @@ const navItems = [
   { href: "/admin/tours", label: "Tour", icon: Map },
   { href: "/admin/b2b-catalog", label: "Katalog B2B", icon: FileText },
   { href: "/admin/inquiries", label: "Lead Masuk", icon: Inbox },
-  { href: "/admin/partners", label: "Referral", icon: Handshake },
   { href: "/admin/database-visa", label: "Database Visa", icon: Database },
-  { href: "/admin/visa-discussions", label: "Diskusi Visa", icon: MessageSquareQuote },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/geo", label: "GEO", icon: Globe2 },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },

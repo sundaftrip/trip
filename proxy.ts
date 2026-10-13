@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { shouldBlockViewerMutation } from "@/lib/viewer-access";
 
-const VALID_THEMES = new Set([
-  "classic", "vibrant", "bold", "tropical", "kawaii", "pixel",
-  "globe", "map", "atlas", "atelier", "jojo", "teri", "attic", "nusantara",
-  "corei",
-]);
+// CMS modules that were removed. Old bookmarks land on the dashboard instead of a 404.
+const REMOVED_ADMIN_MODULES = ["ai-ops", "partners", "leads", "commissions", "disputes", "visa-discussions"];
+
+function isRemovedAdminModule(pathname: string) {
+  return REMOVED_ADMIN_MODULES.some((name) => pathname === `/admin/${name}` || pathname.startsWith(`/admin/${name}/`));
+}
 
 export async function proxy(req: NextRequest) {
-  const { pathname, searchParams } = req.nextUrl;
+  const { pathname } = req.nextUrl;
   const isAdmin = pathname.startsWith("/admin");
 
   if (isAdmin || pathname.startsWith("/api")) {
@@ -25,7 +26,7 @@ export async function proxy(req: NextRequest) {
 
   // Auth guard hanya untuk /admin (tidak pernah dijalankan untuk halaman publik)
   if (isAdmin) {
-    if (pathname === "/admin/ai-ops" || pathname.startsWith("/admin/ai-ops/")) {
+    if (isRemovedAdminModule(pathname)) {
       return NextResponse.redirect(new URL("/admin", req.url));
     }
 
@@ -41,27 +42,6 @@ export async function proxy(req: NextRequest) {
     if (!isPublicAuthPage && !isAuthenticated) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
-  }
-
-  // Preview theme override via ?theme=<key>
-  // Set cookie + redirect ke URL tanpa query supaya server-side render pakai cookie.
-  const themeParam = searchParams.get("theme");
-  if (themeParam && VALID_THEMES.has(themeParam)) {
-    const cleanUrl = new URL(req.nextUrl);
-    cleanUrl.searchParams.delete("theme");
-    const res = NextResponse.redirect(cleanUrl);
-    res.cookies.set("preview-theme", themeParam, {
-      path: "/", maxAge: 60 * 60 * 24, sameSite: "lax",
-    });
-    return res;
-  }
-  // ?theme=clear menghapus override
-  if (themeParam === "clear") {
-    const cleanUrl = new URL(req.nextUrl);
-    cleanUrl.searchParams.delete("theme");
-    const res = NextResponse.redirect(cleanUrl);
-    res.cookies.delete("preview-theme");
-    return res;
   }
 
   const reqHeaders = new Headers(req.headers);

@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { normalizeFacebookGroupUrl } from "../lib/facebook-source";
 import {
   assertPublicHttpUrl,
   fetchPublicText,
@@ -102,15 +101,4 @@ test("applies the text timeout while reading and cancels a stalled body", async 
     /melewati batas waktu/,
   );
   assert.equal(bodyCancelled, true);
-});
-
-test("normalizes only genuine HTTPS Facebook group URLs", () => {
-  assert.equal(
-    normalizeFacebookGroupUrl("https://www.facebook.com/groups/12345/?ref=share").href,
-    "https://mbasic.facebook.com/groups/12345/?ref=share",
-  );
-  assert.throws(() => normalizeFacebookGroupUrl("https://facebook.com.evil.example/groups/123"));
-  assert.throws(() => normalizeFacebookGroupUrl("https://facebook.com@evil.example/groups/123"));
-  assert.throws(() => normalizeFacebookGroupUrl("http://facebook.com/groups/123"));
-  assert.throws(() => normalizeFacebookGroupUrl("https://www.facebook.com/profile.php?id=123"));
 });

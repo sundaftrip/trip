@@ -33,9 +33,6 @@ test("public pages use DM Sans, except the hero chalk note and B2B titles", () =
   const fonts = read("lib/fonts.ts");
   assert.match(fonts, /import \{ Lora \} from "next\/font\/google"/);
 
-  for (const path of ["app/(website)/[slug]/page.tsx", "app/(website)/partner/[slug]/page.tsx"]) {
-    assert.doesNotMatch(read(path), /font-mono/, path);
-  }
   for (const path of ["app/not-found.tsx", "app/~offline/page.tsx", "app/b2b-russia-catalog/page.tsx"]) {
     assert.match(read(path), /public-dm-sans/, path);
   }

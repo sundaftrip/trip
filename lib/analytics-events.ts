@@ -19,10 +19,7 @@ export type SundafAnalyticsEvent =
   | "onef916_interaction"
   | "visa_intelligence_feed_click"
   | "visa_intelligence_source_click"
-  | "visa_intelligence_correction_click"
-  | "visa_discussion_source_click"
-  | "visa_discussion_reply_open"
-  | "visa_discussion_report_open";
+  | "visa_intelligence_correction_click";
 
 type SafeAnalyticsValue = string | number | boolean | null | undefined;
 
