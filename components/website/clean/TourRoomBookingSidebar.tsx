@@ -6,9 +6,7 @@ import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
 import { formatCurrency } from "@/lib/utils";
 import type { BookingMode } from "./TourBookingSheet";
-import TourRecommendedAddOnToggle from "./TourRecommendedAddOnToggle";
 import { useTourRoomSelection } from "./TourRoomSelectionContext";
-import TourVisaServiceToggle from "./TourVisaServiceToggle";
 import styles from "./CleanSite.module.css";
 
 type MandatoryAddOn = {
@@ -105,8 +103,6 @@ export default function TourRoomBookingSidebar({
               <strong>+{formatCurrency(item.price)}</strong>
             </div>
           ))}
-          <TourRecommendedAddOnToggle compact />
-          <TourVisaServiceToggle compact />
           <div className={styles.detailPriceTotal}>
             <span>{selectedPriceCaption}</span><strong>{formatCurrency(selectedTotalPrice)}</strong>
           </div>

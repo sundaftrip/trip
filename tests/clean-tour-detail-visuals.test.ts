@@ -201,7 +201,12 @@ test("offers only the visas required by the selected trip and keeps them optiona
   assert.match(visaToggleSource, /flat = false/);
   assert.match(visaToggleSource, /data-flat=\{\(flat && !compact && !grouped\) \|\| undefined\}/);
   assert.match(roomBookingSource, /<TourVisaServiceToggle compact grouped \/>/);
-  assert.match(roomSidebarSource, /<TourVisaServiceToggle compact \/>/);
+  // Desktop: visa help and insurance are listed under "Tidak termasuk" as links to the
+  // visa page instead of toggles in the booking sidebar.
+  assert.doesNotMatch(roomSidebarSource, /TourVisaServiceToggle|TourRecommendedAddOnToggle/);
+  assert.match(source, /excludedServices\.map\(\(service\) =>/);
+  assert.match(source, /<Link href=\{service\.href\} scroll=\{true\} data-scroll-reset-after-navigation>/);
+  assert.match(source, /href: offer\.href,/);
   assert.match(bookingSheetSource, /<TourVisaServiceToggle flat \/>/);
   assert.match(
     cleanStylesSource,

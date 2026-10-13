@@ -5,6 +5,7 @@ import { formatCurrency } from "@/lib/utils";
 import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
 import { stripLooseItineraryMarkup } from "@/lib/itinerary-markup";
 import { normalizeItineraryDisplayTitle } from "@/lib/tour-display";
+import { VISA_PROTECTION_PATH } from "@/lib/visa-defaults";
 import { getCommerceTourStatus, getDestinationSlug } from "@/lib/tour-commerce";
 import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 import type { TourRoomPrice } from "@/lib/tour-room-pricing";
@@ -236,8 +237,28 @@ export default function CleanTourDetail({
     item !== selectableAddOn
     && !(visaOffers.length > 0 && /visa/i.test(item.name))
   ));
+  // Visa help and the recommended insurance are not part of the package: they are
+  // listed under "Tidak termasuk" with their price and a link to the visa page.
+  const visaPageHref = visaOffers[0]?.href;
+  const excludedServices = [
+    ...visaOffers.map((offer) => ({
+      key: `visa-${offer.id}`,
+      label: offer.name,
+      note: null as string | null,
+      price: offer.price,
+      href: offer.href,
+    })),
+    ...(selectableAddOn ? [{
+      key: "insurance",
+      label: selectableAddOn.name,
+      note: "direkomendasikan",
+      price: Number(selectableAddOn.price),
+      href: visaPageHref ? `${visaPageHref}#protection` : VISA_PROTECTION_PATH,
+    }] : []),
+  ];
   const hotelEntries = tour.hotel ? Object.entries(tour.hotel) : [];
-  const hasInclusionLists = tour.inclusions.length > 0 || tour.exclusions.length > 0;
+  const hasExclusions = tour.exclusions.length > 0 || excludedServices.length > 0;
+  const hasInclusionLists = tour.inclusions.length > 0 || hasExclusions;
   const hasFacilities = hasInclusionLists || hotelEntries.length > 0;
   const hasPaymentTerms = Boolean(paymentPlan) || noteParagraphs.length > 0;
   const hasTerms = hasPaymentTerms || visaParagraphs.length > 0;
@@ -477,10 +498,21 @@ export default function CleanTourDetail({
                       <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
                     </div>
                   )}
-                  {tour.exclusions.length > 0 && (
+                  {hasExclusions && (
                     <div className={styles.detailExcludedBox}>
                       <h3>Tidak termasuk</h3>
-                      <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
+                      <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>
+                        {tour.exclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}
+                        {excludedServices.map((service) => (
+                          <li className={styles.detailExcludedService} key={service.key}>
+                            <Link href={service.href} scroll={true} data-scroll-reset-after-navigation>
+                              {service.label}
+                              {service.note && <small> ({service.note})</small>}
+                              <span> · +{formatCurrency(service.price)}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </div>

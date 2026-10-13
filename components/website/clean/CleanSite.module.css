@@ -1159,6 +1159,25 @@
 .detailIncludedList li::marker { color: var(--doc-green); }
 .detailExcludedList li::marker { color: var(--doc-slate); }
 
+/* Optional services (visa help, recommended insurance): a different colour and a
+   link to the visa page, instead of toggles in the booking card. */
+.detailExcludedList .detailExcludedService::marker { color: #c07a12; }
+
+.detailExcludedService a {
+  color: #965400;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: rgb(150 84 0 / 40%);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.detailExcludedService a:hover { color: #6f3e00; text-decoration-color: currentColor; }
+.detailExcludedService a:focus-visible { outline: 2px solid #965400; outline-offset: 2px; }
+.detailExcludedService a::after { content: " →"; }
+.detailExcludedService small { font-size: inherit; font-weight: 500; }
+.detailExcludedService span { font-weight: 700; white-space: nowrap; }
+
 /* Smaller parts inside a section (accommodation, package terms, visa). */
 .detailSubsection { margin-top: 26px; }
 .detailSubsection p { margin: 0 0 10px; color: var(--doc-ink); font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }

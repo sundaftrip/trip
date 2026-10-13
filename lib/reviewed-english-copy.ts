@@ -203,6 +203,7 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Tahap": "Stage",
   "Nominal": "Amount",
   "Itinerary harian": "Daily itinerary",
+  "direkomendasikan": "recommended",
   "Tambahan opsional": "Optional extras",
   "Jadwal tour": "Tour dates",
   "Jadwal lainnya": "Other departures",
