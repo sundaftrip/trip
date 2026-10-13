@@ -986,7 +986,7 @@
 .detailHeroPrice > small { color: var(--doc-slate); font-size: 13px; }
 .detailHeroPrice > small:first-child { display: block; margin-bottom: 4px; }
 .detailHeroPrice > strong { font-size: clamp(26px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.02em; }
-.detailHeroPrice > strong + small { margin-left: 6px; }
+.detailHeroPrice > strong + small { display: block; margin-top: 4px; }
 .detailHeroPrice > span { display: block; margin-top: 8px; color: var(--doc-green); font-size: 13px; font-weight: 700; }
 .detailHeroPrice > .detailHeroStatusUnavailable { color: #9a4a42; }
 

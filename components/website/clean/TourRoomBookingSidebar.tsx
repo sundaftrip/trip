@@ -83,12 +83,13 @@ export default function TourRoomBookingSidebar({
 
   return (
     <>
-      <p className={styles.detailBookingLabel}>Harga paket per orang</p>
+      {/* The amount people actually pay leads; the package price sits in the breakdown. */}
+      <p className={styles.detailBookingLabel}>{hasPrice ? selectedPriceCaption : "Harga paket"}</p>
       <p className={styles.detailBookingPrice}>
-        {hasPrice ? formatCurrency(selectedHeadlinePrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}
+        {hasPrice ? formatCurrency(selectedTotalPrice) : "Sesuai permintaan"} {hasPrice && <small>/orang</small>}
       </p>
       {promoPrice && roomPrices.length === 0 && (
-        <p className={styles.detailOriginalPrice}>Harga normal <s>{formatCurrency(originalPrice)}</s></p>
+        <p className={styles.detailOriginalPrice}>Harga paket normal <s>{formatCurrency(originalPrice)}</s></p>
       )}
       {priceLandTour && (
         <p className={styles.detailLandPrice}>Pilihan land tour mulai {formatCurrency(priceLandTour)}</p>
@@ -122,11 +123,10 @@ export default function TourRoomBookingSidebar({
             >
               <span>{room.label}</span>
               <span>
-                <b>{formatCurrency(room.headlinePrice)}</b>
-                <small>
-                  {selectedPriceCaption}{" "}
-                  {formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal)}
-                </small>
+                <b>{formatCurrency(room.mandatoryTotalPrice + optionalServicesTotal)}</b>
+                {room.mandatoryTotalPrice + optionalServicesTotal !== room.headlinePrice && (
+                  <small>Harga paket {formatCurrency(room.headlinePrice)}</small>
+                )}
               </span>
             </button>
           ))}

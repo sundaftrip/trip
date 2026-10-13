@@ -354,7 +354,7 @@ export default function CleanTourDetail({
             <p className={styles.detailHeroPrice}>
               <small>{hasPrice ? "Mulai dari" : "Harga"}</small>
               <strong>{priceLabel}</strong>
-              {hasPrice && <small>per orang</small>}
+              {hasPrice && <small>{mandatoryAddOns.length > 0 ? "per orang, termasuk biaya wajib" : "per orang"}</small>}
               <span className={unavailable ? styles.detailHeroStatusUnavailable : undefined}>{status}</span>
             </p>
           </div>

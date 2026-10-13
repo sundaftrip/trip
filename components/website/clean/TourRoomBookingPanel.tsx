@@ -38,6 +38,10 @@ type TourRoomBookingPanelProps = {
   completedTourHref: string;
 };
 
+function perPersonCaption(caption: string) {
+  return /per orang$/i.test(caption) ? caption : `${caption} per orang`;
+}
+
 export default function TourRoomBookingPanel({
   roomPrices,
   mandatoryAddOns,
@@ -107,18 +111,29 @@ export default function TourRoomBookingPanel({
                   onChange={() => setSelectedRoomCode(room.code)}
                 />
                 <span>{room.label}</span>
-                <h3>{formatCurrency(room.headlinePrice)}</h3>
-                <p>Harga posting per orang</p>
-                <dl>
-                  <div>
-                    <dt>Biaya wajib</dt>
-                    <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
-                  </div>
-                  <div>
-                    <dt>{selectedCaption}</dt>
-                    <dd>{formatCurrency(displayedTotal)}</dd>
-                  </div>
-                </dl>
+                {/* The amount people actually pay leads; the package price is a breakdown line. */}
+                <h3>{formatCurrency(displayedTotal)}</h3>
+                <p>{perPersonCaption(selectedCaption)}</p>
+                {displayedTotal !== room.headlinePrice && (
+                  <dl>
+                    <div>
+                      <dt>Harga paket</dt>
+                      <dd>{formatCurrency(room.headlinePrice)}</dd>
+                    </div>
+                    {room.mandatoryTotalPrice > room.headlinePrice && (
+                      <div>
+                        <dt>Biaya wajib</dt>
+                        <dd>+{formatCurrency(room.mandatoryTotalPrice - room.headlinePrice)}</dd>
+                      </div>
+                    )}
+                    {optionalServicesTotal > 0 && (
+                      <div>
+                        <dt>Tambahan pilihan</dt>
+                        <dd>+{formatCurrency(optionalServicesTotal)}</dd>
+                      </div>
+                    )}
+                  </dl>
+                )}
               </label>
             );
           })}

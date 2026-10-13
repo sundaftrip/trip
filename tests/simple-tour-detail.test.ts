@@ -92,3 +92,18 @@ test("motion is light, optional, and never hides the booking bar", () => {
   assert.match(motion, /@media print \{\s*\.tourDetail \[data-reveal\]/);
   assert.match(read("components/website/clean/ScrollReveal.tsx"), /prefers-reduced-motion: reduce/);
 });
+
+test("the subtotal people pay is the largest price, the package price is a breakdown line", () => {
+  const panel = read("components/website/clean/TourRoomBookingPanel.tsx");
+  assert.match(panel, /<h3>\{formatCurrency\(displayedTotal\)\}<\/h3>/);
+  assert.match(panel, /<dt>Harga paket<\/dt>\s*<dd>\{formatCurrency\(room\.headlinePrice\)\}<\/dd>/);
+  assert.doesNotMatch(panel, /<h3>\{formatCurrency\(room\.headlinePrice\)\}<\/h3>/);
+
+  const sidebar = read("components/website/clean/TourRoomBookingSidebar.tsx");
+  assert.match(sidebar, /\{hasPrice \? formatCurrency\(selectedTotalPrice\) : "Sesuai permintaan"\}/);
+  assert.match(sidebar, /<b>\{formatCurrency\(room\.mandatoryTotalPrice \+ optionalServicesTotal\)\}<\/b>/);
+
+  const card = read("components/website/clean/TourDetailInteractive.module.css");
+  assert.match(card, /\.dateCard \.dateTotal dd \{[^}]*font-size: 22px;/);
+  assert.match(source, /"per orang, termasuk biaya wajib"/);
+});

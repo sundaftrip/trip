@@ -88,7 +88,7 @@
 
 .dateCard dd {
   color: #132b3a;
-  font-weight: 800;
+  font-weight: 650;
   text-align: right;
 }
 
@@ -107,10 +107,23 @@
   border-top: 1px solid rgb(30 54 69 / 14%);
 }
 
-.dateTotal dt,
-.dateTotal dd {
+/* The subtotal is what people pay: it is the largest figure in the card. */
+.dateCard .dateTotal {
+  align-items: baseline;
+}
+
+.dateTotal dt {
   color: #2e6751;
+  font-size: 14px;
   font-weight: 800;
+}
+
+.dateCard .dateTotal dd {
+  color: #1e3645;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  white-space: nowrap;
 }
 
 @media (min-width: 701px) {
