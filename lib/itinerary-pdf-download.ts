@@ -1,6 +1,6 @@
 // Bump when the published PDF format changes. A new URL cannot reuse a PDF
 // stored by an older service worker under the previous, unversioned address.
-export const ITINERARY_PDF_VERSION = "clean-2026-09-costs";
+export const ITINERARY_PDF_VERSION = "doc-2026-10";
 
 export function itineraryPdfHref(tourId: string) {
   return `/tours/${encodeURIComponent(tourId)}/pdf?v=${ITINERARY_PDF_VERSION}`;

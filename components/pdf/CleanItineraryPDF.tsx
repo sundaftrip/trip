@@ -1,4 +1,6 @@
-import { Document, Page, View, Text as PdfText, Link, Image, StyleSheet } from "@react-pdf/renderer";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { Document, Page, View, Text as PdfText, Link, Image, StyleSheet, Font, Svg, Polygon } from "@react-pdf/renderer";
 import { Fragment, type ComponentProps } from "react";
 import type { ItineraryPDFProps } from "./ItineraryPDF";
 import { stripItineraryMarkup } from "@/lib/itinerary-markup";
@@ -9,8 +11,8 @@ import { tourSubtotalLabel } from "@/lib/tour-cost-disclosure";
 // it removes meal/stay metadata that this layout intentionally does not repeat.
 export function pdfText(value?: string | null): string {
   return normalizeTourServiceTerms(stripItineraryMarkup(value || "")
-    .replace(/[\u2010-\u2015\u2212]/g, "-")
-    .replace(/\s*[\u2192\u2794]\s*/g, " - ")
+    .replace(/[‐-―−]/g, "-")
+    .replace(/\s*[→➔]\s*/g, " - ")
     .replace(/\bpemandu wisata dan pengemudi\b/gi, "Tour Leader & Driver")
     .replace(/\bpemandu wisata\b/gi, "Tour Leader")
     .replace(/\bKelayakan\b/g, "Syarat")
@@ -26,9 +28,39 @@ export function pdfText(value?: string | null): string {
     .replace(/\s+/g, " ").trim());
 }
 
-const ink = "#17313D";
-const teal = "#075E62";
-const muted = "#52636A";
+/* Sundaf DMC document format, as on the website (DocFormat.module.css and the
+   tour detail page): green slash eyebrow, bold navy title, amber highlighter
+   tags for section titles, tables with a dark green header row and
+   alternating sage/sand rows, and flat tinted boxes. */
+const amber = "#EAB067";
+const green = "#2E6751";
+const sage = "#EAF3F0";
+const sand = "#F5F5EF";
+const sageStrong = "#DCEBE5";
+const navy = "#1E3645";
+const ink = "#2F4352";
+const slate = "#51616A";
+const rule = "#DCE3E1";
+
+// DM Sans, the website typeface (SIL OFL, assets/fonts/dm-sans). The files are
+// traced into the PDF function (next.config.ts); Helvetica remains as a safety
+// net so a missing file can never break the download.
+const DM_SANS_FILES = {
+  regular: path.join(process.cwd(), "assets", "fonts", "dm-sans", "DMSans-Regular.ttf"),
+  bold: path.join(process.cwd(), "assets", "fonts", "dm-sans", "DMSans-Bold.ttf"),
+};
+const hasDmSans = existsSync(DM_SANS_FILES.regular) && existsSync(DM_SANS_FILES.bold);
+if (hasDmSans) {
+  Font.register({
+    family: "DM Sans",
+    fonts: [
+      { src: DM_SANS_FILES.regular, fontWeight: 400 },
+      { src: DM_SANS_FILES.bold, fontWeight: 700 },
+    ],
+  });
+}
+const regular = hasDmSans ? { fontFamily: "DM Sans", fontWeight: 400 as const } : { fontFamily: "Helvetica" };
+const bold = hasDmSans ? { fontFamily: "DM Sans", fontWeight: 700 as const } : { fontFamily: "Helvetica-Bold" };
 
 // Ordinary words remain intact. Very long supplier references and URLs need
 // emergency break points; returning every character preserves the source text.
@@ -39,53 +71,95 @@ export function wrapPdfWord(word: string): string[] {
 function Text(props: ComponentProps<typeof PdfText>) {
   return <PdfText {...props} hyphenationCallback={wrapPdfWord} />;
 }
+
+const TAG_HEIGHT = 19;
+
 const styles = StyleSheet.create({
   // Do not inherit lineHeight from Page: react-pdf's dynamic page-number pass
   // multiplies inherited values on relayout and can corrupt wrapping/footers.
-  page: { backgroundColor: "#FFFFFF", fontFamily: "Helvetica", color: ink, fontSize: 10, paddingTop: 66, paddingBottom: 42, paddingHorizontal: 38 },
-  logo: { position: "absolute", top: 24, left: 38, width: 91, height: 28, objectFit: "contain" },
-  brand: { position: "absolute", top: 24, left: 38, fontFamily: "Helvetica-Bold", fontSize: 16 },
-  headerLabel: { position: "absolute", top: 31, right: 38, fontSize: 7.5, color: muted, maxWidth: 310, textAlign: "right" },
-  footer: { position: "absolute", top: 811, left: 38, fontSize: 8, color: muted },
-  pageNumber: { position: "absolute", top: 811, right: 38, fontSize: 8, color: muted },
-  link: { color: teal, textDecoration: "none" },
-  title: { fontFamily: "Helvetica-Bold", fontSize: 26, lineHeight: 1.14, marginBottom: 9, paddingRight: 8 },
-  meta: { fontSize: 10, color: teal, marginBottom: 5 },
-  route: { fontSize: 10, color: muted, marginBottom: 14 },
-  hero: { width: "100%", height: 204, objectFit: "cover" },
-  caption: { fontSize: 8, color: muted, marginTop: 4, marginBottom: 3 },
-  heading: { fontFamily: "Helvetica-Bold", fontSize: 16, lineHeight: 1.2, marginTop: 15, marginBottom: 9 },
-  subheading: { fontFamily: "Helvetica-Bold", fontSize: 11, marginTop: 11, marginBottom: 5 },
-  paragraph: { fontSize: 10, marginBottom: 5, lineHeight: 1.35 },
-  quiet: { color: muted, fontSize: 9, lineHeight: 1.35, marginTop: 4, marginBottom: 5 },
-  row: { flexDirection: "row", alignItems: "flex-start", paddingVertical: 4 },
-  rowLabel: { flex: 1, paddingRight: 18 },
-  rowValue: { width: 132, textAlign: "right", fontFamily: "Helvetica-Bold" },
-  total: { flexDirection: "row", alignItems: "center", marginTop: 5, marginBottom: 5, paddingVertical: 9, paddingHorizontal: 11, backgroundColor: "#EFF6F5", color: teal },
-  totalLabel: { flex: 1, fontFamily: "Helvetica-Bold", fontSize: 10.5 },
-  totalValue: { fontFamily: "Helvetica-Bold", fontSize: 16 },
-  optionName: { fontFamily: "Helvetica-Bold", fontSize: 10 },
-  optionDescription: { color: muted, fontSize: 9, marginTop: 2 },
-  day: { marginBottom: 5, flexShrink: 0 },
-  dayTitle: { fontFamily: "Helvetica-Bold", color: teal, fontSize: 11, lineHeight: 1.3, marginBottom: 4 },
-  photoRow: { flexDirection: "row", gap: 8, marginTop: 2, marginBottom: 13 },
-  photo: { flex: 1, height: 126, objectFit: "cover" },
-  columns: { flexDirection: "row", gap: 22 },
+  page: { backgroundColor: "#FFFFFF", ...regular, color: ink, fontSize: 9.5, paddingTop: 66, paddingBottom: 44, paddingHorizontal: 40 },
+  logo: { position: "absolute", top: 24, left: 40, width: 91, height: 28, objectFit: "contain" },
+  brand: { position: "absolute", top: 26, left: 40, ...bold, fontSize: 15, color: navy },
+  headerLabel: { position: "absolute", top: 33, right: 40, ...bold, fontSize: 7.5, color: green, letterSpacing: 0.4, textTransform: "uppercase", maxWidth: 300, textAlign: "right" },
+  footer: { position: "absolute", top: 810, left: 40, fontSize: 8, color: slate },
+  pageNumber: { position: "absolute", top: 810, right: 40, fontSize: 8, color: slate },
+  link: { color: green, textDecoration: "none" },
+
+  eyebrow: { ...bold, fontSize: 8.5, color: green, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 6 },
+  title: { ...bold, fontSize: 25, lineHeight: 1.12, color: navy, letterSpacing: -0.3, marginBottom: 12, paddingRight: 8 },
+  facts: { flexDirection: "row", borderTopWidth: 0.8, borderTopColor: rule, paddingTop: 8, marginBottom: 12, gap: 14 },
+  fact: { flex: 1 },
+  factWide: { flex: 1.6 },
+  factLabel: { fontSize: 7.5, color: slate, marginBottom: 2 },
+  factValue: { ...bold, fontSize: 9.5, lineHeight: 1.3, color: navy },
+  hero: { width: "100%", height: 196, objectFit: "cover", borderRadius: 6 },
+  caption: { fontSize: 7.5, color: slate, marginTop: 4 },
+
+  // Section title: amber highlighter tag, rounded on the left and cut at an
+  // angle on the right ("YOUR DAILY ITINERARY" in the planning portfolio).
+  tagRow: { flexDirection: "row", marginTop: 14, marginBottom: 8 },
+  tagBody: { height: TAG_HEIGHT, justifyContent: "center", paddingLeft: 10, paddingRight: 4, backgroundColor: amber, borderTopLeftRadius: TAG_HEIGHT / 2, borderBottomLeftRadius: TAG_HEIGHT / 2 },
+  tagText: { ...bold, fontSize: 9, color: navy, letterSpacing: 0.4, textTransform: "uppercase" },
+  subhead: { ...bold, fontSize: 8.5, color: green, letterSpacing: 0.5, textTransform: "uppercase", marginTop: 10, marginBottom: 4 },
+  paragraph: { fontSize: 9.5, marginBottom: 4, lineHeight: 1.38 },
+  quiet: { color: slate, fontSize: 8.25, lineHeight: 1.35, marginTop: 4, marginBottom: 3 },
+  lead: { color: slate, fontSize: 8.25, lineHeight: 1.35, marginTop: -2, marginBottom: 7 },
+
+  // Tables: dark green header row, then alternating sage/sand rows.
+  tableHead: { flexDirection: "row", backgroundColor: green, paddingVertical: 4.5, paddingHorizontal: 9 },
+  tableHeadText: { ...bold, fontSize: 8.25, color: "#FFFFFF" },
+  tableRow: { flexDirection: "row", alignItems: "flex-start", paddingVertical: 4.5, paddingHorizontal: 9, backgroundColor: sage },
+  tableRowAlt: { backgroundColor: sand },
+  cellLabel: { flex: 1, paddingRight: 14 },
+  cellValue: { width: 128, textAlign: "right", ...bold, color: navy },
+  rowName: { ...bold, color: navy },
+  rowDescription: { color: slate, fontSize: 8.25, lineHeight: 1.3, marginTop: 1.5 },
+  total: { flexDirection: "row", alignItems: "center", paddingVertical: 7, paddingHorizontal: 9, backgroundColor: sageStrong },
+  totalLabel: { flex: 1, ...bold, fontSize: 9.5, color: green },
+  totalValue: { ...bold, fontSize: 15, color: navy },
+  paymentLabel: { flex: 1, ...bold, color: navy },
+  paymentDate: { width: 128, color: ink },
+  paymentAmount: { width: 112, textAlign: "right", ...bold, color: navy },
+
+  day: { flexShrink: 0 },
+  dayTitle: { ...bold, fontSize: 10, lineHeight: 1.3, color: navy, marginBottom: 2 },
+  dayNumber: { color: green, textTransform: "uppercase", letterSpacing: 0.3 },
+  dayRule: { height: 0.7, backgroundColor: rule, marginTop: 2, marginBottom: 5 },
+  photoRow: { flexDirection: "row", gap: 8, marginTop: 2, marginBottom: 8 },
+  photo: { flex: 1, height: 116, objectFit: "cover", borderRadius: 5 },
+
+  // Included / not included: flat sage and sand boxes, side by side when short.
+  columns: { flexDirection: "row", gap: 8 },
   column: { flex: 1 },
-  columnTitle: { fontFamily: "Helvetica-Bold", fontSize: 12, marginBottom: 8 },
-  listItem: { flexDirection: "row", marginBottom: 4 },
-  bullet: { width: 10, color: teal },
-  listText: { flex: 1, fontSize: 9.5, lineHeight: 1.35 },
-  paymentLabel: { flex: 1, fontFamily: "Helvetica-Bold" },
-  paymentDate: { width: 133, color: muted },
-  paymentAmount: { width: 125, textAlign: "right", fontFamily: "Helvetica-Bold" },
-  closing: { marginTop: 12 },
-  closingTitle: { fontFamily: "Helvetica-Bold", fontSize: 13, marginBottom: 6 },
+  boxSage: { backgroundColor: sage, paddingVertical: 8, paddingHorizontal: 10 },
+  boxSand: { backgroundColor: sand, paddingVertical: 8, paddingHorizontal: 10 },
+  boxGap: { marginTop: 8 },
+  boxTitle: { ...bold, fontSize: 8.5, color: green, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 5 },
+  listItem: { flexDirection: "row", marginBottom: 3 },
+  bullet: { width: 9, color: green, ...bold },
+  listText: { flex: 1, fontSize: 9, lineHeight: 1.35 },
+
+  closing: { marginTop: 12, backgroundColor: sage, paddingVertical: 10, paddingHorizontal: 13 },
+  closingTitle: { ...bold, fontSize: 12, color: navy, marginBottom: 4 },
   contact: { fontSize: 9, marginBottom: 3 },
 });
 
-function Heading({ children }: { children: string }) {
-  return <Text style={styles.heading} minPresenceAhead={54}>{children}</Text>;
+/** Amber section tag; the angled right edge is drawn as a small triangle. */
+function Tag({ children }: { children: string }) {
+  return (
+    <View style={styles.tagRow} wrap={false} minPresenceAhead={64}>
+      <View style={styles.tagBody}>
+        <Text style={styles.tagText}>{children}</Text>
+      </View>
+      <Svg width={11} height={TAG_HEIGHT}>
+        <Polygon points={`0,0 11,0 0,${TAG_HEIGHT}`} fill={amber} />
+      </Svg>
+    </View>
+  );
+}
+
+function Subhead({ children }: { children: string }) {
+  return <Text style={styles.subhead} minPresenceAhead={36}>{children}</Text>;
 }
 
 function Paragraphs({ text }: { text?: string | null }) {
@@ -94,7 +168,9 @@ function Paragraphs({ text }: { text?: string | null }) {
   ))}</>;
 }
 
-function Day({ day }: { day: ItineraryPDFProps["tour"]["itinerary"][number] }) {
+const WEATHER_NOTE = "Aktivitas mengikuti kondisi cuaca dan operasional di lapangan.";
+
+function Day({ day, last }: { day: ItineraryPDFProps["tour"]["itinerary"][number]; last: boolean }) {
   const [first = "", ...rest] = day.description.split(/\n+/).filter((line) => line.trim());
   // Keep the heading with a bounded opening paragraph, even if a supplier sends
   // a single multi-page paragraph. The remainder flows; no words are discarded.
@@ -106,10 +182,11 @@ function Day({ day }: { day: ItineraryPDFProps["tour"]["itinerary"][number] }) {
   const continuation = boundary > 0 ? [first.slice(boundary).trim(), ...rest] : rest;
   return <>
     <View wrap={false} style={styles.day}>
-      <Text style={styles.dayTitle}>Hari {day.day} / {pdfText(day.title)}</Text>
+      <Text style={styles.dayTitle}><Text style={styles.dayNumber}>Hari {day.day}</Text> / {pdfText(day.title)}</Text>
       {!!opening && <Text style={styles.paragraph}>{pdfText(opening)}</Text>}
     </View>
     <Paragraphs text={continuation.join("\n")} />
+    {!last && <View style={styles.dayRule} />}
   </>;
 }
 
@@ -126,6 +203,24 @@ function contactWebsite(raw?: string) {
   return `https://${(raw || "sundaftrip.com").replace(/^https?:\/\//, "").replace(/\/+$/, "")}`;
 }
 
+/** "Open trip / Rusia & Aurora", grouped like the eyebrow on the tour page. */
+function tripEyebrow(tour: ItineraryPDFProps["tour"], commerceStatus: ItineraryPDFProps["commerceStatus"]) {
+  const haystack = `${tour.title} ${tour.country} ${tour.cityHighlight ?? ""}`.toLocaleLowerCase("id-ID");
+  const tripType = !tour.tripDateLabel || commerceStatus === "flexible" ? "Land tour privat" : "Open trip";
+  const destination = /4[- ]tan|central asia|asia tengah|kazakhstan|kyrgyzstan|uzbekistan|tajikistan/.test(haystack)
+    ? "Asia Tengah"
+    : /aurora|murmansk/.test(haystack)
+      ? "Rusia & Aurora"
+      : /russia|rusia/.test(haystack)
+        ? "Rusia"
+        : /hokkaido|japan|jepang|tokyo/.test(haystack)
+          ? "Jepang"
+          : /vietnam|sapa|hanoi|danang|phu quoc|ho chi minh/.test(haystack)
+            ? "Vietnam"
+            : pdfText(tour.country);
+  return destination ? `${tripType} / ${destination}` : tripType;
+}
+
 export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, mandatoryAddOns = [], inclusivePriceLabel, inclusivePriceCoretLabel, landTourLabel, paymentPlan, commerceStatus = "available", faqUrl }: ItineraryPDFProps) {
   const companyName = pdfText(company.name) || "Sundaf Trip";
   const website = contactWebsite(company.website);
@@ -139,6 +234,7 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
     || [...tour.inclusions, ...tour.exclusions].some((item) => item.length > 220);
   const photoDay = Math.ceil(tour.itinerary.length / 2) - 1;
   const safeFaq = faqUrl && /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(faqUrl) ? `${website}/faq` : faqUrl;
+  const route = pdfText(tour.cityHighlight || tour.country);
   const closingTitle = commerceStatus === "completed" || commerceStatus === "departed"
     ? "Rencanakan perjalanan berikutnya."
     : commerceStatus === "sold_out" || commerceStatus === "waitlist"
@@ -157,9 +253,24 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
       {/* One flowing document, not one forced page per section. The renderer
           determines page breaks from actual glyph measurements, not estimates. */}
       <Page size="A4" style={styles.page} wrap>
+        <Text style={styles.eyebrow}>{tripEyebrow(tour, commerceStatus)}</Text>
         <Text style={styles.title}>{pdfText(tour.title)}</Text>
-        <Text style={styles.meta}>{[pdfText(tour.tripDateLabel) || "Tanggal mengikuti jadwal", pdfText(tour.duration) || `${tour.itinerary.length} hari`].join("   |   ")}</Text>
-        {!!(tour.cityHighlight || tour.country) && <Text style={styles.route}>{pdfText(tour.cityHighlight || tour.country)}</Text>}
+        <View style={styles.facts} wrap={false}>
+          {!!route && (
+            <View style={styles.factWide}>
+              <Text style={styles.factLabel}>Rute</Text>
+              <Text style={styles.factValue}>{route}</Text>
+            </View>
+          )}
+          <View style={styles.fact}>
+            <Text style={styles.factLabel}>Durasi</Text>
+            <Text style={styles.factValue}>{pdfText(tour.duration) || `${tour.itinerary.length} hari`}</Text>
+          </View>
+          <View style={styles.fact}>
+            <Text style={styles.factLabel}>Keberangkatan</Text>
+            <Text style={styles.factValue}>{pdfText(tour.tripDateLabel) || "Tanggal mengikuti jadwal"}</Text>
+          </View>
+        </View>
         {!!hero && (
           <View wrap={false}>
             {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt prop. */}
@@ -168,23 +279,29 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
           </View>
         )}
 
-        <Heading>Harga perjalanan</Heading>
-        <View style={styles.row} wrap={false}>
-          <Text style={styles.rowLabel}>Paket dasar per orang</Text>
-          <Text style={styles.rowValue}>{pdfText(priceLabel)}</Text>
-        </View>
-        {mandatoryAddOns.map((item, index) => (
-          <View style={styles.row} key={index} wrap={false}>
-            <View style={styles.rowLabel}>
-              <Text>{pdfText(item.name)} (wajib)</Text>
-              {!!item.desc && <Text style={styles.optionDescription}>{pdfText(item.desc)}</Text>}
-            </View>
-            <Text style={styles.rowValue}>{pdfText(item.priceLabel)}</Text>
+        <Tag>Harga perjalanan</Tag>
+        <View wrap={false}>
+          <View style={styles.tableHead}>
+            <Text style={[styles.tableHeadText, styles.cellLabel]}>Rincian harga</Text>
+            <Text style={[styles.tableHeadText, styles.cellValue, { color: "#FFFFFF" }]}>Per orang</Text>
           </View>
-        ))}
-        <View style={styles.total} wrap={false}>
-          <Text style={styles.totalLabel}>{tourSubtotalLabel(mandatoryAddOns.length > 0)}</Text>
-          <Text style={styles.totalValue}>{pdfText(inclusivePriceLabel)}</Text>
+          <View style={styles.tableRow}>
+            <Text style={styles.cellLabel}>Paket dasar per orang</Text>
+            <Text style={styles.cellValue}>{pdfText(priceLabel)}</Text>
+          </View>
+          {mandatoryAddOns.map((item, index) => (
+            <View style={index % 2 === 0 ? [styles.tableRow, styles.tableRowAlt] : styles.tableRow} key={index}>
+              <View style={styles.cellLabel}>
+                <Text>{pdfText(item.name)} (wajib)</Text>
+                {!!item.desc && <Text style={styles.rowDescription}>{pdfText(item.desc)}</Text>}
+              </View>
+              <Text style={styles.cellValue}>{pdfText(item.priceLabel)}</Text>
+            </View>
+          ))}
+          <View style={styles.total}>
+            <Text style={styles.totalLabel}>{tourSubtotalLabel(mandatoryAddOns.length > 0)}</Text>
+            <Text style={styles.totalValue}>{pdfText(inclusivePriceLabel)}</Text>
+          </View>
         </View>
         {!!priceCoretLabel && <Text style={styles.quiet}>Harga normal paket: {pdfText(priceCoretLabel)}</Text>}
         {!!inclusivePriceCoretLabel && <Text style={styles.quiet}>Subtotal harga normal: {pdfText(inclusivePriceCoretLabel)}</Text>}
@@ -193,15 +310,15 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
         {tour.seatsLeft > 0 && ["available", "last_seats", "confirmed"].includes(commerceStatus) && <Text style={styles.quiet}>{tour.seatsLeft} kursi tersedia saat katalog diterbitkan.</Text>}
         {optional.length > 0 && (
           <>
-            <Text style={styles.subheading} minPresenceAhead={40}>Pilihan tambahan</Text>
-            <Text style={styles.quiet}>Opsional, belum masuk subtotal di atas.</Text>
+            <Subhead>Pilihan tambahan</Subhead>
+            <Text style={[styles.quiet, { marginTop: 0, marginBottom: 5 }]}>Opsional, belum masuk subtotal di atas.</Text>
             {optional.map((item, index) => (
-              <View key={index} style={styles.row}>
-                <View style={styles.rowLabel}>
-                  <Text style={styles.optionName} minPresenceAhead={14}>{pdfText(item.name)}{item.tag === "recommended" ? " (direkomendasikan)" : ""}</Text>
-                  {!!item.desc && <Text style={styles.optionDescription}>{pdfText(item.desc)}</Text>}
+              <View key={index} style={index % 2 === 1 ? [styles.tableRow, styles.tableRowAlt] : styles.tableRow}>
+                <View style={styles.cellLabel}>
+                  <Text style={styles.rowName} minPresenceAhead={14}>{pdfText(item.name)}{item.tag === "recommended" ? " (direkomendasikan)" : ""}</Text>
+                  {!!item.desc && <Text style={styles.rowDescription}>{pdfText(item.desc)}</Text>}
                 </View>
-                <Text style={styles.rowValue}>{pdfText(item.priceLabel)}</Text>
+                <Text style={styles.cellValue}>{pdfText(item.priceLabel)}</Text>
               </View>
             ))}
           </>
@@ -209,10 +326,13 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
 
         {tour.itinerary.length > 0 && (
           <>
-            <Heading>Rencana perjalanan</Heading>
+            <Tag>Rencana perjalanan</Tag>
+            {/* Under the tag, like the short line under each tag on the website,
+                so it never sits alone at the top of a page. */}
+            <Text style={styles.lead}>{WEATHER_NOTE}</Text>
             {tour.itinerary.map((day, index) => (
               <Fragment key={`${day.day}-${index}`}>
-                <Day day={day} />
+                <Day day={day} last={index === tour.itinerary.length - 1} />
                 {index === photoDay && photos.length > 0 && (
                   <View style={styles.photoRow} wrap={false}>
                     {photos.map((src) => (
@@ -223,53 +343,59 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
                 )}
               </Fragment>
             ))}
-            <Text style={styles.quiet}>Aktivitas mengikuti kondisi cuaca dan operasional di lapangan.</Text>
           </>
         )}
 
         {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
           stackLists ? <>
-            <Heading>Detail paket</Heading>
-            {tour.inclusions.length > 0 && <>
-              <Text style={styles.columnTitle} minPresenceAhead={32}>Sudah termasuk</Text>
+            <Tag>Detail paket</Tag>
+            {tour.inclusions.length > 0 && <View style={styles.boxSage}>
+              <Text style={styles.boxTitle} minPresenceAhead={32}>Sudah termasuk</Text>
               <List items={tour.inclusions} />
-            </>}
-            {tour.exclusions.length > 0 && <>
-              <Text style={styles.columnTitle} minPresenceAhead={32}>Belum termasuk harga paket</Text>
+            </View>}
+            {tour.exclusions.length > 0 && <View style={tour.inclusions.length > 0 ? [styles.boxSand, styles.boxGap] : styles.boxSand}>
+              <Text style={styles.boxTitle} minPresenceAhead={32}>Belum termasuk harga paket</Text>
               <List items={tour.exclusions} />
-            </>}
+            </View>}
           </> : <View wrap={false}>
-            <Heading>Detail paket</Heading>
+            <Tag>Detail paket</Tag>
             <View style={styles.columns}>
-              {tour.inclusions.length > 0 && <View style={styles.column}>
-                <Text style={styles.columnTitle} minPresenceAhead={32}>Sudah termasuk</Text>
+              {tour.inclusions.length > 0 && <View style={[styles.column, styles.boxSage]}>
+                <Text style={styles.boxTitle} minPresenceAhead={32}>Sudah termasuk</Text>
                 <List items={tour.inclusions} />
               </View>}
-              {tour.exclusions.length > 0 && <View style={styles.column}>
-                <Text style={styles.columnTitle} minPresenceAhead={32}>Belum termasuk harga paket</Text>
+              {tour.exclusions.length > 0 && <View style={[styles.column, styles.boxSand]}>
+                <Text style={styles.boxTitle} minPresenceAhead={32}>Belum termasuk harga paket</Text>
                 <List items={tour.exclusions} />
               </View>}
             </View>
           </View>
         )}
 
-        <Heading>Catatan dan pemesanan</Heading>
+        <Tag>Catatan dan pemesanan</Tag>
         <Paragraphs text={tour.notes || "Harga dan jadwal dapat berubah mengikuti kondisi operasional di lapangan."} />
-        <Text style={styles.subheading} minPresenceAhead={32}>Visa</Text>
+        <Subhead>Visa</Subhead>
         <Paragraphs text={tour.visaInfo || "Bantuan visa tersedia melalui Sundaf Trip. Hubungi tim kami untuk dokumen yang diperlukan."} />
         <Text style={styles.quiet}>Informasi pengurusan: <Link src="https://sundaftrip.com/visa" style={styles.link}>sundaftrip.com/visa</Link></Text>
 
-        <Text style={styles.subheading} minPresenceAhead={36}>Pembayaran</Text>
+        <Subhead>Pembayaran</Subhead>
         {paymentPlan && paymentPlan.steps.length > 0 ? <>
           <Paragraphs text={paymentPlan.intro} />
           <Paragraphs text={paymentPlan.paymentMethodsLabel} />
-          {paymentPlan.steps.map((step, index) => (
-            <View key={index} style={styles.row} wrap={false}>
-              <Text style={styles.paymentLabel}>{pdfText(step.label)}</Text>
-              <Text style={styles.paymentDate}>{pdfText(step.dueDateLabel)}</Text>
-              <Text style={styles.paymentAmount}>{pdfText(step.amountLabel)}</Text>
+          <View style={{ marginTop: 3 }} wrap={false}>
+            <View style={styles.tableHead}>
+              <Text style={[styles.tableHeadText, styles.paymentLabel, { color: "#FFFFFF" }]}>Tahap</Text>
+              <Text style={[styles.tableHeadText, styles.paymentDate, { color: "#FFFFFF" }]}>Jatuh tempo</Text>
+              <Text style={[styles.tableHeadText, styles.paymentAmount, { color: "#FFFFFF" }]}>Nominal</Text>
             </View>
-          ))}
+            {paymentPlan.steps.map((step, index) => (
+              <View key={index} style={index % 2 === 1 ? [styles.tableRow, styles.tableRowAlt] : styles.tableRow}>
+                <Text style={styles.paymentLabel}>{pdfText(step.label)}</Text>
+                <Text style={styles.paymentDate}>{pdfText(step.dueDateLabel)}</Text>
+                <Text style={styles.paymentAmount}>{pdfText(step.amountLabel)}</Text>
+              </View>
+            ))}
+          </View>
           <Text style={styles.quiet}>Jumlah dalam skema pembayaran per orang: {pdfText(paymentPlan.totalLabel)}</Text>
           <Paragraphs text={paymentPlan.finePrint} />
         </> : <Text style={styles.paragraph}>Jadwal dan nominal pembayaran mengikuti invoice resmi Sundaf Trip.</Text>}
@@ -279,15 +405,14 @@ export function CleanItineraryPDF({ tour, company, priceLabel, priceCoretLabel, 
         <View style={styles.closing} wrap={false}>
           <Text style={styles.closingTitle}>{closingTitle}</Text>
           <Text style={styles.paragraph}>{closingBody}</Text>
+          {/* One contact line, so the closing box stays compact. */}
           <Text style={styles.contact}>
             {!!company.whatsapp && <>WhatsApp: <Link style={styles.link} src={`https://wa.me/${company.whatsapp.replace(/\D/g, "")}`}>{company.whatsapp}</Link>{"   "}</>}
-            {!!company.phone && <>Telepon: <Link style={styles.link} src={`tel:${company.phone.replace(/\s+/g, "")}`}>{company.phone}</Link></>}
-          </Text>
-          <Text style={styles.contact}>
+            {!!company.phone && <>Telepon: <Link style={styles.link} src={`tel:${company.phone.replace(/\s+/g, "")}`}>{company.phone}</Link>{"   "}</>}
             {!!company.email && <><Link style={styles.link} src={`mailto:${company.email}`}>{company.email}</Link>{"   "}</>}
             <Link style={styles.link} src={`https://www.instagram.com/${instagram}`}>Instagram @{instagram}</Link>
           </Text>
-          {!!company.nib && <Text style={styles.quiet}>NIB {pdfText(company.nib)}</Text>}
+          {!!company.nib && <Text style={[styles.quiet, { marginBottom: 0 }]}>NIB {pdfText(company.nib)}</Text>}
         </View>
 
         {company.logo ? (

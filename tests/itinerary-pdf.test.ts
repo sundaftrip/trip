@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { cloneElement, isValidElement, type ReactNode } from "react";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { pdf, renderToBuffer } from "@react-pdf/renderer";
 import { ItineraryPDF, type ItineraryPDFProps } from "../components/pdf/ItineraryPDF";
 import { CleanItineraryPDF, pdfText, wrapPdfWord } from "../components/pdf/CleanItineraryPDF";
@@ -155,4 +155,23 @@ test("long Vietnam titles stay inside the page margins", async () => {
   for (const title of ["4 Hari 3 Malam Vietnam Utara dengan Sapa", "5 Hari 4 Malam Vietnam Utara dengan Sapa dan Teluk Halong"]) {
     await checkedLayout({ ...props, tour: { ...props.tour, title } });
   }
+});
+
+test("the PDF follows the Sundaf DMC document format in the website typeface", async () => {
+  const source = readFileSync(new URL("../components/pdf/CleanItineraryPDF.tsx", import.meta.url), "utf8");
+  // Amber tags, dark green table headers, sage/sand rows and boxes, navy titles.
+  for (const colour of ["#EAB067", "#2E6751", "#EAF3F0", "#F5F5EF", "#1E3645"]) assert.ok(source.includes(colour), colour);
+  assert.match(source, /<Polygon points=\{`0,0 11,0 0,\$\{TAG_HEIGHT\}`\} fill=\{amber\} \/>/);
+  for (const title of ["Harga perjalanan", "Rencana perjalanan", "Detail paket", "Catatan dan pemesanan"]) {
+    assert.ok(source.includes(`<Tag>${title}</Tag>`), title);
+  }
+
+  // DM Sans ships with the PDF function and is embedded in the document.
+  for (const file of ["DMSans-Regular.ttf", "DMSans-Bold.ttf", "OFL.txt"]) {
+    assert.ok(existsSync(new URL(`../assets/fonts/dm-sans/${file}`, import.meta.url)), file);
+  }
+  assert.ok(readFileSync(new URL("../next.config.ts", import.meta.url), "utf8").includes('"./assets/fonts/dm-sans/*.ttf"'));
+  const pdfSource = (await renderToBuffer(ItineraryPDF(props))).toString("latin1");
+  assert.match(pdfSource, /DMSans-Regular/);
+  assert.match(pdfSource, /DMSans-Bold/);
 });
