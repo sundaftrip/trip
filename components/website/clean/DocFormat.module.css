@@ -1,0 +1,159 @@
+/* Sundaf DMC document format, shared by the public sub-pages (taken from the
+   2027 planning portfolio and the tour detail page): green slash eyebrow, bold
+   navy title, amber highlighter tags for section titles, tinted boxes and tables
+   with a dark green header row. Colours come from the --doc-* tokens on
+   .public-site-shell (app/globals.css).
+
+   Heading classes repeat themselves so they outrank the site-wide heading weight
+   rule (`.public-site-shell main[data-theme="atlas"] :is(h1, h2, h3, h4)`). */
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--doc-green);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.title.title.title {
+  margin: 0;
+  color: var(--doc-navy);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+/* Section title: an amber highlighter tag, rounded on the left and cut at an
+   angle on the right ("YOUR DAILY ITINERARY" in the PDF). */
+.tag.tag.tag {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 7px 36px 7px 16px;
+  border-radius: 999px 0 0 999px;
+  background: var(--doc-amber);
+  color: var(--doc-navy);
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+}
+
+/* Small uppercase label inside a section ("INCLUDED" / "EXCLUDED" in the PDF). */
+.subhead.subhead.subhead {
+  margin: 0 0 10px;
+  color: var(--doc-green);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* A word marked with the highlighter inside a title. */
+.mark {
+  padding: 0 .12em;
+  background: linear-gradient(transparent 12%, var(--doc-amber) 12%, var(--doc-amber) 92%, transparent 92%);
+  color: inherit;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.lead {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.boxSage,
+.boxSand {
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.boxSage { background: var(--doc-sage); }
+.boxSand { background: var(--doc-sand); }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.table thead th {
+  padding: 10px 14px;
+  background: var(--doc-green);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+
+.table tbody tr { background: var(--doc-sage); }
+.table tbody tr:nth-child(even) { background: var(--doc-sand); }
+
+.table tbody th,
+.table td {
+  padding: 11px 14px;
+  color: var(--doc-navy);
+  font-weight: 500;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table tbody th { font-weight: 650; }
+
+.button {
+  min-height: 48px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--doc-green);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:hover { background: #24563f; }
+.button:focus-visible { outline: 3px solid color-mix(in srgb, var(--doc-green) 40%, transparent); outline-offset: 3px; }
+.button svg { width: 18px; height: 18px; flex: 0 0 auto; }
+
+.textLink {
+  color: var(--doc-green);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--doc-green) 40%, transparent);
+  text-underline-offset: 4px;
+}
+
+.textLink:hover { text-decoration-color: currentColor; }
+
+@media (max-width: 700px) {
+  .tag.tag.tag {
+    padding: 6px 32px 6px 14px;
+    font-size: 14px;
+  }
+
+  .lead { font-size: 16px; }
+
+  .boxSage,
+  .boxSand { padding: 16px; }
+
+  .table { font-size: 13px; }
+
+  .table thead th,
+  .table tbody th,
+  .table td { padding: 9px 10px; }
+}

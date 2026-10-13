@@ -35,6 +35,7 @@ import {
 } from "@/lib/tour-filters";
 import CleanTourCard, { type CleanTour } from "./CleanTourCard";
 import base from "./CleanSite.module.css";
+import doc from "./DocFormat.module.css";
 import styles from "./ToursCatalog.module.css";
 
 const PAGE_SIZE = 12;
@@ -305,7 +306,8 @@ export default function CleanToursCatalog({
         <div className={styles.shell}>
           <div className={styles.heroLayout}>
             <div>
-              <h1 id="catalog-page-title">Pilih cara perjalananmu.</h1>
+              <p className={doc.eyebrow}>Jadwal &amp; biaya tour</p>
+              <h1 id="catalog-page-title" className={doc.title}>Pilih cara perjalananmu.</h1>
             </div>
             <nav className={styles.trustCounts} aria-label="Pilih jenis perjalanan">
               {categoryTabs.map((tab) => (
@@ -376,7 +378,7 @@ export default function CleanToursCatalog({
 
           <div className={styles.headingRow}>
             <div>
-              <h2 id="catalog-results-title">
+              <h2 id="catalog-results-title" className={doc.tag}>
                 {filters.type === "open"
                   ? "Open trip yang dapat dipilih"
                   : filters.type === "private"
@@ -387,9 +389,9 @@ export default function CleanToursCatalog({
           </div>
 
           {filters.type === "private" ? (
-            <div className={styles.customOffer}>
-              <p className={styles.eyebrow}>BEBAS TENTUKAN PERJALANANMU</p>
-              <h3>Thailand, Rusia, atau rute pilihanmu.</h3>
+            <div className={`${styles.customOffer} ${doc.boxSage}`}>
+              <p className={doc.eyebrow}>Bebas tentukan perjalananmu</p>
+              <h3 className={doc.title}>Thailand, Rusia, atau rute pilihanmu.</h3>
               <p>
                 Land tour privat bisa dirancang sesuai tanggal, durasi, kota tujuan,
                 jumlah peserta, dan kisaran budgetmu. Pergi bersama keluarga, teman,
@@ -400,7 +402,7 @@ export default function CleanToursCatalog({
                 kamu butuhkan, mulai dari hotel, transportasi, guide, hingga aktivitas.
                 Rute di katalog bisa menjadi inspirasi; kamu juga bebas mengajukan rute baru.
               </p>
-              <Link href={customTripHref} scroll={false}>Rancang private trip</Link>
+              <Link className={doc.button} href={customTripHref} scroll={false}>Rancang private trip</Link>
               <span>Harga disusun sesuai kebutuhan dan dikonfirmasi bersama detail perjalanan.</span>
             </div>
           ) : null}
@@ -421,6 +423,7 @@ export default function CleanToursCatalog({
               {visibleCount < results.length ? (
                 <div className={styles.loadMore}>
                   <button
+                    className={doc.button}
                     type="button"
                     onClick={() =>
                       setPagination({ key: filterKey, count: visibleCount + PAGE_SIZE })
@@ -435,8 +438,8 @@ export default function CleanToursCatalog({
               ) : null}
             </>
           ) : filters.type === "private" ? null : (
-            <div className={styles.empty}>
-              <h3>Belum ada perjalanan yang cocok.</h3>
+            <div className={`${styles.empty} ${doc.boxSand}`}>
+              <h3 className={doc.title}>Belum ada perjalanan yang cocok.</h3>
               <p>
                 Ubah filter, lihat kategori lain, atau kirim tanggal dan tujuanmu untuk
                 dirancang sebagai private trip.
@@ -459,11 +462,8 @@ export default function CleanToursCatalog({
         <section className={styles.privatePreview} aria-labelledby="private-preview-title">
           <div className={styles.shell}>
             <div className={styles.privatePreviewHeading}>
-              <div>
-                <p className={styles.eyebrow}>PILIH TANGGAL SENDIRI</p>
-                <h2 id="private-preview-title">Land tour privat</h2>
-              </div>
-              <Link href={privateCatalogHref} className={styles.privatePreviewLink} scroll={false}>
+              <h2 id="private-preview-title" className={doc.tag}>Land tour privat</h2>
+              <Link href={privateCatalogHref} className={`${styles.privatePreviewLink} ${doc.textLink}`} scroll={false}>
                 Lihat semua land tour privat
               </Link>
             </div>
@@ -484,10 +484,7 @@ export default function CleanToursCatalog({
 
       <section className={styles.faqSection} aria-labelledby="catalog-faq-title">
         <div className={`${styles.shell} ${styles.faqLayout}`}>
-          <div>
-            <p className={styles.eyebrow}>SEBELUM MEMILIH</p>
-            <h2 id="catalog-faq-title">Pertanyaan tentang jadwal</h2>
-          </div>
+          <h2 id="catalog-faq-title" className={doc.tag}>Pertanyaan tentang jadwal</h2>
           <div className={styles.faqs}>
             <StableDetails>
               <summary>Bagaimana jika tanggal open trip belum cocok?</summary>
@@ -516,12 +513,13 @@ export default function CleanToursCatalog({
       </section>
 
       <section className={styles.consultation}>
-        <div className={`${styles.shell} ${styles.consultationRow}`}>
+        <div className={`${styles.shell} ${styles.consultationRow} ${doc.boxSand}`}>
           <div>
-            <h2>Belum menemukan jadwal yang cocok?</h2>
+            <h2 className={doc.title}>Belum menemukan jadwal yang cocok?</h2>
             <p>Kirim tujuan dan waktumu. Tim Sundaf membantu menyaring pilihan yang relevan.</p>
           </div>
           <a
+            className={doc.button}
             href={consultationHref}
             data-analytics-placement="catalog-final"
             aria-label="Konsultasi jadwal melalui WhatsApp"
