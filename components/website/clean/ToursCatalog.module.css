@@ -20,8 +20,7 @@
 }
 
 .hero {
-  padding: clamp(28px, 3vw, 40px) 0;
-  border-bottom: 1px solid var(--catalog-line);
+  padding: clamp(28px, 3.4vw, 46px) 0 clamp(26px, 3vw, 40px);
   background: #fff;
 }
 
@@ -37,11 +36,26 @@
   color: var(--catalog-primary);
 }
 
+/* Header: title and a short note side by side, then the three ways to travel
+   as a full-width row of tinted cells (like a row of the PDF table). */
 .heroLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
-  gap: clamp(40px, 6vw, 72px);
-  align-items: center;
+  gap: clamp(22px, 2.6vw, 30px);
+}
+
+.heroIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 18px clamp(32px, 5vw, 72px);
+  align-items: end;
+}
+
+.heroLede {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.65;
 }
 
 .hero h1,
@@ -61,29 +75,24 @@
   font-size: clamp(36px, 4.4vw, 56px);
 }
 
-.heroLayout > div > p:last-child {
-  max-width: 680px;
-  margin: 14px 0 0;
-  color: var(--catalog-muted);
-  font-size: 17px;
-  font-weight: 400;
-  letter-spacing: 0.012em;
-  line-height: 1.65;
-}
-
 .trustCounts {
   margin: 0;
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 3px;
 }
 
 .trustCounts a {
-  min-height: 58px;
-  padding: 0 18px;
+  min-height: 112px;
+  padding: 18px 20px;
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(28px, auto) auto;
+  grid-template-areas:
+    "label count"
+    "note note";
+  align-content: start;
+  gap: 8px 16px;
   background: var(--doc-sand);
   color: var(--doc-navy);
   transition: background-color 160ms ease, color 160ms ease;
@@ -98,17 +107,34 @@
 }
 
 .trustCounts span {
+  grid-area: label;
+  align-self: center;
   color: inherit;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .03em;
+  text-transform: uppercase;
 }
 
 .trustCounts strong {
+  grid-area: count;
+  align-self: center;
   color: inherit;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: 0;
+  line-height: 1;
 }
+
+.trustCounts small {
+  grid-area: note;
+  max-width: 34ch;
+  color: var(--doc-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.trustCounts a[aria-current="page"] small { color: rgb(255 255 255 / 86%); }
 
 .resultsSection {
   padding: clamp(28px, 3.5vw, 44px) 0 clamp(56px, 6vw, 76px);
@@ -116,7 +142,7 @@
 
 .trustCounts .customBadge {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .customOffer {
@@ -686,9 +712,6 @@
 }
 
 @media (min-width: 760px) {
-  .hero .shell {
-    width: min(860px, calc(100% - 64px));
-  }
 
   .sheetLayer {
     padding: 32px;
@@ -702,23 +725,13 @@
 }
 
 @media (max-width: 900px) {
-  .heroLayout,
-  .faqLayout {
+  .heroIntro {
     grid-template-columns: 1fr;
   }
 
-  .trustCounts {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .trustCounts a {
-    padding: 14px;
-    display: block;
-  }
-
-  .trustCounts strong {
-    display: block;
-    margin-top: 4px;
+    min-height: 0;
+    padding: 14px 16px;
   }
 
   .grid {
@@ -749,10 +762,10 @@
     font-size: 32px;
   }
 
-  .heroLayout > div > p:last-child {
-    margin-top: 15px;
-    font-size: 14px;
-    line-height: 1.58;
+
+  .heroLede {
+    font-size: 14.5px;
+    line-height: 1.6;
   }
 
   .trustCounts {
@@ -762,6 +775,8 @@
     border-top: 0;
     scrollbar-width: none;
   }
+
+  .trustCounts small { display: none; }
 
   .trustCounts::-webkit-scrollbar {
     display: none;
@@ -800,14 +815,20 @@
     min-height: 0;
     display: inline;
     font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0;
     line-height: 1;
+    text-transform: none;
   }
 
-  .trustCounts strong {
+  .trustCounts strong,
+  .trustCounts .customBadge {
     display: inline;
     margin-top: 0;
     font-size: 14px;
   }
+
+  .trustCounts .customBadge { font-size: 12px; }
 
   .resultsSection {
     padding: 0 0 64px;

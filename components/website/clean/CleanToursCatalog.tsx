@@ -43,10 +43,10 @@ const CleanTourFilterSheet = dynamic(() => import("./CleanTourFilterSheet"), {
   ssr: false,
 });
 
-const categoryTabs: Array<{ value: CatalogTripType; label: string }> = [
-  { value: "open", label: "Open trip" },
-  { value: "private", label: "Land tour privat" },
-  { value: "archive", label: "Trip terdahulu" },
+const categoryTabs: Array<{ value: CatalogTripType; label: string; note: string }> = [
+  { value: "open", label: "Open trip", note: "Berangkat bersama grup di tanggal yang sudah ditetapkan." },
+  { value: "private", label: "Land tour privat", note: "Tanggal, rute, dan jumlah peserta kamu tentukan sendiri." },
+  { value: "archive", label: "Trip terdahulu", note: "Rute yang sudah kami jalankan, sebagai gambaran perjalanan." },
 ];
 
 const durationOptions: Array<{ value: CatalogDuration; label: string }> = [
@@ -305,9 +305,15 @@ export default function CleanToursCatalog({
       <section className={styles.hero} aria-labelledby="catalog-page-title">
         <div className={styles.shell}>
           <div className={styles.heroLayout}>
-            <div>
-              <p className={doc.eyebrow}>Jadwal &amp; biaya tour</p>
-              <h1 id="catalog-page-title" className={doc.title}>Pilih cara perjalananmu.</h1>
+            <div className={styles.heroIntro}>
+              <div>
+                <p className={doc.eyebrow}>Jadwal &amp; biaya tour</p>
+                <h1 id="catalog-page-title" className={doc.title}>Pilih cara perjalananmu.</h1>
+              </div>
+              <p className={styles.heroLede}>
+                Harga di setiap kartu sudah termasuk biaya wajib per orang. Pilih jadwal grup,
+                rancang perjalanan privat, atau lihat rute yang pernah kami jalankan.
+              </p>
             </div>
             <nav className={styles.trustCounts} aria-label="Pilih jenis perjalanan">
               {categoryTabs.map((tab) => (
@@ -321,6 +327,7 @@ export default function CleanToursCatalog({
                   <strong className={tab.value === "private" ? styles.customBadge : undefined}>
                     {tab.value === "private" ? "Custom" : categoryCounts[tab.value]}
                   </strong>
+                  <small>{tab.note}</small>
                 </Link>
               ))}
             </nav>

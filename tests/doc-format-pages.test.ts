@@ -30,3 +30,18 @@ test("the tours catalog uses the document format", () => {
   const css = read("components/website/clean/ToursCatalog.module.css");
   assert.doesNotMatch(css.slice(css.indexOf(".consultation {"), css.indexOf(".consultationRow {")), /background: var\(--catalog-navy\)/);
 });
+
+test("the catalog header fills the desktop width with a note and three described trip types", () => {
+  const catalog = read("components/website/clean/CleanToursCatalog.tsx");
+  assert.match(catalog, /<p className=\{styles\.heroLede\}>/);
+  assert.match(catalog, /note: "Berangkat bersama grup di tanggal yang sudah ditetapkan\."/);
+  assert.match(catalog, /<small>\{tab\.note\}<\/small>/);
+
+  const css = read("components/website/clean/ToursCatalog.module.css");
+  // No narrow 860px column on wide screens any more.
+  assert.doesNotMatch(css, /\.hero \.shell \{\s*width: min\(860px/);
+  assert.match(css, /\.trustCounts \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
+  assert.match(css, /\.trustCounts a\[aria-current="page"\] \{[^}]*background: var\(--doc-green\);/);
+  // The old muted paragraph rule must not override the lede.
+  assert.doesNotMatch(css, /\.heroLayout > div > p:last-child/);
+});
