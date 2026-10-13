@@ -82,7 +82,7 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
 
   if (!access) {
     return (
-      <section className="relative isolate min-h-[100svh] overflow-hidden bg-white px-5 pt-14 pb-10 sm:min-h-screen sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
+      <section className="public-dm-sans relative isolate min-h-[100svh] overflow-hidden bg-white px-5 pt-14 pb-10 sm:min-h-screen sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
         <CatalogSketchBackground />
         <B2BCatalogLoginForm showError={hasError(sp.error)} />
       </section>
@@ -95,7 +95,7 @@ export default async function B2BRussiaCatalogPage({ searchParams }: PageProps) 
   });
 
   return (
-    <section className="relative isolate min-h-[100svh] overflow-hidden bg-white px-5 pt-14 pb-10 sm:min-h-screen sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
+    <section className="public-dm-sans relative isolate min-h-[100svh] overflow-hidden bg-white px-5 pt-14 pb-10 sm:min-h-screen sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
       <CatalogSketchBackground />
       <div className="relative mx-auto w-full max-w-2xl">
         <div className="mb-6 flex items-start justify-between gap-4 sm:mb-8 sm:items-center">

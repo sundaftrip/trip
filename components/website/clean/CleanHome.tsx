@@ -22,6 +22,7 @@ import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
 import HeroChalkNote from "./home/HeroChalkNote";
+import HomeReveal from "./home/HomeReveal";
 import RussiaGuideLinks from "./RussiaGuideLinks";
 import styles from "./home/CleanHome.module.css";
 
@@ -165,6 +166,15 @@ function getMonthOptions(tours: CleanTour[]): HomeSearchOption[] {
     }));
 }
 
+/* The hero photo ships as an optimized JPEG; a CMS value that still points to the
+   original PNG keeps working and gets the lighter file. */
+const HERO_IMAGE = "/images/home/murmansk-aurora-group.jpg";
+const LEGACY_HERO_IMAGE = "/images/home/murmansk-aurora-group.png";
+
+function lighterHeroImage(src: string) {
+  return src === LEGACY_HERO_IMAGE ? HERO_IMAGE : src;
+}
+
 function formatPostDate(value: Date | string) {
   const date = value instanceof Date ? value : new Date(value);
   return Number.isNaN(date.getTime()) ? null : DATE_FORMATTER.format(date);
@@ -176,11 +186,14 @@ export default function CleanHome({
   posts,
   company,
   texts,
-  heroImage = "/images/home/murmansk-aurora-group.png",
+  heroImage = HERO_IMAGE,
 }: CleanHomeProps) {
   const scheduledTours = tours
     .filter((tour) => tour.state === "bookable" || tour.state === "sold")
     .slice(0, 6);
+  // On phones the trips sit in a two-column catalog; an odd count gets a
+  // "see all" tile so the last row stays complete.
+  const showAllTile = scheduledTours.length % 2 === 1;
   const destinationOptions = getDestinationOptions(tours);
   const monthOptions = getMonthOptions(tours);
   const nib = company.company_nib || "1601260060842";
@@ -209,11 +222,11 @@ export default function CleanHome({
     LEGACY_HOME_COPY.heroBody,
     HOME_COPY.heroBody,
   );
-  const resolvedHeroImage = getTourProductImage({
+  const resolvedHeroImage = lighterHeroImage(getTourProductImage({
     title: "Sundaf Trip Aurora",
     country: "Rusia",
     heroImg: readText(texts, ["home_hero_image", "home_hero_img"], heroImage),
-  });
+  }));
   const resolvedHeroAlt = readText(
     texts,
     ["home_hero_image_alt"],
@@ -238,19 +251,22 @@ export default function CleanHome({
 
   return (
     <div className={styles.home}>
+      <HomeReveal rootId="main-content" />
       <div id="main-content" tabIndex={-1}>
         <div className={styles.heroBoundary}>
-          <section className={styles.hero} aria-labelledby="home-hero-title">
+          <section className={styles.hero} aria-labelledby="home-hero-title" data-motion-scene>
             <Image
               src={resolvedHeroImage}
               alt={resolvedHeroAlt}
               fill
               priority
               fetchPriority="high"
-              quality={90}
+              quality={75}
               sizes="100vw"
               className={styles.heroImage}
             />
+            {/* Slow aurora light over the sky; sits under the text scrim. */}
+            <span className={styles.heroAurora} aria-hidden="true" />
             <div className={styles.heroOverlay} aria-hidden="true" />
             <div className={`${styles.shell} ${styles.heroShell}`}>
               <div className={styles.heroCopy}>
@@ -292,7 +308,7 @@ export default function CleanHome({
             </div>
 
             {scheduledTours.length ? (
-              <HomeTourRail tours={scheduledTours} />
+              <HomeTourRail tours={scheduledTours} showAllTile={showAllTile} />
             ) : (
               <div className={styles.emptyState}>
                 <p>Jadwal open trip baru sedang disiapkan.</p>
@@ -300,9 +316,11 @@ export default function CleanHome({
               </div>
             )}
 
-            <Link className={styles.mobileSectionLink} href="/tours">
-              Lihat semua jadwal <ArrowRight aria-hidden="true" />
-            </Link>
+            {scheduledTours.length && showAllTile ? null : (
+              <Link className={styles.mobileSectionLink} href="/tours">
+                Lihat semua jadwal <ArrowRight aria-hidden="true" />
+              </Link>
+            )}
           </div>
         </section>
 
@@ -316,7 +334,7 @@ export default function CleanHome({
               <p>Jelajahi rute Rusia, Asia Tengah, dan Vietnam bersama Sundaf Trip.</p>
             </div>
 
-            <div className={styles.destinationMosaic}>
+            <div className={styles.destinationMosaic} data-reveal="group">
               <Link className={styles.destinationLead} href="/destinations/rusia-aurora">
                 <Image
                   src={russiaImage}
@@ -435,7 +453,7 @@ export default function CleanHome({
 
         <section className={styles.privateSection} aria-labelledby="private-trip-title">
           <div className={styles.shell}>
-            <div className={styles.privatePanel}>
+            <div className={styles.privatePanel} data-reveal>
               <div>
                 <p className={styles.eyebrowLight}>PRIVATE &amp; CUSTOM TRIP</p>
                 <h2 id="private-trip-title">Private trip sesuai rencanamu</h2>
@@ -468,7 +486,7 @@ export default function CleanHome({
                 </Link>
               </div>
 
-              <div className={styles.journalGrid}>
+              <div className={styles.journalGrid} data-reveal="group">
                 {journalPosts.map((post) => {
                   const formattedDate = formatPostDate(post.date);
                   return (
@@ -516,7 +534,7 @@ export default function CleanHome({
         ) : null}
 
         <section className={styles.finalSection} aria-labelledby="final-cta-title">
-          <div className={`${styles.shell} ${styles.finalLayout}`}>
+          <div className={`${styles.shell} ${styles.finalLayout}`} data-reveal>
             <div>
               <p className={styles.eyebrow}>MASIH MENENTUKAN RUTE?</p>
               <h2 id="final-cta-title">Butuh bantuan memilih perjalanan?</h2>

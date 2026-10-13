@@ -29,7 +29,7 @@
   letter-spacing: 0;
   font-family: var(
     --site-font-family,
-    var(--font-jost),
+    var(--font-dm-sans),
     "Helvetica Neue",
     Arial,
     sans-serif

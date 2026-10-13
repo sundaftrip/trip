@@ -32,6 +32,7 @@ export default function HomeBenefitGrid({ children }: { children: ReactNode }) {
     <div
       ref={gridRef}
       className={styles.benefitGrid}
+      data-reveal="group"
       data-motion-active={visible && !pageHidden ? "true" : undefined}
     >
       {children}

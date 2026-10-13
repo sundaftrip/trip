@@ -19,7 +19,7 @@
   background-size: 32px 32px;
   font-family: var(
     --site-font-family,
-    "Plus Jakarta Sans",
+    var(--font-dm-sans),
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",

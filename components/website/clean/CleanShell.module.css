@@ -15,7 +15,7 @@
   letter-spacing: 0.01em;
   font-family: var(
     --site-font-family,
-    var(--font-jost),
+    var(--font-dm-sans),
     "Helvetica Neue",
     Arial,
     sans-serif

@@ -7,7 +7,7 @@
   padding: 108px 0 84px;
   background: #FFFFFF;
   color: #132b3a;
-  font-family: var(--site-font-family), "Plus Jakarta Sans", sans-serif;
+  font-family: var(--site-font-family), var(--font-dm-sans), sans-serif;
 }
 
 .shell {

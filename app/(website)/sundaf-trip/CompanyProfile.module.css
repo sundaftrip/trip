@@ -7,7 +7,7 @@
   padding-top: 68px;
   background: #fff;
   color: var(--ink);
-  font-family: var(--site-font-family, var(--font-jost), "Helvetica Neue", Arial, sans-serif);
+  font-family: var(--site-font-family, var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif);
   font-weight: 400;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -93,7 +93,7 @@
 .reviewsHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; padding-top: 65px; border-top: 1px solid var(--line); }
 .quotes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; margin-top: 38px; }
 .quote { position: relative; padding-top: 9px; }
-.quoteMark { display: block; height: 50px; color: var(--teal); font-family: Georgia, serif; font-size: 74px; line-height: 1; }
+.quoteMark { display: block; height: 50px; color: var(--teal); font-size: 74px; line-height: 1; }
 .quote blockquote { color: var(--ink); font-size: 18px; line-height: 1.8; font-weight: 400; white-space: pre-line; }
 .quote figcaption { display: flex; flex-direction: column; gap: 3px; margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); }
 .quote figcaption strong { font-size: 14px; font-weight: 600; }

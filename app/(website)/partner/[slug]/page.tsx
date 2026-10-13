@@ -211,13 +211,13 @@ export default async function PartnerDashboardPage({ params, searchParams }: Pag
               <p className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-500">
                 <LinkIcon size={14} /> Short Link
               </p>
-              <p className="break-all font-mono text-sm font-semibold text-gray-950">{referralLink}</p>
+              <p className="break-all text-sm font-semibold text-gray-950">{referralLink}</p>
             </div>
             <div className="rounded-lg bg-gray-50 p-4">
               <p className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-500">
                 <Ticket size={14} /> Kode
               </p>
-              <p className="font-mono text-xl font-black text-gray-950">{partner.referralCode}</p>
+              <p className="text-xl font-black tabular-nums tracking-[0.06em] text-gray-950">{partner.referralCode}</p>
             </div>
             <div className="rounded-lg bg-gray-50 p-4">
               <p className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-500">

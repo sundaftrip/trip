@@ -12,7 +12,7 @@ export default function NotFound() {
   ];
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-950">
+    <main className="public-dm-sans min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-950">
       <div className="max-w-md w-full text-center py-16">
         <p
           className="text-7xl sm:text-8xl font-black tracking-tight mb-4"
