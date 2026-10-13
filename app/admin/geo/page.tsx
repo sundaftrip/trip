@@ -4,8 +4,10 @@ import { Pencil, Plus, Sparkles } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
 import { GEO_FALLBACKS } from "@/lib/geo-pages";
 import { prisma } from "@/lib/prisma";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export default async function GeoAdminPage() {
+  await requireAdminModule("geo");
   const saved = await prisma.geoPage.findMany({ orderBy: [{ order: "asc" }, { updatedAt: "desc" }] });
   const savedByRoute = new Map(saved.map((page) => [page.routePath, page]));
   const fallbackRows = Object.values(GEO_FALLBACKS).map((fallback) => ({

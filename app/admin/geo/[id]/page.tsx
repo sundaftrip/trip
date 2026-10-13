@@ -4,8 +4,10 @@ import GeoPageForm from "@/components/admin/GeoPageForm";
 import { upgradeCompanyProfile } from "@/lib/company-profile";
 import { GEO_FALLBACKS } from "@/lib/geo-pages";
 import { prisma } from "@/lib/prisma";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export default async function EditGeoPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdminModule("geo");
   const { id } = await params;
   const page = await prisma.geoPage.findUnique({ where: { id } });
   if (!page) notFound();

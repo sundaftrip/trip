@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get("page") ?? "1");
+  const page = Math.max(1, Number.parseInt(searchParams.get("page") ?? "1", 10) || 1);
   const limit = 50;
   const resource = searchParams.get("resource");
   const action = searchParams.get("action");

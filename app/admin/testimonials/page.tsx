@@ -1,9 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import { requireAdminModule } from "@/lib/admin-access";
 import Link from "next/link";
 import { Plus, Star, Pencil } from "lucide-react";
 import TestimonialDeleteBtn from "./DeleteBtn";
 
 export default async function TestimonialsPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
+  await requireAdminModule("testimonials");
   const { cat } = await searchParams;
   const filter = cat === "trip" || cat === "visa" ? cat : "all";
 

@@ -5,7 +5,7 @@ import type { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { checkPermission, checkPermissions, hasPersistedUser } from "@/lib/permissions";
-import { requiredPermissionsForMutation } from "@/lib/authorization";
+import { requiredPermissionsForMutation, withoutUnchangedFields } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
@@ -83,7 +83,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  const data = pickGeoInput(body);
+  // Status publish yang tidak berubah tidak butuh izin publish (form selalu mengirimnya).
+  const current = await prisma.geoPage.findUnique({ where: { id }, select: { published: true } });
+  if (!current) return NextResponse.json({ error: "Halaman GEO tidak ditemukan. Mungkin sudah dihapus." }, { status: 404 });
+  const data = withoutUnchangedFields(pickGeoInput(body), current, ["published"]);
   const isPublishOnly = "published" in data && Object.keys(data).length === 1;
   const requiredPermissions = requiredPermissionsForMutation(
     data,

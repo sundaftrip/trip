@@ -2,6 +2,8 @@
 
 import { useState, useRef } from "react";
 import { Upload, X, AlertCircle, Link2 } from "lucide-react";
+import { compressImage } from "@/lib/compress-image";
+import { isAllowedCmsImageUrl } from "@/lib/cms-image-hosts";
 
 interface Props {
   value: string;
@@ -9,35 +11,13 @@ interface Props {
   folder?: string;
   multiple?: boolean;
   uploadLabel?: string;
+  /** Foto tampil di website publik: link hanya boleh dari host yang diizinkan. */
+  publicImage?: boolean;
+  /** Kirim file apa adanya (mis. logo PNG transparan) tanpa kompres ke JPEG. */
+  keepOriginal?: boolean;
 }
 
-// Compress & resize image to max 1600px, JPEG quality 85% — keeps under Vercel's 4.5MB limit
-async function compressImage(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const img = document.createElement("img");
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const MAX = 1600;
-      let { width, height } = img;
-      if (width > MAX || height > MAX) {
-        if (width > height) { height = Math.round((height / width) * MAX); width = MAX; }
-        else { width = Math.round((width / height) * MAX); height = MAX; }
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { reject(new Error("Canvas tidak tersedia")); return; }
-      ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL("image/jpeg", 0.85));
-    };
-    img.onerror = () => reject(new Error("Gagal membaca gambar"));
-    img.src = url;
-  });
-}
-
-export default function ImageUpload({ value, onChange, folder = "travel", multiple = false, uploadLabel }: Props) {
+export default function ImageUpload({ value, onChange, folder = "travel", multiple = false, uploadLabel, publicImage = false, keepOriginal = false }: Props) {
   const [mode, setMode] = useState<"upload" | "link">("upload");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,12 +41,7 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
 
       try {
         setProgress("Memproses gambar...");
-        const base64 = await compressImage(file);
-        // Convert base64 back to File for FormData
-        const res0 = await fetch(base64);
-        const blob = await res0.blob();
-        const baseName = (file.name || "gambar.jpg").replace(/\.[^.]+$/, ".jpg");
-        uploadFile = new File([blob], baseName, { type: "image/jpeg" });
+        uploadFile = keepOriginal ? file : await compressImage(file);
       } catch {
         // Compress gagal (misal format HEIC/HEIF dari iOS) — kirim file asli langsung
         uploadFile = file;
@@ -78,10 +53,10 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
       formData.append("folder", folder);
 
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({})) as { url?: string; error?: string };
 
-      if (!res.ok || data.error) {
-        setError(data.error ?? `Upload gagal (${res.status})`);
+      if (!res.ok || data.error || !data.url) {
+        setError(data.error ?? (res.status === 413 ? "Foto terlalu besar. Pilih foto yang lebih kecil." : `Upload gagal (${res.status})`));
       } else {
         onChange(data.url);
       }
@@ -104,6 +79,10 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
     if (!url) return;
     if (!/^https?:\/\//i.test(url)) {
       setError("Link harus diawali http:// atau https://");
+      return;
+    }
+    if (publicImage && !isAllowedCmsImageUrl(url)) {
+      setError("Foto dari link ini tidak akan tampil di website. Simpan fotonya ke perangkat, lalu pilih Upload.");
       return;
     }
     setError(null);
@@ -168,7 +147,7 @@ export default function ImageUpload({ value, onChange, folder = "travel", multip
                 className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition disabled:opacity-60"
               >
                 <Upload size={16} />
-                {uploading ? progress || "Mengupload..." : uploadLabel ?? (multiple ? "Upload Gambar" : "Upload Gambar Hero")}
+                {uploading ? progress || "Mengupload..." : uploadLabel ?? (multiple ? "Upload foto" : "Upload foto")}
               </button>
             </div>
           ) : (

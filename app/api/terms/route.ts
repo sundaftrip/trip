@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { apiError } from "@/lib/api-error";
+import { logActivity } from "@/lib/activityLog";
 
 export async function GET() {
   const terms = await prisma.termsCondition.findFirst();
@@ -31,6 +32,11 @@ export async function PUT(req: NextRequest) {
       ? await prisma.termsCondition.update({ where: { id: existing.id }, data: { bodyId, bodyEn } })
       : await prisma.termsCondition.create({ data: { bodyId, bodyEn } });
 
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "UPDATE", resource: "TERMS",
+      resourceName: "Syarat & Ketentuan",
+    });
     await revalidatePublicContent({ paths: ["/terms"], changedAt: terms.updatedAt });
     return NextResponse.json(terms);
   } catch (err) {

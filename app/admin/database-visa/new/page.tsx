@@ -1,6 +1,8 @@
 import CountryVisaForm from "@/components/admin/CountryVisaForm";
+import { requireAdminModule } from "@/lib/admin-access";
 
-export default function NewCountryVisaPage() {
+export default async function NewCountryVisaPage() {
+  await requireAdminModule("visa");
   return (
     <div className="space-y-6">
       <div>

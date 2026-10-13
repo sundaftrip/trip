@@ -1,34 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import TextsForm from "@/components/admin/TextsForm";
-
-const TEXT_KEYS = [
-  { section: "Hero", keys: ["hero_eyebrow", "hero_title", "hero_subtitle", "hero_btn"] },
-  // Kartu "Mengapa Kami?" (WhySection) — sebelumnya tak bisa diedit dari admin.
-  { section: "Keunggulan (Mengapa Kami)", keys: [
-    "why_1_title", "why_1_desc",
-    "why_2_title", "why_2_desc",
-    "why_3_title", "why_3_desc",
-    "why_4_title", "why_4_desc",
-  ] },
-  { section: "Footer", keys: ["footer_tagline"] },
-  { section: "Kontak", keys: ["contact_title", "contact_desc"] },
-  { section: "Pembayaran", keys: ["payment_bank_name", "payment_bank_acc", "payment_bank_holder"] },
-];
+import { requireAdminModule } from "@/lib/admin-access";
+import { HOME_TEXT_FIELDS } from "@/lib/home-text-fields";
 
 export default async function TextsPage() {
-  const existing = await prisma.siteText.findMany();
-  const textsMap: Record<string, { id?: string; en?: string }> = {};
-  existing.forEach((t) => {
-    textsMap[t.key] = { id: t.valueId ?? undefined, en: t.valueEn ?? undefined };
+  await requireAdminModule("texts");
+  const rows = await prisma.siteText.findMany({
+    where: { key: { in: HOME_TEXT_FIELDS.map((field) => field.key) } },
+    select: { key: true, valueId: true },
   });
+  const initialValues = Object.fromEntries(rows.map((row) => [row.key, row.valueId ?? ""]));
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Teks Website</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Edit semua teks yang tampil di halaman publik</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Teks Beranda</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Judul, kalimat, dan foto di bagian paling atas beranda. Kolom kosong memakai teks bawaan (tampil samar sebagai contoh).
+        </p>
       </div>
-      <TextsForm sections={TEXT_KEYS} initialValues={textsMap} />
+      <TextsForm initialValues={initialValues} />
     </div>
   );
 }

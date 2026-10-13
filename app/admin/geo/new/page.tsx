@@ -1,7 +1,9 @@
 import GeoPageForm from "@/components/admin/GeoPageForm";
 import { GEO_FALLBACKS } from "@/lib/geo-pages";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export default async function NewGeoPage({ searchParams }: { searchParams: Promise<{ routePath?: string }> }) {
+  await requireAdminModule("geo");
   const { routePath } = await searchParams;
   const fallback = routePath ? GEO_FALLBACKS[routePath] : undefined;
   return (

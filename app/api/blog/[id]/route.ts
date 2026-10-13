@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission, checkPermissions, hasPersistedUser } from "@/lib/permissions";
-import { requiredPermissionsForMutation } from "@/lib/authorization";
+import { requiredPermissionsForMutation, withoutUnchangedFields } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { pickInput, BLOG_INPUT_FIELDS } from "@/lib/api-input";
@@ -36,8 +36,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  // Whitelist field — hanya kolom Blog yang sah yang diteruskan ke Prisma
-  const data = pickInput(body, BLOG_INPUT_FIELDS);
+  // Whitelist field — hanya kolom Blog yang sah yang diteruskan ke Prisma.
+  // Status publish yang tidak berubah tidak butuh izin publish (form selalu mengirimnya).
+  const current = await prisma.blog.findUnique({ where: { id }, select: { published: true } });
+  if (!current) return NextResponse.json({ error: "Artikel tidak ditemukan. Mungkin sudah dihapus." }, { status: 404 });
+  const data = withoutUnchangedFields(pickInput(body, BLOG_INPUT_FIELDS), current, ["published"]);
   const isPublishOnly = "published" in data && Object.keys(data).length === 1;
   const requiredPermissions = requiredPermissionsForMutation(
     data,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
@@ -8,6 +9,8 @@ import { apiError } from "@/lib/api-error";
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "testimonial_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin untuk mengelola testimoni" }, { status: 403 });
 
   const { id } = await params;
   let body: Record<string, unknown>;
@@ -38,7 +41,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     await logActivity({
       userId: session.user.id!, userName: session.user.name ?? "-",
-      userRole: session.user.role, action: "UPDATE", resource: "SETTINGS",
+      userRole: session.user.role, action: "UPDATE", resource: "TESTIMONIAL",
       resourceId: item.id, resourceName: item.name, detail: "Edit testimoni",
     });
 
@@ -52,6 +55,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "testimonial_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin untuk mengelola testimoni" }, { status: 403 });
 
   const { id } = await params;
   try {
@@ -59,7 +64,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     await logActivity({
       userId: session.user.id!, userName: session.user.name ?? "-",
-      userRole: session.user.role, action: "DELETE", resource: "SETTINGS",
+      userRole: session.user.role, action: "DELETE", resource: "TESTIMONIAL",
       resourceId: id, resourceName: item.name, detail: "Hapus testimoni",
     });
 

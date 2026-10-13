@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission, hasPersistedUser } from "@/lib/permissions";
 import { revalidatePublicContent } from "@/lib/revalidate";
+import { logActivity } from "@/lib/activityLog";
 
 // GET — ?all=true returns all items (admin), otherwise only active (public)
 export async function GET(req: Request) {
@@ -42,13 +43,18 @@ export async function POST(req: Request) {
 
     const faq = await prisma.faq.create({
       data: {
-        group: group === "visa" ? "visa" : "umum",
+        group: group === "umum" ? "umum" : "visa",
         section, question, answer,
         service: typeof service === "string" && service.trim() ? service : null,
         order: order ?? 0, active: active ?? true,
       },
     });
-    await revalidatePublicContent({ paths: faq.active ? ["/", "/faq", "/visa/faq"] : [], changedAt: faq.updatedAt }); // /faq & /visa/faq kini ISR — segarkan langsung
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "CREATE", resource: "FAQ",
+      resourceId: faq.id, resourceName: faq.question.slice(0, 120),
+    });
+    await revalidatePublicContent({ paths: faq.active ? ["/", "/faq", "/visa", "/visa/faq"] : [], changedAt: faq.updatedAt }); // /faq & /visa/faq kini ISR — segarkan langsung
     return NextResponse.json(faq, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Gagal membuat FAQ" }, { status: 500 });

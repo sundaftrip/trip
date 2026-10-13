@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -147,6 +148,8 @@ export async function GET() {
   const session = await auth();
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "visa_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin mengelola database visa" }, { status: 403 });
 
   let html: string;
   try {

@@ -4,7 +4,7 @@ import ConsoleSidebar from "@/components/website/ConsoleSidebar";
 import StickyWhatsApp from "@/components/website/StickyWhatsApp";
 import OrganizationSchema from "@/components/website/OrganizationSchema";
 import AutoTranslate from "@/components/website/AutoTranslate";
-import ReferralCapture from "@/components/website/ReferralCapture";
+import CampaignCapture from "@/components/website/CampaignCapture";
 import RouteScrollReset from "@/components/website/RouteScrollReset";
 import PageScrollControls from "@/components/website/PageScrollControls";
 import CleanNavbar from "@/components/website/clean/CleanNavbar";
@@ -32,7 +32,7 @@ const getSiteConfig = unstable_cache(
       const rows = await prisma.companyInfo.findMany({
         where: {
           OR: [
-            { key: { in: [...COLOR_KEYS, "site_theme", "site_font"] } },
+            { key: { in: [...COLOR_KEYS, "site_theme"] } },
             { key: { startsWith: "company_" } },
           ],
         },
@@ -41,7 +41,6 @@ const getSiteConfig = unstable_cache(
       const company: Record<string, string> = {};
       let logo = "";
       let theme = "atlas";
-      let font = "plus-jakarta";
       let whatsapp = "";
       rows.forEach((r) => {
         if (r.key.startsWith("company_")) {
@@ -51,12 +50,11 @@ const getSiteConfig = unstable_cache(
           return;
         }
         if (r.key === "site_theme") theme = r.value;
-        else if (r.key === "site_font") font = r.value;
         else if (r.key in COLOR_DEFAULTS) colors[r.key] = r.value;
       });
-      return { colors, logo, theme, font, whatsapp, company };
+      return { colors, logo, theme, whatsapp, company };
     } catch {
-      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "atlas", font: "plus-jakarta", whatsapp: "", company: {} as Record<string, string> };
+      return { colors: { ...COLOR_DEFAULTS }, logo: "", theme: "atlas", whatsapp: "", company: {} as Record<string, string> };
     }
   },
   ["site-config-v5"],
@@ -66,12 +64,9 @@ const getSiteConfig = unstable_cache(
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
   const config = await getSiteConfig();
   const { colors, logo, theme, whatsapp, company } = config;
-  // Preview-theme via cookie sengaja dihilangkan dari server layout karena
-  // cookies() membuat seluruh segmen dynamic dan menghancurkan edge cache.
-  // Admin yang mau preview theme bisa ubah site_theme di /admin/settings.
+  // Situs publik memakai tema Atlas; nilai site_theme tidak lagi bisa diubah dari CMS.
 
-  // Share the DMC's DM Sans typography across the public site while retaining
-  // the existing Trip templates and the saved CMS font settings.
+  // Share the DMC's DM Sans typography across the public site.
   const fontFamily = 'var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif';
   // Atlas is the canonical public brand. Lock its palette here so an older
   // saved CMS preset (for example forest green or electric blue) cannot leak
@@ -128,7 +123,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <PageScrollControls />
         <AutoTranslate />
-        <ReferralCapture />
+        <CampaignCapture />
       </>
     );
   }
@@ -149,7 +144,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
         <StickyWhatsApp phone={whatsapp} hideOnTourDetail />
         <PageScrollControls />
         <AutoTranslate />
-        <ReferralCapture />
+        <CampaignCapture />
       </CleanThemeBoundary>
     );
   }
@@ -168,7 +163,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
       <StickyWhatsApp phone={whatsapp} />
       <PageScrollControls />
       <AutoTranslate />
-      <ReferralCapture />
+      <CampaignCapture />
     </>
   );
 }

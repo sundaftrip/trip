@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { Inbox } from "lucide-react";
 import InquiryRow from "./InquiryRow";
+import { can, requireAdminModule } from "@/lib/admin-access";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW: "Baru",
@@ -10,6 +11,8 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function InquiriesPage() {
+  const viewer = await requireAdminModule("inquiries");
+  const canEdit = can(viewer, "inquiry_edit");
   const items = await prisma.inquiry.findMany({
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],
   });
@@ -17,7 +20,7 @@ export default async function InquiriesPage() {
   const newCount = items.filter((i) => i.status === "NEW").length;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="max-w-6xl">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shrink-0 shadow-sm">
           <Inbox size={20} className="text-white" />
@@ -65,6 +68,7 @@ export default async function InquiriesPage() {
                     createdAt: i.createdAt.toISOString(),
                   }}
                   statusLabel={STATUS_LABEL}
+                  canEdit={canEdit}
                 />
               ))}
             </tbody>

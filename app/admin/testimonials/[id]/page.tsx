@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
+import { requireAdminModule } from "@/lib/admin-access";
 import { notFound } from "next/navigation";
 import TestimonialForm from "../TestimonialForm";
 
 export default async function EditTestimonialPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdminModule("testimonials");
   const { id } = await params;
   const [item, tours] = await Promise.all([
     prisma.testimonial.findUnique({ where: { id } }),

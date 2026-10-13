@@ -1,183 +1,182 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import {
-  LayoutDashboard, Map, BookOpen, Type, Receipt,
-  Users, Settings, FileText, Moon, Sun, LogOut, User, Menu, X, Shield, Activity, MessageSquareQuote, Info, ExternalLink, Wallet, Database, Inbox, Globe2,
-  Handshake,
+  Activity, BookOpen, CircleHelp, Database, ExternalLink, FileText, Globe2, Inbox, Info,
+  LayoutDashboard, LogOut, Map, Menu, MessageSquareQuote, Moon, Receipt, Settings, Shield,
+  Sun, Type, User, Users, Wallet, X, type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ADMIN_MODULE_GROUPS, adminModuleForPath, type AdminModuleGroup, type AdminModuleKey } from "@/lib/admin-modules";
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/tours", label: "Tour", icon: Map },
-  { href: "/admin/b2b-catalog", label: "Katalog B2B", icon: FileText },
-  { href: "/admin/inquiries", label: "Lead Masuk", icon: Inbox },
-  { href: "/admin/partners", label: "Referral", icon: Handshake },
-  { href: "/admin/database-visa", label: "Database Visa", icon: Database },
-  { href: "/admin/visa-discussions", label: "Diskusi Visa", icon: MessageSquareQuote },
-  { href: "/admin/blog", label: "Blog", icon: BookOpen },
-  { href: "/admin/geo", label: "GEO", icon: Globe2 },
-  { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
-  { href: "/admin/texts", label: "Teks Website", icon: Type },
-  { href: "/admin/receipts", label: "Receipt", icon: Receipt },
-  { href: "/admin/keuangan", label: "Keuangan", icon: Wallet },
-  { href: "/admin/about", label: "Tentang Kami", icon: Info },
-  { href: "/admin/faq", label: "FAQ", icon: FileText },
-  { href: "/admin/terms", label: "Syarat & Ketentuan", icon: FileText },
-];
+export type AdminNavItem = {
+  key: AdminModuleKey;
+  href: string;
+  label: string;
+  group: AdminModuleGroup;
+};
 
-const adminItems = [
-  { href: "/admin/users", label: "Pengguna", icon: Users },
-  { href: "/admin/settings", label: "Pengaturan", icon: Settings },
-  { href: "/admin/permissions", label: "Izin Akses", icon: Shield },
-  { href: "/admin/logs", label: "Log Aktivitas", icon: Activity },
-];
+const ICONS: Record<AdminModuleKey, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  guide: CircleHelp,
+  tours: Map,
+  visa: Database,
+  b2b: FileText,
+  inquiries: Inbox,
+  receipts: Receipt,
+  finance: Wallet,
+  blog: BookOpen,
+  scraper: BookOpen,
+  geo: Globe2,
+  testimonials: MessageSquareQuote,
+  texts: Type,
+  about: Info,
+  faq: FileText,
+  terms: FileText,
+  users: Users,
+  permissions: Shield,
+  logs: Activity,
+  settings: Settings,
+};
 
 interface Props {
-  role: string;
-  user: { name?: string | null; email?: string | null; role: string };
+  user: { name?: string | null; email?: string | null; accessLabel: string };
+  navItems: AdminNavItem[];
   logo?: string;
   children: React.ReactNode;
 }
 
-function NavLinks({ pathname, role, onClose }: { pathname: string; role: string; onClose?: () => void }) {
+function isActive(pathname: string, href: string) {
+  return href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function NavLinks({ pathname, navItems, onClose }: { pathname: string; navItems: AdminNavItem[]; onClose?: () => void }) {
   return (
-    <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-      <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</p>
-      {navItems.map((item) => {
-        const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+    <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Menu CMS">
+      {ADMIN_MODULE_GROUPS.map((group) => {
+        const items = navItems.filter((item) => item.group === group);
+        if (items.length === 0) return null;
         return (
-          <Link key={item.href} href={item.href} onClick={onClose}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-              active
-                ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-            )}>
-            <item.icon size={18} />
-            {item.label}
-          </Link>
+          <div key={group} className="mb-4 last:mb-0">
+            {group !== "Utama" && (
+              <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">{group}</p>
+            )}
+            <div className="space-y-0.5">
+              {items.map((item) => {
+                const Icon = ICONS[item.key];
+                const active = isActive(pathname, item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onClose}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                      active
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700",
+                    )}
+                  >
+                    <Icon size={17} aria-hidden="true" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         );
       })}
-      {role === "SUPERADMIN" && (
-        <>
-          <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-4 mb-2">Admin</p>
-          {adminItems.map((item) => {
-            const active = pathname.startsWith(item.href);
-            return (
-              <Link key={item.href} href={item.href} onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  active
-                    ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                )}>
-                <item.icon size={18} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </>
-      )}
     </nav>
   );
 }
 
-export default function AdminShell({ role, user, logo, children }: Props) {
+export default function AdminShell({ user, navItems, logo, children }: Props) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const currentItem = [...navItems, ...adminItems]
-    .filter((item) => pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href)))
-    .sort((a, b) => b.href.length - a.href.length)[0];
+  const currentModule = adminModuleForPath(pathname);
+
   useEffect(() => {
     const id = window.setTimeout(() => setMounted(true), 0);
     return () => window.clearTimeout(id);
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
-
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       {/* Sidebar — desktop */}
-      <aside className="hidden lg:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-col shrink-0">
-        <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 lg:flex">
+        <div className="flex h-16 items-center border-b border-gray-200 px-6 dark:border-gray-700">
           <Image src={logo || "/logo.png"} alt="Logo" width={120} height={36} className="h-8 w-auto object-contain dark:brightness-0 dark:invert" />
         </div>
-        <NavLinks pathname={pathname} role={role} />
-        <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-center text-gray-400">Travel CMS</p>
+        <NavLinks pathname={pathname} navItems={navItems} />
+        <div className="border-t border-gray-200 p-3 dark:border-gray-700">
+          <p className="text-center text-xs text-gray-400">CMS Sundaf Trip</p>
         </div>
       </aside>
 
       {/* Sidebar overlay — mobile */}
       {sidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 flex">
+        <div className="fixed inset-0 z-40 flex lg:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="relative z-50 w-72 bg-white dark:bg-gray-800 flex flex-col h-full shadow-xl">
-            <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
+          <aside className="relative z-50 flex h-full w-72 flex-col bg-white shadow-xl dark:bg-gray-800">
+            <div className="flex h-16 items-center justify-between border-b border-gray-200 px-6 dark:border-gray-700">
               <Image src={logo || "/logo.png"} alt="Logo" width={100} height={30} className="h-7 w-auto object-contain dark:brightness-0 dark:invert" />
-              <button onClick={() => setSidebarOpen(false)} className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <button onClick={() => setSidebarOpen(false)} aria-label="Tutup menu" className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <X size={18} />
               </button>
             </div>
-            <NavLinks pathname={pathname} role={role} onClose={() => setSidebarOpen(false)} />
-            <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs text-center text-gray-400">Travel CMS</p>
-            </div>
+            <NavLinks pathname={pathname} navItems={navItems} onClose={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        {/* Header */}
-        <header className="h-14 sm:h-16 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between px-3 sm:px-6 shrink-0">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 dark:border-gray-700 dark:bg-gray-800 sm:h-16 sm:px-6">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            {/* Hamburger — mobile only */}
-            <button onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+            <button onClick={() => setSidebarOpen(true)} aria-label="Buka menu"
+              className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden">
               <Menu size={20} />
             </button>
             <div className="min-w-0">
               <h2 className="truncate text-sm font-semibold text-gray-900 dark:text-white sm:text-base">
-                {currentItem?.label ?? "Admin CMS"}
+                {currentModule?.label ?? "CMS"}
               </h2>
-              <p className="hidden text-xs text-gray-500 dark:text-gray-400 sm:block">Admin CMS</p>
+              <p className="hidden text-xs text-gray-500 dark:text-gray-400 sm:block">CMS Sundaf Trip</p>
             </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-4">
-            <a href="/" target="_blank" rel="noopener noreferrer"
-              title="Buka website di tab baru"
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition">
+            <a href="/" target="_blank" rel="noopener noreferrer" title="Buka website di tab baru"
+              className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-blue-600 transition hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 sm:px-3">
               <ExternalLink size={16} />
               <span className="hidden sm:inline">Buka Website</span>
             </a>
 
-            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="Ganti mode terang/gelap"
+              className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 dark:hover:bg-gray-700">
               {mounted ? (theme === "dark" ? <Sun size={18} /> : <Moon size={18} />) : <Moon size={18} />}
             </button>
 
             <div className="flex items-center gap-2 text-sm">
-              <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center shrink-0">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
                 <User size={16} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div className="hidden sm:block">
-                <p className="font-medium text-gray-900 dark:text-white leading-none text-xs">{user.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{user.role}</p>
+                <p className="text-xs font-medium leading-none text-gray-900 dark:text-white">{user.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{user.accessLabel}</p>
               </div>
             </div>
 
             <button onClick={() => signOut({ callbackUrl: "/admin/login" })}
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition">
+              className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 sm:px-3">
               <LogOut size={16} />
               <span className="hidden sm:inline">Keluar</span>
             </button>

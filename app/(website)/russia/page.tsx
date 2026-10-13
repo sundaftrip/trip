@@ -6,7 +6,7 @@ import RussiaServiceIllustration from "@/components/website/clean/RussiaServiceI
 import RussiaServiceGrid from "@/components/website/clean/RussiaServiceGrid";
 import RussiaSkyline from "@/components/website/clean/RussiaSkyline";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
-import { getConfiguredWhatsAppNumber } from "@/lib/referrals";
+import { getConfiguredWhatsAppNumber } from "@/lib/company-whatsapp";
 import { buildWhatsAppHref, toWaNumber } from "@/lib/utils";
 import styles from "@/components/website/clean/RussiaServices.module.css";
 import doc from "@/components/website/clean/DocFormat.module.css";

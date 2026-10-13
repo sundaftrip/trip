@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { sendJson } from "@/lib/admin-fetch";
 import { Trash2, MessageCircle } from "lucide-react";
 
 type Inquiry = {
@@ -32,31 +33,39 @@ function waLink(num: string) {
 export default function InquiryRow({
   inquiry,
   statusLabel,
+  canEdit,
 }: {
   inquiry: Inquiry;
   statusLabel: Record<string, string>;
+  canEdit: boolean;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState(inquiry.status);
   const [busy, setBusy] = useState(false);
 
   async function changeStatus(next: string) {
+    const previous = status;
     setBusy(true);
     setStatus(next);
-    await fetch(`/api/inquiries/${inquiry.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next }),
-    }).catch(() => {});
+    const error = await sendJson(`/api/inquiries/${inquiry.id}`, "PATCH", { status: next });
     setBusy(false);
+    if (error) {
+      setStatus(previous);
+      alert(error);
+      return;
+    }
     router.refresh();
   }
 
   async function remove() {
     if (!confirm(`Hapus lead dari ${inquiry.name}?`)) return;
     setBusy(true);
-    await fetch(`/api/inquiries/${inquiry.id}`, { method: "DELETE" }).catch(() => {});
+    const error = await sendJson(`/api/inquiries/${inquiry.id}`, "DELETE", undefined, "Gagal menghapus lead.");
     setBusy(false);
+    if (error) {
+      alert(error);
+      return;
+    }
     router.refresh();
   }
 
@@ -86,7 +95,8 @@ export default function InquiryRow({
       <td className="px-4 py-3">
         <select
           value={status}
-          disabled={busy}
+          disabled={busy || !canEdit}
+          aria-label={`Status lead ${inquiry.name}`}
           onChange={(e) => changeStatus(e.target.value)}
           className={`text-xs font-semibold rounded-full px-2.5 py-1 border-0 cursor-pointer ${STATUS_STYLE[status] ?? ""}`}
         >
@@ -96,10 +106,12 @@ export default function InquiryRow({
         </select>
       </td>
       <td className="px-4 py-3 text-right">
-        <button onClick={remove} disabled={busy}
-          className="text-gray-400 hover:text-red-500 transition p-1" title="Hapus">
-          <Trash2 size={15} />
-        </button>
+        {canEdit && (
+          <button onClick={remove} disabled={busy} aria-label={`Hapus lead ${inquiry.name}`}
+            className="text-gray-400 hover:text-red-500 transition p-1" title="Hapus">
+            <Trash2 size={15} />
+          </button>
+        )}
       </td>
     </tr>
   );

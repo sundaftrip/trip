@@ -2,12 +2,14 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import CountryVisaForm from "@/components/admin/CountryVisaForm";
 import { FlagIcon } from "@/lib/flag-icon";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export default async function EditCountryVisaPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdminModule("visa");
   const { id } = await params;
   const entry = await prisma.countryVisa.findUnique({
     where: { id },

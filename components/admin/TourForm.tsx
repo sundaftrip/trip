@@ -2,15 +2,21 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ExternalLink, Pencil, Plus, Star, Trash2, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import StickyFormActions from "./StickyFormActions";
+import { adminTourIssues, TOUR_STATUS_HELP, TOUR_STATUS_LABELS } from "@/lib/admin-tour-checks";
+import { readApiError } from "@/lib/admin-fetch";
 
 type ItineraryItem = { day: number; title: string; description: string; image?: string };
 type AddOnTag = "" | "wajib" | "recommended";
-type AddOnDraft = { name: string; price: string | number; desc: string };
+type AddOnItem = { name: string; price: number; tag?: AddOnTag; desc?: string };
+type AddOnDraft = { name: string; price: string; desc: string; tag: AddOnTag };
 type PaymentPlanMode = "auto" | "manual" | "hidden";
 type PaymentPlanStepDraft = { label: string; dueDate: string; amount: string | number };
+type RoomPriceCode = "quad" | "triple" | "twin";
+type HotelRow = { label: string; value: string };
+
 export type PaymentPlanFormConfig = {
   mode: PaymentPlanMode;
   title?: string;
@@ -27,10 +33,10 @@ export interface TourData {
   title?: string;
   country?: string;
   cityHighlight?: string;
-  price?: number;
-  promoPrice?: number | null;
-  priceLandTour?: number | null;
-  seatsLeft?: number;
+  price?: number | string;
+  promoPrice?: number | string | null;
+  priceLandTour?: number | string | null;
+  seatsLeft?: number | string;
   status?: string;
   pinned?: boolean;
   tripDate?: string;
@@ -45,32 +51,111 @@ export interface TourData {
   description?: string;
   visaInfo?: string;
   itinerary?: ItineraryItem[];
-  addOns?: { name: string; price: number; tag?: AddOnTag; desc?: string }[];
+  addOns?: AddOnItem[];
   paymentPlan?: PaymentPlanFormConfig;
+  /** Diisi form dari `hotel`: daftar hotel per kota. */
+  hotelInfo?: HotelRow[];
+  /** Diisi form dari `hotel`: harga per tipe kamar (angka sebagai teks). */
+  roomPrices?: Record<RoomPriceCode, string>;
 }
 
 interface TourFormDraft {
-  version: 1;
+  version: 2;
   updatedAt: string;
   form: TourData;
   inclusionInput: string;
   exclusionInput: string;
-  editingInclusionIdx: number | null;
-  editingExclusionIdx: number | null;
   itineraryItem: ItineraryItem;
   editingItineraryIdx: number | null;
   addOnItem: AddOnDraft;
 }
 
+interface TourFormProps {
+  tour?: TourData;
+  returnHref?: string;
+  /** Boleh mengubah status (izin tour_status). */
+  canChangeStatus: boolean;
+  /** Boleh mengatur pin (izin tour_edit). */
+  canPin: boolean;
+  /** URL publik bila tour sedang tampil. */
+  publicHref?: string | null;
+  /** Pesan di atas form, mis. saat menduplikat tour. */
+  notice?: string;
+  /** Kunci draft lokal untuk form baru (template/duplikat punya draft sendiri). */
+  draftScope?: string;
+}
+
+const ROOM_PRICE_FIELDS: { code: RoomPriceCode; key: string; label: string }[] = [
+  { code: "quad", key: "__room_price_quad", label: "4 orang/kamar" },
+  { code: "triple", key: "__room_price_triple", label: "3 orang/kamar" },
+  { code: "twin", key: "__room_price_twin", label: "2 orang/kamar" },
+];
+const ROOM_PRICE_KEYS = new Set(ROOM_PRICE_FIELDS.map((field) => field.key));
+const STATUS_ORDER = ["DRAFT", "ACTIVE", "FULL", "CANCELLED"] as const;
+const ADD_ON_TAG_LABELS: Record<AddOnTag, string> = {
+  "": "Opsional",
+  wajib: "Wajib (masuk subtotal)",
+  recommended: "Disarankan",
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function digitsOnly(value: unknown) {
+  if (typeof value === "number") return Number.isFinite(value) && value > 0 ? String(Math.round(value)) : "";
+  if (typeof value !== "string") return "";
+  return value.replace(/[^\d]/g, "");
+}
+
+function hotelInfoFrom(hotel: unknown): HotelRow[] {
+  if (!isRecord(hotel)) return [];
+  return Object.entries(hotel).flatMap(([label, value]) => {
+    if (ROOM_PRICE_KEYS.has(label)) return [];
+    if (typeof value !== "string" && typeof value !== "number") return [];
+    return [{ label, value: String(value) }];
+  });
+}
+
+function roomPricesFrom(hotel: unknown): Record<RoomPriceCode, string> {
+  const record = isRecord(hotel) ? hotel : {};
+  return {
+    quad: digitsOnly(record.__room_price_quad),
+    triple: digitsOnly(record.__room_price_triple),
+    twin: digitsOnly(record.__room_price_twin),
+  };
+}
+
+/** Nilai hotel yang tidak bisa diedit di form (bukan teks/angka) tetap disimpan apa adanya. */
+function hotelExtrasFrom(hotel: unknown): Record<string, unknown> {
+  if (!isRecord(hotel)) return {};
+  return Object.fromEntries(Object.entries(hotel).filter(([key, value]) => (
+    !ROOM_PRICE_KEYS.has(key) && typeof value !== "string" && typeof value !== "number"
+  )));
+}
+
+function buildHotelJson(rows: HotelRow[], roomPrices: Record<RoomPriceCode, string>, extras: Record<string, unknown>) {
+  const hotel: Record<string, unknown> = { ...extras };
+  for (const row of rows) {
+    const label = row.label.trim();
+    const value = row.value.trim();
+    if (label && value) hotel[label] = value;
+  }
+  for (const field of ROOM_PRICE_FIELDS) {
+    const amount = Number(roomPrices[field.code]);
+    if (Number.isFinite(amount) && amount > 0) hotel[field.key] = Math.round(amount);
+  }
+  return Object.keys(hotel).length > 0 ? hotel : null;
+}
+
 function buildInitialForm(tour?: TourData): TourData {
   return {
-    slug: tour?.slug ?? "",
     title: tour?.title ?? "",
     country: tour?.country ?? "",
     cityHighlight: tour?.cityHighlight ?? "",
-    price: tour?.price ?? 0,
-    promoPrice: tour?.promoPrice ?? null,
-    priceLandTour: tour?.priceLandTour ?? null,
+    price: tour?.price ?? "",
+    promoPrice: tour?.promoPrice ?? "",
+    priceLandTour: tour?.priceLandTour ?? "",
     seatsLeft: tour?.seatsLeft ?? 0,
     status: tour?.status ?? "DRAFT",
     pinned: tour?.pinned ?? false,
@@ -79,15 +164,16 @@ function buildInitialForm(tour?: TourData): TourData {
     inclusions: tour?.inclusions ?? [],
     exclusions: tour?.exclusions ?? [],
     gallery: tour?.gallery ?? [],
-    hotel: tour?.hotel ?? null,
     heroImg: tour?.heroImg ?? "",
     badge: tour?.badge ?? "",
     notes: tour?.notes ?? "",
     description: tour?.description ?? "",
     visaInfo: tour?.visaInfo ?? "",
-    itinerary: tour?.itinerary ?? [],
-    addOns: tour?.addOns ?? [],
+    itinerary: sortItinerary(Array.isArray(tour?.itinerary) ? tour.itinerary : []),
+    addOns: Array.isArray(tour?.addOns) ? tour.addOns : [],
     paymentPlan: normalizePaymentPlanConfig(tour?.paymentPlan),
+    hotelInfo: tour?.hotelInfo ?? hotelInfoFrom(tour?.hotel),
+    roomPrices: tour?.roomPrices ?? roomPricesFrom(tour?.hotel),
   };
 }
 
@@ -100,11 +186,7 @@ function emptyItineraryItem(items?: ItineraryItem[]): ItineraryItem {
 }
 
 function emptyAddOnItem(): AddOnDraft {
-  return { name: "", price: "", desc: "" };
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return { name: "", price: "", desc: "", tag: "" };
 }
 
 function dateInputValue(value: unknown) {
@@ -165,13 +247,26 @@ function roundToThousand(amount: number) {
   return Math.round(amount / 1000) * 1000;
 }
 
-function paymentPlanTotal(form: TourData) {
-  const basePrice = Number(form.promoPrice ?? form.price ?? 0) || 0;
-  const mandatoryTotal = (form.addOns ?? [])
+function mandatoryTotal(form: TourData) {
+  return (form.addOns ?? [])
     .filter((item) => item.tag === "wajib")
     .reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+}
 
-  return basePrice + mandatoryTotal;
+/** Harga "mulai" yang tampil di website: harga kamar pertama, selain itu promo atau harga normal. */
+function headlinePrice(form: TourData) {
+  for (const field of ROOM_PRICE_FIELDS) {
+    const amount = Number(form.roomPrices?.[field.code]);
+    if (Number.isFinite(amount) && amount > 0) return { amount, source: field.label };
+  }
+  const promo = Number(form.promoPrice);
+  if (Number.isFinite(promo) && promo > 0) return { amount: promo, source: "harga promo" };
+  const price = Number(form.price);
+  return { amount: Number.isFinite(price) && price > 0 ? price : 0, source: "harga normal" };
+}
+
+function paymentPlanTotal(form: TourData) {
+  return headlinePrice(form).amount + mandatoryTotal(form);
 }
 
 function paymentPlanTemplate(form: TourData): PaymentPlanStepDraft[] {
@@ -205,7 +300,7 @@ function normalizePaymentPlanForSubmit(value: unknown): { ok: true; value: Recor
   });
 
   if (steps.length === 0) {
-    return { ok: false, error: "Minimal satu tahap pembayaran manual wajib diisi lengkap." };
+    return { ok: false, error: "Skema pembayaran manual: isi minimal satu tahap lengkap (nama, tanggal, nominal)." };
   }
 
   return {
@@ -231,6 +326,10 @@ function formatDraftTime(value: string | null) {
   return new Date(value).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
 }
 
+function rupiah(amount: number) {
+  return `Rp ${Math.round(amount).toLocaleString("id-ID")}`;
+}
+
 function hasDraftWork(draft: TourFormDraft, initialForm: TourData) {
   return (
     JSON.stringify(draft.form) !== JSON.stringify(initialForm) ||
@@ -241,7 +340,7 @@ function hasDraftWork(draft: TourFormDraft, initialForm: TourData) {
     (draft.itineraryItem.image?.trim() ?? "") !== "" ||
     draft.addOnItem.name.trim() !== "" ||
     draft.addOnItem.desc.trim() !== "" ||
-    String(draft.addOnItem.price).trim() !== ""
+    draft.addOnItem.price.trim() !== ""
   );
 }
 
@@ -263,13 +362,26 @@ function persistDraft(draftKey: string, draft: TourFormDraft, initialForm: TourD
   }
 }
 
-export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?: TourData; returnHref?: string }) {
+type FieldErrors = Partial<Record<"title" | "country" | "price", string>>;
+
+export default function TourForm({
+  tour,
+  returnHref = "/admin/tours",
+  canChangeStatus,
+  canPin,
+  publicHref,
+  notice,
+  draftScope,
+}: TourFormProps) {
   const router = useRouter();
   const isEdit = !!tour?.id;
   const initialForm = useMemo(() => buildInitialForm(tour), [tour]);
-  const draftKey = `sundaf:tour-form-draft:${tour?.id ?? "new"}`;
+  const hotelExtras = useMemo(() => hotelExtrasFrom(tour?.hotel), [tour]);
+  const templateSlug = !isEdit && tour?.slug ? tour.slug : undefined;
+  const draftKey = `sundaf:tour-form-draft:${tour?.id ?? `new${draftScope ? `:${draftScope}` : ""}`}`;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [form, setForm] = useState<TourData>(initialForm);
 
   const [inclusionInput, setInclusionInput] = useState("");
@@ -285,25 +397,27 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   const [draftError, setDraftError] = useState("");
   const latestDraftRef = useRef<{ draftKey: string; draft: TourFormDraft; initialForm: TourData } | null>(null);
   const suppressDraftPersistRef = useRef(false);
+  const errorRef = useRef<HTMLDivElement>(null);
 
-  latestDraftRef.current = !suppressDraftPersistRef.current && loadedDraftKey === draftKey
-    ? {
-        draftKey,
-        initialForm,
-        draft: {
-          version: 1,
-          updatedAt: new Date().toISOString(),
-          form,
-          inclusionInput,
-          exclusionInput,
-          editingInclusionIdx,
-          editingExclusionIdx,
-          itineraryItem,
-          editingItineraryIdx,
-          addOnItem,
-        },
-      }
-    : null;
+  // Snapshot terbaru untuk disimpan saat tab ditutup (dibaca handler pagehide).
+  useEffect(() => {
+    latestDraftRef.current = !suppressDraftPersistRef.current && loadedDraftKey === draftKey
+      ? {
+          draftKey,
+          initialForm,
+          draft: {
+            version: 2,
+            updatedAt: new Date().toISOString(),
+            form,
+            inclusionInput,
+            exclusionInput,
+            itineraryItem,
+            editingItineraryIdx,
+            addOnItem,
+          },
+        }
+      : null;
+  });
 
   useEffect(() => {
     suppressDraftPersistRef.current = false;
@@ -322,11 +436,9 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
           return;
         }
 
-        const draft = JSON.parse(rawDraft) as Partial<TourFormDraft>;
-        const restoredForm: TourData = {
-          ...initialForm,
-          ...(draft.form ?? {}),
-        };
+        const draft = JSON.parse(rawDraft) as Partial<TourFormDraft> & { version?: number };
+        const draftForm = (draft.form ?? {}) as TourData;
+        const restoredForm: TourData = { ...initialForm, ...draftForm };
 
         restoredForm.inclusions = Array.isArray(restoredForm.inclusions) ? restoredForm.inclusions : [];
         restoredForm.exclusions = Array.isArray(restoredForm.exclusions) ? restoredForm.exclusions : [];
@@ -334,12 +446,13 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         restoredForm.itinerary = Array.isArray(restoredForm.itinerary) ? sortItinerary(restoredForm.itinerary) : [];
         restoredForm.addOns = Array.isArray(restoredForm.addOns) ? restoredForm.addOns : [];
         restoredForm.paymentPlan = normalizePaymentPlanConfig(restoredForm.paymentPlan);
+        // Draft versi lama menyimpan hotel mentah; turunkan baris hotel & harga kamar darinya.
+        if (!Array.isArray(draftForm.hotelInfo)) restoredForm.hotelInfo = hotelInfoFrom(draftForm.hotel ?? tour?.hotel);
+        if (!isRecord(draftForm.roomPrices)) restoredForm.roomPrices = roomPricesFrom(draftForm.hotel ?? tour?.hotel);
 
         setForm(restoredForm);
         setInclusionInput(typeof draft.inclusionInput === "string" ? draft.inclusionInput : "");
         setExclusionInput(typeof draft.exclusionInput === "string" ? draft.exclusionInput : "");
-        setEditingInclusionIdx(readNumberOrNull(draft.editingInclusionIdx));
-        setEditingExclusionIdx(readNumberOrNull(draft.editingExclusionIdx));
         setItineraryItem(draft.itineraryItem?.title || draft.itineraryItem?.description || draft.itineraryItem?.image
           ? {
               day: Number(draft.itineraryItem.day) || getNextItineraryDay(restoredForm.itinerary),
@@ -352,8 +465,9 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
         setEditingItineraryIdx(readNumberOrNull(draft.editingItineraryIdx));
         setAddOnItem({
           name: draft.addOnItem?.name ?? "",
-          price: draft.addOnItem?.price ?? "",
+          price: String(draft.addOnItem?.price ?? ""),
           desc: draft.addOnItem?.desc ?? "",
+          tag: draft.addOnItem?.tag ?? "",
         });
 
         const restoredAt = typeof draft.updatedAt === "string" ? draft.updatedAt : new Date().toISOString();
@@ -370,19 +484,17 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, [draftKey, initialForm]);
+  }, [draftKey, initialForm, tour]);
 
   useEffect(() => {
     if (loadedDraftKey !== draftKey) return;
 
     const draft: TourFormDraft = {
-      version: 1,
+      version: 2,
       updatedAt: new Date().toISOString(),
       form,
       inclusionInput,
       exclusionInput,
-      editingInclusionIdx,
-      editingExclusionIdx,
       itineraryItem,
       editingItineraryIdx,
       addOnItem,
@@ -408,8 +520,6 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
     form,
     inclusionInput,
     exclusionInput,
-    editingInclusionIdx,
-    editingExclusionIdx,
     itineraryItem,
     editingItineraryIdx,
     addOnItem,
@@ -458,43 +568,76 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
     setDraftError("");
   }
 
-  // commit helpers untuk inclusions/exclusions (tambah baru ATAU simpan editan)
-  function commitInclusion() {
-    if (!inclusionInput.trim()) return;
-    if (editingInclusionIdx !== null) {
-      const updated = [...(form.inclusions ?? [])];
-      updated[editingInclusionIdx] = inclusionInput.trim();
-      set("inclusions", updated);
-      setEditingInclusionIdx(null);
-    } else {
-      set("inclusions", [...(form.inclusions ?? []), inclusionInput.trim()]);
+  function set<K extends keyof TourData>(key: K, value: TourData[K]) {
+    setForm((p) => ({ ...p, [key]: value }));
+    if (key === "title" || key === "country" || key === "price") {
+      setFieldErrors((errors) => ({ ...errors, [key]: undefined }));
     }
+  }
+
+  // ── Termasuk / tidak termasuk ──
+  function commitInclusion() {
+    const value = inclusionInput.trim();
+    if (!value) return;
+    const list = [...(form.inclusions ?? [])];
+    if (editingInclusionIdx !== null) list[editingInclusionIdx] = value;
+    else list.push(value);
+    set("inclusions", list);
+    setEditingInclusionIdx(null);
     setInclusionInput("");
   }
   function commitExclusion() {
-    if (!exclusionInput.trim()) return;
-    if (editingExclusionIdx !== null) {
-      const updated = [...(form.exclusions ?? [])];
-      updated[editingExclusionIdx] = exclusionInput.trim();
-      set("exclusions", updated);
-      setEditingExclusionIdx(null);
-    } else {
-      set("exclusions", [...(form.exclusions ?? []), exclusionInput.trim()]);
-    }
+    const value = exclusionInput.trim();
+    if (!value) return;
+    const list = [...(form.exclusions ?? [])];
+    if (editingExclusionIdx !== null) list[editingExclusionIdx] = value;
+    else list.push(value);
+    set("exclusions", list);
+    setEditingExclusionIdx(null);
     setExclusionInput("");
   }
-  function cycleAddOnTag(i: number) {
-    const next: Record<AddOnTag, AddOnTag> = { "": "wajib", wajib: "recommended", recommended: "" };
-    set("addOns", (form.addOns ?? []).map((a, j) => (j === i ? { ...a, tag: next[a.tag ?? ""] } : a)));
+
+  // ── Add-on ──
+  function updateAddOn(i: number, partial: Partial<AddOnItem>) {
+    set("addOns", (form.addOns ?? []).map((item, j) => (j === i ? { ...item, ...partial } : item)));
   }
-  function setAddOnDesc(i: number, desc: string) {
-    set("addOns", (form.addOns ?? []).map((a, j) => (j === i ? { ...a, desc } : a)));
+  function commitAddOn() {
+    const name = addOnItem.name.trim();
+    if (!name) return;
+    set("addOns", [
+      ...(form.addOns ?? []),
+      { name, price: Number(addOnItem.price) || 0, tag: addOnItem.tag, desc: addOnItem.desc.trim() || undefined },
+    ]);
+    setAddOnItem(emptyAddOnItem());
   }
 
-  function set(key: keyof TourData, value: unknown) {
-    setForm((p) => ({ ...p, [key]: value }));
+  // ── Hotel & harga kamar ──
+  const hotelRows = form.hotelInfo ?? [];
+  const roomPrices = form.roomPrices ?? { quad: "", triple: "", twin: "" };
+  function setHotelRow(i: number, partial: Partial<HotelRow>) {
+    set("hotelInfo", hotelRows.map((row, j) => (j === i ? { ...row, ...partial } : row)));
+  }
+  function setRoomPrice(code: RoomPriceCode, value: string) {
+    set("roomPrices", { ...roomPrices, [code]: value.replace(/[^\d]/g, "") });
   }
 
+  // ── Galeri ──
+  function moveGalleryImage(i: number, direction: -1 | 1) {
+    const list = [...(form.gallery ?? [])];
+    const target = i + direction;
+    if (target < 0 || target >= list.length) return;
+    [list[i], list[target]] = [list[target], list[i]];
+    set("gallery", list);
+  }
+  function makeGalleryImageHero(i: number) {
+    const list = [...(form.gallery ?? [])];
+    const [image] = list.splice(i, 1);
+    if (!image) return;
+    if (form.heroImg) list.unshift(form.heroImg);
+    setForm((p) => ({ ...p, heroImg: image, gallery: list }));
+  }
+
+  // ── Skema pembayaran ──
   const paymentPlan = normalizePaymentPlanConfig(form.paymentPlan);
 
   function setPaymentPlan(partial: Partial<PaymentPlanFormConfig>) {
@@ -509,10 +652,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
   function addPaymentPlanStep() {
     setPaymentPlan({
       mode: "manual",
-      steps: [
-        ...paymentPlan.steps,
-        { label: "", dueDate: "", amount: "" },
-      ],
+      steps: [...paymentPlan.steps, { label: "", dueDate: "", amount: "" }],
     });
   }
 
@@ -520,6 +660,7 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
     setPaymentPlan({ steps: paymentPlan.steps.filter((_, j) => i !== j) });
   }
 
+  // ── Itinerary ──
   function commitItineraryItem() {
     const item: ItineraryItem = {
       day: Number(itineraryItem.day) || getNextItineraryDay(form.itinerary),
@@ -539,420 +680,326 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
     setItineraryItem(emptyItineraryItem(sorted));
   }
 
+  const price = headlinePrice(form);
+  const requiredCosts = mandatoryTotal(form);
+  const effectiveStatus = !isEdit && !canChangeStatus ? "DRAFT" : form.status ?? "DRAFT";
+  const checklist = adminTourIssues({
+    status: effectiveStatus,
+    price: price.amount,
+    seatsLeft: Number(form.seatsLeft) || 0,
+    tripDate: form.tripDate || null,
+    heroImg: form.heroImg,
+    description: form.description,
+    itinerary: form.itinerary,
+    hotel: buildHotelJson(hotelRows, roomPrices, hotelExtras),
+  }).filter((issue) => !issue.includes("pengecualian lama"));
+
+  function validate(): FieldErrors {
+    const errors: FieldErrors = {};
+    if (!form.title?.trim()) errors.title = "Judul tour wajib diisi.";
+    if (!form.country?.trim()) errors.country = "Negara wajib diisi.";
+    const goingLive = effectiveStatus === "ACTIVE" || effectiveStatus === "FULL";
+    if (goingLive && price.amount <= 0) errors.price = "Isi harga (atau harga per kamar) sebelum tour diaktifkan.";
+    return errors;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setError("Periksa isian yang ditandai merah.");
+      window.setTimeout(() => errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
+      return;
+    }
+
     const paymentPlanForSubmit = normalizePaymentPlanForSubmit(form.paymentPlan);
     if (!paymentPlanForSubmit.ok) {
-      setLoading(false);
       setError(paymentPlanForSubmit.error);
       return;
     }
-    const payload = {
-      ...form,
-      price: Number(form.price),
-      promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
-      priceLandTour: form.priceLandTour ? Number(form.priceLandTour) : null,
-      seatsLeft: Number(form.seatsLeft),
+
+    setLoading(true);
+    setError("");
+    // Field bantu form tidak dikirim; slug dikelola server.
+    const { hotelInfo, roomPrices: formRoomPrices, ...rest } = form;
+    const payload: Record<string, unknown> = {
+      ...rest,
+      title: form.title?.trim(),
+      country: form.country?.trim(),
+      price: Number(form.price) || 0,
+      promoPrice: Number(form.promoPrice) > 0 ? Number(form.promoPrice) : null,
+      priceLandTour: Number(form.priceLandTour) > 0 ? Number(form.priceLandTour) : null,
+      seatsLeft: Math.max(0, Math.round(Number(form.seatsLeft) || 0)),
       tripDate: form.tripDate ? new Date(form.tripDate).toISOString() : null,
+      hotel: buildHotelJson(hotelInfo ?? [], formRoomPrices ?? roomPrices, hotelExtras),
       paymentPlan: paymentPlanForSubmit.value,
+      ...(templateSlug ? { slug: templateSlug } : {}),
     };
-    const res = await fetch(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
-      method: isEdit ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    setLoading(false);
-    if (res.ok) {
-      suppressDraftPersistRef.current = true;
-      latestDraftRef.current = null;
-      window.localStorage.removeItem(draftKey);
-      router.push(returnHref);
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Gagal menyimpan. Coba lagi.");
+    if (!canChangeStatus) {
+      if (isEdit) delete payload.status;
+      else payload.status = "DRAFT";
+    }
+    if (!canPin) delete payload.pinned;
+
+    try {
+      const res = await fetch(isEdit ? `/api/tours/${tour!.id}` : "/api/tours", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        suppressDraftPersistRef.current = true;
+        latestDraftRef.current = null;
+        window.localStorage.removeItem(draftKey);
+        router.push(returnHref);
+        router.refresh();
+        return;
+      }
+      setError(await readApiError(res));
+    } catch {
+      setError("Koneksi gagal. Perubahan masih tersimpan di draft lokal; coba simpan lagi.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
-      {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 font-medium">
-          ⛔ {error}
-        </div>
-      )}
+    <form onSubmit={handleSubmit} className="max-w-4xl space-y-6" noValidate>
       <StickyFormActions
         loading={loading}
-        primaryLabel={isEdit ? "Simpan Perubahan" : "Buat Tour"}
+        primaryLabel={isEdit ? "Simpan Perubahan" : "Simpan Tour"}
         cancelHref={returnHref}
       />
-      {(draftError || draftRestoredAt || draftSavedAt) && (
-        <div className={`p-4 border rounded-xl text-sm font-medium flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${
+
+      {notice && (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+          {notice}
+        </div>
+      )}
+
+      {error && (
+        <div ref={errorRef} role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+          {error}
+        </div>
+      )}
+
+      {(draftError || draftRestoredAt) && (
+        <div className={`flex flex-col gap-3 rounded-xl border p-4 text-sm sm:flex-row sm:items-center sm:justify-between ${
           draftError
-            ? "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300"
-            : "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+            ? "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300"
+            : "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300"
         }`}>
           <span>
-            {draftError || (draftRestoredAt
-              ? `Draft lokal dipulihkan (${formatDraftTime(draftRestoredAt)}). Autosave terakhir ${formatDraftTime(draftSavedAt)}.`
-              : `Draft lokal tersimpan otomatis ${formatDraftTime(draftSavedAt)}.`)}
+            {draftError || `Isian yang belum tersimpan dipulihkan dari browser ini (${formatDraftTime(draftRestoredAt)}).`}
           </span>
           {!draftError && (
             <button type="button" onClick={discardLocalDraft}
-              className="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-white/70 dark:bg-gray-800/70 text-xs font-semibold text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-700 hover:bg-white dark:hover:bg-gray-800">
-              Buang draft lokal
+              className="self-start rounded-lg border border-emerald-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-white dark:border-emerald-700 dark:bg-gray-800/70 dark:text-emerald-200 sm:self-auto">
+              Buang & kembali ke data tersimpan
             </button>
           )}
         </div>
       )}
-      {/* Basic Info */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Informasi Dasar</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Judul Tour *">
-            <input required className="input" value={form.title} onChange={(e) => set("title", e.target.value)} />
+
+      {isEdit && publicHref && (
+        <a href={publicHref} target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+          <ExternalLink size={15} /> Lihat halaman tour di website
+        </a>
+      )}
+
+      {/* 1. Info utama */}
+      <Section number={1} title="Info utama" description="Nama paket dan tujuan. Judul tampil di kartu katalog dan judul halaman tour.">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Field label="Judul tour" required htmlFor="tour-title" error={fieldErrors.title}>
+            <input id="tour-title" className="input" value={form.title ?? ""} onChange={(e) => set("title", e.target.value)}
+              placeholder="cth: Open Trip Aurora Murmansk Desember 2026" />
           </Field>
-          <Field label="Negara *">
-            <input required className="input" value={form.country} onChange={(e) => set("country", e.target.value)} />
+          <Field label="Negara" required htmlFor="tour-country" error={fieldErrors.country}
+            hint="Dipakai untuk filter destinasi di website.">
+            <input id="tour-country" className="input" value={form.country ?? ""} onChange={(e) => set("country", e.target.value)}
+              placeholder="cth: Rusia" />
           </Field>
-          <Field label="Kota Highlight">
-            <input className="input" value={form.cityHighlight} onChange={(e) => set("cityHighlight", e.target.value)} />
+          <Field label="Kota / rute" htmlFor="tour-city" hint="Kota utama yang dikunjungi.">
+            <input id="tour-city" className="input" value={form.cityHighlight ?? ""} onChange={(e) => set("cityHighlight", e.target.value)}
+              placeholder="cth: Moskow · Murmansk · Teriberka" />
           </Field>
-          <Field label="Durasi">
-            <input className="input" placeholder="cth: 9 Hari 7 Malam" value={form.duration} onChange={(e) => set("duration", e.target.value)} />
+          <Field label="Durasi" htmlFor="tour-duration">
+            <input id="tour-duration" className="input" value={form.duration ?? ""} onChange={(e) => set("duration", e.target.value)}
+              placeholder="cth: 9 Hari 7 Malam" />
           </Field>
-          <Field label="Tanggal Keberangkatan">
-            <input type="date" className="input" value={form.tripDate} onChange={(e) => set("tripDate", e.target.value)} />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Kosongkan untuk By Request / Tanggal fleksibel.</p>
-          </Field>
-          <Field label="Sisa Seat / Kapasitas">
-            <input type="number" min={0} className="input" value={form.seatsLeft} onChange={(e) => set("seatsLeft", e.target.value)} />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Untuk private by request, 0 akan tampil sebagai Private / By Request.</p>
-          </Field>
-          <Field label="Status">
-            <select className="input" value={form.status} onChange={(e) => set("status", e.target.value)}>
-              <option value="DRAFT">Draft</option>
-              <option value="ACTIVE">Active</option>
-              <option value="FULL">Full</option>
-              <option value="CANCELLED">Cancelled</option>
-            </select>
-          </Field>
-          <Field label="Badge (opsional)">
-            <input className="input" placeholder="cth: Best Seller, New" value={form.badge} onChange={(e) => set("badge", e.target.value)} />
-          </Field>
-          <Field label="Tour Pilihan">
-            <label className="flex min-h-10 items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-              <input
-                type="checkbox"
-                checked={!!form.pinned}
-                onChange={(e) => set("pinned", e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span>Pin ke Tour Pilihan</span>
-            </label>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Maksimal 5 tour dipin. Urutan tetap tanggal terdekat.</p>
+          <Field label="Badge (opsional)" htmlFor="tour-badge" className="md:col-span-2"
+            hint="Label kecil di kartu, mis. Best Seller. Kata khusus: 'penuh' atau 'sold out' = tampil penuh, 'waitlist' = daftar tunggu, 'pasti berangkat' = label pasti berangkat.">
+            <input id="tour-badge" className="input" value={form.badge ?? ""} onChange={(e) => set("badge", e.target.value)}
+              placeholder="cth: Best Seller" />
           </Field>
         </div>
-      </div>
+      </Section>
 
-      {/* Pricing */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Harga</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Field label="Harga Normal *">
-            <input required type="number" min={0} className="input" value={form.price} onChange={(e) => set("price", e.target.value)} />
+      {/* 2. Jadwal & status */}
+      <Section number={2} title="Jadwal & status" description="Atur tanggal, kursi, dan apakah tour tampil di website.">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Field label="Tanggal berangkat" htmlFor="tour-date" hint="Kosongkan untuk private trip / tanggal fleksibel.">
+            <input id="tour-date" type="date" className="input" value={form.tripDate ?? ""} onChange={(e) => set("tripDate", e.target.value)} />
           </Field>
-          <Field label="Harga Promo">
-            <input type="number" min={0} className="input" value={form.promoPrice ?? ""} onChange={(e) => set("promoPrice", e.target.value || null)} />
-          </Field>
-          <Field label="Harga Land Tour">
-            <input type="number" min={0} className="input" value={form.priceLandTour ?? ""} onChange={(e) => set("priceLandTour", e.target.value || null)} />
+          <Field label="Sisa kursi" htmlFor="tour-seats" hint="Kursi yang masih bisa dijual. 1–3 kursi tampil sebagai kursi terakhir.">
+            <input id="tour-seats" type="number" min={0} inputMode="numeric" className="input" value={form.seatsLeft ?? 0}
+              onChange={(e) => set("seatsLeft", e.target.value)} />
           </Field>
         </div>
-      </div>
 
-      {/* Payment Plan */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h2 className="font-semibold text-gray-900 dark:text-white">Skema Pembayaran</h2>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Default otomatis mengikuti harga, add-on wajib, tanggal booking, dan tanggal keberangkatan.
+        <fieldset className="mt-5" disabled={!canChangeStatus}>
+          <legend className="label mb-2">Status</legend>
+          {!canChangeStatus && (
+            <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              {isEdit
+                ? "Akun Anda tidak bisa mengubah status. Minta admin untuk mengaktifkan atau menonaktifkan tour."
+                : "Tour baru tersimpan sebagai Draft. Minta admin untuk mengaktifkannya."}
             </p>
+          )}
+          <div className="grid gap-2 sm:grid-cols-2">
+            {STATUS_ORDER.map((status) => {
+              const active = effectiveStatus === status;
+              return (
+                <label key={status}
+                  className={`flex cursor-pointer gap-3 rounded-lg border p-3 text-sm transition ${
+                    active
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                      : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
+                  } ${!canChangeStatus ? "cursor-not-allowed opacity-70" : ""}`}>
+                  <input type="radio" name="tour-status" value={status} checked={active}
+                    onChange={() => set("status", status)} className="mt-0.5" />
+                  <span>
+                    <span className="block font-semibold text-gray-900 dark:text-white">{TOUR_STATUS_LABELS[status]}</span>
+                    <span className="block text-xs text-gray-500 dark:text-gray-400">{TOUR_STATUS_HELP[status]}</span>
+                  </span>
+                </label>
+              );
+            })}
           </div>
-          <span className="rounded-lg bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-            Total acuan: Rp {paymentPlanTotal(form).toLocaleString("id-ID")}
-          </span>
+        </fieldset>
+
+        <div className={`mt-4 rounded-lg p-3 text-sm ${
+          checklist.length === 0
+            ? "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300"
+            : "bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300"
+        }`}>
+          {checklist.length === 0
+            ? "Data utama lengkap. Tour siap tampil."
+            : <>Sebelum tampil, lengkapi: {checklist.join(" · ")}.</>}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Mode">
-            <select
-              className="input"
-              value={paymentPlan.mode}
-              onChange={(e) => setPaymentPlan({ mode: e.target.value as PaymentPlanMode })}
-            >
-              <option value="auto">Otomatis</option>
-              <option value="manual">Manual dari CMS</option>
-              <option value="hidden">Sembunyikan</option>
-            </select>
+        {canPin && (
+          <label className="mt-4 flex items-start gap-3 rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700">
+            <input type="checkbox" checked={!!form.pinned} onChange={(e) => set("pinned", e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+            <span>
+              <span className="block font-medium text-gray-900 dark:text-white">Pin sebagai tour pilihan</span>
+              <span className="block text-xs text-gray-500 dark:text-gray-400">Tampil paling depan di katalog dan beranda. Maksimal 5 tour.</span>
+            </span>
+          </label>
+        )}
+      </Section>
+
+      {/* 3. Harga */}
+      <Section number={3} title="Harga" description="Semua harga per orang, dalam Rupiah tanpa titik.">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <Field label="Harga normal" required htmlFor="tour-price" error={fieldErrors.price}>
+            <input id="tour-price" type="number" min={0} inputMode="numeric" className="input" value={form.price ?? ""}
+              onChange={(e) => set("price", e.target.value)} placeholder="cth: 32500000" />
+          </Field>
+          <Field label="Harga promo" htmlFor="tour-promo" hint="Isi bila ada potongan. Harga normal tampil dicoret.">
+            <input id="tour-promo" type="number" min={0} inputMode="numeric" className="input" value={form.promoPrice ?? ""}
+              onChange={(e) => set("promoPrice", e.target.value)} />
+          </Field>
+          <Field label="Harga land tour" htmlFor="tour-land" hint="Tanpa tiket pesawat. Opsional.">
+            <input id="tour-land" type="number" min={0} inputMode="numeric" className="input" value={form.priceLandTour ?? ""}
+              onChange={(e) => set("priceLandTour", e.target.value)} />
           </Field>
         </div>
 
-        {paymentPlan.mode === "auto" && (
-          <p className="mt-3 rounded-lg bg-blue-50 p-3 text-xs leading-relaxed text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
-            Otomatis: DP default Rp 1.500.000, cicilan kedua H+7 dari booking, dan cicilan terakhir mengikuti jarak keberangkatan.
-            Jika tanggal keberangkatan kosong, skema tidak tampil di halaman publik.
+        <div className="mt-5">
+          <p className="label">Harga per kamar (opsional)</p>
+          <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+            Bila diisi, harga per kamar menggantikan harga normal di website. Harga pertama yang terisi (biasanya 4 orang/kamar) menjadi &ldquo;harga mulai&rdquo;.
           </p>
-        )}
-
-        {paymentPlan.mode === "hidden" && (
-          <p className="mt-3 rounded-lg bg-amber-50 p-3 text-xs leading-relaxed text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
-            Skema pembayaran tidak akan tampil di halaman tour dan PDF, walaupun tour punya tanggal keberangkatan.
-          </p>
-        )}
-
-        {paymentPlan.mode === "manual" && (
-          <div className="mt-5 space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Judul Section">
-                <input
-                  className="input"
-                  placeholder="Booking Seat DP 1 Juta-an"
-                  value={paymentPlan.title ?? ""}
-                  onChange={(e) => setPaymentPlan({ title: e.target.value })}
-                />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {ROOM_PRICE_FIELDS.map((field) => (
+              <Field key={field.code} label={field.label} htmlFor={`room-${field.code}`}>
+                <input id={`room-${field.code}`} type="number" min={0} inputMode="numeric" className="input"
+                  value={roomPrices[field.code]} onChange={(e) => setRoomPrice(field.code, e.target.value)} />
               </Field>
-              <Field label="Teks Urgensi">
-                <input
-                  className="input"
-                  placeholder="Sisa 5 traveler lagi - gas sebelum habis 🙂"
-                  value={paymentPlan.urgencyLabel ?? ""}
-                  onChange={(e) => setPaymentPlan({ urgencyLabel: e.target.value })}
-                />
-              </Field>
-              <Field label="Kalimat Pembuka">
-                <textarea
-                  className="input min-h-[80px]"
-                  placeholder="Pembayaran aman dan fleksibel..."
-                  value={paymentPlan.intro ?? ""}
-                  onChange={(e) => setPaymentPlan({ intro: e.target.value })}
-                />
-              </Field>
-              <Field label="Metode Pembayaran">
-                <textarea
-                  className="input min-h-[80px]"
-                  placeholder="Tersedia bank transfer, QRIS, e-wallet..."
-                  value={paymentPlan.paymentMethodsLabel ?? ""}
-                  onChange={(e) => setPaymentPlan({ paymentMethodsLabel: e.target.value })}
-                />
-              </Field>
-            </div>
-
-            <div>
-              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <label className="label">Tahapan Pembayaran</label>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentPlan({ mode: "manual", steps: paymentPlanTemplate(form) })}
-                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
-                  >
-                    Pakai template 3 tahap
-                  </button>
-                  <button
-                    type="button"
-                    onClick={addPaymentPlanStep}
-                    className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
-                  >
-                    Tambah tahap
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                {paymentPlan.steps.map((step, i) => (
-                  <div key={i} className="grid grid-cols-1 gap-2 rounded-lg bg-gray-50 p-3 dark:bg-gray-700 md:grid-cols-[1fr_10rem_11rem_auto]">
-                    <input
-                      className="input"
-                      placeholder="DP1"
-                      value={step.label}
-                      onChange={(e) => setPaymentPlanStep(i, { label: e.target.value })}
-                    />
-                    <input
-                      type="date"
-                      className="input"
-                      value={step.dueDate}
-                      onChange={(e) => setPaymentPlanStep(i, { dueDate: e.target.value })}
-                    />
-                    <input
-                      type="number"
-                      min={0}
-                      className="input"
-                      placeholder="Nominal"
-                      value={step.amount}
-                      onChange={(e) => setPaymentPlanStep(i, { amount: e.target.value })}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removePaymentPlanStep(i)}
-                      className="rounded-lg px-3 py-2 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                ))}
-                {paymentPlan.steps.length === 0 && (
-                  <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500 dark:bg-gray-700 dark:text-gray-400">
-                    Belum ada tahap manual. Klik &quot;Pakai template 3 tahap&quot; atau &quot;Tambah tahap&quot;.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <Field label="Catatan Kecil">
-              <input
-                className="input"
-                placeholder="Jadwal pembayaran disesuaikan oleh tim Sundaf di CMS."
-                value={paymentPlan.finePrint ?? ""}
-                onChange={(e) => setPaymentPlan({ finePrint: e.target.value })}
-              />
-            </Field>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Hero Image */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Gambar Hero</h2>
-        <ImageUpload value={form.heroImg ?? ""} onChange={(url) => set("heroImg", url)} folder="tours/hero" />
-      </div>
+        <div className="mt-4 rounded-lg bg-gray-50 p-3 text-sm text-gray-700 dark:bg-gray-700/40 dark:text-gray-200">
+          {price.amount > 0 ? (
+            <>
+              Harga mulai di website: <strong>{rupiah(price.amount)}</strong> <span className="text-gray-500 dark:text-gray-400">(dari {price.source})</span>
+              {requiredCosts > 0 && (
+                <> · Subtotal dengan biaya wajib: <strong>{rupiah(price.amount + requiredCosts)}</strong></>
+              )}
+            </>
+          ) : (
+            "Harga belum diisi. Tour tanpa harga tampil sebagai 'hubungi kami'."
+          )}
+        </div>
+      </Section>
 
-      {/* Gallery */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Galeri</h2>
+      {/* 4. Foto */}
+      <Section number={4} title="Foto" description="Foto utama tampil di kartu katalog dan bagian atas halaman tour. Pakai foto landscape yang tajam.">
+        <p className="label mb-2">Foto utama</p>
+        <ImageUpload value={form.heroImg ?? ""} onChange={(url) => set("heroImg", url)} folder="tours/hero"
+          uploadLabel="Upload foto utama" publicImage />
+
+        <p className="label mb-2 mt-6">Galeri</p>
         <ImageUpload
           value=""
           onChange={(url) => setForm((p) => ({ ...p, gallery: [...(p.gallery ?? []), url] }))}
           folder="tours/gallery"
           multiple
+          uploadLabel="Tambah foto galeri"
+          publicImage
         />
-        <div className="flex flex-wrap gap-2 mt-3">
-          {(form.gallery ?? []).map((url, i) => (
-            <div key={i} className="relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt="" className="w-20 h-20 object-cover rounded-lg" />
-              <button type="button" onClick={() => set("gallery", form.gallery!.filter((_, j) => j !== i))}
-                className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">×</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Inclusions & Exclusions */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Termasuk & Tidak Termasuk</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="label mb-2">Termasuk</label>
-            <div className="flex gap-2 mb-2">
-              <input className="input flex-1" value={inclusionInput} onChange={(e) => setInclusionInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitInclusion(); }}}
-                placeholder={editingInclusionIdx !== null ? "Edit lalu Enter / Simpan" : "Tekan Enter untuk tambah"} />
-              <button type="button" onClick={commitInclusion}
-                className={`px-3 py-2 text-white rounded-lg text-sm whitespace-nowrap ${editingInclusionIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"}`}>
-                {editingInclusionIdx !== null ? "Simpan" : "+"}</button>
-              {editingInclusionIdx !== null && (
-                <button type="button" onClick={() => { setEditingInclusionIdx(null); setInclusionInput(""); }}
-                  className="px-3 py-2 bg-gray-400 text-white rounded-lg text-sm">Batal</button>
-              )}
-            </div>
-            <ul className="space-y-1">
-              {(form.inclusions ?? []).map((item, i) => (
-                <li key={i} className={`flex items-center justify-between text-sm px-3 py-1.5 rounded ${editingInclusionIdx === i ? "ring-2 ring-blue-400 bg-green-50 dark:bg-green-900/20" : "bg-green-50 dark:bg-green-900/20"} text-green-800 dark:text-green-300`}>
-                  <span className="min-w-0 break-words">✓ {item}</span>
-                  <span className="flex items-center gap-1 shrink-0 ml-2">
-                    <button type="button" title="Edit"
-                      onClick={() => { setInclusionInput(item); setEditingInclusionIdx(i); setEditingExclusionIdx(null); }}
-                      className="text-blue-500 hover:text-blue-700">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                      </svg>
-                    </button>
-                    <button type="button" title="Hapus" onClick={() => { if (editingInclusionIdx === i) { setEditingInclusionIdx(null); setInclusionInput(""); } set("inclusions", form.inclusions!.filter((_, j) => j !== i)); }} className="text-red-500">×</button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <label className="label mb-2">Tidak Termasuk</label>
-            <div className="flex gap-2 mb-2">
-              <input className="input flex-1" value={exclusionInput} onChange={(e) => setExclusionInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitExclusion(); }}}
-                placeholder={editingExclusionIdx !== null ? "Edit lalu Enter / Simpan" : "Tekan Enter untuk tambah"} />
-              <button type="button" onClick={commitExclusion}
-                className={`px-3 py-2 text-white rounded-lg text-sm whitespace-nowrap ${editingExclusionIdx !== null ? "bg-blue-600 hover:bg-blue-700" : "bg-red-500 hover:bg-red-600"}`}>
-                {editingExclusionIdx !== null ? "Simpan" : "+"}</button>
-              {editingExclusionIdx !== null && (
-                <button type="button" onClick={() => { setEditingExclusionIdx(null); setExclusionInput(""); }}
-                  className="px-3 py-2 bg-gray-400 text-white rounded-lg text-sm">Batal</button>
-              )}
-            </div>
-            <ul className="space-y-1">
-              {(form.exclusions ?? []).map((item, i) => (
-                <li key={i} className={`flex items-center justify-between text-sm px-3 py-1.5 rounded ${editingExclusionIdx === i ? "ring-2 ring-blue-400 bg-red-50 dark:bg-red-900/20" : "bg-red-50 dark:bg-red-900/20"} text-red-800 dark:text-red-300`}>
-                  <span className="min-w-0 break-words">✗ {item}</span>
-                  <span className="flex items-center gap-1 shrink-0 ml-2">
-                    <button type="button" title="Edit"
-                      onClick={() => { setExclusionInput(item); setEditingExclusionIdx(i); setEditingInclusionIdx(null); }}
-                      className="text-blue-500 hover:text-blue-700">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                      </svg>
-                    </button>
-                    <button type="button" title="Hapus" onClick={() => { if (editingExclusionIdx === i) { setEditingExclusionIdx(null); setExclusionInput(""); } set("exclusions", form.exclusions!.filter((_, j) => j !== i)); }} className="text-red-500">×</button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Itinerary */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Itinerary</h2>
-
-        {editingItineraryIdx === null && (
-          <div className="mb-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/40">
-            <ItineraryItemFields
-              item={itineraryItem}
-              onChange={setItineraryItem}
-              onSubmit={commitItineraryItem}
-              submitLabel="Tambah"
-              submitTone="add"
-            />
-          </div>
+        {(form.gallery ?? []).length > 0 && (
+          <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {(form.gallery ?? []).map((url, i) => (
+              <li key={`${url}-${i}`} className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt={`Foto galeri ${i + 1}`} className="h-24 w-full object-cover" />
+                <div className="flex items-center justify-between gap-1 p-1">
+                  <button type="button" onClick={() => moveGalleryImage(i, -1)} disabled={i === 0}
+                    className="rounded p-1 text-gray-500 hover:bg-gray-100 disabled:opacity-30 dark:hover:bg-gray-700" aria-label="Geser ke kiri">
+                    <ArrowLeft size={14} />
+                  </button>
+                  <button type="button" onClick={() => makeGalleryImageHero(i)}
+                    className="inline-flex items-center gap-1 rounded px-1.5 py-1 text-[11px] font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                    title="Jadikan foto utama">
+                    <Star size={12} /> Utama
+                  </button>
+                  <button type="button" onClick={() => moveGalleryImage(i, 1)} disabled={i === (form.gallery ?? []).length - 1}
+                    className="rounded p-1 text-gray-500 hover:bg-gray-100 disabled:opacity-30 dark:hover:bg-gray-700" aria-label="Geser ke kanan">
+                    <ArrowRight size={14} />
+                  </button>
+                  <button type="button" onClick={() => set("gallery", (form.gallery ?? []).filter((_, j) => j !== i))}
+                    className="rounded p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" aria-label="Hapus foto">
+                    <X size={14} />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
+      </Section>
 
-        {/* List */}
+      {/* 5. Itinerary */}
+      <Section number={5} title="Itinerary" description="Tambahkan per hari. Baris baru di kolom kegiatan menjadi paragraf terpisah di website.">
         <div className="space-y-2">
           {(form.itinerary ?? []).map((item, i) => (
             editingItineraryIdx === i ? (
-              <div
-                key={i}
-                className="rounded-lg border border-blue-400 bg-blue-50 p-3 transition-colors dark:bg-blue-900/20"
-              >
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="shrink-0 rounded bg-blue-100 px-2 py-1 text-center text-xs font-bold text-blue-600 dark:bg-blue-900/30">
-                    {item.day}
-                  </span>
-                  <p className="min-w-0 truncate text-sm font-semibold text-gray-900 dark:text-white">
-                    {item.title || `Hari ${item.day}`}
-                  </p>
-                </div>
+              <div key={i} className="rounded-lg border border-blue-400 bg-blue-50 p-3 dark:bg-blue-900/20">
                 <ItineraryItemFields
                   item={itineraryItem}
                   onChange={setItineraryItem}
@@ -961,47 +1008,37 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
                     setEditingItineraryIdx(null);
                     setItineraryItem(emptyItineraryItem(form.itinerary));
                   }}
-                  submitLabel="Simpan"
+                  submitLabel="Simpan hari"
                   submitTone="save"
                 />
               </div>
             ) : (
-              <div
-                key={i}
-                className="flex items-start gap-3 rounded-lg border border-transparent bg-gray-50 px-4 py-3 transition-colors hover:border-gray-300 dark:bg-gray-700 dark:hover:border-gray-600">
+              <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 px-4 py-3 dark:bg-gray-700">
                 <span className="shrink-0 rounded bg-blue-100 px-2 py-1 text-center text-xs font-bold text-blue-600 dark:bg-blue-900/30">
-                  {item.day}
+                  Hari {item.day}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.title}</p>
                   {item.description && <p className="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{item.description}</p>}
-                  {item.image && <p className="mt-1 text-[11px] font-medium text-blue-600 dark:text-blue-300">Gambar sorotan terpasang</p>}
+                  {item.image && <p className="mt-1 text-[11px] font-medium text-blue-600 dark:text-blue-300">Foto hari ini terpasang</p>}
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
-                  <button
-                    type="button"
-                    title="Edit"
+                  <button type="button" title="Edit" aria-label={`Edit hari ${item.day}`}
                     onClick={() => {
                       setItineraryItem({ day: item.day, title: item.title, description: item.description, image: item.image ?? "" });
                       setEditingItineraryIdx(i);
                     }}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded text-blue-500 transition-colors hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30">
+                    className="inline-flex h-9 w-9 items-center justify-center rounded text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/30">
                     <Pencil size={15} />
                   </button>
-                  <button
-                    type="button"
-                    title="Hapus"
+                  <button type="button" title="Hapus" aria-label={`Hapus hari ${item.day}`}
                     onClick={() => {
-                      const updated = form.itinerary!.filter((_, j) => j !== i);
-                      if (editingItineraryIdx === i) {
-                        setEditingItineraryIdx(null);
-                        setItineraryItem(emptyItineraryItem(updated));
-                      } else if (editingItineraryIdx !== null && editingItineraryIdx > i) {
-                        setEditingItineraryIdx(editingItineraryIdx - 1);
-                      }
+                      const updated = (form.itinerary ?? []).filter((_, j) => j !== i);
+                      if (editingItineraryIdx !== null && editingItineraryIdx > i) setEditingItineraryIdx(editingItineraryIdx - 1);
                       set("itinerary", updated);
+                      if (editingItineraryIdx === null) setItineraryItem(emptyItineraryItem(updated));
                     }}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded text-red-400 transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30">
+                    className="inline-flex h-9 w-9 items-center justify-center rounded text-red-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30">
                     <Trash2 size={15} />
                   </button>
                 </div>
@@ -1009,105 +1046,367 @@ export default function TourForm({ tour, returnHref = "/admin/tours" }: { tour?:
             )
           ))}
           {(form.itinerary ?? []).length === 0 && (
-            <p className="text-xs text-gray-400 text-center py-4">Belum ada itinerary. Tambahkan hari pertama di atas.</p>
+            <p className="py-2 text-xs text-gray-400">Belum ada itinerary. Mulai dari hari pertama di bawah.</p>
           )}
         </div>
-      </div>
+        {editingItineraryIdx === null && (
+          <div className="mt-3 rounded-lg border border-dashed border-gray-300 p-3 dark:border-gray-600">
+            <p className="mb-2 text-xs font-semibold text-gray-600 dark:text-gray-300">Tambah hari berikutnya</p>
+            <ItineraryItemFields
+              item={itineraryItem}
+              onChange={setItineraryItem}
+              onSubmit={commitItineraryItem}
+              submitLabel="Tambah hari"
+              submitTone="add"
+            />
+          </div>
+        )}
+      </Section>
 
-      {/* Add Ons */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Add Ons <span className="font-normal text-gray-400 text-sm">(tidak wajib / opsional)</span></h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-          Layanan tambahan di luar paket. Klik badge tiap item untuk menandai:
-          <span className="mx-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white">WAJIB</span>(harus dibeli, mis. bagasi domestik) atau
-          <span className="mx-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-500 text-white">REKOMENDASI</span>(sangat disarankan). Klik lagi untuk netral.
-        </p>
-        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-1">
-          <label className="label text-xs">Nama Add-On</label>
-          <label className="label text-xs">Harga (Rp)</label>
-          <span />
+      {/* 6. Termasuk & tidak termasuk */}
+      <Section number={6} title="Termasuk & tidak termasuk" description="Tekan Enter untuk menambah baris.">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <ListEditor
+            label="Termasuk"
+            tone="include"
+            items={form.inclusions ?? []}
+            input={inclusionInput}
+            onInput={setInclusionInput}
+            editingIdx={editingInclusionIdx}
+            onCommit={commitInclusion}
+            onEdit={(i) => { setInclusionInput((form.inclusions ?? [])[i] ?? ""); setEditingInclusionIdx(i); }}
+            onCancelEdit={() => { setEditingInclusionIdx(null); setInclusionInput(""); }}
+            onRemove={(i) => {
+              if (editingInclusionIdx === i) { setEditingInclusionIdx(null); setInclusionInput(""); }
+              set("inclusions", (form.inclusions ?? []).filter((_, j) => j !== i));
+            }}
+          />
+          <ListEditor
+            label="Tidak termasuk"
+            tone="exclude"
+            items={form.exclusions ?? []}
+            input={exclusionInput}
+            onInput={setExclusionInput}
+            editingIdx={editingExclusionIdx}
+            onCommit={commitExclusion}
+            onEdit={(i) => { setExclusionInput((form.exclusions ?? [])[i] ?? ""); setEditingExclusionIdx(i); }}
+            onCancelEdit={() => { setEditingExclusionIdx(null); setExclusionInput(""); }}
+            onRemove={(i) => {
+              if (editingExclusionIdx === i) { setEditingExclusionIdx(null); setExclusionInput(""); }
+              set("exclusions", (form.exclusions ?? []).filter((_, j) => j !== i));
+            }}
+          />
         </div>
-        <div className="grid grid-cols-[1fr_9rem_auto] gap-3 mb-2">
-          <input placeholder="cth: Airport Transfer" className="input" value={addOnItem.name}
-            onChange={(e) => setAddOnItem((p) => ({ ...p, name: e.target.value }))}
-            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.currentTarget.nextElementSibling as HTMLInputElement | null)?.focus(); }}} />
-          <input type="number" min={0} placeholder="0" className="input" value={addOnItem.price}
-            onChange={(e) => setAddOnItem((p) => ({ ...p, price: e.target.value }))} />
-          <button type="button"
-            onClick={() => { if (addOnItem.name) { set("addOns", [...(form.addOns ?? []), { name: addOnItem.name, price: Number(addOnItem.price) || 0, desc: addOnItem.desc.trim() || undefined }]); setAddOnItem({ name: "", price: "", desc: "" }); }}}
-            className="px-4 bg-blue-600 text-white rounded-lg text-sm">Tambah</button>
-        </div>
-        <input placeholder="Keterangan (opsional) — apa saja yang didapat? cth: Menginap 1 malam di Sammi Village + makan malam tradisional" className="input mb-4 text-sm"
-          value={addOnItem.desc} onChange={(e) => setAddOnItem((p) => ({ ...p, desc: e.target.value }))} />
+      </Section>
+
+      {/* 7. Hotel */}
+      <Section number={7} title="Hotel" description="Tampil di halaman tour. Satu baris per kota atau area.">
         <div className="space-y-2">
-          {(form.addOns ?? []).map((item, i) => (
-            <div key={i} className="bg-gray-50 dark:bg-gray-700 px-4 py-2.5 rounded-lg text-sm">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-medium text-gray-900 dark:text-white min-w-0 break-words">{item.name}</span>
-                <div className="flex items-center gap-3 shrink-0">
-                  <button type="button" onClick={() => cycleAddOnTag(i)}
-                    title="Klik untuk ganti: netral → WAJIB → REKOMENDASI"
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wide transition-colors ${
-                      item.tag === "wajib"
-                        ? "bg-red-600 text-white hover:bg-red-700"
-                        : item.tag === "recommended"
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : "bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
-                    }`}>
-                    {item.tag === "wajib" ? "WAJIB" : item.tag === "recommended" ? "REKOMENDASI" : "+ Badge"}
-                  </button>
-                  <span className="text-gray-600 dark:text-gray-400">Rp {Number(item.price).toLocaleString("id-ID")}</span>
-                  <button type="button" onClick={() => set("addOns", form.addOns!.filter((_, j) => j !== i))} className="text-red-500">×</button>
-                </div>
-              </div>
-              <textarea
-                value={item.desc ?? ""}
-                onChange={(e) => setAddOnDesc(i, e.target.value)}
-                placeholder="Keterangan (opsional): apa saja yang didapat peserta?"
-                className="input mt-2 w-full text-xs min-h-[2.25rem] resize-y bg-white/60 dark:bg-gray-800/60" />
+          {hotelRows.map((row, i) => (
+            <div key={i} className="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[12rem_1fr_auto]">
+              <input className="input" aria-label={`Kota hotel ${i + 1}`} placeholder="Kota" value={row.label}
+                onChange={(e) => setHotelRow(i, { label: e.target.value })} />
+              <input className="input col-span-2 row-start-2 sm:col-span-1 sm:row-start-auto" aria-label={`Nama hotel ${i + 1}`}
+                placeholder="Nama hotel / kelas" value={row.value} onChange={(e) => setHotelRow(i, { value: e.target.value })} />
+              <button type="button" onClick={() => set("hotelInfo", hotelRows.filter((_, j) => j !== i))}
+                className="row-start-1 rounded-lg px-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 sm:row-start-auto" aria-label="Hapus baris hotel">
+                <X size={16} />
+              </button>
             </div>
           ))}
         </div>
-      </div>
+        <button type="button" onClick={() => set("hotelInfo", [...hotelRows, { label: "", value: "" }])}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+          <Plus size={15} /> Tambah hotel
+        </button>
+      </Section>
 
-      {/* Deskripsi Tour (evocative copy untuk kartu + halaman detail) */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-1">Deskripsi Tour</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-          Tampil di kartu tour beranda (excerpt 140 char) dan halaman detail (lengkap). Tulis konkret: rute utama, tempo perjalanan, musim, tipe peserta, dan hal yang benar-benar termasuk. Hindari klaim generik seperti &quot;menakjubkan&quot;, &quot;perjalanan impian&quot;, atau &quot;tak terlupakan&quot; tanpa detail pendukung. Tambahkan bonus &amp; opsional di baris bawah dengan prefix <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">+</code> atau <code className="px-1 rounded bg-gray-100 dark:bg-gray-700">&amp;</code>.
-        </p>
-        <Field label="Cerita Trip">
-          <textarea
-            className="input min-h-[220px]"
-            value={form.description ?? ""}
+      {/* 8. Biaya tambahan */}
+      <Section number={8} title="Biaya tambahan & add-on"
+        description="Wajib = ikut dihitung ke subtotal (mis. bagasi, tipping). Disarankan = diberi tanda rekomendasi. Opsional = pilihan bebas.">
+        <div className="space-y-2">
+          {(form.addOns ?? []).map((item, i) => (
+            <div key={i} className="space-y-2 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_9rem_12rem_auto]">
+                <input className="input" aria-label={`Nama add-on ${i + 1}`} value={item.name}
+                  onChange={(e) => updateAddOn(i, { name: e.target.value })} />
+                <input type="number" min={0} inputMode="numeric" className="input" aria-label={`Harga add-on ${i + 1}`}
+                  value={item.price} onChange={(e) => updateAddOn(i, { price: Number(e.target.value) || 0 })} />
+                <select className="input" aria-label={`Jenis add-on ${i + 1}`} value={item.tag ?? ""}
+                  onChange={(e) => updateAddOn(i, { tag: e.target.value as AddOnTag })}>
+                  {(Object.keys(ADD_ON_TAG_LABELS) as AddOnTag[]).map((tag) => (
+                    <option key={tag} value={tag}>{ADD_ON_TAG_LABELS[tag]}</option>
+                  ))}
+                </select>
+                <button type="button" onClick={() => set("addOns", (form.addOns ?? []).filter((_, j) => j !== i))}
+                  className="rounded-lg px-3 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" aria-label={`Hapus ${item.name}`}>
+                  <X size={16} />
+                </button>
+              </div>
+              <textarea value={item.desc ?? ""} onChange={(e) => updateAddOn(i, { desc: e.target.value })}
+                placeholder="Keterangan (opsional): apa yang didapat peserta?" aria-label={`Keterangan ${item.name}`}
+                className="input min-h-[2.25rem] w-full resize-y text-xs" />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 space-y-2 rounded-lg border border-dashed border-gray-300 p-3 dark:border-gray-600">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_9rem_12rem_auto]">
+            <input placeholder="Nama, cth: Bagasi 23 kg" aria-label="Nama add-on baru" className="input" value={addOnItem.name}
+              onChange={(e) => setAddOnItem((p) => ({ ...p, name: e.target.value }))}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitAddOn(); } }} />
+            <input type="number" min={0} inputMode="numeric" placeholder="Harga" aria-label="Harga add-on baru" className="input"
+              value={addOnItem.price} onChange={(e) => setAddOnItem((p) => ({ ...p, price: e.target.value }))} />
+            <select className="input" aria-label="Jenis add-on baru" value={addOnItem.tag}
+              onChange={(e) => setAddOnItem((p) => ({ ...p, tag: e.target.value as AddOnTag }))}>
+              {(Object.keys(ADD_ON_TAG_LABELS) as AddOnTag[]).map((tag) => (
+                <option key={tag} value={tag}>{ADD_ON_TAG_LABELS[tag]}</option>
+              ))}
+            </select>
+            <button type="button" onClick={commitAddOn}
+              className="inline-flex items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              <Plus size={15} /> Tambah
+            </button>
+          </div>
+          <input placeholder="Keterangan (opsional)" aria-label="Keterangan add-on baru" className="input text-sm"
+            value={addOnItem.desc} onChange={(e) => setAddOnItem((p) => ({ ...p, desc: e.target.value }))} />
+        </div>
+      </Section>
+
+      {/* 9. Deskripsi & catatan */}
+      <Section number={9} title="Deskripsi & catatan" description="Tampil di halaman tour. Setiap baris baru menjadi paragraf terpisah.">
+        <Field label="Cerita trip" htmlFor="tour-description"
+          hint="Tulis konkret: rute utama, tempo perjalanan, musim, cocok untuk siapa. Hindari klaim umum tanpa detail.">
+          <textarea id="tour-description" className="input min-h-[180px]" value={form.description ?? ""}
             onChange={(e) => set("description", e.target.value)}
-            placeholder={`Contoh:\n\nRute ini fokus ke Banff dan Jasper dengan ritme santai untuk peserta yang ingin banyak waktu di alam, bukan pindah kota setiap hari. Cocok untuk keluarga atau small group yang ingin pegunungan, danau, dan scenic drive tanpa itinerary terlalu padat. Catatan penting: beberapa spot bergantung cuaca dan musim, jadi urutan kunjungan bisa disesuaikan di lapangan.\n\n+ San Francisco & Seattle\n& Tokyo (free time saat kepulangan)\nOPTIONAL: ALASKA`}
-          />
+            placeholder="cth: Rute ini fokus ke Murmansk dan Teriberka dengan ritme santai untuk berburu aurora tiga malam..." />
         </Field>
-      </div>
-
-      {/* Catatan Penting & Visa */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Catatan Penting & Visa</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Catatan Penting">
-            <textarea className="input min-h-[100px]" value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Mis: Pastikan paspor minimal 6 bulan masa berlaku, vaksin tertentu wajib, dll." />
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Field label="Catatan penting" htmlFor="tour-notes">
+            <textarea id="tour-notes" className="input min-h-[110px]" value={form.notes ?? ""} onChange={(e) => set("notes", e.target.value)}
+              placeholder="cth: Paspor minimal berlaku 6 bulan saat berangkat." />
           </Field>
-          <Field label="Informasi Visa">
-            <textarea className="input min-h-[100px]" value={form.visaInfo} onChange={(e) => set("visaInfo", e.target.value)} />
+          <Field label="Informasi visa" htmlFor="tour-visa">
+            <textarea id="tour-visa" className="input min-h-[110px]" value={form.visaInfo ?? ""} onChange={(e) => set("visaInfo", e.target.value)}
+              placeholder="cth: E-visa Rusia diurus tim Sundaf, proses sekitar 4 hari kerja." />
           </Field>
         </div>
-      </div>
+      </Section>
 
+      {/* 10. Lanjutan */}
+      <details className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+        <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white">
+          Pengaturan lanjutan: skema pembayaran
+          <span className="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
+            {paymentPlan.mode === "auto" ? "Otomatis" : paymentPlan.mode === "hidden" ? "Disembunyikan" : "Manual"}
+          </span>
+        </summary>
+        <div className="mt-4">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Otomatis menghitung DP dan cicilan dari harga, biaya wajib, dan tanggal berangkat. Total acuan: {rupiah(paymentPlanTotal(form))}.
+          </p>
+
+          <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Field label="Mode" htmlFor="payment-mode">
+              <select id="payment-mode" className="input" value={paymentPlan.mode}
+                onChange={(e) => setPaymentPlan({ mode: e.target.value as PaymentPlanMode })}>
+                <option value="auto">Otomatis</option>
+                <option value="manual">Manual</option>
+                <option value="hidden">Sembunyikan</option>
+              </select>
+            </Field>
+          </div>
+
+          {paymentPlan.mode === "auto" && (
+            <p className="mt-3 rounded-lg bg-blue-50 p-3 text-xs leading-relaxed text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+              DP default Rp 1.500.000, cicilan kedua H+7 dari booking, cicilan terakhir mengikuti jarak keberangkatan.
+              Tanpa tanggal berangkat, skema tidak tampil.
+            </p>
+          )}
+
+          {paymentPlan.mode === "hidden" && (
+            <p className="mt-3 rounded-lg bg-amber-50 p-3 text-xs leading-relaxed text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+              Skema pembayaran tidak tampil di halaman tour dan PDF.
+            </p>
+          )}
+
+          {paymentPlan.mode === "manual" && (
+            <div className="mt-5 space-y-5">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <Field label="Judul bagian" htmlFor="payment-title">
+                  <input id="payment-title" className="input" placeholder="Booking Seat DP 1 Juta-an" value={paymentPlan.title ?? ""}
+                    onChange={(e) => setPaymentPlan({ title: e.target.value })} />
+                </Field>
+                <Field label="Teks urgensi" htmlFor="payment-urgency">
+                  <input id="payment-urgency" className="input" placeholder="Sisa 5 kursi lagi" value={paymentPlan.urgencyLabel ?? ""}
+                    onChange={(e) => setPaymentPlan({ urgencyLabel: e.target.value })} />
+                </Field>
+                <Field label="Kalimat pembuka" htmlFor="payment-intro">
+                  <textarea id="payment-intro" className="input min-h-[80px]" placeholder="Pembayaran aman dan fleksibel..."
+                    value={paymentPlan.intro ?? ""} onChange={(e) => setPaymentPlan({ intro: e.target.value })} />
+                </Field>
+                <Field label="Metode pembayaran" htmlFor="payment-methods">
+                  <textarea id="payment-methods" className="input min-h-[80px]" placeholder="Transfer bank, QRIS, e-wallet..."
+                    value={paymentPlan.paymentMethodsLabel ?? ""} onChange={(e) => setPaymentPlan({ paymentMethodsLabel: e.target.value })} />
+                </Field>
+              </div>
+
+              <div>
+                <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="label">Tahapan pembayaran</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={() => setPaymentPlan({ mode: "manual", steps: paymentPlanTemplate(form) })}
+                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+                      Pakai template 3 tahap
+                    </button>
+                    <button type="button" onClick={addPaymentPlanStep}
+                      className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
+                      Tambah tahap
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {paymentPlan.steps.map((step, i) => (
+                    <div key={i} className="grid grid-cols-1 gap-2 rounded-lg bg-gray-50 p-3 dark:bg-gray-700 md:grid-cols-[1fr_10rem_11rem_auto]">
+                      <input className="input" placeholder="DP1" aria-label={`Nama tahap ${i + 1}`} value={step.label}
+                        onChange={(e) => setPaymentPlanStep(i, { label: e.target.value })} />
+                      <input type="date" className="input" aria-label={`Tanggal tahap ${i + 1}`} value={step.dueDate}
+                        onChange={(e) => setPaymentPlanStep(i, { dueDate: e.target.value })} />
+                      <input type="number" min={0} className="input" placeholder="Nominal" aria-label={`Nominal tahap ${i + 1}`}
+                        value={step.amount} onChange={(e) => setPaymentPlanStep(i, { amount: e.target.value })} />
+                      <button type="button" onClick={() => removePaymentPlanStep(i)}
+                        className="rounded-lg px-3 py-2 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
+                        Hapus
+                      </button>
+                    </div>
+                  ))}
+                  {paymentPlan.steps.length === 0 && (
+                    <p className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+                      Belum ada tahap. Klik &quot;Pakai template 3 tahap&quot; atau &quot;Tambah tahap&quot;.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <Field label="Catatan kecil" htmlFor="payment-fineprint">
+                <input id="payment-fineprint" className="input" placeholder="Jadwal pembayaran dapat disesuaikan tim Sundaf."
+                  value={paymentPlan.finePrint ?? ""} onChange={(e) => setPaymentPlan({ finePrint: e.target.value })} />
+              </Field>
+            </div>
+          )}
+        </div>
+      </details>
+
+      {draftSavedAt && !draftError && (
+        <p className="text-xs text-gray-400">Isian tersimpan otomatis di browser ini {formatDraftTime(draftSavedAt)} sampai Anda menekan Simpan.</p>
+      )}
     </form>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Section({ number, title, description, children }: { number: number; title: string; description?: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+      <div className="mb-4 flex items-start gap-3">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">{number}</span>
+        <div>
+          <h2 className="font-semibold text-gray-900 dark:text-white">{title}</h2>
+          {description && <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{description}</p>}
+        </div>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Field({
+  label,
+  htmlFor,
+  required,
+  hint,
+  error,
+  className,
+  children,
+}: {
+  label: string;
+  htmlFor?: string;
+  required?: boolean;
+  hint?: string;
+  error?: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={className}>
+      <label className="label mb-1" htmlFor={htmlFor}>
+        {label}{required && <span className="text-red-500"> *</span>}
+      </label>
+      {children}
+      {error
+        ? <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{error}</p>
+        : hint && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{hint}</p>}
+    </div>
+  );
+}
+
+function ListEditor({
+  label,
+  tone,
+  items,
+  input,
+  onInput,
+  editingIdx,
+  onCommit,
+  onEdit,
+  onCancelEdit,
+  onRemove,
+}: {
+  label: string;
+  tone: "include" | "exclude";
+  items: string[];
+  input: string;
+  onInput: (value: string) => void;
+  editingIdx: number | null;
+  onCommit: () => void;
+  onEdit: (i: number) => void;
+  onCancelEdit: () => void;
+  onRemove: (i: number) => void;
+}) {
+  const color = tone === "include"
+    ? "bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300"
+    : "bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300";
   return (
     <div>
-      <label className="label mb-1">{label}</label>
-      {children}
+      <p className="label mb-2">{label}</p>
+      <div className="mb-2 flex gap-2">
+        <input className="input flex-1" value={input} aria-label={`Tambah baris ${label.toLowerCase()}`}
+          onChange={(e) => onInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); onCommit(); } }}
+          placeholder={editingIdx !== null ? "Edit lalu tekan Enter" : "Ketik lalu tekan Enter"} />
+        <button type="button" onClick={onCommit}
+          className="whitespace-nowrap rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700">
+          {editingIdx !== null ? "Simpan" : "Tambah"}
+        </button>
+        {editingIdx !== null && (
+          <button type="button" onClick={onCancelEdit} className="rounded-lg bg-gray-400 px-3 py-2 text-sm text-white">Batal</button>
+        )}
+      </div>
+      <ul className="space-y-1">
+        {items.map((item, i) => (
+          <li key={i} className={`flex items-center justify-between rounded px-3 py-1.5 text-sm ${color} ${editingIdx === i ? "ring-2 ring-blue-400" : ""}`}>
+            <span className="min-w-0 break-words">{item}</span>
+            <span className="ml-2 flex shrink-0 items-center gap-1">
+              <button type="button" title="Edit" aria-label={`Edit ${item}`} onClick={() => onEdit(i)} className="text-blue-500 hover:text-blue-700">
+                <Pencil size={13} />
+              </button>
+              <button type="button" title="Hapus" aria-label={`Hapus ${item}`} onClick={() => onRemove(i)} className="text-red-500">
+                <X size={14} />
+              </button>
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -1130,78 +1429,50 @@ function ItineraryItemFields({
   const SubmitIcon = submitTone === "add" ? Plus : Check;
 
   return (
-    <div data-itinerary-fields className="space-y-3">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-[5rem_1fr_minmax(0,2fr)]">
-        <input
-          type="number"
-          min={1}
-          placeholder="Hari"
-          className="input text-center"
-          value={item.day}
-          onChange={(e) => onChange({ ...item, day: Number(e.target.value) })}
-        />
-        <input
-          placeholder="Judul"
-          className="input"
-          value={item.title}
-          onChange={(e) => onChange({ ...item, title: e.target.value })}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              const descriptionInput = e.currentTarget
-                .closest("[data-itinerary-fields]")
-                ?.querySelector<HTMLInputElement>("[data-itinerary-description]");
-              descriptionInput?.focus();
-            }
-          }}
-        />
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <input
-            data-itinerary-description
-            placeholder="Deskripsi"
-            className="input min-w-0 flex-1"
-            value={item.description}
-            onChange={(e) => onChange({ ...item, description: e.target.value })}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                onSubmit();
-              }
-            }}
-          />
-          <div className="flex gap-2 sm:shrink-0">
-            {onCancel && (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 sm:flex-none">
-                <X size={15} />
-                {submitTone === "save" ? "Batal" : "Reset"}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onSubmit}
-              className={`inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition-colors sm:flex-none ${
-                submitTone === "add" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
-              }`}>
-              <SubmitIcon size={15} />
-              {submitLabel}
-            </button>
-          </div>
+    <div className="space-y-3">
+      <div className="grid grid-cols-[5rem_1fr] gap-3">
+        <div>
+          <label className="label mb-1 text-xs" htmlFor={`itinerary-day-${submitTone}`}>Hari ke</label>
+          <input id={`itinerary-day-${submitTone}`} type="number" min={1} className="input text-center" value={item.day}
+            onChange={(e) => onChange({ ...item, day: Number(e.target.value) })} />
+        </div>
+        <div>
+          <label className="label mb-1 text-xs" htmlFor={`itinerary-title-${submitTone}`}>Judul hari</label>
+          <input id={`itinerary-title-${submitTone}`} placeholder="cth: Tiba di Murmansk, berburu aurora" className="input" value={item.title}
+            onChange={(e) => onChange({ ...item, title: e.target.value })} />
         </div>
       </div>
       <div>
-        <label className="label mb-2 text-xs">Gambar Sorotan Hari Ini</label>
-        <ImageUpload
-          value={item.image ?? ""}
-          onChange={(url) => onChange({ ...item, image: url })}
-          folder="tours/itinerary"
-          uploadLabel="Upload Gambar Hari"
-        />
-        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          Dipakai pada rail &quot;Yang akan ditemui di perjalanan&quot;. Jika kosong, sistem tetap memakai gambar hero/galeri sebagai fallback.
-        </p>
+        <label className="label mb-1 text-xs" htmlFor={`itinerary-desc-${submitTone}`}>Kegiatan</label>
+        <textarea id={`itinerary-desc-${submitTone}`} className="input min-h-[90px]" value={item.description}
+          placeholder="Ceritakan kegiatan hari ini. Ctrl/Cmd + Enter untuk menyimpan."
+          onChange={(e) => onChange({ ...item, description: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              onSubmit();
+            }
+          }} />
+      </div>
+      <div>
+        <p className="label mb-2 text-xs">Foto hari ini (opsional)</p>
+        <ImageUpload value={item.image ?? ""} onChange={(url) => onChange({ ...item, image: url })}
+          folder="tours/itinerary" uploadLabel="Upload foto hari ini" publicImage />
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={onSubmit} disabled={!item.title.trim()}
+          className={`inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg px-4 text-sm font-semibold text-white transition disabled:opacity-50 ${
+            submitTone === "add" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+          }`}>
+          <SubmitIcon size={15} />
+          {submitLabel}
+        </button>
+        {onCancel && (
+          <button type="button" onClick={onCancel}
+            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+            <X size={15} /> Batal
+          </button>
+        )}
       </div>
     </div>
   );

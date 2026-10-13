@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
 import ImageUpload from "@/components/admin/ImageUpload";
 import StickyFormActions from "@/components/admin/StickyFormActions";
+import { sendJson } from "@/lib/admin-fetch";
 
 interface FormData {
   name: string; role: string; content: string;
@@ -39,17 +40,12 @@ export default function TestimonialForm({ id, initial, tours = [] }: Props) {
     }
     setSaving(true);
     setError("");
-    const res = await fetch(id ? `/api/testimonials/${id}` : "/api/testimonials", {
-      method: id ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    if (res.ok) {
+    const failure = await sendJson(id ? `/api/testimonials/${id}` : "/api/testimonials", id ? "PUT" : "POST", form);
+    if (!failure) {
       router.push("/admin/testimonials");
       router.refresh();
     } else {
-      const d = await res.json().catch(() => ({}));
-      setError(d.error ?? "Gagal menyimpan.");
+      setError(failure);
       setSaving(false);
     }
   }

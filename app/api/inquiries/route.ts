@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermissions } from "@/lib/permissions";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 const str = (v: unknown, max = 500) =>
@@ -58,6 +59,8 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermissions(session, ["inquiry_view"]))
+    return NextResponse.json({ error: "Tidak memiliki izin melihat lead" }, { status: 403 });
   const items = await prisma.inquiry.findMany({
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],
   });

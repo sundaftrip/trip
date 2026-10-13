@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission } from "@/lib/permissions";
 import { revalidatePublicContent } from "@/lib/revalidate";
+import { logActivity } from "@/lib/activityLog";
 
 // PUT — update a FAQ item
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -30,7 +31,13 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         ...(active    !== undefined && { active }),
       },
     });
-    await revalidatePublicContent({ paths: previous?.active || faq.active ? ["/", "/faq", "/visa/faq"] : [], changedAt: faq.updatedAt }); // /faq & /visa/faq kini ISR — segarkan langsung
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "UPDATE", resource: "FAQ",
+      resourceId: faq.id, resourceName: faq.question.slice(0, 120),
+      detail: active !== undefined && Object.keys(body).length === 1 ? (faq.active ? "Ditampilkan" : "Disembunyikan") : undefined,
+    });
+    await revalidatePublicContent({ paths: previous?.active || faq.active ? ["/", "/faq", "/visa", "/visa/faq"] : [], changedAt: faq.updatedAt }); // /faq & /visa/faq kini ISR — segarkan langsung
     return NextResponse.json(faq);
   } catch {
     return NextResponse.json({ error: "Gagal mengupdate FAQ" }, { status: 500 });
@@ -48,7 +55,12 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   try {
     const deleted = await prisma.faq.delete({ where: { id } });
-    await revalidatePublicContent({ paths: deleted.active ? ["/", "/faq", "/visa/faq"] : [] });
+    await logActivity({
+      userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+      userRole: session.user.role, action: "DELETE", resource: "FAQ",
+      resourceId: id, resourceName: deleted.question.slice(0, 120),
+    });
+    await revalidatePublicContent({ paths: deleted.active ? ["/", "/faq", "/visa", "/visa/faq"] : [] });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Gagal menghapus FAQ" }, { status: 500 });

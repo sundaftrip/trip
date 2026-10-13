@@ -440,7 +440,7 @@ model LedgerEntry {
 }
 
 // Database visa 88 negara — info persyaratan visa paspor Indonesia.
-// Dikelola lewat CMS (/admin/visa-database), tampil di halaman publik /visa.
+// Dikelola lewat CMS (/admin/database-visa), tampil di halaman publik /visa.
 model CountryVisa {
   id             String    @id @default(cuid())
   sortOrder      Int       @default(0)
@@ -509,6 +509,9 @@ model Inquiry {
   @@index([status, createdAt])
 }
 
+// ARSIP: modul Diskusi Visa dihapus dari CMS dan website (Oktober 2026).
+// Model di bawah dipertahankan agar data lama tetap ada di database;
+// tidak ada kode aplikasi yang membaca atau menulisnya lagi.
 enum VisaDiscussionStatus {
   PENDING
   PUBLISHED
@@ -622,8 +625,9 @@ model B2bCatalogPassword {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  MODUL REFERRAL — MVP tracking partner → WhatsApp → lead → komisi.
-//  Dipisah dari Inquiry supaya data partner, komisi, dan dispute tetap jelas.
+//  MODUL REFERRAL — ARSIP. Dihapus dari CMS dan website (Oktober 2026).
+//  Model dipertahankan agar data partner, lead, dan komisi lama tetap ada;
+//  tidak ada kode aplikasi yang membaca atau menulisnya lagi.
 // ─────────────────────────────────────────────────────────────
 
 enum ReferralPartnerType {

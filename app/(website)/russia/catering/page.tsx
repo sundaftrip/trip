@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import RussiaCatering from "@/components/website/clean/RussiaCatering";
-import { getConfiguredWhatsAppNumber } from "@/lib/referrals";
+import { getConfiguredWhatsAppNumber } from "@/lib/company-whatsapp";
 import { toWaNumber } from "@/lib/utils";
 
 export const revalidate = 300;

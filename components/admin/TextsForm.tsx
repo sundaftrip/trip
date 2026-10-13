@@ -2,88 +2,72 @@
 
 import { useState } from "react";
 import StickyFormActions from "./StickyFormActions";
-
-interface Section {
-  section: string;
-  keys: string[];
-}
+import ImageUpload from "./ImageUpload";
+import { sendJson } from "@/lib/admin-fetch";
+import { HOME_TEXT_FIELDS } from "@/lib/home-text-fields";
 
 interface Props {
-  sections: Section[];
-  initialValues: Record<string, { id?: string; en?: string }>;
+  initialValues: Record<string, string>;
 }
 
-function labelFromKey(key: string) {
-  return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-export default function TextsForm({ sections, initialValues }: Props) {
-  const [values, setValues] = useState<Record<string, { id: string; en: string }>>(
-    () => {
-      const init: Record<string, { id: string; en: string }> = {};
-      sections.forEach(({ keys }) =>
-        keys.forEach((k) => {
-          init[k] = { id: initialValues[k]?.id ?? "", en: initialValues[k]?.en ?? "" };
-        })
-      );
-      return init;
-    }
+export default function TextsForm({ initialValues }: Props) {
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(HOME_TEXT_FIELDS.map((field) => [field.key, initialValues[field.key] ?? ""])),
   );
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [lang, setLang] = useState<"id" | "en">("id");
+  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
 
-  function set(key: string, field: "id" | "en", value: string) {
-    setValues((p) => ({ ...p, [key]: { ...p[key], [field]: value } }));
+  function set(key: string, value: string) {
+    setValues((current) => ({ ...current, [key]: value }));
   }
 
   async function handleSave() {
     setSaving(true);
-    await fetch("/api/texts", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    setMessage(null);
+    const error = await sendJson("/api/texts", "PUT",
+      Object.fromEntries(Object.entries(values).map(([key, value]) => [key, { id: value.trim() }])));
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setMessage(error ? { tone: "error", text: error } : { tone: "ok", text: "Tersimpan. Beranda sudah diperbarui." });
   }
 
   return (
     <div className="space-y-6">
-      <StickyFormActions
-        loading={saving}
-        primaryLabel={saved ? "Tersimpan!" : "Simpan Semua"}
-        onSave={handleSave}
-      />
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-600 dark:text-gray-400">Bahasa:</span>
-        <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <button onClick={() => setLang("id")} className={`px-4 py-1.5 text-sm font-medium transition ${lang === "id" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50"}`}>🇮🇩 Indonesia</button>
-          <button onClick={() => setLang("en")} className={`px-4 py-1.5 text-sm font-medium transition ${lang === "en" ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50"}`}>🇬🇧 English</button>
-        </div>
-      </div>
+      <StickyFormActions loading={saving} primaryLabel="Simpan" onSave={handleSave} />
 
-      {sections.map(({ section, keys }) => (
-        <div key={section} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{section}</h2>
-          <div className="space-y-4">
-            {keys.map((key) => (
-              <div key={key}>
-                <label className="label mb-1">{labelFromKey(key)}</label>
-                <textarea
-                  rows={key === "hero_sundaf" ? 8 : 2}
-                  className="input"
-                  value={values[key]?.[lang] ?? ""}
-                  onChange={(e) => set(key, lang, e.target.value)}
-                  placeholder={`Teks ${labelFromKey(key)} (${lang.toUpperCase()})`}
-                />
-              </div>
-            ))}
+      {message && (
+        <div role={message.tone === "error" ? "alert" : "status"} className={`rounded-xl border p-4 text-sm ${
+          message.tone === "error"
+            ? "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300"
+            : "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-300"
+        }`}>
+          {message.text}
+        </div>
+      )}
+
+      <section className="space-y-5 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+        {HOME_TEXT_FIELDS.map((field) => (
+          <div key={field.key}>
+            <label className="label mb-1" htmlFor={`text-${field.key}`}>{field.label}</label>
+            {field.kind === "image" ? (
+              <ImageUpload value={values[field.key] ?? ""} onChange={(url) => set(field.key, url)}
+                folder="travel" uploadLabel="Upload foto beranda" publicImage />
+            ) : field.kind === "textarea" ? (
+              <textarea id={`text-${field.key}`} rows={3} maxLength={field.maxLength} className="input"
+                value={values[field.key] ?? ""} placeholder={field.defaultValue}
+                onChange={(e) => set(field.key, e.target.value)} />
+            ) : (
+              <input id={`text-${field.key}`} maxLength={field.maxLength} className="input"
+                value={values[field.key] ?? ""} placeholder={field.defaultValue}
+                onChange={(e) => set(field.key, e.target.value)} />
+            )}
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{field.hint}</p>
           </div>
-        </div>
-      ))}
+        ))}
+      </section>
 
+      <a href="/" target="_blank" rel="noopener noreferrer" className="inline-block text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+        Lihat beranda
+      </a>
     </div>
   );
 }

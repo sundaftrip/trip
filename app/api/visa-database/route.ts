@@ -2,6 +2,8 @@ import { visaContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 
 type VisaInput = {
@@ -63,14 +65,22 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "visa_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin mengelola database visa" }, { status: 403 });
 
-  const body = (await req.json()) as VisaInput;
+  const body = (await req.json().catch(() => null)) as VisaInput | null;
+  if (!body) return NextResponse.json({ error: "Bad request" }, { status: 400 });
   const data = pickInput(body);
   if (!data.name || !data.visa) {
     return NextResponse.json({ error: "Nama negara & jenis visa wajib diisi." }, { status: 400 });
   }
 
   const entry = await prisma.countryVisa.create({ data });
+  await logActivity({
+    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+    userRole: session.user.role, action: "CREATE", resource: "VISA",
+    resourceId: entry.id, resourceName: entry.name,
+  });
   await revalidatePublicContent(visaContentChange(null, entry)); // /visa & /visa/[slug] kini ISR — segarkan langsung
   return NextResponse.json(entry, { status: 201 });
 }
