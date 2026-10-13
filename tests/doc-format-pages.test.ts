@@ -9,6 +9,8 @@ test("the Sundaf DMC document format is shared by the public pages", () => {
   const shell = globals.match(/\.public-site-shell \{([^}]*)\}/)?.[1] ?? "";
   assert.match(shell, /--doc-amber: #eab067;/);
   assert.match(shell, /--doc-green: #2e6751;/);
+  // Anchors opened from another page clear the fixed header before hydration too.
+  assert.match(globals, /html:has\(\.public-site-shell\) \{\s*scroll-padding-top: 92px;/);
 
   const doc = read("components/website/clean/DocFormat.module.css");
   const tag = doc.match(/\.tag\.tag\.tag \{([^}]*)\}/)?.[1] ?? "";
@@ -44,4 +46,29 @@ test("the catalog header fills the desktop width with a note and three described
   assert.match(css, /\.trustCounts a\[aria-current="page"\] \{[^}]*background: var\(--doc-green\);/);
   // The old muted paragraph rule must not override the lede.
   assert.doesNotMatch(css, /\.heroLayout > div > p:last-child/);
+});
+
+test("the about page uses the document format on the atlas theme", () => {
+  const page = read("app/(website)/about/page.tsx");
+  assert.match(page, /import CleanAbout from "@\/components\/website\/clean\/CleanAbout";/);
+  assert.match(page, /if \(isAtlas\) \{[\s\S]*?<BreadcrumbSchema crumbs=\{crumbs\} \/>[\s\S]*?<CleanAbout/);
+
+  const about = read("components/website/clean/CleanAbout.tsx");
+  assert.match(about, /<p className=\{doc\.eyebrow\}>Tentang kami \/ Sundaf Trip<\/p>/);
+  assert.match(about, /<h1 id="about-page-title" className=\{`\$\{doc\.title\} \$\{styles\.title\}`\}>/);
+  for (const id of ["about-story-title", "about-gallery-title", "about-routes-title", "about-values-title", "about-form-title"]) {
+    assert.match(about, new RegExp(`<h2 id="${id}" className=\\{doc\\.tag\\}>`));
+  }
+  assert.match(about, /<table className=\{`\$\{doc\.table\} \$\{styles\.table\}`\}>/);
+  // Anchors and language hints from the previous page stay in place.
+  assert.match(about, /id="sundaf-group"/);
+  assert.match(about, /className=\{doc\.tag\} data-no-translate translate="no">SUNDAF Holiday Group<\/h2>/);
+  assert.match(about, /aria-labelledby="about-company-title" lang="en"/);
+  assert.match(about, /<ScrollReveal rootId="about-page" \/>/);
+
+  const css = read("components/website/clean/CleanAbout.module.css");
+  const fade = css.match(/@keyframes about-fade \{([\s\S]*?)\n\}/)?.[1] ?? "";
+  assert.match(fade, /opacity: 0/);
+  assert.doesNotMatch(fade, /transform/);
+  assert.match(css, /@media \(prefers-reduced-motion: no-preference\)/);
 });

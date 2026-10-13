@@ -2162,6 +2162,12 @@ html.public-site-active {
   scroll-padding-top: 92px;
 }
 
+/* A link with #anchor opened from another page jumps before hydration adds
+   .public-site-active, so the header offset is also taken from the markup. */
+html:has(.public-site-shell) {
+  scroll-padding-top: 92px;
+}
+
 .public-site-shell :where(a[href], button:not(:disabled), summary, [role="button"]:not([aria-disabled="true"])) {
   -webkit-tap-highlight-color: rgba(8, 127, 140, 0.12);
   transform-origin: center;

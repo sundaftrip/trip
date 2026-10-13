@@ -1,0 +1,208 @@
+/* About page in the Sundaf DMC document format (see DocFormat.module.css). */
+.page {
+  --site-accent: var(--doc-green);
+  min-height: 100%;
+  padding-top: 68px;
+  overflow-x: clip;
+  background: #fff;
+  color: var(--doc-navy);
+  font-family: var(--site-font-family, var(--font-dm-sans)), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+}
+
+.shell {
+  width: min(1040px, 100%);
+  margin-inline: auto;
+  padding: clamp(36px, 5vw, 56px) 20px clamp(60px, 7vw, 88px);
+}
+
+.page :where(p, li, dd, td) {
+  text-align: left;
+  hyphens: manual;
+  overflow-wrap: anywhere;
+}
+
+/* Header: title on the left, the short promise on the right (same pattern as
+   the tours catalog), so the first screen uses the full width. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  gap: 20px clamp(32px, 5vw, 64px);
+  align-items: end;
+}
+
+.title {
+  max-width: 19ch;
+  font-size: clamp(34px, 4.3vw, 52px);
+  line-height: 1.08;
+}
+
+.lead { max-width: 52ch; }
+
+.nib {
+  margin: 12px 0 0;
+  color: var(--doc-slate);
+  font-size: 13px;
+}
+
+/* Text on the left, a supporting box or key figures on the right. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, .55fr);
+  gap: 24px clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* Key figures as tinted cells, like the rows of the PDF table. */
+.stats {
+  margin: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.stats > div {
+  min-width: 0;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 4px;
+  background: var(--doc-sage);
+}
+
+.stats > div:nth-child(even) { background: var(--doc-sand); }
+.stats dt { color: var(--doc-ink); font-size: 13px; line-height: 1.4; }
+.stats dd { margin: 0; color: var(--doc-navy); font-size: 30px; font-weight: 700; line-height: 1.1; }
+
+.section {
+  margin-top: clamp(44px, 5vw, 60px);
+  scroll-margin-top: 32px;
+}
+
+.section > h2 + * { margin-top: 18px; }
+
+.prose { max-width: 70ch; }
+.prose p { margin: 0 0 14px; color: var(--doc-ink); font-size: 16px; line-height: 1.72; }
+.prose p:last-child { margin-bottom: 0; }
+
+.note {
+  max-width: 70ch;
+  margin-bottom: 18px;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.table th:first-child { width: 32%; }
+
+/* Service principles as tinted boxes, two per row on wider screens. */
+.values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.values p,
+.profile p {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.profile p { margin-bottom: 16px; }
+
+/* The shared inquiry form, flat inside a sand box. */
+.form :global(input),
+.form :global(select),
+.form :global(textarea) {
+  border: 1px solid #dcdcd2 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: var(--doc-navy) !important;
+}
+
+.form :global(button[type="submit"]) {
+  border-radius: 999px !important;
+  background: var(--doc-green) !important;
+}
+
+.cta {
+  margin-top: clamp(48px, 6vw, 72px);
+  text-align: left;
+}
+
+.cta.cta { padding: clamp(24px, 4vw, 40px); }
+
+.cta h2 { font-size: clamp(24px, 3vw, 34px); }
+
+.cta > p {
+  max-width: 62ch;
+  margin: 12px 0 0;
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.actions {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.secondary {
+  min-height: 48px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--doc-navy);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.secondary:hover { color: var(--doc-green); }
+
+@media (max-width: 900px) {
+  .hero,
+  .split { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stats dd { font-size: 26px; }
+}
+
+@media (max-width: 700px) {
+  .shell { padding-inline: 16px; }
+  .title { font-size: clamp(30px, 8.6vw, 38px); }
+  .stats > div { padding: 12px 12px 14px; }
+  .stats dt { font-size: 12px; }
+  .stats dd { font-size: 24px; }
+  .section { margin-top: 40px; }
+  .values { grid-template-columns: 1fr; }
+  .table th:first-child { width: 38%; }
+  .actions { display: grid; }
+  .actions > * { width: 100%; }
+}
+
+/* Calm reveal while scrolling (ScrollReveal); sections only fade so anchors
+   such as #sundaf-group land in the right place. */
+@media (prefers-reduced-motion: no-preference) {
+  .page[data-reveal-ready] [data-reveal] {
+    animation: about-fade 520ms var(--site-motion-ease, cubic-bezier(.2, .65, .2, 1)) backwards;
+    animation-play-state: paused;
+  }
+
+  .page[data-reveal-ready] [data-reveal][data-revealed="true"] { animation-play-state: running; }
+  .page[data-reveal-ready] [data-reveal][data-revealed="instant"] { animation: none; }
+}
+
+@media print {
+  .page [data-reveal] { animation: none !important; }
+}
+
+@keyframes about-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

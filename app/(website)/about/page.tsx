@@ -11,6 +11,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import GalleryZoom from "@/components/website/GalleryZoom";
 import InquiryForm from "@/components/website/InquiryForm";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
+import CleanAbout from "@/components/website/clean/CleanAbout";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { ABOUT_GALLERY_IMAGES } from "@/lib/static-gallery-manifests";
 
@@ -115,6 +116,30 @@ export default async function AboutPage() {
   const nib       = company["company_nib"]       ?? "";
   const whatsapp  = toWaNumber(company["company_whatsapp"]);
   const waLink    = whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi paket wisata.")}` : "/tours";
+  const crumbs = [
+    { name: "Beranda", url: "/" },
+    { name: "Tentang Kami", url: "/about" },
+  ];
+
+  // Atlas theme: the Sundaf DMC document format (amber section tags, tinted boxes, tables).
+  if (isAtlas) {
+    return (
+      <>
+        <BreadcrumbSchema crumbs={crumbs} />
+        <CleanAbout
+          story={story}
+          values={values.map(({ title, desc }: { title: string; desc: string }) => ({ title, desc }))}
+          destinations={destinations}
+          tagline={tagline}
+          nib={nib}
+          waLink={waLink}
+          tourCount={tourCount}
+          blogCount={blogCount}
+          gallery={gallery}
+        />
+      </>
+    );
+  }
 
   const divStyle = isOutlined
     ? { borderColor: bdrClr }
@@ -135,12 +160,7 @@ export default async function AboutPage() {
       className={`${isAtlas ? supportStyles.atlasPage : "pt-24"} min-h-screen ${!isOutlined ? "bg-white dark:bg-slate-950" : ""}`}
       style={wrapperStyle}
     >
-      <BreadcrumbSchema
-        crumbs={[
-          { name: "Beranda", url: "/" },
-          { name: "Tentang Kami", url: "/about" },
-        ]}
-      />
+      <BreadcrumbSchema crumbs={crumbs} />
       <div className={isAtlas ? supportStyles.aboutShell : "max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"}>
 
         {/* ── Hero ───────────────────────────────────────────────── */}
