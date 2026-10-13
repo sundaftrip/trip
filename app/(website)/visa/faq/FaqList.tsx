@@ -2,6 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 import StableDetails from "@/components/website/clean/StableDetails";
+import doc from "@/components/website/clean/DocFormat.module.css";
+import styles from "./VisaFaqDoc.module.css";
 
 export type FaqItem = {
   q: string;
@@ -128,7 +130,7 @@ export function FaqList({
   };
 
   return (
-    <div className="space-y-3">
+    <div className={styles.list}>
       {items.map((item, i) => {
         const ctaText =
           item.layanan === null
@@ -136,68 +138,35 @@ export function FaqList({
             : item.layanan ?? DEFAULT_LAYANAN_CTA;
         const isOpen = openSet.has(i);
         return (
-          <StableDetails
-            key={i}
-            className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
-          >
-            <summary className="cursor-pointer list-none px-5 py-4 flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-gray-900/60">
-              <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base leading-snug">
-                {item.q}
-              </span>
-              <span className="shrink-0 mt-0.5 w-6 h-6 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-500 group-open:rotate-45 transition-transform text-lg leading-none">
-                +
-              </span>
+          <StableDetails key={i} className={styles.item}>
+            <summary className={styles.summary}>
+              <span>{item.q}</span>
+              <span className={styles.plus} aria-hidden="true">+</span>
             </summary>
-            <div className="px-5 pb-5 pt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed space-y-3">
+            <div className={styles.answer}>
               {item.a}
               {ctaText && (
-                <div
-                  className="mt-4 pt-3 border-t"
-                  style={{
-                    borderColor:
-                      "color-mix(in srgb, var(--site-accent-ink,#075d63) 18%, transparent)",
-                  }}
-                >
+                <div className={styles.cta}>
                   {showInlinePreview ? (
                     <>
                       <button
                         type="button"
                         onClick={() => toggle(i)}
                         aria-expanded={isOpen}
-                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold hover:underline cursor-pointer"
-                        style={{ color: "var(--site-accent-ink,#075d63)" }}
+                        className={styles.ctaButton}
                       >
-                        <span
-                          aria-hidden="true"
-                          className={`inline-block transition-transform duration-200 ${
-                            isOpen ? "rotate-90" : ""
-                          }`}
-                        >
-                          →
-                        </span>
+                        <span aria-hidden="true">{isOpen ? "↓" : "→"}</span>
                         <span>{ctaText}</span>
                       </button>
                       {isOpen && (
-                        <div
-                          className="mt-4 p-4 sm:p-5 rounded-lg border bg-gray-50 dark:bg-gray-800/60 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200"
-                          style={{
-                            borderColor:
-                              "color-mix(in srgb, var(--site-accent-ink,#075d63) 28%, transparent)",
-                          }}
-                        >
-                          <div className="mb-1 text-[11px] font-bold uppercase tracking-wider">
-                            <span className="stabilo">Pengurusan Visa via Sundaf</span>
-                          </div>
+                        <div className={styles.preview}>
+                          <p className={doc.subhead}>Pengurusan visa via Sundaf</p>
                           {PENGURUSAN_VISA_DETAIL}
                         </div>
                       )}
                     </>
                   ) : (
-                    <a
-                      href="#layanan-pendukung"
-                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold hover:underline"
-                      style={{ color: "var(--site-accent-ink,#075d63)" }}
-                    >
+                    <a href="#layanan-pendukung" className={styles.ctaButton}>
                       <span aria-hidden="true">→</span>
                       <span>{ctaText}</span>
                     </a>

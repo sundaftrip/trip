@@ -23,6 +23,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import StableDetails from "@/components/website/clean/StableDetails";
 import VisaConsultationForm from "../VisaConsultationForm";
 import styles from "../VisaPages.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 // ISR 5 menit: konten visa jarang berubah, force-dynamic bikin TTFB lambat
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
@@ -265,7 +266,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
               className={styles.detailFlag}
             />
             <div>
-              <p className={styles.detailEyebrow}>{country.region}</p>
+              <p className={styles.detailEyebrow}>Visa / {country.region}</p>
               <h1 className={styles.detailTitle} id="visa-country-title">
                 Visa {country.name}
               </h1>
@@ -345,7 +346,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             id="overview"
             aria-labelledby="overview-title"
           >
-            <h2 id="overview-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 id="overview-title" className={doc.tag}>
               Ringkasan
             </h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -395,7 +396,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             id="eligibility"
             aria-labelledby="eligibility-title"
           >
-            <h2 id="eligibility-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 id="eligibility-title" className={doc.tag}>
               Syarat Kelayakan
             </h2>
             <ul className="space-y-2">
@@ -418,7 +419,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             id="dokumen"
             aria-labelledby="documents-title"
           >
-            <h2 id="documents-title" className="text-xl font-bold mb-1.5 text-gray-900 dark:text-white">
+            <h2 id="documents-title" className={doc.tag}>
               {isRussia ? "Dokumen dan persiapan e-Visa" : "Dokumen Wajib"}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-2xl leading-relaxed">
@@ -530,7 +531,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             id="layanan"
             aria-labelledby="service-title"
           >
-            <h2 id="service-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 id="service-title" className={doc.tag}>
               Layanan &amp; Harga
             </h2>
             {(officialFee || servicePrice) && (
@@ -635,7 +636,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
                     Add-on terpisah
                   </p>
-                  <h2 id="protection-title" className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
+                  <h2 id="protection-title" className={`${styles.boxHeading} mt-1`}>
                     Asuransi Visa Protection
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
@@ -679,7 +680,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             id="proses"
             aria-labelledby="process-title"
           >
-            <h2 id="process-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 id="process-title" className={doc.tag}>
               Proses Pengurusan
             </h2>
             <ol className="relative space-y-3 text-sm">
@@ -724,7 +725,7 @@ export default async function VisaDetailPage({ params }: PageProps) {
             id="faq"
             aria-labelledby="country-faq-title"
           >
-            <h2 id="country-faq-title" className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 id="country-faq-title" className={doc.tag}>
               FAQ
             </h2>
             <div className={styles.faqList}>

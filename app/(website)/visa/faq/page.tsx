@@ -1,8 +1,10 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
-import { HelpCircle, ChevronLeft, MessageCircle } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { FaqList, type FaqItem } from "./FaqList";
+import doc from "@/components/website/clean/DocFormat.module.css";
+import styles from "./VisaFaqDoc.module.css";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { prisma } from "@/lib/prisma";
 import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
@@ -87,7 +89,7 @@ export default async function VisaFaqPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 bg-gray-50 dark:bg-gray-950">
+    <div className={styles.page}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -99,25 +101,17 @@ export default async function VisaFaqPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(VISA_FAQ_SCHEMA) }}
       />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
-        <Link
-          href="/visa"
-          className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-6"
-        >
-          <ChevronLeft size={14} />
+      <div className={styles.shell}>
+        <Link href="/visa" className={styles.back}>
+          <ChevronLeft size={14} aria-hidden="true" />
           Kembali ke Database Visa
         </Link>
 
-        <div className="flex items-center gap-2 mb-2">
-          <HelpCircle size={20} style={{ color: "var(--site-accent-ink,#075d63)" }} />
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            FAQ Teknis Visa
-          </span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        <p className={doc.eyebrow}>FAQ teknis visa / Sundaf Trip</p>
+        <h1 className={`${doc.title} ${styles.title}`}>
           Kasus Teknis yang Sering Bikin Reject
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-2xl leading-relaxed">
+        <p className={styles.lede}>
           Jawaban praktis untuk situasi yang tidak ada di checklist standar
           kedutaan, dari status cerai, anak di bawah 18, sampai strategi apply
           ulang setelah visa ditolak.
@@ -127,32 +121,21 @@ export default async function VisaFaqPage() {
           const items = bySection(sec.db).map(toItem);
           if (items.length === 0) return null;
           return (
-            <section key={sec.db} id={sec.id} className={`mb-12${sec.id ? " scroll-mt-24" : ""}`}>
-              <div className="mb-1">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                  <span className="stabilo">{sec.title}</span>
-                </h2>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{sec.sub}</p>
+            <section key={sec.db} id={sec.id} className={styles.section}>
+              <h2 className={doc.tag}>{sec.title}</h2>
+              <p className={styles.sectionNote}>{sec.sub}</p>
               <FaqList items={items} showInlinePreview={sec.inlinePreview ?? true} />
             </section>
           );
         })}
 
-        <div
-          className="mb-12 p-6 sm:p-8 border"
-          style={{
-            background: "color-mix(in srgb, var(--site-accent-ink,#075d63) 8%, transparent)",
-            borderColor: "color-mix(in srgb, var(--site-accent-ink,#075d63) 25%, transparent)",
-          }}
-        >
-          <div className="flex items-start gap-3 mb-3">
-            <MessageCircle size={20} className="shrink-0 mt-0.5" style={{ color: "var(--site-accent-ink,#075d63)" }} />
+        <div className={`${doc.boxSage} ${styles.box}`}>
+          <div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+              <h3 className={styles.boxTitle}>
                 Punya kasus yang tidak ada di sini?
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p>
                 Profil borderline, pernah reject, atau dokumen tidak standar,
                 setiap kasus punya konteks sendiri yang tidak bisa di-template.
                 Konsultasi awal gratis lewat WhatsApp di pojok kanan bawah.
@@ -164,11 +147,11 @@ export default async function VisaFaqPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-7">
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+        <div className={`${doc.boxSand} ${styles.box}`}>
+          <p className={doc.subhead}>
             Disclaimer
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+          <p>
             Informasi di halaman ini bersifat panduan praktis berdasarkan
             pengalaman lapangan. Aturan kedutaan bisa berubah tanpa pemberitahuan.
             Selalu cek persyaratan resmi di situs VFS/BLS atau kedutaan negara

@@ -109,3 +109,84 @@ test("journal tour suggestions lead with the subtotal and bookable trips", () =>
   const cleanArticle = read("components/website/clean/CleanBlogArticle.tsx");
   assert.match(cleanArticle, /<CleanTourCard key=\{tour\.id\} tour=\{tour\} compact catalog \/>/);
 });
+
+test("support pages and the FAQ use the document format on the atlas theme", () => {
+  const support = read("components/website/clean/SupportPages.module.css");
+  assert.match(support, /--support-primary: var\(--doc-green, #2e6751\);/);
+  const card = support.match(/\.atlasPage :global\(\.at-card\) \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(card, /border: 0;/);
+  assert.match(card, /background: var\(--doc-sand, #f5f5ef\);/);
+  // Legal text (terms) gets amber tags for its sections.
+  assert.match(support, /\.proseContent\.proseContent :global\(h2\) \{[^}]*background: var\(--doc-amber, #eab067\);/);
+
+  for (const page of ["reviews", "legalitas-dan-keamanan", "privacy", "terms", "contact"]) {
+    const source = read(`app/(website)/${page}/page.tsx`);
+    assert.match(source, /className=\{doc\.eyebrow\}|isAtlas \? doc\.eyebrow/, page);
+    assert.match(source, /doc\.title/, page);
+  }
+  const legal = read("app/(website)/legalitas-dan-keamanan/page.tsx");
+  assert.match(legal, /<table className=\{`\$\{doc\.table\} \$\{supportStyles\.factsTable\}`\}>/);
+  assert.match(legal, /<h2 id="legal-facts-title" className=\{`\$\{doc\.tag\} \$\{supportStyles\.tagBlock\}`\}>/);
+
+  const contact = read("components/website/ContactSection.tsx");
+  assert.match(contact, /<h2 id="contact-section-title" className=\{`\$\{doc\.tag\} \$\{supportStyles\.tagBlock\}`\}>Kanal resmi<\/h2>/);
+
+  const faq = read("app/(website)/faq/page.tsx");
+  assert.match(faq, /if \(isAtlas\) \{[\s\S]*?appearance="doc"/);
+  const explorer = read("app/(website)/faq/FaqExplorer.tsx");
+  assert.match(explorer, /<h2 id=\{`\$\{section\.id\}-title`\} className=\{doc\.tag\}>/);
+  const faqCss = read("app/(website)/faq/FaqDoc.module.css");
+  assert.match(faqCss, /\.item:nth-child\(even\) \{\s*background: var\(--doc-sand\);/);
+});
+
+test("destinations, Russia services, private trip and visa pages drop the dark bands", () => {
+  const index = read("components/website/clean/DestinationIndex.module.css");
+  assert.doesNotMatch(index.slice(index.indexOf(".guideSection {"), index.indexOf(".guideLayout {")), /background: var\(--destination-primary\)/);
+  assert.match(read("app/(website)/destinations/page.tsx"), /<h2 id="regional-title" className=\{doc\.tag\}>/);
+
+  const hub = read("components/website/clean/DestinationHub.module.css");
+  assert.doesNotMatch(hub, /\.practical \{\s*background: #075d63;/);
+  assert.match(read("app/(website)/destinations/[slug]/page.tsx"), /<h2 id="destination-tours-title" className=\{doc\.tag\}>/);
+
+  const russia = read("components/website/clean/RussiaServices.module.css");
+  assert.match(russia, /\.serviceGrid article:nth-child\(even\) \{\s*background: var\(--doc-sand, #f5f5ef\);/);
+
+  const wizard = read("components/website/clean/CustomTripWizard.module.css");
+  const wizardBox = wizard.match(/\n\.wizard \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(wizardBox, /background: var\(--doc-sand, #f5f5ef\);/);
+  assert.match(wizardBox, /box-shadow: none;/);
+
+  const visa = read("app/(website)/visa/VisaPages.module.css");
+  const visaHero = visa.match(/\n\.hero \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(visaHero, /background: #fff;/);
+  assert.doesNotMatch(visa, /linear-gradient\(145deg, #05484d/);
+  const detail = read("app/(website)/visa/[slug]/page.tsx");
+  for (const id of ["overview-title", "eligibility-title", "documents-title", "service-title", "process-title", "country-faq-title"]) {
+    assert.match(detail, new RegExp(`<h2 id="${id}" className=\\{doc\\.tag\\}>`));
+  }
+});
+
+test("GEO landing pages, visa FAQ and protection, catering, Latin America, profile and media kit use the document format", () => {
+  const geo = read("app/(website)/geo-page.tsx");
+  assert.match(geo, /<p className=\{doc\.eyebrow\}>\{eyebrow\}<\/p>/);
+  assert.match(geo, /<h2 id="geo-faq-title" className=\{doc\.tag\}>FAQ<\/h2>/);
+  assert.doesNotMatch(geo, /className="stabilo"/);
+
+  assert.match(read("app/(website)/visa/faq/page.tsx"), /<h2 className=\{doc\.tag\}>\{sec\.title\}<\/h2>/);
+  const protection = read("app/(website)/visa/asuransi-visa-protection/page.tsx");
+  assert.match(protection, /<h2 id="visa-protection-faq-title" className=\{doc\.tag\}>/);
+  assert.doesNotMatch(protection, /bg-gray-50 pt-24/);
+
+  const catering = read("components/website/clean/RussiaCatering.module.css");
+  assert.match(catering, /\.page em \{[^}]*var\(--doc-amber, #eab067\)/);
+
+  const latin = read("components/website/LatinAmerica.module.css");
+  assert.doesNotMatch(latin, /border-left/);
+  assert.doesNotMatch(latin, /#075d63/);
+
+  const profile = read("app/(website)/sundaf-trip/CompanyProfile.module.css");
+  assert.doesNotMatch(profile, /\.contents \{[^}]*background: var\(--ink\)/);
+
+  const mediaKit = read("app/(website)/media-kit/page.tsx");
+  assert.match(mediaKit, /<table className=\{`\$\{doc\.table\} \$\{supportStyles\.factsTable\}`\}>/);
+});

@@ -1,9 +1,11 @@
+/* Brand profile in the Sundaf DMC document format (DocFormat.module.css): green
+   eyebrows, bold navy titles, amber highlighter, flat sage/sand boxes. */
 .page {
-  --ink: #132b3a;
-  --muted: #495b64;
-  --teal: #075d63;
-  --line: #dce3e2;
-  --paper: #faf9f6;
+  --ink: var(--doc-navy, #1e3645);
+  --muted: var(--doc-ink, #2f4352);
+  --teal: var(--doc-green, #2e6751);
+  --line: rgb(30 54 69 / 13%);
+  --paper: var(--doc-sand, #f5f5ef);
   padding-top: 68px;
   background: #fff;
   color: var(--ink);
@@ -16,7 +18,8 @@
 .page :where(h1, h2, h3, p, figure, blockquote, ul, ol) { margin: 0; }
 .page :where(h1, h2, h3) { color: var(--ink); text-wrap: balance; }
 .page :where(p, li, blockquote) { text-align: left; overflow-wrap: anywhere; }
-.page :where(a, summary):focus-visible { outline: 3px solid #1fa5a3; outline-offset: 5px; border-radius: 2px; }
+.page :where(a, summary):focus-visible { outline: 3px solid color-mix(in srgb, var(--doc-green, #2e6751) 40%, transparent); outline-offset: 5px; border-radius: 2px; }
+.page.page.page :is(h1, h2, h3) { font-weight: 700; letter-spacing: -.02em; }
 .page :where(a) { -webkit-tap-highlight-color: transparent; text-decoration: none; }
 .page :where(section[id]) { scroll-margin-top: 96px; }
 
@@ -25,7 +28,7 @@
   margin-inline: auto;
 }
 
-.hero { background: var(--paper); border-bottom: 1px solid var(--line); }
+.hero { background: #fff; border-bottom: 1px solid var(--line); }
 .heroInner { padding-block: 24px 76px; }
 .breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 12px; }
 .breadcrumb a { min-height: 44px; display: inline-flex; align-items: center; }
@@ -33,82 +36,86 @@
 .breadcrumb > span[aria-hidden] { color: #8b999f; }
 .heroLayout { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(295px, 0.85fr); gap: clamp(38px, 6vw, 92px); align-items: center; padding-top: 36px; }
 .heroCopy { padding-top: 11px; }
-.eyebrow { display: flex; align-items: center; gap: 12px; color: var(--teal); font-size: 11px; line-height: 1.5; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.eyebrow { display: flex; align-items: center; gap: 12px; color: var(--teal); font-size: 13px; line-height: 1.5; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
 .eyebrow > span { letter-spacing: 0.05em; }
-.hero h1 { margin-top: 23px; font-size: clamp(62px, 6.7vw, 88px); line-height: 1.05; letter-spacing: -0.06em; font-weight: 500; }
+.hero h1 { margin-top: 16px; font-size: clamp(48px, 6vw, 76px); line-height: 1.05; }
 .heroDescription { margin-top: 27px !important; max-width: 610px; font-size: 18px; line-height: 1.85; color: var(--muted); }
 .heroActions { display: flex; align-items: flex-start; flex-direction: column; gap: 16px; margin-top: 32px; }
-.primaryButton { display: inline-flex; justify-content: center; align-items: center; min-height: 52px; padding: 13px 22px; background: var(--teal); color: #fff; border: 1px solid var(--teal); border-radius: 3px; font-size: 14px; font-weight: 500; line-height: 1.5; transition: background 160ms ease, border-color 160ms ease; }
-.primaryButton:hover { background: #05484d; border-color: #05484d; }
-.secondaryLink { display: inline-block; min-height: 44px; padding-block: 11px; color: var(--teal); font-size: 14px; line-height: 1.5; font-weight: 500; }
-.contents { padding: 30px 30px 18px; background: var(--ink); color: #fff; border-radius: 3px; }
-.contentsLabel { padding-bottom: 23px; color: #a5c6c8; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
+.primaryButton { display: inline-flex; justify-content: center; align-items: center; min-height: 50px; padding: 13px 22px; background: var(--teal); color: #fff; border: 1px solid var(--teal); border-radius: 999px; font-size: 14px; font-weight: 700; line-height: 1.5; transition: background 160ms ease, border-color 160ms ease; }
+.primaryButton:hover { background: #24563f; border-color: #24563f; }
+.secondaryLink { display: inline-block; min-height: 44px; padding-block: 11px; color: var(--teal); font-size: 14px; line-height: 1.5; font-weight: 700; }
+/* "In this profile" as a sage box (no dark panel). */
+.contents { padding: 26px 26px 14px; background: var(--doc-sage, #eaf3f0); color: var(--ink); border-radius: 0; }
+.contentsLabel { padding-bottom: 18px; color: var(--teal); font-size: 13px; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 700; }
 .contents ol { padding: 0; list-style: none; }
-.contents li { border-top: 1px solid #ffffff26; }
-.contents li a { display: grid; grid-template-columns: 21px minmax(0, 1fr); gap: 10px; align-items: center; min-height: 63px; padding-block: 14px; color: #f3f7f7; font-size: 13px; line-height: 1.5; }
-.contentsNumber { color: #a5c6c8; font-size: 10px; font-variant-numeric: tabular-nums; }
-.contents li a:hover { color: #94e4df; }
+.contents li { border-top: 1px solid var(--line); }
+.contents li a { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: center; min-height: 58px; padding-block: 12px; color: var(--ink); font-size: 14px; font-weight: 650; line-height: 1.5; }
+.contentsNumber { color: var(--teal); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.contents li a:hover { color: var(--teal); }
 
 .section { padding-block: 80px; }
 .sectionInner { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(40px, 7vw, 105px); }
-.sectionHeading h2, .reviews h2, .faq h2, .closing h2 { font-weight: 450; font-size: clamp(30px, 3vw, 40px); line-height: 1.2; letter-spacing: -0.035em; }
+.sectionHeading h2, .reviews h2, .faq h2, .closing h2 { font-size: clamp(28px, 3vw, 38px); line-height: 1.2; }
 .sectionHeading h2 { margin-top: 19px; max-width: 330px; }
 .sectionIntro { margin-top: 24px !important; color: var(--muted); font-size: 16px; line-height: 1.8; }
 .itemList { padding: 0; list-style: none; }
 .item { padding-block: 24px; border-bottom: 1px solid var(--line); }
 .item:first-child { padding-top: 0; }
 .item:last-child { border-bottom: 0; padding-bottom: 0; }
-.itemContent h3 { font-weight: 500; font-size: 21px; letter-spacing: -0.015em; line-height: 1.4; }
+.itemContent h3 { font-size: 20px; line-height: 1.4; }
 .itemContent p { margin-top: 10px; font-size: 16px; line-height: 1.8; color: var(--muted); }
 .itemContent p:first-child { margin-top: 0; }
-.inlineLink { font-weight: 500; color: var(--teal); }
+.inlineLink { font-weight: 650; color: var(--ink); }
 /* Clone the uneven marker on each wrapped line; 1.05em follows the text size. */
 .inlineLink, .markerText {
   padding-inline: 0.08em;
   margin-inline: -0.03em;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32' preserveAspectRatio='none'%3E%3Cpath fill='%23e3edac' fill-opacity='.82' d='M2 5 35 3 63 4 102 2 137 4 180 1 208 3 238 2 236 11 240 18 237 28 205 27 177 30 144 28 107 31 76 28 40 30 1 28 4 19 0 12Z'/%3E%3Cpath fill='%23d5e58c' fill-opacity='.28' d='M5 14 58 11 112 13 161 10 235 12 237 23 181 25 121 23 62 26 3 24Z'/%3E%3C/svg%3E");
-  background-position: center 60%;
+  background-image: linear-gradient(transparent 12%, var(--doc-amber, #eab067) 12%, var(--doc-amber, #eab067) 92%, transparent 92%);
+  background-position: center;
   background-size: 100% 1.05em;
   background-repeat: no-repeat;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-.inlineLink:hover, a:hover > .markerText { color: #043f44; }
+.inlineLink:hover, a:hover > .markerText { color: var(--teal); }
 .services .item { padding-block: 27px; }
 .services .item:first-child { padding-top: 0; }
 .services .item:last-child { padding-bottom: 0; }
 .services .itemContent h3 { font-size: 27px; }
-.support { background: #eef4f3; }
-.support .item { border-color: #cededb; }
+.support { background: var(--doc-sage, #eaf3f0); }
+.support .item { border-color: var(--line); }
 .preparation { padding-bottom: 0; }
 .preparation .sectionInner { padding-bottom: 80px; border-bottom: 1px solid var(--line); }
 .preparation .item { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 20px; padding-block: 23px; }
 .preparation .item:first-child { padding-top: 0; }
 .preparation .item:last-child { padding-bottom: 0; }
-.stepNumber { padding-top: 4px; color: var(--teal); font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 500; }
+.stepNumber { padding-top: 4px; color: var(--teal); font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 800; }
 .identity .itemContent h3 { font-size: 14px; color: var(--teal); letter-spacing: 0.015em; }
 .identity .itemContent p { font-size: 17px; }
 
 .reviews { padding-block: 6px 80px; }
 .reviewsHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; padding-top: 65px; border-top: 1px solid var(--line); }
-.quotes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; margin-top: 38px; }
+.quotes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; margin-top: 28px; }
 .quote { position: relative; padding-top: 9px; }
 .quoteMark { display: block; height: 50px; color: var(--teal); font-size: 74px; line-height: 1; }
-.quote blockquote { color: var(--ink); font-size: 18px; line-height: 1.8; font-weight: 400; white-space: pre-line; }
+.quote { padding: 22px 24px !important; background: var(--doc-sage, #eaf3f0); }
+.quote:nth-child(even) { background: var(--doc-sand, #f5f5ef); }
+.quote blockquote { color: var(--ink); font-size: 17px; line-height: 1.75; font-weight: 400; white-space: pre-line; }
 .quote figcaption { display: flex; flex-direction: column; gap: 3px; margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); }
 .quote figcaption strong { font-size: 14px; font-weight: 600; }
 .quote figcaption span { font-size: 12px; color: var(--muted); }
 
 .faq { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(40px, 7vw, 105px); padding-block: 72px 80px; border-top: 1px solid var(--line); }
 .faq h2 { margin-top: 18px; max-width: 300px; }
-.question { border-bottom: 1px solid var(--line); }
-.question:first-child { border-top: 1px solid var(--line); }
-.question summary { display: flex; align-items: center; justify-content: space-between; gap: 22px; cursor: pointer; min-height: 76px; padding-block: 21px; list-style: none; color: var(--ink); font-size: 17px; line-height: 1.5; font-weight: 500; }
+.questions { display: grid; gap: 3px; }
+.question { padding-inline: 18px; background: var(--doc-sage, #eaf3f0); }
+.question:nth-child(even) { background: var(--doc-sand, #f5f5ef); }
+.question summary { display: flex; align-items: center; justify-content: space-between; gap: 22px; cursor: pointer; min-height: 64px; padding-block: 16px; list-style: none; color: var(--ink); font-size: 16px; line-height: 1.5; font-weight: 700; }
 .question summary::-webkit-details-marker { display: none; }
 .question summary svg { flex-shrink: 0; color: var(--teal); transition: transform 160ms ease; }
 .question[open] summary svg { transform: rotate(45deg); }
-.question p { padding-bottom: 25px; color: var(--muted); font-size: 16px; line-height: 1.85; }
-.closing { display: flex; justify-content: space-between; gap: 40px; align-items: center; padding: 46px 48px; margin-bottom: 80px; background: var(--paper); border: 1px solid #e5e8e2; border-radius: 3px; }
+.question p { padding-bottom: 20px; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.closing { display: flex; justify-content: space-between; gap: 40px; align-items: center; padding: 40px 44px; margin-bottom: 80px; background: var(--paper); border: 0; border-radius: 0; }
 .closing h2 { font-size: 32px; }
 .closingActions { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; flex-shrink: 0; }
 
@@ -119,7 +126,7 @@
 @media (max-width: 900px) {
   .heroInner, .sectionInner, .reviews, .faq, .closing { width: calc(100% - 48px); }
   .heroLayout { grid-template-columns: minmax(0, 1.1fr) minmax(270px, 0.9fr); gap: 32px; }
-  .hero h1 { font-size: 64px; }
+  .hero h1 { font-size: 56px; }
   .heroDescription { font-size: 17px; }
   .contents { padding: 28px 23px 16px; }
   .sectionInner, .faq { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 40px; }
@@ -132,7 +139,7 @@
   .heroInner { padding-block: 13px 40px; }
   .heroLayout { grid-template-columns: 1fr; gap: 35px; padding-top: 20px; }
   .heroCopy { padding-top: 0; }
-  .hero h1 { font-size: clamp(52px, 14vw, 72px); margin-top: 20px; }
+  .hero h1 { font-size: clamp(42px, 12vw, 56px); margin-top: 14px; }
   .heroDescription { margin-top: 23px !important; font-size: 17px; line-height: 1.8; }
   .heroActions { gap: 11px; margin-top: 26px; }
   .heroActions .primaryButton { width: 100%; }
@@ -154,12 +161,12 @@
   .identity .itemContent p { font-size: 16px; }
   .reviews { padding-block: 0 52px; }
   .reviewsHeader { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 45px; }
-  .quotes { grid-template-columns: 1fr; gap: 35px; margin-top: 20px; }
+  .quotes { grid-template-columns: 1fr; gap: 3px; margin-top: 20px; }
   .quote blockquote { font-size: 17px; }
   .quote figcaption { margin-top: 20px; }
   .faq { padding-block: 49px 52px; }
   .faq h2 { margin-top: 13px; }
-  .question summary { font-size: 16px; min-height: 76px; gap: 16px; }
+  .question summary { font-size: 15px; min-height: 60px; gap: 16px; }
   .closing { flex-direction: column; align-items: flex-start; padding: 28px 22px; margin-bottom: 52px; gap: 25px; }
   .closing h2 { font-size: 29px; }
   .closingActions { width: 100%; }

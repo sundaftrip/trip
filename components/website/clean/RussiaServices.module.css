@@ -1,8 +1,10 @@
+/* Russia services in the Sundaf DMC document format (DocFormat.module.css):
+   bold navy title, services as tinted sage/sand cells. */
 .page {
-  --ink: #132b3a;
-  --text: #42515a;
-  --primary: #075d63;
-  --line: #d6dedc;
+  --ink: var(--doc-navy, #1e3645);
+  --text: var(--doc-ink, #2f4352);
+  --primary: var(--doc-green, #2e6751);
+  --line: #e4e6df;
   min-width: 0;
   min-height: 100vh;
   padding-top: 68px;
@@ -73,24 +75,8 @@
   height: auto;
 }
 
-.eyebrow {
-  margin: 0 0 14px;
-  color: var(--primary);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
 .sectionHeading h1 {
-  margin: 0;
-  color: var(--ink);
-  font-size: clamp(31px, 4.1vw, 49px);
-  font-weight: 760;
-  line-height: 1.06;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
+  font-size: clamp(32px, 4.2vw, 52px);
 }
 
 .sectionIntro {
@@ -102,12 +88,13 @@
   line-height: 1.62;
 }
 
-/* Match the homepage benefits section, with dividers that support multiple rows. */
+/* Services as tinted cells (sage/sand), 3px apart like the rows of the PDF
+   tables. The hover wash and the amber stroke under the title stay. */
 .serviceGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
   margin-top: 32px;
-  border-block: 1px solid var(--line);
 }
 
 .serviceGrid article {
@@ -121,8 +108,12 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 30px 25px 28px;
-  border-right: 1px solid var(--line);
+  padding: 26px 22px 22px;
+  background: var(--doc-sage, #eaf3f0);
+}
+
+.serviceGrid article:nth-child(even) {
+  background: var(--doc-sand, #f5f5ef);
 }
 
 .serviceGrid article[data-motion]::before {
@@ -130,8 +121,8 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(125deg, #e4f4ec, #f2faf6 75%, #ffffff);
-  opacity: var(--card-wash);
+  background: #fff;
+  opacity: calc(var(--card-wash) * .55);
   pointer-events: none;
 }
 
@@ -154,18 +145,6 @@
   }
 }
 
-.serviceGrid article:nth-child(4n + 1) {
-  padding-left: 0;
-}
-
-.serviceGrid article:nth-child(4n) {
-  padding-right: 0;
-  border-right: 0;
-}
-
-.serviceGrid article:nth-child(n + 5) {
-  border-top: 1px solid var(--line);
-}
 
 .serviceTitle {
   display: flex;
@@ -195,14 +174,14 @@
   transform-origin: center;
 }
 
-.serviceTitle h2 {
+.page .serviceGrid .serviceTitle h2 {
   position: relative;
   margin: 0;
   color: var(--card-heading);
   font-size: 17px;
-  font-weight: 720;
+  font-weight: 700;
   line-height: 1.32;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 
 /* Two imperfect strokes sit below the label, keeping every word readable. */
@@ -223,7 +202,7 @@
 .serviceGrid article > p {
   margin: 8px 0 18px;
   color: var(--text);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -235,8 +214,8 @@
   min-height: 44px;
   margin-top: auto;
   color: var(--primary);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 650;
   line-height: 1.55;
   text-decoration: none;
 }
@@ -284,18 +263,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .serviceGrid article:nth-child(odd) {
-    padding-left: 0;
-  }
-
-  .serviceGrid article:nth-child(even) {
-    padding-right: 0;
-    border-right: 0;
-  }
-
-  .serviceGrid article:nth-child(n + 3) {
-    border-top: 1px solid var(--line);
-  }
 }
 
 @media (max-width: 759px) {
@@ -348,8 +315,8 @@
     height: 52px;
   }
 
-  .serviceTitle h2 {
-    font-size: 14px;
+  .page .serviceGrid .serviceTitle h2 {
+    font-size: 14.5px;
     line-height: 1.32;
   }
 

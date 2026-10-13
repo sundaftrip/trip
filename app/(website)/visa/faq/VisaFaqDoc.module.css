@@ -1,0 +1,194 @@
+/* Visa technical FAQ in the Sundaf DMC document format (DocFormat.module.css). */
+
+.page {
+  min-height: 100%;
+  padding-top: 68px;
+  overflow-x: clip;
+  background: #fff;
+  color: var(--doc-navy);
+  font-family: var(--site-font-family, var(--font-dm-sans)), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+}
+
+.shell {
+  width: min(900px, 100%);
+  margin-inline: auto;
+  padding: clamp(24px, 3.6vw, 44px) 20px clamp(56px, 7vw, 88px);
+}
+
+.back {
+  min-height: 40px;
+  margin-bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--doc-green);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.title {
+  font-size: clamp(32px, 4.4vw, 48px);
+}
+
+.lede {
+  max-width: 64ch;
+  margin: 16px 0 clamp(32px, 4vw, 44px);
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.section {
+  margin-bottom: clamp(40px, 5vw, 52px);
+  scroll-margin-top: 32px;
+}
+
+.sectionNote {
+  margin: 12px 0 16px;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Questions as alternating sage/sand rows. */
+.list {
+  display: grid;
+  gap: 3px;
+}
+
+.item {
+  overflow: hidden;
+  background: var(--doc-sage);
+}
+
+.item:nth-child(even) {
+  background: var(--doc-sand);
+}
+
+.summary {
+  padding: 15px 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--doc-navy);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.plus {
+  width: 24px;
+  height: 24px;
+  margin-top: -1px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--doc-green);
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+
+.item[open] .plus {
+  transform: rotate(45deg);
+}
+
+.answer {
+  padding: 0 18px 18px;
+  display: grid;
+  gap: 10px;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.answer :global(ul) {
+  list-style: disc;
+}
+
+.answer :global(li)::marker {
+  color: var(--doc-green);
+}
+
+.answer :global(b),
+.answer :global(strong) {
+  color: var(--doc-navy);
+}
+
+.answer a {
+  color: var(--doc-green);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cta {
+  padding-top: 12px;
+  border-top: 1px solid rgb(30 54 69 / 14%);
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: none;
+  color: var(--doc-green);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ctaButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.preview {
+  margin-top: 12px;
+  padding: 16px 18px;
+  display: grid;
+  gap: 10px;
+  background: #fff;
+}
+
+.box {
+  margin-bottom: 18px;
+}
+
+.boxTitle.boxTitle.boxTitle {
+  margin: 0 0 6px;
+  color: var(--doc-navy);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.box p {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+@media (max-width: 700px) {
+  .shell {
+    padding-inline: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plus {
+    transition: none;
+  }
+}

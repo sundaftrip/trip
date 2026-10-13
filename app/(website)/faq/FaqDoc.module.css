@@ -1,0 +1,345 @@
+/* FAQ in the Sundaf DMC document format (atlas theme): sand search and chips,
+   amber section tags, questions as alternating sage/sand rows like the PDF
+   tables, and flat sage boxes for the calls to action. */
+
+.page {
+  min-height: 100%;
+  padding-top: 68px;
+  overflow-x: clip;
+  background: #fff;
+  color: var(--doc-navy);
+  font-family: var(--site-font-family, var(--font-dm-sans)), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+}
+
+.shell {
+  width: min(1040px, 100%);
+  margin-inline: auto;
+  padding: clamp(32px, 4.4vw, 56px) 20px clamp(60px, 7vw, 88px);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px clamp(32px, 5vw, 64px);
+  align-items: end;
+  margin-bottom: clamp(28px, 3.4vw, 40px);
+}
+
+.title {
+  font-size: clamp(34px, 4.4vw, 52px);
+}
+
+.lede {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.tools {
+  margin-bottom: clamp(32px, 4vw, 48px);
+  display: grid;
+  gap: 14px;
+}
+
+.searchField {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--doc-slate);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.search {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 18px 0 46px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--doc-sand);
+  color: var(--doc-navy);
+  font: inherit;
+  font-size: 16px;
+}
+
+.search::placeholder {
+  color: var(--doc-slate);
+}
+
+.search:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--doc-green) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.chips {
+  margin-inline: -20px;
+  padding: 0 20px 4px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 14px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--doc-sand);
+  color: var(--doc-navy);
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: var(--doc-sage);
+}
+
+.results {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 14px;
+}
+
+.sections {
+  display: grid;
+  gap: clamp(44px, 5vw, 60px);
+}
+
+.section {
+  scroll-margin-top: 32px;
+}
+
+.sectionNote {
+  max-width: 68ch;
+  margin: 14px 0 18px;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Questions as table rows: alternating sage/sand, 3px apart. */
+.items {
+  display: grid;
+  gap: 3px;
+}
+
+.item {
+  background: var(--doc-sage);
+}
+
+.item:nth-child(even) {
+  background: var(--doc-sand);
+}
+
+.question.question.question {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.toggle {
+  width: 100%;
+  min-height: 58px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 0;
+  background: none;
+  color: var(--doc-navy);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--doc-green) 40%, transparent);
+  outline-offset: -3px;
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: var(--doc-green);
+  transition: transform 200ms ease;
+}
+
+.toggle[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.answer {
+  padding: 0 18px 18px;
+  display: grid;
+  gap: 10px;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.answer p {
+  margin: 0;
+}
+
+.related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 14px;
+}
+
+.related > span:first-child {
+  color: var(--doc-slate);
+}
+
+.empty {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.empty strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--doc-navy);
+}
+
+/* Calls to action: flat sage boxes. */
+.cta {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+.ctaLarge {
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+.ctaText {
+  max-width: 60ch;
+}
+
+.ctaTitle.ctaTitle.ctaTitle {
+  margin: 0;
+  color: var(--doc-navy);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ctaLarge .ctaTitle.ctaTitle.ctaTitle {
+  font-size: clamp(20px, 2.4vw, 26px);
+}
+
+.ctaBody {
+  margin: 6px 0 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ctaSecondary {
+  min-height: 48px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--doc-navy);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ctaSecondary:hover {
+  color: var(--doc-green);
+}
+
+.ctaSecondary svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (min-width: 701px) {
+  .chips {
+    margin-inline: 0;
+    padding-inline: 0;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 860px) {
+  .header {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .shell {
+    padding-inline: 16px;
+  }
+
+  .chips {
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .toggle {
+    min-height: 54px;
+    padding: 13px 16px;
+    font-size: 15px;
+  }
+
+  .answer {
+    padding: 0 16px 16px;
+  }
+
+  .ctaButtons {
+    width: 100%;
+    display: grid;
+  }
+
+  .ctaButtons > * {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}

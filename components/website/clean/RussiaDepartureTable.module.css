@@ -1,31 +1,31 @@
 .section {
-  max-width: 64rem;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 0 1rem 3.5rem;
-  color: var(--at-text);
+  padding: 0 20px clamp(44px, 5vw, 60px);
+  color: var(--doc-navy, #1e3645);
 }
 
-.section h2 { margin-bottom: 1rem; font-size: 1.5rem; font-weight: 900; }
-.intro, .note, .empty { color: var(--at-subtext); font-size: .875rem; line-height: 1.7; }
-.intro { max-width: 54rem; margin-bottom: 1.25rem; }
+.intro, .note, .empty { color: var(--doc-ink, #2f4352); font-size: .9375rem; line-height: 1.65; }
+.intro { max-width: 54rem; margin: 14px 0 1.25rem; }
 .note { margin-top: 1rem; }
-.scrollHint { display: none; color: var(--at-subtext); margin-bottom: .75rem; font-size: .8rem; }
-.scroll { overflow-x: auto; border: 1px solid var(--at-border, #d9e2e7); border-radius: 1rem; }
-.scroll:focus-visible { outline: 2px solid var(--site-accent); outline-offset: 3px; }
+.scrollHint { display: none; color: var(--doc-slate, #51616a); margin-bottom: .75rem; font-size: .8rem; }
+.scroll { overflow-x: auto; }
+.scroll:focus-visible { outline: 3px solid color-mix(in srgb, var(--doc-green, #2e6751) 40%, transparent); outline-offset: 3px; }
+/* Document table: dark green header row, tinted rows (Sundaf DMC format). */
 .scroll table { width: 100%; min-width: 52rem; border-collapse: collapse; font-size: .875rem; }
-.scroll th, .scroll td { padding: 1rem; text-align: left; vertical-align: top; }
-.scroll thead { background: var(--at-card, #f1f5f7); }
+.scroll th, .scroll td { padding: .9rem 1rem; text-align: left; vertical-align: top; }
+.scroll thead { background: var(--doc-green, #2e6751); color: #fff; }
 .scroll thead th { font-weight: 700; }
-.scroll tbody + tbody { border-top: 1px solid var(--at-border, #d9e2e7); }
+.scroll tbody { background: var(--doc-sage, #eaf3f0); }
+.scroll tbody:nth-of-type(even) { background: var(--doc-sand, #f5f5ef); }
+.scroll tbody + tbody { border-top: 3px solid #fff; }
 .scroll tbody th { width: 27%; font-weight: 700; }
-.scroll td span, .scroll th span { display: block; margin-top: .4rem; color: var(--at-subtext); font-weight: 400; }
-.section a { text-decoration: underline; text-underline-offset: 4px; }
-.section a:hover { color: var(--site-accent); }
+.scroll td span, .scroll th span { display: block; margin-top: .4rem; color: var(--doc-ink, #2f4352); font-weight: 400; }
+.section a { color: var(--doc-green, #2e6751); text-decoration: underline; text-underline-offset: 4px; }
+.section a:hover { color: #24563f; }
 .scroll .status { font-size: .75rem; }
 .detail { display: block; margin-top: .6rem; font-size: .8rem; }
-.notes td { padding-top: 0; color: var(--at-subtext); font-size: .8rem; line-height: 1.7; }
-.notes strong { color: var(--at-text); }
+.notes td { padding-top: 0; color: var(--doc-ink, #2f4352); font-size: .8rem; line-height: 1.7; }
+.notes strong { color: var(--doc-navy, #1e3645); }
 
-@media (min-width: 640px) { .section { padding-inline: 1.5rem; } }
-@media (min-width: 1024px) { .section { padding-inline: 2rem; } }
-@media (max-width: 639px) { .scrollHint { display: block; } }
+@media (max-width: 639px) { .section { padding-inline: 16px; } .scrollHint { display: block; } }

@@ -16,6 +16,7 @@ import CleanTourCard from "@/components/website/clean/CleanTourCard";
 import StableDetails from "@/components/website/clean/StableDetails";
 import RussiaGuideLinks from "@/components/website/clean/RussiaGuideLinks";
 import styles from "@/components/website/clean/DestinationHub.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 export const revalidate = 300;
 
@@ -212,7 +213,7 @@ export default async function DestinationHubPage({
         <div aria-hidden="true" />
         <div className={styles.shell}>
           <p>{destination.eyebrow}</p>
-          <h1>{destination.title}</h1>
+          <h1 className={styles.heroTitle}>{destination.title}</h1>
           <span>{destination.intro}</span>
           <a href="#tour-aktif">Lihat perjalanan</a>
         </div>
@@ -220,37 +221,37 @@ export default async function DestinationHubPage({
 
       <section className={styles.facts} aria-labelledby="destination-overview-title">
         <div className={`${styles.shell} ${styles.factGrid}`}>
-          <article><span>WAKTU PERJALANAN</span><h2 id="destination-overview-title">Kapan waktu yang masuk akal?</h2><p>{destination.bestTime}</p></article>
-          <article><span>GAMBARAN RUTE</span><h2>Bagaimana alurnya?</h2><p>{destination.route}</p></article>
+          <article className={doc.boxSage}><span className={doc.subhead}>Waktu perjalanan</span><h2 id="destination-overview-title" className={styles.boxTitle}>Kapan waktu yang masuk akal?</h2><p>{destination.bestTime}</p></article>
+          <article className={doc.boxSand}><span className={doc.subhead}>Gambaran rute</span><h2 className={styles.boxTitle}>Bagaimana alurnya?</h2><p>{destination.route}</p></article>
         </div>
       </section>
 
       <section className={styles.section} id="tour-aktif" aria-labelledby="destination-tours-title">
         <div className={styles.shell}>
-          <p className={styles.kicker}>JADWAL &amp; PILIHAN AKTIF</p>
-          <h2 id="destination-tours-title">Perjalanan {destination.name}</h2>
+          <h2 id="destination-tours-title" className={doc.tag}>Perjalanan {destination.name}</h2>
           {tours.length ? (
             <div className={styles.tourRail}>{tours.map((tour) => <CleanTourCard key={tour.id} tour={tour} />)}</div>
           ) : (
-            <div className={styles.empty}><p>Belum ada jadwal tetap yang cocok untuk hub ini.</p><Link href="/custom-trip">Rancang private trip</Link></div>
+            <div className={`${doc.boxSand} ${styles.empty}`}><p>Belum ada jadwal tetap yang cocok untuk hub ini.</p><Link className={doc.button} href="/custom-trip">Rancang private trip</Link></div>
           )}
           {slug === "rusia-aurora" && <RussiaGuideLinks />}
         </div>
       </section>
 
       <section className={`${styles.section} ${styles.practical}`} aria-labelledby="practical-title">
-        <div className={`${styles.shell} ${styles.practicalGrid}`}>
-          <div><p className={styles.kicker}>SEBELUM MEMILIH</p><h2 id="practical-title">Hal praktis yang perlu dibaca</h2></div>
-          <ul>{destination.practical.map((item) => <li key={item}>{item}</li>)}</ul>
-          <Link href={destination.visaHref}>Lihat informasi visa</Link>
+        <div className={styles.shell}>
+          <div className={`${doc.boxSage} ${styles.practicalGrid}`}>
+            <div><p className={doc.subhead}>Sebelum memilih</p><h2 id="practical-title" className={styles.boxTitle}>Hal praktis yang perlu dibaca</h2></div>
+            <ul>{destination.practical.map((item) => <li key={item}>{item}</li>)}</ul>
+            <Link className={doc.textLink} href={destination.visaHref}>Lihat informasi visa</Link>
+          </div>
         </div>
       </section>
 
       {documentation.length > 0 && (
         <section className={styles.section} aria-labelledby="documentation-title">
           <div className={styles.shell}>
-            <p className={styles.kicker}>DOKUMENTASI SUNDAF</p>
-            <h2 id="documentation-title">Visual dari data perjalanan yang tersedia</h2>
+            <h2 id="documentation-title" className={doc.tag}>Dokumentasi perjalanan</h2>
             <p className={styles.sectionCopy}>Foto ini berasal dari galeri tour Sundaf. Kredit dan sumber aset tetap mengikuti catatan media yang sudah dimiliki tim.</p>
             <div className={styles.mosaic}>{documentation.map((image, index) => <Image key={image} src={image} alt={`${destination.name}, dokumentasi perjalanan ${index + 1}`} width={900} height={700} sizes="(max-width: 700px) 100vw, 50vw" />)}</div>
           </div>
@@ -260,12 +261,11 @@ export default async function DestinationHubPage({
       {posts.length > 0 && (
         <section className={styles.section} aria-labelledby="guides-title">
           <div className={styles.shell}>
-            <p className={styles.kicker}>PANDUAN TERKAIT</p>
-            <h2 id="guides-title">Baca sebelum berangkat</h2>
+            <h2 id="guides-title" className={doc.tag}>Baca sebelum berangkat</h2>
             <div className={styles.articleGrid}>{posts.map((post) => (
               <article key={post.id}>
                 <p>{post.readTime || "Panduan perjalanan"}</p>
-                <h3><Link href={`/blog/${post.slug}`}>{post.title}</Link></h3>
+                <h3 className={styles.articleTitle}><Link href={`/blog/${post.slug}`}>{post.title}</Link></h3>
                 {post.excerpt && <span>{post.excerpt}</span>}
               </article>
             ))}</div>
@@ -275,14 +275,13 @@ export default async function DestinationHubPage({
 
       <section className={styles.section} aria-labelledby="destination-faq-title">
         <div className={styles.shell}>
-          <p className={styles.kicker}>YANG SERING DITANYAKAN</p>
-          <h2 id="destination-faq-title">Tentang {destination.name}</h2>
+          <h2 id="destination-faq-title" className={doc.tag}>Yang sering ditanyakan</h2>
           <div className={styles.faqs}>{destination.faqs.map((faq) => <StableDetails key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></StableDetails>)}</div>
         </div>
       </section>
 
       <section className={styles.cta}>
-        <div className={styles.shell}><div><p>MASIH BINGUNG PILIH RUTE?</p><h2>Ceritakan tanggal dan jumlah peserta.</h2><span>Tim Sundaf akan membantu menyaring pilihan yang tersedia tanpa menjanjikan kursi sebelum dikonfirmasi.</span></div><a href={waHref} data-analytics-event="whatsapp_consultation_click">Konsultasi via WhatsApp</a></div>
+        <div className={styles.shell}><div className={`${doc.boxSand} ${styles.ctaBox}`}><div><p className={doc.subhead}>Masih bingung pilih rute?</p><h2 className={styles.boxTitle}>Ceritakan tanggal dan jumlah peserta.</h2><span>Tim Sundaf akan membantu menyaring pilihan yang tersedia tanpa menjanjikan kursi sebelum dikonfirmasi.</span></div><a className={doc.button} href={waHref} data-analytics-event="whatsapp_consultation_click">Konsultasi via WhatsApp</a></div></div>
       </section>
     </div>
   );

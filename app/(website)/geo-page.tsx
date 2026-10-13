@@ -1,6 +1,8 @@
 import type React from "react";
 import Link from "@/components/website/clean/PreserveScrollLink";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import doc from "@/components/website/clean/DocFormat.module.css";
+import styles from "./GeoPage.module.css";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import StableDetails from "@/components/website/clean/StableDetails";
@@ -41,7 +43,7 @@ function LinkedText({ text }: { text: string }) {
     const trailing = token.match(TRAILING_PUNCTUATION_RE)?.[0] ?? "";
     const href = trailing ? token.slice(0, -trailing.length) : token;
     const isInternal = href.startsWith("/");
-    const className = "font-semibold underline decoration-[var(--site-accent)] underline-offset-4 hover:opacity-80";
+    const className = styles.link;
 
     nodes.push(
       isInternal ? (
@@ -79,9 +81,9 @@ function SelectiveHighlights({ text, phrases }: { text: string; phrases: string[
       nodes.push(<LinkedText key={`plain-${index}`} text={text.slice(cursor, start)} />);
     }
     nodes.push(
-      <span className="stabilo" key={`highlight-${index}`}>
+      <mark className={doc.mark} key={`highlight-${index}`}>
         <LinkedText text={phrase} />
-      </span>
+      </mark>
     );
     cursor = start + phrase.length;
   });
@@ -120,7 +122,7 @@ export default function GeoPage({
   };
 
   return (
-    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className={styles.page}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -138,30 +140,22 @@ export default function GeoPage({
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
-          {eyebrow}
-        </span>
-        <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
-          {title}
-        </h1>
-        <div className="mt-6 max-w-3xl">
-          <p className="text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-            {descriptionHighlights?.length ? (
-              <SelectiveHighlights text={description} phrases={descriptionHighlights} />
-            ) : (
-              <span className="stabilo">
-                <LinkedText text={description} />
-              </span>
-            )}
-          </p>
-        </div>
-        <div className="mt-8 flex flex-col sm:flex-row gap-3">
-          <Link href={primaryCta.href} className="at-btn-solid inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
-            {primaryCta.label} <ArrowRight size={15} />
+      <section className={`${styles.shell} ${styles.hero}`} aria-labelledby="geo-page-title">
+        <p className={doc.eyebrow}>{eyebrow}</p>
+        <h1 id="geo-page-title" className={`${doc.title} ${styles.title}`}>{title}</h1>
+        <p className={styles.lede}>
+          {descriptionHighlights?.length ? (
+            <SelectiveHighlights text={description} phrases={descriptionHighlights} />
+          ) : (
+            <LinkedText text={description} />
+          )}
+        </p>
+        <div className={styles.actions}>
+          <Link href={primaryCta.href} className={doc.button}>
+            {primaryCta.label} <ArrowRight aria-hidden="true" />
           </Link>
           {secondaryCta && (
-            <Link href={secondaryCta.href} className="at-btn inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+            <Link href={secondaryCta.href} className={styles.secondary}>
               {secondaryCta.label}
             </Link>
           )}
@@ -170,26 +164,21 @@ export default function GeoPage({
 
       {children}
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
-        <div className="grid gap-4 md:grid-cols-2">
+      <section className={`${styles.shell} ${styles.sections}`} aria-label={`Ringkasan ${title}`}>
+        <div className={styles.boxes}>
           {sections.map((section) => (
-            <div key={section.title} className="at-card p-5">
-              <h2 className="text-lg font-black mb-3" style={{ color: "var(--at-text)" }}>
-                {section.title}
-              </h2>
+            <div key={section.title} className={styles.box}>
+              <h2 className={styles.boxTitle}>{section.title}</h2>
               {section.body && (
-                <p className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+                <p>
                   <LinkedText text={section.body} />
                 </p>
               )}
               {section.items && (
-                <ul className="space-y-2">
+                <ul className={styles.list}>
                   {section.items.map((item) => (
-                    <li key={item} className="flex gap-2 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                      <CheckCircle2 size={15} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
-                      <span>
-                        <LinkedText text={item} />
-                      </span>
+                    <li key={item}>
+                      <LinkedText text={item} />
                     </li>
                   ))}
                 </ul>
@@ -199,17 +188,13 @@ export default function GeoPage({
         </div>
       </section>
 
-      <section id="faq" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <h2 className="text-2xl font-black mb-5" style={{ color: "var(--at-text)" }}>
-          FAQ
-        </h2>
-        <div className="space-y-3">
+      <section id="faq" className={`${styles.shell} ${styles.faq}`} aria-labelledby="geo-faq-title">
+        <h2 id="geo-faq-title" className={doc.tag}>FAQ</h2>
+        <div className={styles.faqRows}>
           {faqs.map((faq) => (
-            <StableDetails key={faq.question} className="at-card p-5 group">
-              <summary className="cursor-pointer list-none font-bold text-sm" style={{ color: "var(--at-text)" }}>
-                {faq.question}
-              </summary>
-              <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+            <StableDetails key={faq.question} className={styles.faqRow}>
+              <summary>{faq.question}</summary>
+              <p>
                 <LinkedText text={faq.answer} />
               </p>
             </StableDetails>

@@ -9,6 +9,7 @@ import {
 import { canonicalTourPath } from "@/lib/seo-routes";
 import { normalizeTourDisplayTitle } from "@/lib/tour-display";
 import { formatCurrency } from "@/lib/utils";
+import doc from "./DocFormat.module.css";
 import styles from "./RussiaDepartureTable.module.css";
 
 export default function RussiaDepartureTable({
@@ -21,7 +22,7 @@ export default function RussiaDepartureTable({
   const selected = selectRussiaGuideTours(tours ?? [], now);
   return (
     <section id="jadwal-rusia" className={styles.section} aria-labelledby="russia-departures-title">
-      <h2 id="russia-departures-title">Jadwal dan biaya open trip Rusia</h2>
+      <h2 id="russia-departures-title" className={doc.tag}>Jadwal dan biaya open trip Rusia</h2>
       <p className={styles.intro}>
         Bandingkan keberangkatan yang masih ditawarkan. Harga per orang mengikuti pilihan kamar
         pada paket. Subtotal mencakup harga paket dan tambahan wajib yang terhitung di tabel;

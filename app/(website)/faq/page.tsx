@@ -4,6 +4,8 @@ export const revalidate = 300;
 import type { Metadata } from "next";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import FaqExplorer from "./FaqExplorer";
+import doc from "@/components/website/clean/DocFormat.module.css";
+import docStyles from "./FaqDoc.module.css";
 import { FAQ_BOTTOM_CTA, FAQ_SECTIONS, faqAnswerText } from "@/lib/faq-content";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
@@ -166,11 +168,8 @@ export default async function FaqPage() {
     ),
   };
 
-  return (
-    <div
-      className={`min-h-screen pt-24 ${!isOutlined ? "bg-gray-50 dark:bg-slate-950" : ""}`}
-      style={wrapperStyle}
-    >
+  const structuredData = (
+    <>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -181,6 +180,42 @@ export default async function FaqPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
+    </>
+  );
+
+  // Atlas theme: the Sundaf DMC document format.
+  if (isAtlas) {
+    return (
+      <div className={docStyles.page}>
+        {structuredData}
+        <div className={docStyles.shell}>
+          <header className={docStyles.header}>
+            <div>
+              <p className={doc.eyebrow}>Pertanyaan umum / Sundaf Trip</p>
+              <h1 className={`${doc.title} ${docStyles.title}`}>FAQ Sundaf Trip</h1>
+            </div>
+            <p className={docStyles.lede}>
+              Jawaban seputar paket tour luar negeri, bantuan visa, pembayaran, deposit tour, refund tour, keamanan perjalanan, trip aurora, private trip, corporate trip, dan keberangkatan grup sebelum Anda booking.
+            </p>
+          </header>
+          <FaqExplorer
+            sections={FAQ_SECTIONS}
+            bottomCta={FAQ_BOTTOM_CTA}
+            whatsappHref={whatsappHref}
+            theme={{ isOutlined, pfx, headClr, subClr, cardBg, bdrClr }}
+            appearance="doc"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`min-h-screen pt-24 ${!isOutlined ? "bg-gray-50 dark:bg-slate-950" : ""}`}
+      style={wrapperStyle}
+    >
+      {structuredData}
 
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <header className="mb-10">

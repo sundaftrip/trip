@@ -6,20 +6,7 @@ export const revalidate = 300;
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import { unstable_cache } from "next/cache";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-  FileText,
-  Globe2,
-  Mail,
-  MapPin,
-  Phone,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
@@ -28,6 +15,7 @@ import {
   appointmentOnlyOfficeAddress,
 } from "@/lib/business-identity";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
@@ -132,14 +120,14 @@ export default async function LegalitasKeamananPage() {
   };
 
   const facts = [
-    { icon: Building2, label: "Nama brand", value: brandName },
-    { icon: FileText, label: "Nama legal", value: legalName },
-    { icon: ShieldCheck, label: "NIB", value: nib },
-    { icon: Globe2, label: "Website resmi", value: SITE_URL, href: SITE_URL },
-    { icon: Phone, label: "WhatsApp resmi", value: phone, href: waHref },
-    { icon: Mail, label: "Email resmi", value: email, href: `mailto:${email}` },
-    { icon: Clock, label: "Jam layanan", value: openingHours },
-    { icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress },
+    { label: "Nama brand", value: brandName },
+    { label: "Nama legal", value: legalName },
+    { label: "NIB", value: nib },
+    { label: "Website resmi", value: SITE_URL, href: SITE_URL },
+    { label: "WhatsApp resmi", value: phone, href: waHref },
+    { label: "Email resmi", value: email, href: `mailto:${email}` },
+    { label: "Jam layanan", value: openingHours },
+    { label: APPOINTMENT_ONLY_LABEL, value: officeAddress },
   ];
 
   const safeSteps = [
@@ -195,13 +183,11 @@ export default async function LegalitasKeamananPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(legalSchema) }} />
 
       <section className={supportStyles.hero} aria-labelledby="legal-page-title">
-        <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
-          Verifikasi Resmi
-        </span>
-        <h1 id="legal-page-title" className={supportStyles.title} style={{ color: "var(--at-text)" }}>
+        <p className={doc.eyebrow}>Verifikasi resmi / Sundaf Trip</p>
+        <h1 id="legal-page-title" className={`${doc.title} ${supportStyles.title}`}>
           Legalitas dan Keamanan Sundaf Trip
         </h1>
-        <p className={`${supportStyles.lede} mt-6`} style={{ color: "var(--at-subtext)" }}>
+        <p className={`${doc.lead} ${supportStyles.lede} mt-6`}>
           Gunakan halaman ini untuk memeriksa identitas resmi Sundaf Trip, kanal komunikasi yang valid, dan langkah aman sebelum mengirim data atau melakukan pembayaran.
         </p>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
@@ -210,51 +196,48 @@ export default async function LegalitasKeamananPage() {
       </section>
 
       <section className={supportStyles.section} aria-labelledby="legal-facts-title">
-        <h2 id="legal-facts-title" className="sr-only">Identitas dan kanal resmi Sundaf Trip</h2>
-        <div className={`${supportStyles.factsGrid} grid gap-4 md:grid-cols-2 xl:grid-cols-3`}>
-          {facts.map(({ icon: Icon, label, value, href }) => (
-            <div key={label} className="at-card p-5">
-              <Icon aria-hidden="true" size={20} style={{ color: "var(--site-accent)" }} />
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>{label}</p>
-              {href ? (
-                <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>
-                  {value}
-                </a>
-              ) : (
-                <p className="mt-2 break-words text-sm font-black" style={{ color: "var(--at-text)" }}>{value}</p>
-              )}
-            </div>
-          ))}
-        </div>
-        <p className="mt-4 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+        <h2 id="legal-facts-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Identitas dan kanal resmi</h2>
+        <table className={`${doc.table} ${supportStyles.factsTable}`}>
+          <tbody>
+            {facts.map(({ label, value, href }) => (
+              <tr key={label}>
+                <th scope="row">{label}</th>
+                <td>
+                  {href ? (
+                    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} className={doc.textLink}>
+                      {value}
+                    </a>
+                  ) : value}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
           Model layanan: online untuk pelanggan di Indonesia. Kunjungan ke kantor hanya dengan janji temu sebelumnya (appointment only); kami tidak menerima kunjungan walk-in. Gunakan kanal resmi di halaman ini sebelum mengirim dokumen atau melakukan pembayaran.
         </p>
       </section>
 
       <section className={supportStyles.section} aria-labelledby="booking-safety-title">
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="at-card p-6 lg:p-8">
-            <AlertTriangle aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
-            <h2 id="booking-safety-title" className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Cek sebelum transfer atau kirim dokumen</h2>
-            <div className="mt-5" style={{ color: "var(--at-subtext)" }}>
-              <CompanyTransferDetails />
+          <div>
+            <h2 id="booking-safety-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Cek sebelum transfer atau kirim dokumen</h2>
+            <div className="at-card p-6 lg:p-8">
+              <div style={{ color: "var(--at-subtext)" }}>
+                <CompanyTransferDetails />
+              </div>
+              <ul className={`${supportStyles.docList} mt-5`}>
+                {safeSteps.map((item) => <li key={item}>{item}</li>)}
+              </ul>
             </div>
-            <ul className="mt-5 space-y-3">
-              {safeSteps.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  <CheckCircle2 aria-hidden="true" size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-4 content-start">
             <a href={waHref || undefined} target={waHref ? "_blank" : undefined} rel={waHref ? "noreferrer" : undefined} className="at-card p-5 transition hover:opacity-80">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Konfirmasi cepat</p>
-                  <h3 className="mt-2 text-lg font-black" style={{ color: "var(--at-text)" }}>WhatsApp resmi</h3>
+                  <p className={supportStyles.label}>Konfirmasi cepat</p>
+                  <h3 className={`${supportStyles.cardTitleSmall} mt-2`}>WhatsApp resmi</h3>
                   <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{phone}</p>
                 </div>
                 <ArrowRight aria-hidden="true" size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
@@ -263,8 +246,8 @@ export default async function LegalitasKeamananPage() {
             <a href={igUrl} target="_blank" rel="noreferrer" className="at-card p-5 transition hover:opacity-80">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Kanal sosial</p>
-                  <h3 className="mt-2 text-lg font-black" style={{ color: "var(--at-text)" }}>Instagram resmi</h3>
+                  <p className={supportStyles.label}>Kanal sosial</p>
+                  <h3 className={`${supportStyles.cardTitleSmall} mt-2`}>Instagram resmi</h3>
                   <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>@sundaf.trip</p>
                 </div>
                 <ArrowRight aria-hidden="true" size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
@@ -275,18 +258,13 @@ export default async function LegalitasKeamananPage() {
       </section>
 
       <section className={supportStyles.section} aria-labelledby="official-references-title">
-        <div className="mb-5 flex items-center gap-3">
-          <ExternalLink aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
-          <h2 id="official-references-title" className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Rujukan resmi yang dicatat</h2>
-        </div>
+        <h2 id="official-references-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Rujukan resmi yang dicatat</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {references.map((item) => (
             <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="at-card p-5 transition hover:opacity-80">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>
-                {item.category}
-              </p>
+              <p className={`${supportStyles.label} mb-3`}>{item.category}</p>
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
+                <h3 className={supportStyles.cardTitleSmall}>{item.label}</h3>
                 <ExternalLink aria-hidden="true" size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
               </div>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>
@@ -296,15 +274,12 @@ export default async function LegalitasKeamananPage() {
       </section>
 
       <section className={supportStyles.section} aria-labelledby="official-support-pages-title">
-        <div className="mb-5 flex items-center gap-3">
-          <ShieldCheck aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
-          <h2 id="official-support-pages-title" className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Halaman pendukung resmi</h2>
-        </div>
+        <h2 id="official-support-pages-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Halaman pendukung resmi</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {officialPages.map((item) => (
             <Link key={item.href} href={item.href} className="at-card p-5 transition hover:opacity-80">
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
+                <h3 className={supportStyles.cardTitleSmall}>{item.label}</h3>
                 <ArrowRight aria-hidden="true" size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
               </div>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>

@@ -3,20 +3,12 @@ export const revalidate = 300;
 
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
-import {
-  CheckCircle2,
-  Database,
-  ExternalLink,
-  FileText,
-  LockKeyhole,
-  Mail,
-  Phone,
-  ShieldCheck,
-} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 const SITE_URL = "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
@@ -139,13 +131,11 @@ export default async function PrivacyPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(privacySchema) }} />
 
       <section className={supportStyles.hero} aria-labelledby="privacy-page-title">
-        <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
-          Privasi Data
-        </span>
-        <h1 id="privacy-page-title" className={supportStyles.title} style={{ color: "var(--at-text)" }}>
+        <p className={doc.eyebrow}>Privasi data / Sundaf Trip</p>
+        <h1 id="privacy-page-title" className={`${doc.title} ${supportStyles.title}`}>
           Kebijakan Privasi Sundaf Trip
         </h1>
-        <p className={`${supportStyles.lede} mt-6`} style={{ color: "var(--at-subtext)" }}>
+        <p className={`${doc.lead} ${supportStyles.lede} mt-6`}>
           Halaman ini menjelaskan bagaimana Sundaf Trip mengumpulkan, menggunakan, menyimpan, dan melindungi data pribadi calon traveler, peserta trip, partner, dan pengguna situs.
         </p>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
@@ -154,68 +144,52 @@ export default async function PrivacyPage() {
       </section>
 
       <section className={supportStyles.section} aria-labelledby="privacy-contact-title">
-        <h2 id="privacy-contact-title" className="sr-only">Kontak pengelola data</h2>
+        <h2 id="privacy-contact-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Kontak pengelola data</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="at-card p-5">
-            <ShieldCheck aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Pengelola data</p>
+            <p className={supportStyles.label}>Pengelola data</p>
             <p className="mt-2 text-sm font-black" style={{ color: "var(--at-text)" }}>{legalName}</p>
             <p className="mt-1 text-xs" style={{ color: "var(--at-subtext)" }}>NIB {nib}</p>
           </div>
           <div className="at-card p-5">
-            <Mail aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>Email resmi</p>
+            <p className={supportStyles.label}>Email resmi</p>
             <a href={`mailto:${email}`} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>{email}</a>
           </div>
           <div className="at-card p-5">
-            <Phone aria-hidden="true" size={22} style={{ color: "var(--site-accent)" }} />
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>WhatsApp resmi</p>
+            <p className={supportStyles.label}>WhatsApp resmi</p>
             <a href={waHref || undefined} target={waHref ? "_blank" : undefined} rel={waHref ? "noreferrer" : undefined} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>{phone}</a>
           </div>
         </div>
       </section>
 
       <section className={supportStyles.section} aria-labelledby="privacy-practices-title">
-        <h2 id="privacy-practices-title" className="sr-only">Data dan tujuan penggunaan</h2>
+        <h2 id="privacy-practices-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Data dan tujuan penggunaan</h2>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="at-card p-6">
-            <Database aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
-            <h3 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Data yang dapat kami kumpulkan</h3>
-            <ul className="mt-5 space-y-3">
-              {dataItems.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  <CheckCircle2 aria-hidden="true" size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
-                  <span>{item}</span>
-                </li>
-              ))}
+            <h3 className={supportStyles.cardTitle}>Data yang dapat kami kumpulkan</h3>
+            <ul className={`${supportStyles.docList} mt-4`}>
+              {dataItems.map((item) => <li key={item}>{item}</li>)}
             </ul>
           </div>
 
           <div className="at-card p-6">
-            <LockKeyhole aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
-            <h3 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Tujuan penggunaan data</h3>
-            <ul className="mt-5 space-y-3">
-              {useItems.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
-                  <CheckCircle2 aria-hidden="true" size={16} className="mt-0.5 shrink-0" style={{ color: "var(--site-accent)" }} />
-                  <span>{item}</span>
-                </li>
-              ))}
+            <h3 className={supportStyles.cardTitle}>Tujuan penggunaan data</h3>
+            <ul className={`${supportStyles.docList} mt-4`}>
+              {useItems.map((item) => <li key={item}>{item}</li>)}
             </ul>
           </div>
         </div>
       </section>
 
       <section className={supportStyles.section} aria-labelledby="privacy-sharing-title">
+        <h2 id="privacy-sharing-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Pembagian data kepada pihak terkait</h2>
         <div className="at-card p-6 lg:p-8">
-          <FileText aria-hidden="true" size={24} style={{ color: "var(--site-accent)" }} />
-          <h2 id="privacy-sharing-title" className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Pembagian data kepada pihak terkait</h2>
-          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+          <p className="text-[15px] leading-relaxed" style={{ color: "var(--at-subtext)" }}>
             Sundaf Trip tidak menjual data pribadi. Data hanya dibagikan sejauh diperlukan untuk menjalankan layanan yang diminta, menjaga keamanan, atau memenuhi kewajiban hukum.
           </p>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {shareItems.map((item) => (
-              <div key={item} className="rounded-lg border p-4" style={{ borderColor: "var(--at-border)" }}>
+              <div key={item} className="bg-white p-4">
                 <p className="text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item}</p>
               </div>
             ))}
@@ -224,16 +198,16 @@ export default async function PrivacyPage() {
       </section>
 
       <section className={supportStyles.section} aria-labelledby="privacy-storage-rights-title">
-        <h2 id="privacy-storage-rights-title" className="sr-only">Penyimpanan data dan hak pengguna</h2>
+        <h2 id="privacy-storage-rights-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Penyimpanan data dan hak pengguna</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="at-card p-6">
-            <h3 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Penyimpanan dan keamanan</h3>
+            <h3 className={supportStyles.cardTitle}>Penyimpanan dan keamanan</h3>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
               Data disimpan selama diperlukan untuk layanan, administrasi, pembukuan, penyelesaian sengketa, dan kewajiban hukum. Akses dibatasi pada tim atau penyedia layanan yang memerlukannya untuk menjalankan tugas.
             </p>
           </div>
           <div className="at-card p-6">
-            <h3 className="text-xl font-black" style={{ color: "var(--at-text)" }}>Hak dan permintaan pengguna</h3>
+            <h3 className={supportStyles.cardTitle}>Hak dan permintaan pengguna</h3>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
               Pengguna dapat meminta akses, koreksi, atau penghapusan data yang tidak lagi diperlukan, sepanjang permintaan tersebut tidak bertentangan dengan kewajiban hukum, administrasi, atau keamanan layanan.
             </p>
@@ -242,9 +216,9 @@ export default async function PrivacyPage() {
       </section>
 
       <section className={supportStyles.section} aria-labelledby="privacy-legal-reference-title">
+        <h2 id="privacy-legal-reference-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Rujukan hukum</h2>
         <div className="at-card p-6">
-          <h2 id="privacy-legal-reference-title" className="text-xl font-black" style={{ color: "var(--at-text)" }}>Rujukan hukum</h2>
-          <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+          <p className="text-[15px] leading-relaxed" style={{ color: "var(--at-subtext)" }}>
             Kebijakan ini disusun dengan memperhatikan prinsip pelindungan data pribadi di Indonesia, termasuk UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">

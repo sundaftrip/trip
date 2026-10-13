@@ -4,20 +4,9 @@ export const revalidate = 300;
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import { unstable_cache } from "next/cache";
-import {
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-  FileText,
-  Globe2,
-  Mail,
-  MapPin,
-  Newspaper,
-  Phone,
-  AtSign,
-} from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
+import supportStyles from "@/components/website/clean/SupportPages.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
@@ -118,16 +107,16 @@ export default async function MediaKitPage() {
     "Sundaf Trip adalah biro perjalanan Indonesia yang fokus pada tour Rusia, Asia Tengah, aurora borealis, dan bantuan visa untuk traveler Indonesia.";
 
   const facts = [
-    { icon: Building2, label: "Nama brand", value: brandName },
-    { icon: FileText, label: "Nama legal", value: legalName },
-    { icon: CheckCircle2, label: "NIB", value: nib },
-    { icon: Globe2, label: "Website resmi", value: SITE_URL, href: SITE_URL },
-    { icon: MapPin, label: "Model layanan", value: "Online untuk pelanggan di Indonesia; kunjungan kantor hanya dengan janji temu" },
-    { icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress },
-    { icon: Mail, label: "Email", value: email, href: `mailto:${email}` },
-    { icon: Phone, label: "Telepon/WhatsApp", value: phone || "081-775-2027-59", href: phoneHref },
-    { icon: Clock, label: "Jam layanan", value: openingHours },
-    { icon: AtSign, label: "Instagram", value: "@sundaf.trip", href: igUrl },
+    { label: "Nama brand", value: brandName },
+    { label: "Nama legal", value: legalName },
+    { label: "NIB", value: nib },
+    { label: "Website resmi", value: SITE_URL, href: SITE_URL },
+    { label: "Model layanan", value: "Online untuk pelanggan di Indonesia; kunjungan kantor hanya dengan janji temu" },
+    { label: APPOINTMENT_ONLY_LABEL, value: officeAddress },
+    { label: "Email", value: email, href: `mailto:${email}` },
+    { label: "Telepon/WhatsApp", value: phone || "081-775-2027-59", href: phoneHref },
+    { label: "Jam layanan", value: openingHours },
+    { label: "Instagram", value: "@sundaf.trip", href: igUrl },
   ];
 
   const officialPages = [
@@ -208,7 +197,7 @@ export default async function MediaKitPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+    <div className={`${supportStyles.atlasPage} min-h-screen`}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -217,53 +206,51 @@ export default async function MediaKitPage() {
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(mediaSchema) }} />
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <span className="at-pill mb-5 inline-flex text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--at-subtext)" }}>
-          Rujukan Resmi
-        </span>
-        <h1 className="max-w-4xl text-4xl lg:text-6xl font-black leading-tight" style={{ color: "var(--at-text)" }}>
+      <section className={supportStyles.hero} aria-labelledby="media-kit-title">
+        <p className={doc.eyebrow}>Rujukan resmi / Sundaf Trip</p>
+        <h1 id="media-kit-title" className={`${doc.title} ${supportStyles.title}`}>
           Media Kit dan Profil Resmi Sundaf Trip
         </h1>
-        <p className="mt-6 max-w-3xl text-base lg:text-lg leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+        <p className={`${doc.lead} ${supportStyles.lede}`}>
           Halaman ini merangkum data resmi Sundaf Trip untuk direktori, partner, media, dan marketplace travel yang membutuhkan rujukan brand yang konsisten.
         </p>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {facts.map(({ icon: Icon, label, value, href }) => (
-            <div key={label} className="at-card p-5">
-              <Icon size={20} style={{ color: "var(--site-accent)" }} />
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>{label}</p>
-              {href ? (
-                <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} className="mt-2 block break-words text-sm font-black underline underline-offset-4" style={{ color: "var(--at-text)" }}>
-                  {value}
-                </a>
-              ) : (
-                <p className="mt-2 break-words text-sm font-black" style={{ color: "var(--at-text)" }}>{value}</p>
-              )}
-            </div>
-          ))}
-        </div>
+      <section className={supportStyles.section} aria-labelledby="media-kit-facts-title">
+        <h2 id="media-kit-facts-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Data resmi</h2>
+        <table className={`${doc.table} ${supportStyles.factsTable}`}>
+          <tbody>
+            {facts.map(({ label, value, href }) => (
+              <tr key={label}>
+                <th scope="row">{label}</th>
+                <td>
+                  {href ? (
+                    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} className={doc.textLink}>
+                      {value}
+                    </a>
+                  ) : value}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="at-card p-6">
-            <Newspaper size={24} style={{ color: "var(--site-accent)" }} />
-            <h2 className="mt-4 text-2xl font-black" style={{ color: "var(--at-text)" }}>Profil singkat resmi</h2>
-            <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+      <section className={supportStyles.section} aria-labelledby="media-kit-profile-title">
+        <h2 id="media-kit-profile-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Profil singkat resmi</h2>
+        <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className={`${doc.boxSage} p-6`}>
+            <p className="text-[15px] leading-relaxed" style={{ color: "var(--at-subtext)" }}>
               {description}
             </p>
-
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-[3px] sm:grid-cols-2">
             {officialPages.map((item) => (
-              <Link key={item.href} href={item.href} className="at-card p-5 transition hover:opacity-80">
+              <Link key={item.href} href={item.href} className="at-card p-5">
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
-                  <ArrowRight size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                  <h3 className={supportStyles.cardTitleSmall}>{item.label}</h3>
+                  <ArrowRight size={17} className="shrink-0" style={{ color: "var(--site-accent)" }} aria-hidden="true" />
                 </div>
                 <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>
               </Link>
@@ -272,26 +259,21 @@ export default async function MediaKitPage() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="mb-5 flex items-center gap-3">
-          <ExternalLink size={22} style={{ color: "var(--site-accent)" }} />
-          <h2 className="text-2xl font-black" style={{ color: "var(--at-text)" }}>Sumber verifikasi dan rujukan industri</h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
+      <section className={supportStyles.section} aria-labelledby="media-kit-references-title">
+        <h2 id="media-kit-references-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Sumber verifikasi dan rujukan industri</h2>
+        <div className="grid gap-[3px] md:grid-cols-2">
           {externalReferences.map((item) => (
-            <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="at-card p-5 transition hover:opacity-80">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "var(--at-subtext)" }}>
-                {item.category}
-              </p>
+            <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="at-card p-5">
+              <p className={`${supportStyles.label} mb-3`}>{item.category}</p>
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-base font-black" style={{ color: "var(--at-text)" }}>{item.label}</h3>
-                <ExternalLink size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} />
+                <h3 className={supportStyles.cardTitleSmall}>{item.label}</h3>
+                <ExternalLink size={16} className="shrink-0" style={{ color: "var(--site-accent)" }} aria-hidden="true" />
               </div>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.desc}</p>
             </a>
           ))}
         </div>
-        <p className="mt-5 text-xs leading-relaxed" style={{ color: "var(--at-subtext)" }}>
+        <p className="mt-5 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>
           Catatan: rujukan eksternal di atas dipakai untuk membantu pengecekan mandiri. Direktori asosiasi tidak berarti Sundaf Trip mengklaim keanggotaan di asosiasi tersebut.
         </p>
       </section>
