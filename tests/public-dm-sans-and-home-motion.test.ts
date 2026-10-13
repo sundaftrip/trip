@@ -70,3 +70,9 @@ test("phones show trips as a two-column catalog", () => {
   assert.match(rail, /sizes="\(max-width: 759px\) 50vw/);
   assert.doesNotMatch(rail, /aria-roledescription="carousel"/);
 });
+
+test("photos and catalog tiles use no dashed lines", () => {
+  for (const path of ["components/website/clean/home/CleanHome.module.css", "components/website/clean/CleanSite.module.css"]) {
+    assert.doesNotMatch(read(path), /dashed/, path);
+  }
+});

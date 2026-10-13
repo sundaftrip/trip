@@ -2435,7 +2435,7 @@
   .footer * { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
-/* Photo frames: a soft aurora tint in the corner and a thin dashed "ticket" line. */
+/* Photos: a soft aurora tint in the top corner. */
 .tourPhoto::before {
   content: "";
   position: absolute;
@@ -2445,24 +2445,6 @@
   background: linear-gradient(150deg, rgba(32, 184, 181, .22) 0%, rgba(32, 184, 181, 0) 40%);
 }
 
-.tourPhoto::after {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  z-index: 2;
-  pointer-events: none;
-  border: 1px dashed rgba(255, 255, 255, .58);
-  border-radius: 12px;
-  transition: inset .42s var(--site-motion-ease), border-color .42s ease;
-}
-
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .tourCard:hover .tourPhoto::after {
-    inset: 14px;
-    border-color: rgba(255, 255, 255, .9);
-  }
-}
-
 /* Tours catalog on phones: compact cards, two per row (see ToursCatalog .grid). */
 @media (max-width: 700px) {
   .tourCardCatalog { border-radius: 16px !important; }
@@ -2470,7 +2452,6 @@
     aspect-ratio: 1 / 1;
     border-radius: 14px 14px 0 0 !important;
   }
-  .tourCardCatalog .tourPhoto::after { inset: 7px; border-radius: 10px; }
   .tourCardCatalog .tourPhotoShade { inset: 22% 0 0; }
   .tourCardCatalog .tourStatus {
     top: 10px;
