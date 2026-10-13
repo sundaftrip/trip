@@ -1,6 +1,8 @@
 import NextAuth, { type Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import { logActivity } from "@/lib/activityLog";
+import { rateLimit } from "@/lib/rate-limit";
 import bcrypt from "bcryptjs";
 
 type PersistedAuthUser = {
@@ -69,9 +71,13 @@ const nextAuth = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
+        // Email dicocokkan tanpa membedakan huruf besar/kecil; akun lama yang
+        // tersimpan dengan huruf besar tetap bisa masuk.
+        const email = String(credentials.email).trim();
+        // Rem percobaan tebak password: maks 10 kali per 15 menit per email (per instance).
+        if (!rateLimit(`login:${email.toLowerCase()}`, 10, 15 * 60_000)) return null;
+        const user = await prisma.user.findUnique({ where: { email } })
+          ?? await prisma.user.findFirst({ where: { email: { equals: email, mode: "insensitive" } } });
 
         if (!user) return null;
 
@@ -109,6 +115,31 @@ const nextAuth = NextAuth({
         ? token.sessionVersion
         : undefined;
       return session;
+    },
+  },
+  events: {
+    async signIn({ user }) {
+      if (!user?.id) return;
+      await logActivity({
+        userId: user.id,
+        userName: user.name ?? user.email ?? "-",
+        userRole: typeof user.role === "string" ? user.role : "",
+        action: "LOGIN",
+        resource: "AUTH",
+        detail: "Masuk ke CMS",
+      });
+    },
+    async signOut(message) {
+      const token = "token" in message ? message.token : null;
+      if (!token || typeof token.id !== "string") return;
+      await logActivity({
+        userId: token.id,
+        userName: typeof token.name === "string" ? token.name : typeof token.email === "string" ? token.email : "-",
+        userRole: typeof token.role === "string" ? token.role : "",
+        action: "LOGOUT",
+        resource: "AUTH",
+        detail: "Keluar dari CMS",
+      });
     },
   },
   pages: {

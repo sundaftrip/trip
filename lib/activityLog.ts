@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 
 export type LogAction = "CREATE" | "UPDATE" | "DELETE" | "LOGIN" | "LOGOUT";
-export type LogResource = "TOUR" | "RECEIPT" | "BLOG" | "USER" | "SETTINGS" | "TEXTS" | "PERMISSIONS" | "SCRAPER" | "GEO" | "B2B_CATALOG";
+export type LogResource =
+  | "TOUR" | "RECEIPT" | "BLOG" | "USER" | "SETTINGS" | "TEXTS" | "PERMISSIONS" | "SCRAPER" | "GEO" | "B2B_CATALOG"
+  | "FAQ" | "TERMS" | "TESTIMONIAL" | "INQUIRY" | "VISA" | "AUTH";
 
 interface LogParams {
   userId: string;

@@ -2,6 +2,9 @@ import { visaContentChange } from "@/lib/indexnow-content";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
+import { logActivity } from "@/lib/activityLog";
+import { apiError } from "@/lib/api-error";
 import { revalidatePublicContent } from "@/lib/revalidate";
 
 type VariantInput = {
@@ -116,9 +119,12 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "visa_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin mengelola database visa" }, { status: 403 });
 
   const { id } = await params;
-  const body = (await req.json()) as VisaInput;
+  const body = (await req.json().catch(() => null)) as VisaInput | null;
+  if (!body) return NextResponse.json({ error: "Bad request" }, { status: 400 });
   const data = pickInput(body);
   if (!data.name || !data.visa) {
     return NextResponse.json({ error: "Nama negara & jenis visa wajib diisi." }, { status: 400 });
@@ -127,6 +133,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   // Atomic: update country + replace variants (delete-then-create) dalam 1 transaksi.
   const previous = await prisma.countryVisa.findUnique({ where: { id }, select: { en: true, updatedAt: true } });
+  if (!previous) return NextResponse.json({ error: "Data visa tidak ditemukan." }, { status: 404 });
   const result = await prisma.$transaction(async (tx) => {
     const updated = await tx.countryVisa.update({ where: { id }, data });
     if (variantData !== null) {
@@ -143,6 +150,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   });
 
+  await logActivity({
+    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+    userRole: session.user.role, action: "UPDATE", resource: "VISA",
+    resourceId: id, resourceName: result?.name,
+  });
   await revalidatePublicContent(visaContentChange(previous, result)); // /visa & /visa/[slug] kini ISR — segarkan langsung
   return NextResponse.json(result);
 }
@@ -150,11 +162,22 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "visa_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin mengelola database visa" }, { status: 403 });
 
   const { id } = await params;
   // VisaVariant otomatis ke-cascade lewat onDelete: Cascade di schema.
-  const previous = await prisma.countryVisa.findUnique({ where: { id }, select: { en: true, updatedAt: true } });
-  await prisma.countryVisa.delete({ where: { id } });
+  const previous = await prisma.countryVisa.findUnique({ where: { id }, select: { en: true, name: true, updatedAt: true } });
+  try {
+    await prisma.countryVisa.delete({ where: { id } });
+  } catch (err) {
+    return apiError(err);
+  }
+  await logActivity({
+    userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
+    userRole: session.user.role, action: "DELETE", resource: "VISA",
+    resourceId: id, resourceName: previous?.name,
+  });
   await revalidatePublicContent(visaContentChange(previous, null));
   return NextResponse.json({ success: true });
 }

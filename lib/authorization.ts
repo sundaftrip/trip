@@ -68,6 +68,24 @@ export function requiredPermissionsForMutation(
   ];
 }
 
+/**
+ * Removes gated fields whose submitted value equals the stored value, so a
+ * full-form save that leaves the status or publication flag untouched only
+ * needs the ordinary edit permission. The input object is not modified.
+ */
+export function withoutUnchangedFields(
+  input: Record<string, unknown>,
+  current: Record<string, unknown> | null | undefined,
+  fields: readonly string[],
+): Record<string, unknown> {
+  if (!current) return input;
+  const result = { ...input };
+  for (const field of fields) {
+    if (field in result && result[field] === current[field]) delete result[field];
+  }
+  return result;
+}
+
 export function getPublicationCreatePolicy(
   requestedPublished: boolean | undefined,
   createPermission: string,

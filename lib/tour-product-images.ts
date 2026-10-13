@@ -1,3 +1,4 @@
+import { isAllowedCmsImageUrl } from "@/lib/cms-image-hosts";
 export type TourProductImageInput = {
   id?: string | null;
   slug?: string | null;
@@ -104,27 +105,7 @@ function choose(seed: string, images: readonly string[]) {
 
 function controlledCmsImage(value?: string | null) {
   const source = value?.trim();
-  if (!source) return null;
-  if (/^\/(?!\/)/.test(source)) return source;
-
-  try {
-    const url = new URL(source);
-    const allowedHost =
-      url.protocol === "https:"
-      && (
-        url.hostname === "res.cloudinary.com"
-        || url.hostname === "images.unsplash.com"
-        || url.hostname === "picsum.photos"
-        || url.hostname === "fastly.picsum.photos"
-        || url.hostname === "images.pexels.com"
-        || url.hostname === "upload.wikimedia.org"
-        || url.hostname.endsWith(".pexels.com")
-        || url.hostname.endsWith(".rbth.com")
-      );
-    return allowedHost ? source : null;
-  } catch {
-    return null;
-  }
+  return source && isAllowedCmsImageUrl(source) ? source : null;
 }
 
 const VIETNAM_MIXED = [

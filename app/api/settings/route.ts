@@ -7,22 +7,14 @@ import { auth } from "@/lib/auth";
 import { revalidateTag, revalidatePath } from "next/cache";
 import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
-import { PLAN_FEATURES } from "@/lib/plan";
-import { getPlan } from "@/lib/license";
 import { apiError } from "@/lib/api-error";
+import { EDITABLE_SETTING_KEYS } from "@/lib/company-settings";
 
 const PUBLIC_SETTING_KEYS = [
   "about_destinations",
   "about_story",
   "about_tagline",
   "about_values",
-  "color_accent",
-  "color_blog_title",
-  "color_eyebrow",
-  "color_heading",
-  "color_hero",
-  "color_scheme",
-  "color_tour_title",
   "company_description",
   "company_email",
   "company_facebook",
@@ -39,9 +31,6 @@ const PUBLIC_SETTING_KEYS = [
   "company_website",
   "company_whatsapp",
   "company_youtube",
-  "favicon_logo",
-  "site_font",
-  "site_theme",
 ] as const;
 
 const PUBLIC_SETTING_KEY_SET = new Set<string>(PUBLIC_SETTING_KEYS);
@@ -87,53 +76,47 @@ export async function PUT(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let body: Record<string, string>;
+  let body: Record<string, unknown>;
   try { body = await req.json(); } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
+  }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Format pengaturan tidak valid." }, { status: 400 });
   }
   if (Object.keys(body).some(isInternalCompanyInfoKey)) {
     return NextResponse.json({ error: "Pengaturan internal tidak dapat diubah melalui CMS." }, { status: 400 });
   }
+  // Hanya kunci yang memang punya form di CMS yang boleh ditulis.
+  const unknownKeys = Object.keys(body).filter((key) => !EDITABLE_SETTING_KEYS.has(key));
+  if (unknownKeys.length > 0) {
+    return NextResponse.json({ error: `Pengaturan ini tidak bisa diubah dari CMS: ${unknownKeys.join(", ")}` }, { status: 400 });
+  }
   // Hanya nilai string yang diterima (kolom CompanyInfo.value bertipe String)
-  for (const k of Object.keys(body)) {
-    if (typeof body[k] !== "string") delete body[k];
+  const values: Record<string, string> = {};
+  for (const [key, value] of Object.entries(body)) {
+    if (typeof value === "string") values[key] = value.trim();
+  }
+  if (Object.keys(values).length === 0) {
+    return NextResponse.json({ error: "Tidak ada perubahan untuk disimpan." }, { status: 400 });
   }
 
   // Keep the WhatsApp number in the digits-only form wa.me links need,
   // regardless of how it was typed in the admin panel.
-  if (typeof body.company_whatsapp === "string") {
-    body.company_whatsapp = body.company_whatsapp.replace(/\D/g, "");
+  if (typeof values.company_whatsapp === "string") {
+    values.company_whatsapp = values.company_whatsapp.replace(/\D/g, "");
   }
 
-  // Block plan-locked features — plan diresolusi dari MASTER
-  const plan = await getPlan();
-
-  if (body.site_theme && body.site_theme !== "classic") {
-    const featureKey = `theme_${body.site_theme}`;
-    if (PLAN_FEATURES[featureKey] === "pro" && plan !== "pro") {
-      return NextResponse.json({ error: "Tema ini memerlukan paket Pro" }, { status: 403 });
-    }
-  }
-
-  // Skema warna juga fitur Pro
-  if (body.color_scheme && PLAN_FEATURES["color_schemes"] === "pro" && plan !== "pro") {
-    return NextResponse.json({ error: "Skema warna memerlukan paket Pro" }, { status: 403 });
-  }
-
-  const isColorChange = Object.keys(body).some((k) => k.startsWith("color_") || k.startsWith("site_"));
-  const permKey = isColorChange ? "color_edit" : "company_edit";
-
-  if (!await checkPermission(session, permKey))
+  if (!await checkPermission(session, "company_edit"))
     return NextResponse.json({ error: "Tidak memiliki izin" }, { status: 403 });
 
   try {
     const previous = await prisma.companyInfo.findMany({
-      where: { key: { in: Object.keys(body).filter((key) => key.startsWith("company_") || key.startsWith("about_")) } },
+      where: { key: { in: Object.keys(values).filter((key) => key.startsWith("company_") || key.startsWith("about_")) } },
       select: { key: true, value: true },
     });
-    const discoveryChange = settingsContentChange(Object.fromEntries(previous.map((row) => [row.key, row.value])), body);
+    const discoveryChange = settingsContentChange(Object.fromEntries(previous.map((row) => [row.key, row.value])), values);
     await Promise.all(
-      Object.entries(body).map(([key, value]) =>
+      Object.entries(values).map(([key, value]) =>
         prisma.companyInfo.upsert({ where: { key }, update: { value }, create: { key, value } })
       )
     );
@@ -144,13 +127,14 @@ export async function PUT(req: NextRequest) {
     // Schema Organization juga baca info perusahaan — ikut disegarkan biar sinkron
     (revalidateTag as unknown as (t: string) => void)("site-org-schema");
     (revalidateTag as unknown as (t: string) => void)("company-info");
-    // Tema/warna/font berdampak ke seluruh halaman — buang cache rute sesitus
+    // Info perusahaan tampil di header/footer seluruh halaman — buang cache rute sesitus
     (revalidatePath as unknown as (p: string, t?: string) => void)("/", "layout");
 
+    const isAboutChange = Object.keys(values).every((key) => key.startsWith("about_"));
     await logActivity({
       userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
       userRole: session.user.role, action: "UPDATE", resource: "SETTINGS",
-      detail: isColorChange ? "Update warna/tema" : "Update info perusahaan",
+      detail: isAboutChange ? "Update halaman Tentang Kami" : "Update info perusahaan",
     });
 
     await notifyIndexNowChange(discoveryChange);

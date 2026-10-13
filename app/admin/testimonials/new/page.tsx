@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
+import { requireAdminModule } from "@/lib/admin-access";
 import TestimonialForm from "../TestimonialForm";
 
 export default async function NewTestimonialPage() {
+  await requireAdminModule("testimonials");
   const tours = await prisma.tour.findMany({
     where: { status: { not: "DRAFT" } },
     select: { id: true, title: true, country: true },

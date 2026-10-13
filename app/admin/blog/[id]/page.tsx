@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import BlogForm from "@/components/admin/BlogForm";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export default async function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdminModule("blog");
   const { id } = await params;
   const post = await prisma.blog.findUnique({ where: { id } });
   if (!post) notFound();

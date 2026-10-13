@@ -3,8 +3,10 @@ import Link from "next/link";
 import { Plus, Pencil, Sparkles } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export default async function BlogAdminPage() {
+  await requireAdminModule("blog");
   const posts = await prisma.blog.findMany({ orderBy: { date: "desc" } });
 
   return (

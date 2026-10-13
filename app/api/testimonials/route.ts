@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkPermission } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
 import { apiError } from "@/lib/api-error";
@@ -20,6 +21,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await checkPermission(session, "testimonial_edit"))
+    return NextResponse.json({ error: "Tidak memiliki izin untuk mengelola testimoni" }, { status: 403 });
 
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch {
@@ -47,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     await logActivity({
       userId: session.user.id!, userName: session.user.name ?? "-",
-      userRole: session.user.role, action: "CREATE", resource: "SETTINGS",
+      userRole: session.user.role, action: "CREATE", resource: "TESTIMONIAL",
       resourceId: item.id, resourceName: item.name,
       detail: "Tambah testimoni",
     });

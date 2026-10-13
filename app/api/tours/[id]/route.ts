@@ -4,10 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkPermission, checkPermissions } from "@/lib/permissions";
-import { requiredPermissionsForMutation } from "@/lib/authorization";
+import { requiredPermissionsForMutation, withoutUnchangedFields } from "@/lib/authorization";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
-import { pickInput, badNumber, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
+import { pickInput, badNumber, describeTourChanges, normalizeTourInput, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
+import { uniqueTourSlug } from "@/lib/tour-slug";
 import { apiError } from "@/lib/api-error";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
@@ -90,8 +91,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  // Whitelist field — hanya kolom Tour yang sah yang diteruskan ke Prisma
-  const data = pickInput(body, TOUR_INPUT_FIELDS);
+  const current = await prisma.tour.findUnique({ where: { id } });
+  if (!current) return NextResponse.json({ error: "Tour tidak ditemukan. Mungkin sudah dihapus." }, { status: 404 });
+
+  // Whitelist field — hanya kolom Tour yang sah yang diteruskan ke Prisma.
+  // Slug dikelola server (lihat di bawah), jadi tidak diterima dari form.
+  const picked = pickInput(body, TOUR_INPUT_FIELDS);
+  delete picked.slug;
+  // Status yang tidak berubah tidak butuh izin ubah status (form selalu mengirim semua field).
+  const data = withoutUnchangedFields(picked, current, ["status"]);
   const isStatusOnly = "status" in data && Object.keys(data).length === 1;
   const requiredPermissions = requiredPermissionsForMutation(
     data,
@@ -108,29 +116,37 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Status tour tidak valid." }, { status: 422 });
   if (data.pinned !== undefined && typeof data.pinned !== "boolean")
     return NextResponse.json({ error: "Pin tour harus bernilai benar/salah." }, { status: 422 });
-  if (data.pinned === true && await pinnedLimitReached(id))
+  if (data.pinned === true && !current.pinned && await pinnedLimitReached(id))
     return NextResponse.json({ error: `Maksimal ${MAX_PINNED_TOURS} tour bisa dipin. Unpin salah satu tour dulu.` }, { status: 422 });
   if ("paymentPlan" in data) {
     const paymentPlan = normalizeTourPaymentPlanInput(data.paymentPlan);
     if (!paymentPlan.ok) return NextResponse.json({ error: paymentPlan.error }, { status: 422 });
     data.paymentPlan = paymentPlan.value;
   }
+  const normalized = normalizeTourInput(data);
+  if (!normalized.ok) return NextResponse.json({ error: normalized.error }, { status: 422 });
+  const update = normalized.value;
+  // Tour lama tanpa slug mendapat URL rapi saat disimpan; URL berbasis ID tetap bisa dibuka.
+  if (!current.slug?.trim()) {
+    update.slug = await uniqueTourSlug(String(update.title ?? current.title), id);
+  }
 
   try {
-    const previous = await prisma.tour.findUnique({ where: { id }, select: INDEXNOW_TOUR_SELECT });
     const tour = await prisma.tour.update({
       where: { id },
-      data: data as unknown as Prisma.TourUncheckedUpdateInput,
+      data: update as unknown as Prisma.TourUncheckedUpdateInput,
     });
 
     await logActivity({
       userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
       userRole: session.user.role, action: "UPDATE", resource: "TOUR",
       resourceId: tour.id, resourceName: tour.title,
-      detail: isStatusOnly ? `Status → ${data.status}` : undefined,
+      detail: isStatusOnly
+        ? `Status → ${data.status}`
+        : describeTourChanges(current as unknown as Record<string, unknown>, update),
     });
 
-    await revalidatePublicContent(tourContentChange(previous, tour));
+    await revalidatePublicContent(tourContentChange(current, tour));
     return NextResponse.json(tour);
   } catch (err) {
     return apiError(err, { duplicate: "Slug tour sudah dipakai." });

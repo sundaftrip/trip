@@ -1,6 +1,8 @@
 import BlogForm from "@/components/admin/BlogForm";
+import { requireAdminModule } from "@/lib/admin-access";
 
-export default function NewBlogPage() {
+export default async function NewBlogPage() {
+  await requireAdminModule("blog");
   return (
     <div className="space-y-6">
       <div>

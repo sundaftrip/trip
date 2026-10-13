@@ -145,6 +145,177 @@ export function normalizeReceiptPricingBreakdownInput(
 // Nilai sah enum TourStatus di prisma/schema.prisma
 export const VALID_TOUR_STATUSES = ["ACTIVE", "DRAFT", "FULL", "CANCELLED"] as const;
 
+const ADD_ON_TAGS = new Set(["", "wajib", "recommended"]);
+const ROOM_PRICE_KEY = /^__room_price_(quad|triple|twin)$/;
+
+type TourInputResult = { ok: true; value: Record<string, unknown> } | { ok: false; error: string };
+
+function textList(value: unknown, field: string, max = 120): string[] | string {
+  if (!Array.isArray(value)) return `${field} harus berupa daftar.`;
+  const items = value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  return items.length > max ? `${field} maksimal ${max} baris.` : items;
+}
+
+function optionalTrimmed(value: unknown) {
+  if (value === null) return null;
+  return typeof value === "string" ? (value.trim() || null) : undefined;
+}
+
+/**
+ * Validasi bentuk data tour dari CMS sebelum masuk Prisma. Field yang tidak
+ * dikirim tidak disentuh (aman untuk update parsial). Mengembalikan salinan.
+ */
+export function normalizeTourInput(input: Record<string, unknown>): TourInputResult {
+  const data: Record<string, unknown> = { ...input };
+
+  for (const field of ["title", "country"] as const) {
+    if (field in data) {
+      if (typeof data[field] !== "string" || !(data[field] as string).trim()) {
+        return { ok: false, error: field === "title" ? "Judul tour wajib diisi." : "Negara wajib diisi." };
+      }
+      data[field] = (data[field] as string).trim();
+    }
+  }
+
+  for (const field of ["cityHighlight", "duration", "badge", "heroImg", "notes", "description", "visaInfo"] as const) {
+    if (field in data) {
+      const value = optionalTrimmed(data[field]);
+      if (value === undefined) return { ok: false, error: `Isian ${field} tidak valid.` };
+      data[field] = value;
+    }
+  }
+
+  for (const field of ["price", "promoPrice", "priceLandTour"] as const) {
+    if (field in data && typeof data[field] === "number") data[field] = Math.round(data[field] as number);
+  }
+  if ("promoPrice" in data && data.promoPrice === 0) data.promoPrice = null;
+  if ("priceLandTour" in data && data.priceLandTour === 0) data.priceLandTour = null;
+  if ("seatsLeft" in data) {
+    if (typeof data.seatsLeft !== "number" || !Number.isFinite(data.seatsLeft) || data.seatsLeft < 0) {
+      return { ok: false, error: "Sisa kursi harus angka 0 atau lebih." };
+    }
+    data.seatsLeft = Math.round(data.seatsLeft);
+  }
+
+  if ("tripDate" in data && data.tripDate !== null) {
+    const date = typeof data.tripDate === "string" ? new Date(data.tripDate) : null;
+    if (!date || !Number.isFinite(date.getTime())) return { ok: false, error: "Tanggal berangkat tidak valid." };
+    data.tripDate = date;
+  }
+
+  for (const [field, label] of [["inclusions", "Daftar termasuk"], ["exclusions", "Daftar tidak termasuk"], ["gallery", "Galeri"]] as const) {
+    if (field in data) {
+      const list = textList(data[field], label);
+      if (typeof list === "string") return { ok: false, error: list };
+      data[field] = list;
+    }
+  }
+
+  if ("itinerary" in data) {
+    if (!Array.isArray(data.itinerary)) return { ok: false, error: "Itinerary harus berupa daftar hari." };
+    const days = [];
+    for (const item of data.itinerary.slice(0, 60)) {
+      if (!isRecord(item)) continue;
+      const title = typeof item.title === "string" ? item.title.trim() : "";
+      const description = typeof item.description === "string" ? item.description.trim() : "";
+      const day = Math.round(Number(item.day));
+      if (!title && !description) continue;
+      if (!Number.isFinite(day) || day < 1) return { ok: false, error: "Nomor hari itinerary harus 1 atau lebih." };
+      if (!title) return { ok: false, error: `Judul itinerary hari ${day} wajib diisi.` };
+      const image = typeof item.image === "string" && item.image.trim() ? item.image.trim() : undefined;
+      days.push({ day, title, description, ...(image ? { image } : {}) });
+    }
+    data.itinerary = days.sort((a, b) => a.day - b.day);
+  }
+
+  if ("addOns" in data) {
+    if (data.addOns === null) data.addOns = [];
+    if (!Array.isArray(data.addOns)) return { ok: false, error: "Add-on harus berupa daftar." };
+    const addOns = [];
+    for (const item of data.addOns.slice(0, 40)) {
+      if (!isRecord(item)) continue;
+      const name = typeof item.name === "string" ? item.name.trim() : "";
+      if (!name) continue;
+      const price = Number(item.price);
+      if (!Number.isFinite(price) || price < 0) return { ok: false, error: `Harga add-on "${name}" tidak valid.` };
+      const tag = typeof item.tag === "string" && ADD_ON_TAGS.has(item.tag) ? item.tag : "";
+      const desc = typeof item.desc === "string" && item.desc.trim() ? item.desc.trim() : undefined;
+      addOns.push({ name, price: Math.round(price), ...(tag ? { tag } : {}), ...(desc ? { desc } : {}) });
+    }
+    data.addOns = addOns;
+  }
+
+  if ("hotel" in data && data.hotel !== null) {
+    if (!isRecord(data.hotel)) return { ok: false, error: "Data hotel tidak valid." };
+    const hotel: Record<string, unknown> = {};
+    for (const [rawKey, value] of Object.entries(data.hotel)) {
+      const key = rawKey.trim();
+      if (!key) continue;
+      if (ROOM_PRICE_KEY.test(key)) {
+        const price = Number(value);
+        if (value === "" || value === null || value === undefined) continue;
+        if (!Number.isFinite(price) || price < 0) return { ok: false, error: "Harga per kamar harus angka." };
+        if (price > 0) hotel[key] = Math.round(price);
+        continue;
+      }
+      if (typeof value === "string") {
+        if (value.trim()) hotel[key] = value.trim();
+      } else if (typeof value === "number" || isRecord(value) || Array.isArray(value)) {
+        hotel[key] = value;
+      }
+    }
+    data.hotel = Object.keys(hotel).length > 0 ? hotel : null;
+  }
+
+  return { ok: true, value: data };
+}
+
+const TOUR_CHANGE_LABELS: Record<string, string> = {
+  title: "judul", country: "negara", cityHighlight: "kota", duration: "durasi", badge: "badge",
+  tripDate: "tanggal", seatsLeft: "kursi", status: "status", pinned: "pin",
+  price: "harga", promoPrice: "harga promo", priceLandTour: "harga land tour",
+  heroImg: "foto utama", gallery: "galeri", itinerary: "itinerary", inclusions: "termasuk",
+  exclusions: "tidak termasuk", hotel: "hotel/harga kamar", addOns: "add-on",
+  description: "deskripsi", notes: "catatan", visaInfo: "info visa", paymentPlan: "skema bayar",
+};
+
+const TOUR_STATUS_NAMES: Record<string, string> = { DRAFT: "Draft", ACTIVE: "Aktif", FULL: "Penuh", CANCELLED: "Batal" };
+
+function comparable(value: unknown) {
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  if (value === undefined || value === "") return null;
+  return JSON.stringify(value ?? null);
+}
+
+function rupiah(value: unknown) {
+  const amount = Number(value);
+  return Number.isFinite(amount) && amount > 0 ? `Rp ${amount.toLocaleString("id-ID")}` : "kosong";
+}
+
+/** Ringkasan perubahan tour untuk Log Aktivitas, mis. "Status Draft → Aktif · Ubah: harga, galeri". */
+export function describeTourChanges(before: Record<string, unknown>, after: Record<string, unknown>) {
+  const details: string[] = [];
+  const changed: string[] = [];
+  for (const [field, label] of Object.entries(TOUR_CHANGE_LABELS)) {
+    if (!(field in after)) continue;
+    if (comparable(before[field]) === comparable(after[field])) continue;
+    if (field === "status") {
+      details.push(`Status ${TOUR_STATUS_NAMES[String(before.status)] ?? before.status} → ${TOUR_STATUS_NAMES[String(after.status)] ?? after.status}`);
+    } else if (field === "price" || field === "promoPrice") {
+      details.push(`${field === "price" ? "Harga" : "Harga promo"} ${rupiah(before[field])} → ${rupiah(after[field])}`);
+    } else if (field === "seatsLeft") {
+      details.push(`Kursi ${before.seatsLeft ?? 0} → ${after.seatsLeft ?? 0}`);
+    } else {
+      changed.push(label);
+    }
+  }
+  if (changed.length) details.push(`Ubah: ${changed.join(", ")}`);
+  return details.join(" · ") || "Tanpa perubahan isi";
+}
+
 // Model Tour — expenseToken sengaja TIDAK masuk: token link pelaporan TL,
 // dikelola khusus oleh lib/keuangan/actions.ts (bukan lewat form tour).
 export const TOUR_INPUT_FIELDS = [

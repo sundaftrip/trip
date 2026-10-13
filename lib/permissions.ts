@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_PERMISSIONS, ALL_PERMISSION_KEYS } from "@/lib/permission-keys";
+import { resolvePermissionMap } from "@/lib/permission-keys";
 import {
   checkPermissionsWithLookup,
   type PermissionSession,
@@ -53,9 +53,6 @@ export async function getUsersWithPermissions() {
   });
   return users.map((u) => ({
     ...u,
-    permissions: Object.fromEntries(ALL_PERMISSION_KEYS.map((k) => [
-      k,
-      (u.permissions as Record<string, boolean> | null)?.[k] ?? DEFAULT_PERMISSIONS[u.role]?.[k] ?? false,
-    ])),
+    permissions: resolvePermissionMap(u.role, u.permissions),
   }));
 }

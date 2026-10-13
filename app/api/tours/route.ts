@@ -5,11 +5,12 @@ import { auth } from "@/lib/auth";
 import { checkPermissions } from "@/lib/permissions";
 import { logActivity } from "@/lib/activityLog";
 import { revalidatePublicContent } from "@/lib/revalidate";
-import { pickInput, badNumber, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
+import { pickInput, badNumber, normalizeTourInput, normalizeTourPaymentPlanInput, TOUR_INPUT_FIELDS, VALID_TOUR_STATUSES } from "@/lib/api-input";
 import { apiError } from "@/lib/api-error";
 import { MAX_PINNED_TOURS } from "@/lib/tour-order";
 import type { Prisma } from "@prisma/client";
 import slugify from "slugify";
+import { uniqueTourSlug } from "@/lib/tour-slug";
 
 const PUBLIC_TOUR_STATUSES = ["ACTIVE", "FULL"] as const;
 
@@ -58,15 +59,6 @@ async function hasPersistedAuthenticatedSession() {
     // Authentication and user lookup failures degrade to the public view.
     return false;
   }
-}
-
-/** Slug URL rapi & unik dari judul tour (mis. "Russia Aurora" → "russia-aurora"). */
-async function uniqueTourSlug(title: string): Promise<string> {
-  const base = slugify(title || "tour", { lower: true, strict: true }) || "tour";
-  let s = base;
-  let i = 2;
-  while (await prisma.tour.findUnique({ where: { slug: s } })) s = `${base}-${i++}`;
-  return s;
 }
 
 async function pinnedLimitReached() {
@@ -120,34 +112,42 @@ export async function POST(req: NextRequest) {
   }
 
   // Whitelist field — hanya kolom Tour yang sah yang diteruskan ke Prisma
-  const data = pickInput(body, TOUR_INPUT_FIELDS);
+  const picked = pickInput(body, TOUR_INPUT_FIELDS);
 
   // Validasi ringan
-  if (typeof data.title !== "string" || !data.title.trim())
+  if (typeof picked.title !== "string" || !picked.title.trim())
     return NextResponse.json({ error: "Judul tour wajib diisi." }, { status: 422 });
-  if (typeof data.country !== "string" || !data.country.trim())
+  if (typeof picked.country !== "string" || !picked.country.trim())
     return NextResponse.json({ error: "Negara wajib diisi." }, { status: 422 });
-  if (badNumber(data.price) || badNumber(data.promoPrice) || badNumber(data.priceLandTour) || badNumber(data.seatsLeft))
+  if (badNumber(picked.price) || badNumber(picked.promoPrice) || badNumber(picked.priceLandTour) || badNumber(picked.seatsLeft))
     return NextResponse.json({ error: "Harga/kursi harus berupa angka dan tidak boleh negatif." }, { status: 422 });
-  if (data.status !== undefined && !VALID_TOUR_STATUSES.includes(data.status as (typeof VALID_TOUR_STATUSES)[number]))
+  if (picked.status !== undefined && !VALID_TOUR_STATUSES.includes(picked.status as (typeof VALID_TOUR_STATUSES)[number]))
     return NextResponse.json({ error: "Status tour tidak valid." }, { status: 422 });
-  data.status ??= "DRAFT";
-  const requiredPermissions = data.status === "DRAFT"
+  picked.status ??= "DRAFT";
+  const requiredPermissions = picked.status === "DRAFT"
     ? ["tour_create"]
     : ["tour_create", "tour_status"];
   if (!await checkPermissions(session, requiredPermissions))
     return NextResponse.json({ error: "Tidak memiliki izin untuk membuat tour dengan status tersebut" }, { status: 403 });
-  if (data.pinned !== undefined && typeof data.pinned !== "boolean")
+  if (picked.pinned !== undefined && typeof picked.pinned !== "boolean")
     return NextResponse.json({ error: "Pin tour harus bernilai benar/salah." }, { status: 422 });
-  if (data.pinned === true && await pinnedLimitReached())
+  if (picked.pinned === true && await pinnedLimitReached())
     return NextResponse.json({ error: `Maksimal ${MAX_PINNED_TOURS} tour bisa dipin. Unpin salah satu tour dulu.` }, { status: 422 });
-  if ("paymentPlan" in data) {
-    const paymentPlan = normalizeTourPaymentPlanInput(data.paymentPlan);
+  if ("paymentPlan" in picked) {
+    const paymentPlan = normalizeTourPaymentPlanInput(picked.paymentPlan);
     if (!paymentPlan.ok) return NextResponse.json({ error: paymentPlan.error }, { status: 422 });
-    data.paymentPlan = paymentPlan.value;
+    picked.paymentPlan = paymentPlan.value;
   }
+  const normalized = normalizeTourInput(picked);
+  if (!normalized.ok) return NextResponse.json({ error: normalized.error }, { status: 422 });
+  const data = normalized.value;
+  if (typeof data.price !== "number") data.price = 0;
 
-  if (!data.slug) data.slug = await uniqueTourSlug(data.title);
+  // Slug dikelola server: pakai slug templat bila ada, selain itu dari judul.
+  const requestedSlug = typeof data.slug === "string"
+    ? slugify(data.slug, { lower: true, strict: true })
+    : "";
+  data.slug = requestedSlug || await uniqueTourSlug(data.title as string);
 
   try {
     const tour = await prisma.tour.create({ data: data as unknown as Prisma.TourUncheckedCreateInput });
@@ -156,6 +156,7 @@ export async function POST(req: NextRequest) {
       userId: session.user.id!, userName: session.user.name ?? session.user.email ?? "-",
       userRole: session.user.role, action: "CREATE", resource: "TOUR",
       resourceId: tour.id, resourceName: tour.title,
+      detail: `Status ${tour.status === "DRAFT" ? "Draft" : tour.status === "ACTIVE" ? "Aktif" : tour.status === "FULL" ? "Penuh" : "Batal"}`,
     });
 
     await revalidatePublicContent(tourContentChange(null, tour));

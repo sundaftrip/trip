@@ -4,6 +4,7 @@ import { Plus, Pencil, Globe2, Info } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
 import ScrapeVisaButton from "@/components/admin/ScrapeVisaButton";
 import { FlagIcon } from "@/lib/flag-icon";
+import { requireAdminModule } from "@/lib/admin-access";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ const VISA_BADGE: Record<string, string> = {
 };
 
 export default async function VisaDatabasePage() {
+  await requireAdminModule("visa");
   const entries = await prisma.countryVisa.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
   });
