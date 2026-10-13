@@ -35,3 +35,10 @@ test("PDF route does not resolve arbitrary paths under public", () => {
   assert.match(pdfRouteSource, /LOCAL_PDF_IMAGES\.get\(src\)/);
   assert.doesNotMatch(pdfRouteSource, /realpath|requestedPath|src\.replace\(\/\^\\\/\+\//);
 });
+
+test("PDF photo fallbacks only serve trips to the same destination", () => {
+  assert.match(pdfRouteSource, /const PDF_GALLERY_FALLBACKS_BY_DESTINATION/);
+  assert.match(pdfRouteSource, /\.\.\.pdfGalleryFallbacksFor\(tour\)/);
+  // Photos taken in India and China are not offered to any catalog.
+  assert.doesNotMatch(pdfRouteSource, /trip-2\.jpg|trip-3\.jpg/);
+});

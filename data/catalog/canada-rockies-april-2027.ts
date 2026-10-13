@@ -177,7 +177,6 @@ export const CANADA_ROCKIES_TOUR = {
       name: "Airport tax & fuel surcharge",
       price: 1_400_000,
       tag: "wajib" as const,
-      desc: "Nilai target; dikonfirmasi kembali saat tiket grup dikunci.",
     },
     {
       name: "Asuransi perjalanan usia sampai 69 tahun",
