@@ -32,17 +32,30 @@ import visaSeed from "@/prisma/visa-seed.json";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const PDF_GALLERY_FALLBACKS = [
-  "/trip-photos/trip-1.jpg",
-  "/trip-photos/trip-2.jpg",
-  "/trip-photos/trip-3.jpg",
-  "/trip-photos/trip-4.jpg",
-  "/trip-photos/trip-5.jpg",
-  "/trip-photos/trip-6.jpg",
-  "/trip-photos/cp-1.jpg",
-  "/trip-photos/cp-2.jpg",
+// Sundaf group photos fill a sparse gallery only on trips to the same place:
+// a Canada or Japan catalog never borrows photos taken in Russia or Kazakhstan.
+const PDF_GALLERY_FALLBACKS_BY_DESTINATION: ReadonlyArray<{ match: RegExp; images: readonly string[] }> = [
+  {
+    match: /\b(?:rusia|russia|moskow|moscow|murmansk|petersburg|teriberka)\b/i,
+    images: [
+      "/trip-photos/trip-1.jpg",
+      "/trip-photos/trip-5.jpg",
+      "/trip-photos/trip-6.jpg",
+      "/trip-photos/cp-1.jpg",
+      "/trip-photos/cp-2.jpg",
+    ],
+  },
+  {
+    match: /\b(?:kazakhstan|kazakstan|almaty|asia tengah|central asia)\b/i,
+    images: ["/trip-photos/trip-4.jpg"],
+  },
 ];
 const MAX_PDF_GALLERY_IMAGES = 7;
+
+function pdfGalleryFallbacksFor(tour: { title: string; country: string; cityHighlight?: string | null }) {
+  const text = `${tour.title} ${tour.country} ${tour.cityHighlight ?? ""}`;
+  return PDF_GALLERY_FALLBACKS_BY_DESTINATION.find((entry) => entry.match.test(text))?.images ?? [];
+}
 const previewVisaCountries: VisaServiceCatalogEntry[] = visaSeed.map((entry) => ({
   name: entry.name,
   en: entry.en,
@@ -84,14 +97,6 @@ const LOCAL_PDF_IMAGES = new Map<string, LocalPdfImage>([
   }],
   ["/trip-photos/trip-1.jpg", {
     filePath: path.join(process.cwd(), "public", "trip-photos", "trip-1.jpg"),
-    mime: "image/jpeg",
-  }],
-  ["/trip-photos/trip-2.jpg", {
-    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-2.jpg"),
-    mime: "image/jpeg",
-  }],
-  ["/trip-photos/trip-3.jpg", {
-    filePath: path.join(process.cwd(), "public", "trip-photos", "trip-3.jpg"),
     mime: "image/jpeg",
   }],
   ["/trip-photos/trip-4.jpg", {
@@ -323,7 +328,7 @@ export async function GET(
   ]).slice(0, MAX_PDF_GALLERY_IMAGES);
   const fallbackGallery = uniqueImages([
     fallbackHero,
-    ...PDF_GALLERY_FALLBACKS,
+    ...pdfGalleryFallbacksFor(tour),
   ]).filter((image) => !storedGallery.includes(image));
   const imageCache = new Map<string, Promise<string | null>>();
   const resolveImage = (src?: string | null) => {

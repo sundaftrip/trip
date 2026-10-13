@@ -6,6 +6,24 @@ import {
 
 export const CANADA_ROCKIES_PREVIEW_ID = "preview-canada-rockies-april-2027";
 
+/* "Nilai target; dikonfirmasi kembali saat tiket grup dikunci." was removed
+   from the catalog. The saved Canada record may still carry it, so the note is
+   dropped wherever the page and the PDF read the add-ons. */
+const WITHDRAWN_ADD_ON_NOTE = /^\s*nilai target\b[\s\S]*\btiket grup dikunci\.?\s*$/i;
+
+function withoutWithdrawnNote(item: unknown): unknown {
+  if (
+    !item
+    || typeof item !== "object"
+    || !("desc" in item)
+    || typeof item.desc !== "string"
+    || !WITHDRAWN_ADD_ON_NOTE.test(item.desc)
+  ) {
+    return item;
+  }
+  return { ...item, desc: null };
+}
+
 export function resolveCanadaRockiesAddOns(
   databaseAddOns: unknown,
   resolvedTourSlug?: string | null,
@@ -15,9 +33,9 @@ export function resolveCanadaRockiesAddOns(
   const reviewedInsurance = CANADA_ROCKIES_TOUR.addOns.find((item) => (
     /asuransi perjalanan usia sampai 69 tahun/i.test(item.name)
   ));
-  const source = Array.isArray(databaseAddOns)
+  const source = (Array.isArray(databaseAddOns)
     ? databaseAddOns
-    : CANADA_ROCKIES_TOUR.addOns;
+    : [...CANADA_ROCKIES_TOUR.addOns]).map(withoutWithdrawnNote);
   let hasReviewedInsurance = false;
   const resolved = source.map((item) => {
     if (

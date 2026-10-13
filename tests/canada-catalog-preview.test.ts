@@ -98,3 +98,19 @@ test("Canada PDF replaces only the known stale detailed note", () => {
     staleDetailedNote,
   );
 });
+
+test("the withdrawn airport-tax note is gone from the catalog and from a saved copy", () => {
+  const withdrawn = "Nilai target; dikonfirmasi kembali saat tiket grup dikunci.";
+  assert.ok(!JSON.stringify(CANADA_ROCKIES_TOUR).includes("Nilai target"));
+
+  const saved = [
+    { name: "Tips Tour Leader & Driver + city tax", price: 3_000_000, tag: "wajib", desc: "Dibayar bersama pelunasan paket." },
+    { name: "Airport tax & fuel surcharge", price: 1_400_000, tag: "wajib", desc: withdrawn },
+  ];
+  const resolved = resolveCanadaRockiesAddOns(saved, CANADA_ROCKIES_SLUG) as Array<{ name: string; price: number; desc?: string | null }>;
+  assert.equal(resolved[1].desc, null);
+  assert.equal(resolved[1].price, 1_400_000);
+  assert.equal(resolved[0].desc, "Dibayar bersama pelunasan paket.");
+  // Other tours keep their own wording.
+  assert.equal(resolveCanadaRockiesAddOns(saved, "another-tour"), saved);
+});

@@ -43,6 +43,10 @@ const nextConfig: NextConfig = {
       "./public/**/*.{webp,avif,gif,svg,ico,pdf,css,js,html,txt,woff,woff2,mp4}",
     ],
   },
+  // The itinerary PDF is set in DM Sans like the website; ship its two weights.
+  outputFileTracingIncludes: {
+    "/tours/\\[id\\]/pdf": ["./assets/fonts/dm-sans/*.ttf"],
+  },
   // Tree-shake lucide-react & icon libraries — cut JS bundle signifikan.
   // Tanpa ini, import { Foo } dari "lucide-react" akan bawa seluruh barrel.
   experimental: {
