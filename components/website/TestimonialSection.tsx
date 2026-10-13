@@ -7,6 +7,7 @@ import { Star, ChevronLeft, ChevronRight, X } from "lucide-react";
 import AnimateIn from "./AnimateIn";
 import ExpandableQuote from "./ExpandableQuote";
 import { cldOptimize } from "@/lib/utils";
+import doc from "./clean/DocFormat.module.css";
 
 interface Testimonial {
   id: string; name: string; role: string | null;
@@ -210,14 +211,13 @@ function MobileDenseTestimonials({
   onOpen: (item: Testimonial) => void;
 }) {
   return (
-    <section className="sm:hidden overflow-hidden at-grid-bg py-8" style={{ backgroundColor: "var(--at-bg)" }}>
+    <section className="sm:hidden overflow-hidden bg-white py-8">
       <div className="px-4">
-        <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Testimoni</span>
-        <h2 className="text-xl font-bold leading-tight" style={{ color: "var(--at-text)" }}>Kata traveler Sundaf</h2>
-        <div className="mt-4 space-y-2">
-          {items.slice(0, 8).map((item) => {
+        <h2 className={doc.tag}>Kata traveler Sundaf</h2>
+        <div className="mt-4 grid gap-[3px]">
+          {items.slice(0, 8).map((item, index) => {
             return (
-              <article key={item.id} className="at-card p-3">
+              <article key={item.id} className={`${index % 2 === 0 ? doc.boxSage : doc.boxSand} p-3`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-2">
                     <Avatar avatar={item.avatar} name={item.name} />
@@ -365,15 +365,14 @@ export default function TestimonialSection({ items, theme = "classic" }: Props) 
   if (theme === "atlas") return withDialogs(
     <>
       <MobileDenseTestimonials items={items} onOpen={openTestimonial} />
-      <section className="hidden sm:block py-14 overflow-hidden at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }}>
+      <section className="hidden sm:block py-14 overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto">
           <AnimateIn className="px-4 sm:px-6 lg:px-8 mb-7">
-            <span className="at-pill mb-3 inline-flex" style={{ color: "var(--at-subtext)" }}>Testimoni</span>
-            <h2 className="text-3xl lg:text-5xl font-bold mt-3" style={{ color: "var(--at-text)" }}>Kata Mereka</h2>
+            <h2 className={doc.tag}>Kata mereka</h2>
           </AnimateIn>
           <AnimateIn delay={100}>
             <Carousel items={items} renderCard={(item, active) => (
-              <div className={`at-card p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-60"}`}>
+              <div className={`${active ? doc.boxSage : doc.boxSand} p-6 flex flex-col ${cardShell} transition-all duration-300 ${active ? "" : "opacity-70"}`}>
                 <Stars rating={item.rating} />
                 <ExpandableQuote text={item.content} color={"var(--at-subtext)"} {...quotePreviewProps(item)} />
                 <div className="flex items-center gap-2.5 mt-4 pt-3 border-t"

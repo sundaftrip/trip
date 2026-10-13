@@ -8,6 +8,7 @@ import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadat
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
 import styles from "@/components/website/clean/DestinationIndex.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 export const revalidate = 3600;
 
@@ -148,8 +149,8 @@ export default function DestinationsPage() {
       <section className={styles.hero} aria-labelledby="destinations-title">
         <div className={`${styles.shell} ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>DESTINASI SUNDAF</p>
-            <h1 id="destinations-title">Mau pergi ke mana?</h1>
+            <p className={doc.eyebrow}>Destinasi / Sundaf Trip</p>
+            <h1 id="destinations-title" className={doc.title}>Mau pergi ke mana?</h1>
             <p className={styles.heroLead}>
               Pilih destinasi untuk melihat rute, biaya, dan pilihan perjalanan.
               Dari Vietnam dan Jepang sampai Peru dan Amerika Latin.
@@ -189,10 +190,7 @@ export default function DestinationsPage() {
       >
         <div className={styles.shell}>
           <div className={styles.sectionHeading}>
-            <div>
-              <p className={styles.eyebrow}>ENAM PILIHAN DESTINASI</p>
-              <h2 id="regional-title">Pilih perjalananmu.</h2>
-            </div>
+            <h2 id="regional-title" className={doc.tag}>Enam pilihan destinasi</h2>
             <p>
               Buka destinasi untuk melihat itinerary, layanan yang termasuk,
               dan informasi sebelum berangkat.
@@ -225,7 +223,7 @@ export default function DestinationsPage() {
                       <MapPin size={13} aria-hidden="true" />
                       {destination.region}
                     </p>
-                    <h3>{destination.name}</h3>
+                    <h3 className={styles.regionTitle}>{destination.name}</h3>
                     <p>{destination.description}</p>
                     <span className={styles.textLink}>
                       Lihat perjalanan
@@ -242,8 +240,8 @@ export default function DestinationsPage() {
       <section className={styles.guideSection} aria-labelledby="guide-title">
         <div className={`${styles.shell} ${styles.guideLayout}`}>
           <div className={styles.guideIntro}>
-            <p className={styles.eyebrow}>PANDUAN YANG SUDAH TERSEDIA</p>
-            <h2 id="guide-title">Perlu melihat tujuan yang lebih spesifik?</h2>
+            <p className={doc.subhead}>Panduan yang sudah tersedia</p>
+            <h2 id="guide-title" className={doc.title}>Perlu melihat tujuan yang lebih spesifik?</h2>
             <p>
               Tiga panduan ini tetap tersedia di alamat sebelumnya, lengkap
               dengan konten dan tautan yang sudah dimiliki Sundaf.
@@ -266,8 +264,8 @@ export default function DestinationsPage() {
       <section className={styles.cta} aria-labelledby="destination-cta-title">
         <div className={styles.shell}>
           <div>
-            <p className={styles.eyebrow}>BELUM MENENTUKAN RUTE?</p>
-            <h2 id="destination-cta-title">Mulai dari kebutuhan perjalananmu.</h2>
+            <p className={doc.subhead}>Belum menentukan rute?</p>
+            <h2 id="destination-cta-title" className={doc.title}>Mulai dari kebutuhan perjalananmu.</h2>
             <p>
               Sampaikan kawasan, waktu, dan jumlah peserta. Tim Sundaf akan
               membantu meninjau opsi perjalanan yang tersedia.

@@ -1,12 +1,8 @@
 import Link from "@/components/website/clean/PreserveScrollLink";
 import {
   ArrowRight,
-  BadgeCheck,
   ChevronDown,
-  ClipboardCheck,
   FileCheck2,
-  FileText,
-  Landmark,
   MessageCircle,
   Search,
   Send,
@@ -18,6 +14,7 @@ import StableDetails from "@/components/website/clean/StableDetails";
 import type { VisaCountry } from "./VisaDatabase";
 import VisaCountryDirectory from "./VisaCountryDirectory";
 import styles from "./VisaPages.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 type VisaKey = "bebas" | "voa" | "evisa" | "wajib" | "conditional";
 
@@ -67,25 +64,21 @@ const PROCESS_STEPS = [
 
 const DOCUMENT_GROUPS = [
   {
-    icon: FileText,
     title: "Paspor dan identitas",
     description:
       "Paspor, foto, dan data pribadi sesuai format negara tujuan.",
   },
   {
-    icon: BadgeCheck,
     title: "Bukti pendukung",
     description:
       "Dokumen pekerjaan, keuangan, atau sponsor bila memang diwajibkan.",
   },
   {
-    icon: ClipboardCheck,
     title: "Rencana perjalanan",
     description:
       "Itinerary, reservasi, dan dokumen perjalanan yang relevan.",
   },
   {
-    icon: Landmark,
     title: "Syarat khusus negara",
     description:
       "Formulir, biometrik, wawancara, atau dokumen tambahan mengikuti aturan terkini.",
@@ -144,7 +137,7 @@ export default function VisaLanding({
       <section className={styles.hero} aria-labelledby="visa-page-title">
         <div className={`${styles.shell} ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Layanan visa Sundaf Trip</p>
+            <p className={styles.eyebrow}>Layanan visa / Sundaf Trip</p>
             <h1 className={styles.heroTitle} id="visa-page-title">
               Persyaratan dan biaya visa
             </h1>
@@ -184,8 +177,7 @@ export default function VisaLanding({
         >
           <div className={styles.shell}>
             <div className={styles.sectionHeader}>
-              <p className={styles.eyebrow}>Negara tujuan</p>
-              <h2 className={styles.sectionTitle} id="visa-database-title">
+              <h2 className={doc.tag} id="visa-database-title">
                 Cari negara tujuan
               </h2>
               <p className={styles.sectionLede}>
@@ -201,8 +193,7 @@ export default function VisaLanding({
           <section className={styles.section} aria-labelledby="featured-visa-title">
             <div className={styles.shell}>
               <div className={styles.sectionHeader}>
-                <p className={styles.eyebrow}>Layanan visa pilihan</p>
-                <h2 className={styles.sectionTitle} id="featured-visa-title">
+                <h2 className={doc.tag} id="featured-visa-title">
                   Layanan visa populer
                 </h2>
                 <p className={styles.sectionLede}>
@@ -259,8 +250,7 @@ export default function VisaLanding({
         <section className={styles.documentSection} aria-labelledby="visa-process-title">
           <div className={`${styles.shell} ${styles.sectionPlain}`}>
             <div className={styles.sectionHeader}>
-              <p className={styles.eyebrow}>Alur layanan</p>
-              <h2 className={styles.sectionTitle} id="visa-process-title">
+              <h2 className={doc.tag} id="visa-process-title">
                 Empat langkah dari konsultasi sampai hasil
               </h2>
               <p className={styles.sectionLede}>
@@ -273,7 +263,7 @@ export default function VisaLanding({
               {PROCESS_STEPS.map((step, index) => (
                 <li className={styles.stepCard} key={step.title}>
                   <span className={styles.stepNumber} aria-hidden="true">
-                    {index + 1}
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3>{step.title}</h3>
                   <p>{step.description}</p>
@@ -286,8 +276,7 @@ export default function VisaLanding({
         <section className={styles.section} aria-labelledby="document-overview-title">
           <div className={styles.shell}>
             <div className={styles.sectionHeader}>
-              <p className={styles.eyebrow}>Gambaran dokumen</p>
-              <h2 className={styles.sectionTitle} id="document-overview-title">
+              <h2 className={doc.tag} id="document-overview-title">
                 Siapkan kelompok dokumennya, lalu cek detail negara
               </h2>
               <p className={styles.sectionLede}>
@@ -297,11 +286,8 @@ export default function VisaLanding({
             </div>
 
             <div className={styles.documentGrid}>
-              {DOCUMENT_GROUPS.map(({ icon: Icon, title, description }) => (
+              {DOCUMENT_GROUPS.map(({ title, description }) => (
                 <article className={styles.documentCard} key={title}>
-                  <span className={styles.iconBox}>
-                    <Icon size={20} aria-hidden="true" />
-                  </span>
                   <h3>{title}</h3>
                   <p>{description}</p>
                 </article>
@@ -315,8 +301,7 @@ export default function VisaLanding({
           <section className={styles.section} aria-labelledby="visa-faq-title">
             <div className={styles.shell}>
               <div className={styles.sectionHeader}>
-                <p className={styles.eyebrow}>Pertanyaan visa</p>
-                <h2 className={styles.sectionTitle} id="visa-faq-title">
+                <h2 className={doc.tag} id="visa-faq-title">
                   Pertanyaan umum
                 </h2>
                 <p className={styles.sectionLede}>
@@ -342,7 +327,7 @@ export default function VisaLanding({
         <section className={styles.cta} aria-labelledby="visa-consultation-title">
           <div className={`${styles.shell} ${styles.ctaGrid}`}>
             <div>
-              <p className={styles.eyebrow}>Perlu dicek sebelum mengajukan?</p>
+              <p className={doc.subhead}>Perlu dicek sebelum mengajukan?</p>
               <h2 className={styles.ctaTitle} id="visa-consultation-title">
                 Ceritakan negara tujuan dan tanggal keberangkatanmu.
               </h2>

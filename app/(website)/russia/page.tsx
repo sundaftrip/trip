@@ -9,6 +9,7 @@ import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { getConfiguredWhatsAppNumber } from "@/lib/referrals";
 import { buildWhatsAppHref, toWaNumber } from "@/lib/utils";
 import styles from "@/components/website/clean/RussiaServices.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 export const revalidate = 300;
 const title = "Layanan Perjalanan Rusia — Tanya SUNDAF";
@@ -43,8 +44,8 @@ export default async function RussiaServicesPage() {
       <section className={`${styles.services} ${styles.shell}`} aria-labelledby="russia-services-title">
         <header className={styles.sectionHeading}>
           <div className={styles.headingCopy}>
-            <p className={styles.eyebrow}>LAYANAN RUSIA SUNDAF</p>
-            <h1 id="russia-services-title">Butuh apa di Rusia?<br />Tanya SUNDAF.</h1>
+            <p className={doc.eyebrow}>Layanan Rusia / Sundaf Trip</p>
+            <h1 id="russia-services-title" className={doc.title}>Butuh apa di Rusia?<br />Tanya SUNDAF.</h1>
             <p className={styles.sectionIntro}>Dari satu kebutuhan sampai perjalanan lengkap. Untuk wisatawan Indonesia, rombongan, dan mitra agen perjalanan.</p>
           </div>
           <div className={styles.skyline}><RussiaSkyline /></div>

@@ -7,6 +7,7 @@ import { toWaNumber } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CustomTripWizard from "@/components/website/clean/CustomTripWizard";
 import styles from "@/components/website/clean/CustomTripWizard.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 export const revalidate = 300;
 
@@ -78,8 +79,8 @@ export default async function CustomTripPage({
         </nav>
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p>PRIVATE &amp; CUSTOM TRIP</p>
-            <h1>Destinasi impianmu. Liburan dengan caramu.</h1>
+            <p className={doc.eyebrow}>Private &amp; custom trip / Sundaf Trip</p>
+            <h1 className={doc.title}>Destinasi impianmu. Liburan dengan caramu.</h1>
             <span>Pergi bersama keluarga, pasangan, atau teman terdekat. Pilih destinasi dan waktu keberangkatanmu; SUNDAF membantu merancang rute, penginapan, dan pengalaman sesuai keinginan serta budget.</span>
             <a className={styles.heroAction} href="#rancang-liburan">Rancang liburan saya</a>
           </div>
@@ -98,8 +99,8 @@ export default async function CustomTripPage({
         <CustomTripWizard whatsapp={whatsapp} initialDestination={initialDestination} />
         <section className={styles.aftercare} aria-labelledby="custom-process-title">
           <div>
-            <p>CARA KERJANYA</p>
-            <h2 id="custom-process-title">Ceritakan rencanamu, kami bantu merangkainya.</h2>
+            <p className={doc.subhead}>Cara kerjanya</p>
+            <h2 id="custom-process-title" className={doc.title}>Ceritakan rencanamu, kami bantu merangkainya.</h2>
           </div>
           <ol>
             <li><strong>01</strong><span><b>Kamu tentukan rencananya</b>Pilih kota, tanggal, durasi, teman perjalanan, kisaran budget, dan layanan yang kamu butuhkan.</span></li>

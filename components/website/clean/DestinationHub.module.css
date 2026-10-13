@@ -1,7 +1,9 @@
+/* Destination hubs in the Sundaf DMC document format (DocFormat.module.css):
+   photo hero, amber section tags, flat sage/sand boxes, no dark bands. */
 .page {
   padding-top: 66px;
   background: #FFFFFF;
-  color: #132b3a;
+  color: var(--doc-navy, #1e3645);
   font-family: var(--site-font-family), var(--font-dm-sans), sans-serif;
 }
 
@@ -35,22 +37,25 @@
   padding-block: 80px;
 }
 
-.hero p,
-.kicker,
-.cta p {
+/* On the photo the eyebrow is amber, the title white and bold. */
+.hero .shell > p {
   margin: 0 0 12px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .16em;
+  color: var(--doc-amber, #eab067);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
 
-.hero h1 {
+.heroTitle.heroTitle.heroTitle {
   max-width: 780px;
   margin: 0;
-  font-size: clamp(44px, 7vw, 82px);
-  font-weight: 790;
-  letter-spacing: -.05em;
-  line-height: .99;
+  color: #fff;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.04;
+  text-wrap: balance;
 }
 
 .hero .shell > span {
@@ -62,9 +67,7 @@
   line-height: 1.6;
 }
 
-.hero a,
-.empty a,
-.cta a {
+.hero a {
   min-height: 50px;
   margin-top: 26px;
   padding-inline: 22px;
@@ -73,114 +76,97 @@
   justify-content: center;
   border-radius: 999px;
   background: #fff;
-  color: #075d63;
+  color: var(--doc-green, #2e6751);
   font-size: 14px;
-  font-weight: 760;
+  font-weight: 700;
 }
 
 .facts {
-  padding: 62px 0;
-  background: #f3f5f2;
+  padding: clamp(32px, 4vw, 48px) 0 0;
 }
 
+/* Two boxes side by side (sage + sand), like the PDF info panels. */
 .factGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: 12px;
 }
 
-.factGrid article > span {
-  color: #075d63;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .14em;
+.factGrid article {
+  padding: clamp(20px, 2.6vw, 30px);
 }
 
-.factGrid h2,
-.section h2,
-.cta h2 {
-  margin: 10px 0 14px;
-  color: #132b3a;
-  font-size: clamp(29px, 4vw, 46px);
-  letter-spacing: -.035em;
-  line-height: 1.08;
+.boxTitle.boxTitle.boxTitle {
+  margin: 0 0 10px;
+  color: var(--doc-navy, #1e3645);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 700;
+  letter-spacing: -.015em;
+  line-height: 1.18;
+  text-wrap: balance;
 }
 
 .factGrid p,
 .sectionCopy,
 .cta span {
   margin: 0;
-  color: #5d686f;
+  color: var(--doc-ink, #2f4352);
   font-size: 15px;
   line-height: 1.65;
 }
 
-.section {
-  padding: 78px 0;
+.sectionCopy {
+  max-width: 64ch;
+  margin-top: 14px;
 }
 
-.kicker {
-  color: #075d63;
+.section {
+  padding: clamp(44px, 5vw, 64px) 0 0;
 }
 
 .tourRail {
-  margin-top: 30px;
+  margin-top: 22px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
 .empty {
-  margin-top: 28px;
-  padding: 28px;
-  border-radius: 16px;
-  background: #f3f5f2;
+  margin-top: 22px;
 }
 
-.empty a {
-  margin-top: 12px;
-  background: #075d63;
-  color: #fff;
+.empty p {
+  margin: 0 0 14px;
+  color: var(--doc-ink, #2f4352);
 }
 
-.practical {
-  background: #075d63;
-  color: #fff;
-}
-
-.practical .kicker,
-.practical h2 {
-  color: #fff;
-}
-
+/* Practical notes: a sage box with hairline rows (no dark band). */
 .practicalGrid {
+  padding: clamp(22px, 3vw, 36px) !important;
   display: grid;
   grid-template-columns: .9fr 1.1fr;
-  gap: 60px;
+  gap: 18px 60px;
 }
 
 .practical ul {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 14px;
+  gap: 12px;
   list-style: none;
 }
 
 .practical li {
-  padding-bottom: 14px;
-  border-bottom: 1px solid rgb(255 255 255 / 18%);
-  color: rgb(255 255 255 / 82%);
-  font-size: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgb(30 54 69 / 14%);
+  color: var(--doc-ink, #2f4352);
+  font-size: 15px;
   line-height: 1.55;
 }
 
 .practical a {
   grid-column: 2;
-  color: #fff;
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  justify-self: start;
 }
 
 .mosaic {
@@ -193,7 +179,7 @@
 .mosaic img {
   width: 100%;
   height: 280px;
-  border-radius: 16px;
+  border-radius: 14px;
   object-fit: cover;
 }
 
@@ -202,88 +188,101 @@
   height: 570px;
 }
 
+/* Related guides as flat tinted boxes. */
 .articleGrid {
-  margin-top: 28px;
+  margin-top: 22px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 .articleGrid article {
-  padding: 24px;
-  border: 1px solid #e1e7e6;
-  border-radius: 15px;
+  padding: 22px;
+  background: var(--doc-sage, #eaf3f0);
+}
+
+.articleGrid article:nth-child(even) {
+  background: var(--doc-sand, #f5f5ef);
 }
 
 .articleGrid p {
-  margin: 0 0 12px;
-  color: #075d63;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .1em;
+  margin: 0 0 10px;
+  color: var(--doc-green, #2e6751);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
 
-.articleGrid h3 {
+.articleTitle.articleTitle.articleTitle {
   margin: 0;
-  font-size: 19px;
+  color: var(--doc-navy, #1e3645);
+  font-size: 18px;
+  font-weight: 700;
   line-height: 1.35;
 }
 
+.articleTitle a:hover {
+  color: var(--doc-green, #2e6751);
+}
+
 .articleGrid span {
-  margin-top: 12px;
+  margin-top: 10px;
   display: block;
-  color: #5d686f;
-  font-size: 13px;
+  color: var(--doc-ink, #2f4352);
+  font-size: 14px;
   line-height: 1.55;
 }
 
+/* Questions as alternating sage/sand rows, like the FAQ page. */
 .faqs {
-  max-width: 820px;
-  margin-top: 24px;
-  border-top: 1px solid #132b3a;
+  max-width: 860px;
+  margin-top: 22px;
+  display: grid;
+  gap: 3px;
 }
 
 .faqs details {
-  border-bottom: 1px solid #e1e7e6;
+  padding: 0 18px;
+  background: var(--doc-sage, #eaf3f0);
+}
+
+.faqs details:nth-child(even) {
+  background: var(--doc-sand, #f5f5ef);
 }
 
 .faqs summary {
-  min-height: 64px;
+  min-height: 58px;
   display: flex;
   align-items: center;
-  color: #132b3a;
+  color: var(--doc-navy, #1e3645);
   font-size: 16px;
-  font-weight: 720;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .faqs p {
-  max-width: 700px;
+  max-width: 720px;
   margin: 0;
-  padding: 0 0 22px;
-  color: #5d686f;
-  font-size: 14px;
+  padding: 0 0 18px;
+  color: var(--doc-ink, #2f4352);
+  font-size: 15px;
   line-height: 1.65;
 }
 
 .cta {
-  padding: 76px 0;
-  background: #f6f1e8;
+  padding: clamp(48px, 6vw, 72px) 0 clamp(56px, 7vw, 88px);
 }
 
-.cta .shell {
+.ctaBox {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 40px;
+  gap: 24px 40px;
 }
 
-.cta p {
-  color: #075d63;
-}
-
-.cta h2 {
-  max-width: 640px;
+.ctaBox.ctaBox {
+  padding: clamp(22px, 3.4vw, 40px);
 }
 
 .cta span {
@@ -293,8 +292,6 @@
 
 .cta a {
   flex: 0 0 auto;
-  background: #075d63;
-  color: #fff;
 }
 
 @media (max-width: 700px) {
@@ -313,7 +310,7 @@
   .factGrid,
   .practicalGrid {
     grid-template-columns: 1fr;
-    gap: 34px;
+    gap: 12px;
   }
 
   .practical a {
@@ -321,7 +318,7 @@
   }
 
   .section {
-    padding: 64px 0;
+    padding: 40px 0 0;
   }
 
   .tourRail {
@@ -356,7 +353,7 @@
     grid-template-columns: 1fr;
   }
 
-  .cta .shell {
+  .ctaBox {
     display: grid;
   }
 

@@ -138,3 +138,30 @@ test("support pages and the FAQ use the document format on the atlas theme", () 
   const faqCss = read("app/(website)/faq/FaqDoc.module.css");
   assert.match(faqCss, /\.item:nth-child\(even\) \{\s*background: var\(--doc-sand\);/);
 });
+
+test("destinations, Russia services, private trip and visa pages drop the dark bands", () => {
+  const index = read("components/website/clean/DestinationIndex.module.css");
+  assert.doesNotMatch(index.slice(index.indexOf(".guideSection {"), index.indexOf(".guideLayout {")), /background: var\(--destination-primary\)/);
+  assert.match(read("app/(website)/destinations/page.tsx"), /<h2 id="regional-title" className=\{doc\.tag\}>/);
+
+  const hub = read("components/website/clean/DestinationHub.module.css");
+  assert.doesNotMatch(hub, /\.practical \{\s*background: #075d63;/);
+  assert.match(read("app/(website)/destinations/[slug]/page.tsx"), /<h2 id="destination-tours-title" className=\{doc\.tag\}>/);
+
+  const russia = read("components/website/clean/RussiaServices.module.css");
+  assert.match(russia, /\.serviceGrid article:nth-child\(even\) \{\s*background: var\(--doc-sand, #f5f5ef\);/);
+
+  const wizard = read("components/website/clean/CustomTripWizard.module.css");
+  const wizardBox = wizard.match(/\n\.wizard \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(wizardBox, /background: var\(--doc-sand, #f5f5ef\);/);
+  assert.match(wizardBox, /box-shadow: none;/);
+
+  const visa = read("app/(website)/visa/VisaPages.module.css");
+  const visaHero = visa.match(/\n\.hero \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(visaHero, /background: #fff;/);
+  assert.doesNotMatch(visa, /linear-gradient\(145deg, #05484d/);
+  const detail = read("app/(website)/visa/[slug]/page.tsx");
+  for (const id of ["overview-title", "eligibility-title", "documents-title", "service-title", "process-title", "country-faq-title"]) {
+    assert.match(detail, new RegExp(`<h2 id="${id}" className=\\{doc\\.tag\\}>`));
+  }
+});
