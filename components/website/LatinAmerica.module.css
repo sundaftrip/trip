@@ -80,11 +80,15 @@
 .finalCta > a { flex-shrink: 0; }
 .credits { padding-bottom: 28px; font-size: 11px; color: #536169; scroll-margin-top: 85px; }
 .credits a { text-decoration: underline; text-underline-offset: 3px; }
-.collection { width: min(1180px, calc(100% - 40px)); margin: 38px auto; padding: 28px 32px; background: #edf5f2; color: #132b3a; border: 1px solid #cfe1dc; border-radius: 18px; display: flex; justify-content: space-between; gap: 25px; align-items: center; }
-.collection .eyebrow { margin-bottom: 8px; }
-.collection h2 { font-size: 28px; line-height: 1.2; }
-.collection p { margin-top: 8px; color: #536169; font-size: 14px; line-height: 1.65; }
+/* Catalog promo box in the Sundaf DMC document format: flat sage box, green slash
+   eyebrow, bold navy title (the repeated class outranks the site heading weight). */
+.collection { width: min(1280px, calc(100% - 40px)); margin: 32px auto; padding: 26px 30px; background: var(--doc-sage, #eaf3f0); color: var(--doc-navy, #1e3645); display: flex; justify-content: space-between; gap: 25px; align-items: center; }
+.collection .eyebrow { margin-bottom: 8px; color: var(--doc-green, #2e6751); font-size: 13px; font-weight: 700; letter-spacing: .03em; }
+.collection.collection.collection h2 { font-size: 28px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; color: var(--doc-navy, #1e3645); }
+.collection p { margin-top: 8px; color: var(--doc-ink, #2f4352); font-size: 14.5px; line-height: 1.65; }
 .collection > a { flex-shrink: 0; }
+.collection .primary { background: var(--doc-green, #2e6751); border-color: var(--doc-green, #2e6751); }
+.collection .primary:hover { background: #24563f; }
 .page a:focus-visible, .page summary:focus-visible, .collection a:focus-visible { outline: 3px solid #b45d37; outline-offset: 5px; }
 @media (max-width: 760px) {
   .shell { width: calc(100% - 32px); }
@@ -101,7 +105,8 @@
   .steps { gap: 25px; }
   .planning, .trade { padding-block: 48px; }
   .collection, .finalCta { flex-direction: column; align-items: stretch; }
-  .collection { width: calc(100% - 32px); padding: 24px; }
+  .collection { width: calc(100% - 24px); padding: 22px 18px; }
+  .collection.collection.collection h2 { font-size: 24px; }
   .finalCta { padding-block: 45px; }
 }
 @media (max-width: 430px) {

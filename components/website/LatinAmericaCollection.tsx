@@ -6,7 +6,7 @@ export default function LatinAmericaCollection() {
   return (
     <aside className={styles.collection} aria-label="Katalog Amerika Latin 2027">
       <div>
-        <span className={styles.eyebrow}>TOUR GRUP · 2027</span>
+        <span className={styles.eyebrow}>TOUR GRUP / 2027</span>
         <h2>Peru & Amerika Latin</h2>
         <p>Lima, Cusco dan Machu Picchu, atau sekaligus Brasil, Kolombia dan Chile. Lihat itinerary harian, estimasi biaya dari Jakarta dan pilihan tambahan.</p>
       </div>

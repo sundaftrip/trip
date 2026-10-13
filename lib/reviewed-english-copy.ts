@@ -208,6 +208,15 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Tambahan pilihan": "Selected extras",
   "Harga paket normal": "Regular package price",
   "per orang, termasuk biaya wajib": "per guest, including required charges",
+  // Tours catalog (document format)
+  "Jadwal & biaya tour": "Tour dates & prices",
+  "Bebas tentukan perjalananmu": "Plan your own trip",
+  "TOUR GRUP / 2027": "GROUP TOUR / 2027",
+  "Harga di setiap kartu sudah termasuk biaya wajib per orang. Pilih jadwal grup, rancang perjalanan privat, atau lihat rute yang pernah kami jalankan.":
+    "Every price on the cards already includes the required charges per guest. Choose a group departure, plan a private trip, or browse routes we have run before.",
+  "Berangkat bersama grup di tanggal yang sudah ditetapkan.": "Travel with a group on a fixed departure date.",
+  "Tanggal, rute, dan jumlah peserta kamu tentukan sendiri.": "You choose the dates, route, and group size.",
+  "Rute yang sudah kami jalankan, sebagai gambaran perjalanan.": "Routes we have already run, to give you a feel for the trip.",
   "Tambahan opsional": "Optional extras",
   "Jadwal tour": "Tour dates",
   "Jadwal lainnya": "Other departures",

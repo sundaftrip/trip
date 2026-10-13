@@ -20,8 +20,7 @@
 }
 
 .hero {
-  padding: clamp(28px, 3vw, 40px) 0;
-  border-bottom: 1px solid var(--catalog-line);
+  padding: clamp(28px, 3.4vw, 46px) 0 clamp(26px, 3vw, 40px);
   background: #fff;
 }
 
@@ -37,19 +36,26 @@
   color: var(--catalog-primary);
 }
 
+/* Header: title and a short note side by side, then the three ways to travel
+   as a full-width row of tinted cells (like a row of the PDF table). */
 .heroLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
-  gap: clamp(40px, 6vw, 72px);
-  align-items: center;
+  gap: clamp(22px, 2.6vw, 30px);
 }
 
-.eyebrow {
-  margin: 0 0 12px;
-  color: var(--catalog-primary);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+.heroIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 18px clamp(32px, 5vw, 72px);
+  align-items: end;
+}
+
+.heroLede {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.65;
 }
 
 .hero h1,
@@ -65,64 +71,70 @@
 }
 
 .hero h1 {
-  max-width: 10ch;
-  color: var(--catalog-ink);
-  font-size: clamp(42px, 5vw, 66px);
-}
-
-.heroLayout > div > p:last-child {
-  max-width: 680px;
-  margin: 14px 0 0;
-  color: var(--catalog-muted);
-  font-size: 17px;
-  font-weight: 400;
-  letter-spacing: 0.012em;
-  line-height: 1.65;
+  max-width: 12ch;
+  font-size: clamp(36px, 4.4vw, 56px);
 }
 
 .trustCounts {
   margin: 0;
   display: grid;
-  border-top: 1px solid #ccd7d8;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
 }
 
 .trustCounts a {
-  min-height: 68px;
+  min-height: 112px;
+  padding: 18px 20px;
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 20px;
-  border-bottom: 1px solid #ccd7d8;
-  color: var(--catalog-ink);
-  transition:
-    background-color 160ms ease,
-    color 160ms ease,
-    padding 180ms ease;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(28px, auto) auto;
+  grid-template-areas:
+    "label count"
+    "note note";
+  align-content: start;
+  gap: 8px 16px;
+  background: var(--doc-sand);
+  color: var(--doc-navy);
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
-.trustCounts a:hover,
+.trustCounts a:nth-child(even) { background: var(--doc-sage); }
+.trustCounts a:hover { background: #e4eee9; }
+
 .trustCounts a[aria-current="page"] {
-  padding-inline: 14px;
-  background: transparent;
-  color: var(--catalog-primary);
+  background: var(--doc-green);
+  color: #fff;
 }
 
 .trustCounts span {
+  grid-area: label;
+  align-self: center;
   color: inherit;
   font-size: 13px;
-}
-
-.trustCounts a[aria-current="page"] span {
-  color: var(--catalog-primary);
-  font-weight: 650;
+  font-weight: 750;
+  letter-spacing: .03em;
+  text-transform: uppercase;
 }
 
 .trustCounts strong {
+  grid-area: count;
+  align-self: center;
   color: inherit;
-  font-size: 29px;
-  font-weight: 400;
-  letter-spacing: 0.012em;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
 }
+
+.trustCounts small {
+  grid-area: note;
+  max-width: 34ch;
+  color: var(--doc-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.trustCounts a[aria-current="page"] small { color: rgb(255 255 255 / 86%); }
 
 .resultsSection {
   padding: clamp(28px, 3.5vw, 44px) 0 clamp(56px, 6vw, 76px);
@@ -130,15 +142,14 @@
 
 .trustCounts .customBadge {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .customOffer {
-  margin-top: 30px;
-  padding: clamp(24px, 4vw, 44px);
-  border: 1px solid var(--catalog-line);
-  border-radius: 16px;
+  margin-top: 26px;
 }
+
+.customOffer.customOffer { padding: clamp(22px, 3.5vw, 36px); }
 
 .customOffer h3 {
   margin: 0 0 18px;
@@ -148,25 +159,14 @@
   line-height: 1.2;
 }
 
-.customOffer > p:not(.eyebrow) {
+.customOffer > p:not([class]) {
   max-width: 760px;
   margin: 12px 0;
   color: var(--catalog-muted);
   line-height: 1.7;
 }
 
-.customOffer a {
-  min-height: 46px;
-  margin-top: 12px;
-  padding: 12px 22px;
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  background: var(--catalog-primary);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-}
+.customOffer a { margin-top: 12px; }
 
 .customOffer > span {
   display: block;
@@ -186,7 +186,7 @@
 
 .privatePreviewHeading {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
   gap: 32px;
 }
@@ -200,19 +200,11 @@
   line-height: 1.05;
 }
 
-.privatePreviewHeading .eyebrow {
-  margin-bottom: 12px;
-}
-
 .privatePreviewLink {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  color: var(--catalog-primary);
   font-size: 14px;
-  font-weight: 750;
-  text-decoration: underline;
-  text-underline-offset: 4px;
 }
 
 .tabs {
@@ -296,10 +288,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid #cbd5d5;
+  border: 0;
   border-radius: 999px;
-  background: #fff;
-  color: var(--catalog-navy);
+  background: var(--doc-sand);
+  color: var(--doc-navy);
   font: inherit;
   font-size: 13px;
   font-weight: 730;
@@ -314,7 +306,7 @@
   min-width: 20px;
   padding: 2px 5px;
   border-radius: 999px;
-  background: var(--catalog-primary);
+  background: var(--doc-green);
   color: #fff;
   font-size: 10px;
 }
@@ -389,7 +381,6 @@
   gap: 12px;
 }
 
-.loadMore button,
 .empty button,
 .empty a {
   min-height: 46px;
@@ -413,13 +404,11 @@
 }
 
 .empty {
-  margin-top: 34px;
-  padding: clamp(30px, 6vw, 68px);
-  border: 1px solid var(--catalog-line);
-  border-radius: 16px;
-  background: var(--catalog-soft);
+  margin-top: 26px;
   text-align: center;
 }
+
+.empty.empty { padding: clamp(28px, 5vw, 56px); }
 
 .empty h3 {
   margin: 0;
@@ -447,19 +436,18 @@
 }
 
 .faqSection {
-  padding: clamp(52px, 6.5vw, 82px) 0;
-  border-top: 1px solid var(--catalog-line);
-  background: var(--catalog-soft);
+  padding: clamp(44px, 5.5vw, 68px) 0;
+  background: #fff;
 }
 
 .faqLayout {
+  max-width: 860px;
   display: grid;
-  grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
-  gap: clamp(44px, 8vw, 112px);
+  gap: 18px;
 }
 
 .faqs {
-  border-top: 1px solid var(--catalog-navy);
+  border-top: 1px solid var(--catalog-line);
 }
 
 .faqs details {
@@ -488,10 +476,10 @@
   line-height: 1.7;
 }
 
+/* Closing call to action as a tinted box, like the boxes in the PDF portfolio. */
 .consultation {
-  padding: 58px 0;
-  background: var(--catalog-navy);
-  color: #fff;
+  padding: 0 0 clamp(52px, 6vw, 76px);
+  background: #fff;
 }
 
 .consultationRow {
@@ -501,36 +489,20 @@
   gap: 40px;
 }
 
+.consultationRow.consultationRow { padding: clamp(24px, 3.5vw, 36px); }
+
 .consultation h2 {
-  color: #fff;
-  font-size: clamp(30px, 3.5vw, 46px);
+  font-size: clamp(24px, 2.6vw, 32px);
 }
 
 .consultation p {
   max-width: 680px;
   margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--doc-ink);
   line-height: 1.6;
 }
 
-.consultation a {
-  min-height: 50px;
-  padding: 0 20px;
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border-radius: 999px;
-  background: #fff;
-  color: var(--catalog-navy);
-  font-size: 13px;
-  font-weight: 740;
-}
-
-.consultation svg {
-  width: 18px;
-}
+.consultation a { flex: 0 0 auto; }
 
 .sheetLayer {
   --catalog-ink: #132b3a;
@@ -740,9 +712,6 @@
 }
 
 @media (min-width: 760px) {
-  .hero .shell {
-    width: min(860px, calc(100% - 64px));
-  }
 
   .sheetLayer {
     padding: 32px;
@@ -756,28 +725,13 @@
 }
 
 @media (max-width: 900px) {
-  .heroLayout,
-  .faqLayout {
+  .heroIntro {
     grid-template-columns: 1fr;
   }
 
-  .trustCounts {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .trustCounts a {
-    padding: 14px;
-    display: block;
-    border-right: 1px solid #ccd7d8;
-  }
-
-  .trustCounts a:last-child {
-    border-right: 0;
-  }
-
-  .trustCounts strong {
-    display: block;
-    margin-top: 4px;
+    min-height: 0;
+    padding: 14px 16px;
   }
 
   .grid {
@@ -805,13 +759,13 @@
 
   .hero h1 {
     max-width: 12ch;
-    font-size: 36px;
+    font-size: 32px;
   }
 
-  .heroLayout > div > p:last-child {
-    margin-top: 15px;
-    font-size: 14px;
-    line-height: 1.58;
+
+  .heroLede {
+    font-size: 14.5px;
+    line-height: 1.6;
   }
 
   .trustCounts {
@@ -822,28 +776,29 @@
     scrollbar-width: none;
   }
 
+  .trustCounts small { display: none; }
+
   .trustCounts::-webkit-scrollbar {
     display: none;
   }
 
   .trustCounts a,
-  .trustCounts a[aria-current="page"] {
+  .trustCounts a:nth-child(even) {
     min-width: max-content;
     min-height: 38px;
-    padding: 0 12px;
+    padding: 0 13px;
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
     gap: 6px;
-    border: 1px solid #ccd7d8;
+    border: 0;
     border-radius: 999px;
-    background: #fff;
-    color: var(--catalog-muted);
+    background: var(--doc-sand);
+    color: var(--doc-navy);
   }
 
   .trustCounts a[aria-current="page"] {
-    border-color: var(--catalog-primary);
-    background: var(--catalog-primary);
+    background: var(--doc-green);
     color: #fff;
   }
 
@@ -859,15 +814,21 @@
   .trustCounts span {
     min-height: 0;
     display: inline;
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0;
     line-height: 1;
+    text-transform: none;
   }
 
-  .trustCounts strong {
+  .trustCounts strong,
+  .trustCounts .customBadge {
     display: inline;
     margin-top: 0;
-    font-size: 15px;
+    font-size: 14px;
   }
+
+  .trustCounts .customBadge { font-size: 12px; }
 
   .resultsSection {
     padding: 0 0 64px;
@@ -922,11 +883,7 @@
     margin-inline: 12px;
     display: grid;
     align-items: start;
-    gap: 12px;
-  }
-
-  .privatePreviewHeading h2 {
-    font-size: 30px;
+    gap: 8px;
   }
 
   .privatePreviewLink {
@@ -965,11 +922,11 @@
   }
 
   .faqSection {
-    padding: 58px 0;
+    padding: 44px 0;
   }
 
   .faqLayout {
-    gap: 32px;
+    gap: 14px;
   }
 
   .faqs summary {
@@ -978,19 +935,19 @@
   }
 
   .consultation {
-    padding: 50px 0;
+    padding: 0 0 52px;
   }
 
   .consultationRow {
-    gap: 24px;
+    gap: 20px;
   }
 
   .consultation h2 {
-    font-size: 30px;
+    font-size: 24px;
   }
 
   .consultation p {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .consultation a {
