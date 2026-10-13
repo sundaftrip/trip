@@ -1,5 +1,5 @@
 import Link from "./PreserveScrollLink";
-import { Check, Download, Star, X } from "lucide-react";
+import { Download, Star } from "lucide-react";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { formatCurrency } from "@/lib/utils";
 import { itineraryPdfHref } from "@/lib/itinerary-pdf-download";
@@ -90,49 +90,49 @@ function detailCopy(tour: DetailTour, isFlexibleDate: boolean) {
 
   if (/4[- ]tan/.test(haystack)) {
     return {
-      eyebrow: "Open trip · Asia Tengah",
+      eyebrow: "Open trip / Asia Tengah",
       heroSupport: "Rute antarnegara, perpindahan kota, dan kebutuhan perjalanan dikoordinasikan sejak awal.",
     };
   }
 
   if (/central-asia|asia tengah|kazakhstan|kyrgyzstan|uzbekistan|tajikistan/.test(haystack)) {
     return {
-      eyebrow: `${tripType} · Asia Tengah`,
+      eyebrow: `${tripType} / Asia Tengah`,
       heroSupport: "Perpindahan kota, kebutuhan perjalanan, dan koordinasi di destinasi dirangkum sejak awal.",
     };
   }
 
   if (/aurora|murmansk/.test(haystack)) {
     return {
-      eyebrow: `${tripType} · Rusia & Aurora`,
+      eyebrow: `${tripType} / Rusia & Aurora`,
       heroSupport: "Jadwal antarkota, aktivitas musim dingin, dan koordinasi di destinasi disiapkan sebagai satu perjalanan utuh.",
     };
   }
 
   if (/russia|rusia/.test(haystack)) {
     return {
-      eyebrow: `${tripType} · Rusia`,
+      eyebrow: `${tripType} / Rusia`,
       heroSupport: "Rute antarkota, akomodasi, dan kebutuhan perjalanan dirangkum agar mudah dipahami sebelum memesan.",
     };
   }
 
   if (/hokkaido/.test(haystack)) {
     return {
-      eyebrow: `${tripType} · Jepang`,
+      eyebrow: `${tripType} / Jepang`,
       heroSupport: "Rute, akomodasi, dan perpindahan antarkota dirangkum agar perjalanan lebih mudah dipahami.",
     };
   }
 
   if (/japan|jepang|tokyo/.test(haystack)) {
     return {
-      eyebrow: `${tripType} · Jepang`,
+      eyebrow: `${tripType} / Jepang`,
       heroSupport: "Rute, akomodasi, dan perpindahan antarkota ditampilkan dalam satu alur yang mudah dibandingkan.",
     };
   }
 
   if (/vietnam|sapa|hanoi|danang|phu quoc|ho chi minh/.test(haystack)) {
     return {
-      eyebrow: `${tripType} · Vietnam`,
+      eyebrow: `${tripType} / Vietnam`,
       heroSupport: isFlexibleDate
         ? "Akomodasi, transportasi darat, dan aktivitas dapat dikonfirmasi sesuai tanggal serta kebutuhan grup."
         : "Akomodasi, transportasi darat, dan aktivitas utama ditampilkan dalam satu alur yang mudah dibaca.",
@@ -140,7 +140,7 @@ function detailCopy(tour: DetailTour, isFlexibleDate: boolean) {
   }
 
   return {
-    eyebrow: `${tripType} · ${tour.country}`,
+    eyebrow: `${tripType} / ${tour.country}`,
     heroSupport: "Rute, durasi, fasilitas, dan cara pemesanan dirangkum dalam satu halaman yang mudah dibandingkan.",
   };
 }
@@ -371,7 +371,7 @@ export default function CleanTourDetail({
 
           {itinerary.length > 0 && (
             <section className={styles.detailContentSection} id="itinerary" aria-labelledby="itinerary-title">
-              <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary</h2>
+              <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary harian</h2>
               <ol className={styles.detailItinerary}>
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);
@@ -379,21 +379,24 @@ export default function CleanTourDetail({
                   const dayTitle = normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`;
                   return (
                     <li className={styles.detailDay} key={`${item.day}-${item.title}-${index}`} data-reveal>
-                      <p className={styles.detailDayLabel}>
-                        <span>Hari {item.day}</span>
-                        {date ? <time dateTime={date.iso}>{date.label}</time> : null}
-                      </p>
-                      <h3>{dayTitle}</h3>
+                      <h3><span>Hari {item.day}</span> / {dayTitle}</h3>
                       {paragraphs.map((paragraph, paragraphIndex) => <p key={`${paragraph.slice(0, 32)}-${paragraphIndex}`}>{paragraph}</p>)}
-                      {item.insights.length > 0 && (
-                        <dl className={styles.detailDayFacts}>
-                          {item.insights.map((insight) => (
-                            <div key={`${insight.kind}-${insight.value}`}>
-                              <dt>{insight.label}</dt>
-                              <dd>{insight.value}</dd>
-                            </div>
-                          ))}
-                        </dl>
+                      {(date || item.insights.length > 0) && (
+                        <div className={styles.detailDayMeta}>
+                          <div>
+                            {date ? <time dateTime={date.iso}>{date.label}</time> : null}
+                            {item.insights.length > 0 && (
+                              <dl>
+                                {item.insights.map((insight) => (
+                                  <div key={`${insight.kind}-${insight.value}`}>
+                                    <dt>{insight.label}</dt>
+                                    <dd>{insight.value}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </li>
                   );
@@ -471,13 +474,13 @@ export default function CleanTourDetail({
                   {tour.inclusions.length > 0 && (
                     <div className={styles.detailIncludedBox}>
                       <h3>Termasuk</h3>
-                      <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}><Check aria-hidden="true" />{item}</li>)}</ul>
+                      <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
                     </div>
                   )}
                   {tour.exclusions.length > 0 && (
                     <div className={styles.detailExcludedBox}>
                       <h3>Tidak termasuk</h3>
-                      <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}><X aria-hidden="true" />{item}</li>)}</ul>
+                      <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
                     </div>
                   )}
                 </div>
@@ -505,15 +508,14 @@ export default function CleanTourDetail({
                     <strong>{paymentPlan.totalLabel}</strong>
                   </p>
                   {paymentPlan.intro && <p>{paymentPlan.intro}</p>}
-                  <ol className={styles.detailPaymentSteps}>
-                    {paymentPlan.steps.map((step, index) => (
-                      <li key={`${step.label}-${index}`}>
-                        <span>{step.label}</span>
-                        <strong>{step.amountLabel}</strong>
-                        <small>Jatuh tempo {step.dueDateLabel}</small>
-                      </li>
-                    ))}
-                  </ol>
+                  <table className={styles.detailDocTable}>
+                    <thead><tr><th scope="col">Tahap</th><th scope="col">Jatuh tempo</th><th scope="col">Nominal</th></tr></thead>
+                    <tbody>
+                      {paymentPlan.steps.map((step, index) => (
+                        <tr key={`${step.label}-${index}`}><th scope="row">{step.label}</th><td>{step.dueDateLabel}</td><td>{step.amountLabel}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
                   {(paymentPlan.paymentMethodsLabel || paymentPlan.finePrint) && (
                     <p className={styles.detailFinePrint}>
                       {[paymentPlan.paymentMethodsLabel, paymentPlan.finePrint].filter(Boolean).join(" ")}

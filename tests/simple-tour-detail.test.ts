@@ -15,7 +15,8 @@ test("tour detail opens with the photo carousel, then text-first information", (
 
   // Itinerary is a plain, always-open day list (no per-day accordion).
   assert.match(source, /<ol className=\{styles\.detailItinerary\}>/);
-  assert.match(source, /<p className=\{styles\.detailDayLabel\}>/);
+  assert.match(source, /<h3><span>Hari \{item\.day\}<\/span> \/ \{dayTitle\}<\/h3>/);
+  assert.match(source, /<div className=\{styles\.detailDayMeta\}>/);
   assert.doesNotMatch(source, /<StableDetails className=\{styles\.detailDay\}/);
 
   // Included / not included stay colour coded; reviews only show when published.
@@ -43,10 +44,30 @@ test("parts follow the order itinerary, price & date, include & exclude, payment
   assert.match(source, /label: hasPaymentTerms \? "Term Pembayaran" : "Ketentuan"/);
 });
 
+test("follows the Sundaf DMC portfolio format", () => {
+  const tokens = styles.match(/\n\.tourDetail \{(\s*--doc-[^}]*)\}/)?.[1] ?? "";
+  assert.match(tokens, /--doc-amber: #eab067;/);
+  assert.match(tokens, /--doc-green: #2e6751;/);
+
+  // Section titles: amber highlighter tag, rounded on the left, cut at an angle on the right.
+  const tag = styles.match(/\.tourDetail\.tourDetail \.detailSectionTitle \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(tag, /border-radius: 999px 0 0 999px;/);
+  assert.match(tag, /background: var\(--doc-amber\);/);
+  assert.match(tag, /text-transform: uppercase;/);
+  assert.match(tag, /clip-path: polygon\(0 0, 100% 0, calc\(100% - 18px\) 100%, 0 100%\);/);
+
+  // Tables with a dark green header row and tinted rows.
+  assert.match(source, /<table className=\{styles\.detailDocTable\}>/);
+  assert.match(source, /<th scope="col">Tahap<\/th><th scope="col">Jatuh tempo<\/th><th scope="col">Nominal<\/th>/);
+  assert.match(styles, /\.detailDocTable thead th \{[^}]*background: var\(--doc-green\);/);
+  assert.match(styles, /\.detailRoomPriceLegend \{[^}]*float: left;[^}]*background: var\(--doc-green, #2e6751\);/);
+  assert.match(source, /eyebrow: `\$\{tripType\} \/ \$\{tour\.country\}`/);
+});
+
 test("keeps the page plain: no section icons, FAQ filler or decorative boxes", () => {
   assert.doesNotMatch(source, /className=\{styles\.detailSectionTitle\}[^>]*>\s*<[A-Z]/);
   assert.doesNotMatch(source, /tourFaqs|Pertanyaan umum|Simpan dan bandingkan|Masih ingin membandingkan|detailHeroCta|detailRouteLine/);
-  assert.doesNotMatch(source, /detailHeroIntro|detailSectionKicker|detailNoteBox|detailMobileUtilities/);
+  assert.doesNotMatch(source, /detailHeroIntro|detailSectionKicker|detailNoteBox|detailMobileUtilities|detailDayPill/);
   assert.doesNotMatch(source, /\b(Compass|Route|CalendarDays|ListChecks|BedDouble|Info|Wallet|CircleHelp|MapPin|Clock|Users)\b/);
 });
 

@@ -21,17 +21,17 @@
   background: #f8fbfb;
 }
 
+/* Flat tinted box, like the boxes in the PDF portfolio. */
 .dateCard {
-  padding: 24px;
-  border: 1px solid #cdd8d7;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 16px 44px rgb(17 53 58 / 7%);
+  padding: 22px;
+  border: 0;
+  border-radius: 0;
+  background: #f5f5ef;
+  box-shadow: none;
 }
 
 .dateCard[data-unavailable="true"] {
-  border-color: #dfd5d3;
-  background: #fbf8f7;
+  background: #f8f1ef;
 }
 
 .dateCardTop {
@@ -40,14 +40,14 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  border-bottom: 1px solid #e1e7e6;
+  border-bottom: 1px solid rgb(30 54 69 / 14%);
 }
 
 .dateCardTop > span {
   padding: 7px 10px;
   border-radius: 999px;
-  background: #dff1f2;
-  color: #075d63;
+  background: #dcebe4;
+  color: #2e6751;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -60,7 +60,7 @@
 }
 
 .dateCardTop > strong {
-  color: #132b3a;
+  color: #1e3645;
   font-size: 18px;
   font-weight: 800;
   text-align: right;
@@ -104,12 +104,12 @@
 .dateTotal {
   margin-top: 5px;
   padding-top: 12px;
-  border-top: 1px solid #e1e7e6;
+  border-top: 1px solid rgb(30 54 69 / 14%);
 }
 
 .dateTotal dt,
 .dateTotal dd {
-  color: #075d63;
+  color: #2e6751;
   font-weight: 800;
 }
 

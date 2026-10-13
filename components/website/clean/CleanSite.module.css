@@ -916,9 +916,17 @@
 .supportRow p { max-width: 660px; margin: 12px 0 0; color: rgba(255, 255, 255, .7); }
 .supportRow > a { background: #fff; color: var(--clean-navy); }
 
-/* Tour detail: photos first, then plain text separated by thin rules.
-   Colour is kept for meaning only (price status, included / not included). */
+/* Tour detail in the Sundaf DMC document style (2027 planning portfolio):
+   amber tag headings, "HARI 1 / judul" days, tinted boxes and tables with a
+   dark green header row. Photos first, then text. */
 .tourDetail {
+  --doc-amber: #eab067;
+  --doc-green: #2e6751;
+  --doc-sage: #eaf3f0;
+  --doc-sand: #f5f5ef;
+  --doc-navy: #1e3645;
+  --doc-ink: #2f4352;
+  --doc-slate: #51616a;
   min-width: 0;
   overflow-x: clip;
 }
@@ -947,38 +955,39 @@
   align-items: end;
 }
 
+/* "OPEN TRIP / KANADA", like "ID-KMD02 / 3D2N / PRIVATE JOURNEY". */
 .detailEyebrow {
-  margin: 0 0 12px;
-  color: var(--clean-teal);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: .08em;
+  margin: 0 0 10px;
+  color: var(--doc-green);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
   text-transform: uppercase;
 }
 
-.detailHero h1 {
+.tourDetail.tourDetail .detailHero h1 {
   max-width: 22ch;
   margin: 0;
-  color: var(--clean-navy);
-  font-size: clamp(32px, 4.2vw, 52px);
-  font-weight: 600;
-  letter-spacing: -.035em;
-  line-height: 1.08;
+  color: var(--doc-navy);
+  font-size: clamp(32px, 4.2vw, 50px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.1;
   overflow-wrap: anywhere;
   text-wrap: balance;
 }
 
 .detailHeroPrice {
   margin: 0;
-  color: var(--clean-navy);
+  color: var(--doc-navy);
   line-height: 1.2;
 }
 
-.detailHeroPrice > small { color: var(--clean-muted); font-size: 13px; }
+.detailHeroPrice > small { color: var(--doc-slate); font-size: 13px; }
 .detailHeroPrice > small:first-child { display: block; margin-bottom: 4px; }
-.detailHeroPrice > strong { font-size: clamp(26px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.03em; }
+.detailHeroPrice > strong { font-size: clamp(26px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.02em; }
 .detailHeroPrice > strong + small { margin-left: 6px; }
-.detailHeroPrice > span { display: block; margin-top: 8px; color: var(--clean-teal); font-size: 13px; font-weight: 650; }
+.detailHeroPrice > span { display: block; margin-top: 8px; color: var(--doc-green); font-size: 13px; font-weight: 700; }
 .detailHeroPrice > .detailHeroStatusUnavailable { color: #9a4a42; }
 
 .detailHeroFacts {
@@ -991,8 +1000,8 @@
 }
 
 .detailHeroFacts > div { min-width: 0; }
-.detailHeroFacts dt { color: var(--clean-muted); font-size: 12px; }
-.detailHeroFacts dd { margin: 3px 0 0; color: var(--clean-navy); font-size: 14px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
+.detailHeroFacts dt { color: var(--doc-slate); font-size: 12px; }
+.detailHeroFacts dd { margin: 3px 0 0; color: var(--doc-navy); font-size: 14px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
 
 .detailContentLayout {
   padding-top: clamp(30px, 3.5vw, 44px);
@@ -1005,35 +1014,40 @@
 
 .detailContentMain { min-width: 0; }
 
-/* Each part starts after one thin rule; no boxes, no icons. */
 .detailContentSection {
-  margin-top: clamp(34px, 4vw, 48px);
-  padding-top: clamp(28px, 3vw, 36px);
-  border-top: 1px solid var(--clean-line);
+  margin-top: clamp(40px, 4.5vw, 56px);
   scroll-margin-top: 32px;
 }
 
-.detailSectionTitle {
+/* Section titles: an amber highlighter tag, rounded on the left and cut at an
+   angle on the right, as in the PDF portfolio ("YOUR DAILY ITINERARY"). */
+.tourDetail.tourDetail .detailSectionTitle {
+  width: fit-content;
+  max-width: 100%;
   margin: 0;
-  color: var(--clean-navy);
-  font-size: clamp(22px, 2.2vw, 27px);
-  font-weight: 650;
-  letter-spacing: -.02em;
-  line-height: 1.2;
-  text-wrap: balance;
+  padding: 7px 36px 7px 16px;
+  border-radius: 999px 0 0 999px;
+  background: var(--doc-amber);
+  color: var(--doc-navy);
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
 }
 
 .detailIntro { max-width: 68ch; scroll-margin-top: 32px; }
-.detailIntro p { margin: 0 0 14px; color: var(--clean-muted); font-size: 16px; line-height: 1.72; }
-.detailIntro p:first-child { color: var(--clean-navy); font-size: 17px; line-height: 1.65; }
+.detailIntro p { margin: 0 0 14px; color: var(--doc-ink); font-size: 16px; line-height: 1.72; }
+.detailIntro p:first-child { color: var(--doc-navy); font-size: 17px; line-height: 1.65; }
 
 .detailDestinationLink {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  color: var(--clean-teal);
+  color: var(--doc-green);
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .detailDestinationLink:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -1041,137 +1055,213 @@
 /* Photo carousel at the top of the page (full width on phones). */
 .detailTopGallery { padding-top: 24px; }
 
-/* Itinerary: every day stays open, like a printed programme, with a thin rule
-   between days. */
+/* Itinerary: every day stays open, like the PDF ("DAY 1 / ..."), with a thin
+   rule between days and a muted meta line (date | transport | overnight). */
 .detailItinerary {
-  margin: 8px 0 0;
+  margin: 18px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .detailDay {
   min-width: 0;
-  padding: 22px 0;
-  color: var(--clean-muted);
+  padding: 18px 0;
+  color: var(--doc-ink);
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
+.detailDay:first-child { padding-top: 0; }
 .detailDay + .detailDay { border-top: 1px solid var(--clean-line); }
 .detailDay:last-child { padding-bottom: 0; }
 
-.detailDayLabel {
-  margin: 0 0 4px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px 8px;
-  color: var(--clean-teal);
-  font-size: 13px;
+.tourDetail.tourDetail .detailDay h3 {
+  margin: 0 0 6px;
+  color: var(--doc-navy);
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.4;
+  letter-spacing: 0;
+  line-height: 1.45;
 }
 
-.detailDayLabel time { color: var(--clean-muted); font-weight: 500; }
-.detailDay h3 { margin: 0 0 6px; color: var(--clean-navy); font-size: 17px; font-weight: 650; line-height: 1.4; }
+.detailDay h3 > span { text-transform: uppercase; }
 .detailDay p { margin: 0 0 8px; overflow-wrap: anywhere; }
 
-.detailDayFacts {
-  margin: 10px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 24px;
+/* "Kamis, 15 April 2027 | Transportasi: ... | Bermalam: ...". Every item starts
+   with its "|", and the row is shifted left inside a clipped box, so a separator
+   never shows at the start of a line when the row wraps on a phone. */
+.detailDayMeta {
+  margin-top: 8px;
+  overflow: hidden;
+  color: var(--doc-slate);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-.detailDayFacts > div { min-width: 0; display: flex; flex-wrap: wrap; gap: 0 6px; }
-.detailDayFacts dt { color: var(--clean-muted); font-size: 13px; }
-.detailDayFacts dt::after { content: ":"; }
-.detailDayFacts dd { margin: 0; color: var(--clean-navy); font-size: 13px; overflow-wrap: anywhere; }
+.detailDayMeta > div { margin-left: -19px; }
 
-/* Included (green) and not included (red): plain lists with a small mark. */
-.detailIncludedGrid {
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px 40px;
-}
-
-.detailIncludedBox,
-.detailExcludedBox { min-width: 0; }
-
-.detailIncludedBox h3,
-.detailExcludedBox h3,
-.detailSubsection h3 {
-  margin: 0 0 10px;
-  color: var(--clean-navy);
-  font-size: 16px;
-}
-
-.detailIncludedBox h3 { color: #1d7a4c; }
-.detailExcludedBox h3 { color: #b03a32; }
-
-.detailIncludedList { margin: 0; padding: 0; display: grid; gap: 9px; list-style: none; }
-.detailIncludedList li {
-  display: grid;
-  grid-template-columns: 16px minmax(0, 1fr);
-  gap: 10px;
-  color: var(--clean-navy);
-  font-size: 14.5px;
-  line-height: 1.55;
+.detailDayMeta time,
+.detailDayMeta dl > div {
+  display: inline-block;
+  max-width: 100%;
   overflow-wrap: anywhere;
 }
 
-.detailIncludedList svg { width: 16px; height: 16px; margin-top: 3px; color: #2f9a62; stroke-width: 2.4; }
-.detailExcludedList svg { color: #c4524a; }
+.detailDayMeta time::before,
+.detailDayMeta dl > div::before {
+  display: inline-block;
+  width: 19px;
+  color: #b8c2c6;
+  content: "|";
+  text-align: center;
+}
+
+.detailDayMeta dl,
+.detailDayMeta dt,
+.detailDayMeta dd { display: inline; margin: 0; }
+
+.detailDayMeta dt::after { content: ":"; }
+.detailDayMeta dd { margin-left: 4px; }
+
+/* Included / not included: two tinted boxes side by side, as in the PDF. */
+.detailIncludedGrid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.detailIncludedBox,
+.detailExcludedBox {
+  min-width: 0;
+  padding: 18px 20px;
+  background: var(--doc-sage);
+}
+
+.detailExcludedBox { background: var(--doc-sand); }
+
+.tourDetail.tourDetail .detailIncludedBox h3,
+.tourDetail.tourDetail .detailExcludedBox h3,
+.tourDetail.tourDetail .detailSubsection h3 {
+  margin: 0 0 10px;
+  color: var(--doc-green);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.tourDetail.tourDetail .detailExcludedBox h3 { color: var(--doc-slate); }
+
+.detailIncludedList { margin: 0; padding-left: 18px; display: grid; gap: 6px; list-style: disc; }
+.detailIncludedList li { color: var(--doc-navy); font-size: 14.5px; line-height: 1.55; overflow-wrap: anywhere; }
+.detailIncludedList li::marker { color: var(--doc-green); }
+.detailExcludedList li::marker { color: var(--doc-slate); }
 
 /* Smaller parts inside a section (accommodation, package terms, visa). */
-.detailSubsection { margin-top: 28px; }
-.detailSubsection p { margin: 0 0 10px; color: var(--clean-muted); font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.detailSubsection { margin-top: 26px; }
+.detailSubsection p { margin: 0 0 10px; color: var(--doc-ink); font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
 .detailSubsection p:last-child { margin-bottom: 0; }
 
+/* Tables like the PDF estimates table: dark green header, tinted rows. */
+.detailDocTable {
+  width: 100%;
+  margin-top: 4px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.detailDocTable thead th {
+  padding: 10px 14px;
+  background: var(--doc-green);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+
+.detailDocTable tbody tr { background: var(--doc-sage); }
+.detailDocTable tbody tr:nth-child(even) { background: var(--doc-sand); }
+
+.detailDocTable tbody th,
+.detailDocTable td {
+  padding: 11px 14px;
+  color: var(--doc-navy);
+  font-weight: 500;
+  text-align: left;
+  vertical-align: top;
+}
+
+.detailDocTable tbody th { font-weight: 650; }
+.detailDocTable thead th:last-child,
+.detailDocTable td:last-child { font-weight: 700; text-align: right; white-space: nowrap; }
+
+/* Room prices as a small table, like the PDF estimates: the legend is the dark
+   green header row and each room option is a tinted cell (still a radio choice). */
 .detailRoomPriceGrid {
-  margin: 24px 0;
+  min-width: 0;
+  margin: 18px 0 20px;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
   border: 0;
 }
 
 .detailRoomPriceLegend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  float: left;
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--doc-green, #2e6751);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
 .detailRoomPriceGrid label {
   position: relative;
   width: 100%;
   min-width: 0;
-  padding: 22px;
-  border: 1px solid var(--clean-line);
-  border-radius: 14px;
-  background: #fff;
+  padding: 16px 16px 16px 44px;
+  background: var(--doc-sage, #eaf3f0);
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+  transition: background-color 160ms ease, box-shadow 160ms ease;
 }
 
-.detailRoomPriceGrid label:hover {
-  border-color: color-mix(in srgb, var(--clean-teal) 55%, var(--clean-line));
+.detailRoomPriceGrid label:nth-of-type(even) { background: var(--doc-sand, #f5f5ef); }
+
+/* A visible radio mark; the real input stays in the label for keyboards and readers. */
+.detailRoomPriceGrid label::before {
+  position: absolute;
+  top: 17px;
+  left: 16px;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid var(--doc-green, #2e6751);
+  border-radius: 50%;
+  background: #fff;
+  content: "";
 }
+
+.detailRoomPriceGrid label:hover { background: #dfeee8; }
 
 .detailRoomPriceGrid label[data-selected="true"] {
-  border-color: var(--clean-teal);
-  background: var(--clean-teal-pale);
+  background: #d6e9e1;
+  box-shadow: inset 0 0 0 2px var(--doc-green, #2e6751);
+}
+
+.detailRoomPriceGrid label[data-selected="true"]::before {
+  background: radial-gradient(circle, var(--doc-green, #2e6751) 0 4px, #fff 4.5px);
 }
 
 .detailRoomPriceInput {
@@ -1184,38 +1274,39 @@
 }
 
 .detailRoomPriceGrid label:focus-within {
-  outline: 3px solid color-mix(in srgb, var(--clean-teal) 30%, transparent);
-  outline-offset: 3px;
+  outline: 3px solid color-mix(in srgb, var(--doc-green, #2e6751) 35%, transparent);
+  outline-offset: -3px;
 }
 
 .detailRoomPriceGrid label > span {
-  color: var(--clean-teal-dark);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .07em;
+  color: var(--doc-navy, #1e3645);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
   text-transform: uppercase;
 }
 
-.detailRoomPriceGrid h3 {
-  margin: 12px 0 3px;
-  color: var(--clean-navy);
-  font-size: clamp(22px, 2.4vw, 29px);
-  letter-spacing: -.04em;
-  line-height: 1.1;
+.tourDetail.tourDetail .detailRoomPriceGrid h3 {
+  margin: 8px 0 2px;
+  color: var(--doc-navy, #1e3645);
+  font-size: clamp(21px, 2.2vw, 26px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.15;
 }
 
 .detailRoomPriceGrid label > p {
   margin: 0;
-  color: var(--clean-muted);
-  font-size: 11px;
+  color: var(--doc-slate, #51616a);
+  font-size: 12px;
 }
 
 .detailRoomPriceGrid dl {
-  margin: 17px 0 0;
-  padding-top: 13px;
+  margin: 12px 0 0;
+  padding-top: 10px;
   display: grid;
-  gap: 8px;
-  border-top: 1px solid var(--clean-line);
+  gap: 6px;
+  border-top: 1px solid rgb(30 54 69 / 14%);
 }
 
 .detailRoomPriceGrid dl > div {
@@ -1223,14 +1314,14 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  color: var(--clean-muted);
-  font-size: 11px;
+  color: var(--doc-slate, #51616a);
+  font-size: 12px;
 }
 
 .detailRoomPriceGrid dd {
   margin: 0;
-  color: var(--clean-navy);
-  font-weight: 780;
+  color: var(--doc-navy, #1e3645);
+  font-weight: 700;
   text-align: right;
 }
 
@@ -1546,23 +1637,24 @@
   line-height: 1.4;
 }
 
+/* Accommodation: label / value rows tinted like the PDF table body. */
 .detailHotelList { margin: 0; }
 
 .detailHotelList > div {
-  padding: 11px 0;
+  padding: 10px 14px;
   display: grid;
   grid-template-columns: minmax(130px, .4fr) minmax(0, 1fr);
-  gap: 4px 18px;
-  border-top: 1px solid var(--clean-line);
+  gap: 2px 18px;
+  background: var(--doc-sage);
 }
 
-.detailHotelList > div:last-child { border-bottom: 1px solid var(--clean-line); }
-.detailHotelList dt { color: var(--clean-navy); font-size: 14px; font-weight: 600; }
-.detailHotelList dd { margin: 0; color: var(--clean-muted); font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.detailHotelList > div:nth-child(even) { background: var(--doc-sand); }
+.detailHotelList dt { color: var(--doc-navy); font-size: 14px; font-weight: 650; }
+.detailHotelList dd { margin: 0; color: var(--doc-ink); font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
 
-/* Payment terms: a short list of instalments instead of a wide table. */
+/* Payment terms: total, short intro, then the instalment table. */
 .detailPayment { margin-top: 18px; }
-.detailPayment > p { max-width: 68ch; margin: 0 0 14px; color: var(--clean-muted); font-size: 15px; line-height: 1.65; }
+.detailPayment > p { max-width: 68ch; margin: 0 0 14px; color: var(--doc-ink); font-size: 15px; line-height: 1.65; }
 
 .detailPayment > .detailPaymentTotal {
   max-width: none;
@@ -1574,27 +1666,12 @@
   gap: 4px 16px;
 }
 
-.detailPaymentTotal span { color: var(--clean-muted); font-size: 13px; }
-.detailPaymentTotal strong { color: var(--clean-navy); font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
-
-.detailPaymentSteps { margin: 18px 0 0; padding: 0; list-style: none; border-bottom: 1px solid var(--clean-line); }
-
-.detailPaymentSteps li {
-  padding: 13px 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 16px;
-  align-items: baseline;
-  border-top: 1px solid var(--clean-line);
-}
-
-.detailPaymentSteps span { color: var(--clean-navy); font-size: 15px; font-weight: 650; }
-.detailPaymentSteps strong { color: var(--clean-navy); font-size: 15px; font-weight: 700; text-align: right; white-space: nowrap; }
-.detailPaymentSteps small { grid-column: 1 / -1; color: var(--clean-muted); font-size: 13px; }
+.detailPaymentTotal span { color: var(--doc-slate); font-size: 13px; }
+.detailPaymentTotal strong { color: var(--doc-navy); font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 .detailFinePrint,
-.detailPayment > .detailFinePrint { margin: 12px 0 0; color: var(--clean-muted); font-size: 13px; line-height: 1.55; }
+.detailPayment > .detailFinePrint { margin: 10px 0 0; color: var(--doc-slate); font-size: 13px; line-height: 1.55; }
 
-.detailReviewHeading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.detailReviewHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; }
 .detailReviewHeading > span { flex: 0 0 auto; display: flex; align-items: center; gap: 5px; color: var(--clean-muted); font-size: 12px; }
 .detailReviewHeading > span strong { color: var(--clean-navy); font-size: 20px; }
 .detailReviewHeading > span svg { width: 16px; fill: #d8aa38; color: #d8aa38; }
@@ -1615,10 +1692,9 @@
 
 .detailBookingCard {
   padding: 28px;
-  border: 1px solid #ccd7d8;
-  border-radius: var(--clean-radius);
+  border: 1px solid #dfe5e3;
+  border-radius: 4px;
   background: #fff;
-  box-shadow: 0 18px 55px rgba(24, 43, 46, .09);
 }
 
 .detailStock {
@@ -1752,12 +1828,12 @@
 
 .detailRelatedHeading {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
 
-.detailRelatedHeading > a { flex: 0 0 auto; color: var(--clean-teal); font-size: 13px; font-weight: 650; }
+.detailRelatedHeading > a { flex: 0 0 auto; color: var(--doc-green); font-size: 13px; font-weight: 700; }
 .detailRelatedHeading > a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .detailRelatedGrid { margin-top: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 
@@ -2025,19 +2101,27 @@
   .detailHeroFacts dd { margin: 0; }
   .detailTopGallery { width: 100%; padding-top: 0; }
   .detailContentLayout { padding-top: 26px; padding-bottom: 56px; gap: 0; }
-  .detailContentSection { margin-top: 32px; padding-top: 28px; }
+  .detailContentSection { margin-top: 38px; }
   .detailIntro p { font-size: 15px; line-height: 1.7; }
   .detailIntro p:first-child { font-size: 16px; line-height: 1.62; }
-  .detailSectionTitle { font-size: 22px; }
-  .detailDay { padding: 20px 0; line-height: 1.65; }
-  .detailDay h3 { font-size: 16.5px; }
-  .detailIncludedGrid { grid-template-columns: 1fr; gap: 26px; }
+  .tourDetail.tourDetail .detailSectionTitle { padding: 6px 32px 6px 14px; font-size: 14px; }
+  .detailDay { padding: 16px 0; }
+  .tourDetail.tourDetail .detailDay h3 { font-size: 15.5px; }
+  .detailIncludedGrid { grid-template-columns: 1fr; gap: 12px; }
+  .detailIncludedBox,
+  .detailExcludedBox { padding: 16px; }
+  .detailRoomPriceGrid label { padding: 14px 14px 14px 42px; }
+  .detailRoomPriceGrid label::before { top: 15px; left: 14px; }
+  .detailDocTable { font-size: 13px; }
+  .detailDocTable thead th,
+  .detailDocTable tbody th,
+  .detailDocTable td { padding: 9px 10px; }
   .detailHotelList > div { grid-template-columns: 1fr; gap: 2px; }
   .detailRoomPriceGrid,
   .detailReviewGrid { grid-template-columns: 1fr; }
   .detailRecommendedAddOn { align-items: flex-start; }
   .detailRecommendedAddOnAction { min-height: 40px; }
-  .detailReviewHeading { display: grid; align-items: start; }
+  .detailReviewHeading { display: grid; justify-items: start; }
   .detailRelatedGrid { margin-top: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .detailBookingSidebar { display: none; }
   .detailContentMain { grid-row: auto; }
@@ -2085,8 +2169,6 @@
   .detailMobileAddOns article a { margin-top: 2px; display: inline-flex; min-height: 44px; align-items: center; color: var(--clean-teal); font-size: 12px; font-weight: 650; }
   .detailMobileShare { margin-top: 36px; display: block; }
   .detailMobileShare > div { border-top-width: 1px; }
-  .detailPaymentSteps span,
-  .detailPaymentSteps strong { font-size: 14.5px; }
   :global(body):has(.tourDetail) :global([data-clean-footer]) { padding-bottom: 110px; }
 }
 
@@ -2192,6 +2274,9 @@
     animation-play-state: paused;
   }
 
+  /* Whole sections only fade: a tab jump measures them, so they must not be moved. */
+  .tourDetail[data-reveal-ready] .detailContentSection[data-reveal] { animation-name: detail-fade; }
+
   .tourDetail[data-reveal-ready] [data-reveal="group"] > :nth-child(2) { animation-delay: 60ms; }
   .tourDetail[data-reveal-ready] [data-reveal="group"] > :nth-child(3) { animation-delay: 120ms; }
   .tourDetail[data-reveal-ready] [data-reveal="group"] > :nth-child(n + 4) { animation-delay: 180ms; }
@@ -2215,6 +2300,11 @@
 @keyframes detail-rise {
   from { opacity: 0; translate: 0 12px; }
   to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes detail-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Photos: a soft aurora tint in the top corner. */
