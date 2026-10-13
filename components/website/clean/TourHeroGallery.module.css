@@ -26,6 +26,30 @@
   bottom: auto;
 }
 
+/* Tour detail: photo carousel at the very top of the page. */
+.gallery[data-variant="top"] {
+  border-radius: 20px;
+}
+
+.gallery[data-variant="top"] .slide > button {
+  aspect-ratio: 5 / 2;
+}
+
+@media (max-width: 760px) {
+  .gallery[data-variant="top"] {
+    border-radius: 0;
+  }
+
+  .gallery[data-variant="top"] .slide > button {
+    aspect-ratio: 4 / 3;
+  }
+
+  .gallery[data-variant="top"] .controls {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
 .track {
   display: flex;
   overflow-x: auto;

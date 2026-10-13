@@ -1,17 +1,22 @@
 import Link from "./PreserveScrollLink";
 import {
   ArrowRight,
+  BedDouble,
   Calendar,
-  Check,
+  CalendarDays,
+  CircleCheck,
+  CircleHelp,
+  CircleX,
   Clock,
+  Compass,
   Download,
-  FileText,
-  Hotel,
+  Info,
+  ListChecks,
   MapPin,
-  Package,
+  Route,
   Star,
   Users,
-  X,
+  Wallet,
 } from "lucide-react";
 import TourShareButtons from "@/components/website/TourShareButtons";
 import { formatCurrency } from "@/lib/utils";
@@ -103,75 +108,57 @@ function detailCopy(tour: DetailTour, isFlexibleDate: boolean) {
   if (/4[- ]tan/.test(haystack)) {
     return {
       eyebrow: "Open trip · Asia Tengah",
-      heroLead: "Empat negara dalam satu perjalanan.",
       heroSupport: "Rute antarnegara, perpindahan kota, dan kebutuhan perjalanan dikoordinasikan sejak awal.",
-      summaryTitle: "Dari danau alpine sampai kota-kota Jalur Sutra.",
     };
   }
 
   if (/central-asia|asia tengah|kazakhstan|kyrgyzstan|uzbekistan|tajikistan/.test(haystack)) {
     return {
       eyebrow: `${tripType} · Asia Tengah`,
-      heroLead: "Bentang alam dan kota bersejarah dalam satu rute.",
       heroSupport: "Perpindahan kota, kebutuhan perjalanan, dan koordinasi di destinasi dirangkum sejak awal.",
-      summaryTitle: "Menjelajahi Asia Tengah melalui rute yang tersusun jelas.",
     };
   }
 
   if (/aurora|murmansk/.test(haystack)) {
     return {
       eyebrow: `${tripType} · Rusia & Aurora`,
-      heroLead: "Kota ikonik Rusia dan langit Arktik dalam satu rute.",
       heroSupport: "Jadwal antarkota, aktivitas musim dingin, dan koordinasi di destinasi disiapkan sebagai satu perjalanan utuh.",
-      summaryTitle: "Dari arsitektur Rusia sampai perburuan Aurora.",
     };
   }
 
   if (/russia|rusia/.test(haystack)) {
     return {
       eyebrow: `${tripType} · Rusia`,
-      heroLead: "Kota-kota ikonik Rusia dalam satu perjalanan.",
       heroSupport: "Rute antarkota, akomodasi, dan kebutuhan perjalanan dirangkum agar mudah dipahami sebelum memesan.",
-      summaryTitle: "Menjelajahi Rusia melalui rute yang tersusun jelas.",
     };
   }
 
   if (/hokkaido/.test(haystack)) {
     return {
       eyebrow: `${tripType} · Jepang`,
-      heroLead: "Tokyo dan Hokkaido dalam satu perjalanan musim dingin.",
       heroSupport: "Rute, akomodasi, dan perpindahan antarkota dirangkum agar perjalanan lebih mudah dipahami.",
-      summaryTitle: "Musim dingin Jepang dari Tokyo sampai Hokkaido.",
     };
   }
 
   if (/japan|jepang|tokyo/.test(haystack)) {
     return {
       eyebrow: `${tripType} · Jepang`,
-      heroLead: "Perjalanan Jepang yang dirangkum dengan jelas.",
       heroSupport: "Rute, akomodasi, dan perpindahan antarkota ditampilkan dalam satu alur yang mudah dibandingkan.",
-      summaryTitle: "Menjelajahi Jepang dengan rute yang tersusun dari awal.",
     };
   }
 
   if (/vietnam|sapa|hanoi|danang|phu quoc|ho chi minh/.test(haystack)) {
     return {
       eyebrow: `${tripType} · Vietnam`,
-      heroLead: isFlexibleDate ? "Rute privat dengan waktu yang lebih fleksibel." : "Rute Vietnam yang dirangkum dari awal.",
       heroSupport: isFlexibleDate
         ? "Akomodasi, transportasi darat, dan aktivitas dapat dikonfirmasi sesuai tanggal serta kebutuhan grup."
         : "Akomodasi, transportasi darat, dan aktivitas utama ditampilkan dalam satu alur yang mudah dibaca.",
-      summaryTitle: tour.cityHighlight
-        ? `Menjelajahi ${tour.cityHighlight} dengan ritme yang lebih leluasa.`
-        : "Land tour Vietnam yang disusun untuk perjalanan privat.",
     };
   }
 
   return {
     eyebrow: `${tripType} · ${tour.country}`,
-    heroLead: "Detail penting ditampilkan sejak awal.",
     heroSupport: "Rute, durasi, fasilitas, dan cara pemesanan dirangkum dalam satu halaman yang mudah dibandingkan.",
-    summaryTitle: `Perjalanan ${tour.country} yang disusun lebih jelas dari awal.`,
   };
 }
 
@@ -200,6 +187,7 @@ function itineraryDate(tripDate: Date | null, day: number) {
   return {
     iso: date.toISOString(),
     label: new Intl.DateTimeFormat("id-ID", {
+      weekday: "long",
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -270,7 +258,7 @@ export default function CleanTourDetail({
   const sectionTabs = [
     { id: "itinerary", label: "Itinerary", show: itinerary.length > 0 },
     { id: "harga-tanggal", label: "Harga & Tanggal", show: true },
-    { id: "ulasan", label: "Ulasan", show: true },
+    { id: "ulasan", label: "Ulasan", show: reviews.length > 0 },
   ].filter((item) => item.show).map(({ id, label }) => ({ id, label }));
   const bookingMode = commerceStatus === "completed" || commerceStatus === "departed"
     ? commerceStatus
@@ -329,16 +317,17 @@ export default function CleanTourDetail({
         : `Status saat ini: ${status}. Tim memeriksa kembali ketersediaan sebelum peserta melakukan pembayaran.`,
     },
   ];
-  const destinationGallery = heroImages.length > 0 ? (
-    <div className={styles.detailGallery}>
-      <TourHeroGallery images={heroImages} title={tour.title} variant="itinerary" />
-      <p>Foto untuk gambaran destinasi. Rincian kegiatan mengikuti itinerary.</p>
-    </div>
-  ) : null;
 
   return (
     <div className={styles.tourDetail}>
       <a className={styles.skipLink} href="#tour-content">Langsung ke detail perjalanan</a>
+
+      {/* Photos first, then the information as plain, readable text. */}
+      {heroImages.length > 0 && (
+        <div className={`${styles.shell} ${styles.detailTopGallery}`}>
+          <TourHeroGallery images={heroImages} title={tour.title} variant="top" />
+        </div>
+      )}
 
       <section className={styles.detailHero} aria-labelledby="tour-title">
         <div className={styles.shell}>
@@ -352,7 +341,6 @@ export default function CleanTourDetail({
             <div>
               <p className={styles.detailEyebrow}>{copy.eyebrow}</p>
               <h1 id="tour-title">{tour.title}</h1>
-              <p className={styles.detailHeroIntro}><strong>{copy.heroLead}</strong> {copy.heroSupport}</p>
             </div>
             <div className={styles.detailHeroCommerce}>
               <div className={styles.detailHeroPriceBlock}>
@@ -387,75 +375,61 @@ export default function CleanTourDetail({
         <div className={`${styles.shell} ${styles.detailContentLayout}`} id="tour-content" tabIndex={-1}>
         <div className={styles.detailContentMain}>
           <section className={styles.detailContentSection} id="ringkasan" aria-labelledby="ringkasan-title">
+            <h2 className={styles.detailSectionTitle} id="ringkasan-title"><Compass aria-hidden="true" />Ringkasan perjalanan</h2>
             <div className={styles.detailSummary}>
-              <span className={styles.detailSummaryIndex}>01 / RINGKASAN</span>
-              <div>
-                <h2 id="ringkasan-title">{copy.summaryTitle}</h2>
-                {summaryParagraphs.length > 0 ? summaryParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>) : (
-                  <p>{copy.heroSupport}</p>
-                )}
-                <div className={styles.detailRouteLine}><strong>Rute utama</strong><span>{route}</span></div>
-                <Link
-                  className={styles.detailDestinationLink}
-                  href={destinationHref}
-                  scroll={true}
-                  data-scroll-reset-after-navigation
-                >
-                  Baca panduan {destinationLabel} →
-                </Link>
-              </div>
+              {summaryParagraphs.length > 0 ? summaryParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>) : (
+                <p>{copy.heroSupport}</p>
+              )}
+              <div className={styles.detailRouteLine}><strong>Rute utama</strong><span>{route}</span></div>
+              <Link
+                className={styles.detailDestinationLink}
+                href={destinationHref}
+                scroll={true}
+                data-scroll-reset-after-navigation
+              >
+                Baca panduan {destinationLabel} →
+              </Link>
             </div>
           </section>
 
           {itinerary.length > 0 && (
             <section className={`${styles.detailContentSection} ${styles.detailItinerarySection}`} id="itinerary" aria-labelledby="itinerary-title">
-              {destinationGallery}
-              <h2 className={styles.detailSectionTitle} id="itinerary-title">Itinerary {tour.title}</h2>
-              <div className={styles.detailItinerary}>
+              <h2 className={styles.detailSectionTitle} id="itinerary-title"><Route aria-hidden="true" />Itinerary hari per hari</h2>
+              <ol className={styles.detailItinerary}>
                 {itinerary.map((item, index) => {
                   const date = itineraryDate(tour.tripDate, item.day);
                   const paragraphs = cleanParagraphs(item.description);
                   const dayTitle = normalizeItineraryDisplayTitle(item.title) || `Aktivitas hari ke-${item.day}`;
                   return (
-                    <StableDetails className={styles.detailDay} key={`${item.day}-${item.title}`} open={index === 0}>
-                      <summary>
-                        <span className={styles.detailDayNumber}>{String(item.day).padStart(2, "0")}</span>
-                        <span className={styles.detailDayHeading}>
-                          {date ? <time dateTime={date.iso}>{date.label}</time> : <span>Hari ke-{item.day}</span>}
-                          <strong>{dayTitle}</strong>
-                        </span>
-                        <span className={styles.detailDayToggle} aria-hidden="true" />
-                      </summary>
-                      <div className={styles.detailDayBody}>
-                        {paragraphs.map((paragraph, paragraphIndex) => <p key={`${paragraph.slice(0, 32)}-${paragraphIndex}`}>{paragraph}</p>)}
-                        {item.insights.length > 0 && (
-                          <dl className={styles.detailDayFacts}>
-                            {item.insights.map((insight) => (
-                              <div key={`${insight.kind}-${insight.value}`}>
-                                <dt>{insight.label}</dt>
-                                <dd>{insight.value}</dd>
-                              </div>
-                            ))}
-                          </dl>
-                        )}
-                      </div>
-                    </StableDetails>
+                    <li className={styles.detailDay} key={`${item.day}-${item.title}-${index}`}>
+                      <p className={styles.detailDayPill}>
+                        <span>Hari {item.day}</span>
+                        {date ? <time dateTime={date.iso}>{date.label}</time> : null}
+                      </p>
+                      <h3>{dayTitle}</h3>
+                      {paragraphs.map((paragraph, paragraphIndex) => <p key={`${paragraph.slice(0, 32)}-${paragraphIndex}`}>{paragraph}</p>)}
+                      {item.insights.length > 0 && (
+                        <dl className={styles.detailDayFacts}>
+                          {item.insights.map((insight) => (
+                            <div key={`${insight.kind}-${insight.value}`}>
+                              <dt>{insight.label}</dt>
+                              <dd>{insight.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      )}
+                    </li>
                   );
                 })}
-              </div>
+              </ol>
             </section>
           )}
 
-          {itinerary.length === 0 && destinationGallery}
-
           <section className={styles.detailContentSection} id="harga-tanggal" aria-labelledby="harga-tanggal-title">
-            <p className={styles.detailSectionKicker}>Harga &amp; tanggal</p>
             <h2 className={styles.detailSectionTitle} id="harga-tanggal-title">
-              {isFlexibleDate ? "Rancang tanggal perjalanan" : "Pilih tanggal keberangkatan"}
+              <CalendarDays aria-hidden="true" />
+              {isFlexibleDate ? "Rancang tanggal perjalanan" : "Harga & tanggal keberangkatan"}
             </h2>
-            <p className={styles.detailSectionLede}>
-              Harga paket, biaya wajib di luar paket, dan status ditampilkan sebelum kamu mengirim permintaan ketersediaan.
-            </p>
             <TourRoomBookingPanel
               roomPrices={roomPrices}
               mandatoryAddOns={mandatoryAddOns}
@@ -480,18 +454,18 @@ export default function CleanTourDetail({
 
           {hasFacilities && (
             <section className={styles.detailContentSection} id="fasilitas" aria-labelledby="fasilitas-title">
-              <h2 className={styles.detailSectionTitle} id="fasilitas-title">Yang termasuk dalam paket</h2>
+              <h2 className={styles.detailSectionTitle} id="fasilitas-title"><ListChecks aria-hidden="true" />Termasuk &amp; tidak termasuk</h2>
               <div className={styles.detailIncludedGrid}>
                 {tour.inclusions.length > 0 && (
-                  <div>
-                    <h3>Sudah termasuk</h3>
-                    <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}><Check aria-hidden="true" />{item}</li>)}</ul>
+                  <div className={styles.detailIncludedBox}>
+                    <h3><CircleCheck aria-hidden="true" />Termasuk</h3>
+                    <ul className={styles.detailIncludedList}>{tour.inclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
                   </div>
                 )}
                 {tour.exclusions.length > 0 && (
-                  <div>
-                    <h3>Belum termasuk</h3>
-                    <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}><X aria-hidden="true" />{item}</li>)}</ul>
+                  <div className={styles.detailExcludedBox}>
+                    <h3><CircleX aria-hidden="true" />Tidak termasuk</h3>
+                    <ul className={`${styles.detailIncludedList} ${styles.detailExcludedList}`}>{tour.exclusions.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
                   </div>
                 )}
               </div>
@@ -501,26 +475,24 @@ export default function CleanTourDetail({
 
           {tour.hotel && Object.keys(tour.hotel).length > 0 && (
             <section className={styles.detailContentSection} id="hotel" aria-labelledby="hotel-title">
-              <p className={styles.detailSectionKicker}>Akomodasi</p>
-              <h2 className={styles.detailSectionTitle} id="hotel-title">Pilihan hotel</h2>
-              <div className={styles.detailHotelGrid}>
+              <h2 className={styles.detailSectionTitle} id="hotel-title"><BedDouble aria-hidden="true" />Akomodasi</h2>
+              <dl className={styles.detailHotelList}>
                 {Object.entries(tour.hotel).map(([label, value]) => (
-                  <div key={label}><Hotel aria-hidden="true" /><span><strong>{label}</strong><small>{value}</small></span></div>
+                  <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
                 ))}
-              </div>
+              </dl>
             </section>
           )}
 
           {hasNotes && (
             <section className={styles.detailContentSection} id="catatan" aria-labelledby="catatan-title">
-              <p className={styles.detailSectionKicker}>Sebelum memesan</p>
-              <h2 className={styles.detailSectionTitle} id="catatan-title">Catatan penting perjalanan</h2>
-              <div className={styles.detailInfoGrid}>
+              <h2 className={styles.detailSectionTitle} id="catatan-title"><Info aria-hidden="true" />Catatan penting</h2>
+              <div className={styles.detailNoteBox}>
                 {visaParagraphs.length > 0 && (
-                  <article><FileText aria-hidden="true" /><div><h3>Informasi visa</h3>{visaParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}</div></article>
+                  <div><h3>Informasi visa</h3>{visaParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}</div>
                 )}
                 {noteParagraphs.length > 0 && (
-                  <article><Package aria-hidden="true" /><div><h3>Ketentuan paket</h3>{noteParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}</div></article>
+                  <div><h3>Ketentuan paket</h3>{noteParagraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 32)}-${index}`}>{paragraph}</p>)}</div>
                 )}
               </div>
             </section>
@@ -528,8 +500,7 @@ export default function CleanTourDetail({
 
           {paymentPlan && (
             <section className={styles.detailContentSection} id="pembayaran" aria-labelledby="pembayaran-title">
-              <p className={styles.detailSectionKicker}>Skema pembayaran</p>
-              <h2 className={styles.detailSectionTitle} id="pembayaran-title">Pembayaran dan booking kursi</h2>
+              <h2 className={styles.detailSectionTitle} id="pembayaran-title"><Wallet aria-hidden="true" />Pembayaran</h2>
               <div className={styles.detailPaymentIntro}>
                 <div><span>Jumlah dalam skema pembayaran per orang</span><strong>{paymentPlan.totalLabel}</strong></div>
                 <p>{paymentPlan.intro}</p>
@@ -550,8 +521,7 @@ export default function CleanTourDetail({
           )}
 
           <section className={styles.detailContentSection} aria-labelledby="tour-faq-title">
-            <p className={styles.detailSectionKicker}>Pertanyaan sebelum booking</p>
-            <h2 className={styles.detailSectionTitle} id="tour-faq-title">Hal yang perlu dipastikan</h2>
+            <h2 className={styles.detailSectionTitle} id="tour-faq-title"><CircleHelp aria-hidden="true" />Pertanyaan umum</h2>
             <div className={styles.detailFaqs}>
               {tourFaqs.map((item, index) => (
                 <StableDetails key={item.question} open={index === 0}>
@@ -562,26 +532,23 @@ export default function CleanTourDetail({
             </div>
           </section>
 
-          <section className={styles.detailContentSection} id="ulasan" aria-labelledby="ulasan-title">
-              <p className={styles.detailSectionKicker}>Pengalaman peserta</p>
+          {reviews.length > 0 && (
+            <section className={styles.detailContentSection} id="ulasan" aria-labelledby="ulasan-title">
               <div className={styles.detailReviewHeading}>
-                <h2 className={styles.detailSectionTitle} id="ulasan-title">Ulasan peserta</h2>
-                {reviews.length > 0 && <span><strong>{ratingValue.toFixed(1)}</strong><Star aria-hidden="true" />{reviews.length} ulasan</span>}
+                <h2 className={styles.detailSectionTitle} id="ulasan-title"><Star aria-hidden="true" />Ulasan peserta</h2>
+                <span><strong>{ratingValue.toFixed(1)}</strong><Star aria-hidden="true" />{reviews.length} ulasan</span>
               </div>
-              {reviews.length > 0 ? (
-                <div className={styles.detailReviewGrid}>
-                  {reviews.map((review) => (
-                    <article key={review.id}>
-                      <div role="img" aria-label={`Rating ${review.rating} dari 5`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} aria-hidden="true" className={index < review.rating ? styles.detailStarActive : ""} />)}</div>
-                      <blockquote>“{review.content}”</blockquote>
-                      <p><strong>{review.name}</strong>{review.role && <span> · {review.role}</span>}</p>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.detailSectionLede}>Ulasan khusus untuk perjalanan ini belum dipublikasikan. Lihat halaman testimoni untuk cerita peserta Sundaf lainnya.</p>
-              )}
+              <div className={styles.detailReviewGrid}>
+                {reviews.map((review) => (
+                  <article key={review.id}>
+                    <div role="img" aria-label={`Rating ${review.rating} dari 5`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} aria-hidden="true" className={index < review.rating ? styles.detailStarActive : ""} />)}</div>
+                    <blockquote>“{review.content}”</blockquote>
+                    <p><strong>{review.name}</strong>{review.role && <span> · {review.role}</span>}</p>
+                  </article>
+                ))}
+              </div>
             </section>
+          )}
 
           <section className={styles.detailMobileUtilities} aria-labelledby="mobile-trip-tools-title">
             <h2 id="mobile-trip-tools-title">Simpan dan bandingkan detail</h2>
@@ -728,7 +695,6 @@ export default function CleanTourDetail({
           <div className={styles.shell}>
             <div className={styles.detailRelatedHeading}>
               <div>
-                <p className={styles.detailSectionKicker}>Pilihan untuk dibandingkan</p>
                 <h2 className={styles.detailSectionTitle} id="related-title">Masih ingin membandingkan?</h2>
                 <p>Bandingkan destinasi, durasi, tanggal, dan harga sebelum menentukan perjalanan yang paling sesuai.</p>
               </div>
