@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
 import { formatDate, cldOptimize } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
+import CleanBlogIndex from "@/components/website/clean/CleanBlogIndex";
 import BlogCategoryFilter, {
   type BlogCategoryOption,
 } from "./BlogCategoryFilter";
@@ -61,6 +62,21 @@ export default async function BlogPage() {
     ([name, count]) => ({ name, count }),
   ).sort((a, b) => a.name.localeCompare(b.name, "id"));
 
+  const crumbs = [
+    { name: "Beranda", url: "/" },
+    { name: "Blog & Tips Travel", url: "/blog" },
+  ];
+
+  // Atlas theme: the Sundaf DMC document format (amber tags, tinted boxes).
+  if (theme === "atlas") {
+    return (
+      <>
+        <BreadcrumbSchema crumbs={crumbs} />
+        <CleanBlogIndex posts={posts} categories={categoryOptions} description={BLOG_DESC} />
+      </>
+    );
+  }
+
   const isKawaii   = theme === "kawaii";
   const isTropical = theme === "tropical";
   const isPixel    = theme === "pixel";
@@ -85,12 +101,7 @@ export default async function BlogPage() {
 
   return (
     <div className={`min-h-screen pt-24 ${!isOutlined ? "bg-gray-50 dark:bg-gray-950" : ""}`} style={wrapperStyle}>
-      <BreadcrumbSchema
-        crumbs={[
-          { name: "Beranda", url: "/" },
-          { name: "Blog & Tips Travel", url: "/blog" },
-        ]}
-      />
+      <BreadcrumbSchema crumbs={crumbs} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* Heading */}

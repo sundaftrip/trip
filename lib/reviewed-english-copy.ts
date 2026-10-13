@@ -225,6 +225,28 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Artikel jurnal": "Journal articles",
   "Kota & rute": "Cities & routes",
   "Lihat paket tour": "View tour packages",
+  // Journal (document format)
+  "Jurnal / Sundaf Trip": "Journal / Sundaf Trip",
+  "Blog & Tips Travel": "Blog & Travel Tips",
+  "Tips travel ke Rusia, Asia Tengah, dan Aurora, cerita lapangan, panduan visa, dan rekomendasi rute dari pengalaman langsung Sundaf Trip.":
+    "Travel tips for Russia, Central Asia, and the Northern Lights, stories from the road, visa guides, and route ideas from Sundaf Trip's own trips.",
+  "Pilih kategori": "Choose a category",
+  "Semua": "All",
+  "Filter kategori artikel": "Filter articles by category",
+  "Belum ada artikel yang dipublish.": "No articles have been published yet.",
+  "Navigasi artikel": "Article navigation",
+  "Daftar isi artikel": "Article contents",
+  "Dalam artikel ini": "In this article",
+  "Bagikan artikel ini": "Share this article",
+  "Salin link": "Copy link",
+  "Link tersalin": "Link copied",
+  "Tertarik pergi ke sana?": "Want to go there?",
+  "Semua paket dirancang khusus untuk traveler Indonesia, dari visa, tiket, sampai guide lokal.":
+    "Every package is planned for travelers from Indonesia, from visas and tickets to local guides.",
+  "Lihat jadwal dan biaya semua open trip, atau rancang land tour privat bersama tim kami.":
+    "See the dates and prices of every group tour, or plan a private land tour with our team.",
+  "Lihat semua paket tour": "View all tour packages",
+  "Artikel lainnya": "More articles",
   "Tambahan opsional": "Optional extras",
   "Jadwal tour": "Tour dates",
   "Jadwal lainnya": "Other departures",
