@@ -10,10 +10,41 @@ export type BlogArticleHeading = {
 
 type BlogArticleTocProps = {
   headings: BlogArticleHeading[];
+  /** "doc": the Sundaf DMC document format (atlas theme). */
+  appearance?: "panel" | "doc";
 };
 
-export default function BlogArticleToc({ headings }: BlogArticleTocProps) {
+export default function BlogArticleToc({ headings, appearance = "panel" }: BlogArticleTocProps) {
   if (headings.length === 0) return null;
+
+  if (appearance === "doc") {
+    return (
+      <aside className={styles.docToc} aria-label="Navigasi artikel">
+        <StableDetails className={styles.docTocDetails} open>
+          <summary className={styles.docTocSummary}>
+            <span className={styles.docTocTitle}>Dalam artikel ini</span>
+            <span className={styles.docTocMeta}>{headings.length} bagian</span>
+            <span className={styles.tocChevron} aria-hidden="true" />
+          </summary>
+
+          <nav aria-label="Daftar isi artikel">
+            <ol className={styles.docTocList}>
+              {headings.map((heading) => (
+                <li
+                  key={heading.id}
+                  className={heading.level === 3 ? styles.docTocItemLevel3 : undefined}
+                >
+                  <a className={styles.docTocLink} href={`#${heading.id}`}>
+                    {heading.label}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </StableDetails>
+      </aside>
+    );
+  }
 
   return (
     <aside

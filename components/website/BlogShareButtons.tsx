@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Share2, Copy, Check, MessageCircle } from "lucide-react";
+import docStyles from "./clean/CleanBlog.module.css";
 
 interface BlogShareButtonsProps {
   postTitle: string;
@@ -11,10 +12,12 @@ interface BlogShareButtonsProps {
   cardBg?: string;
   bdrClr?: string;
   subClr?: string;
+  /** "doc": the Sundaf DMC document format (atlas theme). */
+  variant?: "doc";
 }
 
 export default function BlogShareButtons({
-  postTitle, isOutlined, isAtlas, pfx, headClr, cardBg, bdrClr, subClr,
+  postTitle, isOutlined, isAtlas, pfx, headClr, cardBg, bdrClr, subClr, variant,
 }: BlogShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
@@ -40,6 +43,27 @@ export default function BlogShareButtons({
     const text = encodeURIComponent(`Baca artikel perjalanan ini!\n*${postTitle}*\n${getUrl()}`);
     window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
   };
+
+  /* ── Document format ───────────────────── */
+  if (variant === "doc") {
+    return (
+      <div className={docStyles.share}>
+        <p className={docStyles.shareLabel}>Bagikan artikel ini</p>
+        <div className={docStyles.shareActions}>
+          <button type="button" onClick={handleShare} className={docStyles.shareButton}>
+            <Share2 aria-hidden="true" /> Bagikan
+          </button>
+          <button type="button" onClick={handleCopy} className={docStyles.shareButton} aria-live="polite">
+            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+            {copied ? "Link tersalin" : "Salin link"}
+          </button>
+          <button type="button" onClick={handleWhatsApp} className={docStyles.shareButton}>
+            <MessageCircle aria-hidden="true" /> WhatsApp
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   /* ── Atlas ─────────────────────────────── */
   if (isAtlas) {

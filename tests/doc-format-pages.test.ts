@@ -72,3 +72,40 @@ test("the about page uses the document format on the atlas theme", () => {
   assert.doesNotMatch(fade, /transform/);
   assert.match(css, /@media \(prefers-reduced-motion: no-preference\)/);
 });
+
+test("the journal uses the document format on the atlas theme", () => {
+  const index = read("app/(website)/blog/page.tsx");
+  assert.match(index, /if \(theme === "atlas"\) \{[\s\S]*?<CleanBlogIndex posts=\{posts\} categories=\{categoryOptions\} description=\{BLOG_DESC\} \/>/);
+  const article = read("app/(website)/blog/[slug]/page.tsx");
+  // The article keeps its breadcrumb and JSON-LD in the new layout.
+  assert.match(article, /if \(isAtlas\) \{[\s\S]*?\{structuredData\}\s*<CleanBlogArticle/);
+
+  const cleanIndex = read("components/website/clean/CleanBlogIndex.tsx");
+  assert.match(cleanIndex, /<p className=\{doc\.eyebrow\}>Jurnal \/ Sundaf Trip<\/p>/);
+  assert.match(cleanIndex, /appearance="doc"/);
+  const filter = read("app/(website)/blog/BlogCategoryFilter.tsx");
+  assert.match(filter, /data-filtered=\{selectedCategory === null \? undefined : "true"\}/);
+
+  const cleanArticle = read("components/website/clean/CleanBlogArticle.tsx");
+  assert.match(cleanArticle, /<h2 id="blog-tours-title" className=\{doc\.tag\}>/);
+  assert.match(cleanArticle, /<h2 id="blog-related-title" className=\{doc\.tag\}>/);
+  assert.match(cleanArticle, /<BlogArticleToc headings=\{headings\} appearance="doc" \/>/);
+  assert.match(cleanArticle, /variant="doc"/);
+
+  const css = read("components/website/clean/CleanBlog.module.css");
+  // Section titles inside the article are amber tags with one cut corner.
+  const h2 = css.match(/\.body\.body\.body :global\(h2\) \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(h2, /background: var\(--doc-amber\);/);
+  assert.match(h2, /clip-path: polygon\(0 0, 100% 0, calc\(100% - 18px\) 100%, 0 100%\);/);
+  assert.match(css, /\.body :global\(ul\) \{\s*list-style: disc;/);
+  assert.match(css, /\.body :global\(ol\) \{\s*list-style: decimal;/);
+  assert.doesNotMatch(css, /border-left/);
+});
+
+test("journal tour suggestions lead with the subtotal and bookable trips", () => {
+  const article = read("app/(website)/blog/[slug]/page.tsx");
+  assert.match(article, /mandatoryTotal: mandatoryAddOnsTotal\(resolveCanadaRockiesAddOns\(tour\.addOns, tour\.slug\)\)/);
+  assert.match(article, /\.\.\.ctaTours\.filter\(\(tour\) => tour\.state !== "sold"\)/);
+  const cleanArticle = read("components/website/clean/CleanBlogArticle.tsx");
+  assert.match(cleanArticle, /<CleanTourCard key=\{tour\.id\} tour=\{tour\} compact catalog \/>/);
+});

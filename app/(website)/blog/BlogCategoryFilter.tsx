@@ -19,13 +19,39 @@ type BlogCategoryFilterProps = {
   categories: BlogCategoryOption[];
   totalCount: number;
   children: ReactNode;
+  /** "doc": the Sundaf DMC document format (atlas theme). */
+  appearance?: "panel" | "doc";
+};
+
+const PANEL_CLASSES = {
+  section: `${styles.atlasPanel} ${styles.filterPanel}`,
+  header: styles.filterHeader,
+  title: styles.filterTitle,
+  count: styles.resultCount,
+  scroller: styles.filterScroller,
+  list: styles.filterList,
+  chip: styles.filterLink,
+  chipCount: styles.filterCount,
+};
+
+const DOC_CLASSES = {
+  section: styles.docFilter,
+  header: styles.docFilterHeader,
+  title: styles.docFilterTitle,
+  count: styles.docResultCount,
+  scroller: styles.docFilterScroller,
+  list: styles.docFilterList,
+  chip: styles.docChip,
+  chipCount: styles.docChipCount,
 };
 
 export default function BlogCategoryFilter({
   categories,
   totalCount,
   children,
+  appearance = "panel",
 }: BlogCategoryFilterProps) {
+  const cx = appearance === "doc" ? DOC_CLASSES : PANEL_CLASSES;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const resultsId = useId();
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -50,36 +76,36 @@ export default function BlogCategoryFilter({
     <>
       {categories.length > 0 && (
         <section
-          className={`${styles.atlasPanel} ${styles.filterPanel}`}
+          className={cx.section}
           aria-labelledby="blog-category-filter-title"
         >
-          <div className={styles.filterHeader}>
+          <div className={cx.header}>
             <div>
-              <p className={styles.eyebrow}>Indeks jurnal</p>
-              <h2 id="blog-category-filter-title" className={styles.filterTitle}>
+              {appearance === "panel" && <p className={styles.eyebrow}>Indeks jurnal</p>}
+              <h2 id="blog-category-filter-title" className={cx.title}>
                 Pilih kategori
               </h2>
             </div>
-            <p className={styles.resultCount} aria-live="polite" aria-atomic="true">
+            <p className={cx.count} aria-live="polite" aria-atomic="true">
               {visibleCount} artikel
             </p>
           </div>
 
           <div
-            className={styles.filterScroller}
+            className={cx.scroller}
             role="group"
             aria-label="Filter kategori artikel"
           >
-            <div className={styles.filterList}>
+            <div className={cx.list}>
               <button
                 type="button"
                 aria-pressed={selectedCategory === null}
                 aria-controls={resultsId}
-                className={styles.filterLink}
+                className={cx.chip}
                 onClick={() => setSelectedCategory(null)}
               >
                 Semua
-                <span className={styles.filterCount} aria-hidden="true">
+                <span className={cx.chipCount} aria-hidden="true">
                   {totalCount}
                 </span>
               </button>
@@ -89,11 +115,11 @@ export default function BlogCategoryFilter({
                   type="button"
                   aria-pressed={selectedCategory === category.name}
                   aria-controls={resultsId}
-                  className={styles.filterLink}
+                  className={cx.chip}
                   onClick={() => setSelectedCategory(category.name)}
                 >
                   {category.name}
-                  <span className={styles.filterCount} aria-hidden="true">
+                  <span className={cx.chipCount} aria-hidden="true">
                     {category.count}
                   </span>
                 </button>
@@ -103,7 +129,12 @@ export default function BlogCategoryFilter({
         </section>
       )}
 
-      <div id={resultsId} ref={resultsRef} className={styles.filterResults}>
+      <div
+        id={resultsId}
+        ref={resultsRef}
+        className={styles.filterResults}
+        data-filtered={selectedCategory === null ? undefined : "true"}
+      >
         {children}
       </div>
     </>

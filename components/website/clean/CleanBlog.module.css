@@ -1,0 +1,840 @@
+/* Journal (blog index and articles) in the Sundaf DMC document format
+   (see DocFormat.module.css): green slash eyebrow, bold navy titles, amber
+   highlighter tags for section titles, flat sand/sage boxes, no side rules. */
+
+.page {
+  --site-accent: var(--doc-green);
+  min-width: 0;
+  min-height: 100%;
+  padding-top: 68px;
+  overflow-x: clip;
+  background: #fff;
+  color: var(--doc-navy);
+  font-family: var(--site-font-family, var(--font-dm-sans)), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+}
+
+.page :where(p, li, dd, td, blockquote) {
+  text-align: left;
+  hyphens: manual;
+  overflow-wrap: break-word;
+}
+
+.shell {
+  width: min(1280px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* ── Index header: title left, short note right (same as /tours) ───────── */
+.hero {
+  padding: clamp(28px, 3.4vw, 46px) 0 clamp(26px, 3.4vw, 44px);
+}
+
+.heroIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .9fr);
+  gap: 18px clamp(32px, 5vw, 72px);
+  align-items: end;
+}
+
+.heroTitle {
+  font-size: clamp(36px, 4.4vw, 56px);
+}
+
+.heroLede {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.indexBody {
+  padding-bottom: clamp(56px, 6vw, 88px);
+}
+
+.empty {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+}
+
+/* ── Article cards ─────────────────────────────────────────────────────── */
+.grid {
+  margin-top: clamp(26px, 3vw, 36px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(30px, 3vw, 40px) clamp(20px, 2.2vw, 28px);
+}
+
+.card {
+  min-width: 0;
+}
+
+.cardLink {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardImage {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--doc-sage);
+}
+
+.cardPhoto {
+  object-fit: cover;
+  transition: transform 520ms var(--site-motion-ease, cubic-bezier(.2, .65, .2, 1));
+}
+
+.cardBody {
+  padding-top: 14px;
+  display: grid;
+  gap: 7px;
+  align-content: start;
+}
+
+.cardEyebrow {
+  margin: 0;
+  color: var(--doc-green);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.cardTitle.cardTitle.cardTitle {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--doc-navy);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+  text-wrap: pretty;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  transition: color 160ms ease;
+}
+
+.cardExcerpt {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--doc-ink);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cardMeta {
+  margin: 2px 0 0;
+  color: var(--doc-slate);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.cardMeta > * + *::before {
+  margin-inline: 7px;
+  content: "·";
+}
+
+.cardLink:hover .cardTitle {
+  color: var(--doc-green);
+}
+
+.cardLink:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--doc-green) 40%, transparent);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+/* The newest article leads the index: photo left, text in a sand box. When a
+   category is picked (data-filtered on the results), every card is equal. */
+@media (min-width: 901px) {
+  .grid > .card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .grid > .card:first-child .cardLink {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  }
+
+  .grid > .card:first-child .cardImage {
+    aspect-ratio: auto;
+    min-height: 380px;
+    border-radius: 16px 0 0 16px;
+  }
+
+  .grid > .card:first-child .cardBody {
+    padding: clamp(28px, 3vw, 44px);
+    align-content: center;
+    gap: 12px;
+    border-radius: 0 16px 16px 0;
+    background: var(--doc-sand);
+  }
+
+  .grid > .card:first-child .cardTitle {
+    font-size: clamp(26px, 2.4vw, 34px);
+    line-height: 1.18;
+    -webkit-line-clamp: 4;
+  }
+
+  .grid > .card:first-child .cardExcerpt {
+    font-size: 16px;
+    -webkit-line-clamp: 4;
+  }
+
+  :global([data-filtered="true"]) .grid > .card:first-child {
+    grid-column: auto;
+  }
+
+  :global([data-filtered="true"]) .grid > .card:first-child .cardLink {
+    display: flex;
+  }
+
+  :global([data-filtered="true"]) .grid > .card:first-child .cardImage {
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+    border-radius: 14px;
+  }
+
+  :global([data-filtered="true"]) .grid > .card:first-child .cardBody {
+    padding: 14px 0 0;
+    gap: 7px;
+    border-radius: 0;
+    background: none;
+  }
+
+  :global([data-filtered="true"]) .grid > .card:first-child .cardTitle {
+    font-size: 19px;
+    line-height: 1.3;
+    -webkit-line-clamp: 3;
+  }
+
+  :global([data-filtered="true"]) .grid > .card:first-child .cardExcerpt {
+    font-size: 14.5px;
+    -webkit-line-clamp: 2;
+  }
+}
+
+/* ── Article ───────────────────────────────────────────────────────────── */
+.articleShell {
+  width: min(1120px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.articleHeader {
+  max-width: 860px;
+  padding-top: clamp(30px, 4vw, 52px);
+}
+
+.eyebrowLink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--doc-green) 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+.eyebrowLink:hover {
+  text-decoration-color: currentColor;
+}
+
+.articleTitle {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.12;
+}
+
+.articleMeta {
+  margin: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  color: var(--doc-slate);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.articleMeta > * + *::before {
+  margin-inline: 10px;
+  color: rgb(30 54 69 / 30%);
+  content: "/";
+}
+
+.cover {
+  position: relative;
+  margin: clamp(24px, 3vw, 34px) 0 0;
+  aspect-ratio: 2 / 1;
+  max-height: 560px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--doc-sage);
+}
+
+.coverImage {
+  object-fit: cover;
+}
+
+.layout {
+  margin-top: clamp(30px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: minmax(0, 720px);
+  gap: 28px clamp(40px, 5vw, 64px);
+}
+
+.layoutWithToc {
+  grid-template-columns: minmax(0, 720px) minmax(260px, 1fr);
+  grid-template-areas: "main aside";
+}
+
+.layoutWithToc > .aside {
+  grid-area: aside;
+}
+
+.layoutWithToc > .main {
+  grid-area: main;
+}
+
+.aside {
+  min-width: 0;
+}
+
+/* On wide screens the reading map stays in view next to the text. */
+@media (min-width: 1001px) {
+  .aside > * {
+    position: sticky;
+    top: 96px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+.main {
+  min-width: 0;
+}
+
+/* Article text from the CMS. Classes repeat to outrank the site-wide heading
+   weight rule and the old `prose` defaults. */
+.body {
+  color: var(--doc-ink);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.body > :first-child {
+  margin-top: 0;
+}
+
+.body :global(p) {
+  margin: 0 0 1.1em;
+}
+
+.body.body.body :global(h2) {
+  width: fit-content;
+  max-width: 100%;
+  margin: 2.1em 0 .85em;
+  padding: 7px 36px 7px 16px;
+  border-radius: 22px 0 0 22px;
+  background: var(--doc-amber);
+  color: var(--doc-navy);
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-wrap: balance;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+  scroll-margin-top: 24px;
+}
+
+.body.body.body :global(h3) {
+  margin: 1.7em 0 .5em;
+  color: var(--doc-green);
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.4;
+  scroll-margin-top: 24px;
+}
+
+.body.body.body :global(h4) {
+  margin: 1.5em 0 .4em;
+  color: var(--doc-navy);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.body :global(ul),
+.body :global(ol) {
+  margin: 0 0 1.2em;
+  padding-left: 1.35em;
+}
+
+.body :global(ul) {
+  list-style: disc;
+}
+
+.body :global(ol) {
+  list-style: decimal;
+}
+
+.body :global(li > ul) {
+  list-style: circle;
+}
+
+.body :global(li) {
+  margin: .35em 0;
+  padding-left: .2em;
+}
+
+.body :global(li)::marker {
+  color: var(--doc-green);
+  font-weight: 700;
+}
+
+.body :global(li > ul),
+.body :global(li > ol) {
+  margin: .3em 0 0;
+}
+
+.body :global(a) {
+  color: var(--doc-green);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--doc-green) 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+.body :global(a:hover) {
+  text-decoration-color: currentColor;
+}
+
+.body :global(strong),
+.body :global(b) {
+  color: var(--doc-navy);
+  font-weight: 700;
+}
+
+.body :global(mark) {
+  padding: 0 .12em;
+  background: linear-gradient(transparent 14%, rgb(234 176 103 / 70%) 14%, rgb(234 176 103 / 70%) 90%, transparent 90%);
+  color: inherit;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.body :global(img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 1.6em 0;
+  border-radius: 12px;
+}
+
+.body :global(figure) {
+  margin: 1.6em 0;
+}
+
+.body :global(figure img) {
+  margin: 0;
+}
+
+.body :global(figcaption) {
+  margin-top: 8px;
+  color: var(--doc-slate);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Tables like the PDF: dark green header row, tinted rows. */
+.body :global(table) {
+  width: 100%;
+  margin: 1.4em 0 1.6em;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.body :global(thead th),
+.body :global(table > tr:first-child > th) {
+  padding: 10px 14px;
+  background: var(--doc-green);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+
+.body :global(tbody tr) {
+  background: var(--doc-sage);
+}
+
+.body :global(tbody tr:nth-child(even)) {
+  background: var(--doc-sand);
+}
+
+.body :global(td),
+.body :global(tbody th) {
+  padding: 10px 14px;
+  border: 0;
+  color: var(--doc-navy);
+  text-align: left;
+  vertical-align: top;
+}
+
+.body :global(blockquote) {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border: 0;
+  background: var(--doc-sage);
+  color: var(--doc-navy);
+  font-style: normal;
+  quotes: none;
+}
+
+.body :global(blockquote p:last-child) {
+  margin-bottom: 0;
+}
+
+.body :global(hr) {
+  height: 1px;
+  margin: 2em 0;
+  border: 0;
+  background: rgb(30 54 69 / 14%);
+}
+
+.body :global(h2[id]:target) {
+  outline: 3px solid color-mix(in srgb, var(--doc-green) 30%, transparent);
+  outline-offset: 4px;
+}
+
+/* ── Share ─────────────────────────────────────────────────────────────── */
+.share {
+  margin-top: 36px;
+  padding: 18px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  background: var(--doc-sand);
+}
+
+.shareLabel {
+  margin: 0;
+  color: var(--doc-green);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.shareActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shareButton {
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--doc-navy);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.shareButton:hover {
+  color: var(--doc-green);
+}
+
+.shareButton:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--doc-green) 40%, transparent);
+  outline-offset: 3px;
+}
+
+.shareButton svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+/* ── After the article: tours and more articles ────────────────────────── */
+.afterSection {
+  margin-top: clamp(56px, 6vw, 80px);
+}
+
+.afterSection > h2 + * {
+  margin-top: 14px;
+}
+
+.note {
+  max-width: 64ch;
+  margin: 14px 0 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Tours share the row width of the related articles; a sage box with the
+   catalog link fills the last column. */
+.tourGrid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px clamp(20px, 2.2vw, 28px);
+  align-items: start;
+}
+
+.tourMore {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.tourMore > p:not([class]) {
+  margin: 0;
+  color: var(--doc-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.tourMore > a {
+  justify-self: start;
+  margin-top: 4px;
+}
+
+.relatedGrid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px clamp(20px, 2.2vw, 28px);
+}
+
+.articleEnd {
+  height: clamp(56px, 6vw, 88px);
+}
+
+@media (max-width: 1000px) {
+  .layoutWithToc {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "aside"
+      "main";
+  }
+}
+
+@media (max-width: 900px) {
+  .heroIntro {
+    grid-template-columns: 1fr;
+  }
+
+  .grid,
+  .relatedGrid,
+  .tourGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .shell,
+  .articleShell {
+    width: calc(100% - 32px);
+  }
+
+  .hero {
+    padding-top: 24px;
+  }
+
+  .heroTitle {
+    font-size: 34px;
+  }
+
+  .heroLede {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .grid,
+  .relatedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Two tours side by side (catalog cards), the catalog box below them. */
+  .tourGrid {
+    gap: 12px;
+  }
+
+  .tourMore {
+    grid-column: 1 / -1;
+  }
+
+  .grid {
+    gap: 22px;
+  }
+
+  .relatedGrid {
+    gap: 18px;
+  }
+
+  .cardTitle.cardTitle.cardTitle {
+    font-size: 18px;
+  }
+
+  /* Phones: after the lead story the index reads as a compact list
+     (thumbnail left, text right), and so do the related articles. */
+  .grid > .card:not(:first-child) .cardLink,
+  :global([data-filtered="true"]) .grid > .card:first-child .cardLink,
+  .relatedGrid .cardLink {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  .grid > .card:not(:first-child) .cardImage,
+  :global([data-filtered="true"]) .grid > .card:first-child .cardImage,
+  .relatedGrid .cardImage {
+    aspect-ratio: 1;
+    border-radius: 10px;
+  }
+
+  .grid > .card:not(:first-child) .cardBody,
+  :global([data-filtered="true"]) .grid > .card:first-child .cardBody,
+  .relatedGrid .cardBody {
+    padding-top: 0;
+    gap: 5px;
+  }
+
+  .grid > .card:not(:first-child) .cardTitle.cardTitle.cardTitle,
+  :global([data-filtered="true"]) .grid > .card:first-child .cardTitle.cardTitle.cardTitle,
+  .relatedGrid .cardTitle.cardTitle.cardTitle {
+    font-size: 16px;
+    line-height: 1.32;
+  }
+
+  .grid > .card:not(:first-child) .cardExcerpt,
+  :global([data-filtered="true"]) .grid > .card:first-child .cardExcerpt,
+  .relatedGrid .cardExcerpt {
+    display: none;
+  }
+
+  .grid > .card:not(:first-child) .cardEyebrow,
+  :global([data-filtered="true"]) .grid > .card:first-child .cardEyebrow,
+  .relatedGrid .cardEyebrow {
+    font-size: 11px;
+  }
+
+  .articleTitle {
+    font-size: clamp(28px, 7.6vw, 34px);
+  }
+
+  .articleMeta {
+    font-size: 13px;
+  }
+
+  .cover {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+
+  .body {
+    font-size: 16px;
+    line-height: 1.72;
+  }
+
+  .body.body.body :global(h2) {
+    padding: 6px 30px 6px 14px;
+    font-size: 16px;
+    border-radius: 18px 0 0 18px;
+  }
+
+  .body.body.body :global(h3) {
+    font-size: 16.5px;
+  }
+
+  /* Wide tables scroll inside the column instead of the page. */
+  .body :global(table) {
+    display: block;
+    overflow-x: auto;
+    font-size: 14px;
+  }
+
+  .body :global(thead th),
+  .body :global(td),
+  .body :global(tbody th) {
+    padding: 9px 10px;
+  }
+
+  .share {
+    padding: 16px;
+  }
+
+  .shareActions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .shareButton {
+    min-width: 0;
+    padding: 0 6px;
+    gap: 6px;
+    justify-content: center;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
+
+/* Calm motion: cards and the sections after the article fade in once. */
+@media (prefers-reduced-motion: no-preference) {
+  .page[data-reveal-ready] [data-reveal] {
+    animation: blog-fade 520ms var(--site-motion-ease, cubic-bezier(.2, .65, .2, 1)) backwards;
+    animation-play-state: paused;
+  }
+
+  .page[data-reveal-ready] [data-reveal][data-revealed="true"] {
+    animation-play-state: running;
+  }
+
+  .page[data-reveal-ready] [data-reveal][data-revealed="instant"] {
+    animation: none;
+  }
+
+  .cardLink:hover .cardPhoto {
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardPhoto,
+  .cardTitle {
+    transition: none;
+  }
+}
+
+@media print {
+  .page [data-reveal] {
+    animation: none !important;
+  }
+}
+
+@keyframes blog-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

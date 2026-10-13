@@ -259,6 +259,202 @@
   text-underline-offset: 0.2em;
 }
 
+/* ── Sundaf DMC document format (atlas theme) ───────────────────────────
+   Flat sand chips with the selected one in green, and a sand reading map.
+   Heading classes repeat themselves to outrank the site-wide heading weight
+   rule (`.public-site-shell main[data-theme="atlas"] :is(h1, h2, h3, h4)`). */
+
+.docFilter {
+  min-width: 0;
+}
+
+.docFilterHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 12px;
+}
+
+.docFilterTitle.docFilterTitle.docFilterTitle {
+  margin: 0;
+  color: var(--doc-green, #2e6751);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.docResultCount {
+  flex: none;
+  margin: 0;
+  color: var(--doc-slate, #51616a);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.docFilterScroller {
+  margin-inline: -16px;
+  padding: 0 16px 4px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  scroll-padding-inline: 16px;
+}
+
+.docFilterScroller::-webkit-scrollbar {
+  display: none;
+}
+
+.docFilterList {
+  display: flex;
+  width: max-content;
+  gap: 8px;
+}
+
+.docChip {
+  appearance: none;
+  min-height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--doc-sand, #f5f5ef);
+  color: var(--doc-navy, #1e3645);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.docChip:hover {
+  background: var(--doc-sage, #eaf3f0);
+}
+
+.docChip[aria-pressed="true"] {
+  background: var(--doc-green, #2e6751);
+  color: #fff;
+}
+
+.docChip:focus-visible,
+.docTocLink:focus-visible,
+.docTocSummary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--doc-green, #2e6751) 40%, transparent);
+  outline-offset: 3px;
+}
+
+.docChipCount {
+  color: var(--doc-slate, #51616a);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.docChip[aria-pressed="true"] .docChipCount {
+  color: rgb(255 255 255 / 80%);
+}
+
+.docToc {
+  background: var(--doc-sand, #f5f5ef);
+}
+
+.docTocSummary {
+  min-height: 52px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--doc-navy, #1e3645);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.docTocSummary::-webkit-details-marker {
+  display: none;
+}
+
+.docTocTitle {
+  flex: 1;
+  color: var(--doc-green, #2e6751);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.docTocMeta {
+  color: var(--doc-slate, #51616a);
+  font-size: 12px;
+}
+
+.docTocDetails[open] .tocChevron {
+  transform: rotate(225deg);
+}
+
+.docTocList {
+  margin: 0;
+  padding: 0 18px 16px;
+  display: grid;
+  gap: 2px;
+  counter-reset: doc-toc;
+  list-style: none;
+}
+
+.docTocList > li {
+  counter-increment: doc-toc;
+}
+
+.docTocLink {
+  min-height: 36px;
+  padding: 6px 0;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: baseline;
+  color: var(--doc-ink, #2f4352);
+  font-size: 14px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.docTocLink::before {
+  content: counter(doc-toc, decimal-leading-zero);
+  color: var(--doc-green, #2e6751);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.docTocLink:hover {
+  color: var(--doc-navy, #1e3645);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.docTocItemLevel3 .docTocLink {
+  padding-left: 14px;
+  font-size: 13px;
+}
+
+@media (min-width: 640px) {
+  .docFilterScroller {
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+
+  .docFilterList {
+    width: auto;
+    flex-wrap: wrap;
+  }
+}
+
 @media (min-width: 640px) {
   .filterPanel {
     padding: 1.25rem;
@@ -277,6 +473,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .filterLink,
+  .docChip,
   .tocChevron {
     transition-duration: 0.01ms;
   }

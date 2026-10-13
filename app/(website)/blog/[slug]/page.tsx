@@ -13,6 +13,11 @@ import { formatDate, formatCurrency, cldOptimize } from "@/lib/utils";
 import BlogShareButtons from "@/components/website/BlogShareButtons";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import { getTourProductImage } from "@/lib/tour-product-images";
+import { getPublicTourState } from "@/lib/tour-order";
+import { normalizeTourDisplayTitle } from "@/lib/tour-display";
+import { mandatoryAddOnsTotal } from "@/lib/tour-commerce";
+import { resolveCanadaRockiesAddOns } from "@/lib/canada-catalog-preview";
+import CleanBlogArticle from "@/components/website/clean/CleanBlogArticle";
 import BlogArticleToc, {
   type BlogArticleHeading,
 } from "../BlogArticleToc";
@@ -230,7 +235,7 @@ export default async function BlogDetailPage({
   const { slug } = await params;
 
   /* ── Fetch semua data sekaligus (parallel) ──────────────────────── */
-  const [post, { theme, companyName }, relatedPosts, upcomingTours] =
+  const [post, { theme, companyName }, relatedPosts, tourRows] =
     await Promise.all([
       prisma.blog.findFirst({ where: { slug, published: true } }),
       getSiteInfo(),
@@ -244,19 +249,22 @@ export default async function BlogDetailPage({
           category: true, readTime: true, date: true,
         },
       }),
-      /* #3: Tour CTA, 2 paket mendatang */
+      /* #3: Tour CTA, 2 paket mendatang (yang masih bisa dipesan lebih dulu) */
       prisma.tour.findMany({
         where: { status: { not: "DRAFT" }, tripDate: { gte: new Date() } },
         orderBy: { tripDate: "asc" },
-        take: 2,
+        take: 6,
         select: {
           id: true, slug: true, title: true, heroImg: true,
           price: true, promoPrice: true, duration: true, country: true,
+          cityHighlight: true, seatsLeft: true, tripDate: true, badge: true,
+          status: true, addOns: true,
         },
       }),
     ]);
 
   if (!post) notFound();
+  const upcomingTours = tourRows.slice(0, 2);
 
   /* ── Theme setup ────────────────────────────────────────────────── */
   const isKawaii   = theme === "kawaii";
@@ -306,6 +314,57 @@ export default async function BlogDetailPage({
     : { html: "", structuredData: [], headings: [] };
   const articleBody = sanitizeRichHtml(enhancedArticle.html);
   const showArticleToc = enhancedArticle.headings.length >= 3;
+  const crumbs = [
+    { name: "Beranda", url: "/" },
+    { name: "Blog", url: "/blog" },
+    { name: post.title, url: `/blog/${slug}` },
+  ];
+  const structuredData = (
+    <>
+      <BreadcrumbSchema crumbs={crumbs} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
+      />
+      {enhancedArticle.structuredData.map((schema, index) => (
+        <script
+          key={`cms-jsonld-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
+        />
+      ))}
+    </>
+  );
+
+  // Atlas theme: the Sundaf DMC document format. Tours that can still be booked
+  // come first, and prices lead with the subtotal (package + required extras).
+  if (isAtlas) {
+    const now = new Date();
+    const ctaTours = editorialBlogIds.has(post.id) ? [] : tourRows.map((tour) => ({
+      ...tour,
+      title: normalizeTourDisplayTitle(tour.title),
+      tripDate: tour.tripDate?.toISOString() ?? null,
+      mandatoryTotal: mandatoryAddOnsTotal(resolveCanadaRockiesAddOns(tour.addOns, tour.slug)),
+      state: getPublicTourState(tour, now),
+    }));
+    const bookableFirst = [
+      ...ctaTours.filter((tour) => tour.state !== "sold"),
+      ...ctaTours.filter((tour) => tour.state === "sold"),
+    ].slice(0, 2);
+
+    return (
+      <>
+        {structuredData}
+        <CleanBlogArticle
+          post={post}
+          bodyHtml={articleBody}
+          headings={enhancedArticle.headings}
+          tours={bookableFirst}
+          related={relatedPosts}
+        />
+      </>
+    );
+  }
 
   const divider = (
     <div
@@ -320,24 +379,7 @@ export default async function BlogDetailPage({
       style={wrapperStyle}
     >
       {/* #4: JSON-LD structured data */}
-      <BreadcrumbSchema
-        crumbs={[
-          { name: "Beranda", url: "/" },
-          { name: "Blog", url: "/blog" },
-          { name: post.title, url: `/blog/${slug}` },
-        ]}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
-      />
-      {enhancedArticle.structuredData.map((schema, index) => (
-        <script
-          key={`cms-jsonld-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
-        />
-      ))}
+      {structuredData}
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
