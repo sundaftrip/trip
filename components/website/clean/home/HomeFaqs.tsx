@@ -5,8 +5,10 @@ import { ChevronDown } from "lucide-react";
 import type { HomeFaqItem } from "@/lib/home-faqs";
 import styles from "./CleanHome.module.css";
 
+/** Questions as alternating sage/sand rows (document format). The first answer,
+    about legality, starts open, like the FAQ page. */
 export default function HomeFaqs({ items }: { items: HomeFaqItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <div className={styles.faqList} data-reveal>

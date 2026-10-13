@@ -379,6 +379,8 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Destinasi pilihan": "Explore our destinations",
   "Jelajahi rute Rusia, Asia Tengah, dan Vietnam bersama Sundaf Trip.": "Explore Russia, Central Asia, and Vietnam with Sundaf Trip.",
   "Persiapan dan pendampingan perjalanan": "Planning and support",
+  "Persiapan dan pendampingan": "Planning and support",
+  "Lihat semua pertanyaan": "See all questions",
   "Rute dan jadwal jelas": "Routes and schedules",
   "Lihat aktivitas, perpindahan kota, dan akomodasi sebelum memesan.": "See activities, transfers, and accommodation before booking.",
   "Pertanyaan sebelum memesan": "Before you book",

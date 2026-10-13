@@ -1,6 +1,7 @@
 import Link from "../PreserveScrollLink";
 import { ArrowRight, Star } from "lucide-react";
 import type { CleanHomeTestimonial } from "../CleanHome";
+import doc from "../DocFormat.module.css";
 import styles from "./CleanHome.module.css";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("id-ID", {
@@ -33,8 +34,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
       <div className={styles.shell}>
         <div className={styles.reviewHeading}>
           <div className={styles.sectionHeading}>
-            <p className={styles.eyebrow}>CERITA PESERTA</p>
-            <h2 id="stories-title">Ulasan peserta</h2>
+            <h2 id="stories-title" className={doc.tag}>Ulasan peserta</h2>
             <p>Pengalaman peserta yang telah bepergian bersama Sundaf Trip.</p>
           </div>
         </div>
