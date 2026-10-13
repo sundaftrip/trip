@@ -165,3 +165,28 @@ test("destinations, Russia services, private trip and visa pages drop the dark b
     assert.match(detail, new RegExp(`<h2 id="${id}" className=\\{doc\\.tag\\}>`));
   }
 });
+
+test("GEO landing pages, visa FAQ and protection, catering, Latin America, profile and media kit use the document format", () => {
+  const geo = read("app/(website)/geo-page.tsx");
+  assert.match(geo, /<p className=\{doc\.eyebrow\}>\{eyebrow\}<\/p>/);
+  assert.match(geo, /<h2 id="geo-faq-title" className=\{doc\.tag\}>FAQ<\/h2>/);
+  assert.doesNotMatch(geo, /className="stabilo"/);
+
+  assert.match(read("app/(website)/visa/faq/page.tsx"), /<h2 className=\{doc\.tag\}>\{sec\.title\}<\/h2>/);
+  const protection = read("app/(website)/visa/asuransi-visa-protection/page.tsx");
+  assert.match(protection, /<h2 id="visa-protection-faq-title" className=\{doc\.tag\}>/);
+  assert.doesNotMatch(protection, /bg-gray-50 pt-24/);
+
+  const catering = read("components/website/clean/RussiaCatering.module.css");
+  assert.match(catering, /\.page em \{[^}]*var\(--doc-amber, #eab067\)/);
+
+  const latin = read("components/website/LatinAmerica.module.css");
+  assert.doesNotMatch(latin, /border-left/);
+  assert.doesNotMatch(latin, /#075d63/);
+
+  const profile = read("app/(website)/sundaf-trip/CompanyProfile.module.css");
+  assert.doesNotMatch(profile, /\.contents \{[^}]*background: var\(--ink\)/);
+
+  const mediaKit = read("app/(website)/media-kit/page.tsx");
+  assert.match(mediaKit, /<table className=\{`\$\{doc\.table\} \$\{supportStyles\.factsTable\}`\}>/);
+});

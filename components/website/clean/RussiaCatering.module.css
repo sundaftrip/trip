@@ -1,10 +1,12 @@
+/* Halal catering in the Sundaf DMC document format (DocFormat.module.css):
+   bold navy titles with amber highlights, flat tinted menu boxes. */
 .page {
-  --ink: #132b3a;
-  --text: #42515a;
-  --muted: #5d6b72;
-  --primary: #075d63;
-  --primary-strong: #05484d;
-  --control-border: #dce4e4;
+  --ink: var(--doc-navy, #1e3645);
+  --text: var(--doc-ink, #2f4352);
+  --muted: var(--doc-slate, #51616a);
+  --primary: var(--doc-green, #2e6751);
+  --primary-strong: #24563f;
+  --control-border: #dcdcd2;
   min-height: 100vh;
   padding: 68px 0 40px;
   background: #ffffff;
@@ -98,38 +100,45 @@
 .page .eyebrow,
 .page .hub-label {
   color: var(--primary);
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1.7;
-  letter-spacing: 1.6px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .03em;
+  text-transform: uppercase;
 }
 
-.page h1 {
-  margin-block: 22px 24px;
-  font-size: clamp(44px, 4.1vw, 62px);
-  font-weight: 400;
-  line-height: 1.13;
-  letter-spacing: -2.2px;
+/* Tripled to outrank the site-wide heading weight rule. */
+.page.page.page h1 {
+  margin-block: 14px 22px;
+  font-size: clamp(40px, 4.1vw, 60px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
 }
 
-.page h2 {
-  margin-top: 12px;
-  font-size: 44px;
-  font-weight: 400;
+.page.page.page h2 {
+  margin-top: 10px;
+  font-size: clamp(30px, 3.4vw, 42px);
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -1.3px;
+  letter-spacing: -.02em;
 }
 
-.page h3 {
-  font-weight: 450;
+.page.page.page h3 {
+  font-weight: 700;
   line-height: 1.25;
-  letter-spacing: -0.4px;
+  letter-spacing: -.01em;
 }
 
+/* Accent words: the amber highlighter of the document format. */
 .page em {
-  color: var(--primary);
+  padding: 0 .12em;
+  background: linear-gradient(transparent 14%, var(--doc-amber, #eab067) 14%, var(--doc-amber, #eab067) 90%, transparent 90%);
+  color: inherit;
   font-style: normal;
   font-weight: inherit;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .page .intro {
@@ -184,9 +193,9 @@
   min-height: 48px;
   padding: 14px 22px;
   border: 1px solid transparent;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 450;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1.45;
   transition: background-color 180ms ease, border-color 180ms ease;
 }
@@ -304,15 +313,18 @@
   min-width: 0;
   overflow: hidden;
   scroll-snap-align: start;
-  border: 1px solid #e6ebeb;
-  border-radius: 20px;
-  background: #ffffff;
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+  border: 0;
+  border-radius: 0;
+  background: var(--doc-sand, #f5f5ef);
+  transition: background-color 160ms ease;
+}
+
+.page .menu-item:nth-child(even) {
+  background: var(--doc-sage, #eaf3f0);
 }
 
 .page .menu-item:hover {
-  border-color: #b8cece;
-  box-shadow: 0 7px 22px rgb(19 43 58 / 5%);
+  background: #e4eee9;
 }
 
 .page .menu-photo {
@@ -720,11 +732,11 @@
     gap: 38px;
   }
 
-  .page h1 {
+  .page.page.page h1 {
     font-size: 46px;
   }
 
-  .page h2 {
+  .page.page.page h2 {
     font-size: 38px;
   }
 
@@ -757,13 +769,13 @@
     padding-block: 28px 22px;
   }
 
-  .page h1 {
+  .page.page.page h1 {
     margin-block: 18px 20px;
     font-size: clamp(38px, 8.1vw, 57px);
     letter-spacing: -1.3px;
   }
 
-  .page h2 {
+  .page.page.page h2 {
     font-size: 36px;
     letter-spacing: -1px;
   }
@@ -829,7 +841,7 @@
   }
 
   .page .menu-item {
-    border-radius: 18px;
+    border-radius: 0;
   }
 
   .page .product-body {

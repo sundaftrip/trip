@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
-import {
-  AlertTriangle,
-  ArrowRight,
-  CheckCircle2,
-  FileCheck2,
-  MessageCircle,
-  ReceiptText,
-  ShieldCheck,
-  XCircle,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft, MessageCircle } from "lucide-react";
 
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import StableDetails from "@/components/website/clean/StableDetails";
+import doc from "@/components/website/clean/DocFormat.module.css";
+import styles from "./VisaProtection.module.css";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
@@ -65,17 +58,14 @@ const EXCLUSIONS = [
 
 const STEPS = [
   {
-    icon: FileCheck2,
     title: "Screening profil",
     body: "Kami cek negara tujuan, jenis visa, tanggal keberangkatan, usia pemohon, dan riwayat visa sebelum menyarankan produk.",
   },
   {
-    icon: ReceiptText,
     title: "Cek manfaat polis",
     body: "Kami cocokkan apakah manfaat visa refusal atau visa rejection benar-benar tertulis di polis, termasuk batas klaim dan dokumen yang diminta.",
   },
   {
-    icon: ShieldCheck,
     title: "Beli sebelum submit",
     body: "Jika cocok, polis bisa dibeli melalui Sundaf Trip dan harus aktif sebelum pengajuan visa. Jangan membeli setelah dokumen bermasalah atau hasil visa sudah keluar.",
   },
@@ -201,7 +191,7 @@ export default async function VisaProtectionPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-24 text-gray-900 dark:bg-gray-950 dark:text-white">
+    <div className={styles.page}>
       <BreadcrumbSchema
         crumbs={[
           { name: "Beranda", url: "/" },
@@ -218,114 +208,78 @@ export default async function VisaProtectionPage() {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(serviceSchema) }}
       />
 
-      <section className="border-b border-gray-200 bg-white px-4 py-12 dark:border-gray-800 dark:bg-gray-950 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <Link
-            href="/visa"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-          >
-            <ArrowRight size={14} className="rotate-180" aria-hidden /> Kembali ke Info Visa
-          </Link>
-          <div className="mt-7 grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300">
-                Add-on pengajuan visa
-              </p>
-              <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">
-                Asuransi Visa Protection untuk risiko visa ditolak
-              </h1>
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                Produk ini bukan jaminan visa lolos. Fungsinya membantu mengurangi risiko
-                biaya tertentu jika visa ditolak, selama manfaatnya tertulis di polis dan
-                syarat klaim terpenuhi.
-              </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={waHref}
-                  target={wa ? "_blank" : undefined}
-                  rel={wa ? "noreferrer" : undefined}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold text-white transition hover:opacity-90"
-                  style={{ background: "var(--site-accent,#075d63)" }}
-                >
-                  <MessageCircle size={17} aria-hidden />
-                  Cek kecocokan polis
-                </a>
-                <Link
-                  href="/jasa-urus-visa-terpercaya"
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-sm font-bold text-gray-800 transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-900"
-                >
-                  Review dokumen visa
-                </Link>
-              </div>
+      <section className={`${styles.shell} ${styles.hero}`} aria-labelledby="visa-protection-title">
+        <Link href="/visa" className={styles.back}>
+          <ChevronLeft size={14} aria-hidden="true" /> Kembali ke Info Visa
+        </Link>
+        <div className={styles.heroGrid}>
+          <div>
+            <p className={doc.eyebrow}>Add-on pengajuan visa / Sundaf Trip</p>
+            <h1 id="visa-protection-title" className={`${doc.title} ${styles.title}`}>
+              Asuransi Visa Protection untuk risiko visa ditolak
+            </h1>
+            <p className={styles.lede}>
+              Produk ini bukan jaminan visa lolos. Fungsinya membantu mengurangi risiko
+              biaya tertentu jika visa ditolak, selama manfaatnya tertulis di polis dan
+              syarat klaim terpenuhi.
+            </p>
+            <div className={styles.actions}>
+              <a
+                href={waHref}
+                target={wa ? "_blank" : undefined}
+                rel={wa ? "noreferrer" : undefined}
+                className={doc.button}
+              >
+                <MessageCircle aria-hidden="true" />
+                Cek kecocokan polis
+              </a>
+              <Link href="/jasa-urus-visa-terpercaya" className={styles.secondary}>
+                Review dokumen visa
+              </Link>
             </div>
-
-            <aside className="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900/60 dark:bg-amber-950/30">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
-                Dibahas sebelum submit
-              </p>
-              <p className="mt-2 text-2xl font-black leading-tight text-gray-900 dark:text-white">
-                Cek polis sebelum visa diajukan
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                Produk harus dibeli sebelum pengajuan dan sebelum ada hasil penolakan. Tim kami
-                akan bantu cek manfaat, pembelian polis, dan alur klaim bila visa ditolak.
-              </p>
-            </aside>
           </div>
+
+          <aside className={`${doc.boxSand} ${styles.box}`}>
+            <p className={doc.subhead}>Dibahas sebelum submit</p>
+            <p className={styles.boxTitle}>Cek polis sebelum visa diajukan</p>
+            <p>
+              Produk harus dibeli sebelum pengajuan dan sebelum ada hasil penolakan. Tim kami
+              akan bantu cek manfaat, pembelian polis, dan alur klaim bila visa ditolak.
+            </p>
+          </aside>
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
-              Apa itu Visa Protection?
+      <section className={`${styles.shell} ${styles.section}`} aria-label="Tentang Visa Protection">
+        <div className={styles.pair}>
+          <div className={`${doc.boxSage} ${styles.box}`}>
+            <p className={doc.subhead}>Apa itu Visa Protection?</p>
+            <h2 className={styles.boxTitle}>Perlindungan finansial, bukan jaminan approval visa</h2>
+            <p>
+              Visa Protection adalah add-on perlindungan atau asuransi perjalanan yang
+              dirancang untuk membantu mengurangi kerugian biaya tertentu jika pengajuan
+              visa ditolak. Jika cocok, polisnya dapat dibeli melalui Sundaf Trip.
             </p>
-            <h2 className="mt-3 text-2xl font-black leading-tight text-gray-950 dark:text-white">
-              Perlindungan finansial, bukan jaminan approval visa
-            </h2>
-            <div className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-              <p>
-                Visa Protection adalah add-on perlindungan atau asuransi perjalanan yang
-                dirancang untuk membantu mengurangi kerugian biaya tertentu jika pengajuan
-                visa ditolak. Jika cocok, polisnya dapat dibeli melalui Sundaf Trip.
-              </p>
-              <p>
-                Manfaatnya hanya bisa dipakai bila risiko visa refusal atau visa rejection
-                tertulis jelas di polis, polis dibeli sebelum pengajuan, alasan penolakan
-                memenuhi syarat, dan dokumen klaim lengkap.
-              </p>
-              <p className="font-semibold text-gray-900 dark:text-white">
-                Jadi fokusnya bukan membuat visa pasti lolos, tetapi membantu traveler
-                memahami risiko biaya sebelum dokumen disubmit, sekaligus punya pendampingan
-                administratif jika perlu klaim.
-              </p>
-            </div>
+            <p>
+              Manfaatnya hanya bisa dipakai bila risiko visa refusal atau visa rejection
+              tertulis jelas di polis, polis dibeli sebelum pengajuan, alasan penolakan
+              memenuhi syarat, dan dokumen klaim lengkap.
+            </p>
+            <p className={styles.strong}>
+              Jadi fokusnya bukan membuat visa pasti lolos, tetapi membantu traveler
+              memahami risiko biaya sebelum dokumen disubmit, sekaligus punya pendampingan
+              administratif jika perlu klaim.
+            </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
-              Manfaat yang perlu dipahami
-            </p>
-            <h2 className="mt-3 text-2xl font-black leading-tight text-gray-950 dark:text-white">
-              Membantu mengelola risiko sebelum biaya visa keluar
-            </h2>
-            <div className="mt-5 grid gap-3">
+          <div className={`${doc.boxSand} ${styles.box}`}>
+            <p className={doc.subhead}>Manfaat yang perlu dipahami</p>
+            <h2 className={styles.boxTitle}>Membantu mengelola risiko sebelum biaya visa keluar</h2>
+            <div className={styles.benefits}>
               {BENEFITS.map((benefit) => (
-                <div key={benefit.title} className="flex gap-3">
-                  <CheckCircle2
-                    size={18}
-                    className="mt-0.5 shrink-0 text-emerald-600"
-                    aria-hidden
-                  />
-                  <div>
-                    <h3 className="text-sm font-black text-gray-950 dark:text-white">
-                      {benefit.title}
-                    </h3>
-                    <p className="mt-1 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                      {benefit.body}
-                    </p>
-                  </div>
+                <div key={benefit.title}>
+                  <h3 className={styles.benefitTitle}>{benefit.title}</h3>
+                  <p>{benefit.body}</p>
                 </div>
               ))}
             </div>
@@ -333,107 +287,64 @@ export default async function VisaProtectionPage() {
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-4 md:grid-cols-3">
-            {STEPS.map((step) => {
-              const Icon = step.icon;
-              return (
-                <div
-                  key={step.title}
-                  className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900"
-                >
-                  <Icon size={22} className="text-amber-600 dark:text-amber-300" aria-hidden />
-                  <h2 className="mt-4 text-base font-black">{step.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                    {step.body}
-                  </p>
-                </div>
-              );
-            })}
+      <section className={`${styles.shell} ${styles.section}`} aria-labelledby="visa-protection-steps-title">
+        <h2 id="visa-protection-steps-title" className={doc.tag}>Cara kerjanya</h2>
+        <ol className={styles.steps}>
+          {STEPS.map((step, index) => (
+            <li key={step.title}>
+              <span className={styles.stepNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className={styles.stepTitle}>{step.title}</h3>
+              <p>{step.body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={`${styles.shell} ${styles.section}`} aria-label="Cakupan polis">
+        <div className={styles.pair}>
+          <div className={`${doc.boxSage} ${styles.box}`}>
+            <h2 className={styles.boxTitle}>Biasanya perlu dicek sebelum beli</h2>
+            <ul className={styles.list}>
+              {CHECKLIST.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </div>
+          <div className={`${doc.boxSand} ${styles.box}`}>
+            <h2 className={styles.boxTitle}>Yang sering tidak dicover</h2>
+            <ul className={`${styles.list} ${styles.listMuted}`}>
+              {EXCLUSIONS.map((item) => <li key={item}>{item}</li>)}
+            </ul>
           </div>
         </div>
       </section>
 
-      <section className="px-4 pb-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="mt-0.5 shrink-0 text-emerald-600" size={22} aria-hidden />
-              <div>
-                <h2 className="text-lg font-black">Biasanya perlu dicek sebelum beli</h2>
-                <ul className="mt-4 space-y-3">
-                  {CHECKLIST.map((item) => (
-                    <li key={item} className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <div className="flex items-start gap-3">
-              <XCircle className="mt-0.5 shrink-0 text-rose-600" size={22} aria-hidden />
-              <div>
-                <h2 className="text-lg font-black">Yang sering tidak dicover</h2>
-                <ul className="mt-4 space-y-3">
-                  {EXCLUSIONS.map((item) => (
-                    <li key={item} className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
+      <section className={`${styles.shell} ${styles.section}`} aria-labelledby="visa-protection-position-title">
+        <h2 id="visa-protection-position-title" className={doc.tag}>Posisi Sundaf Trip</h2>
+        <div className={`${doc.boxSage} ${styles.box}`}>
+          <p>
+            Sundaf Trip menawarkan dan membantu pembelian polis Visa Protection yang sesuai
+            setelah screening. Kami juga mendampingi proses klaim administratif jika visa
+            ditolak. Sundaf Trip bukan perusahaan asuransi dan tidak memutuskan klaim;
+            keputusan penerbitan polis serta pembayaran klaim tetap berada pada insurer
+            sesuai syarat polis.
+          </p>
         </div>
       </section>
 
-      <section className="px-4 pb-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900/60">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 shrink-0 text-slate-600 dark:text-slate-300" size={22} aria-hidden />
-            <div>
-              <h2 className="text-lg font-black">Posisi Sundaf Trip</h2>
-              <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                Sundaf Trip menawarkan dan membantu pembelian polis Visa Protection yang sesuai
-                setelah screening. Kami juga mendampingi proses klaim administratif jika visa
-                ditolak. Sundaf Trip bukan perusahaan asuransi dan tidak memutuskan klaim;
-                keputusan penerbitan polis serta pembayaran klaim tetap berada pada insurer
-                sesuai syarat polis.
-              </p>
-            </div>
-          </div>
+      <section className={`${styles.shell} ${styles.section}`} aria-labelledby="visa-protection-faq-title">
+        <h2 id="visa-protection-faq-title" className={doc.tag}>FAQ Asuransi Visa Protection</h2>
+        <div className={styles.faqRows}>
+          {FAQS.map((faq) => (
+            <StableDetails key={faq.question} className={styles.faqRow}>
+              <summary>
+                <span>{faq.question}</span>
+                <ArrowRight size={15} aria-hidden="true" />
+              </summary>
+              <p>{faq.answer}</p>
+            </StableDetails>
+          ))}
         </div>
       </section>
-
-      <section className="px-4 pb-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-xl font-black">FAQ Asuransi Visa Protection</h2>
-          <div className="mt-4 space-y-3">
-            {FAQS.map((faq) => (
-              <StableDetails
-                key={faq.question}
-                className="group rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-bold">
-                  <span>{faq.question}</span>
-                  <ArrowRight
-                    size={15}
-                    className="shrink-0 text-gray-400 transition-transform group-open:rotate-90"
-                    aria-hidden
-                  />
-                </summary>
-                <p className="px-4 pb-4 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                  {faq.answer}
-                </p>
-              </StableDetails>
-            ))}
-          </div>
-        </div>
-      </section>
-    </main>
+      <div className={styles.end} aria-hidden="true" />
+    </div>
   );
 }
