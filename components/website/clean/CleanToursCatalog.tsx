@@ -413,6 +413,7 @@ export default function CleanToursCatalog({
                     key={tour.id}
                     tour={tour}
                     compact
+                    catalog
                     campaignQuery={campaignQuery}
                   />
                 ))}
@@ -472,6 +473,7 @@ export default function CleanToursCatalog({
                   key={tour.id}
                   tour={tour}
                   compact
+                  catalog
                   campaignQuery={campaignQuery}
                 />
               ))}

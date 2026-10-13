@@ -10,7 +10,7 @@
   overflow-x: clip;
   background: var(--catalog-soft);
   color: var(--catalog-ink);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.012em;
 }
 
@@ -75,7 +75,7 @@
   margin: 14px 0 0;
   color: var(--catalog-muted);
   font-size: 17px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.012em;
   line-height: 1.65;
 }
@@ -943,10 +943,11 @@
     font-size: 13px;
   }
 
+  /* Phones: a two-column catalog so several trips show at once. */
   .grid {
-    margin: 24px 12px 12px;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    margin: 20px 0 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .empty {
@@ -997,7 +998,7 @@
   }
 }
 
-@media (max-width: 370px) {
+@media (max-width: 339px) {
   .grid {
     grid-template-columns: 1fr;
   }

@@ -9,7 +9,7 @@ export default function HomeFaqs({ items }: { items: HomeFaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className={styles.faqList}>
+    <div className={styles.faqList} data-reveal>
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         const triggerId = `home-faq-trigger-${index}`;

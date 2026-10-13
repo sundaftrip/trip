@@ -4,7 +4,7 @@ import { Fragment, type MouseEvent } from "react";
 import Image from "next/image";
 import Link from "../PreserveScrollLink";
 import { useRouter } from "next/navigation";
-import { Calendar, MapPin } from "lucide-react";
+import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { getTourProductImage } from "@/lib/tour-product-images";
 import { cldThumb, formatCurrency } from "@/lib/utils";
 import type { CleanTour } from "../CleanTourCard";
@@ -64,7 +64,14 @@ function routeHighlight(value: string) {
   ));
 }
 
-export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
+export default function HomeTourRail({
+  tours,
+  showAllTile = false,
+}: {
+  tours: CleanTour[];
+  /** Phones show the trips as a two-column catalog; this tile completes an odd last row. */
+  showAllTile?: boolean;
+}) {
   const router = useRouter();
 
   function preserveCampaign(
@@ -83,9 +90,9 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
       <div
         className={styles.tourRail}
         role="region"
-        aria-roledescription="carousel"
         aria-label="Daftar kartu perjalanan Sundaf"
         tabIndex={0}
+        data-reveal="group"
       >
         {tours.map((tour, index) => {
           const href = `/tours/${tour.slug || tour.id}`;
@@ -115,7 +122,7 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
                     src={cldThumb(getTourProductImage(tour), 760, 510)}
                     alt={`Pemandangan destinasi untuk ${tour.title}`}
                     fill
-                    sizes="(max-width: 699px) 82vw, (max-width: 1199px) 44vw, 360px"
+                    sizes="(max-width: 759px) 50vw, (max-width: 1199px) 44vw, 360px"
                   />
                   <span className={styles.tourMediaShade} aria-hidden="true" />
                   <span className={styles.tourBadge}>{statusLabel(tour)}</span>
@@ -154,6 +161,12 @@ export default function HomeTourRail({ tours }: { tours: CleanTour[] }) {
             </article>
           );
         })}
+        {showAllTile ? (
+          <Link href="/tours" className={styles.tourAllTile}>
+            <span>Lihat semua jadwal &amp; biaya</span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        ) : null}
       </div>
     </div>
   );

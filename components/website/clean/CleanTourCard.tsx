@@ -54,10 +54,13 @@ function statusLabel(tour: CleanTour) {
 export default function CleanTourCard({
   tour,
   compact = false,
+  catalog = false,
   campaignQuery = "",
 }: {
   tour: CleanTour;
   compact?: boolean;
+  /** Catalog grid: on phones the card shrinks so two trips fit side by side. */
+  catalog?: boolean;
   campaignQuery?: string;
 }) {
   const baseHref = `/tours/${tour.slug || tour.id}`;
@@ -71,7 +74,7 @@ export default function CleanTourCard({
 
   return (
     <article
-      className={`${styles.tourCard} ${compact ? styles.tourCardCompact : ""} ${unavailable ? styles.unavailable : ""}`}
+      className={`${styles.tourCard} ${compact ? styles.tourCardCompact : ""} ${catalog ? styles.tourCardCatalog : ""} ${unavailable ? styles.unavailable : ""}`}
       data-trip-state={tour.state}
       data-commerce-status={commerceStatus}
     >
@@ -87,7 +90,9 @@ export default function CleanTourCard({
           src={image}
           alt={tour.title}
           fill
-          sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 1100px) 50vw, 33vw"
+          sizes={catalog
+            ? "(max-width: 1100px) 50vw, 33vw"
+            : "(max-width: 700px) calc(100vw - 48px), (max-width: 1100px) 50vw, 33vw"}
           className={styles.tourImage}
         />
         <span className={styles.tourPhotoShade} aria-hidden="true" />

@@ -45,6 +45,7 @@ export default function HomeReviews({ items }: { items: CleanHomeTestimonial[] }
           aria-roledescription="carousel"
           aria-label="Cerita peserta Sundaf Trip. Geser untuk melihat cerita berikutnya."
           tabIndex={0}
+          data-reveal="group"
         >
           {items.map((item, index) => {
             const date = testimonialDate(item.date);
