@@ -95,29 +95,14 @@ test("makes every room tier an accessible synchronized choice", () => {
   assert.doesNotMatch(roomBookingSource, /data-featured/);
 });
 
-test("keeps the main date card while grouping mobile option controls and hiding them on desktop", () => {
-  assert.match(
-    roomBookingSource,
-    /\{hasOptionalServices && \([\s\S]*?className=\{interactiveStyles\.dateCardOptionControls\}[\s\S]*?role="group"[\s\S]*?aria-label="Tambahan opsional"[\s\S]*?<TourRecommendedAddOnToggle compact grouped \/>[\s\S]*?<TourVisaServiceToggle compact grouped \/>/,
-  );
-  assert.match(
-    interactiveStylesSource,
-    /\.dateCardOptionControls \{[\s\S]*?display: grid;[\s\S]*?border: 1px solid #cfdcdc;[\s\S]*?border-radius: 12px;/,
-  );
-  assert.match(
-    cleanStylesSource,
-    /\.detailRecommendedAddOn\[data-grouped="true"\] \{[\s\S]*?border: 0;[\s\S]*?background: transparent;/,
-  );
-  assert.match(
-    cleanStylesSource,
-    /\.detailVisaServices\[data-grouped="true"\] \{[\s\S]*?border: 0;[\s\S]*?background: transparent;/,
-  );
-  assert.match(recommendedAddOnSource, /data-grouped=\{grouped \|\| undefined\}/);
-  assert.match(visaToggleSource, /data-grouped=\{grouped \|\| undefined\}/);
-  assert.match(
-    interactiveStylesSource,
-    /@media \(min-width: 701px\) \{[\s\S]*?\.dateCardOptionControls \{\s*display: none;\s*\}/,
-  );
+test("keeps the main date card simple: visa help and insurance live under Tidak termasuk", () => {
+  // Neither the phone price card nor the desktop sidebar shows service toggles anymore.
+  assert.doesNotMatch(roomBookingSource, /dateCardOptionControls|TourRecommendedAddOnToggle|TourVisaServiceToggle/);
+  assert.doesNotMatch(interactiveStylesSource, /dateCardOptionControls/);
+  assert.match(source, /excludedServices\.map\(\(service\) =>/);
+  // The booking sheet still asks whether visa help or insurance is needed.
+  assert.match(bookingSheetSource, /<TourRecommendedAddOnToggle flat \/>/);
+  assert.match(bookingSheetSource, /<TourVisaServiceToggle flat \/>/);
   assert.doesNotMatch(
     interactiveStylesSource,
     /@media \(min-width: 701px\) \{[\s\S]*?\.dateGrid \{\s*display: none;\s*\}/,
@@ -200,7 +185,6 @@ test("offers only the visas required by the selected trip and keeps them optiona
   assert.match(visaToggleSource, /included \? "Ya" : "Tidak"/);
   assert.match(visaToggleSource, /flat = false/);
   assert.match(visaToggleSource, /data-flat=\{\(flat && !compact && !grouped\) \|\| undefined\}/);
-  assert.match(roomBookingSource, /<TourVisaServiceToggle compact grouped \/>/);
   // Desktop: visa help and insurance are listed under "Tidak termasuk" as links to the
   // visa page instead of toggles in the booking sidebar.
   assert.doesNotMatch(roomSidebarSource, /TourVisaServiceToggle|TourRecommendedAddOnToggle/);

@@ -11,16 +11,6 @@
   margin-top: 22px;
 }
 
-.dateCardOptionControls {
-  margin: 16px 0 18px;
-  padding: 4px 12px;
-  display: grid;
-  overflow: hidden;
-  border: 1px solid #cfdcdc;
-  border-radius: 12px;
-  background: #f8fbfb;
-}
-
 /* Flat tinted box, like the boxes in the PDF portfolio. */
 .dateCard {
   padding: 22px;
@@ -124,12 +114,6 @@
   font-weight: 800;
   letter-spacing: -.01em;
   white-space: nowrap;
-}
-
-@media (min-width: 701px) {
-  .dateCardOptionControls {
-    display: none;
-  }
 }
 
 .tabBar > div {
