@@ -916,23 +916,31 @@
 .supportRow p { max-width: 660px; margin: 12px 0 0; color: rgba(255, 255, 255, .7); }
 .supportRow > a { background: #fff; color: var(--clean-navy); }
 
-/* Tour detail — one data-driven system based on the 4-TAN benchmark. */
+/* Tour detail in the Sundaf DMC document style (2027 planning portfolio):
+   amber tag headings, "HARI 1 / judul" days, tinted boxes and tables with a
+   dark green header row. Photos first, then text. */
 .tourDetail {
+  --doc-amber: #eab067;
+  --doc-green: #2e6751;
+  --doc-sage: #eaf3f0;
+  --doc-sand: #f5f5ef;
+  --doc-navy: #1e3645;
+  --doc-ink: #2f4352;
+  --doc-slate: #51616a;
   min-width: 0;
   overflow-x: clip;
 }
 
 .detailHero {
-  padding: clamp(24px, 3vw, 38px) 0 clamp(28px, 3.8vw, 48px);
-  border-bottom: 1px solid var(--clean-line);
+  padding: clamp(22px, 2.6vw, 32px) 0 clamp(26px, 3vw, 36px);
   background: #fff;
 }
 
 .detailBreadcrumb {
-  margin-bottom: clamp(18px, 2vw, 26px);
+  margin-bottom: clamp(16px, 1.8vw, 22px);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 10px;
+  gap: 6px 10px;
   color: var(--clean-muted);
   font-size: 13px;
 }
@@ -942,166 +950,61 @@
 
 .detailHeroHeading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
-  gap: clamp(28px, 5vw, 64px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px clamp(28px, 5vw, 64px);
+  align-items: end;
 }
 
-.detailEyebrow,
-.detailSectionKicker {
-  margin: 0 0 15px;
-  color: var(--clean-teal-dark);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .17em;
+/* "OPEN TRIP / KANADA", like "ID-KMD02 / 3D2N / PRIVATE JOURNEY". */
+.detailEyebrow {
+  margin: 0 0 10px;
+  color: var(--doc-green);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
   text-transform: uppercase;
 }
 
-.detailHero .detailEyebrow { color: #555; }
-
-.detailHero h1 {
-  max-width: 24ch;
+.tourDetail.tourDetail .detailHero h1 {
+  max-width: 22ch;
   margin: 0;
-  color: #171717;
-  font-size: clamp(34px, 4.5vw, 58px);
-  font-weight: 600;
-  letter-spacing: -.04em;
+  color: var(--doc-navy);
+  font-size: clamp(32px, 4.2vw, 50px);
+  font-weight: 700;
+  letter-spacing: -.02em;
   line-height: 1.1;
   overflow-wrap: anywhere;
   text-wrap: balance;
 }
 
-.detailHeroIntro {
-  max-width: 680px;
-  margin: 20px 0 0;
-  color: #555;
-  font-size: 14px;
-  line-height: 1.65;
+.detailHeroPrice {
+  margin: 0;
+  color: var(--doc-navy);
+  line-height: 1.2;
 }
 
-.detailHeroIntro strong {
-  display: block;
-  margin-bottom: 7px;
-  color: #222;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.45;
-}
-
-.detailHeroCommerce {
-  display: grid;
-  gap: 18px;
-}
-
-.detailHeroPriceBlock {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: baseline;
-  gap: 4px 9px;
-  color: #171717;
-}
-
-.detailHeroPriceBlock > span {
-  grid-column: 1 / 3;
-  width: max-content;
-  margin-bottom: 6px;
-  padding: 7px 11px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 11px;
-  font-weight: 760;
-}
-
-.detailHeroPriceBlock > small {
-  color: #555;
-  font-size: 11px;
-  font-weight: 650;
-}
-
-.detailHeroPriceBlock > strong {
-  grid-column: 1 / 3;
-  font-size: clamp(28px, 3vw, 36px);
-  font-weight: 700;
-  letter-spacing: -.035em;
-  line-height: 1;
-}
-
-.detailHeroCta {
-  min-height: 52px;
-  padding: 0 21px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border-radius: 8px;
-  background: #171717;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.detailHeroCta svg { width: 17px; height: 17px; }
-.detailHeroCta:hover { background: #333; }
-.detailHeroCta:focus-visible { outline: 2px solid #171717; outline-offset: 3px; }
+.detailHeroPrice > small { color: var(--doc-slate); font-size: 13px; }
+.detailHeroPrice > small:first-child { display: block; margin-bottom: 4px; }
+.detailHeroPrice > strong { font-size: clamp(26px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.02em; }
+.detailHeroPrice > strong + small { display: block; margin-top: 4px; }
+.detailHeroPrice > span { display: block; margin-top: 8px; color: var(--doc-green); font-size: 13px; font-weight: 700; }
+.detailHeroPrice > .detailHeroStatusUnavailable { color: #9a4a42; }
 
 .detailHeroFacts {
-  margin-top: clamp(22px, 2.8vw, 34px);
-  padding-top: 18px;
+  margin: clamp(22px, 2.6vw, 30px) 0 0;
+  padding-top: 16px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  border-top: 1px solid #ddd;
-  color: #333;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 32px;
+  border-top: 1px solid var(--clean-line);
 }
 
-.detailHeroFacts > span {
-  min-height: 48px;
-  padding: 8px 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  font-weight: 680;
-}
-
-.detailHeroFacts svg { width: 17px; height: 17px; flex: 0 0 auto; color: #555; }
-
-.detailSectionNav {
-  position: sticky;
-  top: 94px;
-  z-index: 30;
-  border-bottom: 1px solid var(--clean-line);
-  background: rgba(255, 255, 255, .97);
-  box-shadow: 0 7px 18px rgba(25, 45, 48, .04);
-  backdrop-filter: blur(14px);
-}
-
-.detailSectionNav > div {
-  display: flex;
-  gap: 30px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.detailSectionNav > div::-webkit-scrollbar { display: none; }
-
-.detailSectionNav a {
-  min-height: 56px;
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  border-bottom: 2px solid transparent;
-  color: var(--clean-muted);
-  font-size: 12px;
-  font-weight: 720;
-}
-
-.detailSectionNav a:hover,
-.detailSectionNav a:focus-visible { border-color: var(--clean-teal-dark); color: var(--clean-teal-dark); }
+.detailHeroFacts > div { min-width: 0; }
+.detailHeroFacts dt { color: var(--doc-slate); font-size: 12px; }
+.detailHeroFacts dd { margin: 3px 0 0; color: var(--doc-navy); font-size: 14px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
 
 .detailContentLayout {
-  padding-top: clamp(52px, 5.5vw, 72px);
+  padding-top: clamp(30px, 3.5vw, 44px);
   padding-bottom: clamp(60px, 6.5vw, 84px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
@@ -1112,266 +1015,272 @@
 .detailContentMain { min-width: 0; }
 
 .detailContentSection {
-  margin-bottom: clamp(56px, 6vw, 80px);
-  scroll-margin-top: 175px;
+  margin-top: clamp(40px, 4.5vw, 56px);
+  scroll-margin-top: 32px;
 }
 
-.detailContentSection:last-child { margin-bottom: 0; }
-
-.detailSummary {
-  padding-top: 24px;
-  display: grid;
-  grid-template-columns: 140px minmax(0, 1fr);
-  gap: 32px;
-  border-top: 1px solid var(--clean-navy);
-}
-
-.detailSummaryIndex {
-  padding-top: 8px;
-  color: var(--clean-teal-dark);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .15em;
-}
-
-.detailSummary h2,
-.detailSectionTitle {
+/* Section titles: an amber highlighter tag, rounded on the left and cut at an
+   angle on the right, as in the PDF portfolio ("YOUR DAILY ITINERARY"). */
+.tourDetail.tourDetail .detailSectionTitle {
+  width: fit-content;
+  max-width: 100%;
   margin: 0;
-  color: var(--clean-navy);
-  font-size: clamp(34px, 3.6vw, 52px);
-  font-weight: 755;
-  letter-spacing: -.045em;
-  line-height: 1.08;
-  text-wrap: balance;
+  padding: 7px 36px 7px 16px;
+  border-radius: 999px 0 0 999px;
+  background: var(--doc-amber);
+  color: var(--doc-navy);
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
 }
 
-.detailSummary h2 { max-width: 14ch; margin-bottom: 24px; }
+.detailIntro { max-width: 68ch; scroll-margin-top: 32px; }
+.detailIntro p { margin: 0 0 14px; color: var(--doc-ink); font-size: 16px; line-height: 1.72; }
+.detailIntro p:first-child { color: var(--doc-navy); font-size: 17px; line-height: 1.65; }
 
-.detailSummary p,
-.detailSectionLede,
-.detailRelatedHeading p {
-  color: var(--clean-muted);
-  font-size: 16px;
-  line-height: 1.72;
-}
-
-.detailSummary p { margin: 0 0 14px; }
-
-.detailRouteLine {
-  margin-top: 28px;
-  padding: 18px 0;
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 18px;
-  border-top: 1px solid var(--clean-line);
-  border-bottom: 1px solid var(--clean-line);
-  font-size: 13px;
-}
-
-.detailRouteLine strong { color: var(--clean-navy); }
-.detailRouteLine span { color: var(--clean-muted); }
 .detailDestinationLink {
   min-height: 44px;
-  margin-top: 14px;
   display: inline-flex;
   align-items: center;
-  color: var(--clean-teal-dark);
+  color: var(--doc-green);
   font-size: 13px;
-  font-weight: 740;
+  font-weight: 700;
 }
+
 .detailDestinationLink:hover { text-decoration: underline; text-underline-offset: 4px; }
-.detailSectionLede { max-width: 680px; margin: 12px 0 0; }
 
-.detailHighlightRail {
-  margin: 24px calc((100vw - min(1280px, 100vw - 80px)) / -2) 0 0;
-  padding: 0 max(40px, calc((100vw - min(1280px, 100vw - 80px)) / 2)) 18px 0;
-  display: grid;
-  grid-auto-columns: minmax(280px, 34%);
-  grid-auto-flow: column;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-}
+/* Photo carousel at the top of the page (full width on phones). */
+.detailTopGallery { padding-top: 24px; }
 
-.detailHighlightRail article {
-  min-width: 0;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--clean-line);
-  scroll-snap-align: start;
-}
-
-.detailHighlightRail article > div {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  margin-bottom: 18px;
-  overflow: hidden;
-  border-radius: 14px;
-  background: var(--clean-soft);
-}
-
-.detailHighlightRail img { object-fit: cover; }
-.detailHighlightRail article > span {
-  color: var(--clean-teal-dark);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.detailHighlightRail h3 { margin: 7px 0 8px; color: var(--clean-navy); font-size: 19px; line-height: 1.3; }
-.detailHighlightRail p {
-  margin: 0;
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--clean-muted);
-  font-size: 13px;
-  line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.detailGallery { margin-bottom: 32px; }
-.detailGallery > p { margin: 10px 0 0; color: #555; font-size: 12px; line-height: 1.6; }
-.detailItinerarySection .detailSectionTitle { color: #171717; }
-
+/* Itinerary: every day stays open, like the PDF ("DAY 1 / ..."), with a thin
+   rule between days and a muted meta line (date | transport | overnight). */
 .detailItinerary {
-  margin-top: 26px;
-  border-top: 1px solid #222;
-}
-
-.detailDay { border-bottom: 1px solid #ddd; }
-.detailDay summary::-webkit-details-marker { display: none; }
-
-.detailDay summary {
-  min-height: 104px;
-  padding: 18px 0;
-  display: grid;
-  grid-template-columns: 68px minmax(0, 1fr) 28px;
-  gap: 20px;
-  align-items: center;
-  color: #171717;
-  cursor: pointer;
+  margin: 18px 0 0;
+  padding: 0;
   list-style: none;
 }
 
-.detailDay summary:focus-visible { outline: 2px solid #222; outline-offset: 3px; }
-
-.detailDayNumber {
-  color: #171717;
-  font-size: 25px;
-  font-weight: 760;
-  letter-spacing: -.04em;
-}
-
-.detailDayHeading { min-width: 0; }
-.detailDayHeading time,
-.detailDayHeading > span { display: block; margin-bottom: 5px; color: #555; font-size: 12px; font-weight: 500; }
-.detailDayHeading strong { display: block; font-size: clamp(18px, 2vw, 23px); line-height: 1.4; }
-
-.detailDayToggle {
-  position: relative;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-}
-
-.detailDayToggle::before,
-.detailDayToggle::after {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 1px;
-  background: #222;
-  content: "";
-  transform: translate(-50%, -50%);
-}
-
-.detailDayToggle::after { transform: translate(-50%, -50%) rotate(90deg); transition: transform .18s ease; }
-.detailDay[open] .detailDayToggle::after { transform: translate(-50%, -50%) rotate(0); }
-
-.detailDayBody {
-  padding: 0 48px 30px 88px;
-  color: #333;
+.detailDay {
+  min-width: 0;
+  padding: 18px 0;
+  color: var(--doc-ink);
   font-size: 15px;
-  line-height: 1.75;
+  line-height: 1.65;
 }
 
-.detailDayBody p { margin: 0 0 12px; }
+.detailDay:first-child { padding-top: 0; }
+.detailDay + .detailDay { border-top: 1px solid var(--clean-line); }
+.detailDay:last-child { padding-bottom: 0; }
 
-.detailDayFacts {
-  margin: 18px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 28px;
+.tourDetail.tourDetail .detailDay h3 {
+  margin: 0 0 6px;
+  color: var(--doc-navy);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.45;
 }
 
-.detailDayFacts > div { min-width: 0; }
-.detailDayFacts dt { color: #555; font-size: 12px; }
-.detailDayFacts dd { margin: 2px 0 0; color: #222; font-size: 14px; overflow-wrap: anywhere; }
+.detailDay h3 > span { text-transform: uppercase; }
+.detailDay p { margin: 0 0 8px; overflow-wrap: anywhere; }
 
+/* "Kamis, 15 April 2027 | Transportasi: ... | Bermalam: ...". Every item starts
+   with its "|", and the row is shifted left inside a clipped box, so a separator
+   never shows at the start of a line when the row wraps on a phone. */
+.detailDayMeta {
+  margin-top: 8px;
+  overflow: hidden;
+  color: var(--doc-slate);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.detailDayMeta > div { margin-left: -19px; }
+
+.detailDayMeta time,
+.detailDayMeta dl > div {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.detailDayMeta time::before,
+.detailDayMeta dl > div::before {
+  display: inline-block;
+  width: 19px;
+  color: #b8c2c6;
+  content: "|";
+  text-align: center;
+}
+
+.detailDayMeta dl,
+.detailDayMeta dt,
+.detailDayMeta dd { display: inline; margin: 0; }
+
+.detailDayMeta dt::after { content: ":"; }
+.detailDayMeta dd { margin-left: 4px; }
+
+/* Included / not included: two tinted boxes side by side, as in the PDF. */
 .detailIncludedGrid {
-  margin-top: 26px;
+  margin-top: 18px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid var(--clean-line);
-  border-radius: var(--clean-radius);
-  overflow: hidden;
+  gap: 16px;
 }
 
-.detailIncludedGrid > div { padding: clamp(26px, 4vw, 40px); }
-.detailIncludedGrid > div + div { border-left: 1px solid var(--clean-line); background: var(--clean-soft); }
-.detailIncludedGrid h3 { margin: 0 0 22px; color: var(--clean-navy); font-size: 18px; }
-.detailIncludedList { margin: 0; padding: 0; display: grid; gap: 14px; list-style: none; }
-.detailIncludedList li { display: flex; align-items: flex-start; gap: 11px; color: var(--clean-muted); font-size: 14px; line-height: 1.55; }
-.detailIncludedList svg { flex: 0 0 18px; margin-top: 2px; color: var(--clean-teal); }
-.detailExcludedList svg { color: #9a4f48; }
+.detailIncludedBox,
+.detailExcludedBox {
+  min-width: 0;
+  padding: 18px 20px;
+  background: var(--doc-sage);
+}
 
+.detailExcludedBox { background: var(--doc-sand); }
+
+.tourDetail.tourDetail .detailIncludedBox h3,
+.tourDetail.tourDetail .detailExcludedBox h3,
+.tourDetail.tourDetail .detailSubsection h3 {
+  margin: 0 0 10px;
+  color: var(--doc-green);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.tourDetail.tourDetail .detailExcludedBox h3 { color: var(--doc-slate); }
+
+.detailIncludedList { margin: 0; padding-left: 18px; display: grid; gap: 6px; list-style: disc; }
+.detailIncludedList li { color: var(--doc-navy); font-size: 14.5px; line-height: 1.55; overflow-wrap: anywhere; }
+.detailIncludedList li::marker { color: var(--doc-green); }
+.detailExcludedList li::marker { color: var(--doc-slate); }
+
+/* Optional services (visa help, recommended insurance): a different colour and a
+   link to the visa page, instead of toggles in the booking card. */
+.detailExcludedList .detailExcludedService::marker { color: #c07a12; }
+
+.detailExcludedService a {
+  color: #965400;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: rgb(150 84 0 / 40%);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.detailExcludedService a:hover { color: #6f3e00; text-decoration-color: currentColor; }
+.detailExcludedService a:focus-visible { outline: 2px solid #965400; outline-offset: 2px; }
+.detailExcludedService a::after { content: " →"; }
+.detailExcludedService small { font-size: inherit; font-weight: 500; }
+.detailExcludedService span { font-weight: 700; white-space: nowrap; }
+
+/* Smaller parts inside a section (accommodation, package terms, visa). */
+.detailSubsection { margin-top: 26px; }
+.detailSubsection p { margin: 0 0 10px; color: var(--doc-ink); font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.detailSubsection p:last-child { margin-bottom: 0; }
+
+/* Tables like the PDF estimates table: dark green header, tinted rows. */
+.detailDocTable {
+  width: 100%;
+  margin-top: 4px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.detailDocTable thead th {
+  padding: 10px 14px;
+  background: var(--doc-green);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+
+.detailDocTable tbody tr { background: var(--doc-sage); }
+.detailDocTable tbody tr:nth-child(even) { background: var(--doc-sand); }
+
+.detailDocTable tbody th,
+.detailDocTable td {
+  padding: 11px 14px;
+  color: var(--doc-navy);
+  font-weight: 500;
+  text-align: left;
+  vertical-align: top;
+}
+
+.detailDocTable tbody th { font-weight: 650; }
+.detailDocTable thead th:last-child,
+.detailDocTable td:last-child { font-weight: 700; text-align: right; white-space: nowrap; }
+
+/* Room prices as a small table, like the PDF estimates: the legend is the dark
+   green header row and each room option is a tinted cell (still a radio choice). */
 .detailRoomPriceGrid {
-  margin: 24px 0;
+  min-width: 0;
+  margin: 18px 0 20px;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
   border: 0;
 }
 
 .detailRoomPriceLegend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  float: left;
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--doc-green, #2e6751);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
 .detailRoomPriceGrid label {
   position: relative;
   width: 100%;
   min-width: 0;
-  padding: 22px;
-  border: 1px solid var(--clean-line);
-  border-radius: 14px;
-  background: #fff;
+  padding: 16px 16px 16px 44px;
+  background: var(--doc-sage, #eaf3f0);
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+  transition: background-color 160ms ease, box-shadow 160ms ease;
 }
 
-.detailRoomPriceGrid label:hover {
-  border-color: color-mix(in srgb, var(--clean-teal) 55%, var(--clean-line));
+.detailRoomPriceGrid label:nth-of-type(even) { background: var(--doc-sand, #f5f5ef); }
+
+/* A visible radio mark; the real input stays in the label for keyboards and readers. */
+.detailRoomPriceGrid label::before {
+  position: absolute;
+  top: 17px;
+  left: 16px;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid var(--doc-green, #2e6751);
+  border-radius: 50%;
+  background: #fff;
+  content: "";
 }
+
+.detailRoomPriceGrid label:hover { background: #dfeee8; }
 
 .detailRoomPriceGrid label[data-selected="true"] {
-  border-color: var(--clean-teal);
-  background: var(--clean-teal-pale);
+  background: #d6e9e1;
+  box-shadow: inset 0 0 0 2px var(--doc-green, #2e6751);
+}
+
+.detailRoomPriceGrid label[data-selected="true"]::before {
+  background: radial-gradient(circle, var(--doc-green, #2e6751) 0 4px, #fff 4.5px);
 }
 
 .detailRoomPriceInput {
@@ -1384,38 +1293,39 @@
 }
 
 .detailRoomPriceGrid label:focus-within {
-  outline: 3px solid color-mix(in srgb, var(--clean-teal) 30%, transparent);
-  outline-offset: 3px;
+  outline: 3px solid color-mix(in srgb, var(--doc-green, #2e6751) 35%, transparent);
+  outline-offset: -3px;
 }
 
 .detailRoomPriceGrid label > span {
-  color: var(--clean-teal-dark);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .07em;
+  color: var(--doc-navy, #1e3645);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .03em;
   text-transform: uppercase;
 }
 
-.detailRoomPriceGrid h3 {
-  margin: 12px 0 3px;
-  color: var(--clean-navy);
-  font-size: clamp(22px, 2.4vw, 29px);
-  letter-spacing: -.04em;
-  line-height: 1.1;
+.tourDetail.tourDetail .detailRoomPriceGrid h3 {
+  margin: 8px 0 2px;
+  color: var(--doc-navy, #1e3645);
+  font-size: clamp(21px, 2.2vw, 26px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.15;
 }
 
 .detailRoomPriceGrid label > p {
   margin: 0;
-  color: var(--clean-muted);
-  font-size: 11px;
+  color: var(--doc-slate, #51616a);
+  font-size: 12px;
 }
 
 .detailRoomPriceGrid dl {
-  margin: 17px 0 0;
-  padding-top: 13px;
+  margin: 12px 0 0;
+  padding-top: 10px;
   display: grid;
-  gap: 8px;
-  border-top: 1px solid var(--clean-line);
+  gap: 6px;
+  border-top: 1px solid rgb(30 54 69 / 14%);
 }
 
 .detailRoomPriceGrid dl > div {
@@ -1423,14 +1333,14 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  color: var(--clean-muted);
-  font-size: 11px;
+  color: var(--doc-slate, #51616a);
+  font-size: 12px;
 }
 
 .detailRoomPriceGrid dd {
   margin: 0;
-  color: var(--clean-navy);
-  font-weight: 780;
+  color: var(--doc-navy, #1e3645);
+  font-weight: 700;
   text-align: right;
 }
 
@@ -1746,103 +1656,50 @@
   line-height: 1.4;
 }
 
-.detailHotelGrid {
-  margin-top: 24px;
+/* Accommodation: label / value rows tinted like the PDF table body. */
+.detailHotelList { margin: 0; }
+
+.detailHotelList > div {
+  padding: 10px 14px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(130px, .4fr) minmax(0, 1fr);
+  gap: 2px 18px;
+  background: var(--doc-sage);
 }
 
-.detailHotelGrid > div {
-  min-width: 0;
-  padding: 22px;
+.detailHotelList > div:nth-child(even) { background: var(--doc-sand); }
+.detailHotelList dt { color: var(--doc-navy); font-size: 14px; font-weight: 650; }
+.detailHotelList dd { margin: 0; color: var(--doc-ink); font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+
+/* Payment terms: total, short intro, then the instalment table. */
+.detailPayment { margin-top: 18px; }
+.detailPayment > p { max-width: 68ch; margin: 0 0 14px; color: var(--doc-ink); font-size: 15px; line-height: 1.65; }
+
+.detailPayment > .detailPaymentTotal {
+  max-width: none;
+  margin-bottom: 10px;
   display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  border: 1px solid var(--clean-line);
-  border-radius: 11px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
 }
 
-.detailHotelGrid svg { flex: 0 0 18px; color: var(--clean-teal-dark); }
-.detailHotelGrid strong { display: block; margin-bottom: 4px; color: var(--clean-navy); font-size: 13px; }
-.detailHotelGrid small { display: block; color: var(--clean-muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.detailPaymentTotal span { color: var(--doc-slate); font-size: 13px; }
+.detailPaymentTotal strong { color: var(--doc-navy); font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.detailFinePrint,
+.detailPayment > .detailFinePrint { margin: 10px 0 0; color: var(--doc-slate); font-size: 13px; line-height: 1.55; }
 
-.detailInfoGrid {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.detailInfoGrid article {
-  min-width: 0;
-  padding: 22px;
-  display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  border: 1px solid var(--clean-line);
-  border-radius: 11px;
-  background: #fff;
-}
-
-.detailInfoGrid article > svg { flex: 0 0 18px; color: var(--clean-teal-dark); }
-.detailInfoGrid h3 { margin: 0 0 9px; color: var(--clean-navy); font-size: 15px; }
-.detailInfoGrid p { margin: 0 0 10px; color: var(--clean-muted); font-size: 13px; line-height: 1.6; }
-.detailInfoGrid p:last-child { margin-bottom: 0; }
-
-
-
-
-.detailPaymentIntro {
-  margin-top: 24px;
-  padding: 24px 0;
-  display: grid;
-  grid-template-columns: 210px 1fr;
-  gap: 34px;
-  align-items: center;
-  border-top: 1px solid var(--clean-line);
-}
-
-.detailPaymentIntro span { display: block; margin-bottom: 5px; color: var(--clean-muted); font-size: 12px; }
-.detailPaymentIntro strong { color: var(--clean-navy); font-size: 26px; letter-spacing: -.035em; }
-.detailPaymentIntro p { margin: 0; color: var(--clean-muted); font-size: 14px; line-height: 1.6; }
-
-.detailPaymentTableWrap { overflow-x: auto; border: 1px solid var(--clean-line); border-radius: 10px; }
-.detailPaymentTable { width: 100%; min-width: 590px; border-collapse: collapse; text-align: left; }
-.detailPaymentTable th { padding: 13px 16px; background: var(--clean-soft); color: var(--clean-muted); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
-.detailPaymentTable td { padding: 16px; border-top: 1px solid var(--clean-line); color: var(--clean-muted); font-size: 13px; }
-.detailPaymentTable td:last-child { color: var(--clean-navy); font-weight: 720; }
-.detailFinePrint { margin: 12px 0 0; color: var(--clean-muted); font-size: 12px; line-height: 1.55; }
-
-.detailFaqs {
-  margin-top: 24px;
-  border-top: 1px solid var(--clean-navy);
-}
-.detailFaqs details { border-bottom: 1px solid var(--clean-line); }
-.detailFaqs summary {
-  min-height: 64px;
-  padding: 16px 40px 16px 0;
-  display: flex;
-  align-items: center;
-  color: var(--clean-navy);
-  font-size: 15px;
-  font-weight: 720;
-  line-height: 1.4;
-  cursor: pointer;
-}
-.detailFaqs summary:focus-visible { outline: 3px solid var(--clean-teal-pale); outline-offset: 3px; }
-.detailFaqs p { max-width: 690px; margin: -4px 0 22px; color: var(--clean-muted); font-size: 14px; line-height: 1.65; }
-
-.detailReviewHeading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.detailReviewHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; }
 .detailReviewHeading > span { flex: 0 0 auto; display: flex; align-items: center; gap: 5px; color: var(--clean-muted); font-size: 12px; }
-.detailReviewHeading > span strong { color: var(--clean-navy); font-size: 25px; }
+.detailReviewHeading > span strong { color: var(--clean-navy); font-size: 20px; }
 .detailReviewHeading > span svg { width: 16px; fill: #d8aa38; color: #d8aa38; }
-.detailReviewGrid { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.detailReviewGrid article { min-width: 0; padding: 28px; border: 1px solid var(--clean-line); border-radius: 12px; }
+.detailReviewGrid { margin-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+.detailReviewGrid article { min-width: 0; padding: 20px 0; border-top: 1px solid var(--clean-line); }
 .detailReviewGrid article > div { display: flex; gap: 3px; }
-.detailReviewGrid article svg { width: 14px; height: 14px; color: #c9d0d1; }
+.detailReviewGrid article svg { width: 13px; height: 13px; color: #c9d0d1; }
 .detailReviewGrid article svg.detailStarActive { fill: #d8aa38; color: #d8aa38; }
-.detailReviewGrid blockquote { margin: 18px 0; color: var(--clean-navy); font-size: 17px; line-height: 1.55; }
+.detailReviewGrid blockquote { margin: 12px 0; color: var(--clean-navy); font-size: 15.5px; line-height: 1.6; }
 .detailReviewGrid article > p { margin: 0; color: var(--clean-muted); font-size: 12px; }
 .detailReviewGrid article > p strong { color: var(--clean-navy); }
 
@@ -1854,10 +1711,9 @@
 
 .detailBookingCard {
   padding: 28px;
-  border: 1px solid #ccd7d8;
-  border-radius: var(--clean-radius);
+  border: 1px solid #dfe5e3;
+  border-radius: 4px;
   background: #fff;
-  box-shadow: 0 18px 55px rgba(24, 43, 46, .09);
 }
 
 .detailStock {
@@ -1976,31 +1832,29 @@
 .detailBookingDisclosure article a { display: inline-block; margin-top: 6px; color: var(--clean-teal-dark); font-size: 11px; font-weight: 680; }
 
 .detailShare { margin-top: 4px; }
-.detailShare :global(.at-pill) { border: 1px solid var(--clean-line); border-radius: 999px; cursor: pointer; }
-.detailMobileUtilities { display: none; }
+.detailShare :global(.at-pill),
+.detailMobileShare :global(.at-pill) { border: 1px solid var(--clean-line); border-radius: 999px; cursor: pointer; }
+
+.detailMobilePdf,
+.detailMobileAddOns,
+.detailMobileShare { display: none; }
 
 .detailRelated {
-  padding: clamp(60px, 6.5vw, 86px) 0;
-  border-top: 6px solid var(--clean-teal-dark);
-  background: var(--clean-soft);
-  box-shadow: inset 0 1px 0 #fff;
+  padding: clamp(52px, 6vw, 80px) 0;
+  border-top: 1px solid var(--clean-line);
+  background: #f6f8f8;
 }
 
 .detailRelatedHeading {
-  padding-bottom: 34px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 44px;
-  border-bottom: 1px solid #ced9da;
+  gap: 24px;
 }
 
-.detailRelatedHeading > div { max-width: 760px; }
-.detailRelatedHeading p:last-child { max-width: 650px; margin: 17px 0 0; }
-.detailRelatedHeading > a { flex: 0 0 auto; padding-bottom: 5px; border-bottom: 1px solid var(--clean-navy); color: var(--clean-navy); font-size: 13px; font-weight: 720; }
-.detailRelatedHeading > a:hover { color: var(--clean-teal-dark); border-color: var(--clean-teal-dark); }
-.detailRelatedGrid { margin-top: 38px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
-.detailMobileBooking { display: none; }
+.detailRelatedHeading > a { flex: 0 0 auto; color: var(--doc-green); font-size: 13px; font-weight: 700; }
+.detailRelatedHeading > a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.detailRelatedGrid { margin-top: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 
 @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
   .tourCard:hover .tourTitle {
@@ -2072,12 +1926,11 @@
   .catalogSummary span { display: block; }
   .catalogSummary span { margin-top: 5px; }
   .archiveSection { scroll-margin-top: 68px; }
-  .detailHeroHeading { grid-template-columns: 1fr; gap: 28px; }
-  .detailHeroIntro { max-width: 650px; }
-  .detailSectionNav { top: 68px; }
+  .detailHeroHeading { grid-template-columns: 1fr; gap: 18px; }
   .detailContentLayout { grid-template-columns: 1fr; }
-  .detailBookingSidebar { position: static; grid-row: 1; }
-  .detailContentMain { grid-row: 2; }
+  /* Tablets keep the reading order (itinerary first); the booking card follows. */
+  .detailBookingSidebar { position: static; grid-row: 2; }
+  .detailContentMain { grid-row: 1; }
   .detailBookingCard { max-width: 650px; }
   .detailRelatedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -2248,98 +2101,93 @@
   .pagination { gap: 8px; }
   .pagination span { font-size: 11px; text-align: center; }
   .pagination button { padding-inline: 12px; font-size: 12px; }
-  .detailHero { padding: 18px 0 24px; }
-  .detailBreadcrumb { margin-bottom: 16px; font-size: 11px; }
-  .detailHeroHeading { gap: 24px; }
-  .detailHero h1 { font-size: clamp(32px, 9vw, 40px); line-height: 1.15; }
-  .detailHeroIntro { font-size: 13px; line-height: 1.5; }
-  .detailHeroIntro strong { margin-bottom: 4px; font-size: 15px; }
-  .detailHeroCommerce { gap: 16px; }
-  .detailHeroPriceBlock > strong { font-size: 31px; }
-  .detailHeroCta { min-height: 50px; width: 100%; }
-  .detailHeroFacts { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .detailHeroFacts > span { min-height: 44px; font-size: 12px; }
-  .detailSectionNav > div { gap: 24px; }
-  .detailContentLayout { padding-top: 46px; padding-bottom: 64px; gap: 54px; }
-  .detailContentSection { scroll-margin-top: 145px; }
-  .detailSummary { grid-template-columns: 1fr; gap: 18px; }
-  .detailSummaryIndex { padding-top: 0; }
-  .detailSummary h2,
-  .detailSectionTitle { font-size: 30px; }
-  .detailRouteLine { grid-template-columns: 1fr; gap: 5px; }
-  .detailDay summary { min-height: 92px; grid-template-columns: 44px minmax(0, 1fr) 28px; gap: 12px; }
-  .detailDayNumber { font-size: 19px; }
-  .detailDayBody { padding: 0 0 24px; }
-  .detailIncludedGrid,
-  .detailRoomPriceGrid,
-  .detailHotelGrid,
-  .detailInfoGrid,
-  .detailReviewGrid { grid-template-columns: 1fr; }
-  .detailHighlightRail {
-    width: calc(100vw - 20px);
-    margin-right: -20px;
-    padding-right: 20px;
-    grid-auto-columns: 78vw;
+  .detailHero { padding: 18px 0 22px; }
+  .detailBreadcrumb { margin-bottom: 14px; font-size: 11px; }
+  .detailHeroHeading { gap: 16px; }
+  .detailEyebrow { margin-bottom: 8px; font-size: 11px; }
+  .detailHero h1 { font-size: clamp(28px, 7.6vw, 34px); line-height: 1.14; letter-spacing: -.03em; }
+  .detailHeroPrice > strong { font-size: 26px; }
+  .detailHeroFacts { margin-top: 18px; padding-top: 0; grid-template-columns: 1fr; gap: 0; }
+  .detailHeroFacts > div {
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 12px;
+    border-bottom: 1px solid var(--clean-line);
   }
-  .detailIncludedGrid > div + div { border-top: 1px solid var(--clean-line); border-left: 0; }
+  .detailHeroFacts > div:last-child { padding-bottom: 0; border-bottom: 0; }
+  .detailHeroFacts dt { font-size: 13px; line-height: 1.5; }
+  .detailHeroFacts dd { margin: 0; }
+  .detailTopGallery { width: 100%; padding-top: 0; }
+  .detailContentLayout { padding-top: 26px; padding-bottom: 56px; gap: 0; }
+  .detailContentSection { margin-top: 38px; }
+  .detailIntro p { font-size: 15px; line-height: 1.7; }
+  .detailIntro p:first-child { font-size: 16px; line-height: 1.62; }
+  .tourDetail.tourDetail .detailSectionTitle { padding: 6px 32px 6px 14px; font-size: 14px; }
+  .detailDay { padding: 16px 0; }
+  .tourDetail.tourDetail .detailDay h3 { font-size: 15.5px; }
+  .detailIncludedGrid { grid-template-columns: 1fr; gap: 12px; }
+  .detailIncludedBox,
+  .detailExcludedBox { padding: 16px; }
+  .detailRoomPriceGrid label { padding: 14px 14px 14px 42px; }
+  .detailRoomPriceGrid label::before { top: 15px; left: 14px; }
+  .detailDocTable { font-size: 13px; }
+  .detailDocTable thead th,
+  .detailDocTable tbody th,
+  .detailDocTable td { padding: 9px 10px; }
+  .detailHotelList > div { grid-template-columns: 1fr; gap: 2px; }
+  .detailRoomPriceGrid,
+  .detailReviewGrid { grid-template-columns: 1fr; }
   .detailRecommendedAddOn { align-items: flex-start; }
   .detailRecommendedAddOnAction { min-height: 40px; }
-  .detailPaymentIntro { grid-template-columns: 1fr; gap: 14px; }
-  .detailReviewHeading,
-  .detailRelatedHeading { display: grid; align-items: start; }
-  .detailRelatedHeading > a { width: max-content; }
-  .detailRelatedGrid { grid-template-columns: 1fr; }
+  .detailReviewHeading { display: grid; justify-items: start; }
+  .detailRelatedGrid { margin-top: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .detailBookingSidebar { display: none; }
   .detailContentMain { grid-row: auto; }
-  .detailMobileUtilities {
-    margin-top: -24px;
-    padding: 24px;
-    display: grid;
-    gap: 14px;
-    border: 1px solid var(--clean-line);
-    border-radius: 16px;
-    background: var(--clean-soft);
-  }
-  .detailMobileUtilities > h2 { margin: 0; color: var(--clean-navy); font-size: 21px; }
-  .detailMobileUtilities > a {
+  .detailMobilePdf { margin-top: 26px; display: grid; gap: 4px; }
+  .detailMobilePdf > a {
     min-height: 48px;
-    padding: 0 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    border: 1px solid var(--clean-navy);
     border-radius: 999px;
-    background: var(--clean-teal-dark);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 740;
+    color: var(--clean-navy);
+    font-size: 14px;
+    font-weight: 650;
   }
-  .detailMobileUtilities > a svg { width: 17px; }
-  .detailMobileUtilities details { border-top: 1px solid var(--clean-line); border-bottom: 1px solid var(--clean-line); }
-  .detailMobileUtilities summary { min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: var(--clean-navy); font-size: 13px; font-weight: 720; cursor: pointer; }
-  .detailMobileUtilities summary span { min-width: 23px; padding: 2px 6px; border-radius: 999px; background: #fff; text-align: center; }
-  .detailMobileUtilities details article { padding: 12px 0; border-top: 1px solid var(--clean-line); }
-  .detailMobileUtilities details article p { margin: 0; display: flex; justify-content: space-between; gap: 10px; color: var(--clean-navy); font-size: 12px; }
-  .detailMobileUtilities details article small { margin-top: 5px; display: block; color: var(--clean-muted); font-size: 11px; line-height: 1.45; }
-  .detailMobileUtilities details article a { margin-top: 7px; display: inline-flex; min-height: 44px; align-items: center; color: var(--clean-teal-dark); font-size: 11px; font-weight: 700; }
-  .detailMobileBooking {
-    position: fixed;
-    inset: auto 0 0;
-    z-index: 49;
-    min-height: 76px;
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 14px;
+  .detailMobilePdf > a svg { width: 17px; height: 17px; }
+  .detailMobileAddOns { margin-top: 20px; display: block; border-top: 1px solid var(--clean-line); }
+  .detailMobileAddOns summary {
+    min-height: 50px;
+    display: flex;
     align-items: center;
-    border-top: 1px solid var(--clean-line);
-    background: rgba(255, 255, 255, .98);
-    box-shadow: 0 -10px 30px rgba(23, 25, 26, .12);
-    backdrop-filter: blur(12px);
+    gap: 10px;
+    color: var(--clean-navy);
+    font-size: 14px;
+    font-weight: 650;
+    list-style: none;
+    cursor: pointer;
   }
-  .detailMobileBooking span { display: block; color: var(--clean-muted); font-size: 10px; }
-  .detailMobileBooking strong { display: block; color: var(--clean-navy); font-size: 17px; line-height: 1.2; }
-  .detailMobileBooking a { min-height: 46px; padding: 0 17px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; background: var(--clean-teal-dark); color: #fff; font-size: 12px; font-weight: 750; }
+  .detailMobileAddOns summary::-webkit-details-marker { display: none; }
+  .detailMobileAddOns summary span { min-width: 24px; margin-left: auto; padding: 2px 7px; border-radius: 999px; background: #eef2f2; font-size: 12px; text-align: center; }
+  .detailMobileAddOns summary::after {
+    width: 7px;
+    height: 7px;
+    margin: -4px 4px 0 2px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    content: "";
+    transform: rotate(45deg);
+  }
+  .detailMobileAddOns[open] summary::after { margin-top: 4px; transform: rotate(225deg); }
+  .detailMobileAddOns article { padding: 12px 0; border-top: 1px solid var(--clean-line); }
+  .detailMobileAddOns article p { margin: 0; display: flex; justify-content: space-between; gap: 10px; color: var(--clean-navy); font-size: 13px; }
+  .detailMobileAddOns article small { margin-top: 5px; display: block; color: var(--clean-muted); font-size: 12px; line-height: 1.45; }
+  .detailMobileAddOns article a { margin-top: 2px; display: inline-flex; min-height: 44px; align-items: center; color: var(--clean-teal); font-size: 12px; font-weight: 650; }
+  .detailMobileShare { margin-top: 36px; display: block; }
+  .detailMobileShare > div { border-top-width: 1px; }
   :global(body):has(.tourDetail) :global([data-clean-footer]) { padding-bottom: 110px; }
 }
 
@@ -2435,7 +2283,50 @@
   .footer * { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
-/* Photo frames: a soft aurora tint in the corner and a thin dashed "ticket" line. */
+/* Tour detail motion (ScrollReveal): itinerary days and the later sections rise in
+   gently while scrolling. Nothing is hidden before the script runs, for content that
+   is already on screen, when motion is reduced, or when the page is printed. */
+@media (prefers-reduced-motion: no-preference) {
+  .tourDetail[data-reveal-ready] [data-reveal]:not([data-reveal="group"]),
+  .tourDetail[data-reveal-ready] [data-reveal="group"] > * {
+    animation: detail-rise 560ms var(--site-motion-ease, cubic-bezier(.2, .65, .2, 1)) backwards;
+    animation-play-state: paused;
+  }
+
+  /* Whole sections only fade: a tab jump measures them, so they must not be moved. */
+  .tourDetail[data-reveal-ready] .detailContentSection[data-reveal] { animation-name: detail-fade; }
+
+  .tourDetail[data-reveal-ready] [data-reveal="group"] > :nth-child(2) { animation-delay: 60ms; }
+  .tourDetail[data-reveal-ready] [data-reveal="group"] > :nth-child(3) { animation-delay: 120ms; }
+  .tourDetail[data-reveal-ready] [data-reveal="group"] > :nth-child(n + 4) { animation-delay: 180ms; }
+
+  .tourDetail[data-reveal-ready] [data-reveal][data-revealed="true"]:not([data-reveal="group"]),
+  .tourDetail[data-reveal-ready] [data-reveal="group"][data-revealed="true"] > * {
+    animation-play-state: running;
+  }
+
+  .tourDetail[data-reveal-ready] [data-reveal][data-revealed="instant"]:not([data-reveal="group"]),
+  .tourDetail[data-reveal-ready] [data-reveal="group"][data-revealed="instant"] > * {
+    animation: none;
+  }
+}
+
+@media print {
+  .tourDetail [data-reveal],
+  .tourDetail [data-reveal="group"] > * { animation: none !important; }
+}
+
+@keyframes detail-rise {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes detail-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Photos: a soft aurora tint in the top corner. */
 .tourPhoto::before {
   content: "";
   position: absolute;
@@ -2445,24 +2336,6 @@
   background: linear-gradient(150deg, rgba(32, 184, 181, .22) 0%, rgba(32, 184, 181, 0) 40%);
 }
 
-.tourPhoto::after {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  z-index: 2;
-  pointer-events: none;
-  border: 1px dashed rgba(255, 255, 255, .58);
-  border-radius: 12px;
-  transition: inset .42s var(--site-motion-ease), border-color .42s ease;
-}
-
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .tourCard:hover .tourPhoto::after {
-    inset: 14px;
-    border-color: rgba(255, 255, 255, .9);
-  }
-}
-
 /* Tours catalog on phones: compact cards, two per row (see ToursCatalog .grid). */
 @media (max-width: 700px) {
   .tourCardCatalog { border-radius: 16px !important; }
@@ -2470,7 +2343,6 @@
     aspect-ratio: 1 / 1;
     border-radius: 14px 14px 0 0 !important;
   }
-  .tourCardCatalog .tourPhoto::after { inset: 7px; border-radius: 10px; }
   .tourCardCatalog .tourPhotoShade { inset: 22% 0 0; }
   .tourCardCatalog .tourStatus {
     top: 10px;

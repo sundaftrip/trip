@@ -22,7 +22,7 @@ import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
 import HeroChalkNote from "./home/HeroChalkNote";
-import HomeReveal from "./home/HomeReveal";
+import ScrollReveal from "./ScrollReveal";
 import RussiaGuideLinks from "./RussiaGuideLinks";
 import styles from "./home/CleanHome.module.css";
 
@@ -251,7 +251,7 @@ export default function CleanHome({
 
   return (
     <div className={styles.home}>
-      <HomeReveal rootId="main-content" />
+      <ScrollReveal rootId="main-content" />
       <div id="main-content" tabIndex={-1}>
         <div className={styles.heroBoundary}>
           <section className={styles.hero} aria-labelledby="home-hero-title" data-motion-scene>

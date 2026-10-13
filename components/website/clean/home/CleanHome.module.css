@@ -479,7 +479,7 @@
   pointer-events: none;
 }
 
-/* Photo frames: a soft aurora tint in the corner and a thin dashed "ticket" line. */
+/* Photos: a soft aurora tint in the top corner. */
 .tourMedia::before,
 .destinationMosaic > a::before,
 .journalMedia::before {
@@ -493,27 +493,6 @@
 
 .destinationMosaic > a::before {
   z-index: -1;
-}
-
-.tourMedia::after,
-.destinationMosaic > a::after,
-.journalMedia::after {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  z-index: 2;
-  pointer-events: none;
-  border: 1px dashed rgba(255, 255, 255, 0.58);
-  border-radius: 12px;
-  transition:
-    inset 420ms var(--site-motion-ease),
-    border-color 420ms ease;
-}
-
-.destinationMosaic > a::after {
-  inset: 12px;
-  z-index: 1;
-  border-radius: 14px;
 }
 
 .tourMediaTitle {
@@ -1368,12 +1347,6 @@
     transform: scale(1.025);
   }
 
-  .tourCard:hover .tourMedia::after,
-  .destinationMosaic > a:hover::after,
-  .journalCard:hover .journalMedia::after {
-    inset: 14px;
-    border-color: rgba(255, 255, 255, 0.9);
-  }
 
   .tourCard:hover .tourMediaTitle {
     transform: translateY(-2px);
@@ -1683,11 +1656,6 @@
     aspect-ratio: 1 / 1;
   }
 
-  .tourMedia::after {
-    inset: 7px;
-    border-radius: 10px;
-  }
-
   .tourMediaShade {
     inset: 22% 0 0;
   }
@@ -1768,7 +1736,7 @@
     align-items: flex-start;
     justify-content: flex-end;
     gap: 12px;
-    border: 1px dashed rgba(7, 93, 99, 0.42);
+    border: 1px solid var(--home-line);
     border-radius: 16px;
     background: linear-gradient(160deg, #eef6f5 0%, #ffffff 62%);
     color: var(--home-primary-strong);
@@ -1793,11 +1761,6 @@
   .destinationMosaic > a {
     min-height: 0;
     border-radius: 18px !important;
-  }
-
-  .destinationMosaic > a::after {
-    inset: 8px;
-    border-radius: 11px;
   }
 
   .destinationLead,
@@ -2131,7 +2094,7 @@
     animation: none;
   }
 
-  /* Scroll reveal (HomeReveal): sections and cards further down rise in calmly.
+  /* Scroll reveal (ScrollReveal): sections and cards further down rise in calmly.
      Nothing is hidden before the script is ready or for content already on screen. */
   .home [data-reveal-ready] [data-reveal]:not([data-reveal="group"]),
   .home [data-reveal-ready] [data-reveal="group"] > * {

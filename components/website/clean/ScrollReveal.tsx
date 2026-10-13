@@ -3,15 +3,18 @@
 import { useEffect } from "react";
 
 /**
- * Calm motion helpers for the homepage.
+ * Calm scroll motion for public pages (homepage and tour detail).
  *
  * - Scroll reveal: elements marked `data-reveal` (or the children of
  *   `data-reveal="group"`) glide in once they reach the viewport. Content is visible
  *   by default: nothing is hidden without JavaScript, for visitors who prefer reduced
  *   motion, or for anything that is already on screen when the page loads.
- * - The hero (`data-motion-scene`) pauses its slow photo drift while it is off screen.
+ * - A hero marked `data-motion-scene` pauses its slow photo drift while it is off screen.
+ *
+ * The page's stylesheet decides what the reveal looks like, scoped to
+ * `[data-reveal-ready]`, which is set on the root element once this has run.
  */
-export default function HomeReveal({ rootId }: { rootId: string }) {
+export default function ScrollReveal({ rootId }: { rootId: string }) {
   useEffect(() => {
     const root = document.getElementById(rootId);
     if (!root || typeof IntersectionObserver === "undefined") return;

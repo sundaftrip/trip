@@ -46,7 +46,7 @@ test("public pages use DM Sans, except the hero chalk note and B2B titles", () =
 });
 
 test("homepage motion stays optional and calm", () => {
-  const reveal = read("components/website/clean/home/HomeReveal.tsx");
+  const reveal = read("components/website/clean/ScrollReveal.tsx");
   assert.match(reveal, /prefers-reduced-motion: reduce/);
   assert.match(reveal, /dataset\.revealed = "instant"/);
 
@@ -69,4 +69,10 @@ test("phones show trips as a two-column catalog", () => {
   const rail = read("components/website/clean/home/HomeTourRail.tsx");
   assert.match(rail, /sizes="\(max-width: 759px\) 50vw/);
   assert.doesNotMatch(rail, /aria-roledescription="carousel"/);
+});
+
+test("photos and catalog tiles use no dashed lines", () => {
+  for (const path of ["components/website/clean/home/CleanHome.module.css", "components/website/clean/CleanSite.module.css"]) {
+    assert.doesNotMatch(read(path), /dashed/, path);
+  }
 });
