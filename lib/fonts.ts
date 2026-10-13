@@ -1,15 +1,8 @@
-import { Lora, Roboto } from "next/font/google";
-
-export const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["latin"],
-  variable: "--font-footer-roboto",
-  display: "swap",
-  preload: false,
-});
+import { Lora } from "next/font/google";
 
 /* Serif untuk judul halaman B2B — kesan formal / korporat.
-   Body text tetap memakai sans-serif default situs. */
+   Ini satu-satunya font judul selain DM Sans di situs publik (Company Profile,
+   B2B, Partner, Partnership Relation). Body text tetap DM Sans. */
 export const lora = Lora({
   subsets: ["latin", "cyrillic"],
   weight: ["600", "700"],

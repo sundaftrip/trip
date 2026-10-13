@@ -79,7 +79,7 @@
   position: relative;
 }
 
-/* Keep the hero note outside the hero's clipped photo layer. */
+/* Keep the handwritten note outside the hero's clipped photo layer. */
 .heroNoteRail {
   position: absolute;
   top: 100%;
@@ -90,36 +90,41 @@
   pointer-events: none;
 }
 
-/* A small "ticket" tag on the hero edge, in the site font. */
+/* Handwritten chalk note (kept on purpose). The chalk ink is a gradient. */
 .heroNote {
+  /* Aurora teal -> blue -> violet, deep enough to read on the photo and on white. */
+  --hero-note-ink-start: #0fc4a2;
+  --hero-note-ink-middle: #119fc4;
+  --hero-note-ink-end: #6a45ff;
   position: absolute;
   top: 0;
   right: 4px;
+  width: 190px;
   margin: 0;
-  padding: 10px 18px 10px 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px dashed rgba(7, 93, 99, 0.42);
-  border-radius: 999px;
-  background: var(--home-white);
-  color: var(--home-primary-strong);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  box-shadow: 0 12px 30px -16px rgba(4, 20, 23, 0.5);
-  translate: 0 -50%;
+  line-height: 0;
+  letter-spacing: -0.02em;
+  transform: translateY(-34%) rotate(-5deg);
 }
 
-.heroNoteMark {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
-  border-radius: 50%;
-  background: var(--home-aurora);
-  box-shadow: 0 0 0 4px rgba(32, 184, 181, 0.16);
+.heroNote > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-weight: 700;
+  filter: drop-shadow(0 1px 1px rgba(5, 25, 29, 0.25));
+}
+
+.heroNoteInkStart {
+  stop-color: var(--hero-note-ink-start);
+}
+
+.heroNoteInkMiddle {
+  stop-color: var(--hero-note-ink-middle);
+}
+
+.heroNoteInkEnd {
+  stop-color: var(--hero-note-ink-end);
 }
 
 .hero {
@@ -1495,10 +1500,8 @@
   }
 
   .heroNote {
-    right: 0;
-    padding: 8px 14px 8px 11px;
-    gap: 8px;
-    font-size: 13px;
+    right: 64px;
+    width: 150px;
   }
 
   .hero {
@@ -2208,9 +2211,10 @@
   100% { opacity: 0.18; transform: translate3d(4%, -2%, 0) scale(1.06); }
 }
 
+/* Uses opacity + translate only, so the note keeps its own tilt (transform). */
 @keyframes note-arrive {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes reveal-rise {

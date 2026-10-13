@@ -10,9 +10,11 @@ const publicCss = [
   "components/website/clean/home/CleanHome.module.css",
   "app/(website)/sundaf-trip/CompanyProfile.module.css",
   "app/(website)/visa/VisaPages.module.css",
+  "components/website/PageScrollControls.module.css",
+  "components/website/LatinAmerica.module.css",
 ];
 
-test("public pages use DM Sans only (no serif, handwritten, or mono faces)", () => {
+test("public pages use DM Sans, except the hero chalk note and B2B titles", () => {
   for (const path of publicCss) {
     const css = read(path);
     for (const declaration of css.match(/font-family:[^;]+;/g) ?? []) {
@@ -20,9 +22,27 @@ test("public pages use DM Sans only (no serif, handwritten, or mono faces)", () 
     }
   }
 
-  const heroNote = read("components/website/clean/home/HeroNote.tsx");
-  assert.doesNotMatch(heroNote, /next\/font|<svg|<text/);
-  assert.match(heroNote, /Semua bisa jalan!/);
+  // Agreed exceptions: the handwritten "Semua bisa jalan!" note (Kalam, gradient ink)
+  // and the Lora titles on the B2B pages. Everything else is DM Sans.
+  const heroNote = read("components/website/clean/home/HeroChalkNote.tsx");
+  assert.match(heroNote, /Kalam/);
+  assert.match(heroNote, /<linearGradient id="sundaf-hero-note-ink"/);
+  assert.match(heroNote, /fill="url\(#sundaf-hero-note-ink\)"/);
+  assert.match(heroNote, /<span className="sr-only">Semua bisa jalan!<\/span>/);
+
+  const fonts = read("lib/fonts.ts");
+  assert.match(fonts, /import \{ Lora \} from "next\/font\/google"/);
+
+  for (const path of ["app/(website)/[slug]/page.tsx", "app/(website)/partner/[slug]/page.tsx"]) {
+    assert.doesNotMatch(read(path), /font-mono/, path);
+  }
+  for (const path of ["app/not-found.tsx", "app/~offline/page.tsx", "app/b2b-russia-catalog/page.tsx"]) {
+    assert.match(read(path), /public-dm-sans/, path);
+  }
+
+  const globals = read("app/globals.css");
+  const phoneBody = globals.match(/@media \(max-width: 767px\) \{\s*body \{([^}]+)\}/)?.[1] ?? "";
+  assert.match(phoneBody, /font-family: var\(--site-font-family,/);
 });
 
 test("homepage motion stays optional and calm", () => {

@@ -21,7 +21,7 @@ import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
-import HeroNote from "./home/HeroNote";
+import HeroChalkNote from "./home/HeroChalkNote";
 import HomeReveal from "./home/HomeReveal";
 import RussiaGuideLinks from "./RussiaGuideLinks";
 import styles from "./home/CleanHome.module.css";
@@ -291,7 +291,7 @@ export default function CleanHome({
             </div>
           </section>
           <div className={`${styles.shell} ${styles.heroNoteRail}`}>
-            <HeroNote />
+            <HeroChalkNote />
           </div>
         </div>
 

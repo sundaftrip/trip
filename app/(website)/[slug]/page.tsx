@@ -252,7 +252,7 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
                 <p className="text-[10px] font-bold uppercase tracking-wide text-teal-800 sm:text-[11px]">Kupon partner</p>
                 <p className="text-base font-black leading-tight text-gray-950 sm:text-lg">{campaign.discountLabel}</p>
                 <p className="mt-0.5 text-xs text-gray-600">
-                  Kode <span className="font-mono font-black text-gray-950">{partner.referralCode}</span> · {partner.partnerName}
+                  Kode <span className="font-black tabular-nums tracking-[0.06em] text-gray-950">{partner.referralCode}</span> · {partner.partnerName}
                 </p>
               </div>
             </div>
@@ -262,7 +262,7 @@ export default async function ReferralLandingPage({ params, searchParams }: Page
         <aside className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg shadow-gray-200/60 lg:sticky lg:top-24 lg:row-span-2">
           <div className="mb-3 flex items-center justify-between gap-3 text-xs">
             <span className="font-semibold text-gray-600">Kupon siap dipakai</span>
-            <span className="rounded-full bg-teal-50 px-2.5 py-1 font-mono font-black text-teal-800">{partner.referralCode}</span>
+            <span className="rounded-full bg-teal-50 px-2.5 py-1 font-black tabular-nums tracking-[0.06em] text-teal-800">{partner.referralCode}</span>
           </div>
 
           <ReferralGateClient

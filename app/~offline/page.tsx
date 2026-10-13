@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function OfflinePage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-6 py-16 text-center bg-gray-50 dark:bg-gray-950">
+    <main className="public-dm-sans min-h-screen flex flex-col items-center justify-center px-6 py-16 text-center bg-gray-50 dark:bg-gray-950">
       <div className="max-w-md mx-auto">
         <div className="mx-auto mb-6 w-14 h-14 rounded-2xl bg-gray-900 dark:bg-white flex items-center justify-center">
           <span className="text-2xl" aria-hidden>
