@@ -15,12 +15,10 @@ const styles = readFileSync(
   "utf8",
 );
 
-test("removes only the redundant contact and legal strip below the finder", () => {
+test("removes the redundant contact and legal strip below the finder", () => {
   assert.doesNotMatch(home, /finderMeta|legalProof|Belum yakin\? Tanya rute via WhatsApp\./);
   assert.doesNotMatch(styles, /\.finderMeta\b|\.legalProof\b/);
   assert.match(home, /getHomeFaqs\(nib, legalName\)/);
-  assert.match(home, /data-analytics-placement="home-final"/);
-  assert.match(home, /Konsultasi rute via WhatsApp/);
   assert.match(home, /<HomeSearchForm\s+destinations=\{destinationOptions\}\s+months=\{monthOptions\}/);
 });
 

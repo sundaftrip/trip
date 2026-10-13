@@ -190,3 +190,44 @@ test("GEO landing pages, visa FAQ and protection, catering, Latin America, profi
   const mediaKit = read("app/(website)/media-kit/page.tsx");
   assert.match(mediaKit, /<table className=\{`\$\{doc\.table\} \$\{supportStyles\.factsTable\}`\}>/);
 });
+
+test("the homepage drops the repeated calls to action and closes on the FAQ in the document format", () => {
+  const home = read("components/website/clean/CleanHome.tsx");
+  const css = read("components/website/clean/home/CleanHome.module.css");
+
+  // The private-trip panel and the "masih menentukan rute?" band repeated the
+  // destinations tile, the FAQ and the WhatsApp button that stays on screen.
+  assert.doesNotMatch(home, /Private trip sesuai rencanamu|Butuh bantuan memilih perjalanan\?|MASIH MENENTUKAN RUTE\?/);
+  assert.doesNotMatch(home, /home-final|private-trip-title|final-cta-title|MessageCircle/);
+  assert.doesNotMatch(css, /\.(privateSection|privatePanel|finalSection|finalLayout|finalActions|primaryAction|secondaryAction)\b/);
+  // Private trips stay one tap away in the destinations mosaic.
+  assert.match(home, /className=\{styles\.destinationPrivate\} href="\/custom-trip"/);
+
+  // Section titles are amber tags; the FAQ is the last section, with the bold title.
+  assert.match(home, /import doc from "\.\/DocFormat\.module\.css";/);
+  for (const id of ["active-tours-title", "destinations-title", "benefits-title", "journal-title"]) {
+    assert.match(home, new RegExp(`<h2 id="${id}" className=\\{doc\\.tag\\}>`));
+  }
+  assert.match(read("components/website/clean/home/HomeReviews.tsx"), /<h2 id="stories-title" className=\{doc\.tag\}>Ulasan peserta<\/h2>/);
+  assert.match(home, /<p className=\{doc\.eyebrow\}>BIAR MAKIN YAKIN<\/p>/);
+  assert.match(home, /<h2 id="faq-title" className=\{`\$\{doc\.title\} \$\{styles\.faqTitle\}`\}>Pertanyaan sebelum memesan<\/h2>/);
+  assert.match(home, /Informasi legalitas, pembayaran, visa, dan perubahan rencana\./);
+  assert.match(home, /href="\/faq"/);
+  const sections = [...home.matchAll(/aria-labelledby="([a-z-]+)"/g)].map((match) => match[1]);
+  assert.equal(sections.at(-1), "faq-title");
+  assert.ok(sections.indexOf("journal-title") < sections.indexOf("faq-title"));
+
+  // Questions as alternating sage/sand rows; the first answer starts open.
+  assert.match(css, /\.faqItem \{[^}]*background: var\(--doc-sage\);/);
+  assert.match(css, /\.faqItem:nth-child\(even\) \{[^}]*background: var\(--doc-sand\);/);
+  assert.match(read("components/website/clean/home/HomeFaqs.tsx"), /useState<number \| null>\(0\)/);
+
+  // Service points and reviews are flat tinted boxes; guides are one link each.
+  assert.match(css, /\.benefitGrid article \{[^}]*background: var\(--doc-sage\);/);
+  assert.match(css, /\.reviewCard \{[^}]*background: var\(--doc-sand\);/);
+  assert.doesNotMatch(home, /journalFooter|Baca panduan </);
+
+  // A view() timeline inside the clipped .home never advances, which left the
+  // last heading half-faded, so headings do not use one.
+  assert.doesNotMatch(css, /animation-timeline/);
+});

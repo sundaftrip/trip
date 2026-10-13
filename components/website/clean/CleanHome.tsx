@@ -3,7 +3,6 @@ import Link from "./PreserveScrollLink";
 import {
   ArrowRight,
   Compass,
-  MessageCircle,
 } from "lucide-react";
 import {
   HOME_COPY,
@@ -12,9 +11,10 @@ import {
 } from "@/lib/home-copy";
 import { getHomeFaqs, type HomeFaqItem } from "@/lib/home-faqs";
 import { getTourProductImage, PEXELS_TOUR_IMAGES } from "@/lib/tour-product-images";
-import { buildWhatsAppHref, cldOptimize } from "@/lib/utils";
+import { cldOptimize } from "@/lib/utils";
 import { TextWithAuroraAccent } from "@/components/website/AuroraText";
 import type { CleanTour } from "./CleanTourCard";
+import doc from "./DocFormat.module.css";
 import HomeFaqs from "./home/HomeFaqs";
 import HomeBenefitGrid from "./home/HomeBenefitGrid";
 import RussiaServiceIllustration from "./RussiaServiceIllustration";
@@ -198,12 +198,6 @@ export default function CleanHome({
   const monthOptions = getMonthOptions(tours);
   const nib = company.company_nib || "1601260060842";
   const legalName = company.company_legal_name || "CV Sundaf Holiday Group";
-  const whatsappNumber = company.company_whatsapp || "+62 817-7520-2759";
-  const waHref =
-    buildWhatsAppHref(
-      whatsappNumber,
-      "Halo Sundaf Trip, saya ingin konsultasi untuk memilih perjalanan yang sesuai.",
-    ) || "/contact";
   const resolvedFaqs = getHomeFaqs(nib, legalName);
   const journalPosts = posts.slice(0, 3);
 
@@ -299,8 +293,8 @@ export default function CleanHome({
           <div className={styles.shell}>
             <div className={styles.headingRow}>
               <div className={styles.sectionHeading}>
-                <p className={styles.eyebrow}>JADWAL TERDEKAT</p>
-                <h2 id="active-tours-title">Jadwal open trip</h2>
+                <h2 id="active-tours-title" className={doc.tag}>Jadwal open trip</h2>
+                <p>Bandingkan tanggal, rute, dan biaya sebelum memilih perjalanan.</p>
               </div>
               <Link className={styles.desktopSectionLink} href="/tours">
                 Lihat semua jadwal <ArrowRight aria-hidden="true" />
@@ -330,7 +324,7 @@ export default function CleanHome({
         >
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <h2 id="destinations-title">Destinasi pilihan</h2>
+              <h2 id="destinations-title" className={doc.tag}>Destinasi pilihan</h2>
               <p>Jelajahi rute Rusia, Asia Tengah, dan Vietnam bersama Sundaf Trip.</p>
             </div>
 
@@ -398,8 +392,7 @@ export default function CleanHome({
         <section className={`${styles.section} ${styles.benefitSection}`} aria-labelledby="benefits-title">
           <div className={styles.shell}>
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>CARA KERJA SUNDAF</p>
-              <h2 id="benefits-title">Persiapan dan pendampingan perjalanan</h2>
+              <h2 id="benefits-title" className={doc.tag}>Persiapan dan pendampingan</h2>
             </div>
 
             <HomeBenefitGrid>
@@ -437,48 +430,12 @@ export default function CleanHome({
 
         <HomeReviews items={testimonials} />
 
-        <section
-          className={`${styles.section} ${styles.faqSection}`}
-          aria-labelledby="faq-title"
-        >
-          <div className={`${styles.shell} ${styles.faqLayout}`}>
-            <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>BIAR MAKIN YAKIN</p>
-              <h2 id="faq-title">Pertanyaan sebelum memesan</h2>
-              <p>Informasi legalitas, pembayaran, visa, dan perubahan rencana.</p>
-            </div>
-            <HomeFaqs items={resolvedFaqs} />
-          </div>
-        </section>
-
-        <section className={styles.privateSection} aria-labelledby="private-trip-title">
-          <div className={styles.shell}>
-            <div className={styles.privatePanel} data-reveal>
-              <div>
-                <p className={styles.eyebrowLight}>PRIVATE &amp; CUSTOM TRIP</p>
-                <h2 id="private-trip-title">Private trip sesuai rencanamu</h2>
-                <p>
-                  Kirim tujuan, jumlah peserta, durasi, dan kisaran budget. Kami akan
-                  menyiapkan pilihan rute sesuai kebutuhanmu.
-                </p>
-              </div>
-              <Link
-                href="/custom-trip"
-                data-analytics-event="custom_trip_start"
-              >
-                Rancang perjalanan privat <ArrowRight aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {journalPosts.length ? (
           <section className={`${styles.section} ${styles.journalSection}`} aria-labelledby="journal-title">
             <div className={styles.shell}>
               <div className={styles.headingRow}>
                 <div className={styles.sectionHeading}>
-                  <p className={styles.eyebrow}>BEKAL SEBELUM PERGI</p>
-                  <h2 id="journal-title">Panduan perjalanan</h2>
+                  <h2 id="journal-title" className={doc.tag}>Panduan perjalanan</h2>
                   <p>Panduan destinasi, visa, cuaca, dan persiapan praktis untuk traveler Indonesia.</p>
                 </div>
                 <Link className={styles.desktopSectionLink} href="/blog">
@@ -486,41 +443,39 @@ export default function CleanHome({
                 </Link>
               </div>
 
+              {/* Journal cards in the document format: one link per article. */}
               <div className={styles.journalGrid} data-reveal="group">
                 {journalPosts.map((post) => {
                   const formattedDate = formatPostDate(post.date);
                   return (
                     <article className={styles.journalCard} key={post.id}>
-                      <Link href={`/blog/${post.slug}`} className={styles.journalMedia} tabIndex={-1}>
-                        {post.cover ? (
-                          <Image
-                            src={cldOptimize(post.cover, 760)}
-                            alt={`Sampul artikel ${post.title}`}
-                            fill
-                            sizes="(max-width: 759px) calc(100vw - 40px), (max-width: 1100px) 46vw, 31vw"
-                          />
-                        ) : (
-                          <span className={styles.journalPlaceholder} aria-hidden="true">
-                            <Compass />
-                          </span>
-                        )}
+                      <Link href={`/blog/${post.slug}`} className={styles.journalLink}>
+                        <div className={styles.journalMedia}>
+                          {post.cover ? (
+                            <Image
+                              src={cldOptimize(post.cover, 760)}
+                              alt=""
+                              fill
+                              sizes="(max-width: 759px) 108px, (max-width: 1040px) 31vw, 380px"
+                            />
+                          ) : (
+                            <span className={styles.journalPlaceholder} aria-hidden="true">
+                              <Compass />
+                            </span>
+                          )}
+                        </div>
+                        <div className={styles.journalBody}>
+                          <p className={styles.journalMeta}>
+                            <span>{post.category || "Jurnal"}</span>
+                            {post.readTime ? <span>{post.readTime}</span> : null}
+                          </p>
+                          <h3>{post.title}</h3>
+                          {post.excerpt ? <p className={styles.journalExcerpt}>{post.excerpt}</p> : null}
+                          {formattedDate ? (
+                            <time dateTime={new Date(post.date).toISOString()}>{formattedDate}</time>
+                          ) : null}
+                        </div>
                       </Link>
-                      <div className={styles.journalBody}>
-                        <div className={styles.journalMeta}>
-                          <span>{post.category || "Jurnal"}</span>
-                          {post.readTime ? <span>{post.readTime}</span> : null}
-                        </div>
-                        <h3>
-                          <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                        </h3>
-                        {post.excerpt ? <p>{post.excerpt}</p> : null}
-                        <div className={styles.journalFooter}>
-                          {formattedDate ? <time dateTime={new Date(post.date).toISOString()}>{formattedDate}</time> : <span />}
-                          <Link href={`/blog/${post.slug}`}>
-                            Baca panduan <ArrowRight aria-hidden="true" />
-                          </Link>
-                        </div>
-                      </div>
                     </article>
                   );
                 })}
@@ -533,27 +488,26 @@ export default function CleanHome({
           </section>
         ) : null}
 
-        <section className={styles.finalSection} aria-labelledby="final-cta-title">
-          <div className={`${styles.shell} ${styles.finalLayout}`} data-reveal>
-            <div>
-              <p className={styles.eyebrow}>MASIH MENENTUKAN RUTE?</p>
-              <h2 id="final-cta-title">Butuh bantuan memilih perjalanan?</h2>
-              <p>
-                Sampaikan destinasi, waktu berangkat, jumlah peserta, dan kisaran budget. Kamu
-                akan mendapat arahan awal sebelum memutuskan.
-              </p>
+        {/* The page closes on the questions people ask before booking. Private trips
+            and route advice live in the destinations tile, the answers below, and the
+            WhatsApp button that stays on screen. */}
+        <section
+          className={`${styles.section} ${styles.faqSection}`}
+          aria-labelledby="faq-title"
+        >
+          <div className={`${styles.shell} ${styles.faqLayout}`}>
+            <div className={styles.faqIntro}>
+              <p className={doc.eyebrow}>BIAR MAKIN YAKIN</p>
+              <h2 id="faq-title" className={`${doc.title} ${styles.faqTitle}`}>Pertanyaan sebelum memesan</h2>
+              <p className={styles.faqLede}>Informasi legalitas, pembayaran, visa, dan perubahan rencana.</p>
+              <Link className={styles.desktopSectionLink} href="/faq">
+                Lihat semua pertanyaan <ArrowRight aria-hidden="true" />
+              </Link>
             </div>
-            <div className={styles.finalActions}>
-              <a
-                className={styles.primaryAction}
-                href={waHref}
-                data-analytics-placement="home-final"
-              >
-                <MessageCircle aria-hidden="true" />
-                Konsultasi rute via WhatsApp
-              </a>
-              <Link className={styles.secondaryAction} href="/tours">
-                Lihat jadwal &amp; biaya <ArrowRight aria-hidden="true" />
+            <div>
+              <HomeFaqs items={resolvedFaqs} />
+              <Link className={styles.mobileSectionLink} href="/faq">
+                Lihat semua pertanyaan <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </div>

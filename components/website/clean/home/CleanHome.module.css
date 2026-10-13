@@ -182,22 +182,14 @@
   padding-bottom: 154px;
 }
 
-.eyebrow,
 .eyebrowLight {
   margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.84);
   font-size: 11px;
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-}
-
-.eyebrow {
-  color: var(--home-primary);
-}
-
-.eyebrowLight {
-  color: rgba(255, 255, 255, 0.84);
 }
 
 .heroCopy h1 {
@@ -320,29 +312,20 @@
 }
 
 .section {
-  padding-block: clamp(60px, 6.5vw, 84px);
+  padding-block: clamp(52px, 5.6vw, 76px);
 }
 
+/* Sundaf DMC document format below the hero: every section opens with an amber
+   tag (DocFormat .tag) and a short ink line; the FAQ closes the page with the
+   bold navy title. Colours come from the --doc-* tokens on .public-site-shell. */
 .sectionHeading {
   max-width: 700px;
 }
 
-.sectionHeading h2,
-.privatePanel h2,
-.finalLayout h2 {
-  margin: 0;
-  color: var(--home-ink);
-  font-size: clamp(31px, 4.1vw, 49px);
-  font-weight: 500;
-  line-height: 1.14;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-}
-
 .sectionHeading > p:last-child {
   max-width: 620px;
-  margin: 12px 0 0;
-  color: var(--home-ink-soft);
+  margin: 14px 0 0;
+  color: var(--doc-ink);
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0;
@@ -363,9 +346,9 @@
   min-height: 44px;
   align-items: center;
   gap: 8px;
-  color: var(--home-primary);
+  color: var(--doc-green);
   font-size: 14px;
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .desktopSectionLink {
@@ -726,40 +709,22 @@
   background: var(--home-paper);
 }
 
-.benefitSection .sectionHeading {
-  max-width: 800px;
-}
-
-.benefitSection .eyebrow {
-  font-weight: 500;
-}
-
-.benefitSection .sectionHeading h2 {
-  font-weight: 500;
-  letter-spacing: -0.035em;
-}
-
+/* Service points as flat tinted boxes, like the principles on the About page. */
 .benefitGrid {
-  margin-top: 30px;
+  margin-top: 22px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid #d6dedc;
-  border-bottom: 1px solid #d6dedc;
+  gap: 12px;
 }
 
 .benefitGrid article {
   min-width: 0;
-  padding: 30px 25px 28px;
-  border-right: 1px solid #d6dedc;
+  padding: 22px 22px 24px;
+  background: var(--doc-sage);
 }
 
-.benefitGrid article:first-child {
-  padding-left: 0;
-}
-
-.benefitGrid article:last-child {
-  padding-right: 0;
-  border-right: 0;
+.benefitGrid article:nth-child(even) {
+  background: var(--doc-sand);
 }
 
 .benefitIcon {
@@ -785,27 +750,26 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
 }
 
-.benefitGrid h3 {
-  margin: 22px 0 0;
-  color: var(--home-ink);
-  font-size: 17px;
-  font-weight: 720;
-  letter-spacing: 0.01em;
-  line-height: 1.32;
-}
-
-.benefitGrid .benefitTitle h3 {
+/* Green uppercase subheads, as inside the document boxes. The repeated class
+   outranks the site-wide heading weight rule. */
+.benefitGrid.benefitGrid .benefitTitle h3 {
   margin: 0;
+  color: var(--doc-green);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
 .benefitGrid p {
   margin: 8px 0 0;
-  color: var(--home-ink-soft);
-  font-size: 13px;
-  line-height: 1.55;
+  color: var(--doc-ink);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .reviewSection {
@@ -822,24 +786,27 @@
 
 .reviewRail {
   grid-auto-columns: min(500px, 52vw);
-  gap: 16px;
-  margin-top: 28px;
+  gap: 12px;
+  margin-top: 24px;
   padding: 2px 2px 18px;
   scroll-padding-inline: 2px;
 }
 
+/* Reviews as flat sand/sage boxes, without borders. */
 .reviewCard {
-  height: 320px;
-  min-height: 320px;
+  height: 300px;
+  min-height: 300px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
   scroll-snap-align: start;
-  border: 1px solid #e5dfd2;
-  border-radius: 24px !important;
-  background: var(--home-white);
+  background: var(--doc-sand);
+}
+
+.reviewCard:nth-child(even) {
+  background: var(--doc-sage);
 }
 
 .reviewTopline {
@@ -870,11 +837,11 @@
 
 .reviewCard blockquote {
   margin: 0;
-  color: var(--home-ink);
-  font-size: clamp(18px, 1.8vw, 22px);
+  color: var(--doc-navy);
+  font-size: clamp(18px, 1.7vw, 21px);
   font-weight: 400;
   line-height: 1.52;
-  letter-spacing: 0.012em;
+  letter-spacing: 0;
 }
 
 .reviewBody {
@@ -894,19 +861,19 @@
   padding: 0;
   display: inline-flex;
   align-items: center;
-  color: var(--home-primary);
+  color: var(--doc-green);
   font-size: 13px;
-  font-weight: 520;
+  font-weight: 650;
   text-decoration: none;
   cursor: pointer;
 }
 
 .reviewer {
-  padding-top: 22px;
+  padding-top: 18px;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-top: 1px solid var(--home-line);
+  border-top: 1px solid rgba(30, 54, 69, 0.1);
 }
 
 .reviewerAvatar {
@@ -917,7 +884,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--home-primary);
+  background: var(--doc-green);
   color: var(--home-white);
   font-size: 12px;
   font-weight: 780;
@@ -933,14 +900,14 @@
 }
 
 .reviewer strong {
-  color: var(--home-ink);
+  color: var(--doc-navy);
   font-size: 14px;
   line-height: 1.35;
 }
 
 .reviewer small {
   margin-top: 3px;
-  color: var(--home-muted);
+  color: var(--doc-slate);
   font-size: 11px;
   line-height: 1.45;
 }
@@ -951,24 +918,45 @@
   display: inline-flex;
 }
 
+/* Closing section: the questions people ask before booking. Bold navy title
+   beside alternating sage/sand rows, like the FAQ page. */
 .faqLayout {
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
-  gap: clamp(54px, 8vw, 116px);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(44px, 6vw, 88px);
   align-items: start;
 }
 
-.faqLayout .sectionHeading {
-  position: sticky;
-  top: 124px;
+.faqIntro {
+  max-width: 440px;
+}
+
+.faqTitle {
+  font-size: clamp(34px, 3.8vw, 48px);
+}
+
+.faqLede {
+  margin: 16px 0 0;
+  color: var(--doc-ink);
+  font-size: 16px;
+  line-height: 1.62;
+}
+
+.faqIntro .desktopSectionLink {
+  margin-top: 18px;
 }
 
 .faqList {
-  border-top: 1px solid var(--home-line);
+  display: grid;
+  gap: 3px;
 }
 
 .faqItem {
-  border-bottom: 1px solid var(--home-line);
+  background: var(--doc-sage);
+}
+
+.faqItem:nth-child(even) {
+  background: var(--doc-sand);
 }
 
 .faqItem h3 {
@@ -977,27 +965,32 @@
 
 .faqItem h3 > button {
   width: 100%;
-  min-height: 76px;
-  padding: 20px 0;
+  min-height: 62px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 22px;
+  gap: 18px;
   border: 0;
+  border-radius: 0;
   background: transparent;
-  color: var(--home-ink);
+  color: var(--doc-navy);
   font-size: 16px;
-  font-weight: 720;
+  font-weight: 700;
   line-height: 1.42;
   text-align: left;
   cursor: pointer;
 }
 
+.faqItem h3 > button:focus-visible {
+  outline-offset: -3px;
+}
+
 .faqItem h3 > button svg {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
-  color: var(--home-primary);
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: var(--doc-green);
   transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1033,111 +1026,55 @@
 
 .faqPanel p {
   margin: 0;
-  padding: 0 46px 24px 0;
+  padding: 0 52px 20px 20px;
   white-space: pre-line;
-  color: var(--home-ink-soft);
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.privateSection {
-  padding-block: clamp(40px, 5vw, 60px);
-  background: var(--home-paper);
-}
-
-.privatePanel {
-  min-height: 360px;
-  padding: clamp(34px, 5.5vw, 72px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 54px;
-  border-radius: 24px;
-  background: var(--home-primary-strong);
-  color: var(--home-white);
-}
-
-.privatePanel > div {
-  max-width: 730px;
-}
-
-.privatePanel h2 {
-  color: var(--home-white);
-}
-
-.privatePanel > div > p:last-child {
-  max-width: 630px;
-  margin: 20px 0 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--doc-ink);
   font-size: 15px;
   line-height: 1.65;
 }
 
-.privatePanel > a {
-  min-height: 52px;
-  padding: 0 22px;
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border-radius: 999px;
-  background: var(--home-white);
-  color: var(--home-primary-strong);
-  font-size: 14px;
-  font-weight: 760;
-  transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 180ms ease;
-}
-
-.privatePanel > a:hover {
-  background: var(--home-sand);
-  transform: translateY(-2px);
-}
-
-.privatePanel > a svg {
-  width: 17px;
-  height: 17px;
-}
-
 .journalSection {
-  padding-top: 78px;
   background: var(--home-paper);
 }
 
+/* Journal cards in the document format (as on /blog): photo, green category,
+   bold navy title, short excerpt and date. The whole card is one link. */
 .journalGrid {
-  margin-top: 38px;
+  margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 28px 24px;
 }
 
 .journalCard {
   min-width: 0;
-  overflow: hidden;
+}
+
+.journalLink {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--home-line);
-  border-radius: 18px;
-  background: var(--home-white);
+  color: inherit;
+  text-decoration: none;
+}
+
+.journalLink:focus-visible {
+  border-radius: 14px;
+  outline-offset: 4px;
 }
 
 .journalMedia {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   display: block;
-  background: var(--home-ice);
+  border-radius: 14px;
+  background: var(--doc-sage);
 }
 
 .journalMedia > img {
   object-fit: cover;
-  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.journalCard:hover .journalMedia > img {
-  transform: scale(1.025);
+  transition: transform 520ms var(--site-motion-ease);
 }
 
 .journalPlaceholder {
@@ -1146,7 +1083,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--home-primary);
+  color: var(--doc-green);
 }
 
 .journalPlaceholder svg {
@@ -1156,155 +1093,66 @@
 }
 
 .journalBody {
-  min-height: 300px;
-  padding: 20px;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+  padding-top: 14px;
+  display: grid;
+  gap: 7px;
+  align-content: start;
 }
 
 .journalMeta {
+  margin: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 9px;
-  color: var(--home-primary);
-  font-size: 10px;
-  font-weight: 740;
+  color: var(--doc-green);
+  font-size: 12px;
+  font-weight: 750;
   line-height: 1.4;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .journalMeta span + span::before {
-  margin-right: 9px;
-  content: "•";
+  margin-inline: 7px;
+  content: "·";
 }
 
-.journalBody h3 {
-  margin: 12px 0 0;
-  color: var(--home-ink);
-  font-size: 19px;
-  font-weight: 740;
-  line-height: 1.35;
-  letter-spacing: -0.02em;
-}
-
-.journalBody h3 a {
-  color: inherit;
-}
-
-.journalBody > p {
-  overflow: hidden;
-  margin: 12px 0 0;
+/* The repeated class outranks the site-wide heading weight rule. */
+.journalBody.journalBody.journalBody h3 {
+  margin: 0;
   display: -webkit-box;
-  color: var(--home-ink-soft);
-  font-size: 13px;
-  line-height: 1.6;
+  overflow: hidden;
+  color: var(--doc-navy);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  transition: color 160ms ease;
 }
 
-.journalFooter {
-  margin-top: auto;
-  padding-top: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--home-line);
+.journalExcerpt {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--doc-ink);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
-.journalFooter time {
-  color: var(--home-muted);
-  font-size: 10px;
+.journalBody time {
+  margin-top: 2px;
+  color: var(--doc-slate);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
-.journalFooter a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--home-primary);
-  font-size: 12px;
-  font-weight: 740;
-}
-
-.journalFooter svg {
-  width: 15px;
-  height: 15px;
-}
-
-.finalSection {
-  padding-block: clamp(60px, 7vw, 88px);
-  background: var(--home-white);
-}
-
-.finalLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 72px;
-  align-items: end;
-}
-
-.finalLayout > div:first-child {
-  max-width: 740px;
-}
-
-.finalLayout > div:first-child > p:last-child {
-  max-width: 600px;
-  margin: 14px 0 0;
-  color: var(--home-ink-soft);
-  font-size: 15px;
-  line-height: 1.65;
-}
-
-.finalActions {
-  min-width: 290px;
-  display: grid;
-  gap: 10px;
-}
-
-.primaryAction,
-.secondaryAction {
-  min-height: 52px;
-  padding: 0 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 750;
-  transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 180ms ease;
-}
-
-.primaryAction {
-  background: var(--home-primary);
-  color: var(--home-white);
-}
-
-.primaryAction:hover {
-  background: var(--home-primary-strong);
-  transform: translateY(-1px);
-}
-
-.secondaryAction {
-  border: 1px solid #c8d3d2;
-  background: var(--home-white);
-  color: var(--home-primary-strong);
-}
-
-.secondaryAction:hover {
-  border-color: var(--home-primary);
-  transform: translateY(-1px);
-}
-
-.primaryAction svg,
-.secondaryAction svg {
-  width: 18px;
-  height: 18px;
+.journalLink:hover .journalBody.journalBody.journalBody h3 {
+  color: var(--doc-green);
 }
 
 @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
@@ -1313,7 +1161,7 @@
   }
 
   .desktopSectionLink:hover {
-    color: var(--home-primary);
+    color: #24563f;
   }
 
   .tourCard:hover .tourMediaTitle,
@@ -1343,10 +1191,10 @@
   }
 
   .tourCard:hover .tourMedia img,
-  .destinationMosaic > a:hover > img {
+  .destinationMosaic > a:hover > img,
+  .journalLink:hover .journalMedia > img {
     transform: scale(1.025);
   }
-
 
   .tourCard:hover .tourMediaTitle {
     transform: translateY(-2px);
@@ -1411,26 +1259,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .benefitGrid article {
-    border-bottom: 1px solid #d6dedc;
-  }
-
-  .benefitGrid article:nth-child(2) {
-    padding-right: 0;
-    border-right: 0;
-  }
-
-  .benefitGrid article:nth-child(3) {
-    padding-left: 0;
-    border-bottom: 0;
-  }
-
-  .benefitGrid article:nth-child(4) {
-    padding-right: 0;
-    border-right: 0;
-    border-bottom: 0;
-  }
-
   .reviewRail {
     grid-auto-columns: min(490px, 62vw);
   }
@@ -1441,29 +1269,31 @@
     gap: 22px;
   }
 
-  .privatePanel {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
   .journalGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 18px;
   }
 
-  .finalLayout {
-    grid-template-columns: 1fr;
-    gap: 32px;
-    align-items: start;
-  }
-
-  .finalActions {
-    width: min(100%, 390px);
+  .journalBody.journalBody.journalBody h3 {
+    font-size: 17px;
   }
 }
 
 @media (max-width: 920px) {
   .home {
     padding-top: 68px;
+  }
+
+  /* The questions take the full width under their title. */
+  .faqLayout {
+    display: block;
+  }
+
+  .faqIntro {
+    max-width: 640px;
+  }
+
+  .faqList {
+    margin-top: 24px;
   }
 }
 
@@ -1508,7 +1338,6 @@
     padding: 54px 0 0;
   }
 
-  .eyebrow,
   .eyebrowLight {
     margin-bottom: 11px;
     font-size: 10px;
@@ -1583,19 +1412,12 @@
   }
 
   .section {
-    padding-block: 56px;
-  }
-
-  .sectionHeading h2,
-  .privatePanel h2,
-  .finalLayout h2 {
-    font-size: clamp(29px, 8.1vw, 32px);
-    line-height: 1.13;
+    padding-block: 48px;
   }
 
   .sectionHeading > p:last-child {
-    margin-top: 15px;
-    font-size: 14px;
+    margin-top: 12px;
+    font-size: 15px;
     line-height: 1.6;
   }
 
@@ -1787,51 +1609,44 @@
     font-size: 10.5px;
   }
 
+  /* Phones: one box per row, the illustration beside the text. */
   .benefitGrid {
-    margin-top: 26px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 18px;
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 
-  .benefitSection .sectionHeading h2 {
-    font-size: clamp(26px, 7.2vw, 29px);
-    line-height: 1.15;
-  }
-
-  .benefitGrid article,
-  .benefitGrid article:first-child,
-  .benefitGrid article:nth-child(3) {
+  .benefitGrid article {
     min-height: 0;
-    padding: 18px 13px 16px;
-  }
-
-  .benefitGrid article:nth-child(odd) {
-    padding-left: 0;
-  }
-
-  .benefitGrid article:nth-child(even) {
-    padding-right: 0;
-  }
-
-  .benefitIcon {
-    width: 52px;
-    height: 52px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: start;
   }
 
   .benefitTitle {
-    align-items: flex-start;
-    gap: 10px;
+    display: contents;
   }
 
-  .benefitGrid h3 {
-    margin-top: 15px;
-    font-size: 14px;
-    line-height: 1.32;
+  .benefitIcon {
+    grid-row: 1 / span 2;
+    width: 48px;
+    height: 48px;
+  }
+
+  .benefitGrid.benefitGrid .benefitTitle h3 {
+    grid-column: 2;
+    font-size: 13px;
+    letter-spacing: 0.035em;
+    line-height: 1.35;
   }
 
   .benefitGrid p {
-    margin-top: 6px;
-    font-size: 12px;
-    line-height: 1.48;
+    grid-column: 2;
+    margin-top: 5px;
+    font-size: 14px;
+    line-height: 1.55;
   }
 
   .benefitSection {
@@ -1859,8 +1674,6 @@
     padding: 18px 16px;
     justify-content: flex-start;
     gap: 10px;
-    border-color: #ddd7cb;
-    border-radius: 24px !important;
   }
 
   .reviewCard blockquote {
@@ -1914,97 +1727,78 @@
   }
 
   .faqSection {
-    padding-top: 38px;
+    padding-top: 44px;
   }
 
-  .faqLayout {
-    display: block;
+  .faqIntro {
+    max-width: none;
   }
 
-  .faqLayout .sectionHeading {
-    position: static;
+  .faqTitle {
+    font-size: clamp(30px, 8.4vw, 34px);
+  }
+
+  .faqLede {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.6;
   }
 
   .faqList {
-    margin-top: 30px;
+    margin-top: 22px;
   }
 
   .faqItem h3 > button {
-    min-height: 72px;
-    padding-block: 18px;
+    min-height: 58px;
+    padding: 14px 16px;
     font-size: 15px;
   }
 
   .faqPanel p {
-    padding: 0 34px 22px 0;
-    font-size: 13px;
+    padding: 0 16px 16px;
+    font-size: 14px;
     line-height: 1.65;
   }
 
-  .privateSection {
-    padding-block: 42px;
-  }
-
-  .privatePanel {
-    min-height: 0;
-    padding: 34px 26px;
-    gap: 28px;
-    border-radius: 22px;
-  }
-
-  .privatePanel > div > p:last-child {
-    margin-top: 17px;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .privatePanel > a {
-    width: 100%;
-    min-height: 50px;
-  }
-
   .journalSection {
-    padding-top: 72px;
+    padding-top: 48px;
   }
 
+  /* Phones: the guides read as a compact list (thumbnail left, text right). */
   .journalGrid {
-    margin-top: 30px;
+    margin-top: 22px;
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 18px;
+  }
+
+  .journalLink {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  .journalMedia {
+    aspect-ratio: 1;
+    border-radius: 10px;
   }
 
   .journalBody {
-    min-height: 268px;
-    padding: 18px;
+    padding-top: 0;
+    gap: 5px;
   }
 
-  .journalBody h3 {
-    font-size: 18px;
+  .journalMeta {
+    font-size: 11px;
   }
 
-  .finalSection {
-    padding-block: 76px;
+  .journalBody.journalBody.journalBody h3 {
+    font-size: 16px;
+    line-height: 1.32;
   }
 
-  .finalLayout {
-    display: block;
-  }
-
-  .finalLayout > div:first-child > p:last-child {
-    margin-top: 17px;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .finalActions {
-    width: 100%;
-    min-width: 0;
-    margin-top: 30px;
-  }
-
-  .primaryAction,
-  .secondaryAction {
-    min-height: 50px;
+  .journalExcerpt {
+    display: none;
   }
 }
 
@@ -2034,8 +1828,8 @@
     font-size: 14px;
   }
 
-  .benefitGrid h3 {
-    font-size: 14px;
+  .benefitGrid.benefitGrid .benefitTitle h3 {
+    font-size: 12.5px;
   }
 }
 
@@ -2119,16 +1913,6 @@
     animation: none;
   }
 
-  @supports (animation-timeline: view()) {
-    .sectionHeading h2,
-    .privatePanel h2,
-    .finalLayout h2 {
-      animation: heading-arrive linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 18%;
-    }
-  }
-
   .benefitIcon [data-part] {
     animation-duration: 5.2s;
     animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1);
@@ -2183,11 +1967,6 @@
 @keyframes reveal-rise {
   from { opacity: 0; translate: 0 18px; }
   to { opacity: 1; translate: 0 0; }
-}
-
-@keyframes heading-arrive {
-  from { opacity: 0.6; transform: translateY(12px); }
-  to { opacity: 1; transform: none; }
 }
 
 @keyframes benefitFloat {
