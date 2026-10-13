@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import type { CSSProperties } from "react";
 import type { FaqButton, FaqCta, FaqItem, FaqSection } from "@/lib/faq-content";
+import doc from "@/components/website/clean/DocFormat.module.css";
+import docStyles from "./FaqDoc.module.css";
 
 type ThemeProps = {
   isOutlined: boolean;
@@ -31,6 +33,8 @@ type FaqExplorerProps = {
   bottomCta: FaqCta;
   whatsappHref: string;
   theme: ThemeProps;
+  /** "doc": the Sundaf DMC document format (atlas theme). */
+  appearance?: "doc";
 };
 
 const SECTION_ICONS: Record<string, typeof HelpCircle> = {
@@ -129,6 +133,40 @@ function CtaBlock({
   );
 }
 
+/** Call to action as a flat sage box (document format). */
+function DocCta({ cta, whatsappHref, large = false }: { cta: FaqCta; whatsappHref: string; large?: boolean }) {
+  const TitleTag = large ? "h2" : "h3";
+  return (
+    <div className={`${doc.boxSage} ${docStyles.cta} ${large ? docStyles.ctaLarge : ""}`}>
+      <div className={docStyles.ctaText}>
+        <TitleTag className={docStyles.ctaTitle}>{cta.title}</TitleTag>
+        <p className={docStyles.ctaBody}>{cta.body}</p>
+      </div>
+      <div className={docStyles.ctaButtons}>
+        {cta.buttons.map((button) => {
+          const href = resolveHref(button.href, whatsappHref);
+          const className = button.variant === "primary" ? doc.button : docStyles.ctaSecondary;
+          const icon = button.label.includes("WhatsApp") ? <MessageCircle aria-hidden="true" /> : null;
+          if (href.startsWith("http")) {
+            return (
+              <a key={`${button.label}-${href}`} href={href} target="_blank" rel="noreferrer" className={className}>
+                {icon}
+                {button.label}
+              </a>
+            );
+          }
+          return (
+            <Link key={`${button.label}-${href}`} href={href} className={className}>
+              {icon}
+              {button.label}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function normalize(value: string) {
   return value.toLowerCase().normalize("NFKD");
 }
@@ -143,7 +181,7 @@ function itemMatches(item: FaqItem, query: string) {
   return haystack.includes(query);
 }
 
-export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }: FaqExplorerProps) {
+export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme, appearance }: FaqExplorerProps) {
   const [query, setQuery] = useState("");
   const [openItems, setOpenItems] = useState<Set<string>>(() => new Set([sections[0]?.items[0]?.id].filter(Boolean)));
   const normalizedQuery = normalize(query.trim());
@@ -170,6 +208,107 @@ export default function FaqExplorer({ sections, bottomCta, whatsappHref, theme }
       return next;
     });
   };
+
+  if (appearance === "doc") {
+    return (
+      <>
+        <div className={docStyles.tools}>
+          <div className={docStyles.searchField}>
+            <label htmlFor="faq-search" className="sr-only">
+              Cari FAQ Sundaf Trip
+            </label>
+            <Search className={docStyles.searchIcon} aria-hidden="true" />
+            <input
+              id="faq-search"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Cari visa, refund, deposit, aurora, private trip..."
+              className={docStyles.search}
+            />
+          </div>
+
+          <nav aria-label="Kategori FAQ" className={docStyles.chips}>
+            {sections.map((section) => (
+              <a key={section.id} href={`#${section.id}`} className={docStyles.chip}>
+                {section.title}
+              </a>
+            ))}
+          </nav>
+
+          {normalizedQuery && (
+            <p className={docStyles.results} aria-live="polite">
+              {totalResults} jawaban cocok untuk &quot;{query.trim()}&quot;.
+            </p>
+          )}
+        </div>
+
+        {filteredSections.length === 0 ? (
+          <div className={doc.boxSand}>
+            <p className={docStyles.empty}>
+              <strong>Tidak ada FAQ yang cocok.</strong>
+              Coba kata lain seperti visa, refund, deposit, aurora, atau private trip.
+            </p>
+          </div>
+        ) : (
+          <div className={docStyles.sections}>
+            {filteredSections.map((section) => (
+              <section key={section.id} id={section.id} className={docStyles.section} aria-labelledby={`${section.id}-title`}>
+                <h2 id={`${section.id}-title`} className={doc.tag}>{section.title}</h2>
+                <p className={docStyles.sectionNote}>{section.description}</p>
+
+                <div className={docStyles.items}>
+                  {section.items.map((item) => {
+                    const isOpen = openItems.has(item.id);
+                    const answerId = `faq-answer-${item.id}`;
+                    const buttonId = `faq-button-${item.id}`;
+                    return (
+                      <article key={item.id} className={docStyles.item}>
+                        <h3 className={docStyles.question}>
+                          <button
+                            id={buttonId}
+                            type="button"
+                            aria-expanded={isOpen}
+                            aria-controls={answerId}
+                            onClick={() => toggleItem(item.id)}
+                            className={docStyles.toggle}
+                          >
+                            <span>{item.question}</span>
+                            <ChevronDown className={docStyles.chevron} aria-hidden="true" />
+                          </button>
+                        </h3>
+                        <div id={answerId} role="region" aria-labelledby={buttonId} hidden={!isOpen} className={docStyles.answer}>
+                          {item.answer.map((paragraph) => (
+                            <p key={paragraph}>{paragraph}</p>
+                          ))}
+                          {item.relatedLinks?.length ? (
+                            <p className={docStyles.related}>
+                              <span>Terkait:</span>
+                              {item.relatedLinks.map((link) => (
+                                <Link key={link.href} href={link.href} className={doc.textLink}>
+                                  {link.label}
+                                </Link>
+                              ))}
+                            </p>
+                          ) : null}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+
+                {section.cta && showSectionCtas && (
+                  <DocCta cta={section.cta} whatsappHref={whatsappHref} />
+                )}
+              </section>
+            ))}
+          </div>
+        )}
+
+        <DocCta cta={bottomCta} whatsappHref={whatsappHref} large />
+      </>
+    );
+  }
 
   return (
     <>

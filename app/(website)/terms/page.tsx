@@ -7,6 +7,7 @@ import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CompanyTransferDetails from "@/components/website/CompanyTransferDetails";
 import supportStyles from "@/components/website/clean/SupportPages.module.css";
+import doc from "@/components/website/clean/DocFormat.module.css";
 
 const siteUrl = process.env.NEXTAUTH_URL || "https://sundaftrip.com";
 const LEGAL_ENTITY_STATEMENT =
@@ -121,13 +122,13 @@ export default async function TermsPage({
 
         {isOutlined ? (
           <>
-            {isAtlas    && <span className="at-pill mb-4 inline-flex">Legal</span>}
+            {isAtlas    && <p className={doc.eyebrow}>Legal / Sundaf Trip</p>}
             {isKawaii   && <span className="kw-pill mb-4 inline-flex" style={{ background: "var(--kw-blush)", color: "var(--kw-text)" }}>♡ Legal</span>}
             {isTropical && <span className="tr-pill mb-4 inline-flex" style={{ background: "var(--tr-grape)", color: "var(--tr-text)" }}>📋 Legal</span>}
             {isPixel    && <span className="px-pill mb-4 inline-flex" style={{ background: "var(--px-purple)", color: "#ffffff" }}>► LEGAL</span>}
             {isGlobe    && <span className="gl-pill mb-4 inline-flex" style={{ background: "var(--gl-coral)", color: "var(--gl-on-coral)", borderColor: "transparent" }}>📋 Legal</span>}
             {isMap      && <span className="mp-pill mb-4 inline-flex" style={{ background: "var(--mp-land)", color: "var(--mp-text)", borderColor: "var(--mp-border)" }}>Legal</span>}
-            <h1 className={`${isAtlas ? supportStyles.title : "text-3xl"} font-black mt-3 mb-2`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
+            <h1 className={`${isAtlas ? `${doc.title} ${supportStyles.title}` : "text-3xl"} font-black mt-3 mb-2`} style={{ color: headClr, fontFamily: isPixel ? "monospace" : undefined }}>
               {isPixel ? "SYARAT & KETENTUAN" : "Syarat & Ketentuan"}
             </h1>
             <p className="text-sm mb-6" style={{ color: subClr, fontFamily: isPixel ? "monospace" : undefined }}>CV Sundaf Holiday Group</p>

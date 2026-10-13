@@ -7,6 +7,8 @@ import {
 import { buildWhatsAppHref, DEFAULT_WHATSAPP_MESSAGE, toWaNumber } from "@/lib/utils";
 import { SUNDAF_TRANSFER_ACCOUNT } from "@/lib/company-transfer";
 import CopyButton from "./CopyButton";
+import doc from "./clean/DocFormat.module.css";
+import supportStyles from "./clean/SupportPages.module.css";
 
 interface Props {
   texts: Record<string, { id?: string; en?: string }>;
@@ -78,7 +80,7 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
   ].filter(Boolean) as ContactItem[];
   const atlasContacts = [
     phone   && { Icon: Phone,         label: "Telepon",     value: phone,   href: `tel:${phone.replace(/\D/g,"")}` },
-    wa      && { Icon: Phone,         label: "WhatsApp",    value: "WhatsApp", href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
+    wa      && { Icon: Phone,         label: "WhatsApp",    value: wa.startsWith("62") ? `+${wa}` : wa, href: buildWhatsAppHref(wa, DEFAULT_WHATSAPP_MESSAGE) },
     email   && { Icon: Mail,          label: "Email",       value: email,   href: `mailto:${email}` },
     { Icon: Clock, label: "Jam layanan", value: OPENING_HOURS, href: null },
     { Icon: MapPin, label: APPOINTMENT_ONLY_LABEL, value: officeAddress, href: null },
@@ -188,39 +190,32 @@ export default function ContactSection({ texts, company, theme = "classic" }: Pr
     </section>
   );
 
-  /* ── ATLAS ── */
+  /* ── ATLAS: Sundaf DMC document format ── */
   if (theme === "atlas") return (
-    <section id="contact" className="overflow-hidden py-14 sm:py-20 at-grid-bg" style={{ backgroundColor: "var(--at-bg)" }} aria-labelledby="contact-section-title">
-      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8" style={{ maxWidth: "min(80rem, 100vw)" }}>
-        <div className="max-w-lg sm:pl-8">
-          <span className="at-pill mb-10 inline-flex px-5 py-2 text-xs font-bold tracking-[0.18em]" style={{ color: "var(--at-subtext)" }}>Kontak</span>
-          <h2 id="contact-section-title" className="sr-only">
-            {t("contact_title", "Siap Membantu Perjalanan Anda")}
-          </h2>
-
-          <div className="not-prose space-y-8 sm:space-y-9">
-            {atlasContacts.map(({ Icon, label, value, href }) => (
-              <div key={label} className="grid min-w-0 grid-cols-[1.55rem_minmax(0,1fr)] items-start gap-x-5 sm:grid-cols-[1.75rem_minmax(0,1fr)] sm:gap-x-6">
-                <Icon size={22} className="mt-1 shrink-0" aria-hidden="true" style={{ color: "var(--at-border)" }} />
-                <div className="min-w-0 pr-4 sm:pr-0">
-                  {href
-                    ? <a href={href} className="break-words text-left text-base font-medium leading-7 transition-opacity hover:opacity-70 sm:text-xl sm:leading-9" style={{ color: "var(--at-subtext)" }}>{value}</a>
-                    : <p className="break-words text-left text-base font-medium leading-7 sm:text-xl sm:leading-9" style={{ color: "var(--at-subtext)" }}>{value}</p>}
-                </div>
-              </div>
-            ))}
-            {bankAcc && (
-              <div className="border-t pt-6" style={{ borderColor: "var(--at-border)" }}>
-                <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--at-subtext)" }}>{bankLabel}</p>
-                {bankName && <p translate="no" className="text-xs mb-1" style={{ color: "var(--at-subtext)" }}>{bankName}</p>}
-                <p translate="no" className="text-xl font-bold font-mono" style={{ color: "var(--at-text)" }}>{bankAcc}</p>
-                {bankHolder && <p translate="no" className="text-xs mt-1" style={{ color: "var(--at-subtext)" }}>a/n {bankHolder}</p>}
-                <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
-              </div>
-            )}
-          </div>
-
+    <section id="contact" className={supportStyles.contactDoc} aria-labelledby="contact-section-title">
+      <div className={supportStyles.contactDocShell}>
+        <div>
+          <h2 id="contact-section-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Kanal resmi</h2>
+          <table className={`${doc.table} ${supportStyles.factsTable}`}>
+            <tbody>
+              {atlasContacts.map(({ label, value, href }) => (
+                <tr key={label}>
+                  <th scope="row">{label}</th>
+                  <td>{href ? <a href={href} className={doc.textLink}>{value}</a> : value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+        {bankAcc && (
+          <div className={`${doc.boxSand} ${supportStyles.contactBank}`}>
+            <p className={doc.subhead}>{bankLabel}</p>
+            {bankName && <p translate="no">{bankName}</p>}
+            <p translate="no" className={supportStyles.contactBankNumber}>{bankAcc}</p>
+            {bankHolder && <p translate="no">a/n {bankHolder}</p>}
+            <div className="mt-3"><CopyButton value={bankAcc} label="Salin nomor rekening" /></div>
+          </div>
+        )}
       </div>
     </section>
   );

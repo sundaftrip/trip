@@ -109,3 +109,32 @@ test("journal tour suggestions lead with the subtotal and bookable trips", () =>
   const cleanArticle = read("components/website/clean/CleanBlogArticle.tsx");
   assert.match(cleanArticle, /<CleanTourCard key=\{tour\.id\} tour=\{tour\} compact catalog \/>/);
 });
+
+test("support pages and the FAQ use the document format on the atlas theme", () => {
+  const support = read("components/website/clean/SupportPages.module.css");
+  assert.match(support, /--support-primary: var\(--doc-green, #2e6751\);/);
+  const card = support.match(/\.atlasPage :global\(\.at-card\) \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(card, /border: 0;/);
+  assert.match(card, /background: var\(--doc-sand, #f5f5ef\);/);
+  // Legal text (terms) gets amber tags for its sections.
+  assert.match(support, /\.proseContent\.proseContent :global\(h2\) \{[^}]*background: var\(--doc-amber, #eab067\);/);
+
+  for (const page of ["reviews", "legalitas-dan-keamanan", "privacy", "terms", "contact"]) {
+    const source = read(`app/(website)/${page}/page.tsx`);
+    assert.match(source, /className=\{doc\.eyebrow\}|isAtlas \? doc\.eyebrow/, page);
+    assert.match(source, /doc\.title/, page);
+  }
+  const legal = read("app/(website)/legalitas-dan-keamanan/page.tsx");
+  assert.match(legal, /<table className=\{`\$\{doc\.table\} \$\{supportStyles\.factsTable\}`\}>/);
+  assert.match(legal, /<h2 id="legal-facts-title" className=\{`\$\{doc\.tag\} \$\{supportStyles\.tagBlock\}`\}>/);
+
+  const contact = read("components/website/ContactSection.tsx");
+  assert.match(contact, /<h2 id="contact-section-title" className=\{`\$\{doc\.tag\} \$\{supportStyles\.tagBlock\}`\}>Kanal resmi<\/h2>/);
+
+  const faq = read("app/(website)/faq/page.tsx");
+  assert.match(faq, /if \(isAtlas\) \{[\s\S]*?appearance="doc"/);
+  const explorer = read("app/(website)/faq/FaqExplorer.tsx");
+  assert.match(explorer, /<h2 id=\{`\$\{section\.id\}-title`\} className=\{doc\.tag\}>/);
+  const faqCss = read("app/(website)/faq/FaqDoc.module.css");
+  assert.match(faqCss, /\.item:nth-child\(even\) \{\s*background: var\(--doc-sand\);/);
+});
