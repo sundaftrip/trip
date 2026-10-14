@@ -761,7 +761,8 @@ h3{font-size:1rem;font-weight:600}
   function pkgs() { return (S.dest && S.dest.pkgs) || []; }
   function pkgBy(c) { var f = null; pkgs().forEach(function (p) { if (p.c === c) f = p; }); return f; }
   function mainPkg() { var f = null; pkgs().forEach(function (p) { if (!f && p.tiers && p.tiers.length) f = p; }); return f; }
-  function mode() { var d = D(); return d && d.status === 'buka' && pkgs().length ? 'pool' : 'minat'; }
+  /* Segera = daftar minat. Buka, Draf, dan Tutup memakai tampilan pool kalau paketnya sudah diisi (Draf = pratinjau halaman yang dibuka). */
+  function mode() { var d = D(); return d && d.status !== 'segera' && pkgs().length ? 'pool' : 'minat'; }
   function joinable() { var d = D(); return !!d && !!S.cat && S.cat.open !== false && (d.status === 'buka' || d.status === 'segera'); }
   function place() { var d = D(); return d ? d.city || d.name : ''; }
   function ms() { var m = D() && D().milestones; return m && m.length ? m : [6]; }
@@ -904,7 +905,7 @@ h3{font-size:1rem;font-weight:600}
     $('#demoNote').hidden = LIVE;
     $('#modePill').classList.toggle('demo', !LIVE);
 
-    $('#poolsSec').hidden = !(m === 'pool' && d.status !== 'tutup');
+    $('#poolsSec').hidden = !(m === 'pool' && d.status === 'buka');
     if (!$('#poolsSec').hidden) { renderStats(first); renderTicker(); renderPools(first); }
     renderCare(); renderHow(); renderDetails();
   }
