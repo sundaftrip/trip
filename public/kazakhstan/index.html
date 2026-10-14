@@ -10,6 +10,8 @@
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <title>Pool Kazakhstan · SUNDAF Trip</title>
 <script>(function(){try{var t=JSON.parse(localStorage.getItem('sundafPool.theme'));if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -399,7 +401,7 @@ h3{font-size:1rem;font-weight:600}
     <li><span>30 orang</span><b>Rp5,28 jt</b><small>termurah</small></li>
   </ol>
   <p class="cap" style="--i:4">Harga per orang, paket 5 hari, hotel bintang 3. Belum termasuk tips wajib Rp250 rb.</p>
-  <button type="button" class="btn btn-primary wide" id="heroCta" style="--i:5">Daftar tanggalku</button>
+  <button type="button" class="btn btn-primary wide" id="heroCta" style="--i:5"><span class="spin" aria-hidden="true"></span>Daftar tanggalku</button>
   <p class="note" style="--i:6">Gratis. Belum ada pembayaran.</p>
   <p class="demo-note" id="demoNote" hidden>Ini tampilan contoh. Angka di halaman ini belum data asli dan pendaftaran tidak disimpan.</p>
 </header>
@@ -415,7 +417,7 @@ h3{font-size:1rem;font-weight:600}
     </div>
     <p class="live-line"><span id="liveStack"></span><b class="num" id="statTotal">0</b> orang di <b class="num" id="statDates">0</b> tanggal<span class="tick" id="ticker" hidden></span></p>
     <ol class="pool-list" id="poolList"><li class="skel" aria-label="Memuat"></li><li class="skel" aria-hidden="true"></li></ol>
-    <button type="button" class="btn btn-line wide more" id="newDateBtn">Tanggalku belum ada di daftar</button>
+    <button type="button" class="btn btn-line wide more" id="newDateBtn"><span class="spin" aria-hidden="true"></span>Tanggalku belum ada di daftar</button>
   </section>
 
   <section class="wrap sec" aria-labelledby="careTitle">
@@ -490,7 +492,7 @@ h3{font-size:1rem;font-weight:600}
 <div class="dock" id="dock">
   <div class="dock-in">
     <div class="dock-txt"><b>Pool Kazakhstan</b><span>Gratis, belum bayar apa-apa</span></div>
-    <button type="button" class="btn btn-primary btn-sm" id="dockCta">Daftar</button>
+    <button type="button" class="btn btn-primary btn-sm" id="dockCta"><span class="spin" aria-hidden="true"></span>Daftar</button>
   </div>
 </div>
 
@@ -892,6 +894,30 @@ h3{font-size:1rem;font-weight:600}
     el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
     if (field) { var f = $(field); if (f) { f.setAttribute('aria-invalid', 'true'); f.focus(); } }
   }
+  /* Tombol daftar tidak boleh diam saat data belum masuk (API Apps Script bisa 2-5 detik):
+     tampilkan spinner, buka form begitu data datang, atau paling lambat 2,5 detik pakai data bawaan. */
+  function jakartaToday() { return keyOf(Date.now() + 7 * 36e5); }
+  function provisional() {
+    return { ok: true, prov: true, open: true, today: jakartaToday(), minDays: 7, maxPax: 10, milestones: DEFAULT.milestones.slice(),
+      prices: { tiers: DEFAULT.tiers, single: DEFAULT.single }, kurs: 17950, wa: '', share: '', pools: [], recent: [], total: 0 };
+  }
+  function openFrom(btn, d) {
+    if (S.data) return openSheet(d);
+    if (S.loadFailed) { S.data = provisional(); return openSheet(d); }
+    if (S.pending) return;
+    S.pending = { d: d || '', btn: btn || null };
+    if (btn) { btn.classList.add('busy'); btn.setAttribute('aria-busy', 'true'); }
+    S.pendingT = setTimeout(function () { flushPending(true); }, 2500);
+  }
+  function flushPending(fallback) {
+    var p = S.pending;
+    if (!p) return;
+    if (!S.data) { if (!fallback) return; S.data = provisional(); }
+    clearTimeout(S.pendingT); S.pending = null;
+    if (p.btn) { p.btn.classList.remove('busy'); p.btn.removeAttribute('aria-busy'); }
+    openSheet(p.d);
+  }
+
   function openSheet(d) {
     if (!S.data) return;
     if (S.data.open === false) { closedNote(); return; }
@@ -1230,8 +1256,8 @@ h3{font-size:1rem;font-weight:600}
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-join],[data-new],[data-pick],[data-sort],[data-route],[data-next],[data-goto],[data-pkg]');
     if (!t) return;
-    if (t.hasAttribute('data-join')) openSheet(t.getAttribute('data-join'));
-    else if (t.hasAttribute('data-new')) openSheet('');
+    if (t.hasAttribute('data-join')) openFrom(t, t.getAttribute('data-join'));
+    else if (t.hasAttribute('data-new')) openFrom(t, '');
     else if (t.hasAttribute('data-pick')) pickDate(t.getAttribute('data-pick'));
     else if (t.hasAttribute('data-sort')) {
       S.sort = t.getAttribute('data-sort');
@@ -1243,9 +1269,9 @@ h3{font-size:1rem;font-weight:600}
     else if (t.hasAttribute('data-goto')) go(+t.getAttribute('data-goto'));
     else if (t.hasAttribute('data-pkg')) pickPkg(t.getAttribute('data-pkg'));
   });
-  $('#heroCta').addEventListener('click', function () { openSheet(''); });
-  $('#dockCta').addEventListener('click', function () { openSheet(''); });
-  $('#newDateBtn').addEventListener('click', function () { openSheet(''); });
+  $('#heroCta').addEventListener('click', function () { openFrom(this, ''); });
+  $('#dockCta').addEventListener('click', function () { openFrom(this, ''); });
+  $('#newDateBtn').addEventListener('click', function () { openFrom(this, ''); });
   $('#closeBtn').addEventListener('click', closeSheet);
   $('#backdrop').addEventListener('click', closeSheet);
   $('#sDone').addEventListener('click', closeSheet);
@@ -1306,23 +1332,41 @@ h3{font-size:1rem;font-weight:600}
   } else { S.heroSeen = false; }
 
   /* ---------------- boot ---------------- */
+  function saveCache(d) { if (API_URL && !GAS) store.set('pools', { t: Date.now(), d: d }); }
   function fail() {
-    $('#poolList').innerHTML = '<li class="load-err">Daftar tanggal belum bisa dimuat. <button type="button" class="btn btn-line btn-sm" id="retry">Coba lagi</button></li>';
-    $('#retry').addEventListener('click', load);
+    S.loadFailed = true;
+    if (!(S.data && !S.data.prov)) {
+      $('#poolList').innerHTML = '<li class="load-err">Daftar tanggal belum bisa dimuat. <button type="button" class="btn btn-line btn-sm" id="retry">Coba lagi</button></li>';
+      $('#retry').addEventListener('click', load);
+    }
+    flushPending(true);
   }
   function load() {
     call('getPools').then(function (d) {
       if (!d || !d.ok) return fail();
-      var first = !S.data; S.data = d; renderAll(first); updateDock();
+      var first = !S.data || !!S.data.prov;
+      S.loadFailed = false; S.data = d; saveCache(d);
+      renderAll(first); updateDock();
+      if (S.open && S.step === 0 && S.f.d) updateDate();
+      flushPending(false);
     }, fail);
   }
   function refresh() {
     if (!LIVE || document.hidden || S.open || S.busy || !S.data) return;
-    call('getPools').then(function (d) { if (d && d.ok && !S.open) { S.data = d; renderHeader(); renderStats(false); renderTicker(); renderPools(false); } }, function () {});
+    if (S.data.prov) return load();
+    call('getPools').then(function (d) { if (d && d.ok && !S.open) { S.data = d; saveCache(d); renderHeader(); renderStats(false); renderTicker(); renderPools(false); } }, function () {});
   }
   renderRoute('5');
   if (BOOT && BOOT.ok) { S.data = BOOT; renderAll(true); updateDock(); }
-  else load();
+  else {
+    // Kunjungan ulang: tampilkan data terakhir langsung, lalu perbarui dari API di belakang.
+    var cached = API_URL && !GAS ? store.get('pools', null) : null;
+    if (cached && cached.d && cached.d.ok && Date.now() - cached.t < 12 * 36e5) {
+      if (!(cached.d.today >= jakartaToday())) cached.d.today = jakartaToday();
+      S.data = cached.d; renderAll(true); updateDock();
+    }
+    load();
+  }
   setInterval(refresh, 120000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
 })();
