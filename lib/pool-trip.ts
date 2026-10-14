@@ -4,7 +4,7 @@
 
 /** Web app Apps Script (URL /exec). Bukan rahasia: endpoint publik yang tidak mengembalikan nama atau nomor WA. */
 export const POOL_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxj-o13J28YMm2aoa1aHgoOWKtI_vvyxO1g3tni2V_Y7FEreBJWlASA7ZVWBh-TQCVjBQ/exec";
+  "https://script.google.com/macros/s/AKfycbwH_O0QVAlzUYe4uxMiobyzMRLyTvqIheQJ8vT5dNsUs1MrEyoqPyiIL8910juQvVznug/exec";
 
 /** Batas ukuran isi formulir yang diteruskan ke Apps Script. */
 export const POOL_MAX_BODY = 4000;
