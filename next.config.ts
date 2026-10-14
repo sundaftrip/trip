@@ -233,6 +233,11 @@ const nextConfig: NextConfig = {
       // Data pendaftar tersimpan di Google Sheet SUNDAF lewat Apps Script; halaman ini
       // tidak memakai database website. Disajikan di URL bersih /kazakhstan.
       { source: "/kazakhstan", destination: "/kazakhstan/index.html" },
+      // Pool Trip multi-negara (file di public/pool/). Satu halaman statis untuk daftar negara
+      // (/pool) dan halaman tiap negara (/pool/<kode>). Data dari Google Sheet "SUNDAF · Pool Trip"
+      // lewat /api/pool; terpisah dari pool Kazakhstan.
+      { source: "/pool", destination: "/pool/index.html" },
+      { source: "/pool/:slug", destination: "/pool/index.html" },
     ];
   },
   async headers() {

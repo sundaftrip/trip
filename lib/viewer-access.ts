@@ -9,6 +9,7 @@ const PUBLIC_WRITE_API_PATHS = new Set([
   "/api/b2b-catalog/logout",
   "/api/inquiries",
   "/api/lapor/upload",
+  "/api/pool",
 ]);
 
 export function isAdminRole(value: unknown): value is AdminRole {
