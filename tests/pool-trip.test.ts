@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   POOL_MAX_BODY,
+  POOL_SCRIPT_URL,
   forwardSubmission,
   isAppsScriptUrl,
   parseSubmission,
@@ -20,6 +21,8 @@ test("pool trip only talks to a real Apps Script /exec URL", () => {
   assert.equal(isAppsScriptUrl(`${EXEC}?api=catalog`), false);
   assert.equal(poolScriptUrl({ POOL_SCRIPT_URL: ` ${EXEC} ` }), EXEC);
   assert.equal(poolScriptUrl({ POOL_SCRIPT_URL: "http://script.google.com/macros/s/x/exec" }), poolScriptUrl({}));
+  assert.equal(poolScriptUrl({}), POOL_SCRIPT_URL, "the committed deployment URL is used when no env override is set");
+  assert.equal(isAppsScriptUrl(POOL_SCRIPT_URL), true);
 });
 
 test("pool catalog passes a valid reply through and marks it cacheable", async () => {
