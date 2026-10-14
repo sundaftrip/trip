@@ -55,6 +55,7 @@ test("viewer write guard blocks CMS mutations without blocking public writes", (
   assert.equal(isViewerWriteBlockedPath("/api/tours"), true);
   assert.equal(isViewerWriteBlockedPath("/api/auth/callback/credentials"), false);
   assert.equal(isViewerWriteBlockedPath("/api/inquiries"), false);
+  assert.equal(isViewerWriteBlockedPath("/api/pool"), false);
   assert.equal(shouldBlockViewerMutation("POST", "/api/tours", "VIEWER"), true);
   assert.equal(shouldBlockViewerMutation("GET", "/api/tours", "VIEWER"), false);
   assert.equal(shouldBlockViewerMutation("POST", "/api/tours", "ADMIN"), false);
