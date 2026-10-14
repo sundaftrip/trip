@@ -227,6 +227,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // Landing page statis pool land tour Kazakhstan (file di public/kazakhstan/).
+      // Data pendaftar tersimpan di Google Sheet SUNDAF lewat Apps Script; halaman ini
+      // tidak memakai database website. Disajikan di URL bersih /kazakhstan.
+      { source: "/kazakhstan", destination: "/kazakhstan/index.html" },
+    ];
+  },
   async headers() {
     return [
       {
