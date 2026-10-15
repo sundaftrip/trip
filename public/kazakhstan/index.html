@@ -137,15 +137,9 @@ h2{font-size:1.15rem;line-height:1.3;font-weight:700;letter-spacing:-.015em}
 
 /* pool list */
 .pool-list{list-style:none;padding:0;margin-top:12px;display:grid;gap:3px}
-.pool{--card:var(--sage);display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;padding:16px 16px 16px 14px;background:var(--card);animation:up .55s var(--ease) both;animation-delay:calc(var(--i,0)*60ms + 120ms)}
+.pool{--card:var(--sage);display:grid;gap:10px;padding:16px;background:var(--card);animation:up .55s var(--ease) both;animation-delay:calc(var(--i,0)*60ms + 120ms)}
 .pool:nth-child(even){--card:var(--sand)}
 .pool.still{animation:none}
-.pool-no{display:grid;align-content:start;gap:4px;padding-top:1px;color:var(--green);line-height:1;font-variant-numeric:tabular-nums}
-.pool-no b{font-size:1.45rem;font-weight:700;letter-spacing:-.02em}
-.pool-no span{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.pool-no small{font-size:.64rem;font-weight:600;opacity:.75}
-.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.pool-body{display:grid;gap:10px;min-width:0}
 .pool .bar{background:var(--track)}
 .pool .av,.pool .av-more{box-shadow:0 0 0 2px var(--card)}
 .pool .stack{margin-right:7px}
@@ -158,7 +152,7 @@ h2{font-size:1.15rem;line-height:1.3;font-weight:700;letter-spacing:-.015em}
 .pool.flash{animation:flash 1.6s var(--ease)}
 .pool-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .pool-when{display:grid;min-width:0}
-.pool-when b{font-weight:600;font-size:1.02rem}
+.pool-when b{font-weight:700;font-size:1.06rem;color:var(--green)}
 .pool-when span{font-size:.86rem;color:var(--muted)}
 .mine{color:var(--green);font-weight:600}
 .pool-meta{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:.9rem;color:var(--muted)}
@@ -1029,14 +1023,13 @@ h3{font-size:1rem;font-weight:600}
       var days = diff(p.d, today);
       var dp = p.d.split('-');
       return '<li class="pool' + (first ? '' : ' still') + '" style="--i:' + i + '" data-d="' + p.d + '">' +
-        '<div class="pool-no" aria-hidden="true"><b>' + dp[2] + '</b><span>' + MON[+dp[1] - 1] + '</span><small>' + dp[0] + '</small></div><div class="pool-body">' +
-        '<div class="pool-top"><div class="pool-when"><b><span class="sr">' + (+dp[2]) + ' ' + MONL[+dp[1] - 1] + ' ' + dp[0] + ', </span>' + DAYL[dow(p.d)] + ' · ' + (days > 0 ? days + ' hari lagi' : 'hari ini') + '</b>' +
-        (p.kg || mine ? '<span>' + (p.kg ? p.kg + ' lanjut Kirgistan' : '') + (p.kg && mine ? ' · ' : '') + (mine ? '<span class="mine">kamu ikut</span>' : '') + '</span>' : '') + '</div>' +
+        '<div class="pool-top"><div class="pool-when"><b>' + DAYL[dow(p.d)] + ', ' + (+dp[2]) + ' ' + MON[+dp[1] - 1] + ' ' + dp[0] + '</b>' +
+        '<span>' + (days > 0 ? days + ' hari lagi' : 'hari ini') + (p.kg ? ' · ' + p.kg + ' lanjut Kirgistan' : '') + (mine ? ' · <span class="mine">kamu ikut</span>' : '') + '</span></div>' +
         (full ? '<button type="button" class="btn btn-line btn-sm" disabled>Penuh</button></div>'
           : '<button type="button" class="btn btn-line btn-sm" data-join="' + p.d + '" aria-label="Gabung pool ' + esc(long(p.d)) + '">Gabung</button></div>') +
         barHTML(p.n, prev, false) +
         '<p class="pool-meta"><span>' + (first ? stack(p.n, 3, 250 + i * 60) : stack(p.n, 3).replace('class="stack"', 'class="stack still"')) + '<b class="num" data-to="' + p.n + '">' + (first ? 0 : p.n) + '</b>&nbsp;orang</span><span class="st ' + st.tone + '">' + esc(st.text) + '</span></p>' +
-        '</div></li>';
+        '</li>';
     }).join('');
     pools.forEach(function (p) { S.prevP[p.d] = Math.min(p.n / cap(), 1); });
     animateBars(list, first ? 250 : 0);
