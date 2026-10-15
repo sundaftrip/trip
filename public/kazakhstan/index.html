@@ -253,7 +253,7 @@ h3{font-size:1rem;font-weight:600}
 /* ---------- sheet ---------- */
 .backdrop{position:fixed;inset:0;z-index:30;background:var(--scrim);animation:fade .35s both}
 .backdrop.closing{animation:fadeOut .3s both}
-.sheet{position:fixed;z-index:31;left:0;right:0;bottom:0;margin:0 auto;width:100%;max-width:520px;max-height:94vh;max-height:94dvh;overflow-y:auto;overscroll-behavior:contain;background:var(--bg);border-radius:22px 22px 0 0;padding:6px max(20px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));animation:sheetUp .5s var(--ease) both}
+.sheet{position:fixed;z-index:31;left:0;right:0;bottom:0;margin:0 auto;width:100%;max-width:520px;max-height:94vh;max-height:94dvh;overflow-y:auto;overscroll-behavior:contain;background:var(--bg);border-radius:22px 22px 0 0;padding:6px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));animation:sheetUp .5s var(--ease) both}
 .sheet.settled{animation:none}
 .sheet.closing{animation:sheetDown .3s cubic-bezier(.4,0,1,1) both}
 .sheet.dragging{transition:none!important}
@@ -267,6 +267,7 @@ h3{font-size:1rem;font-weight:600}
 .prog i{display:block;height:100%;width:calc(var(--s,1)*25%);background:var(--ink);border-radius:inherit;transition:width .5s var(--ease)}
 
 .step{display:grid;gap:16px;padding-bottom:4px}
+.step[data-step="1"],.step.success{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
 .step.fwd{animation:inR .45s var(--ease) both}
 .step.back{animation:inL .45s var(--ease) both}
 .q{font-size:1.4rem;line-height:1.25;font-weight:700;letter-spacing:-.02em;outline:none;text-wrap:balance}
@@ -297,26 +298,104 @@ h3{font-size:1rem;font-weight:600}
 .dest{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:flex-start;overscroll-behavior-x:contain}
 .dest::-webkit-scrollbar{display:none}
 .dest-panel{flex:0 0 100%;min-width:0;scroll-snap-align:start;display:grid;gap:14px}
-.soon-card{display:grid;gap:12px;padding:20px 18px;border-radius:16px;background:var(--soft);text-align:left}
-.soon-card h4{margin:0;font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
-.soon-card p{color:var(--muted);font-size:.94rem}
-.soon-card .stack{margin:2px 0}
 
 .field{display:grid;gap:6px;position:relative}
 .field>span{font-size:.9rem;font-weight:500;color:var(--muted)}
 .field input{width:100%;height:54px;padding:0 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);font-size:1.05rem;transition:border-color .2s;-webkit-appearance:none;appearance:none}
-.field input:focus{outline:none;border-color:var(--ink)}
-.field input[aria-invalid="true"]{border-color:var(--warn)}
-.date-field input{padding-right:48px;line-height:normal;text-align:left}
-.date-field input::-webkit-date-and-time-value{text-align:left}
-.date-field input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
-.date-ico{position:absolute;right:16px;bottom:16px;width:22px;height:22px;color:var(--muted);pointer-events:none}
-.date-ph{display:none;position:absolute;left:17px;bottom:15px;color:var(--muted);pointer-events:none}
-.ios .date-field.empty .date-ph{display:block}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+.field input[aria-invalid="true"],.field textarea[aria-invalid="true"]{border-color:var(--warn)}
+.field i{font-style:normal;font-weight:400}
+.field textarea{display:block;width:100%;min-height:84px;padding:13px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);font:inherit;font-size:1.05rem;line-height:1.45;resize:vertical;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+
+/* calendar, GetYourGuide style: month grid, dates with people get a ring and a count */
+.cal{display:grid;gap:4px;touch-action:pan-y}
+.cal-head{display:grid;grid-template-columns:44px 1fr 44px;align-items:center}
+.cal-title{text-align:center;font-weight:700;font-size:1.02rem;letter-spacing:-.01em}
+.cal-btn{border:1.5px solid var(--line)}
+.cal-btn[disabled]{opacity:.3;cursor:default}
+.cal-dow,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cal-dow span{padding:6px 0 2px;text-align:center;font-size:.74rem;font-weight:600;color:var(--muted)}
+.cal-grid.fwd{animation:inR .4s var(--ease) both}
+.cal-grid.back{animation:inL .4s var(--ease) both}
+.day{position:relative;display:grid;place-items:center;height:50px;min-width:0;color:var(--ink);font-variant-numeric:tabular-nums}
+.day b{display:grid;place-items:center;width:36px;height:36px;margin-top:-6px;border-radius:50%;font-size:.95rem;font-weight:600;transition:background-color .25s,color .25s,box-shadow .25s}
+.day small{position:absolute;left:-2px;right:-2px;bottom:1px;font-size:.62rem;font-weight:700;line-height:1;color:var(--link);text-align:center;white-space:nowrap}
+.day.has b{box-shadow:inset 0 0 0 1.5px var(--bar)}
+.day.full small{color:var(--warn)}
+.day[disabled]{cursor:default}
+.day[disabled] b{color:var(--muted);opacity:.45;box-shadow:none}
+.day[aria-pressed="true"] b{background:var(--ink);color:var(--on-btn);box-shadow:none;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+@media (hover:hover){.day:not([disabled]):not([aria-pressed="true"]):hover b{background:var(--soft)}}
+.cal-legend{display:flex;flex-wrap:wrap;gap:4px 16px;padding-top:2px;font-size:.78rem;color:var(--muted)}
+.cal-legend i{display:inline-block;width:11px;height:11px;margin-right:6px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--bar);vertical-align:-1px}
+.cal-legend i.on{background:var(--ink);box-shadow:none}
+.chips-l{font-size:.86rem;font-weight:600;color:var(--muted);margin-bottom:-8px}
+.chips{display:flex;gap:8px;margin:0 -2px;padding:2px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:grid;align-content:center;min-height:48px;padding:6px 13px;border:1.5px solid var(--line);border-radius:12px;text-align:left;line-height:1.25;scroll-snap-align:start;transition:border-color .25s,background-color .25s;animation:avIn .5s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--k,0)*55ms + 120ms)}
+.chip b{font-size:.88rem;font-weight:600;white-space:nowrap}
+.chip span{font-size:.76rem;font-weight:600;color:var(--link)}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--soft)}
+.pax-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border:1.5px solid var(--line);border-radius:14px}
+.pax-row .lbl{display:grid;min-width:0}
+.pax-row .lbl b{font-weight:600}
+.pax-row .lbl span{font-size:.84rem;color:var(--muted)}
+.pax-row .pax{gap:10px;padding:0}
+.pax-row .round{width:44px;height:44px;font-size:1.35rem}
+.pax-row .pax-n{font-size:1.55rem;min-width:1.6ch}
+
+/* arrival step */
+.flabel{font-size:.9rem;font-weight:500;color:var(--muted)}
+.vias{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.via{display:grid;justify-items:center;align-content:start;gap:1px;min-height:88px;padding:12px 6px 10px;border:1.5px solid var(--line);border-radius:14px;text-align:center;transition:border-color .25s,background-color .25s}
+.via svg{width:26px;height:26px;margin-bottom:5px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.via b{font-size:.92rem;font-weight:600}
+.via span{font-size:.76rem;line-height:1.3;color:var(--muted)}
+.via[aria-pressed="true"]{border-color:var(--ink);background:var(--soft)}
+.via[aria-pressed="true"] svg{animation:hopIco .55s var(--ease)}
+.time-field{display:grid;gap:6px}
+.time-sel{display:flex;align-items:center;gap:8px}
+.time-sel>span{font-weight:700;color:var(--muted)}
+.sel{position:relative;flex:1;min-width:0}
+.sel select{display:block;width:100%;height:54px;padding:0 40px 0 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:1.05rem;-webkit-appearance:none;appearance:none;transition:border-color .2s,opacity .2s}
+.sel select:focus{outline:none;border-color:var(--ink)}
+.sel select:disabled{opacity:.45}
+.sel svg{position:absolute;right:14px;top:50%;width:18px;height:18px;margin-top:-9px;color:var(--muted);pointer-events:none}
+.note-card{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:start;padding:12px 14px;border-radius:14px;background:var(--soft);font-size:.9rem;color:var(--muted);animation:up .4s var(--ease) both}
+.note-card b{color:var(--ink);font-weight:600}
+.note-card svg{width:24px;height:24px;color:var(--ink);overflow:visible}
+.meet{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start;font-size:.88rem;color:var(--muted)}
+.meet b{color:var(--ink);font-weight:600}
+.meet svg{width:22px;height:22px;color:var(--ink);overflow:visible}
+.moon-star{fill:var(--gold);transform-box:fill-box;transform-origin:center;animation:twinkle 2.6s ease-in-out infinite}
+.moon-star.s2{animation-delay:1.3s}
+.pin-head{transform-box:fill-box;transform-origin:50% 100%;animation:bob 2.4s ease-in-out infinite}
+.hop-dot{fill:var(--bar);animation:cross 3s ease-in-out infinite}
+
+/* Kazakhstan + Kirgistan configurator */
+.kg-box{display:grid;gap:12px;padding:14px;border-radius:16px;background:var(--soft)}
+.kg-row{display:grid;gap:6px}
+.kg-l{font-size:.86rem;font-weight:600;color:var(--muted)}
+.kg-row .seg{display:grid;grid-template-columns:repeat(var(--c,4),minmax(0,1fr));background:var(--bg)}
+.kg-row .seg button{padding:0 6px}
+.kg-row .seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-btn);box-shadow:none}
+.kg-plan li{grid-template-columns:84px minmax(0,1fr)}
+.kg-total{font-size:.9rem;font-weight:600}
+.opt-main .drop{color:var(--good);font-weight:600}
+#fFl{text-transform:uppercase}
+#fFl::placeholder{text-transform:none}
+.hotel-row{display:grid;gap:6px}
+.hotel-row .seg{display:grid;grid-template-columns:1fr 1fr}
+
+/* step button stays in reach while the form scrolls */
+.step-cta{position:sticky;bottom:0;z-index:2;display:grid;gap:8px;margin-top:-4px;padding:12px 0 calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+.step-cta::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:18px;background:linear-gradient(to top,var(--bg),transparent);pointer-events:none}
 .date-info{font-size:.92rem;color:var(--muted);animation:up .35s var(--ease) both}
 .date-info b{color:var(--ink);font-weight:600}
 .suggest{display:grid;gap:10px;justify-items:start;padding:14px 16px;border-radius:14px;background:var(--soft);font-size:.92rem;animation:up .4s var(--ease) both}
 .suggest b{font-weight:600}
+.suggest .s-row{justify-self:stretch;grid-template-columns:repeat(2,minmax(0,1fr))}
+.suggest .btn{white-space:nowrap;padding:0 12px}
 .check{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;font-size:.95rem}
 .check input{position:absolute;opacity:0;pointer-events:none}
 .box{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;transition:background-color .2s,border-color .2s}
@@ -332,10 +411,9 @@ h3{font-size:1rem;font-weight:600}
 .pax-n{min-width:2ch;text-align:center;font-size:3.2rem;font-weight:700;letter-spacing:-.03em;line-height:1;display:inline-block}
 .pax-n.up{animation:rollUp .35s var(--ease)}
 .pax-n.down{animation:rollDown .35s var(--ease)}
-.pax-hint{text-align:center;color:var(--muted)}
 
 .recap{display:flex;flex-wrap:wrap;gap:8px}
-.recap button{min-height:40px;padding:0 14px;border-radius:10px;background:var(--soft);font-size:.88rem;font-weight:600}
+.recap button{min-height:44px;padding:0 14px;border-radius:10px;background:var(--soft);font-size:.88rem;font-weight:600}
 .recap button span{color:var(--muted);font-weight:500;margin-right:5px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .err{padding:10px 14px;border-radius:12px;background:var(--soft);color:var(--warn);font-size:.9rem;font-weight:500;animation:up .3s var(--ease) both}
@@ -362,6 +440,11 @@ h3{font-size:1rem;font-weight:600}
 .s-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:10px}
 .copy-fallback{width:100%;height:46px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);font-size:1rem}
 
+@keyframes pop{0%{transform:scale(.55)}60%{transform:scale(1.12)}100%{transform:none}}
+@keyframes hopIco{0%,100%{transform:none}40%{transform:translateY(-4px) rotate(-7deg)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.55)}50%{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:none}50%{transform:translateY(-2.5px)}}
+@keyframes cross{0%,12%{transform:translate(7px,15.5px);opacity:0}22%{opacity:1}70%{transform:translate(17px,8.5px);opacity:1}82%,100%{transform:translate(17px,8.5px);opacity:0}}
 @keyframes avIn{0%{opacity:0;transform:scale(.3) translateY(8px)}70%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:none}}
 @keyframes meIn{0%{opacity:0;transform:translateY(-34px) scale(.6)}55%{opacity:1;transform:translateY(4px) scale(1.08)}75%{transform:translateY(-3px)}100%{opacity:1;transform:none}}
 @keyframes hop{0%,9%,100%{transform:none}4.5%{transform:translateY(-3px)}}
@@ -425,13 +508,16 @@ h3{font-size:1rem;font-weight:600}
     <ul class="care">
       <li><span class="care-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="flag-cloth" d="M5.6 4h12.2l-2.6 3.6 2.6 3.6H5.6z"/></svg></span><p><b>Di Bandara Almaty,</b> pemandu menjemput kamu dengan bendera SUNDAF Trip.</p></li>
       <li><span class="care-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 22h20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="plane" d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/></svg></span><p><b>Berangkat dari Jakarta?</b> Tim SUNDAF Trip menemui kamu di Bandara Soekarno-Hatta (CGK) sebelum terbang.</p></li>
+      <li id="careMeet"><span class="care-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="pin-head"><path d="M12 21s-6.2-5.5-6.2-10.4a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10.6" r="2.3" fill="var(--bar)"/></g></svg></span><p><b>Titik kumpul tiap pagi:</b> <span id="meetText">Lobi hotel paket (Astra), Almaty</span>. Yang nyusul atau menginap di hotel sendiri gabung di sini.</p></li>
+      <li><span class="care-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19.5 14.6A7.6 7.6 0 1 1 9.4 4.5a6 6 0 0 0 10.1 10.1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path class="moon-star" d="M17.3 2.6l.75 1.65 1.65.75-1.65.75-.75 1.65-.75-1.65-1.65-.75 1.65-.75z"/><path class="moon-star s2" d="M21.2 8.4l.45 1 1 .45-1 .45-.45 1-.45-1-1-.45 1-.45z"/></svg></span><p><b>Tiba malam?</b> Tetap dijemput, terpisah dari rombongan. <span id="nightText">Biaya transfer malam dikonfirmasi admin.</span></p></li>
+      <li><span class="care-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="17.5" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="6.5" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 15.5 17 8.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 3.2"/><circle class="hop-dot" r="1.9"/></svg></span><p><b>Lanjut ke Kirgistan?</b> Kami antar sampai perbatasan Korday atau Bandara Almaty, lalu tim Kirgistan menjemput di seberang.</p></li>
     </ul>
   </section>
 
   <section class="wrap sec" aria-labelledby="howTitle">
     <h2 id="howTitle">Cara kerjanya</h2>
     <ol class="how">
-      <li><p><b>Daftar minat.</b> Isi tanggal tiba, paket, jumlah orang, nama, dan nomor WA. Gratis, tanpa bayar.</p></li>
+      <li><p><b>Daftar minat.</b> Pilih tanggal tiba dan jumlah orang, lalu paket, jam tiba, nama, dan nomor WA. Gratis, tanpa bayar.</p></li>
       <li><p><b id="how2">Tembus 6 orang, grup WA dibuka.</b> Admin masukin kamu ke grup bareng peserta yang tiba di tanggal yang sama.</p></li>
       <li><p><b>Makin ramai, makin murah.</b> Harga per orang ikut jumlah peserta di tanggalmu. Pelunasan paling lambat 3 hari sebelum tiba.</p></li>
     </ol>
@@ -505,68 +591,108 @@ h3{font-size:1rem;font-weight:600}
   <form id="form" novalidate>
     <div class="step" data-step="0">
       <h3 class="q" id="q0" tabindex="-1">Kapan kamu tiba di Almaty?</h3>
-      <div class="opts" id="dateOpts" hidden></div>
-      <label class="field date-field empty" for="fDate"><span id="dateLabel">Pilih tanggal tiba</span><input type="date" id="fDate" name="d"><span class="date-ph" aria-hidden="true">Ketuk untuk pilih tanggal</span><svg class="date-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></label>
+      <p class="chips-l" id="chipsL" hidden>Sudah ada rombongan</p>
+      <div class="chips" id="chips" hidden></div>
+      <div class="cal" id="cal">
+        <div class="cal-head">
+          <button type="button" class="icon-btn cal-btn" id="calPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <b class="cal-title" id="calTitle" aria-live="polite"></b>
+          <button type="button" class="icon-btn cal-btn" id="calNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="cal-dow" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+        <div class="cal-grid" id="calGrid" role="group"></div>
+        <p class="cal-legend"><span><i></i>Sudah ada peserta</span><span><i class="on"></i>Tanggal tibamu</span></p>
+      </div>
       <p class="date-info" id="dateInfo" hidden></p>
       <div class="suggest" id="suggest" hidden></div>
+      <div class="pax-row">
+        <span class="lbl"><b>Jumlah orang</b><span id="paxHint">Kamu dan 1 teman</span></span>
+        <div class="pax">
+          <button type="button" class="round" id="paxMinus" aria-label="Kurangi satu orang">−</button>
+          <output class="pax-n num" id="paxOut" aria-live="polite">2</output>
+          <button type="button" class="round" id="paxPlus" aria-label="Tambah satu orang">+</button>
+        </div>
+      </div>
       <label class="check" for="fFlex"><input type="checkbox" id="fFlex" name="flex"><span class="box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Tanggalku masih bisa geser ±2 hari</span></label>
       <p class="err" id="err0" role="alert" hidden></p>
-      <button type="button" class="btn btn-primary wide" data-next="0">Lanjut</button>
+      <div class="step-cta"><button type="button" class="btn btn-primary wide" data-next="0">Lihat paket</button></div>
     </div>
 
     <div class="step" data-step="1" hidden>
       <h3 class="q" tabindex="-1">Pilih paket</h3>
       <div class="dest-tabs" role="tablist" aria-label="Pilih tujuan">
         <button type="button" role="tab" id="tabKZ" data-dest="0" aria-selected="true" aria-controls="panKZ">Kazakhstan</button>
-        <button type="button" role="tab" id="tabKG" data-dest="1" aria-selected="false" aria-controls="panKG">+ Kirgistan<span class="soon">segera</span></button>
+        <button type="button" role="tab" id="tabKG" data-dest="1" aria-selected="false" aria-controls="panKG">+ Kirgistan<span class="soon">baru</span></button>
         <i class="ink" aria-hidden="true"></i>
       </div>
       <div class="dest" id="dest">
         <div class="dest-panel" id="panKZ" role="tabpanel" aria-labelledby="tabKZ">
           <p class="sub" id="pkgSub">Masih galau? Boleh pilih 2, nanti diputuskan bareng di grup.</p>
           <div class="opts">
-            <button type="button" class="opt" data-pkg="5" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>5 hari 4 malam</b><span class="range" data-days="5"></span><span>Almaty, Charyn Canyon, Danau Kolsay, Medeo, Shymbulak</span></span><span class="opt-side" data-price="5">Rp5,28 jt<small>di 30 orang</small></span></button>
-            <button type="button" class="opt" data-pkg="6" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>6 hari 5 malam</b><span class="range" data-days="6"></span><span>Semua di paket 5 hari, plus Oi Qaragai</span></span><span class="opt-side" data-price="6">Rp6,36 jt<small>di 30 orang</small></span></button>
-            <button type="button" class="opt" data-pkg="8" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>8 hari 7 malam</b><span class="range" data-days="8"></span><span>Paket 6 hari, plus Big Almaty Lake dan sehari santai</span></span><span class="opt-side" data-price="8">±Rp8,50 jt<small>estimasi, 30 orang</small></span></button>
+            <button type="button" class="opt" data-pkg="5" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>5 hari 4 malam</b><span class="range" data-days="5"></span><span>Almaty, Charyn Canyon, Danau Kolsay, Medeo, Shymbulak</span><span class="drop" data-drop="5" hidden></span></span><span class="opt-side" data-price="5">Rp6,38 jt<small>di 6 orang</small></span></button>
+            <button type="button" class="opt" data-pkg="6" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>6 hari 5 malam</b><span class="range" data-days="6"></span><span>Semua di paket 5 hari, plus Oi Qaragai</span><span class="drop" data-drop="6" hidden></span></span><span class="opt-side" data-price="6">Rp7,60 jt<small>di 6 orang</small></span></button>
+            <button type="button" class="opt" data-pkg="8" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>8 hari 7 malam</b><span class="range" data-days="8"></span><span>Paket 6 hari, plus Big Almaty Lake dan sehari santai</span><span class="drop" data-drop="8" hidden></span></span><span class="opt-side" data-price="8">±Rp10,03 jt<small>estimasi, 6 orang</small></span></button>
           </div>
           <p class="pick-note" id="pickNote" aria-live="polite"></p>
           <p class="err" id="err1" role="alert" hidden></p>
           <button type="button" class="btn btn-primary wide" data-next="1">Lanjut</button>
         </div>
         <div class="dest-panel" id="panKG" role="tabpanel" aria-labelledby="tabKG">
-          <div class="soon-card">
-            <span id="kgStack"></span>
-            <h4>Kazakhstan + Kirgistan</h4>
-            <p>Paket gabungan dua negara sedang kami siapkan. Daftar minat sekarang, nanti kamu dikabari duluan begitu jadwal dan harganya siap.</p>
-            <button type="button" class="btn btn-primary wide" id="kgBtn">Daftar minat</button>
-            <p class="hint">Terpisah dari pool Kazakhstan. Belum ada pembayaran.</p>
+          <p class="sub">Mulai bareng rombongan Kazakhstan, lalu lanjut ke Kirgistan. Atur sendiri harinya.</p>
+          <div class="kg-box">
+            <div class="kg-row"><span class="kg-l" id="kzL">Hari di Kazakhstan</span><div class="seg" role="group" aria-labelledby="kzL"><button type="button" data-kz="2" aria-pressed="false">2</button><button type="button" data-kz="3" aria-pressed="true">3</button><button type="button" data-kz="4" aria-pressed="false">4</button><button type="button" data-kz="5" aria-pressed="false">5</button></div></div>
+            <div class="kg-row"><span class="kg-l" id="kxL">Ke Bishkek lewat</span><div class="seg" role="group" aria-labelledby="kxL" style="--c:2"><button type="button" data-kx="darat" aria-pressed="true">Darat</button><button type="button" data-kx="pesawat" aria-pressed="false">Pesawat</button></div></div>
+            <div class="kg-row"><span class="kg-l" id="kgdL">Hari di Kirgistan</span><div class="seg" role="group" aria-labelledby="kgdL"><button type="button" data-kgd="2" aria-pressed="false">2</button><button type="button" data-kgd="3" aria-pressed="true">3</button><button type="button" data-kgd="4" aria-pressed="false">4</button><button type="button" data-kgd="5" aria-pressed="false">5</button></div></div>
           </div>
+          <ol class="route kg-plan" id="kgPlan"></ol>
+          <p class="kg-total" id="kgTotal"></p>
+          <p class="hint">Harga dikonfirmasi admin lewat WhatsApp. Tim Kirgistan terpisah, serah terima di perbatasan atau bandara. Kamu tetap dihitung di pool tanggal tibamu.</p>
+          <button type="button" class="btn btn-primary wide" id="kgBtn">Pilih rencana ini</button>
         </div>
       </div>
     </div>
 
     <div class="step" data-step="2" hidden>
-      <h3 class="q" tabindex="-1">Berangkat berapa orang?</h3>
-      <div class="pax">
-        <button type="button" class="round" id="paxMinus" aria-label="Kurangi satu orang">−</button>
-        <output class="pax-n num" id="paxOut" aria-live="polite">2</output>
-        <button type="button" class="round" id="paxPlus" aria-label="Tambah satu orang">+</button>
+      <h3 class="q" tabindex="-1">Kamu tiba lewat apa?</h3>
+      <div class="vias" role="group" aria-label="Cara tiba">
+        <button type="button" class="via" data-via="pesawat" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><b>Pesawat</b><span>ke Bandara Almaty</span></button>
+        <button type="button" class="via" data-via="darat" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v6M15 6v6M2 12h19.6M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg><b>Darat</b><span>dari Bishkek</span></button>
+        <button type="button" class="via" data-via="lokal" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.2-5.5-6.2-10.4a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21z"/><circle cx="12" cy="10.6" r="2.3"/></svg><b>Sudah di</b><span>Almaty</span></button>
       </div>
-      <p class="pax-hint" id="paxHint">Kamu dan 1 teman</p>
+      <div class="time-field" id="timeField">
+        <span class="flabel" id="timeLabel">Jam mendarat (waktu Almaty)</span>
+        <div class="time-sel">
+          <span class="sel"><select id="fHour" aria-labelledby="timeLabel"><option value="">Belum tahu</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span aria-hidden="true">:</span>
+          <span class="sel"><select id="fMin" aria-label="Menit"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+      </div>
+      <label class="field" for="fFl" id="flField"><span>No. penerbangan <i>(opsional)</i></span><input id="fFl" name="fl" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Contoh: KC 123"></label>
+      <div class="note-card" id="viaNote" hidden></div>
+      <div class="note-card" id="joinNote" hidden></div>
+      <div class="hotel-row">
+        <span class="flabel" id="hotelL">Menginap di</span>
+        <div class="seg" role="group" aria-labelledby="hotelL"><button type="button" data-hotel="paket" aria-pressed="true">Hotel paket</button><button type="button" data-hotel="sendiri" aria-pressed="false">Hotel sendiri</button></div>
+      </div>
+      <label class="field" for="fHn" id="hnField" hidden><span>Nama hotelmu <i>(opsional)</i></span><input id="fHn" name="hn" maxlength="60" autocomplete="off" placeholder="Boleh diisi nanti"></label>
+      <p class="meet" id="meetHint"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="pin-head"><path d="M12 21s-6.2-5.5-6.2-10.4a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10.6" r="2.3" fill="var(--bar)"/></g></svg><span id="meetHintText"></span></p>
       <p class="err" id="err2" role="alert" hidden></p>
-      <button type="button" class="btn btn-primary wide" data-next="2">Lanjut</button>
+      <div class="step-cta"><button type="button" class="btn btn-primary wide" data-next="2">Lanjut</button></div>
     </div>
 
     <div class="step" data-step="3" hidden>
       <h3 class="q" tabindex="-1">Nama dan nomor WhatsApp</h3>
       <p class="sub">Biar admin bisa kabari kamu kalau tanggalmu sudah ramai.</p>
       <label class="field" for="fName"><span>Nama</span><input id="fName" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="60" placeholder="Nama panggilan juga boleh"></label>
-      <label class="field" for="fWa"><span>Nomor WhatsApp</span><input id="fWa" name="wa" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="send" maxlength="22" placeholder="0812 3456 7890"></label>
+      <label class="field" for="fWa"><span>Nomor WhatsApp</span><input id="fWa" name="wa" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" maxlength="22" placeholder="0812 3456 7890"></label>
+      <label class="field" for="fNote"><span>Catatan untuk admin <i>(opsional)</i></span><textarea id="fNote" name="note" rows="2" maxlength="300" placeholder="Misal: alergi makanan, ulang tahun, butuh kursi roda"></textarea></label>
       <input type="text" class="hp" id="fHp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="recap" id="recap"></div>
       <p class="err" id="err3" role="alert" hidden></p>
-      <button type="submit" class="btn btn-primary wide" id="submitBtn"><span class="spin" aria-hidden="true"></span><span class="lbl">Gabung pool</span></button>
-      <p class="fine">Belum ada pembayaran. Data kamu hanya dipakai admin SUNDAF Trip.</p>
+      <div class="step-cta">
+        <button type="submit" class="btn btn-primary wide" id="submitBtn"><span class="spin" aria-hidden="true"></span><span class="lbl">Gabung pool</span></button>
+        <p class="fine">Belum ada pembayaran. Data kamu hanya dipakai admin SUNDAF Trip.</p>
+      </div>
     </div>
 
     <div class="step success" data-step="4" hidden>
@@ -604,6 +730,7 @@ h3{font-size:1rem;font-weight:600}
   var GAS = !!(window.google && google.script && google.script.run);
   var LIVE = GAS || !!API_URL;
 
+  var DEFAULT_MEET = 'Lobi hotel paket (Astra), Almaty';
   var DEFAULT = {
     milestones: [6, 20, 30],
     tiers: [
@@ -659,13 +786,20 @@ h3{font-size:1rem;font-weight:600}
     if (more && n > k) h += '<span class="av-more" style="--k:' + k + '">+' + (n - k) + '</span>';
     return '<span class="stack" style="--d:' + (delay || 0) + 'ms" aria-hidden="true">' + h + '</span>';
   }
-  function range(d, days) {
-    var e = addDays(d, days - 1), a = d.split('-'), b = e.split('-');
+  function range(d, days) { return rangeKeys(d, addDays(d, days - 1)); }
+  function rangeShort(d, e) {
+    var a = d.split('-'), b = e.split('-');
+    if (d === e) return short(d);
+    return a[1] === b[1] ? (+a[2]) + '–' + (+b[2]) + ' ' + MON[+a[1] - 1] : short(d) + '–' + short(e);
+  }
+  function rangeKeys(d, e) {
+    var a = d.split('-'), b = e.split('-');
+    if (d === e) return (+a[2]) + ' ' + MONL[+a[1] - 1] + ' ' + a[0];
     if (a[0] === b[0] && a[1] === b[1]) return (+a[2]) + '–' + (+b[2]) + ' ' + MONL[+a[1] - 1] + ' ' + a[0];
     if (a[0] === b[0]) return (+a[2]) + ' ' + MONL[+a[1] - 1] + ' – ' + (+b[2]) + ' ' + MONL[+b[1] - 1] + ' ' + a[0];
     return (+a[2]) + ' ' + MONL[+a[1] - 1] + ' ' + a[0] + ' – ' + (+b[2]) + ' ' + MONL[+b[1] - 1] + ' ' + b[0];
   }
-  function pkgText(p) { return p === 'KG' ? 'Kazakhstan + Kirgistan (minat)' : String(p || '').split(',').join(' atau ') + ' hari'; }
+  function pkgText(p) { return p === 'KG' ? 'Kazakhstan ' + S.f.kg.kz + ' hari + Kirgistan ' + S.f.kg.kgd + ' hari' : String(p || '').split(',').join(' atau ') + ' hari'; }
   function safeUrl(u) { return /^https?:\/\//i.test(String(u || '')) ? String(u) : ''; }
   function normWa(raw) {
     var d = String(raw || '').replace(/\D/g, '');
@@ -679,11 +813,24 @@ h3{font-size:1rem;font-weight:600}
   };
 
   var S = {
-    data: null, sort: 'n', step: 0, open: false, busy: false, heroSeen: true, prevP: {}, res: null, pkgOrder: [], nudged: false,
-    f: { d: '', flex: false, pkg: '', pax: 2, name: '', wa: '' },
+    data: null, sort: 'n', step: 0, open: false, busy: false, heroSeen: true, prevP: {}, res: null, pkgOrder: [], nudged: false, cal: null,
+    f: { d: '', j: '', flex: false, pkg: '', pax: 2, t: '', via: 'pesawat', fl: '', hotel: 'paket', hn: '', kg: { kz: 3, x: 'darat', kgd: 3 }, note: '', name: '', wa: '' },
     mine: store.get('mine', [])
   };
-  (function () { var dr = store.get('draft', null); if (dr && typeof dr === 'object') { ['d', 'pkg', 'name', 'wa'].forEach(function (k) { if (typeof dr[k] === 'string') S.f[k] = dr[k]; }); if (dr.pax > 0) S.f.pax = dr.pax | 0; S.f.flex = !!dr.flex; } })();
+  (function () {
+    var dr = store.get('draft', null);
+    if (!dr || typeof dr !== 'object') return;
+    ['d', 'j', 'pkg', 'name', 'wa', 'fl', 'hn', 'note'].forEach(function (k) { if (typeof dr[k] === 'string') S.f[k] = dr[k]; });
+    if (dr.pax > 0) S.f.pax = dr.pax | 0;
+    S.f.flex = !!dr.flex;
+    if (/^\d{2}:\d{2}$/.test(dr.t || '')) S.f.t = dr.t;
+    if (/^(pesawat|darat|lokal)$/.test(dr.via || '')) S.f.via = dr.via;
+    if (dr.hotel === 'sendiri') S.f.hotel = 'sendiri';
+    if (dr.kg && typeof dr.kg === 'object') {
+      var kz = dr.kg.kz | 0, kgd = dr.kg.kgd | 0;
+      S.f.kg = { kz: kz >= 2 && kz <= 5 ? kz : 3, x: dr.kg.x === 'pesawat' ? 'pesawat' : 'darat', kgd: kgd >= 2 && kgd <= 5 ? kgd : 3 };
+    }
+  })();
   S.pkgOrder = S.f.pkg && S.f.pkg !== 'KG' ? S.f.pkg.split(',').filter(function (x) { return /^[568]$/.test(x); }).slice(0, 2) : [];
   if (S.f.pkg !== 'KG') S.f.pkg = S.pkgOrder.slice().sort().join(',');
   function saveDraft() { store.set('draft', S.f); }
@@ -704,11 +851,16 @@ h3{font-size:1rem;font-weight:600}
   var DEMO = null;
   function demoData() {
     var today = keyOf(Date.now() + 7 * 36e5), now = Date.now();
-    function mk(o, n, p6, p8, g) { return { d: addDays(today, o), n: n, p5: n - p6 - p8, p6: p6, p8: p8, r: Math.ceil(n / 2), g: !!g }; }
-    var pools = [mk(37, 11, 3, 2, 1), mk(50, 4, 0, 0), mk(59, 23, 6, 3, 1), mk(71, 7, 2, 0), mk(86, 2, 0, 0), mk(120, 31, 9, 4, 1)];
+    function mk(o, n, p6, p8, g, kg, q) {
+      var d = addDays(today, o);
+      kg = kg || 0; q = q || 30;
+      return { d: d, n: n, p5: n - p6 - p8 - kg, p6: p6, p8: p8, kg: kg, px: 0, r: Math.ceil(n / 2), e: addDays(d, p8 ? 7 : p6 ? 5 : 4), q: q, full: n >= q, g: !!g };
+    }
+    var pools = [mk(37, 11, 3, 2, 1, 2), mk(50, 4, 0, 0), mk(59, 23, 6, 3, 1, 4), mk(71, 7, 2, 0, 0, 2), mk(86, 2, 0, 0), mk(120, 12, 4, 2, 1, 0, 12)];
     return {
-      ok: true, demo: true, open: true, today: today, minDays: 7, maxPax: 10, milestones: DEFAULT.milestones.slice(),
-      prices: { tiers: DEFAULT.tiers, single: DEFAULT.single }, kurs: 17950, wa: '', share: '', pools: pools,
+      ok: true, demo: true, version: 3, open: true, today: today, minDays: 7, maxPax: 10, quota: 30, joinMax: 3, milestones: DEFAULT.milestones.slice(),
+      prices: { tiers: DEFAULT.tiers, single: DEFAULT.single }, kurs: 17950, wa: '', share: '',
+      meet: DEFAULT_MEET, meetTime: '08:30', night: { from: '22:00', to: '06:00', fee: 0 }, pools: pools,
       recent: [{ d: pools[2].d, n: 2, t: now - 3 * 6e4 }, { d: pools[0].d, n: 1, t: now - 17 * 6e4 }, { d: pools[3].d, n: 2, t: now - 52 * 6e4 }, { d: pools[5].d, n: 4, t: now - 2.5 * 36e5 }],
       total: pools.reduce(function (s, p) { return s + p.n; }, 0), updated: now
     };
@@ -718,14 +870,18 @@ h3{font-size:1rem;font-weight:600}
     return new Promise(function (res) {
       setTimeout(function () {
         if (fn === 'getPools') return res(JSON.parse(JSON.stringify(DEMO)));
-        var x = arg || {}, p = null;
-        DEMO.pools.forEach(function (q) { if (q.d === x.d) p = q; });
-        if (!p) { p = { d: x.d, n: 0, p5: 0, p6: 0, p8: 0, r: 0, g: false }; DEMO.pools.push(p); }
-        if (x.pkg === 'KG') return res({ ok: true, demo: true, kind: 'KG', kode: 'KZ-DEMO', updated: false, prev: p.n, pool: { d: p.d, n: p.n, p5: p.p5, p6: p.p6, p8: p.p8, px: p.px || 0, r: p.r }, group: '', wa: '', share: '' });
-        var key = x.pkg.indexOf(',') >= 0 ? 'px' : 'p' + x.pkg;
-        var prev = p.n; p.n += x.pax; p[key] = (p[key] || 0) + x.pax; p.r += 1;
-        DEMO.total += x.pax; DEMO.recent.unshift({ d: x.d, n: x.pax, t: Date.now() });
-        res({ ok: true, demo: true, kind: 'KZ', kode: 'KZ-DEMO', updated: false, prev: prev, pool: { d: p.d, n: p.n, p5: p.p5, p6: p.p6, p8: p.p8, px: p.px || 0, r: p.r }, group: '', wa: '', share: '' });
+        var x = arg || {}, g = x.j || x.d, p = null;
+        DEMO.pools.forEach(function (q) { if (q.d === g) p = q; });
+        if (!p) { p = { d: g, n: 0, p5: 0, p6: 0, p8: 0, kg: 0, px: 0, r: 0, e: addDays(g, 4), q: DEMO.quota, full: false, g: false }; DEMO.pools.push(p); }
+        var left = p.q - p.n;
+        if (x.pax > left) return res({ ok: false, field: left > 0 ? 'pax' : 'd', error: left > 0 ? 'Tanggal ini tinggal ' + left + ' kursi. Kurangi jumlah orang atau pilih tanggal lain.' : 'Tanggal ini sudah penuh. Pilih tanggal lain, atau chat admin untuk daftar tunggu.' });
+        var key = x.pkg === 'KG' ? 'kg' : x.pkg.indexOf(',') >= 0 ? 'px' : 'p' + x.pkg;
+        var span = x.pkg === 'KG' ? (x.kg && x.kg.kz) || 3 : Math.max.apply(null, x.pkg.split(',').map(Number));
+        var prev = p.n; p.n += x.pax; p[key] = (p[key] || 0) + x.pax; p.r += 1; p.full = p.n >= p.q;
+        if (addDays(g, span - 1) > p.e) p.e = addDays(g, span - 1);
+        DEMO.total += x.pax; DEMO.recent.unshift({ d: g, n: x.pax, t: Date.now() });
+        res({ ok: true, demo: true, kind: x.pkg === 'KG' ? 'KG' : 'KZ', interest: false, joined: !!x.j, kode: 'KZ-DEMO', updated: false, prev: prev,
+          pool: { d: p.d, n: p.n, p5: p.p5, p6: p.p6, p8: p.p8, kg: p.kg, px: p.px, r: p.r, e: p.e, q: p.q }, group: '', night: x.via === 'pesawat' && isNight(x.t), wa: '', share: '' });
       }, fn === 'getPools' ? 200 : 900);
     });
   }
@@ -738,6 +894,24 @@ h3{font-size:1rem;font-weight:600}
   function minKey() { return addDays(S.data.today, S.data.minDays || 0); }
   function maxKey() { return addDays(S.data.today, 450); }
   function poolOf(d) { var f = null; (S.data.pools || []).forEach(function (p) { if (p.d === d) f = p; }); return f; }
+  function validDate(k) { return /^\d{4}-\d{2}-\d{2}$/.test(k || ''); }
+  function qOf(p) { return p && p.q !== undefined && p.q !== null ? p.q : (S.data.quota || 999); }
+  function isFull(p) { return !!p && (p.full !== undefined ? !!p.full : p.n >= qOf(p)); }
+  function endOf(p) { return p.e || addDays(p.d, 4); }
+  function gKey() { return S.f.j || S.f.d; }
+  function seatsLeft(k) { var p = poolOf(k); return qOf(p) - (p ? p.n : 0); }
+  function meetText() { var m = S.data.meet !== undefined ? S.data.meet : DEFAULT_MEET; return m ? m + (S.data.meetTime ? ', jam ' + S.data.meetTime.replace(':', '.') : '') : ''; }
+  function nightCfg() { return S.data.night !== undefined ? S.data.night : { from: '22:00', to: '06:00', fee: 0 }; }
+  function isNight(t) { var n = nightCfg(); if (!t || !n) return false; return n.from > n.to ? (t >= n.from || t < n.to) : (t >= n.from && t < n.to); }
+  function nightFee() { var n = nightCfg(); return n && n.fee ? 'biaya transfer malam ' + rp(n.fee) + ' per penjemputan' : 'biaya transfer malam dikonfirmasi admin'; }
+  /* Rombongan yang tiba 1-3 hari sebelum tanggalmu dan masih jalan: bisa disusul. */
+  function joinCandidates(d) {
+    var max = S.data.joinMax || 3;
+    return (S.data.pools || []).filter(function (p) { var gap = diff(d, p.d); return p.n > 0 && !isFull(p) && gap >= 1 && gap <= max && d < endOf(p); })
+      .sort(function (a, b) { return b.n - a.n || diff(d, a.d) - diff(d, b.d); });
+  }
+  function validJoin(d, j) { return joinCandidates(d).some(function (p) { return p.d === j; }); }
+  function monthOf(k) { var p = k.split('-'); return { y: +p[0], m: +p[1] - 1 }; }
   function status(n, g) {
     var m = ms(), next = null;
     for (var i = 0; i < m.length; i++) if (n < m[i]) { next = m[i]; break; }
@@ -781,10 +955,11 @@ h3{font-size:1rem;font-weight:600}
       return '<li><span>' + x + ' orang</span><b>' + jt(price('5', x)) + '</b>' + (i === 0 ? '<small>grup WA dibuka</small>' : i === m.length - 1 ? '<small>termurah</small>' : '') + '</li>';
     }).join('');
     $('#how2').textContent = 'Tembus ' + m[0] + ' orang, grup WA dibuka.';
-    $$('[data-price]').forEach(function (el) {
-      var k = el.getAttribute('data-price');
-      el.innerHTML = (k === '8' ? '±' : '') + jt(price(k, cap())) + '<small>' + (k === '8' ? 'estimasi, ' : 'di ') + cap() + ' orang</small>';
-    });
+    var mt = meetText();
+    $('#careMeet').hidden = !mt;
+    $('#meetText').textContent = mt;
+    var nf = nightFee();
+    $('#nightText').textContent = nf.charAt(0).toUpperCase() + nf.slice(1) + '.';
     $('#modePill').classList.toggle('demo', !LIVE);
     $('#modeText').textContent = LIVE ? 'Live' : 'Contoh';
     $('#demoNote').hidden = LIVE;
@@ -818,7 +993,7 @@ h3{font-size:1rem;font-weight:600}
   }
 
   function renderPools(first) {
-    var list = $('#poolList'), pools = (S.data.pools || []).slice();
+    var list = $('#poolList'), pools = (S.data.pools || []).filter(function (p) { return p.n > 0 || qOf(p) > 0; });
     if (!pools.length) {
       list.innerHTML = '<li class="empty"><b>Belum ada tanggal yang dibuka.</b><span>Jadi yang pertama. Tanggalmu langsung muncul di sini begitu kamu daftar.</span><button type="button" class="btn btn-primary btn-sm" data-new="1">Buka tanggal pertama</button></li>';
       return;
@@ -828,13 +1003,14 @@ h3{font-size:1rem;font-weight:600}
       : function (a, b) { return a.d < b.d ? -1 : 1; });
     var today = S.data.today;
     list.innerHTML = pools.map(function (p, i) {
-      var st = status(p.n, p.g), mine = S.mine.some(function (x) { return x.d === p.d; });
+      var full = isFull(p), st = full ? { tone: '', text: 'Kuota ' + qOf(p) + ' orang penuh' } : status(p.n, p.g), mine = S.mine.some(function (x) { return x.d === p.d; });
       var prev = first ? 0 : (S.prevP[p.d] !== undefined ? S.prevP[p.d] : 0);
       var days = diff(p.d, today);
       return '<li class="pool' + (first ? '' : ' still') + '" style="--i:' + i + '" data-d="' + p.d + '">' +
         '<div class="pool-top"><div class="pool-when"><b>' + mid(p.d) + '</b><span>' + (days > 0 ? days + ' hari lagi' : 'hari ini') +
-        (mine ? ' <span class="mine">· kamu ikut</span>' : '') + '</span></div>' +
-        '<button type="button" class="btn btn-line btn-sm" data-join="' + p.d + '" aria-label="Gabung pool ' + esc(long(p.d)) + '">Gabung</button></div>' +
+        (p.kg ? ' · ' + p.kg + ' lanjut Kirgistan' : '') + (mine ? ' <span class="mine">· kamu ikut</span>' : '') + '</span></div>' +
+        (full ? '<button type="button" class="btn btn-line btn-sm" disabled>Penuh</button></div>'
+          : '<button type="button" class="btn btn-line btn-sm" data-join="' + p.d + '" aria-label="Gabung pool ' + esc(long(p.d)) + '">Gabung</button></div>') +
         barHTML(p.n, prev, false) +
         '<p class="pool-meta"><span>' + (first ? stack(p.n, 4, 250 + i * 60) : stack(p.n, 4).replace('class="stack"', 'class="stack still"')) + '<b class="num" data-to="' + p.n + '">' + (first ? 0 : p.n) + '</b>&nbsp;orang</span><span class="st ' + st.tone + '">' + esc(st.text) + '</span></p>' +
         '</li>';
@@ -874,6 +1050,8 @@ h3{font-size:1rem;font-weight:600}
       '*Paket 8 hari masih estimasi, final dikonfirmasi admin.',
       s && s.p5 ? 'Kamar sendiri: tambah ' + rp(s.p5) + ' (5 hari)' + (s.p6 ? ', ' + rp(s.p6) + ' (6 hari)' : '') + (s.p8 ? ', ' + rp(s.p8) + ' (8 hari)' : '') + '.' : '',
       'Belum termasuk tips wajib Rp250.000 per orang.',
+      nightCfg() ? 'Tiba malam (' + nightCfg().from.replace(':', '.') + '–' + nightCfg().to.replace(':', '.') + '): dijemput terpisah, ' + nightFee() + '.' : '',
+      'Kazakhstan + Kirgistan, nyusul rombongan, atau hotel sendiri: harga dikonfirmasi admin.',
       'Hotel bintang 4 dan 5 juga ada, tanya admin.',
       'Harga dihitung dari USD (kurs ' + rp(kurs) + ') dan bisa berubah mengikuti kurs.'
     ].filter(Boolean).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('');
@@ -896,8 +1074,9 @@ h3{font-size:1rem;font-weight:600}
      tampilkan spinner, buka form begitu data datang, atau paling lambat 2,5 detik pakai data bawaan. */
   function jakartaToday() { return keyOf(Date.now() + 7 * 36e5); }
   function provisional() {
-    return { ok: true, prov: true, open: true, today: jakartaToday(), minDays: 7, maxPax: 10, milestones: DEFAULT.milestones.slice(),
-      prices: { tiers: DEFAULT.tiers, single: DEFAULT.single }, kurs: 17950, wa: '', share: '', pools: [], recent: [], total: 0 };
+    return { ok: true, prov: true, version: 3, open: true, today: jakartaToday(), minDays: 7, maxPax: 10, quota: 30, joinMax: 3, milestones: DEFAULT.milestones.slice(),
+      prices: { tiers: DEFAULT.tiers, single: DEFAULT.single }, kurs: 17950, wa: '', share: '', meet: DEFAULT_MEET, meetTime: '',
+      night: { from: '22:00', to: '06:00', fee: 0 }, pools: [], recent: [], total: 0 };
   }
   function openFrom(btn, d) {
     if (S.data) return openSheet(d);
@@ -920,21 +1099,22 @@ h3{font-size:1rem;font-weight:600}
     if (!S.data) return;
     if (S.data.open === false) { closedNote(); return; }
     S.open = true;
-    if (d) S.f.d = d;
-    if (S.f.d && (S.f.d < minKey() || S.f.d > maxKey())) S.f.d = '';
+    if (d) { S.f.d = d; S.f.j = ''; }
+    if (S.f.d && (S.f.d < minKey() || S.f.d > maxKey() || isFull(poolOf(S.f.d)))) S.f.d = '';
+    if (S.f.j && !(S.f.d && validJoin(S.f.d, S.f.j))) S.f.j = '';
     var shEl = $('#sheet'); shEl.classList.remove('settled', 'closing'); shEl.style.transform = '';
     $('#backdrop').hidden = false; $('#backdrop').style.opacity = ''; shEl.hidden = false;
     document.documentElement.classList.add('locked');
     updateDock();
-    $('#fName').value = S.f.name; $('#fWa').value = S.f.wa; $('#fFlex').checked = S.f.flex;
+    $('#fName').value = S.f.name; $('#fWa').value = S.f.wa; $('#fNote').value = S.f.note; $('#fFlex').checked = S.f.flex;
     [0, 1, 2, 3].forEach(function (i) { err(i, ''); });
-    renderDateStep(); renderPkg(); renderPax();
+    S.cal = monthOf(S.f.d || minKey());
+    renderChips(); renderCal(0); updateDate(); renderPkg(); renderArrival();
     $('#dest').scrollLeft = 0; setDestTab(0);
-    $('#kgStack').innerHTML = '<span class="stack" style="--d:250ms" aria-hidden="true">' + face(0) + face(1) + face(2) + '</span>';
     $('.success').classList.remove('drawn');
     $$('.step').forEach(function (s) { s.hidden = true; });
     S.step = -1;
-    go(d ? 1 : 0, true);
+    go(0, true);
   }
   function closedNote() {
     var list = $('#poolList'), note = document.createElement('li');
@@ -954,7 +1134,7 @@ h3{font-size:1rem;font-weight:600}
       document.documentElement.classList.remove('locked');
       updateDock();
       if (wasDone) {
-        S.f.d = ''; S.f.pkg = ''; S.f.pax = 2; S.f.flex = false; saveDraft();
+        S.f.d = ''; S.f.j = ''; S.f.pkg = ''; S.pkgOrder = []; S.f.pax = 2; S.f.flex = false; S.f.t = ''; S.f.fl = ''; S.f.note = ''; saveDraft();
         var row = d && $('.pool[data-d="' + d + '"]');
         if (row) { row.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
       }
@@ -972,73 +1152,204 @@ h3{font-size:1rem;font-weight:600}
     $('#prog').style.visibility = n === 4 ? 'hidden' : 'visible';
     $('#sheet').setAttribute('aria-labelledby', n === 4 ? 'sTitle' : 'q0');
     $('#sheet').scrollTop = 0;
-    if (n === 3) renderRecap();
+    if (n === 0 && !instant) { renderChips(); renderCal(0); updateDate(); }
     if (n === 1) { renderPkg(); nudgeDest(); }
+    if (n === 2) renderArrival();
+    if (n === 3) renderRecap();
     var q = $('.q', nx);
     if (q) q.focus({ preventScroll: true });
   }
   function next(n) {
     if (n === 0) {
       var d = S.f.d;
-      if (!d) return err(0, 'Pilih dulu tanggal kamu tiba di Almaty.', '#fDate');
-      if (d < minKey()) return err(0, 'Tanggal paling cepat ' + long(minKey()) + '. Untuk tanggal yang lebih dekat, chat admin langsung, ya.', '#fDate');
-      if (d > maxKey()) return err(0, 'Tanggalnya kejauhan. Pilih tanggal dalam 15 bulan ke depan.', '#fDate');
+      if (!d) return err(0, 'Pilih dulu tanggal kamu tiba di Almaty.');
+      if (d < minKey()) return err(0, 'Tanggal paling cepat ' + long(minKey()) + '. Untuk tanggal yang lebih dekat, chat admin langsung, ya.');
+      if (d > maxKey()) return err(0, 'Tanggalnya kejauhan. Pilih tanggal dalam 15 bulan ke depan.');
+      var left = seatsLeft(gKey());
+      if (left <= 0) return err(0, 'Tanggal ini sudah penuh. Pilih tanggal lain, atau chat admin untuk daftar tunggu.');
+      if (S.f.pax > left) return err(0, 'Tanggal ini tinggal ' + left + ' kursi. Kurangi jumlah orang atau pilih tanggal lain.');
       err(0, ''); return go(1);
     }
     if (n === 1) { if (!S.f.pkg || S.f.pkg === 'KG') return err(1, 'Pilih paket dulu. Masih galau? Boleh pilih 2.'); err(1, ''); return go(2); }
     if (n === 2) { err(2, ''); return go(3); }
   }
+  function restart(el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
 
-  function renderDateStep() {
-    var inp = $('#fDate');
-    inp.min = minKey(); inp.max = maxKey(); inp.value = S.f.d || '';
-    var open = (S.data.pools || []).filter(function (p) { return p.n > 0 && p.d >= minKey(); })
-      .sort(function (a, b) { return a.d < b.d ? -1 : 1; }).slice(0, 6);
-    var box = $('#dateOpts');
-    box.innerHTML = open.map(function (p) {
-      return '<button type="button" class="opt" data-pick="' + p.d + '" aria-pressed="false"><span class="radio" aria-hidden="true"></span>' +
-        '<span class="opt-main"><b>' + mid(p.d) + '</b><span>' + p.n + ' orang sudah ikut</span></span><span></span></button>';
+  /* ---------------- tanggal: kalender ala GetYourGuide ---------------- */
+  function renderChips() {
+    var list = (S.data.pools || []).filter(function (p) { return p.n > 0 && !isFull(p) && p.d >= minKey() && p.d <= maxKey(); })
+      .sort(function (a, b) { return a.d < b.d ? -1 : 1; }).slice(0, 8);
+    $('#chips').innerHTML = list.map(function (p, i) {
+      return '<button type="button" class="chip" data-pick="' + p.d + '" aria-pressed="' + (p.d === S.f.d) + '" style="--k:' + i + '" aria-label="' + esc(long(p.d)) + ', ' + p.n + ' orang">' +
+        '<b>' + DAYS[dow(p.d)] + ', ' + short(p.d) + '</b><span>' + p.n + ' orang</span></button>';
     }).join('');
-    box.hidden = !open.length;
-    $('#dateLabel').textContent = open.length ? 'Tanggal lain' : 'Pilih tanggal tiba';
+    $('#chips').hidden = $('#chipsL').hidden = !list.length;
+  }
+  function renderCal(dir) {
+    var y = S.cal.y, m = S.cal.m, lead = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7;
+    var count = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(), lo = minKey(), hi = maxKey(), h = '';
+    for (var i = 0; i < lead; i++) h += '<span aria-hidden="true"></span>';
+    for (var dd = 1; dd <= count; dd++) {
+      var k = y + '-' + pad(m + 1) + '-' + pad(dd), p = poolOf(k), full = isFull(p), closed = !!p && qOf(p) <= 0;
+      var off = k < lo || k > hi || full;
+      var tag = closed ? 'tutup' : full ? 'penuh' : p && p.n ? p.n + ' org' : '';
+      var label = long(k) + (closed ? ', ditutup' : full ? ', penuh' : p && p.n ? ', ' + p.n + ' orang sudah ikut' : '') + (k < lo ? ', belum bisa dipilih' : '');
+      h += '<button type="button" class="day' + (p && !full ? ' has' : '') + (full ? ' full' : '') + '" data-pick="' + k + '" aria-pressed="' + (k === S.f.d) + '"' +
+        (off ? ' disabled' : '') + ' aria-label="' + esc(label) + '"><b>' + dd + '</b>' + (tag ? '<small>' + tag + '</small>' : '') + '</button>';
+    }
+    var grid = $('#calGrid');
+    grid.innerHTML = h;
+    grid.setAttribute('aria-label', MONL[m] + ' ' + y);
+    grid.classList.remove('fwd', 'back');
+    if (dir && !reduce) { void grid.offsetWidth; grid.classList.add(dir > 0 ? 'fwd' : 'back'); }
+    $('#calTitle').textContent = MONL[m] + ' ' + y;
+    var a = monthOf(lo), b = monthOf(hi), at = y * 12 + m;
+    $('#calPrev').disabled = at <= a.y * 12 + a.m;
+    $('#calNext').disabled = at >= b.y * 12 + b.m;
+  }
+  function shiftMonth(n) {
+    var a = monthOf(minKey()), b = monthOf(maxKey());
+    var t = Math.max(a.y * 12 + a.m, Math.min(b.y * 12 + b.m, S.cal.y * 12 + S.cal.m + n));
+    if (t === S.cal.y * 12 + S.cal.m) return;
+    S.cal = { y: Math.floor(t / 12), m: t % 12 };
+    renderCal(n);
+  }
+  function pickDate(d) {
+    if (!validDate(d)) return;
+    var mo = monthOf(d), cur = S.cal ? S.cal.y * 12 + S.cal.m : -1, nx = mo.y * 12 + mo.m;
+    S.f.d = d;
+    if (S.f.j && !validJoin(d, S.f.j)) S.f.j = '';
+    err(0, ''); saveDraft();
+    if (nx !== cur) { S.cal = mo; renderCal(nx > cur ? 1 : -1); }
+    else $$('#calGrid .day').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pick') === d)); });
     updateDate();
   }
   function updateDate() {
     var d = S.f.d, info = $('#dateInfo');
-    $('.date-field').classList.toggle('empty', !d);
-    var listed = false;
-    $$('#dateOpts .opt').forEach(function (c) { var on = c.getAttribute('data-pick') === d; if (on) listed = true; c.setAttribute('aria-pressed', String(on)); });
-    if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) { info.hidden = true; $('#suggest').hidden = true; return; }
-    var pool = poolOf(d), days = diff(d, S.data.today);
-    info.innerHTML = '<b>' + esc(long(d)) + '</b>, ' + days + ' hari lagi. ' + (pool && pool.n ? pool.n + ' orang sudah di tanggal ini.' : 'Tanggal baru, kamu yang pertama.');
-    info.hidden = false; info.style.animation = 'none'; void info.offsetWidth; info.style.animation = '';
-    renderSuggest(listed);
+    $$('#chips .chip').forEach(function (c) { c.setAttribute('aria-pressed', String(c.getAttribute('data-pick') === d)); });
+    if (!validDate(d)) { info.hidden = true; $('#suggest').hidden = true; renderPax(); return; }
+    var g = gKey(), pool = poolOf(g), left = seatsLeft(g), days = diff(d, S.data.today);
+    var txt = '<b>' + esc(long(d)) + '</b>, ' + days + ' hari lagi. ';
+    if (S.f.j && pool) txt += 'Kamu nyusul rombongan ' + short(S.f.j) + ' (' + pool.n + ' orang).';
+    else if (pool && pool.n) txt += pool.n + ' orang sudah di tanggal ini' + (left <= 10 ? ', sisa ' + left + ' kursi.' : '.');
+    else txt += 'Tanggal baru, kamu yang pertama.';
+    if (info.hidden || info.innerHTML !== txt) { info.innerHTML = txt; info.hidden = false; restart(info); }
+    renderSuggest();
+    renderPax();
   }
-  function renderSuggest(listed) {
-    var box = $('#suggest'), d = S.f.d, own = poolOf(d), base = own ? own.n : 0;
-    var c = (S.data.pools || []).filter(function (p) { return p.d !== d && p.n > base && Math.abs(diff(p.d, d)) <= 3 && p.d >= minKey(); })
-      .sort(function (a, b) { return b.n - a.n || Math.abs(diff(a.d, d)) - Math.abs(diff(b.d, d)); })[0];
-    if (!c) { box.hidden = true; return; }
-    var dd = diff(c.d, d);
-    box.innerHTML = '<p><b>' + short(c.d) + '</b> sudah ' + c.n + ' orang, ' + Math.abs(dd) + ' hari ' + (dd > 0 ? 'setelah' : 'sebelum') + ' tanggalmu. Kalau tiketmu masih bisa geser, gabung ke sana biar cepat ramai.</p>' +
-      '<button type="button" class="btn btn-line btn-sm" data-pick="' + c.d + '">Pakai ' + short(c.d) + '</button>';
-    box.hidden = false; box.style.animation = 'none'; void box.offsetWidth; box.style.animation = '';
+  function renderSuggest() {
+    var box = $('#suggest'), d = S.f.d, h = '';
+    var jc = S.f.j ? null : joinCandidates(d)[0];
+    if (S.f.j) {
+      h = '<p><b>Kamu nyusul rombongan ' + short(S.f.j) + '.</b> Ikut mulai hari ke-' + (diff(d, S.f.j) + 1) + '. Pemandu menjemput kamu terpisah, lalu kamu gabung di titik kumpul.</p>' +
+        '<button type="button" class="btn btn-line btn-sm" data-unjoin="1">Batal nyusul</button>';
+    } else if (jc) {
+      h = '<p><b>Rombongan ' + short(jc.d) + '</b> (' + jc.n + ' orang) masih jalan saat kamu tiba. Nyusul saja? Kamu ikut mulai hari ke-' + (diff(d, jc.d) + 1) + ', dijemput terpisah.</p>' +
+        '<div class="s-row"><button type="button" class="btn btn-primary btn-sm" data-join-group="' + jc.d + '">Nyusul ' + short(jc.d) + '</button>' +
+        '<button type="button" class="btn btn-line btn-sm" data-pick="' + jc.d + '">Tiba ' + short(jc.d) + '</button></div>';
+    } else {
+      var own = poolOf(d), base = own ? own.n : 0;
+      var c = (S.data.pools || []).filter(function (p) { return p.d !== d && p.n > base && !isFull(p) && Math.abs(diff(p.d, d)) <= 3 && p.d >= minKey(); })
+        .sort(function (a, b) { return b.n - a.n || Math.abs(diff(a.d, d)) - Math.abs(diff(b.d, d)); })[0];
+      if (c) {
+        var dd = diff(c.d, d);
+        h = '<p><b>' + short(c.d) + '</b> sudah ' + c.n + ' orang, ' + Math.abs(dd) + ' hari ' + (dd > 0 ? 'setelah' : 'sebelum') + ' tanggalmu. Kalau tiketmu masih bisa geser, gabung ke sana biar cepat ramai.</p>' +
+          '<button type="button" class="btn btn-line btn-sm" data-pick="' + c.d + '">Pakai ' + short(c.d) + '</button>';
+      }
+    }
+    if (!h) { box.hidden = true; box.innerHTML = ''; return; }
+    if (box.hidden || box.innerHTML !== h) { box.innerHTML = h; box.hidden = false; restart(box); }
   }
-  function pickDate(d) { S.f.d = d; $('#fDate').value = d; err(0, ''); saveDraft(); updateDate(); }
+  function setJoin(j) { S.f.j = j; saveDraft(); updateDate(); }
 
+  /* ---------------- paket ---------------- */
   function renderPkg() {
     var sel = S.f.pkg === 'KG' ? [] : String(S.f.pkg || '').split(',');
     $$('.opt[data-pkg]').forEach(function (b) { b.setAttribute('aria-pressed', String(sel.indexOf(b.getAttribute('data-pkg')) >= 0)); });
-    var d = S.f.d && /^\d{4}-\d{2}-\d{2}$/.test(S.f.d) ? S.f.d : '';
-    $$('.range[data-days]').forEach(function (el) { el.textContent = d ? range(d, +el.getAttribute('data-days')) : ''; el.hidden = !d; });
-    $('#pkgSub').textContent = (d ? 'Tiba ' + long(d) + '. ' : '') + 'Masih galau? Boleh pilih 2, nanti diputuskan bareng di grup.';
+    var d = validDate(S.f.d) ? S.f.d : '', g = gKey(), pool = d ? poolOf(g) : null;
+    var at = Math.max((pool ? pool.n : 0) + S.f.pax, tiers()[0].n), m = ms(), nextM = null;
+    for (var i = 0; i < m.length; i++) if (at < m[i]) { nextM = m[i]; break; }
+    $$('.range[data-days]').forEach(function (el) {
+      var days = +el.getAttribute('data-days');
+      el.textContent = d ? (S.f.j ? rangeKeys(d, addDays(S.f.j, days - 1)) : range(d, days)) : '';
+      el.hidden = !d;
+    });
+    $$('[data-price]').forEach(function (el) {
+      var k = el.getAttribute('data-price');
+      el.innerHTML = (k === '8' ? '±' : '') + jt(price(k, at)) + '<small>' + (k === '8' ? 'estimasi, ' : 'di ') + at + ' orang</small>';
+    });
+    $$('[data-drop]').forEach(function (el) {
+      var k = el.getAttribute('data-drop'), now = price(k, at), lo = nextM ? price(k, nextM) : 0;
+      el.textContent = lo && lo < now ? 'Turun ke ' + jt(lo) + ' kalau tembus ' + nextM + ' orang' : '';
+      el.hidden = !el.textContent;
+    });
+    $('#pkgSub').textContent = S.f.j && d
+      ? 'Nyusul rombongan ' + short(S.f.j) + ', tiba ' + long(d) + '. Harga yang tertera untuk rombongan penuh, harga untukmu dikonfirmasi admin.'
+      : (d ? 'Tiba ' + long(d) + ', ' + S.f.pax + ' orang. ' : '') + 'Masih galau? Boleh pilih 2, nanti diputuskan bareng di grup.';
     $('#pickNote').textContent = S.pkgOrder.length === 2 ? 'Oke, 2 pilihan: ' + S.pkgOrder.slice().sort().join(' atau ') + ' hari. Tetap dihitung 1 kali di pool.' : '';
+    renderKg();
   }
   function pickPkg(k) {
     var o = S.f.pkg === 'KG' ? [] : S.pkgOrder.slice(), i = o.indexOf(k);
     if (i >= 0) o.splice(i, 1); else { o.push(k); if (o.length > 2) o.shift(); }
     S.pkgOrder = o; S.f.pkg = o.slice().sort().join(',');
     saveDraft(); renderPkg(); err(1, '');
+  }
+  function renderKg() {
+    var k = S.f.kg, d = validDate(S.f.d) ? S.f.d : '';
+    $$('[data-kz]').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-kz') === k.kz)); });
+    $$('[data-kx]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-kx') === k.x)); });
+    $$('[data-kgd]').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-kgd') === k.kgd)); });
+    var x = d ? addDays(d, k.kz) : '', end = d ? addDays(x, k.kgd - 1) : '';
+    var plan = [
+      [d ? rangeShort(d, addDays(d, k.kz - 1)) : 'Hari 1–' + k.kz, 'Kazakhstan bareng rombongan', k.kz + ' hari di Almaty dan sekitarnya, dijemput di bandara.'],
+      [d ? short(x) : 'Hari ' + (k.kz + 1), 'Ke Bishkek ' + (k.x === 'pesawat' ? 'naik pesawat' : 'lewat darat'), k.x === 'pesawat' ? 'Diantar ke Bandara Almaty, dijemput tim Kirgistan di Bishkek.' : 'Diantar sampai perbatasan Korday, dijemput tim Kirgistan di seberang.'],
+      [d ? rangeShort(x, end) : 'Hari ' + (k.kz + 1) + '–' + (k.kz + k.kgd), 'Kirgistan ' + k.kgd + ' hari', d ? 'Pulang dari Bishkek ' + long(end) + '.' : 'Pulang dari Bishkek.']
+    ];
+    $('#kgPlan').innerHTML = plan.map(function (r, i) { return '<li style="--i:' + i + '"><span class="d">' + esc(r[0]) + '</span><div><b>' + esc(r[1]) + '</b><p>' + esc(r[2]) + '</p></div></li>'; }).join('');
+    $('#kgTotal').textContent = 'Total ' + (k.kz + k.kgd) + ' hari' + (d ? ', ' + rangeKeys(d, end) + '.' : '.');
+  }
+  function setKg(field, v) { S.f.kg[field] = v; saveDraft(); renderKg(); }
+
+  /* ---------------- kedatangan ---------------- */
+  function renderArrival() {
+    var f = S.f, air = f.via === 'pesawat', land = f.via === 'darat', here = f.via === 'lokal';
+    $$('[data-via]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-via') === f.via)); });
+    $('#timeField').hidden = here;
+    $('#timeLabel').textContent = land ? 'Perkiraan jam tiba di Almaty' : 'Jam mendarat (waktu Almaty)';
+    $('#flField').hidden = !air;
+    var hm = f.t ? f.t.split(':') : null;
+    $('#fHour').value = hm ? hm[0] : '';
+    $('#fMin').value = hm ? hm[1] : '00';
+    $('#fMin').disabled = !hm;
+    $('#fFl').value = f.fl;
+    $$('[data-hotel]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-hotel') === f.hotel)); });
+    $('#hnField').hidden = f.hotel !== 'sendiri';
+    $('#fHn').value = f.hn;
+    var vn = $('#viaNote'), h = '';
+    if (air && isNight(f.t)) {
+      var n = nightCfg(), early = n.from > n.to && f.t < n.to;
+      h = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 14.6A7.6 7.6 0 1 1 9.4 4.5a6 6 0 0 0 10.1 10.1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path class="moon-star" d="M17.3 2.6l.75 1.65 1.65.75-1.65.75-.75 1.65-.75-1.65-1.65-.75 1.65-.75z"/><path class="moon-star s2" d="M21.2 8.4l.45 1 1 .45-1 .45-.45 1-.45-1-1-.45 1-.45z"/></svg>' +
+        '<p><b>Tiba malam, tetap dijemput.</b> Kamu dijemput terpisah dari rombongan, ' + nightFee() + '.' +
+        (early ? ' Mendarat dini hari? Kamar hotel biasanya baru siap siang. Mau langsung istirahat, bisa tambah 1 malam (dikonfirmasi admin).' : '') + '</p>';
+    } else if (land) {
+      h = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="17.5" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="6.5" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 15.5 17 8.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 3.2"/><circle class="hop-dot" r="1.9"/></svg>' +
+        '<p><b>Dari Bishkek lewat darat.</b> Lewat perbatasan Korday, sekitar 4 sampai 5 jam. Kabari admin begitu lewat perbatasan, nanti diarahkan ke titik jemput.</p>';
+    }
+    if (vn.innerHTML !== h) { vn.innerHTML = h; vn.hidden = !h; if (h) restart(vn); }
+    var jn = $('#joinNote'), jh = '';
+    if (f.j && validDate(f.d)) jh = '<svg viewBox="0 0 24 24" aria-hidden="true"><g class="pin-head"><path d="M12 21s-6.2-5.5-6.2-10.4a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10.6" r="2.3" fill="var(--bar)"/></g></svg>' +
+      '<p><b>Nyusul rombongan ' + short(f.j) + '.</b> Kamu ikut mulai hari ke-' + (diff(f.d, f.j) + 1) + '. Jemputanmu diatur terpisah, lalu gabung di titik kumpul.</p>';
+    if (jn.innerHTML !== jh) { jn.innerHTML = jh; jn.hidden = !jh; if (jh) restart(jn); }
+    var mt = meetText();
+    $('#meetHint').hidden = !mt;
+    $('#meetHintText').innerHTML = (f.hotel === 'sendiri' || here ? 'Tiap pagi kamu ke titik kumpul: ' : 'Titik kumpul tiap pagi: ') + '<b>' + esc(mt) + '</b>';
+  }
+  function setTime() {
+    var h = $('#fHour').value, m = $('#fMin').value || '00';
+    S.f.t = h ? h + ':' + m : '';
+    $('#fMin').disabled = !h;
+    saveDraft(); renderArrival();
   }
   function setDestTab(i) {
     $$('.dest-tabs [role=tab]').forEach(function (t) { t.setAttribute('aria-selected', String(+t.getAttribute('data-dest') === i)); });
@@ -1061,25 +1372,31 @@ h3{font-size:1rem;font-weight:600}
     }, 650));
   }
 
+  function paxMax() { var max = S.data.maxPax || 10; if (validDate(S.f.d)) { var left = seatsLeft(gKey()); if (left > 0) max = Math.min(max, left); } return max; }
   function renderPax() {
-    var n = S.f.pax, max = S.data.maxPax || 10;
+    var n = S.f.pax, max = paxMax();
     if (n > max) n = S.f.pax = max;
     $('#paxOut').textContent = n;
     $('#paxMinus').disabled = n <= 1; $('#paxPlus').disabled = n >= max;
-    $('#paxHint').textContent = n === 1 ? 'Berangkat sendiri juga bisa. Teman barunya nanti di grup.' : n === 2 ? 'Kamu dan 1 teman' : 'Kamu dan ' + (n - 1) + ' teman';
+    var left = validDate(S.f.d) ? seatsLeft(gKey()) : 999;
+    $('#paxHint').textContent = (n === 1 ? 'Berangkat sendiri juga bisa' : n === 2 ? 'Kamu dan 1 teman' : 'Kamu dan ' + (n - 1) + ' teman') +
+      (left > 0 && left <= (S.data.maxPax || 10) ? ' · sisa ' + left + ' kursi' : '');
   }
   function setPax(delta) {
-    var max = S.data.maxPax || 10, n = Math.max(1, Math.min(max, S.f.pax + delta));
+    var n = Math.max(1, Math.min(paxMax(), S.f.pax + delta));
     if (n === S.f.pax) return;
     S.f.pax = n; saveDraft();
     var out = $('#paxOut'); out.classList.remove('up', 'down'); void out.offsetWidth; if (!reduce) out.classList.add(delta > 0 ? 'up' : 'down');
     renderPax();
   }
   function renderRecap() {
+    var f = S.f;
     $('#recap').innerHTML =
-      '<button type="button" data-goto="0"><span>Tiba</span>' + short(S.f.d) + '</button>' +
-      '<button type="button" data-goto="1"><span>Paket</span>' + esc(pkgText(S.f.pkg)) + '</button>' +
-      '<button type="button" data-goto="2"><span>Orang</span>' + S.f.pax + '</button>';
+      '<button type="button" data-goto="0"><span>Tiba</span>' + short(f.d) + '</button>' +
+      '<button type="button" data-goto="0"><span>Orang</span>' + f.pax + '</button>' +
+      '<button type="button" data-goto="1"><span>Paket</span>' + esc(pkgText(f.pkg)) + '</button>' +
+      (f.via !== 'lokal' && f.t ? '<button type="button" data-goto="2"><span>Jam</span>' + f.t.replace(':', '.') + '</button>' : '') +
+      (f.j ? '<button type="button" data-goto="0"><span>Nyusul</span>' + short(f.j) + '</button>' : '');
   }
 
   function setBusy(on) {
@@ -1090,19 +1407,27 @@ h3{font-size:1rem;font-weight:600}
   function submit() {
     if (S.busy) return;
     var name = $('#fName').value.replace(/\s+/g, ' ').trim(), waRaw = $('#fWa').value.trim(), wa = normWa(waRaw);
-    S.f.name = name; S.f.wa = waRaw; saveDraft();
+    S.f.name = name; S.f.wa = waRaw; S.f.note = $('#fNote').value; saveDraft();
     if (name.length < 2) return err(3, 'Isi nama dulu, minimal 2 huruf.', '#fName');
     if (!wa) return err(3, 'Nomor WhatsApp-nya belum pas. Contoh: 0812 3456 7890.', '#fWa');
     err(3, '');
-    var payload = { d: S.f.d, pkg: S.f.pkg, pax: S.f.pax, flex: S.f.flex, name: name, wa: wa, hp: $('#fHp').value };
+    var f = S.f, air = f.via === 'pesawat';
+    var payload = {
+      d: f.d, j: f.j || '', pkg: f.pkg, pax: f.pax, flex: f.flex, t: f.via === 'lokal' ? '' : f.t, via: f.via,
+      fl: air ? f.fl.toUpperCase().replace(/[^A-Z0-9 ]/g, '').trim() : '', hotel: f.hotel, hn: f.hotel === 'sendiri' ? f.hn.trim() : '',
+      note: f.note.trim(), name: name, wa: wa, hp: $('#fHp').value
+    };
+    if (f.pkg === 'KG') payload.kg = { kz: f.kg.kz, x: f.kg.x, kgd: f.kg.kgd };
     S.busy = true; setBusy(true);
     call('submit', payload).then(function (res) { return res; }, function () { return { ok: false, error: 'Koneksi lagi bermasalah. Coba tekan kirim sekali lagi.' }; })
       .then(function (res) {
         S.busy = false; setBusy(false);
         if (!res || !res.ok) {
-          var map = { d: 0, pkg: 1, pax: 2 }, st = res && map.hasOwnProperty(res.field) ? map[res.field] : 3;
+          var map = { d: 0, j: 0, pax: 0, pkg: 1, kg: 1, t: 2, fl: 2 }, st = res && map.hasOwnProperty(res.field) ? map[res.field] : 3;
+          var focus = { name: '#fName', wa: '#fWa', note: '#fNote', t: '#fHour', fl: '#fFl' };
+          if (res && (res.field === 'd' || res.field === 'pax') && LIVE) load();
           if (st !== 3) go(st);
-          return err(st, (res && res.error) || 'Ada yang belum beres. Coba lagi, ya.', res && res.field === 'name' ? '#fName' : res && res.field === 'wa' ? '#fWa' : null);
+          return err(st, (res && res.error) || 'Ada yang belum beres. Coba lagi, ya.', (res && focus[res.field]) || null);
         }
         success(res, payload);
       });
@@ -1116,10 +1441,11 @@ h3{font-size:1rem;font-weight:600}
   }
   function success(res, payload) {
     S.res = res;
-    if (res.kind === 'KG' || payload.pkg === 'KG') return successKG(res, payload);
+    if (res.interest || (res.kind === 'KG' && !(S.data.version >= 3))) return successKG(res, payload);
     var pools = S.data.pools || (S.data.pools = []), p = poolOf(res.pool.d);
-    if (p) { p.n = res.pool.n; p.p5 = res.pool.p5; p.p6 = res.pool.p6; p.p8 = res.pool.p8; p.r = res.pool.r; }
-    else { p = { d: res.pool.d, n: res.pool.n, p5: res.pool.p5, p6: res.pool.p6, p8: res.pool.p8, r: res.pool.r, g: false }; pools.push(p); }
+    if (!p) { p = { d: res.pool.d, n: 0, p5: 0, p6: 0, p8: 0, kg: 0, px: 0, r: 0, g: false }; pools.push(p); }
+    ['n', 'p5', 'p6', 'p8', 'kg', 'px', 'r', 'e', 'q'].forEach(function (k) { if (res.pool[k] !== undefined) p[k] = res.pool[k]; });
+    p.full = p.n >= qOf(p);
     if (res.group) p.g = true;
     (S.data.recent = S.data.recent || []).unshift({ d: p.d, n: payload.pax, t: Date.now() });
     S.mine = S.mine.filter(function (x) { return x.d !== p.d; }).concat([{ d: p.d, kode: res.kode, t: Date.now() }]);
@@ -1128,7 +1454,7 @@ h3{font-size:1rem;font-weight:600}
     var n = p.n, prev = Math.max(0, Math.min(+res.prev || 0, n)), m = ms(), nextM = null;
     for (var i = 0; i < m.length; i++) if (n < m[i]) { nextM = m[i]; break; }
     $('#sCode').textContent = res.kode || '';
-    $('#sTitle').textContent = res.updated ? 'Data kamu sudah diperbarui' : 'Kamu masuk pool ' + short(p.d);
+    $('#sTitle').textContent = res.updated ? 'Data kamu sudah diperbarui' : res.joined ? 'Kamu nyusul rombongan ' + short(p.d) : 'Kamu masuk pool ' + short(p.d);
     $('#sNum').textContent = prev;
     $('#sNumWrap').hidden = false; $('#sBar').hidden = false;
     var others = Math.max(0, Math.min(prev, 7)), crowd = '';
@@ -1141,7 +1467,7 @@ h3{font-size:1rem;font-weight:600}
     $('#sNext').textContent = status(n, !!res.group).text + (nextM ? '. Ajak teman biar cepat ramai.' : '.');
 
     var link = shareLink();
-    var txt = 'Aku ikut pool land tour Kazakhstan, tiba di Almaty ' + long(p.d) + '. Sekarang ' + n + ' orang' +
+    var txt = (res.joined ? 'Aku ikut rombongan land tour Kazakhstan yang tiba di Almaty ' : 'Aku ikut pool land tour Kazakhstan, tiba di Almaty ') + long(p.d) + '. Sekarang ' + n + ' orang' +
       (nextM ? ', ' + (nextM - n) + ' lagi biar harganya turun ke ' + jt(price('5', nextM)) + '/orang' : ', harga termurahnya sudah dapat') +
       '. Yuk gabung' + (link ? ': ' + link : '!');
     $('#sShare').href = 'https://wa.me/?text=' + encodeURIComponent(txt);
@@ -1151,11 +1477,14 @@ h3{font-size:1rem;font-weight:600}
     $('#sShare').className = 'btn wide ' + (g ? 'btn-line' : 'btn-primary');
     var wa = normWa(res.wa || S.data.wa);
     $('#sAdmin').hidden = !wa;
-    if (wa) $('#sAdmin').href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Halo admin SUNDAF Trip! Aku ' + S.f.name + ', baru gabung pool Kazakhstan tanggal ' + long(p.d) + ', paket ' + pkgText(payload.pkg) + ', ' + payload.pax + ' orang. Kode: ' + res.kode + '.');
-    $('#sInfo').textContent = res.demo ? 'Mode contoh: pendaftaran ini tidak disimpan.'
+    if (wa) $('#sAdmin').href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Halo admin SUNDAF Trip! Aku ' + S.f.name + ', baru gabung pool Kazakhstan tanggal ' + long(p.d) +
+      (res.joined ? ' (nyusul, tiba ' + long(payload.d) + ')' : '') + ', paket ' + pkgText(payload.pkg) + ', ' + payload.pax + ' orang' + (payload.t ? ', tiba jam ' + payload.t.replace(':', '.') : '') + '. Kode: ' + res.kode + '.');
+    var extra = (payload.pkg === 'KG' ? ' Rencana Kirgistan dan harganya dikonfirmasi admin lewat WhatsApp.' : '') +
+      (res.night || (payload.via === 'pesawat' && isNight(payload.t)) ? ' Kamu tiba malam, admin akan atur jemputan terpisah.' : '');
+    $('#sInfo').textContent = (res.demo ? 'Mode contoh: pendaftaran ini tidak disimpan.'
       : g ? 'Grup WA tanggal ini sudah aktif. Tekan tombol di atas untuk gabung.'
       : n >= m[0] ? 'Tanggal ini sudah cukup orang. Admin akan kirim link grup WA ke nomormu.'
-      : 'Kalau tanggal ini tembus ' + m[0] + ' orang, admin kabari kamu lewat WhatsApp.';
+      : 'Kalau tanggal ini tembus ' + m[0] + ' orang, admin kabari kamu lewat WhatsApp.') + extra;
 
     go(4);
     var sc = $('.success'); sc.classList.remove('drawn'); void sc.offsetWidth; sc.classList.add('drawn');
@@ -1252,11 +1581,18 @@ h3{font-size:1rem;font-weight:600}
 
   /* ---------------- events ---------------- */
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-join],[data-new],[data-pick],[data-sort],[data-route],[data-next],[data-goto],[data-pkg]');
-    if (!t) return;
+    var t = e.target.closest('[data-join],[data-new],[data-pick],[data-join-group],[data-unjoin],[data-sort],[data-route],[data-next],[data-goto],[data-pkg],[data-kz],[data-kx],[data-kgd],[data-via],[data-hotel]');
+    if (!t || t.disabled) return;
     if (t.hasAttribute('data-join')) openFrom(t, t.getAttribute('data-join'));
     else if (t.hasAttribute('data-new')) openFrom(t, '');
     else if (t.hasAttribute('data-pick')) pickDate(t.getAttribute('data-pick'));
+    else if (t.hasAttribute('data-join-group')) setJoin(t.getAttribute('data-join-group'));
+    else if (t.hasAttribute('data-unjoin')) setJoin('');
+    else if (t.hasAttribute('data-kz')) setKg('kz', +t.getAttribute('data-kz'));
+    else if (t.hasAttribute('data-kx')) setKg('x', t.getAttribute('data-kx'));
+    else if (t.hasAttribute('data-kgd')) setKg('kgd', +t.getAttribute('data-kgd'));
+    else if (t.hasAttribute('data-via')) { S.f.via = t.getAttribute('data-via'); saveDraft(); renderArrival(); }
+    else if (t.hasAttribute('data-hotel')) { S.f.hotel = t.getAttribute('data-hotel'); saveDraft(); renderArrival(); }
     else if (t.hasAttribute('data-sort')) {
       S.sort = t.getAttribute('data-sort');
       $$('[data-sort]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === t)); });
@@ -1286,13 +1622,33 @@ h3{font-size:1rem;font-weight:600}
       raf = requestAnimationFrame(function () { raf = 0; setDestTab(el.scrollLeft > (el.clientWidth + 20) / 2 ? 1 : 0); });
     }, { passive: true });
   })();
-  $('#kgBtn').addEventListener('click', function () { S.pkgOrder = []; S.f.pkg = 'KG'; saveDraft(); renderPkg(); go(2); });
+  $('#kgBtn').addEventListener('click', function () { S.pkgOrder = []; S.f.pkg = 'KG'; saveDraft(); renderPkg(); err(1, ''); go(2); });
   $('#fFlex').addEventListener('change', function (e) { S.f.flex = e.target.checked; saveDraft(); });
-  ['change', 'input'].forEach(function (ev) {
-    $('#fDate').addEventListener(ev, function (e) { if (e.target.value === S.f.d) return; S.f.d = e.target.value; err(0, ''); saveDraft(); updateDate(); });
-  });
-  ['#fName', '#fWa'].forEach(function (id) { $(id).addEventListener('input', function (e) { e.target.removeAttribute('aria-invalid'); }); });
+  (function () {
+    var h = '<option value="">Belum tahu</option>', m = '';
+    for (var i = 0; i < 24; i++) h += '<option value="' + pad(i) + '">' + pad(i) + '</option>';
+    for (var j = 0; j < 60; j += 5) m += '<option value="' + pad(j) + '">' + pad(j) + '</option>';
+    $('#fHour').innerHTML = h; $('#fMin').innerHTML = m;
+  })();
+  $('#fHour').addEventListener('change', setTime);
+  $('#fMin').addEventListener('change', setTime);
+  $('#fFl').addEventListener('input', function (e) { S.f.fl = e.target.value; saveDraft(); });
+  $('#fHn').addEventListener('input', function (e) { S.f.hn = e.target.value; saveDraft(); });
+  $('#fNote').addEventListener('input', function (e) { S.f.note = e.target.value; saveDraft(); });
+  $('#calPrev').addEventListener('click', function () { shiftMonth(-1); });
+  $('#calNext').addEventListener('click', function () { shiftMonth(1); });
+  (function () {
+    var el = $('#cal'), x0 = null, y0 = 0;
+    el.addEventListener('touchstart', function (e) { var t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; }, { passive: true });
+    el.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) shiftMonth(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  })();
+  ['#fName', '#fWa', '#fNote'].forEach(function (id) { $(id).addEventListener('input', function (e) { e.target.removeAttribute('aria-invalid'); }); });
   $('#fName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#fWa').focus(); } });
+  $('#fWa').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#fNote').focus(); } });
   $('#form').addEventListener('submit', function (e) { e.preventDefault(); if (S.step < 3) next(S.step); else if (S.step === 3) submit(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.open) closeSheet(); });
   $('#sheet').addEventListener('animationend', function (e) { if (e.target === this && e.animationName === 'sheetUp') this.classList.add('settled'); });
@@ -1323,7 +1679,6 @@ h3{font-size:1rem;font-weight:600}
     };
     vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit);
   }
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('ios');
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (es) { S.heroSeen = es[0].isIntersecting; updateDock(); }).observe($('#heroCta'));
@@ -1345,7 +1700,8 @@ h3{font-size:1rem;font-weight:600}
       var first = !S.data || !!S.data.prov;
       S.loadFailed = false; S.data = d; saveCache(d);
       renderAll(first); updateDock();
-      if (S.open && S.step === 0 && S.f.d) updateDate();
+      if (S.open && S.step === 0) { renderChips(); renderCal(0); updateDate(); }
+      else if (S.open && S.step === 1) renderPkg();
       flushPending(false);
     }, fail);
   }
