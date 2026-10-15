@@ -143,6 +143,8 @@ h2{font-size:1.15rem;line-height:1.3;font-weight:700;letter-spacing:-.015em}
 .pool-no{display:grid;align-content:start;gap:4px;padding-top:1px;color:var(--green);line-height:1;font-variant-numeric:tabular-nums}
 .pool-no b{font-size:1.45rem;font-weight:700;letter-spacing:-.02em}
 .pool-no span{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.pool-no small{font-size:.64rem;font-weight:600;opacity:.75}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .pool-body{display:grid;gap:10px;min-width:0}
 .pool .bar{background:var(--track)}
 .pool .av,.pool .av-more{box-shadow:0 0 0 2px var(--card)}
@@ -1027,9 +1029,9 @@ h3{font-size:1rem;font-weight:600}
       var days = diff(p.d, today);
       var dp = p.d.split('-');
       return '<li class="pool' + (first ? '' : ' still') + '" style="--i:' + i + '" data-d="' + p.d + '">' +
-        '<div class="pool-no" aria-hidden="true"><b>' + dp[2] + '</b><span>' + MON[+dp[1] - 1] + '</span></div><div class="pool-body">' +
-        '<div class="pool-top"><div class="pool-when"><b>' + mid(p.d) + '</b><span>' + (days > 0 ? days + ' hari lagi' : 'hari ini') +
-        (p.kg ? ' · ' + p.kg + ' lanjut Kirgistan' : '') + (mine ? ' <span class="mine">· kamu ikut</span>' : '') + '</span></div>' +
+        '<div class="pool-no" aria-hidden="true"><b>' + dp[2] + '</b><span>' + MON[+dp[1] - 1] + '</span><small>' + dp[0] + '</small></div><div class="pool-body">' +
+        '<div class="pool-top"><div class="pool-when"><b><span class="sr">' + (+dp[2]) + ' ' + MONL[+dp[1] - 1] + ' ' + dp[0] + ', </span>' + DAYL[dow(p.d)] + ' · ' + (days > 0 ? days + ' hari lagi' : 'hari ini') + '</b>' +
+        (p.kg || mine ? '<span>' + (p.kg ? p.kg + ' lanjut Kirgistan' : '') + (p.kg && mine ? ' · ' : '') + (mine ? '<span class="mine">kamu ikut</span>' : '') + '</span>' : '') + '</div>' +
         (full ? '<button type="button" class="btn btn-line btn-sm" disabled>Penuh</button></div>'
           : '<button type="button" class="btn btn-line btn-sm" data-join="' + p.d + '" aria-label="Gabung pool ' + esc(long(p.d)) + '">Gabung</button></div>') +
         barHTML(p.n, prev, false) +
