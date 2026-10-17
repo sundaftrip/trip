@@ -188,14 +188,28 @@ def link(c, x, y, s, url, font=SANS, size=9.5, color=TEAL):
     return tw
 
 
-def accent(c, x, y):
-    """The short aurora rule that sits above every section title."""
-    set_fill(c, AURORA)
-    c.roundRect(x, y, 22, 3, 1.5, stroke=0, fill=1)
+GOLD = _hex("#d8aa38")       # website gold accent
+GOLD_LT = _hex("#f4d39b")    # website footer gold, for navy backgrounds
+
+
+def accent(c, x, y, color=GOLD):
+    """Gold leaf above every section title: round at the left, pointed at the right."""
+    r, length = 3.5, 24
+    k = r * 0.5523
+    y -= 2
+    set_fill(c, color)
+    p = c.beginPath()
+    p.moveTo(x + r, y + 2 * r)
+    p.curveTo(x + 11, y + 2 * r, x + 19, y + r + 1.4, x + length, y + r)
+    p.curveTo(x + 19, y + r - 1.4, x + 11, y, x + r, y)
+    p.curveTo(x + r - k, y, x, y + r - k, x, y + r)
+    p.curveTo(x, y + r + k, x + r - k, y + 2 * r, x + r, y + 2 * r)
+    p.close()
+    c.drawPath(p, stroke=0, fill=1)
 
 
 def heading(c, x, y, title, size=16):
-    accent(c, x, y + size - 1)
+    accent(c, x, y + size + 4)
     text(c, x, y, title, SANS_BOLD, size, INK)
     return y - 24
 
@@ -534,7 +548,7 @@ def page_four(c, T):
 
     # Closing line: the website footer's own tagline.
     y = navy_top - 62
-    accent(c, LM, y + 31)
+    accent(c, LM, y + 31, GOLD_LT)
     text(c, LM, y, T["closing"], SANS_BOLD, 28, WHITE)
     c.setStrokeColorRGB(*_hex("#3a4455"))
     c.setLineWidth(0.8)
@@ -575,7 +589,7 @@ EN = {
                 "   |   Indonesia-based Tour Operator"),
     "city": "Jakarta, Indonesia",
     "page": "Page",
-    "doc_title": "Sundaf Trip — Company Profile",
+    "doc_title": "Sundaf Trip Company Profile",
     "cover_kicker": "COMPANY PROFILE",
     "cover_title": ("Small-group journeys from Indonesia, led by our own "
                     "tour leaders."),
@@ -586,7 +600,7 @@ EN = {
                "Holiday Group, based in Jakarta. We specialize in organizing "
                "affordable, well-curated small group tours to international "
                "destinations. Our focus is delivering high-value travel "
-               "experiences with personal attention — ensuring every trip is "
+               "experiences with personal attention, so every trip is "
                "safe, enjoyable, and memorable."),
     "about2_ferdiansah": ("Founded by Ferdiansah, Sundaf Trip was built on the "
                "belief that international travel should be accessible to more "
@@ -606,7 +620,7 @@ EN = {
          "personal touch and flexible itineraries."),
         ("End-to-End Coordination",
          "Flights, accommodation, ground transport, meals, and attraction "
-         "tickets — all organized under one roof."),
+         "tickets, all organized under one roof."),
         ("Tour Leadership",
          "Every trip is accompanied by our own Indonesian-speaking tour "
          "leader from departure to return."),
@@ -632,13 +646,13 @@ EN = {
     ],
     "h_why": "Why partner with Sundaf Trip",
     "reasons": [
-        "Small group sizes of 10–20 pax per departure — ideal for focused, "
+        "Small group sizes of 10–20 pax per departure, ideal for focused, "
         "well-coordinated ground arrangements.",
-        "We bring our own tour leader — your team only needs to handle "
+        "We bring our own tour leader, so your team only needs to handle "
         "logistics and ground operations.",
         "Growing Indonesian outbound travel market with strong demand for "
         "affordable Europe packages.",
-        "Long-term partnership mindset — we are looking for a reliable DMC "
+        "Long-term partnership mindset: we are looking for a reliable DMC "
         "to grow with, not one-off deals.",
         "Professional operations: structured itineraries, clear "
         "communication, and on-time coordination.",
@@ -659,7 +673,7 @@ EN = {
          "arrangements and emergency contacts."),
         ("4. On-Ground Execution",
          "Our tour leader manages the group. DMC partner handles local "
-         "logistics — driver, hotel check-ins, restaurant reservations, "
+         "logistics: driver, hotel check-ins, restaurant reservations, "
          "and any on-the-ground issues."),
         ("5. Post-Trip Review",
          "We share feedback from our travelers and discuss improvements "
@@ -671,10 +685,10 @@ EN = {
         "Competitive group rates for 3-star hotels in city center or "
         "well-connected locations.",
         "Reliable coach / minibus transportation with experienced drivers.",
-        "Meal arrangements — flexible between restaurant bookings and "
+        "Meal arrangements, flexible between restaurant bookings and "
         "self-catered options.",
         "Attraction tickets and skip-the-line access where available.",
-        "Transparent pricing with clear inclusions — no hidden costs.",
+        "Transparent pricing with clear inclusions and no hidden costs.",
         "Responsive communication, ideally via email and WhatsApp.",
     ],
     "lets_talk": "Let's talk",
@@ -696,7 +710,7 @@ EN = {
     ],
     "h_groups": "Our groups in action",
     "groups_intro": ("Real group departures we have operated across Russia, "
-                     "Central Asia, China, and India — every trip accompanied "
+                     "Central Asia, China, and India. Every trip is accompanied "
                      "by our own Indonesian-speaking tour leader."),
     "photos": [
         ("trip-1.jpg", "Red Square, Moscow"),
@@ -711,17 +725,17 @@ RU = {
                 "путешествия   |   Туроператор из Индонезии"),
     "city": "Джакарта, Индонезия",
     "page": "Стр.",
-    "doc_title": "Sundaf Trip — Профиль компании",
+    "doc_title": "Sundaf Trip. Профиль компании",
     "cover_kicker": "ПРОФИЛЬ КОМПАНИИ",
     "cover_title": ("Туры малыми группами из Индонезии с нашими "
                     "собственными турлидерами."),
     "hero_photo": "trip-5.jpg",
     "closing": "Путешествовать может каждый.",
     "h_about": "О компании",
-    "about1": ("Sundaf Trip — индонезийский туроператор в составе CV Sundaf "
+    "about1": ("Sundaf Trip: индонезийский туроператор в составе CV Sundaf "
                "Holiday Group, базирующийся в Джакарте. Мы специализируемся "
                "на организации доступных, тщательно продуманных туров малыми "
-               "группами по международным направлениям. Наша цель — дарить "
+               "группами по международным направлениям. Наша цель: дарить "
                "путешествия высокой ценности с индивидуальным вниманием, "
                "чтобы каждая поездка была безопасной, приятной и "
                "запоминающейся."),
@@ -744,10 +758,10 @@ RU = {
          "индивидуальным подходом и гибкими маршрутами."),
         ("Полная координация",
          "Авиаперелёты, проживание, наземный транспорт, питание и билеты "
-         "на достопримечательности — всё в одних руках."),
+         "на достопримечательности, всё в одних руках."),
         ("Сопровождение тура",
          "Каждую поездку сопровождает наш собственный турлидер со знанием "
-         "индонезийского — от вылета до возвращения."),
+         "индонезийского, от вылета до возвращения."),
         ("Доступные пакеты",
          "Пакеты с оптимальным соотношением цены и качества, делающие "
          "международные поездки доступнее для путешественников."),
@@ -766,17 +780,17 @@ RU = {
     "dest_exp": [
         "Западная Европа (Франция, Нидерланды, Германия, Швейцария, Италия)",
         "Скандинавия (Норвегия, Швеция, Финляндия)",
-        "Другие направления — в зависимости от спроса",
+        "Другие направления в зависимости от спроса",
     ],
     "h_why": "Почему стоит работать с Sundaf Trip",
     "reasons": [
-        "Малые группы по 10–20 человек на выезд — идеально для чёткой и "
+        "Малые группы по 10–20 человек на выезд, идеально для чёткой и "
         "слаженной организации на месте.",
-        "Мы привозим собственного турлидера — вашей команде нужно "
+        "Мы привозим собственного турлидера, поэтому вашей команде нужно "
         "заниматься только логистикой и наземным обслуживанием.",
         "Растущий рынок выездного туризма Индонезии с высоким спросом на "
         "доступные туры по Европе.",
-        "Настрой на долгосрочное партнёрство — мы ищем надёжного DMC для "
+        "Настрой на долгосрочное партнёрство: мы ищем надёжного DMC для "
         "совместного роста, а не разовые сделки.",
         "Профессиональная организация: структурированные маршруты, чёткая "
         "коммуникация и своевременная координация.",
@@ -797,7 +811,7 @@ RU = {
          "все договорённости и экстренные контакты."),
         ("4. Работа на месте",
          "Наш турлидер ведёт группу. DMC-партнёр отвечает за местную "
-         "логистику — водителя, заселение в отели, бронирование "
+         "логистику: водителя, заселение в отели, бронирование "
          "ресторанов и решение вопросов на месте."),
         ("5. Анализ после поездки",
          "Мы делимся отзывами путешественников и обсуждаем улучшения для "
@@ -808,13 +822,13 @@ RU = {
     "wants": [
         "Конкурентные групповые тарифы на отели 3* в центре города или в "
         "удобных по транспорту районах.",
-        "Надёжный транспорт — автобусы или микроавтобусы с опытными "
+        "Надёжный транспорт: автобусы или микроавтобусы с опытными "
         "водителями.",
-        "Организация питания — гибко: бронирование ресторанов или "
+        "Организация питания, гибко: бронирование ресторанов или "
         "самостоятельные варианты.",
         "Билеты на достопримечательности и проход без очереди, где это "
         "возможно.",
-        "Прозрачное ценообразование с понятным составом услуг — без "
+        "Прозрачное ценообразование с понятным составом услуг, без "
         "скрытых платежей.",
         "Оперативная коммуникация, желательно по email и WhatsApp.",
     ],
@@ -837,7 +851,7 @@ RU = {
     ],
     "h_groups": "Наши группы в деле",
     "groups_intro": ("Реальные групповые выезды, проведённые нами по России, "
-                     "Центральной Азии, Китаю и Индии — каждую поездку "
+                     "Центральной Азии, Китаю и Индии. Каждую поездку "
                      "сопровождал наш собственный турлидер."),
     "photos": [
         ("trip-1.jpg", "Красная площадь, Москва"),
