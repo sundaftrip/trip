@@ -37,16 +37,22 @@ test("every footer payment mark is an official asset with a recorded source", ()
   }
 });
 
-test("footer horizon is decorative, seamless and motion-safe", () => {
+test("footer waves are decorative, seamless and motion-safe", () => {
   const horizon = readSource("components/website/clean/FooterHorizon.tsx");
   const horizonCss = readSource("components/website/clean/FooterHorizon.module.css");
   const footerCss = readSource("components/website/clean/CleanFooter.module.css");
 
   assert.match(footer, /<FooterHorizon \/>/);
   assert.match(horizon, /aria-hidden="true"/);
-  // The nearest range and the footer share one colour variable, so no seam shows.
-  assert.match(horizonCss, /\.near \{ fill: var\(--footer-bg/);
+  // The front wave and the footer share one colour variable, so no seam shows.
+  assert.match(horizonCss, /\.front \{ fill: var\(--footer-bg/);
   assert.match(footerCss, /--footer-bg: #222b3b/);
+  // Every wave runs past both edges of the 1440-wide artwork, so the sideways drift never shows a gap.
+  const waves = [...horizon.matchAll(/^const \w+ = "M(-?\d+) .* L(\d+) \d+Z";$/gm)];
+  assert.equal(waves.length, 3);
+  for (const [, start, end] of waves) {
+    assert.ok(Number(start) <= -60 && Number(end) >= 1500, `wave spans ${start} to ${end}`);
+  }
   // Motion only runs when the visitor allows it.
   const motionBlock = horizonCss.slice(horizonCss.indexOf("@media (prefers-reduced-motion: no-preference)"));
   assert.match(motionBlock, /animation-timeline: --footer-horizon/);

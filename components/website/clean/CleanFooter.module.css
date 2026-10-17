@@ -5,9 +5,9 @@
   --footer-line: #3a4455;
   --footer-gold: #f4d39b;
   --footer-bg: #222b3b;
-  --footer-horizon-h: clamp(100px, 11vw, 190px);
+  --footer-horizon-h: clamp(92px, 10.4vw, 168px);
   padding: 0 0 24px;
-  /* Transparent behind the mountain horizon, footer colour from its base. */
+  /* Transparent behind the waves, footer colour from the front wave down. */
   background: linear-gradient(to bottom, transparent 0 calc(var(--footer-horizon-h) - 1px), var(--footer-bg) 0);
   color: var(--footer-ink);
   font-family: var(--site-font-family, var(--font-dm-sans)), "Helvetica Neue", Arial, sans-serif;

@@ -1,9 +1,10 @@
-/* Mountain horizon at the top of the footer. The sky is transparent, so the
-   page colour shows through; the nearest range uses the footer colour and the
-   footer background starts 1px under it, so there is no seam. */
+/* Wave transition at the top of the footer. Above the waves the footer is
+   transparent, so the page colour shows through; the front wave takes the
+   footer colour and the footer background starts 1px under it, so there is
+   no seam. */
 .horizon {
   position: relative;
-  height: var(--footer-horizon-h, clamp(88px, 11vw, 190px));
+  height: var(--footer-horizon-h, clamp(92px, 10.4vw, 168px));
   overflow: hidden;
   pointer-events: none;
 }
@@ -17,34 +18,28 @@
   height: calc(100% + 1px);
 }
 
-.near { fill: var(--footer-bg, #222b3b); }
+.back { fill: #5fb3ad; opacity: 0.22; }
+.middle { fill: #3b4a62; opacity: 0.7; }
+.front { fill: var(--footer-bg, #222b3b); }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The aurora glow behind the twin summit breathes slowly. */
-  .halo { animation: footer-horizon-breathe 7s ease-in-out infinite alternate; }
-
-  /* Distant ranges rise into place as the footer arrives, the same calm
-     glide-up as the site's scroll reveals. Without scroll timelines the
-     ranges simply stay in place. */
+  /* The waves roll in as the footer arrives: the back two rise and all three
+     slide sideways into place, at the same calm pace as the site's scroll
+     reveals. Without scroll timelines the waves simply stay put. */
   @supports (animation-timeline: view()) {
     .horizon { view-timeline-name: --footer-horizon; }
-    .layer {
-      animation: footer-horizon-rise linear both;
+    .wave {
+      animation: footer-wave-roll linear both;
       animation-timeline: --footer-horizon;
       animation-range: entry 0% cover 45%;
     }
-    .haze { --footer-horizon-rise: 34px; }
-    .far { --footer-horizon-rise: 26px; }
-    .mid { --footer-horizon-rise: 12px; }
+    .back { --footer-wave-x: -56px; --footer-wave-y: 22px; }
+    .middle { --footer-wave-x: 40px; --footer-wave-y: 12px; }
+    .front { --footer-wave-x: -24px; }
   }
 }
 
-@keyframes footer-horizon-rise {
-  from { transform: translateY(var(--footer-horizon-rise, 0px)); }
+@keyframes footer-wave-roll {
+  from { transform: translate(var(--footer-wave-x, 0px), var(--footer-wave-y, 0px)); }
   to { transform: none; }
-}
-
-@keyframes footer-horizon-breathe {
-  from { opacity: .55; }
-  to { opacity: 1; }
 }
