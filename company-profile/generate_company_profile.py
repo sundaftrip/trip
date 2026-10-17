@@ -10,6 +10,7 @@ Builds three A4 company-profile PDFs into the website's public/ folder:
 
 Run:  python3 generate_company_profile.py
 """
+import os
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import simpleSplit
@@ -20,7 +21,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 # --------------------------------------------------------------------------
 # CONFIG
 # --------------------------------------------------------------------------
-BASE          = "/Users/ferdiansahyusuf/sundaftrip"
+# The repository this script lives in, so a worktree builds into its own public/.
+BASE          = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_EN     = f"{BASE}/public/sundaftrip-company-profile.pdf"
 OUTPUT_BILLY  = f"{BASE}/public/sundaftrip-company-profile-billy.pdf"
 OUTPUT_RU     = f"{BASE}/public/sundaftrip-company-profile-ru.pdf"
@@ -43,7 +45,7 @@ CONTACTS = {
         "wa_url": WA_URL,
     },
     "billy": {
-        "email": "sebastianbilly31@gmail.com",
+        "email": "partner@sundaftrip.com",
         "wa_display": "+7 916 889-64-71",
         "wa_url": "https://wa.me/79168896471",
     },

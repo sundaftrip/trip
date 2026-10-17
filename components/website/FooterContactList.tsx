@@ -13,7 +13,7 @@ export type FooterContact = {
 
 type IconProps = { size?: number; className?: string; style?: CSSProperties };
 
-const BILLY_EMAIL = "sebastianbilly31@gmail.com";
+const PARTNER_EMAIL = "partner@sundaftrip.com";
 const BILLY_WHATSAPP_DISPLAY = "+7 916 889-64-71";
 const BILLY_WHATSAPP_URL = "https://wa.me/79168896471";
 
@@ -59,8 +59,8 @@ function partnerContact(contact: FooterContact): FooterContact {
   if (contact.kind === "email") {
     return {
       ...contact,
-      value: BILLY_EMAIL,
-      href: `mailto:${BILLY_EMAIL}`,
+      value: PARTNER_EMAIL,
+      href: `mailto:${PARTNER_EMAIL}`,
     };
   }
 
