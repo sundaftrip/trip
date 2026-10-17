@@ -188,30 +188,30 @@ def link(c, x, y, s, url, font=SANS, size=9.5, color=TEAL):
     return tw
 
 
-GOLD = _hex("#d8aa38")       # website gold accent
-GOLD_LT = _hex("#f4d39b")    # website footer gold, for navy backgrounds
+AMBER = _hex("#eab067")      # --doc-amber: the website's section tag
+DOC_NAVY = _hex("#1e3645")   # --doc-navy: text on the tag
 
 
-def accent(c, x, y, color=GOLD):
-    """Gold leaf above every section title: round at the left, pointed at the right."""
-    r, length = 3.5, 24
+def heading(c, x, y, title, size=10.5):
+    """Section title as the website's amber tag (DocFormat .tag): rounded on
+    the left, cut on a slant on the right, navy capitals."""
+    label = title.upper()
+    h, cut, r = 23, 12, 11.5
+    w = 14 + spaced_width(label, SANS_BOLD, size, 0.3) + 30
+    by = y - 6
     k = r * 0.5523
-    y -= 2
-    set_fill(c, color)
+    set_fill(c, AMBER)
     p = c.beginPath()
-    p.moveTo(x + r, y + 2 * r)
-    p.curveTo(x + 11, y + 2 * r, x + 19, y + r + 1.4, x + length, y + r)
-    p.curveTo(x + 19, y + r - 1.4, x + 11, y, x + r, y)
-    p.curveTo(x + r - k, y, x, y + r - k, x, y + r)
-    p.curveTo(x, y + r + k, x + r - k, y + 2 * r, x + r, y + 2 * r)
+    p.moveTo(x + r, by)
+    p.lineTo(x + w - cut, by)
+    p.lineTo(x + w, by + h)
+    p.lineTo(x + r, by + h)
+    p.curveTo(x + r - k, by + h, x, by + r + k, x, by + r)
+    p.curveTo(x, by + r - k, x + r - k, by, x + r, by)
     p.close()
     c.drawPath(p, stroke=0, fill=1)
-
-
-def heading(c, x, y, title, size=16):
-    accent(c, x, y + size + 4)
-    text(c, x, y, title, SANS_BOLD, size, INK)
-    return y - 24
+    spaced(c, x + 14, by + 8, label, SANS_BOLD, size, DOC_NAVY, 0.3)
+    return y - 32
 
 
 def card(c, x, y, w, h, fill, radius=5):
@@ -548,7 +548,6 @@ def page_four(c, T):
 
     # Closing line: the website footer's own tagline.
     y = navy_top - 62
-    accent(c, LM, y + 31, GOLD_LT)
     text(c, LM, y, T["closing"], SANS_BOLD, 28, WHITE)
     c.setStrokeColorRGB(*_hex("#3a4455"))
     c.setLineWidth(0.8)
