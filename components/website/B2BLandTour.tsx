@@ -274,7 +274,7 @@ const BILLY = {
   name: "Billy",
   role: "Co-Founder",
   photo: "/partner/billy.jpg",
-  email: "sebastianbilly31@gmail.com",
+  email: "partner@sundaftrip.com",
   whatsappUrl: "https://wa.me/79168896471",
   desc: {
     id: "Memimpin pengembangan kemitraan dan hubungan dengan travel agent, dengan pengalaman mendampingi perjalanan grup internasional.",

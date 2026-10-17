@@ -90,6 +90,7 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Terdaftar di Kementerian Hukum RI": "Registered with the Ministry of Law of Indonesia",
   "Perizinan melalui OSS": "Licensed through OSS",
   "Metode pembayaran": "Payment methods",
+  "Semua bisa jalan.": "Everyone can travel.",
   "APPOINTMENT ONLY": "APPOINTMENT ONLY",
   "Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lt. 5 Unit A501, Jl. HR Rasuna Said, Setiabudi, Jakarta Selatan, DKI Jakarta 12940":
     "Rasuna Epicentrum, Epiwalk Office Suite, 5th Floor, Unit A501, Jalan HR Rasuna Said, Setiabudi, South Jakarta, DKI Jakarta 12940",

@@ -203,7 +203,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
 
         <div className={styles.bottom}>
           {officeAddress && <address><span className={styles.appointment}>{APPOINTMENT_ONLY_LABEL}</span>{officeAddress}</address>}
-          <p>© {new Date().getFullYear()} Sundaf Trip<span>Perjalanan dimulai dari obrolan.</span></p>
+          <p>© {new Date().getFullYear()} Sundaf Trip<span>Semua bisa jalan.</span></p>
         </div>
       </div>
     </footer>
