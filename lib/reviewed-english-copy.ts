@@ -86,6 +86,10 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Tautan perjalanan": "Trip links",
   "Tautan tentang Sundaf": "About Sundaf links",
   "Tautan kontak": "Contact links",
+  "Pendaftaran dan perizinan usaha": "Business registration and licensing",
+  "Terdaftar di AHU": "Registered with AHU",
+  "Perizinan melalui OSS": "Licensed through OSS",
+  "Metode pembayaran": "Payment methods",
   "APPOINTMENT ONLY": "APPOINTMENT ONLY",
   "Kawasan Rasuna Epicentrum, Epiwalk Office Suite Lt. 5 Unit A501, Jl. HR Rasuna Said, Setiabudi, Jakarta Selatan, DKI Jakarta 12940":
     "Rasuna Epicentrum, Epiwalk Office Suite, 5th Floor, Unit A501, Jalan HR Rasuna Said, Setiabudi, South Jakarta, DKI Jakarta 12940",

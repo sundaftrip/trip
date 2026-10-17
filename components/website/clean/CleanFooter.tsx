@@ -1,7 +1,7 @@
 import Image from "next/image";
 import WhatsAppIcon from "../WhatsAppIcon";
 import Link from "./PreserveScrollLink";
-import { FileCheck2, Globe2, Mail, Phone, Route } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import {
   APPOINTMENT_ONLY_LABEL,
   SUNDAF_AHU_REGISTRATION,
@@ -11,6 +11,26 @@ import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
 import { SUNDAF_TRANSFER_ACCOUNT } from "@/lib/company-transfer";
 import styles from "./CleanFooter.module.css";
+
+type PaymentMark = {
+  src: string;
+  alt: string;
+  title?: string;
+  width: number;
+  height: number;
+};
+
+// Payment marks use official, unchanged artwork only. Record each file's
+// source in public/brand/ASSET-SOURCES.md before adding it here.
+const PAYMENT_MARKS: readonly PaymentMark[] = [
+  {
+    src: "/brand/bca-white.svg",
+    alt: "BCA",
+    title: "Logo BCA merupakan merek terdaftar milik PT Bank Central Asia Tbk.",
+    width: 51,
+    height: 16,
+  },
+];
 
 function InstagramIcon() {
   return (
@@ -30,7 +50,6 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
   const phone = resolveCompanyPhone(company.company_phone);
   const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : "";
   const nib = company.company_nib?.trim();
-  const legalName = company.company_legal_name?.trim();
   const officeAddress = appointmentOnlyOfficeAddress(company.company_address);
   const igUser = (company.company_instagram || "")
     .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
@@ -49,18 +68,6 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <h2 id="footer-brand-title" className="sr-only">Sundaf Trip</h2>
             <p>Perjalanan Rusia, Asia Tengah, aurora, dan private trip untuk traveler Indonesia.</p>
             <span className={styles.brandNote} data-no-translate translate="no">Your B2B partner.</span>
-            <div className={styles.payment} role="group" aria-label="Rekening transfer perusahaan">
-              <Image
-                className={styles.paymentLogo}
-                src="/brand/bca-white.svg"
-                alt="BCA"
-                title="Logo BCA merupakan merek terdaftar milik PT Bank Central Asia Tbk."
-                width={80}
-                height={25}
-              />
-              <p>{`Transfer perusahaan hanya melalui ${SUNDAF_TRANSFER_ACCOUNT.bank}.`}</p>
-              <span data-no-translate translate="no">{SUNDAF_TRANSFER_ACCOUNT.holder}</span>
-            </div>
           </section>
 
           <div className={styles.navigation}>
@@ -103,51 +110,10 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
         </div>
 
         <div className={styles.connections}>
-          <ul className={styles.highlights} aria-label="Bersama Sundaf">
-            <li>
-              <span className={`${styles.badge} ${styles.pink}`}><Route aria-hidden="true" /></span>
-              <div><strong>Rute dan jadwal jelas</strong><p>Kenali perjalanan sebelum memilih.</p></div>
-            </li>
-            <li>
-              <span className={`${styles.badge} ${styles.orange}`}><FileCheck2 aria-hidden="true" /></span>
-              <div><strong>Persiapan dibantu</strong><p>Dari dokumen hingga info keberangkatan.</p></div>
-            </li>
-            <li>
-              <span className={`${styles.badge} ${styles.blue}`}><Globe2 aria-hidden="true" /></span>
-              <div><strong>Untuk traveler Indonesia</strong><p>Koordinasi perjalanan dalam bahasa Indonesia.</p></div>
-            </li>
-          </ul>
-
           <section className={styles.partner} aria-labelledby="footer-partner-title">
             <h2 id="footer-partner-title">Untuk mitra perjalanan</h2>
             <p>Kebutuhan tamu Anda, dari satu layanan di Rusia hingga perjalanan grup. Mari bekerja sama.</p>
             <Link className={styles.textLink} href="/partner">Kenali kemitraan SUNDAF</Link>
-            <div className={styles.registrations}>
-              {(legalName || nib) && (
-                <div className={styles.identity} role="group" aria-label="Perizinan usaha melalui OSS">
-                  {nib && (
-                    <a className={styles.ossMark} href="https://oss.go.id/id" target="_blank" rel="noopener noreferrer" aria-label="Buka situs resmi OSS (buka di tab baru)" title="Buka situs resmi OSS">
-                      <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={90} height={27} />
-                    </a>
-                  )}
-                  <span>
-                    {legalName ? <strong data-no-translate translate="no">{legalName}</strong> : <strong>Identitas usaha Sundaf</strong>}
-                    {nib && <small data-no-translate translate="no">NIB {nib}</small>}
-                    {nib && <span className={styles.issuer}>Perizinan melalui OSS</span>}
-                  </span>
-                </div>
-              )}
-              <div className={styles.registration} role="group" aria-label="Pendaftaran badan usaha di AHU">
-                <a className={styles.ahuMark} href={SUNDAF_AHU_REGISTRATION.verificationUrl} target="_blank" rel="noopener noreferrer" aria-label={`Cek pendaftaran ${SUNDAF_AHU_REGISTRATION.legalName} di AHU (buka di tab baru)`} title="Cek pendaftaran di AHU">
-                  <Image src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={36} height={36} />
-                </a>
-                <div className={styles.registrationDetails}>
-                  <strong>Terdaftar di AHU</strong>
-                  <span className={styles.registrationNumber} data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.number}</span>
-                  <span className={styles.issuer}>Kementerian Hukum RI</span>
-                </div>
-              </div>
-            </div>
           </section>
 
           <section className={styles.contact} aria-labelledby="footer-contact-title">
@@ -166,6 +132,60 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
               {phoneHref && phone !== whatsappDisplay && <a href={phoneHref}><Phone aria-hidden="true" /><span>{phone}</span></a>}
             </nav>
           </section>
+        </div>
+
+        <div className={styles.trust}>
+          <ul className={styles.seals} aria-label="Pendaftaran dan perizinan usaha">
+            <li className={styles.seal}>
+              <a
+                className={`${styles.sealMark} ${styles.ahuSeal}`}
+                href={SUNDAF_AHU_REGISTRATION.verificationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Cek pendaftaran ${SUNDAF_AHU_REGISTRATION.legalName} di AHU (buka di tab baru)`}
+                title="Cek pendaftaran di AHU"
+              >
+                <Image src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={44} height={44} />
+              </a>
+              <div className={styles.sealText}>
+                <strong>Terdaftar di AHU</strong>
+                <span data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.number}</span>
+              </div>
+            </li>
+            {nib && (
+              <li className={styles.seal}>
+                <a
+                  className={`${styles.sealMark} ${styles.ossSeal}`}
+                  href="https://oss.go.id/id"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Buka situs resmi OSS (buka di tab baru)"
+                  title="Buka situs resmi OSS"
+                >
+                  <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={84} height={25} />
+                </a>
+                <div className={styles.sealText}>
+                  <strong>Perizinan melalui OSS</strong>
+                  <span data-no-translate translate="no">NIB {nib}</span>
+                </div>
+              </li>
+            )}
+          </ul>
+
+          <div className={styles.payments} role="group" aria-labelledby="footer-payment-title">
+            <p id="footer-payment-title" className={styles.trustLabel}>Pembayaran</p>
+            <ul className={styles.paymentMarks} aria-label="Metode pembayaran">
+              {PAYMENT_MARKS.map((mark) => (
+                <li key={mark.src} className={styles.paymentMark}>
+                  <Image src={mark.src} alt={mark.alt} title={mark.title} width={mark.width} height={mark.height} />
+                </li>
+              ))}
+            </ul>
+            <p className={styles.paymentNote}>
+              {`Transfer perusahaan hanya melalui ${SUNDAF_TRANSFER_ACCOUNT.bank}.`}
+              <span data-no-translate translate="no">{SUNDAF_TRANSFER_ACCOUNT.holder}</span>
+            </p>
+          </div>
         </div>
 
         <div className={styles.bottom}>
