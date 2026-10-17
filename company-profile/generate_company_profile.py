@@ -8,12 +8,17 @@ Builds three A4 company-profile PDFs into the website's public/ folder:
   sundaftrip-company-profile-billy.pdf  English  · Billy only  (→ /partner)
   sundaftrip-company-profile-ru.pdf     Russian  · Ferdiansah  (→ /company-profile RU)
 
+The layout follows the website: DM Sans, the clean theme colours and the
+footer waves, over four pages.
+
 Run:  python3 generate_company_profile.py
 """
+import math
 import os
+import re
 
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.utils import simpleSplit
+from reportlab.lib.utils import ImageReader, simpleSplit
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -54,30 +59,54 @@ LEGAL_ENTITY = "CV Sundaf Holiday Group"
 NIB          = "1601260060842"
 
 # --------------------------------------------------------------------------
-# Brand palette / geometry
+# Brand palette: the website's own colours (components/website/clean/*.css)
 # --------------------------------------------------------------------------
-# REBRAND 2026: charcoal/teal (navy+oranye pensiun). Nama konstanta tetap
-# NAVY/ORANGE agar tak perlu ubah seluruh pemakaian — hanya nilainya diganti.
-NAVY   = (0x22 / 255, 0x28 / 255, 0x31 / 255)   # charcoal (dulu navy)
-ORANGE = (0x00 / 255, 0xAD / 255, 0xB5 / 255)   # teal (dulu oranye)
-WHITE  = (1, 1, 1)
-GREY   = (0.36, 0.38, 0.42)
-LGREY  = (0.55, 0.57, 0.60)
-CARDBG = (0.945, 0.945, 0.955)
-LINKBL = (0.20, 0.45, 0.78)
+def _hex(value):
+    value = value.lstrip("#")
+    return tuple(int(value[i:i + 2], 16) / 255 for i in (0, 2, 4))
+
+
+INK = _hex("#132b3a")        # --clean-ink: headings
+INK_SOFT = _hex("#42515a")   # --shell-ink-soft: body text
+MUTED = _hex("#606b72")      # --clean-muted: labels and captions
+TEAL = _hex("#075d63")       # --clean-teal: links and numbers
+AURORA = _hex("#20b8b5")     # --shell-aurora: small accents
+AURORA_LT = _hex("#8cdae0")  # links on navy
+LINE = _hex("#e2e7e8")       # --clean-line: rules
+ROW_LINE = _hex("#d8e5e4")   # rules inside sage cards
+SAGE = _hex("#eaf3f0")       # --doc-sage: cards, like the website FAQ rows
+SAND = _hex("#f5f5ef")       # --doc-sand: cards, like the website FAQ rows
+TEAL_PALE = _hex("#dff1f2")  # --clean-teal-pale
+NAVY = _hex("#222b3b")       # website footer
+NAVY_TEXT = _hex("#b7c0d0")  # website footer text
+WHITE = (1, 1, 1)
 
 W, H = A4
-LM, RM = 42, 42
+LM, RM = 46, 46
 CW = W - LM - RM
 
-# Font remap — populated per build. Russian build maps the built-in
-# Helvetica names onto registered Cyrillic Arial fonts.
+SANS, SANS_BOLD = "DMSans", "DMSans-Bold"
+FONT_DIR = f"{BASE}/assets/fonts/dm-sans"
+COLOR_LOGO_PATH = f"{BASE}/public/logo.png"
+
+# Font remap, set per build: DM Sans has no Cyrillic, so the Russian build
+# swaps it for the Cyrillic Arial fonts.
 FONTMAP = {}
+_FONTS_DONE = False
 _CYR_DONE = False
 
 
 def _f(name):
     return FONTMAP.get(name, name)
+
+
+def register_fonts():
+    global _FONTS_DONE
+    if _FONTS_DONE:
+        return
+    pdfmetrics.registerFont(TTFont(SANS, f"{FONT_DIR}/DMSans-Regular.ttf"))
+    pdfmetrics.registerFont(TTFont(SANS_BOLD, f"{FONT_DIR}/DMSans-Bold.ttf"))
+    _FONTS_DONE = True
 
 
 def register_cyrillic():
@@ -90,261 +119,465 @@ def register_cyrillic():
 
 
 # --------------------------------------------------------------------------
-# Low-level helpers — every font name passes through _f()
+# Low-level helpers: every font name passes through _f()
 # --------------------------------------------------------------------------
-def set_fill(c, rgb):
+def set_fill(c, rgb, alpha=1):
     c.setFillColorRGB(*rgb)
+    c.setFillAlpha(alpha)
 
 
-def text(c, x, y, s, font="Helvetica", size=10, color=GREY):
+def sw(s, font, size):
+    return pdfmetrics.stringWidth(s, _f(font), size)
+
+
+def text(c, x, y, s, font=SANS, size=9.5, color=INK_SOFT):
     set_fill(c, color)
     c.setFont(_f(font), size)
     c.drawString(x, y, s)
+    return sw(s, font, size)
 
 
-def text_center(c, x, y, s, font="Helvetica", size=10, color=GREY):
+def text_right(c, x, y, s, font=SANS, size=9.5, color=INK_SOFT):
+    set_fill(c, color)
+    c.setFont(_f(font), size)
+    c.drawRightString(x, y, s)
+
+
+def text_center(c, x, y, s, font=SANS, size=9.5, color=INK_SOFT):
     set_fill(c, color)
     c.setFont(_f(font), size)
     c.drawCentredString(x, y, s)
 
 
-def link(c, x, y, s, url, font="Helvetica", size=10, color=LINKBL,
-         underline=True):
-    set_fill(c, color)
-    c.setFont(_f(font), size)
-    c.drawString(x, y, s)
-    tw = c.stringWidth(s, _f(font), size)
-    if underline:
-        c.setStrokeColorRGB(*color)
-        c.setLineWidth(0.6)
-        c.line(x, y - 1.6, x + tw, y - 1.6)
-    c.linkURL(url, (x, y - 3, x + tw, y + size), relative=0,
-              thickness=0, kind="URI")
-    return tw
+def spaced_width(s, font, size, space):
+    return sw(s, font, size) + space * max(len(s) - 1, 0)
 
 
-def paragraph(c, x, y, body, width, font="Helvetica", size=9,
-              color=GREY, leading=12.5):
+def spaced(c, x, y, s, font=SANS_BOLD, size=7.5, color=TEAL, space=1.2):
+    """Letter-spaced capitals, like the website's small section labels."""
     set_fill(c, color)
+    # Set the canvas font first, so the text object never falls back to Helvetica.
     c.setFont(_f(font), size)
-    for line in simpleSplit(body, _f(font), size, width):
-        c.drawString(x, y, line)
+    t = c.beginText(x, y)
+    t.setFont(_f(font), size)
+    t.setCharSpace(space)
+    t.textOut(s)
+    # Character spacing is part of the PDF text state and outlives this text
+    # object, so reset it or every later line would be spaced out too.
+    t.setCharSpace(0)
+    c.drawText(t)
+    return spaced_width(s, font, size, space)
+
+
+def lines_of(body, width, font=SANS, size=9.5):
+    return simpleSplit(body, _f(font), size, width)
+
+
+def paragraph(c, x, y, body, width, font=SANS, size=9.5, color=INK_SOFT,
+              leading=14):
+    for line in lines_of(body, width, font, size):
+        text(c, x, y, line, font, size, color)
         y -= leading
     return y
 
 
-def section_heading(c, x, y, label):
-    set_fill(c, ORANGE)
-    c.rect(x, y - 2, 5, 17, stroke=0, fill=1)
-    text(c, x + 13, y + 2, label, "Helvetica-Bold", 13.5, NAVY)
-    return y - 20
+def link(c, x, y, s, url, font=SANS, size=9.5, color=TEAL):
+    tw = text(c, x, y, s, font, size, color)
+    c.linkURL(url, (x, y - 3, x + tw, y + size), relative=0, thickness=0,
+              kind="URI")
+    return tw
 
 
-def bullet(c, x, y, body, width):
-    set_fill(c, ORANGE)
-    c.circle(x + 3, y + 3, 2.6, stroke=0, fill=1)
-    return paragraph(c, x + 13, y, body, width - 13,
-                     "Helvetica", 9, GREY, 12.5)
+AMBER = _hex("#eab067")      # --doc-amber: the website's section tag
+DOC_NAVY = _hex("#1e3645")   # --doc-navy: text on the tag
 
 
-def text_label(c, x, y, s, color):
-    text(c, x, y, s, "Helvetica", 9.5, color)
-    return c.stringWidth(s, _f("Helvetica"), 9.5)
+def heading(c, x, y, title, size=10.5):
+    """Section title as the website's amber tag (DocFormat .tag): rounded on
+    the left, cut on a slant on the right, navy capitals."""
+    label = title.upper()
+    h, cut, r = 23, 12, 11.5
+    w = 14 + spaced_width(label, SANS_BOLD, size, 0.3) + 30
+    by = y - 6
+    k = r * 0.5523
+    set_fill(c, AMBER)
+    p = c.beginPath()
+    p.moveTo(x + r, by)
+    p.lineTo(x + w - cut, by)
+    p.lineTo(x + w, by + h)
+    p.lineTo(x + r, by + h)
+    p.curveTo(x + r - k, by + h, x, by + r + k, x, by + r)
+    p.curveTo(x, by + r - k, x + r - k, by, x + r, by)
+    p.close()
+    c.drawPath(p, stroke=0, fill=1)
+    spaced(c, x + 14, by + 8, label, SANS_BOLD, size, DOC_NAVY, 0.3)
+    return y - 32
 
 
-def text_chunk(c, x, y, s, mailto=False, url=None):
-    font, size = "Helvetica", 8
-    if mailto or url:
-        target = f"mailto:{s}" if mailto else url
-        set_fill(c, LINKBL)
-        c.setFont(_f(font), size)
-        c.drawString(x, y, s)
-        tw = c.stringWidth(s, _f(font), size)
-        c.linkURL(target, (x, y - 2, x + tw, y + size), relative=0,
-                  thickness=0, kind="URI")
-        return tw
-    text(c, x, y, s, font, size, LGREY)
-    return c.stringWidth(s, _f(font), size)
+def card(c, x, y, w, h, fill, radius=5):
+    set_fill(c, fill)
+    c.roundRect(x, y, w, h, radius, stroke=0, fill=1)
 
 
-def sep(c, x, y):
-    text(c, x + 5, y, "|", "Helvetica", 8, (0.78, 0.80, 0.83))
-    return c.stringWidth("  |  ", _f("Helvetica"), 8) + 4
+def tick(c, x, y, d=11):
+    """Round teal check mark, aligned with text on baseline y."""
+    r = d / 2
+    cx, cy = x + r, y + r - 2.2
+    set_fill(c, TEAL)
+    c.circle(cx, cy, r, stroke=0, fill=1)
+    c.setStrokeColorRGB(*WHITE)
+    c.setLineWidth(1.2)
+    c.setLineCap(1)
+    c.setLineJoin(1)
+    p = c.beginPath()
+    p.moveTo(cx - r * 0.42, cy + r * 0.02)
+    p.lineTo(cx - r * 0.1, cy - r * 0.32)
+    p.lineTo(cx + r * 0.45, cy + r * 0.34)
+    c.drawPath(p, stroke=1, fill=0)
+
+
+def photo(c, path, x, y, w, h, radius=6):
+    """Image cropped to fill the box, with rounded corners."""
+    img = ImageReader(path)
+    iw, ih = img.getSize()
+    scale = max(w / iw, h / ih)
+    dw, dh = iw * scale, ih * scale
+    c.saveState()
+    p = c.beginPath()
+    p.roundRect(x, y, w, h, radius)
+    c.clipPath(p, stroke=0, fill=0)
+    c.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, width=dw, height=dh)
+    c.restoreState()
+
+
+# The three waves of the website footer (FooterHorizon), in its 1440 x 150 box.
+def _wave(base, amp, periods, phase, harm=0.35):
+    pts = []
+    for x in range(-120, 1561, 40):
+        t = x / 1440 * math.pi * 2 * periods + phase
+        pts.append((x, base + amp * (math.sin(t) + harm * math.sin(2.3 * t + 1.1))))
+    return pts
+
+
+WAVES = [
+    (_hex("#5fb3ad"), 0.22, _wave(56, 16, 1.6, 0.4)),
+    (_hex("#3b4a62"), 0.7, _wave(86, 14, 2.2, 1.6)),
+    (NAVY, 1, _wave(114, 12, 1.25, 2.6)),
+]
+
+
+def waves(c, x, y, w, h, flip=False, layers=WAVES):
+    """Draw the footer waves in the box (x, y, w, h).
+
+    flip=False matches the website: page above, navy below.
+    flip=True hangs the waves under a navy band.
+    """
+    def at(px, py):
+        yy = y + py / 150 * h if flip else y + h - py / 150 * h
+        return x + px * w / 1440, yy
+
+    base_y = y + h if flip else y
+    for color, alpha, pts in layers:
+        set_fill(c, color, alpha)
+        p = c.beginPath()
+        p.moveTo(at(pts[0][0], 0)[0], base_y)
+        p.lineTo(*at(*pts[0]))
+        for i in range(len(pts) - 1):
+            p0 = pts[i - 1] if i else pts[i]
+            p1, p2 = pts[i], pts[i + 1]
+            p3 = pts[i + 2] if i + 2 < len(pts) else p2
+            c1 = at(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6)
+            c2 = at(p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6)
+            p.curveTo(*c1, *c2, *at(*p2))
+        p.lineTo(at(pts[-1][0], 0)[0], base_y)
+        p.close()
+        c.drawPath(p, stroke=0, fill=1)
+    set_fill(c, WHITE)
 
 
 # --------------------------------------------------------------------------
 # Page furniture
 # --------------------------------------------------------------------------
 def draw_header(c, T):
-    set_fill(c, NAVY)
-    c.rect(0, H - 86, W, 86, stroke=0, fill=1)
-    logo_h = 34
-    logo_w = logo_h * 862 / 241          # logo-white.png is 862x241
-    c.drawImage(LOGO_PATH, LM + 16, H - 58, width=logo_w, height=logo_h,
-                mask="auto")
-    text(c, LM + 17, H - 71, T["tagline"], "Helvetica", 9, (0.78, 0.82, 0.88))
-    set_fill(c, ORANGE)
-    c.rect(0, H - 90, W, 4, stroke=0, fill=1)
+    """White header with the colour logo, like the website's top bar."""
+    logo_h = 22
+    c.drawImage(COLOR_LOGO_PATH, LM, H - 54, width=logo_h * 862 / 241,
+                height=logo_h, mask="auto")
+    label = T["cover_kicker"]
+    spaced(c, W - RM - spaced_width(label, SANS_BOLD, 7, 1.4), H - 46, label,
+           SANS_BOLD, 7, MUTED, 1.4)
+    c.setStrokeColorRGB(*LINE)
+    c.setLineWidth(0.8)
+    c.line(LM, H - 68, W - RM, H - 68)
 
 
-def draw_footer(c, T, page_no):
-    set_fill(c, ORANGE)
-    c.rect(0, 46, W, 2.5, stroke=0, fill=1)
-    y, x = 33, LM
-    x += text_chunk(c, x, y, T["email"], mailto=True)
-    x += sep(c, x, y)
-    x += text_chunk(c, x, y, WEBSITE, url=WEBSITE_URL)
-    x += sep(c, x, y)
-    x += text_chunk(c, x, y, LEGAL_ENTITY)
-    x += sep(c, x, y)
-    x += text_chunk(c, x, y, T["city"])
-    text(c, W - RM - 52, y, f'{T["page"]} {page_no}', "Helvetica", 8, LGREY)
+def footer_dot(c, x, y):
+    set_fill(c, AURORA)
+    c.circle(x + 7, y + 2.6, 1.2, stroke=0, fill=1)
+    return 14
+
+
+def draw_footer(c, T, page_no, on_navy=False):
+    rule, link_color, muted = ((_hex("#3a4455"), AURORA_LT, NAVY_TEXT) if on_navy
+                               else (LINE, TEAL, MUTED))
+    c.setStrokeColorRGB(*rule)
+    c.setLineWidth(0.8)
+    c.line(LM, 50, W - RM, 50)
+    y, x, size = 34, LM, 7.8
+    x += link(c, x, y, T["email"], f'mailto:{T["email"]}', SANS, size, link_color)
+    x += footer_dot(c, x, y)
+    x += link(c, x, y, WEBSITE, WEBSITE_URL, SANS, size, link_color)
+    x += footer_dot(c, x, y)
+    x += text(c, x, y, LEGAL_ENTITY, SANS, size, muted)
+    x += footer_dot(c, x, y)
+    text(c, x, y, T["city"], SANS, size, muted)
+    text_right(c, W - RM, y, f'{T["page"]} {page_no}', SANS, size, muted)
 
 
 # --------------------------------------------------------------------------
 # Pages
 # --------------------------------------------------------------------------
 def page_one(c, T):
-    draw_header(c, T)
-    y = H - 118
+    """Cover band in the footer navy, then about, key numbers, destinations."""
+    band = H - 268
+    wave_h = 58
+    # Waves first, then the band over them, reaching into the navy front wave,
+    # so no hairline shows where they meet.
+    waves(c, 0, band - wave_h, W, wave_h, flip=True)
+    set_fill(c, NAVY)
+    c.rect(0, band - 3, W, H - band + 3, stroke=0, fill=1)
 
-    y = section_heading(c, LM, y, T["h_about"])
-    y = paragraph(c, LM, y, T["about1"], CW) - 5
-    y = paragraph(c, LM, y, T["about2"], CW) - 16
+    logo_h = 30
+    c.drawImage(LOGO_PATH, LM, H - 78, width=logo_h * 862 / 241,
+                height=logo_h, mask="auto")
+    kicker = T["cover_kicker"]
+    spaced(c, W - RM - spaced_width(kicker, SANS_BOLD, 7.5, 1.6), H - 66,
+           kicker, SANS_BOLD, 7.5, AURORA_LT, 1.6)
 
-    gap = 12
-    card_w = (CW - 3 * gap) / 4
-    card_h = 56
-    cy = y - card_h
+    photo_w, photo_h = 196, 214
+    px, py = W - RM - photo_w, band - 40
+    title_w = px - LM - 28
+    # Longer titles (the Russian one) step down a size so the tagline clears the waves.
+    size, leading = 22, 27
+    title = lines_of(T["cover_title"], title_w, SANS_BOLD, size)
+    if len(title) > 3:
+        size, leading = 20, 24
+        title = lines_of(T["cover_title"], title_w, SANS_BOLD, size)
+    y = H - 128
+    for line in title:
+        text(c, LM, y, line, SANS_BOLD, size, WHITE)
+        y -= leading
+    y -= 10
+    for item in [s.strip() for s in T["tagline"].split("|")]:
+        set_fill(c, AURORA)
+        c.circle(LM + 2.4, y + 3, 2.1, stroke=0, fill=1)
+        text(c, LM + 12, y, item, SANS, 9, NAVY_TEXT)
+        y -= 15
+    photo(c, f'{PHOTO_DIR}/{T["hero_photo"]}', px, py, photo_w, photo_h, 10)
+
+    y = band - wave_h - 28
+    y = heading(c, LM, y, T["h_about"])
+    y = paragraph(c, LM, y, T["about1"], CW, SANS, 9.4, INK_SOFT, 13.8) - 6
+    y = paragraph(c, LM, y, T["about2"], CW, SANS, 9.4, INK_SOFT, 13.8) - 12
+
+    # Key numbers on the sage and sand tiles of the website's FAQ rows.
+    gap = 10
+    tile_w = (CW - 3 * gap) / 4
+    tile_h = 54
+    ty = y - tile_h
     for i, (num, label) in enumerate(T["stats"]):
-        cx = LM + i * (card_w + gap)
-        set_fill(c, CARDBG)
-        c.roundRect(cx, cy, card_w, card_h, 6, stroke=0, fill=1)
-        text_center(c, cx + card_w / 2, cy + 30, num, "Helvetica-Bold", 17, ORANGE)
-        text_center(c, cx + card_w / 2, cy + 14, label, "Helvetica", 7, GREY)
-    y = cy - 26
+        tx = LM + i * (tile_w + gap)
+        card(c, tx, ty, tile_w, tile_h, SAGE if i % 2 == 0 else SAND)
+        text_center(c, tx + tile_w / 2, ty + 27, num, SANS_BOLD, 16, TEAL)
+        lw = spaced_width(label, SANS_BOLD, 6.2, 0.7)
+        spaced(c, tx + (tile_w - lw) / 2, ty + 13, label, SANS_BOLD, 6.2, MUTED, 0.7)
+    y = ty - 34
 
-    y = section_heading(c, LM, y, T["h_services"])
-    col_gap = 26
-    col_w = (CW - col_gap) / 2
-    row_h = 56
-    for i, (title, body) in enumerate(T["services"]):
-        sx = LM + (i % 2) * (col_w + col_gap)
-        sy = y - (i // 2) * row_h
-        text(c, sx, sy, title, "Helvetica-Bold", 10, NAVY)
-        paragraph(c, sx, sy - 13, body, col_w, "Helvetica", 8.5, GREY, 11)
-    y = y - 3 * row_h - 8
-
-    y = section_heading(c, LM, y, T["h_destinations"])
-    label_w = 90
-    text(c, LM, y, T["lbl_current"], "Helvetica-Bold", 9, NAVY)
-    text(c, LM + label_w, y, T["dest_current"], "Helvetica", 9, GREY)
-    y -= 15
-    text(c, LM, y, T["lbl_expanding"], "Helvetica-Bold", 9, NAVY)
-    text(c, LM + label_w, y, T["dest_exp"][0], "Helvetica", 9, GREY)
-    for line in T["dest_exp"][1:]:
-        y -= 12.5
-        text(c, LM + label_w, y, line, "Helvetica", 9, GREY)
-    y -= 22
-
-    y = section_heading(c, LM, y, T["h_why"])
-    for r in T["reasons"]:
-        y = bullet(c, LM, y, r, CW) - 4
+    y = heading(c, LM, y, T["h_destinations"])
+    gap = 12
+    col_w = (CW - gap) / 2
+    inner = col_w - 30
+    current = lines_of(T["dest_current"], inner, SANS, 9.2)
+    expanding = [lines_of(item, inner - 12, SANS, 9.2) for item in T["dest_exp"]]
+    rows = max(len(current), sum(len(item) for item in expanding))
+    card_h = 44 + rows * 13 + 8
+    cy = y + 8 - card_h
+    for i, (label, fill) in enumerate([(T["lbl_current"], TEAL_PALE), (T["lbl_expanding"], SAND)]):
+        cx = LM + i * (col_w + gap)
+        card(c, cx, cy, col_w, card_h, fill)
+        spaced(c, cx + 15, cy + card_h - 22, label.rstrip(":").upper(), SANS_BOLD, 7, TEAL, 1.2)
+        ly = cy + card_h - 41
+        if i == 0:
+            for line in current:
+                text(c, cx + 15, ly, line, SANS, 9.2, INK)
+                ly -= 13
+        else:
+            for item in expanding:
+                set_fill(c, AURORA)
+                c.circle(cx + 17.5, ly + 3, 2, stroke=0, fill=1)
+                for line in item:
+                    text(c, cx + 27, ly, line, SANS, 9.2, INK)
+                    ly -= 13
 
     draw_footer(c, T, 1)
 
 
 def page_two(c, T):
+    """Services on sage and sand cards, then why partner with us."""
     draw_header(c, T)
-    y = H - 118
+    y = H - 106
+    y = heading(c, LM, y, T["h_services"])
+    gap = 10
+    col_w = (CW - gap) / 2
+    services = T["services"]
+    for row in range(0, len(services), 2):
+        pair = services[row:row + 2]
+        titles = [lines_of(t, col_w - 30, SANS_BOLD, 10.5) for t, _ in pair]
+        bodies = [lines_of(b, col_w - 30, SANS, 8.8) for _, b in pair]
+        card_h = 30 + 14 * max(map(len, titles)) + 12.4 * max(map(len, bodies))
+        for i, (tl, bl) in enumerate(zip(titles, bodies)):
+            cx = LM + i * (col_w + gap)
+            card(c, cx, y + 8 - card_h, col_w, card_h,
+                 SAGE if (row // 2 + i) % 2 == 0 else SAND)
+            ly = y - 14
+            for line in tl:
+                text(c, cx + 15, ly, line, SANS_BOLD, 10.5, INK)
+                ly -= 14
+            ly -= 2
+            for line in bl:
+                text(c, cx + 15, ly, line, SANS, 8.8, INK_SOFT)
+                ly -= 12.4
+        y -= card_h + gap
+    y -= 26
 
-    y = section_heading(c, LM, y, T["h_how"])
-    for title, body in T["steps"]:
-        text(c, LM, y, title, "Helvetica-Bold", 10, ORANGE)
-        y = paragraph(c, LM, y - 13, body, CW, "Helvetica", 9, GREY, 11.5)
-        y -= 4
-    y -= 12
+    y = heading(c, LM, y, T["h_why"])
+    for reason in T["reasons"]:
+        tick(c, LM, y)
+        y = paragraph(c, LM + 20, y, reason, CW - 20, SANS, 9.4, INK_SOFT, 13.6) - 8
+    y -= 22
 
-    y = section_heading(c, LM, y, T["h_look"])
-    for w in T["wants"]:
-        y = bullet(c, LM, y, w, CW) - 4
-    y -= 6
-
-    # Let's Talk box
-    box_h = 104
-    box_y = y - box_h
-    set_fill(c, NAVY)
-    c.roundRect(LM, box_y, CW, box_h, 8, stroke=0, fill=1)
-    pad = 22
-    ix = LM + pad
-    set_fill(c, ORANGE)
-    c.rect(ix, box_y + box_h - 40, 5, 20, stroke=0, fill=1)
-    text(c, ix + 14, box_y + box_h - 36, T["lets_talk"], "Helvetica-Bold", 16, WHITE)
-
-    line_y = box_y + box_h - 54
-    LH = 15.5
-    light = (0.82, 0.85, 0.90)
-    blue = (0.62, 0.80, 1.0)
-    text(c, ix, line_y, T["leaders"], "Helvetica", 9.5, light)
-    line_y -= LH
-    lx = ix + text_label(c, ix, line_y, T["lbl_email"], light)
-    link(c, lx, line_y, T["email"], f'mailto:{T["email"]}', "Helvetica", 9.5, blue)
-    line_y -= LH
-    lx = ix + text_label(c, ix, line_y, T["lbl_wa"], light)
-    link(c, lx, line_y, T["wa_display"], T["wa_url"], "Helvetica", 9.5, blue)
-    line_y -= LH
-    lx = ix + text_label(c, ix, line_y, T["lbl_web"], light)
-    link(c, lx, line_y, WEBSITE, WEBSITE_URL, "Helvetica", 9.5, blue)
-
-    rx = LM + CW - pad
-    set_fill(c, ORANGE)
-    c.setFont(_f("Helvetica-Bold"), 9.5)
-    c.drawRightString(rx, box_y + box_h - 36, "CV SUNDAF HOLIDAY GROUP")
-    set_fill(c, light)
-    c.setFont(_f("Helvetica"), 9)
-    c.drawRightString(rx, box_y + box_h - 52, f"NIB: {NIB}")
-    c.drawRightString(rx, box_y + box_h - 68, T["city"])
-    c.drawRightString(rx, box_y + box_h - 84, T["op_label"])
-
-    y = box_y - 20
-
-    y = section_heading(c, LM, y, T["h_snapshot"])
-    snapshot = T["snapshot"]
-    panel_h = 18 + len(snapshot) * 15
-    panel_y = y - panel_h
-    set_fill(c, CARDBG)
-    c.roundRect(LM, panel_y, CW, panel_h, 6, stroke=0, fill=1)
-    row_y = y - 16
-    for k, v in snapshot:
-        text(c, LM + 20, row_y, k, "Helvetica-Bold", 8.5, NAVY)
-        text(c, LM + 210, row_y, v, "Helvetica", 8.5, GREY)
-        row_y -= 15
+    y = heading(c, LM, y, T["h_look"])
+    gap = 22
+    col_w = (CW - gap) / 2
+    wants = T["wants"]
+    for row in range(0, len(wants), 2):
+        pair = [lines_of(item, col_w - 20, SANS, 9.2) for item in wants[row:row + 2]]
+        for i, lines in enumerate(pair):
+            cx = LM + i * (col_w + gap)
+            tick(c, cx, y)
+            ly = y
+            for line in lines:
+                text(c, cx + 20, ly, line, SANS, 9.2, INK_SOFT)
+                ly -= 13.2
+        y -= max(map(len, pair)) * 13.2 + 10
 
     draw_footer(c, T, 2)
 
 
 def page_three(c, T):
+    """The five steps of working together, then the company snapshot."""
     draw_header(c, T)
-    y = H - 118
+    y = H - 106
+    y = heading(c, LM, y, T["h_how"])
+    steps = T["steps"]
+    nx, bx = LM + 12, LM + 38
+    bw = CW - 38
+    blocks = []
+    for i, (title, body) in enumerate(steps):
+        m = re.match(r"\s*(\d+)\.\s*(.*)", title)
+        num, name = (m.group(1), m.group(2)) if m else (str(i + 1), title)
+        lines = lines_of(body, bw, SANS, 9.2)
+        blocks.append((num, name, lines, 18 + len(lines) * 13))
+    # The connector runs behind the number circles.
+    yy = y
+    for _, _, _, block_h in blocks[:-1]:
+        nxt = yy - block_h - 14
+        c.setStrokeColorRGB(*LINE)
+        c.setLineWidth(1.4)
+        c.line(nx, yy + 3.5, nx, nxt + 3.5)
+        yy = nxt
+    for num, name, lines, block_h in blocks:
+        set_fill(c, TEAL_PALE)
+        c.circle(nx, y + 3.5, 11, stroke=0, fill=1)
+        text_center(c, nx, y, num, SANS_BOLD, 10, TEAL)
+        text(c, bx, y, name, SANS_BOLD, 10.5, INK)
+        ly = y - 18
+        for line in lines:
+            text(c, bx, ly, line, SANS, 9.2, INK_SOFT)
+            ly -= 13
+        y -= block_h + 14
+    y -= 22
 
-    y = section_heading(c, LM, y, T["h_groups"])
-    y = paragraph(c, LM, y, T["groups_intro"], CW) - 16
-
-    gap = 14
-    col_w = (CW - gap) / 2
-    img_h = col_w * 2 / 3
-    row_h = img_h + 26
-    top = y
-    for i, (fn, cap) in enumerate(T["photos"]):
-        px = LM + (i % 2) * (col_w + gap)
-        img_y = top - (i // 2) * row_h - img_h
-        c.drawImage(f"{PHOTO_DIR}/{fn}", px, img_y, width=col_w, height=img_h)
-        c.setStrokeColorRGB(*CARDBG)
-        c.setLineWidth(0.75)
-        c.rect(px, img_y, col_w, img_h, stroke=1, fill=0)
-        text(c, px + 1, img_y - 13, cap, "Helvetica", 8.5, GREY)
+    y = heading(c, LM, y, T["h_snapshot"])
+    rows = T["snapshot"]
+    row_h, pad = 21, 13
+    table_h = len(rows) * row_h + pad * 2 - 6
+    top = y + 12
+    card(c, LM, top - table_h, CW, table_h, SAGE)
+    ry = top - pad - 10
+    for i, (label, value) in enumerate(rows):
+        if i:
+            c.setStrokeColorRGB(*ROW_LINE)
+            c.setLineWidth(0.6)
+            c.line(LM + 16, ry + 13.5, LM + CW - 16, ry + 13.5)
+        text(c, LM + 16, ry, label, SANS_BOLD, 9, INK)
+        text(c, LM + 186, ry, value, SANS, 9, INK_SOFT)
+        ry -= row_h
 
     draw_footer(c, T, 3)
+
+
+def page_four(c, T):
+    """Two group photos, then the website footer: waves into a navy close."""
+    draw_header(c, T)
+    y = H - 106
+    y = heading(c, LM, y, T["h_groups"])
+    y = paragraph(c, LM, y, T["groups_intro"], CW, SANS, 9.4, INK_SOFT, 13.8) - 8
+    gap = 14
+    pw = (CW - gap) / 2
+    ph = 212
+    for i, (fn, cap) in enumerate(T["photos"][:2]):
+        px = LM + i * (pw + gap)
+        photo(c, f"{PHOTO_DIR}/{fn}", px, y - ph, pw, ph, 6)
+        text(c, px, y - ph - 14, cap, SANS, 8.4, MUTED)
+
+    navy_top, wave_h = 338, 60
+    waves(c, 0, navy_top, W, wave_h, flip=False)
+    set_fill(c, NAVY)
+    c.rect(0, 0, W, navy_top + 1, stroke=0, fill=1)
+
+    # Closing line: the website footer's own tagline.
+    y = navy_top - 62
+    text(c, LM, y, T["closing"], SANS_BOLD, 28, WHITE)
+    c.setStrokeColorRGB(*_hex("#3a4455"))
+    c.setLineWidth(0.8)
+    c.line(LM, y - 26, W - RM, y - 26)
+
+    tx, ty = LM, y - 58
+    text(c, tx, ty, T["lets_talk"], SANS_BOLD, 13, WHITE)
+    ty -= 20
+    text(c, tx, ty, T["leaders"], SANS, 9.4, NAVY_TEXT)
+    ty -= 21
+    contacts = [
+        (T["lbl_email"].strip(), T["email"], f'mailto:{T["email"]}'),
+        (T["lbl_wa"].strip(), T["wa_display"], T["wa_url"]),
+        (T["lbl_web"].strip(), WEBSITE, WEBSITE_URL),
+    ]
+    label_w = max(sw(label, SANS, 9.4) for label, _, _ in contacts) + 12
+    for label, value, url in contacts:
+        text(c, tx, ty, label, SANS, 9.4, NAVY_TEXT)
+        link(c, tx + label_w, ty, value, url, SANS_BOLD, 9.4, AURORA_LT)
+        ty -= 17
+
+    rx, ry = W - RM, y - 58
+    legal = LEGAL_ENTITY.upper()
+    spaced(c, rx - spaced_width(legal, SANS_BOLD, 7.6, 1.2), ry + 2, legal,
+           SANS_BOLD, 7.6, AURORA_LT, 1.2)
+    for line in [f"NIB: {NIB}", T["city"], T["op_label"]]:
+        ry -= 18
+        text_right(c, rx, ry, line, SANS, 9.2, NAVY_TEXT)
+
+    draw_footer(c, T, 4, on_navy=True)
 
 
 # --------------------------------------------------------------------------
@@ -355,13 +588,18 @@ EN = {
                 "   |   Indonesia-based Tour Operator"),
     "city": "Jakarta, Indonesia",
     "page": "Page",
-    "doc_title": "Sundaf Trip — Company Profile",
-    "h_about": "ABOUT US",
+    "doc_title": "Sundaf Trip Company Profile",
+    "cover_kicker": "COMPANY PROFILE",
+    "cover_title": ("Small-group journeys from Indonesia, led by our own "
+                    "tour leaders."),
+    "hero_photo": "trip-5.jpg",
+    "closing": "Everyone can travel.",
+    "h_about": "About us",
     "about1": ("Sundaf Trip is an Indonesian tour operator under CV Sundaf "
                "Holiday Group, based in Jakarta. We specialize in organizing "
                "affordable, well-curated small group tours to international "
                "destinations. Our focus is delivering high-value travel "
-               "experiences with personal attention — ensuring every trip is "
+               "experiences with personal attention, so every trip is "
                "safe, enjoyable, and memorable."),
     "about2_ferdiansah": ("Founded by Ferdiansah, Sundaf Trip was built on the "
                "belief that international travel should be accessible to more "
@@ -374,14 +612,14 @@ EN = {
                "coordination, and on-ground tour leadership."),
     "stats": [("10–20", "PAX PER GROUP"), ("5+", "TARGET DESTINATIONS"),
               ("100%", "OWN TOUR LEADER"), ("B2C + B2B", "SALES MODEL")],
-    "h_services": "OUR SERVICES",
+    "h_services": "Our services",
     "services": [
         ("Small Group Tours",
          "Curated international tours for groups of 10–20 pax, with a "
          "personal touch and flexible itineraries."),
         ("End-to-End Coordination",
          "Flights, accommodation, ground transport, meals, and attraction "
-         "tickets — all organized under one roof."),
+         "tickets, all organized under one roof."),
         ("Tour Leadership",
          "Every trip is accompanied by our own Indonesian-speaking tour "
          "leader from departure to return."),
@@ -395,7 +633,7 @@ EN = {
          "In-house social media content production including branded "
          "visuals, travel stories, and trip documentation."),
     ],
-    "h_destinations": "DESTINATIONS",
+    "h_destinations": "Destinations",
     "lbl_current": "Current:",
     "lbl_expanding": "Expanding to:",
     "dest_current": ("Russia (Moscow, St. Petersburg, Murmansk), Central Asia, "
@@ -405,20 +643,20 @@ EN = {
         "Scandinavia (Norway, Sweden, Finland)",
         "Other destinations based on market demand",
     ],
-    "h_why": "WHY PARTNER WITH SUNDAF TRIP",
+    "h_why": "Why partner with Sundaf Trip",
     "reasons": [
-        "Small group sizes of 10–20 pax per departure — ideal for focused, "
+        "Small group sizes of 10–20 pax per departure, ideal for focused, "
         "well-coordinated ground arrangements.",
-        "We bring our own tour leader — your team only needs to handle "
+        "We bring our own tour leader, so your team only needs to handle "
         "logistics and ground operations.",
         "Growing Indonesian outbound travel market with strong demand for "
         "affordable Europe packages.",
-        "Long-term partnership mindset — we are looking for a reliable DMC "
+        "Long-term partnership mindset: we are looking for a reliable DMC "
         "to grow with, not one-off deals.",
         "Professional operations: structured itineraries, clear "
         "communication, and on-time coordination.",
     ],
-    "h_how": "HOW WE WORK WITH DMC PARTNERS",
+    "h_how": "How we work with DMC partners",
     "steps": [
         ("1. Itinerary Planning",
          "We share our desired route, destinations, group size, travel "
@@ -434,30 +672,30 @@ EN = {
          "arrangements and emergency contacts."),
         ("4. On-Ground Execution",
          "Our tour leader manages the group. DMC partner handles local "
-         "logistics — driver, hotel check-ins, restaurant reservations, "
+         "logistics: driver, hotel check-ins, restaurant reservations, "
          "and any on-the-ground issues."),
         ("5. Post-Trip Review",
          "We share feedback from our travelers and discuss improvements "
          "for future departures. Strong partnerships are built on "
          "continuous communication."),
     ],
-    "h_look": "WHAT WE LOOK FOR IN A DMC PARTNER",
+    "h_look": "What we look for in a DMC partner",
     "wants": [
         "Competitive group rates for 3-star hotels in city center or "
         "well-connected locations.",
         "Reliable coach / minibus transportation with experienced drivers.",
-        "Meal arrangements — flexible between restaurant bookings and "
+        "Meal arrangements, flexible between restaurant bookings and "
         "self-catered options.",
         "Attraction tickets and skip-the-line access where available.",
-        "Transparent pricing with clear inclusions — no hidden costs.",
+        "Transparent pricing with clear inclusions and no hidden costs.",
         "Responsive communication, ideally via email and WhatsApp.",
     ],
-    "lets_talk": "Let's Talk",
+    "lets_talk": "Let's talk",
     "lbl_email": "Email:  ",
     "lbl_wa": "WhatsApp:  ",
     "lbl_web": "Website:  ",
     "op_label": "B2C + B2B Tour Operator",
-    "h_snapshot": "COMPANY SNAPSHOT",
+    "h_snapshot": "Company snapshot",
     "snapshot_base": [
         ("Legal Entity", "CV Sundaf Holiday Group"),
         ("Business License (NIB)", NIB),
@@ -469,17 +707,13 @@ EN = {
         ("Current Destinations", "Russia, Central Asia, and India"),
         ("Target Expansion", "Western Europe & Scandinavia"),
     ],
-    "h_groups": "OUR GROUPS IN ACTION",
+    "h_groups": "Our groups in action",
     "groups_intro": ("Real group departures we have operated across Russia, "
-                     "Central Asia, China, and India — every trip accompanied "
+                     "Central Asia, China, and India. Every trip is accompanied "
                      "by our own Indonesian-speaking tour leader."),
     "photos": [
-        ("cp-1.jpg", "Aurora borealis — Murmansk"),
-        ("cp-2.jpg", "Group under the northern lights — Murmansk"),
         ("trip-1.jpg", "Red Square, Moscow"),
         ("trip-4.jpg", "Kaindy Lake, Kazakhstan"),
-        ("cp-3.jpg", "Aurora hunting — Murmansk"),
-        ("cp-4.jpg", "Sundaf Trip travelers — Murmansk"),
     ],
     "name_ferdiansah": "Ferdiansah", "role_ferdiansah": "Founder",
     "name_billy": "Billy", "role_billy": "Co-Founder",
@@ -490,12 +724,17 @@ RU = {
                 "путешествия   |   Туроператор из Индонезии"),
     "city": "Джакарта, Индонезия",
     "page": "Стр.",
-    "doc_title": "Sundaf Trip — Профиль компании",
-    "h_about": "О КОМПАНИИ",
-    "about1": ("Sundaf Trip — индонезийский туроператор в составе CV Sundaf "
+    "doc_title": "Sundaf Trip. Профиль компании",
+    "cover_kicker": "ПРОФИЛЬ КОМПАНИИ",
+    "cover_title": ("Туры малыми группами из Индонезии с нашими "
+                    "собственными турлидерами."),
+    "hero_photo": "trip-5.jpg",
+    "closing": "Путешествовать может каждый.",
+    "h_about": "О компании",
+    "about1": ("Sundaf Trip: индонезийский туроператор в составе CV Sundaf "
                "Holiday Group, базирующийся в Джакарте. Мы специализируемся "
                "на организации доступных, тщательно продуманных туров малыми "
-               "группами по международным направлениям. Наша цель — дарить "
+               "группами по международным направлениям. Наша цель: дарить "
                "путешествия высокой ценности с индивидуальным вниманием, "
                "чтобы каждая поездка была безопасной, приятной и "
                "запоминающейся."),
@@ -511,17 +750,17 @@ RU = {
                "сопровождение тура на месте."),
     "stats": [("10–20", "ЧЕЛ. В ГРУППЕ"), ("5+", "НАПРАВЛЕНИЙ"),
               ("100%", "СВОЙ ТУРЛИДЕР"), ("B2C + B2B", "МОДЕЛЬ ПРОДАЖ")],
-    "h_services": "НАШИ УСЛУГИ",
+    "h_services": "Наши услуги",
     "services": [
         ("Туры малыми группами",
          "Продуманные международные туры для групп 10–20 человек, с "
          "индивидуальным подходом и гибкими маршрутами."),
         ("Полная координация",
          "Авиаперелёты, проживание, наземный транспорт, питание и билеты "
-         "на достопримечательности — всё в одних руках."),
+         "на достопримечательности, всё в одних руках."),
         ("Сопровождение тура",
          "Каждую поездку сопровождает наш собственный турлидер со знанием "
-         "индонезийского — от вылета до возвращения."),
+         "индонезийского, от вылета до возвращения."),
         ("Доступные пакеты",
          "Пакеты с оптимальным соотношением цены и качества, делающие "
          "международные поездки доступнее для путешественников."),
@@ -532,7 +771,7 @@ RU = {
          "Собственное производство контента для соцсетей: фирменные "
          "визуалы, истории путешествий и документация поездок."),
     ],
-    "h_destinations": "НАПРАВЛЕНИЯ",
+    "h_destinations": "Направления",
     "lbl_current": "Сейчас:",
     "lbl_expanding": "Расширяемся:",
     "dest_current": ("Россия (Москва, Санкт-Петербург, Мурманск), "
@@ -540,22 +779,22 @@ RU = {
     "dest_exp": [
         "Западная Европа (Франция, Нидерланды, Германия, Швейцария, Италия)",
         "Скандинавия (Норвегия, Швеция, Финляндия)",
-        "Другие направления — в зависимости от спроса",
+        "Другие направления в зависимости от спроса",
     ],
-    "h_why": "ПОЧЕМУ СТОИТ РАБОТАТЬ С SUNDAF TRIP",
+    "h_why": "Почему стоит работать с Sundaf Trip",
     "reasons": [
-        "Малые группы по 10–20 человек на выезд — идеально для чёткой и "
+        "Малые группы по 10–20 человек на выезд, идеально для чёткой и "
         "слаженной организации на месте.",
-        "Мы привозим собственного турлидера — вашей команде нужно "
+        "Мы привозим собственного турлидера, поэтому вашей команде нужно "
         "заниматься только логистикой и наземным обслуживанием.",
         "Растущий рынок выездного туризма Индонезии с высоким спросом на "
         "доступные туры по Европе.",
-        "Настрой на долгосрочное партнёрство — мы ищем надёжного DMC для "
+        "Настрой на долгосрочное партнёрство: мы ищем надёжного DMC для "
         "совместного роста, а не разовые сделки.",
         "Профессиональная организация: структурированные маршруты, чёткая "
         "коммуникация и своевременная координация.",
     ],
-    "h_how": "КАК МЫ РАБОТАЕМ С DMC-ПАРТНЁРАМИ",
+    "h_how": "Как мы работаем с DMC-партнёрами",
     "steps": [
         ("1. Планирование маршрута",
          "Мы сообщаем желаемый маршрут, направления, размер группы, даты "
@@ -571,24 +810,24 @@ RU = {
          "все договорённости и экстренные контакты."),
         ("4. Работа на месте",
          "Наш турлидер ведёт группу. DMC-партнёр отвечает за местную "
-         "логистику — водителя, заселение в отели, бронирование "
+         "логистику: водителя, заселение в отели, бронирование "
          "ресторанов и решение вопросов на месте."),
         ("5. Анализ после поездки",
          "Мы делимся отзывами путешественников и обсуждаем улучшения для "
          "будущих выездов. Прочное партнёрство строится на постоянной "
          "коммуникации."),
     ],
-    "h_look": "ЧТО МЫ ИЩЕМ В DMC-ПАРТНЁРЕ",
+    "h_look": "Что мы ищем в DMC-партнёре",
     "wants": [
         "Конкурентные групповые тарифы на отели 3* в центре города или в "
         "удобных по транспорту районах.",
-        "Надёжный транспорт — автобусы или микроавтобусы с опытными "
+        "Надёжный транспорт: автобусы или микроавтобусы с опытными "
         "водителями.",
-        "Организация питания — гибко: бронирование ресторанов или "
+        "Организация питания, гибко: бронирование ресторанов или "
         "самостоятельные варианты.",
         "Билеты на достопримечательности и проход без очереди, где это "
         "возможно.",
-        "Прозрачное ценообразование с понятным составом услуг — без "
+        "Прозрачное ценообразование с понятным составом услуг, без "
         "скрытых платежей.",
         "Оперативная коммуникация, желательно по email и WhatsApp.",
     ],
@@ -597,7 +836,7 @@ RU = {
     "lbl_wa": "WhatsApp:  ",
     "lbl_web": "Сайт:  ",
     "op_label": "Туроператор B2C + B2B",
-    "h_snapshot": "КРАТКО О КОМПАНИИ",
+    "h_snapshot": "Кратко о компании",
     "snapshot_base": [
         ("Юридическое лицо", "CV Sundaf Holiday Group"),
         ("Лицензия (NIB)", NIB),
@@ -609,17 +848,13 @@ RU = {
         ("Текущие направления", "Россия, Центральная Азия и Индия"),
         ("Планы расширения", "Западная Европа и Скандинавия"),
     ],
-    "h_groups": "НАШИ ГРУППЫ В ДЕЛЕ",
+    "h_groups": "Наши группы в деле",
     "groups_intro": ("Реальные групповые выезды, проведённые нами по России, "
-                     "Центральной Азии, Китаю и Индии — каждую поездку "
+                     "Центральной Азии, Китаю и Индии. Каждую поездку "
                      "сопровождал наш собственный турлидер."),
     "photos": [
-        ("cp-1.jpg", "Северное сияние — Мурманск"),
-        ("cp-2.jpg", "Группа под северным сиянием — Мурманск"),
         ("trip-1.jpg", "Красная площадь, Москва"),
         ("trip-4.jpg", "Озеро Каинды, Казахстан"),
-        ("cp-3.jpg", "Охота за сиянием — Мурманск"),
-        ("cp-4.jpg", "Путешественники Sundaf Trip — Мурманск"),
     ],
     "name_ferdiansah": "Фердиансах", "role_ferdiansah": "Основатель",
     "name_billy": "Билли", "role_billy": "Сооснователь",
@@ -649,23 +884,22 @@ def content(lang, person):
 # --------------------------------------------------------------------------
 def build(output_path, lang, person):
     global FONTMAP
+    register_fonts()
     if lang == "ru":
         register_cyrillic()
-        FONTMAP = {"Helvetica": "ArialRU", "Helvetica-Bold": "ArialRU-Bold"}
+        FONTMAP = {SANS: "ArialRU", SANS_BOLD: "ArialRU-Bold"}
     else:
         FONTMAP = {}
 
     T = content(lang, person)
-    c = canvas.Canvas(output_path, pagesize=A4)
+    c = canvas.Canvas(output_path, pagesize=A4, initialFontName=_f(SANS),
+                      initialFontSize=9.5)
     c.setTitle(T["doc_title"])
     c.setAuthor("CV Sundaf Holiday Group")
     c.setSubject("Company Profile")
-    page_one(c, T)
-    c.showPage()
-    page_two(c, T)
-    c.showPage()
-    page_three(c, T)
-    c.showPage()
+    for page in (page_one, page_two, page_three, page_four):
+        page(c, T)
+        c.showPage()
     c.save()
     print(f"PDF written to {output_path}")
 
