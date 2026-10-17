@@ -65,9 +65,9 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
             <Link className={styles.logoLink} href="/" aria-label="Sundaf Trip, beranda">
               <Image className={styles.logo} src={logoSrc} alt="Sundaf Trip" width={180} height={50} />
             </Link>
+            <span className={styles.brandNote} data-no-translate translate="no">Your B2B partner</span>
             <h2 id="footer-brand-title" className="sr-only">Sundaf Trip</h2>
             <p>Perjalanan Rusia, Asia Tengah, aurora, dan private trip untuk traveler Indonesia.</p>
-            <span className={styles.brandNote} data-no-translate translate="no">Your B2B partner.</span>
           </section>
 
           <div className={styles.navigation}>
@@ -135,48 +135,47 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
         </div>
 
         <div className={styles.trust}>
-          <ul className={styles.seals} aria-label="Pendaftaran dan perizinan usaha">
-            <li className={styles.seal}>
+          <div className={styles.certificate} role="group" aria-label="Pendaftaran dan perizinan usaha">
+            <div className={styles.credential}>
               <a
-                className={`${styles.sealMark} ${styles.ahuSeal}`}
+                className={styles.emblemLink}
                 href={SUNDAF_AHU_REGISTRATION.verificationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Cek pendaftaran ${SUNDAF_AHU_REGISTRATION.legalName} di AHU (buka di tab baru)`}
                 title="Cek pendaftaran di AHU"
               >
-                <Image src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={44} height={44} />
+                <Image className={styles.emblem} src="/brand/ahu-pengayoman.jpg" alt="Lambang Pengayoman, Ditjen AHU Kementerian Hukum RI" width={40} height={40} />
               </a>
-              <div className={styles.sealText}>
-                <strong>Terdaftar di AHU</strong>
+              <p className={styles.credentialText}>
+                <strong>Terdaftar di Kementerian Hukum RI</strong>
                 <span data-no-translate translate="no">{SUNDAF_AHU_REGISTRATION.number}</span>
-              </div>
-            </li>
+              </p>
+            </div>
             {nib && (
-              <li className={styles.seal}>
+              <div className={styles.credential}>
                 <a
-                  className={`${styles.sealMark} ${styles.ossSeal}`}
+                  className={styles.ossBadge}
                   href="https://oss.go.id/id"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Buka situs resmi OSS (buka di tab baru)"
                   title="Buka situs resmi OSS"
                 >
-                  <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={84} height={25} />
+                  <Image src="/brand/oss-indonesia.svg" alt="OSS — Kementerian Investasi dan Hilirisasi/BKPM" width={66} height={20} />
                 </a>
-                <div className={styles.sealText}>
+                <p className={styles.credentialText}>
                   <strong>Perizinan melalui OSS</strong>
                   <span data-no-translate translate="no">NIB {nib}</span>
-                </div>
-              </li>
+                </p>
+              </div>
             )}
-          </ul>
+          </div>
 
-          <div className={styles.payments} role="group" aria-labelledby="footer-payment-title">
-            <p id="footer-payment-title" className={styles.trustLabel}>Pembayaran</p>
-            <ul className={styles.paymentMarks} aria-label="Metode pembayaran">
+          <div className={styles.payments} role="group" aria-label="Metode pembayaran">
+            <ul className={styles.paymentMarks}>
               {PAYMENT_MARKS.map((mark) => (
-                <li key={mark.src} className={styles.paymentMark}>
+                <li key={mark.src}>
                   <Image src={mark.src} alt={mark.alt} title={mark.title} width={mark.width} height={mark.height} />
                 </li>
               ))}

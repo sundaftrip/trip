@@ -87,7 +87,7 @@ export const REVIEWED_ENGLISH_COPY: Readonly<Record<string, string>> = {
   "Tautan tentang Sundaf": "About Sundaf links",
   "Tautan kontak": "Contact links",
   "Pendaftaran dan perizinan usaha": "Business registration and licensing",
-  "Terdaftar di AHU": "Registered with AHU",
+  "Terdaftar di Kementerian Hukum RI": "Registered with the Ministry of Law of Indonesia",
   "Perizinan melalui OSS": "Licensed through OSS",
   "Metode pembayaran": "Payment methods",
   "APPOINTMENT ONLY": "APPOINTMENT ONLY",
