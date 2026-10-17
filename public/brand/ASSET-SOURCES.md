@@ -15,3 +15,24 @@
 - Asset: https://www.bca.co.id/-/media/Feature/Footer/Breadcrumb/logo-bca-logo-only-light.svg?v=1
 - Logo BCA merupakan merek terdaftar milik PT Bank Central Asia Tbk.
 - The logo identifies the bank used for SUNDAF company transfers. The existing public receiving-account data remains in `lib/company-transfer.ts`.
+
+## Mastercard acceptance mark
+
+`mastercard-symbol.svg` is the unchanged Mastercard Symbol (`ma_symbol.svg`) from the official Mastercard Brand Center download "Mastercard Symbol, Websites & apps, SVG", retrieved on 2026-10-17 after accepting the Mastercard Download Artwork Agreement.
+
+- Source page: https://www.mastercard.com/brandcenter/us/en/download-artwork.html
+- Asset: https://www.mastercard.com/content/dam/brandcenter/assets/downloads/mc_symbol_SVG.zip
+- Mastercard's web quick reference guide places this symbol on websites with an `<img>` element at the chosen size; the file includes its own clear space.
+- Shown in the footer payment row because Sundaf accepts Mastercard cards (confirmed by the owner on 2026-10-17).
+
+## UnionPay acceptance mark
+
+`unionpay.svg` is the official UnionPay "Brand logo (for general purpose and E-Commerce checkout)" from the UnionPay International Artwork Download Center, retrieved on 2026-10-17 after accepting UnionPay's download statement.
+
+- Source page: https://m.unionpayintl.com/en/mediaCenter/brandCenter/artworkDownloadCenter/identification.shtml
+- The download ships an Illustrator file (PDF-compatible). It was converted with `pdftocairo -svg`, and only the root `viewBox` was changed to crop the page to the logo's bounds. The artwork paths are unchanged.
+- Shown in the footer payment row because Sundaf accepts UnionPay cards (confirmed by the owner on 2026-10-17).
+
+## Visa acceptance mark (pending)
+
+Not added yet. The public Visa Brand Mark form at https://globalclient.visa.com/brand-mark returned the "Enabled by Visa" endorsement lockup, which is not an acceptance mark, so it is not used here. Add the white Visa Brand Mark from brand.visa.com (or from Sundaf's acquiring bank) with its own entry in this file.

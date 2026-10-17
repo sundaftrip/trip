@@ -30,6 +30,18 @@ const PAYMENT_MARKS: readonly PaymentMark[] = [
     width: 51,
     height: 16,
   },
+  {
+    src: "/brand/mastercard-symbol.svg",
+    alt: "Mastercard",
+    width: 45,
+    height: 32,
+  },
+  {
+    src: "/brand/unionpay.svg",
+    alt: "UnionPay",
+    width: 37,
+    height: 23,
+  },
 ];
 
 function InstagramIcon() {
