@@ -4,8 +4,11 @@
   --footer-muted: #a5afc0;
   --footer-line: #3a4455;
   --footer-gold: #f4d39b;
-  padding: 48px 0 24px;
-  background: #222b3b;
+  --footer-bg: #222b3b;
+  --footer-horizon-h: clamp(100px, 11vw, 190px);
+  padding: 0 0 24px;
+  /* Transparent behind the mountain horizon, footer colour from its base. */
+  background: linear-gradient(to bottom, transparent 0 calc(var(--footer-horizon-h) - 1px), var(--footer-bg) 0);
   color: var(--footer-ink);
   font-family: var(--site-font-family, var(--font-dm-sans)), "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
@@ -18,7 +21,7 @@
 .footer a { text-decoration: none; }
 .footer a:focus-visible { outline: 3px solid #f6c773; outline-offset: 4px; border-radius: 5px; }
 
-.shell { width: min(1280px, calc(100% - 64px)); margin-inline: auto; }
+.shell { width: min(1280px, calc(100% - 64px)); margin-inline: auto; padding-top: 36px; }
 .top { display: grid; grid-template-columns: minmax(190px, .9fr) minmax(0, 3.1fr); gap: 36px; }
 .brand { min-width: 0; }
 .logoLink { display: inline-flex; align-items: center; min-height: 50px; }
@@ -105,8 +108,8 @@
 }
 
 @media (max-width: 639px) {
-  .footer { padding: 32px 0 96px; }
-  .shell { width: calc(100% - 40px); }
+  .footer { padding: 0 0 96px; }
+  .shell { width: calc(100% - 40px); padding-top: 26px; }
   .top { gap: 22px; }
   .logo { width: 168px; height: 47px; }
   .brand > p { max-width: 34ch; font-size: 13px; }

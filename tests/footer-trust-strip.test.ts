@@ -36,3 +36,19 @@ test("every footer payment mark is an official asset with a recorded source", ()
     assert.match(sources, new RegExp(`\`${file.replace(/\./g, "\\.")}\``), `${file} needs a source entry in ASSET-SOURCES.md`);
   }
 });
+
+test("footer horizon is decorative, seamless and motion-safe", () => {
+  const horizon = readSource("components/website/clean/FooterHorizon.tsx");
+  const horizonCss = readSource("components/website/clean/FooterHorizon.module.css");
+  const footerCss = readSource("components/website/clean/CleanFooter.module.css");
+
+  assert.match(footer, /<FooterHorizon \/>/);
+  assert.match(horizon, /aria-hidden="true"/);
+  // The nearest range and the footer share one colour variable, so no seam shows.
+  assert.match(horizonCss, /\.near \{ fill: var\(--footer-bg/);
+  assert.match(footerCss, /--footer-bg: #222b3b/);
+  // Motion only runs when the visitor allows it.
+  const motionBlock = horizonCss.slice(horizonCss.indexOf("@media (prefers-reduced-motion: no-preference)"));
+  assert.match(motionBlock, /animation-timeline: --footer-horizon/);
+  assert.doesNotMatch(horizonCss.slice(0, horizonCss.indexOf("@media")), /animation:/);
+});

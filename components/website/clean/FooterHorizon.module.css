@@ -1,0 +1,50 @@
+/* Mountain horizon at the top of the footer. The sky is transparent, so the
+   page colour shows through; the nearest range uses the footer colour and the
+   footer background starts 1px under it, so there is no seam. */
+.horizon {
+  position: relative;
+  height: var(--footer-horizon-h, clamp(88px, 11vw, 190px));
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.art {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  display: block;
+  width: 100%;
+  height: calc(100% + 1px);
+}
+
+.near { fill: var(--footer-bg, #222b3b); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The aurora glow behind the twin summit breathes slowly. */
+  .halo { animation: footer-horizon-breathe 7s ease-in-out infinite alternate; }
+
+  /* Distant ranges rise into place as the footer arrives, the same calm
+     glide-up as the site's scroll reveals. Without scroll timelines the
+     ranges simply stay in place. */
+  @supports (animation-timeline: view()) {
+    .horizon { view-timeline-name: --footer-horizon; }
+    .layer {
+      animation: footer-horizon-rise linear both;
+      animation-timeline: --footer-horizon;
+      animation-range: entry 0% cover 45%;
+    }
+    .haze { --footer-horizon-rise: 34px; }
+    .far { --footer-horizon-rise: 26px; }
+    .mid { --footer-horizon-rise: 12px; }
+  }
+}
+
+@keyframes footer-horizon-rise {
+  from { transform: translateY(var(--footer-horizon-rise, 0px)); }
+  to { transform: none; }
+}
+
+@keyframes footer-horizon-breathe {
+  from { opacity: .55; }
+  to { opacity: 1; }
+}

@@ -10,6 +10,7 @@ import {
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import { resolveCompanyPhone } from "@/lib/company-phone";
 import { SUNDAF_TRANSFER_ACCOUNT } from "@/lib/company-transfer";
+import FooterHorizon from "./FooterHorizon";
 import styles from "./CleanFooter.module.css";
 
 type PaymentMark = {
@@ -71,6 +72,7 @@ export default function CleanFooter({ logo, company }: { logo?: string; company:
 
   return (
     <footer className={styles.footer} data-clean-footer>
+      <FooterHorizon />
       <div className={styles.shell}>
         <div className={styles.top}>
           <section className={styles.brand} aria-labelledby="footer-brand-title">
