@@ -1,0 +1,45 @@
+/* Wave transition at the top of the footer. Above the waves the footer is
+   transparent, so the page colour shows through; the front wave takes the
+   footer colour and the footer background starts 1px under it, so there is
+   no seam. */
+.horizon {
+  position: relative;
+  height: var(--footer-horizon-h, clamp(92px, 10.4vw, 168px));
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.art {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  display: block;
+  width: 100%;
+  height: calc(100% + 1px);
+}
+
+.back { fill: #5fb3ad; opacity: 0.22; }
+.middle { fill: #3b4a62; opacity: 0.7; }
+.front { fill: var(--footer-bg, #222b3b); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The waves roll in as the footer arrives: the back two rise and all three
+     slide sideways into place, at the same calm pace as the site's scroll
+     reveals. Without scroll timelines the waves simply stay put. */
+  @supports (animation-timeline: view()) {
+    .horizon { view-timeline-name: --footer-horizon; }
+    .wave {
+      animation: footer-wave-roll linear both;
+      animation-timeline: --footer-horizon;
+      animation-range: entry 0% cover 45%;
+    }
+    .back { --footer-wave-x: -56px; --footer-wave-y: 22px; }
+    .middle { --footer-wave-x: 40px; --footer-wave-y: 12px; }
+    .front { --footer-wave-x: -24px; }
+  }
+}
+
+@keyframes footer-wave-roll {
+  from { transform: translate(var(--footer-wave-x, 0px), var(--footer-wave-y, 0px)); }
+  to { transform: none; }
+}
