@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="{{@META_DESC}}">
+<meta property="og:title" content="{{@TITLE}}">
+<meta property="og:description" content="{{@OG_DESC}}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sundaftrip.com/{{@KEY}}">
+<link rel="canonical" href="https://sundaftrip.com/{{@KEY}}">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<title>{{@TITLE}}</title>
+<script>(function(){try{var t=JSON.parse(localStorage.getItem('sundafPool.theme'));if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/*__BASE_CSS__*/
+/*__PAGE_CSS__*/
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <div class="topline" style="--i:0"><span class="logo" role="img" aria-label="SUNDAF Trip"></span><div class="top-r"><span class="mode" id="modePill"><i></i><span id="modeText">Live</span></span><button type="button" class="lamp" id="lampBtn" aria-pressed="true" aria-label="Lampu (mode terang)" title="Matikan lampu"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="lampLight" cx="50%" cy="22%" r="70%"><stop offset="0" class="lamp-l0"/><stop offset="1" class="lamp-l1"/></radialGradient></defs><g class="lamp-sw"><circle class="lamp-glow" cx="12" cy="20" r="9.5"/><path class="lamp-cord" d="M12 1v6"/><path class="lamp-bulb" d="M14.829 15.998a3 3 0 1 1-5.658 0"/><path class="lamp-shade" d="M20.92 14.606A1 1 0 0 1 20 16H4a1 1 0 0 1-.92-1.394l3-7A1 1 0 0 1 7 7h10a1 1 0 0 1 .92.606z"/></g></svg></button></div></div>
+  <h1 style="--i:1">{{@H1}}</h1>
+  <p class="lede" style="--i:2">{{@LEDE}}</p>
+  <ol class="tiers" id="tiers" style="--i:3;--n:3"></ol>
+  <p class="cap" style="--i:4">{{@CAP}}</p>
+  <button type="button" class="btn btn-primary wide" id="heroCta" style="--i:5"><span class="spin" aria-hidden="true"></span>{{@CTA}}</button>
+  <p class="note" style="--i:6">Gratis. Belum ada pembayaran.</p>
+  <p class="demo-note" id="demoNote" hidden>Ini tampilan contoh. Angka di halaman ini belum data asli dan pendaftaran tidak disimpan. Rencanamu tetap bisa dikirim ke admin lewat WhatsApp.</p>
+</header>
+
+<main>
+  <section class="wrap sec" id="pools" aria-labelledby="poolsTitle">
+    <div class="sec-head">
+      <h2 id="poolsTitle">{{@POOLS_TITLE}}</h2>
+      <div class="seg" role="group" aria-label="Urutkan tanggal">
+        <button type="button" data-sort="n" aria-pressed="true">Terbanyak</button>
+        <button type="button" data-sort="d" aria-pressed="false">Terdekat</button>
+      </div>
+    </div>
+    <p class="live-line"><span id="liveStack"></span><b class="num" id="statTotal">0</b> orang di <b class="num" id="statDates">0</b> {{@POOLS_UNIT}}<span class="tick" id="ticker" hidden></span></p>
+    <ol class="pool-list" id="poolList"><li class="skel" aria-label="Memuat"></li><li class="skel" aria-hidden="true"></li></ol>
+    <button type="button" class="btn btn-line wide more" id="newDateBtn"><span class="spin" aria-hidden="true"></span>{{@NEW_DATE_BTN}}</button>
+  </section>
+
+  <section class="wrap sec" aria-labelledby="menuTitle">
+    <h2 id="menuTitle">{{@MENU_TITLE}}</h2>
+    <p class="live-line">{{@MENU_NOTE}}</p>
+    <ul class="addons menu" id="menu"></ul>
+  </section>
+
+  <section class="wrap sec" aria-labelledby="careTitle">
+    <h2 id="careTitle">{{@CARE_TITLE}}</h2>
+    <ul class="care">
+{{@CARE_ITEMS}}
+    </ul>
+  </section>
+
+  <section class="wrap sec" aria-labelledby="howTitle">
+    <h2 id="howTitle">Cara kerjanya</h2>
+    <ol class="how">
+{{@HOW_ITEMS}}
+    </ol>
+  </section>
+
+  <section class="wrap sec">
+    <button type="button" class="acc" id="accBtn" aria-expanded="false" aria-controls="accBody"><span>Detail harga dan aturan</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="acc-body" id="accBody"><div class="acc-in"><div class="acc-pad">
+      <h3>Harga dihitung dari mana</h3>
+      <ul class="fine-list" id="srcList"></ul>
+      <h3>Sudah termasuk</h3>
+      <p class="plain">{{@INCL}}</p>
+      <h3>Belum termasuk</h3>
+      <p class="plain">{{@EXCL}}</p>
+      <h3>DP, tanggal kunci, dan pembatalan</h3>
+      <ul class="fine-list" id="ruleList"></ul>
+      <div class="tbl-wrap"><table class="tbl tbl-c">
+        <thead><tr><th scope="col">Waktu batal</th><th scope="col">Biaya</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Sebelum tanggal kunci</th><td id="batal1"></td></tr>
+          <tr><th scope="row">Tanggal kunci s.d. H-31</th><td>30% harga</td></tr>
+          <tr><th scope="row">H-30 s.d. H-15</th><td>50% harga</td></tr>
+          <tr><th scope="row">H-14 atau tidak hadir</th><td>100% harga</td></tr>
+        </tbody>
+      </table></div>
+{{@BATAL_NOTE}}      <h3>Tambahan di Shymbulak, bayar terpisah</h3>
+      <p class="plain">Bisa dicentang saat menyusun hari yang berisi tur kota dan Shymbulak, lalu dipesan lewat admin. Pesan lebih awal supaya kebagian slot.</p>
+      <ul class="addons">
+        <li><span>Berkuda<small>Mulai 15 menit, bergantung cuaca</small></span><b>mulai Rp165.140</b></li>
+        <li><span>Paralayang<small>Ditambah kereta gantung ke puncak Rp309.638, bergantung cuaca</small></span><b>Rp1.692.685</b></li>
+        <li><span>Foto atau video paralayang<small>Video Rp247.710, foto dan video Rp309.638</small></span><b>foto Rp144.498</b></li>
+        <li><span>Mengendarai ATV<small>Mulai 20 menit</small></span><b>mulai Rp1.032.125</b></li>
+        <li><span>Gorilla ZipLine<small>Horizontal Rp619.275. Tutup Selasa, Rabu, dan Kamis</small></span><b>Rp309.638</b></li>
+        <li><span>Alpine park</span><b>Rp206.425</b></li>
+        <li><span>Taman tali<small>Ditambah kereta gantung ke Medeo Rp247.710</small></span><b>mulai Rp144.498</b></li>
+        <li><span>Pertunjukan burung pemburu</span><b>tanya admin</b></li>
+      </ul>
+      <h3>Pertanyaan</h3>
+      <dl class="qa">
+{{@FAQ}}
+      </dl>
+      <h3>Pembayaran</h3>
+      <div class="pay">
+        <span class="pay-bank"><img src="__BCA_SRC__" alt="BCA" title="Logo BCA merupakan merek terdaftar milik PT Bank Central Asia Tbk." width="64" height="20"></span>
+        <div class="pay-acc"><b id="payNum" translate="no">6815288673</b><span id="payWho" translate="no" aria-live="polite">a.n. CV SUNDAF HOLIDAY GROUP</span></div>
+        <button type="button" class="pay-copy" id="payCopy" aria-label="Salin nomor rekening">Salin</button>
+      </div>
+      <ul class="fine-list">
+        <li>Transfer hanya ke rekening BCA perusahaan ini, setelah admin mengonfirmasi tanggal dan harga.</li>
+        <li>DP 30% dalam 3×24 jam setelah harga pasti dikirim. Pelunasan di tanggal kunci.</li>
+      </ul>
+    </div></div></div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p><b>SUNDAF Trip</b> · <a href="https://sundaftrip.com" target="_blank" rel="noopener">sundaftrip.com</a></p>
+  <p>Data yang kamu isi hanya dipakai admin SUNDAF Trip untuk urusan trip ini.</p>
+  <p id="hargaPer"></p>
+  <p class="xl">{{@FOOT_LINKS}}</p>
+</footer>
+<div class="dock-space"></div>
+
+<div class="dock" id="dock">
+  <div class="dock-in">
+    <div class="dock-txt"><b>{{@DOCK_TITLE}}</b><span>Gratis, belum bayar apa-apa</span></div>
+    <button type="button" class="btn btn-primary btn-sm" id="dockCta"><span class="spin" aria-hidden="true"></span>{{@DOCK_CTA}}</button>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="q0" hidden>
+  <div class="grab" aria-hidden="true"></div>
+  <div class="sheet-head">
+    <button type="button" class="icon-btn" id="backBtn" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="prog" id="prog" aria-hidden="true"><i></i></div>
+    <button type="button" class="icon-btn" id="closeBtn" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <form id="form" novalidate>
+
+    <!-- 0: tanggal dan jumlah orang -->
+    <div class="step" data-step="0">
+      <h3 class="q" id="q0" tabindex="-1">{{@Q0}}</h3>
+      <p class="sub">{{@Q0_SUB}}</p>
+      <p class="chips-l" id="chipsL" hidden>{{@CHIPS_LABEL}}</p>
+      <div class="chips" id="chips" hidden></div>
+      <div class="cal" id="cal">
+        <div class="cal-head">
+          <button type="button" class="icon-btn cal-btn" id="calPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <b class="cal-title" id="calTitle" aria-live="polite"></b>
+          <button type="button" class="icon-btn cal-btn" id="calNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="cal-dow" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+        <div class="cal-grid" id="calGrid" role="group"></div>
+        <p class="cal-legend">{{@CAL_LEGEND}}</p>
+      </div>
+      <p class="date-info" id="dateInfo" aria-live="polite" hidden></p>
+      <div class="suggest" id="suggest" hidden></div>
+      <div class="pax-row">
+        <span class="lbl"><b>Jumlah orang</b><span id="paxHint">Kamu dan 1 teman</span></span>
+        <div class="pax">
+          <button type="button" class="round" id="paxMinus" aria-label="Kurangi satu orang">−</button>
+          <output class="pax-n num" id="paxOut" aria-live="polite">2</output>
+          <button type="button" class="round" id="paxPlus" aria-label="Tambah satu orang">+</button>
+        </div>
+      </div>
+      <label class="check" for="fFlex"><input type="checkbox" id="fFlex" name="flex"><span class="box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Tanggalku masih bisa geser ±2 hari</span></label>
+      <p class="err" id="err0" role="alert" hidden></p>
+      <div class="step-cta"><button type="button" class="btn btn-primary wide" data-next="0">Lanjut</button></div>
+    </div>
+
+    <!-- 1: Kirgistan -->
+    <div class="step" data-step="1" hidden>
+      <h3 class="q" id="q1" tabindex="-1">Lanjut ke Kirgistan?</h3>
+      <p class="sub">Masuk lewat darat dari Almaty. Hari di Kirgistan keluar dari jadwal Kazakhstan dan dari malam hotel di Almaty.</p>
+      <div class="opts">
+        <button type="button" class="opt" data-kg="tidak" aria-pressed="true"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>Cukup Kazakhstan</b><span>Semua hari di Almaty dan sekitarnya.</span></span><span class="opt-side">–</span></button>
+        <button type="button" class="opt" data-kg="gabungan" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>Tur gabungan, 3 hari 2 malam</b><span>Bareng tamu lain. Termasuk penginapan dan makan.</span><span class="range">Jadwal tercantum: 28–30 Maret 2027</span></span><span class="opt-side" id="kgGabPrice"></span></button>
+        <button type="button" class="opt" data-kg="privat" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>Tur privat, 4 hari 3 malam</b><span>Karakol, Issyk-Kul, Bishkek. Satu malam di yurt. Penawaran untuk rombongan 10–26 orang.</span></span><span class="opt-side" id="kgPrivPrice"></span></button>
+      </div>
+      <div class="kg-box" id="kgStartBox" hidden>
+        <div class="kg-row"><span class="kg-l" id="kgStartL">Berangkat ke Kirgistan</span><div class="chips" id="kgChips" role="group" aria-labelledby="kgStartL"></div></div>
+      </div>
+      <ol class="route kg-plan" id="kgPlan" hidden></ol>
+      <p class="hint" id="kgAsumsi" hidden>Asumsi harga: kamu kembali ke Almaty di hari terakhir tur Kirgistan dan menginap di Almaty malam itu. Admin memastikan jam pulangnya.</p>
+      <p class="hint warn-t" id="kgWarn" hidden></p>
+      <div class="note-card" id="visaNote" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="17.5" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="6.5" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 15.5 17 8.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 3.2"/><circle class="hop-dot" r="1.9"/></svg><p><b>Perlu e-visa Kirgistan.</b> WNI yang masuk lewat darat wajib punya e-visa sebelum berangkat, kami bantu urus. Biaya e-visa dan transfer ke perbatasan menyusul dari admin.</p></div>
+      <p class="err" id="err1" role="alert" hidden></p>
+      <div class="step-cta"><div class="cta-row"><p class="cta-sum" aria-live="polite"><b class="num" data-sum>—</b><span data-sub></span></p><button type="button" class="btn btn-primary" data-next="1">Lanjut</button></div></div>
+    </div>
+
+    <!-- 2: isi hari -->
+    <div class="step" data-step="2" hidden>
+      <h3 class="q" id="q2" tabindex="-1">{{@Q2}}</h3>
+      <p class="sub" id="planSub"></p>
+      <div class="dest-tabs" id="planTabs" role="tablist" aria-label="Cara pesan">
+        <button type="button" role="tab" data-mode="harian" aria-selected="true">Pilih per hari</button>
+        <button type="button" role="tab" data-mode="paket" aria-selected="false">Paket privat</button>
+        <i class="ink" aria-hidden="true"></i>
+      </div>
+      <div class="opts" id="pkgBox" hidden>
+        <p class="hint">Mobil dan guide berbahasa Inggris khusus rombonganmu, jemput dan antar bandara, tiket masuk. Harga per orang ikut jumlah orang di rombonganmu.</p>
+        <button type="button" class="opt" data-paket="p5" aria-pressed="true"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>5 hari 4 malam</b><span>3 hari tur bersama guide.</span></span><span class="opt-side" id="p5Price"></span></button>
+        <button type="button" class="opt" data-paket="p6" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b>6 hari 5 malam</b><span>4 hari tur bersama guide.</span></span><span class="opt-side" id="p6Price"></span></button>
+        <p class="hint" id="pkgHint"></p>
+      </div>
+      <div class="chips dstrip" id="dayStrip" role="group" aria-label="Pilih hari"></div>
+      <div class="day-panel" id="dayPanel"></div>
+      <div class="addon-box" id="addonBox" hidden>
+        <button type="button" class="acc" id="addonBtn" aria-expanded="false" aria-controls="addonBody"><span>Tambahan di Shymbulak<small>bayar terpisah</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="acc-body" id="addonBody"><div class="acc-in"><div class="addon-list" id="addonList"></div></div></div>
+      </div>
+      <p class="xlink" id="kgLink" hidden>Mau sekalian ke Kirgistan? Susun trip dua negara di <a href="/2tans">sundaftrip.com/2tans</a>.</p>
+      <ul class="fine-list warn-list" id="planWarn" hidden></ul>
+      <p class="err" id="err2" role="alert" hidden></p>
+      <div class="step-cta"><div class="cta-row"><p class="cta-sum" aria-live="polite"><b class="num" data-sum>—</b><span data-sub></span></p><button type="button" class="btn btn-primary" data-next="2">Lanjut</button></div></div>
+    </div>
+
+    <!-- 3: menginap -->
+    <div class="step" data-step="3" hidden>
+      <h3 class="q" id="q3" tabindex="-1">Menginap di mana?</h3>
+      <p class="sub" id="hotelSub"></p>
+      <div class="opts">
+        <button type="button" class="opt" data-hotel="astra" aria-pressed="true"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b id="hotelAName">Astra Hotel bintang 3, dengan sarapan</b><span id="hotelADesc">Jl. Zheltoksan 12. Lobinya sekaligus titik kumpul tur.</span></span><span class="opt-side" id="hotelAPrice"></span></button>
+        <button type="button" class="opt" data-hotel="sendiri" aria-pressed="false"><span class="radio" aria-hidden="true"></span><span class="opt-main"><b id="hotelSName">Hotel sendiri</b><span id="hotelSDesc">Tiap pagi kamu datang ke titik kumpul.</span></span><span class="opt-side" id="hotelSPrice"></span></button>
+      </div>
+      <div class="hotel-row" id="kamarRow">
+        <span class="flabel" id="kamarL">Satu kamar untuk</span>
+        <div class="seg seg3" role="group" aria-labelledby="kamarL"><button type="button" data-kamar="2" aria-pressed="true">Berdua</button><button type="button" data-kamar="3" aria-pressed="false">Bertiga</button><button type="button" data-kamar="1" aria-pressed="false">Sendiri</button></div>
+        <p class="hint" id="kamarHint"></p>
+      </div>
+      <label class="field" for="fHn" id="hnField" hidden><span>Nama hotelmu <i>(opsional)</i></span><input id="fHn" name="hn" maxlength="60" autocomplete="off" placeholder="Boleh diisi nanti"></label>
+      <p class="meet" id="meetHint"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="pin-head"><path d="M12 21s-6.2-5.5-6.2-10.4a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10.6" r="2.3" fill="var(--bar)"/></g></svg><span id="meetHintText"></span></p>
+      <p class="err" id="err3" role="alert" hidden></p>
+      <div class="step-cta"><div class="cta-row"><p class="cta-sum" aria-live="polite"><b class="num" data-sum>—</b><span data-sub></span></p><button type="button" class="btn btn-primary" data-next="3">Lanjut</button></div></div>
+    </div>
+
+    <!-- 4: kedatangan -->
+    <div class="step" data-step="4" hidden>
+      <h3 class="q" id="q4" tabindex="-1">Kamu tiba lewat apa?</h3>
+      <div class="vias" role="group" aria-label="Cara tiba">
+        <button type="button" class="via" data-via="pesawat" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><b>Pesawat</b><span>ke Bandara Almaty</span></button>
+        <button type="button" class="via" data-via="darat" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v6M15 6v6M2 12h19.6M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg><b>Darat</b><span>dari Bishkek</span></button>
+        <button type="button" class="via" data-via="lokal" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.2-5.5-6.2-10.4a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21z"/><circle cx="12" cy="10.6" r="2.3"/></svg><b>Sudah di</b><span>Almaty</span></button>
+      </div>
+      <div class="time-field" id="timeField">
+        <span class="flabel" id="timeLabel">Jam mendarat (waktu Almaty)</span>
+        <div class="time-sel">
+          <span class="sel"><select id="fHour" aria-labelledby="timeLabel"><option value="">Belum tahu</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span aria-hidden="true">:</span>
+          <span class="sel"><select id="fMin" aria-label="Menit"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+      </div>
+      <label class="field" for="fFl" id="flField"><span>No. penerbangan <i>(opsional)</i></span><input id="fFl" name="fl" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Contoh: KC 123"></label>
+      <div class="note-card" id="viaNote" hidden></div>
+      <div class="trf" id="trfBox">
+        <span class="flabel">Transfer</span>
+        <label class="check" for="fJemput" id="jemputRow"><input type="checkbox" id="fJemput"><span class="box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="ck-t" id="jemputT">Jemput di Bandara Almaty</span><span class="ck-side muted">harga menyusul</span></label>
+        <label class="check" for="fAntar"><input type="checkbox" id="fAntar"><span class="box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="ck-t">Antar ke bandara saat pulang</span><span class="ck-side muted">harga menyusul</span></label>
+      </div>
+      <p class="hint" id="trfPaket" hidden>Jemput dan antar bandara sudah termasuk paket privat.</p>
+      <ul class="fine-list warn-list" id="arrWarn" hidden></ul>
+      <p class="err" id="err4" role="alert" hidden></p>
+      <div class="step-cta"><div class="cta-row"><p class="cta-sum" aria-live="polite"><b class="num" data-sum>—</b><span data-sub></span></p><button type="button" class="btn btn-primary" data-next="4">Lanjut</button></div></div>
+    </div>
+
+    <!-- 5: nama, WA, rincian -->
+    <div class="step" data-step="5" hidden>
+      <h3 class="q" id="q5" tabindex="-1">Nama dan nomor WhatsApp</h3>
+      <p class="sub">Admin mengirim harga pasti ke nomor ini. Belum ada pembayaran.</p>
+      <label class="field" for="fName"><span>Nama</span><input id="fName" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="60" placeholder="Nama panggilan juga boleh"></label>
+      <label class="field" for="fWa"><span>Nomor WhatsApp</span><input id="fWa" name="wa" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" maxlength="22" placeholder="0812 3456 7890"></label>
+      <label class="field" for="fNote"><span>Catatan untuk admin <i>(opsional)</i></span><textarea id="fNote" name="note" rows="2" maxlength="300" placeholder="Misal: alergi makanan, ulang tahun, butuh kursi roda"></textarea></label>
+      <input type="text" class="hp" id="fHp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="subh">Rencanamu</p>
+      <div class="recap" id="recap"></div>
+      <div class="bill" id="bill"></div>
+      <p class="err" id="err5" role="alert" hidden></p>
+      <a class="btn btn-line wide" id="waFallback" target="_blank" rel="noopener" hidden>Kirim rencana lewat WhatsApp</a>
+      <div class="step-cta">
+        <button type="submit" class="btn btn-primary wide" id="submitBtn"><span class="spin" aria-hidden="true"></span><span class="lbl">Kirim rencana</span></button>
+        <p class="fine">Belum ada pembayaran. Data kamu hanya dipakai admin SUNDAF Trip.</p>
+      </div>
+    </div>
+
+    <!-- 6: selesai -->
+    <div class="step success" data-step="6" hidden>
+      <svg class="ok-ico" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg>
+      <h3 class="q" id="sTitle" tabindex="-1">Rencanamu masuk</h3>
+      <p class="code">Kode: <b id="sCode">PB-0000</b></p>
+      <div class="crowd" id="sCrowd" aria-hidden="true"></div>
+      <div class="s-num" id="sNumWrap"><b class="num" id="sNum">0</b><span id="sNumL">orang tiba di tanggal ini</span></div>
+      <div id="sBar"></div>
+      <p class="s-next" id="sNext"></p>
+      <div class="s-actions">
+        <a class="btn btn-primary wide" id="sAdmin" target="_blank" rel="noopener">Kirim rencana ke admin</a>
+        <a class="btn btn-line wide" id="sGroup" target="_blank" rel="noopener" hidden>Gabung grup WA</a>
+        <div class="s-row">
+          <a class="btn btn-line" id="sShare" target="_blank" rel="noopener">Ajak teman</a>
+          <button type="button" class="btn btn-line" id="sCopy">Salin rencana</button>
+        </div>
+        <textarea class="copy-fallback" id="sPlan" readonly hidden aria-label="Rencana untuk disalin"></textarea>
+      </div>
+      <p class="fine" id="sInfo"></p>
+      <button type="button" class="btn btn-text wide" id="sDone">Selesai</button>
+    </div>
+  </form>
+</section>
+
+<script>
+/*__SCRIPT__*/
+</script>
+
+</body>
+</html>
