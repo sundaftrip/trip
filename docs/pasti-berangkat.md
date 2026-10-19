@@ -22,8 +22,9 @@ pendaftar sendiri, jadi trip tetap jalan walau cuma satu orang yang daftar. Terp
 - `app/api/pasti-berangkat/route.ts` + `lib/pasti-berangkat.ts`: GET meneruskan ke Apps Script `?api=pools`
   (cache CDN 30 detik, stale-while-revalidate 5 menit). POST meneruskan pendaftaran (rate limit 8/menit per IP,
   maksimal 12.000 karakter, halaman harus salah satu dari tiga, hanya field formulir yang diteruskan).
-- Google Sheet **SUNDAF · Pasti Berangkat** (akun sundaf.group@gmail.com) dengan Apps Script
-  `docs/apps-script/pasti-berangkat.gs` (Web app, Execute as: Me, Who has access: Anyone).
+- Google Sheet **SUNDAF · Pasti Berangkat** (akun sundaf.group@gmail.com). Kodenya `docs/apps-script/pasti-berangkat.gs`,
+  dipasang sebagai project Apps Script tersendiri **SUNDAF · Pasti Berangkat API** di script.google.com akun yang sama
+  (membuka Sheet lewat `CFG.SHEET_ID`), di-deploy sebagai Web app (Execute as: Me, Who has access: Anyone).
 - Dibuka langsung sebagai file atau dengan `?demo=1`: data contoh, tidak menyimpan apa pun.
 
 ## Harga
@@ -64,11 +65,13 @@ Aturan yang dijaga mesin harga:
   Kolom Halaman menunjukkan asal pendaftar. Kode: `PB-` (pastiberangkat), `2T-` (2tans), `TH-` (turharian).
   Pendaftar yang mengirim lagi dengan nomor, tanggal, dan halaman yang sama memperbarui barisnya sendiri.
 - **Rekap tur**: jumlah orang per tanggal per tur dari ketiga halaman, untuk memesan kursi tur gabungan.
-  Diperbarui setiap ada pendaftaran, atau lewat menu SUNDAF → Perbarui rekap tur (misalnya setelah mengubah status).
+  Diperbarui setiap ada pendaftaran, dan paling lama 10 menit setelah status diubah (saat halaman dibuka pengunjung).
+  Perlu segera: buka project Apps Script, pilih fungsi `rekap`, tekan Run.
 - **Grup WA**: isi tanggal tiba (yyyy-mm-dd) dan link grup WhatsApp. Pendaftar `/pastiberangkat` dan `/2tans`
   di tanggal itu langsung melihat tombol "Gabung grup WA".
 - Pengaturan di bagian `CFG` Apps Script: buka/tutup pendaftaran, nomor WA admin, titik dan jam kumpul,
-  batas tanggal dan jumlah orang. Setelah mengubah kode: Deploy → Manage deployments → Edit → New version.
+  batas tanggal dan jumlah orang. Setelah mengubah kode: Deploy → Manage deployments → Edit → Version: New version
+  (URL `/exec` tetap sama). Samakan juga isi `docs/apps-script/pasti-berangkat.gs` di repo.
 
 Data publik dari Apps Script tidak berisi nama atau nomor WA.
 

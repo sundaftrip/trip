@@ -5,7 +5,8 @@
 import { isAppsScriptUrl, type FetchLike } from "./pool-trip";
 
 /** Web app Apps Script (URL /exec). Bukan rahasia: endpoint publik yang tidak mengembalikan nama atau nomor WA. */
-export const PB_SCRIPT_URL = "";
+export const PB_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxSp1SLTEnsDTXR5pPvWbnIbc_i3jLRDBDr8bY7XX-7bnloZSQBpvMDSfDGGJwp1WHT7A/exec";
 
 /** Batas ukuran isi formulir yang diteruskan ke Apps Script (rencana per hari bisa panjang untuk trip 21 malam). */
 export const PB_MAX_BODY = 12_000;

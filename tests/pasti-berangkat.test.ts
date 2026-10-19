@@ -19,8 +19,7 @@ const reply = (body: unknown, status = 200): FetchLike => async () => new Respon
 test("pasti berangkat only talks to a real Apps Script /exec URL", () => {
   assert.equal(pbScriptUrl({ PB_SCRIPT_URL: ` ${EXEC} ` }), EXEC);
   assert.equal(pbScriptUrl({ PB_SCRIPT_URL: "https://evil.example/macros/s/AKfycbTESTtestTESTtestTESTtest/exec" }), pbScriptUrl({}));
-  // Kosong = belum tersambung: API membalas 503 dan halaman menawarkan kirim lewat WhatsApp.
-  assert.ok(PB_SCRIPT_URL === "" || isAppsScriptUrl(PB_SCRIPT_URL), "the committed deployment URL is empty or a real /exec URL");
+  assert.equal(isAppsScriptUrl(PB_SCRIPT_URL), true, "the committed deployment URL is a real /exec URL");
   assert.equal(pbScriptUrl({}), PB_SCRIPT_URL);
 });
 

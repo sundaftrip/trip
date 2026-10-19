@@ -5,10 +5,13 @@
  *   sundaftrip.com/turharian       tur harian Almaty, tanpa hotel
  * Satu Google Sheet ("SUNDAF · Pasti Berangkat") untuk ketiganya. Terpisah dari Pool Kazakhstan dan Pool Trip.
  * Halaman memanggil /api/pasti-berangkat di sundaftrip.com; route itu meneruskan ke web app ini.
+ * Project Apps Script ini berdiri sendiri (project "SUNDAF · Pasti Berangkat API" di script.google.com milik
+ * sundaf.group@gmail.com) dan membuka Sheet lewat CFG.SHEET_ID.
  *
  * Cara pasang (sekali saja):
- * 1. Di Google Sheet ini: Extensions → Apps Script. Hapus isi Code.gs, tempel seluruh file ini, simpan.
- * 2. Pilih fungsi "setup" di toolbar, tekan Run, lalu beri izin. Sheet Pendaftar, Grup WA, dan Rekap tur dibuat otomatis.
+ * 1. Di script.google.com (akun pemilik Sheet): New project. Hapus isi Code.gs, tempel seluruh file ini, simpan.
+ *    CFG.SHEET_ID = ID Google Sheet, yaitu bagian URL Sheet setelah /d/.
+ * 2. Pilih fungsi "setup" di toolbar, tekan Run, lalu beri izin. Sheet Pendaftar, Grup WA, dan Rekap tur disiapkan otomatis.
  * 3. Deploy → New deployment → Select type: Web app. Execute as: Me. Who has access: Anyone. Deploy.
  * 4. Salin URL yang berakhiran /exec ke PB_SCRIPT_URL di lib/pasti-berangkat.ts (repo situs),
  *    atau ke env PB_SCRIPT_URL di Vercel.
@@ -19,7 +22,8 @@
  *   Hanya DP dan LUNAS yang dihitung sebagai peserta pasti; BATAL tidak dihitung di mana pun.
  * - Kolom Halaman: dari halaman mana pendaftar datang (pastiberangkat, 2tans, turharian).
  * - Sheet "Rekap tur": jumlah orang per tanggal per tur, dari semua halaman. Dipakai untuk memesan kursi
- *   tur gabungan. Diperbarui setiap ada pendaftaran, atau lewat menu SUNDAF → Perbarui rekap tur.
+ *   tur gabungan. Diperbarui setiap ada pendaftaran, dan paling lama 10 menit setelah status diubah
+ *   (saat halaman dibuka pengunjung). Perlu segera? Buka project ini, pilih fungsi "rekap", tekan Run.
  * - Sheet "Grup WA": isi tanggal tiba (yyyy-mm-dd) dan link grup WhatsApp.
  *   Pendaftar halaman pastiberangkat dan 2tans di tanggal itu langsung melihat tombol "Gabung grup WA".
  * - Kolom Rencana berisi teks lengkap yang juga bisa disalin ke WhatsApp.
@@ -28,6 +32,7 @@
  */
 
 var CFG = {
+  SHEET_ID: '1YKXGD9lBFSxXTsGO0BkS7yxoQOcV3EQ82NFyveatAts',   // Google Sheet "SUNDAF · Pasti Berangkat"
   OPEN: true,                 // false = pendaftaran ditutup sementara
   MIN_DAYS: 7,                // tanggal paling cepat: hari ini + 7
   MAX_DAYS: 450,              // tanggal paling jauh: hari ini + 450
@@ -41,7 +46,8 @@ var CFG = {
   TZ: 'Asia/Jakarta',
   SHEET: 'Pendaftar',
   GROUPS: 'Grup WA',
-  REKAP: 'Rekap tur'
+  REKAP: 'Rekap tur',
+  REKAP_EVERY: 600            // detik: rekap tur disegarkan paling sering tiap 10 menit saat ada yang membuka halaman
 };
 
 var PAGES = {
@@ -65,8 +71,10 @@ var ADDONS = ['kuda', 'para', 'paragg', 'parafoto', 'paravideo', 'parafv', 'atv'
 var HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
 /* ---------------- pasang ---------------- */
+var BOOK = null;
+function book() { return BOOK || (BOOK = SpreadsheetApp.openById(CFG.SHEET_ID)); }   // sekali buka per eksekusi
 function setup() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = book();
   var sh = ss.getSheetByName(CFG.SHEET) || ss.insertSheet(CFG.SHEET, 0);
   sh.getRange(1, 1, 1, COLS.length).setValues([COLS]).setFontWeight('bold');
   sh.setFrozenRows(1);
@@ -84,9 +92,6 @@ function setup() {
   var first = ss.getSheetByName('Sheet1');   // sheet kosong bawaan
   if (first && first.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(first);
   rekap();
-}
-function onOpen() {
-  SpreadsheetApp.getUi().createMenu('SUNDAF').addItem('Perbarui rekap tur', 'rekap').addToUi();
 }
 
 /* ---------------- web ---------------- */
@@ -124,6 +129,10 @@ function getPools() {
     total += r.pax;
   });
   recent.sort(function (a, b) { return b.t - a.t; });
+  try {   // status yang diubah admin ikut masuk rekap tur, paling sering tiap CFG.REKAP_EVERY detik
+    var cache = CacheService.getScriptCache();
+    if (!cache.get('rekap')) { rekap(rows); cache.put('rekap', '1', CFG.REKAP_EVERY); }
+  } catch (err) { console.error(err); }
   return {
     ok: true, version: 1, open: CFG.OPEN, today: today, minDays: CFG.MIN_DAYS, maxPax: CFG.MAX_PAX, milestones: CFG.MILESTONES,
     wa: CFG.WA_ADMIN, share: '', meet: CFG.MEET, meetTime: CFG.MEET_TIME, night: CFG.NIGHT,
@@ -131,7 +140,7 @@ function getPools() {
   };
 }
 function firstTour(r) { var k = Object.keys(r.hari).sort(); return k.length ? k[0] : r.tiba; }
-function sheet(name) { return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name); }
+function sheet(name) { return book().getSheetByName(name); }
 function readRows() {
   var sh = sheet(CFG.SHEET);
   if (!sh || sh.getLastRow() < 2) return [];
@@ -162,8 +171,8 @@ function readGroups() {
 
 /* ---------------- rekap tur per hari (untuk memesan kursi tur gabungan) ---------------- */
 function rekap(rows) {
-  rows = Array.isArray(rows) ? rows : readRows();   // dari menu: tanpa argumen
-  var sh = sheet(CFG.REKAP) || SpreadsheetApp.getActiveSpreadsheet().insertSheet(CFG.REKAP), by = {}, today = todayKey();
+  rows = Array.isArray(rows) ? rows : readRows();   // dijalankan sendiri dari editor: tanpa argumen
+  var sh = sheet(CFG.REKAP) || book().insertSheet(CFG.REKAP), by = {}, today = todayKey();
   rows.forEach(function (r) {
     if (r.status === 'BATAL') return;
     Object.keys(r.hari).forEach(function (d) {
