@@ -238,6 +238,12 @@ const nextConfig: NextConfig = {
       // lewat /api/pool; terpisah dari pool Kazakhstan.
       { source: "/pool", destination: "/pool/index.html" },
       { source: "/pool/:slug", destination: "/pool/index.html" },
+      // Halaman "pasti berangkat" (file di public/<nama>/, dibuat oleh scripts/pasti-berangkat): trip Almaty,
+      // trip Kazakhstan + Kirgistan, dan tur harian. Data dari Google Sheet "SUNDAF · Pasti Berangkat"
+      // lewat /api/pasti-berangkat; terpisah dari pool Kazakhstan dan Pool Trip.
+      { source: "/pastiberangkat", destination: "/pastiberangkat/index.html" },
+      { source: "/2tans", destination: "/2tans/index.html" },
+      { source: "/turharian", destination: "/turharian/index.html" },
     ];
   },
   async headers() {

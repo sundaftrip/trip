@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/sw.js",
+    // Sumber halaman statis /pastiberangkat, /2tans, /turharian: JS browser lama (ES5), dirakit jadi public/<nama>/index.html.
+    "scripts/pasti-berangkat/src/**",
   ]),
   {
     files: ["scripts/*.js"],
