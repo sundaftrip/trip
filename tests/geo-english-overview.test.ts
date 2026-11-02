@@ -56,6 +56,8 @@ test("the English overview is server-rendered, discoverable and keeps the no-wal
   assert.doesNotMatch(page, /^"use client"/m, "the page must render on the server for crawlers");
   assert.match(page, /<div lang="en"/);
   assert.match(page, /inLanguage: "en"/);
+  assert.match(page, /"@type": "FAQPage"/);
+  assert.match(page, /approval cannot be guaranteed/);
   assert.match(page, /canonical: PAGE_URL/);
   assert.doesNotMatch(page, /"@type"\s*:\s*"(?:TravelAgency|LocalBusiness|PostalAddress)"/);
   assert.match(read("app/sitemap.ts"), /\$\{base\}\/en`/);
