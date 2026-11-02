@@ -16,5 +16,5 @@ export const getRussiaPublicTours = unstable_cache(
     },
   }),
   ["russia-guide-tours-v2"],
-  { revalidate: 300, tags: ["home-data"] },
+  { revalidate: 3600, tags: ["home-data"] },
 );

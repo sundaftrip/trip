@@ -1,6 +1,6 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
 // ISR: konten CMS jarang berubah; revalidatePublicContent() me-revalidate on-write.
-export const revalidate = 300;
+export const revalidate = 3600;
 import type { Metadata } from "next";
 import React from "react";
 import { prisma } from "@/lib/prisma";

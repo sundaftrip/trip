@@ -7,7 +7,7 @@ import { buildWhatsAppHref } from "@/lib/utils";
 import VisaLanding from "./VisaLanding";
 
 // ISR: database visa jarang berubah — edit dari admin tampil maksimal 5 menit.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata: Metadata = withPageSocialMetadata({
   title: "Info Visa Paspor Indonesia dan Jasa Urus Visa",

@@ -8,7 +8,7 @@ import { canonicalTourPath } from "@/lib/seo-routes";
 import RussiaDepartureTable from "@/components/website/clean/RussiaDepartureTable";
 
 const ROUTE = "/open-trip-rusia-dari-jakarta";
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return geoMetadata(await getGeoPageContent(ROUTE));

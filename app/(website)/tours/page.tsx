@@ -21,7 +21,7 @@ import {
   resolveTourStartingPrice,
 } from "@/lib/tour-room-pricing";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const TOURS_TITLE = "Jadwal Tour & Dokumentasi · Sundaf Trip";
 const TOURS_DESC =
@@ -95,7 +95,7 @@ const getData = unstable_cache(
     };
   },
   ["all-tours-page"],
-  { revalidate: 300, tags: ["home-data", "site-colors"] },
+  { revalidate: 3600, tags: ["home-data", "site-colors"] },
 );
 
 function toIsoDateString(value: Date | string | null | undefined) {

@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { sanitizeRichHtml } from "@/lib/sanitize-rich-html";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 
-export const revalidate = 300; // segarkan tiap 5 menit setelah edit di CMS
+export const revalidate = 3600; // edit CMS tetap instan via revalidatePublicContent; ini jaring pengaman 1 jam
 
 export const metadata: Metadata = withPageSocialMetadata({
   title: "FAQ Teknis Visa Schengen untuk Paspor Indonesia",

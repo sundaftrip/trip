@@ -1,5 +1,5 @@
 // ISR: list blog di-revalidate on-write oleh revalidatePublicContent() di API blog.
-export const revalidate = 300;
+export const revalidate = 3600;
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Link from "@/components/website/clean/PreserveScrollLink";

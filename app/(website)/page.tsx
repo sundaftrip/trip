@@ -1,7 +1,7 @@
 import { publicCompanyInfoWhere } from "@/lib/company-info";
-// ISR, homepage di-revalidate setiap 5 menit lewat unstable_cache di getData().
+// ISR: edit CMS langsung segar via revalidatePublicContent(); revalidate 1 jam hanya jaring pengaman (hemat ISR Writes Vercel).
 // Tidak pakai force-dynamic agar Vercel Edge bisa cache HTML → TTFB cepat.
-export const revalidate = 60;
+export const revalidate = 3600;
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
 import { unstable_cache } from "next/cache";
@@ -85,7 +85,7 @@ const getData = unstable_cache(async () => {
   companyRows.forEach((c) => { company[c.key] = c.value; });
   return { texts: t, tours, posts, company, companyRows, testimonials };
 // tag "site-colors" disertakan agar cache ikut dibuang saat tema/warna/font diganti
-}, ["home-page-data", "home-payload-v1"], { revalidate: 300, tags: ["home-data", "site-colors"] });
+}, ["home-page-data", "home-payload-v1"], { revalidate: 3600, tags: ["home-data", "site-colors"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   // Title, description, keywords, OG & Twitter card — semuanya diwarisi dari

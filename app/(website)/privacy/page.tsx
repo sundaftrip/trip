@@ -1,5 +1,5 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
-export const revalidate = 300;
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -47,7 +47,7 @@ const getCompany = unstable_cache(
     }
   },
   ["privacy-company-v1"],
-  { revalidate: 300, tags: ["company-info"] }
+  { revalidate: 3600, tags: ["company-info"] }
 );
 
 function whatsappUrl(value: string | undefined) {

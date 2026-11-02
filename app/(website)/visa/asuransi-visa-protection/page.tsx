@@ -11,7 +11,7 @@ import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { defaultOpenGraphImages, defaultTwitterImages } from "@/lib/site-metadata";
 import { toWaNumber } from "@/lib/utils";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const SITE_URL = "https://sundaftrip.com";
 const CANONICAL = `${SITE_URL}/visa/asuransi-visa-protection`;

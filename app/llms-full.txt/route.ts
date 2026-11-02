@@ -3,7 +3,7 @@ import { CRAWL_PROFILE, formatCrawlTour, formatCrawlVisaFees } from "@/lib/crawl
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 import { visaSlug } from "@/lib/visa-slug";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const VISA_LABEL: Record<string, string> = {
   bebas: "Bebas visa", voa: "Visa on Arrival", evisa: "E-Visa", wajib: "Visa wajib", conditional: "Bersyarat",

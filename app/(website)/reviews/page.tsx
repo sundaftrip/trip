@@ -1,5 +1,5 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
-export const revalidate = 300;
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
@@ -57,7 +57,7 @@ const getData = unstable_cache(
     }
   },
   ["public-reviews-page-v1"],
-  { revalidate: 300, tags: ["testimonials", "site-colors"] }
+  { revalidate: 3600, tags: ["testimonials", "site-colors"] }
 );
 
 function categoryLabel(category: string) {

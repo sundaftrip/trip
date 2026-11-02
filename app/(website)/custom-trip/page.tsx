@@ -9,7 +9,7 @@ import CustomTripWizard from "@/components/website/clean/CustomTripWizard";
 import styles from "@/components/website/clean/CustomTripWizard.module.css";
 import doc from "@/components/website/clean/DocFormat.module.css";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const PAGE_TITLE = "Private & Custom Trip";
 const PAGE_DESC =

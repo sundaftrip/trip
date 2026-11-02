@@ -1,5 +1,5 @@
 import { publicCompanyInfoWhere } from "@/lib/company-info";
-export const revalidate = 300;
+export const revalidate = 3600;
 
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
@@ -59,7 +59,7 @@ const getData = unstable_cache(
     return { texts: textMap, company };
   },
   ["contact-page-data"],
-  { revalidate: 300, tags: ["footer-data", "home-data", "site-colors"] },
+  { revalidate: 3600, tags: ["footer-data", "home-data", "site-colors"] },
 );
 
 function normalizeTheme(value?: string): PublicTheme {

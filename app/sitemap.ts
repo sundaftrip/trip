@@ -5,7 +5,7 @@ import { visaSlug } from "@/lib/visa-slug";
 import { canonicalTourPath, isSubstantialArchivedTour } from "@/lib/seo-routes";
 
 // Keep CMS URLs fresh even when an on-demand invalidation is missed.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://sundaftrip.com";

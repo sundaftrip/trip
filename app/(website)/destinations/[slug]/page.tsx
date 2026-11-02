@@ -18,7 +18,7 @@ import RussiaGuideLinks from "@/components/website/clean/RussiaGuideLinks";
 import styles from "@/components/website/clean/DestinationHub.module.css";
 import doc from "@/components/website/clean/DocFormat.module.css";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 type DestinationConfig = {
   name: string;

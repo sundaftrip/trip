@@ -27,7 +27,7 @@ import doc from "@/components/website/clean/DocFormat.module.css";
 
 // ISR 5 menit: konten visa jarang berubah, force-dynamic bikin TTFB lambat
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 type VisaKey = "bebas" | "voa" | "evisa" | "wajib" | "conditional";
 

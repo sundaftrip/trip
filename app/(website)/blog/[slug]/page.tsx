@@ -1,7 +1,7 @@
 import { getMetadataTitleAlias } from "@/lib/metadata-title-aliases";
 // ISR 5 menit: artikel blog jarang berubah, force-dynamic bikin TTFB lambat
 // & boros koneksi DB. Halaman ini tidak pakai cookies()/headers()/searchParams.
-export const revalidate = 300;
+export const revalidate = 3600;
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";

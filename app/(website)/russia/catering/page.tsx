@@ -4,7 +4,7 @@ import RussiaCatering from "@/components/website/clean/RussiaCatering";
 import { getConfiguredWhatsAppNumber } from "@/lib/company-whatsapp";
 import { toWaNumber } from "@/lib/utils";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 const title = "Katering Halal Moscow & Saint Petersburg Mulai 700 RUB";
 const description = "Katering halal Indonesia di Moscow dan Saint Petersburg. Pilih nasi box 700, 850, atau 1.000 RUB per porsi; pengantaran taksi ke titik temu sesuai penawaran.";
 const url = "https://sundaftrip.com/russia/catering";

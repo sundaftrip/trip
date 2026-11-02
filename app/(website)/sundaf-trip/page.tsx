@@ -8,7 +8,7 @@ import CompanyProfile, { type CompanyProfileReview } from "./CompanyProfile";
 const ROUTE = "/sundaf-trip";
 const FEATURED_REVIEW_IDS = ["cmtyil7qg00018vot0x3nhprl", "cmtyindoc001d5zmyf7jykxbx"];
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const getParticipantReviews = unstable_cache(
   async (): Promise<CompanyProfileReview[]> => {
@@ -23,7 +23,7 @@ const getParticipantReviews = unstable_cache(
     }
   },
   ["company-profile-participant-reviews-v1"],
-  { revalidate: 300, tags: ["home-data"] },
+  { revalidate: 3600, tags: ["home-data"] },
 );
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -1,5 +1,5 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
-export const revalidate = 300;
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";

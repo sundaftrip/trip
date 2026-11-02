@@ -1,5 +1,5 @@
 import { withPageSocialMetadata } from "@/lib/site-metadata";
-export const revalidate = 300;
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import Link from "@/components/website/clean/PreserveScrollLink";
@@ -54,7 +54,7 @@ const getData = unstable_cache(
     }
   },
   ["media-kit-company-v1"],
-  { revalidate: 300, tags: ["company-info"] }
+  { revalidate: 3600, tags: ["company-info"] }
 );
 
 function instagramUrl(value: string | undefined) {

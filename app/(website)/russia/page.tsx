@@ -11,7 +11,7 @@ import { buildWhatsAppHref, toWaNumber } from "@/lib/utils";
 import styles from "@/components/website/clean/RussiaServices.module.css";
 import doc from "@/components/website/clean/DocFormat.module.css";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 const title = "Layanan Perjalanan Rusia — Tanya SUNDAF";
 const description = "Katering halal, bantuan berbagai pembayaran di Rusia, transportasi, guide berbahasa Indonesia, akses internet, dan asuransi perjalanan. Tanya SUNDAF.";
 

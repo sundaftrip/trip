@@ -6,7 +6,7 @@ import { getRussiaPublicTours } from "@/lib/russia-public-tours";
 import { buildRussiaTourSummarySection, RUSSIA_GUIDE_PATH } from "@/lib/russia-tour-summary";
 
 const ROUTE = RUSSIA_GUIDE_PATH;
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return geoMetadata(await getGeoPageContent(ROUTE));

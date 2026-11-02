@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { CRAWL_PROFILE, formatCrawlTour, isCrawlTourBookable } from "@/lib/crawl-catalog";
 import { publicTourVisibilityWhere } from "@/lib/public-tours";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function GET() {
   const now = new Date();
