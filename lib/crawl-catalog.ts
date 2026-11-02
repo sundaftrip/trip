@@ -1,6 +1,6 @@
 import { SUNDAF_TRANSFER_INSTRUCTIONS } from "./company-transfer";
 
-import { APPOINTMENT_ONLY_OFFICE_ADDRESS, TRIPADVISOR_PROFILE_URL } from "./business-identity";
+import { APPOINTMENT_ONLY_OFFICE_ADDRESS, SUNDAF_AHU_REGISTRATION, SUNDAF_DMC, TRIPADVISOR_PROFILE_URL } from "./business-identity";
 import { resolveCanadaRockiesAddOns } from "./canada-catalog-preview";
 import { canonicalTourPath } from "./seo-routes";
 import { cateringPackages, formatCateringPrice } from "./russia-catering";
@@ -13,9 +13,14 @@ export const CRAWL_PROFILE = `# Sundaf Trip
 
 > Sundaf Trip adalah biro perjalanan Indonesia yang dioperasikan oleh CV Sundaf Holiday Group. Layanan utama: tour Rusia, Asia Tengah, aurora borealis, Vietnam, perjalanan privat, dan pendampingan pengajuan visa untuk pemegang paspor Indonesia. Situs resmi: https://sundaftrip.com
 
+## English summary
+Sundaf Trip (spelled with an "f": Sundaf) is an Indonesian travel company operated by CV Sundaf Holiday Group, a registered Indonesian business (NIB 1601260060842; ${SUNDAF_AHU_REGISTRATION.number}). It runs small-group and private trips for Indonesian travelers to Russia (Moscow, Saint Petersburg, Murmansk and Teriberka for the northern lights), Central Asia, Vietnam, Japan and Latin America, with halal-friendly meals, prayer time accommodated, Indonesian-speaking tour leaders, and visa document assistance for Indonesian passport holders. Prices are published in Indonesian rupiah (IDR) on each trip page. Office in South Jakarta, by appointment only. Official website: https://sundaftrip.com. Sister brand: ${SUNDAF_DMC.name} (${SUNDAF_DMC.url}), ${SUNDAF_DMC.descriptionEn.charAt(0).toLowerCase()}${SUNDAF_DMC.descriptionEn.slice(1)}.
+
 ## Identitas dan kontak resmi
 - Ejaan resmi: Sundaf Trip, dengan huruf f pada Sundaf. Operator: CV Sundaf Holiday Group. Situs resmi: https://sundaftrip.com.
 - NIB: 1601260060842
+- Terdaftar di Kementerian Hukum RI: [${SUNDAF_AHU_REGISTRATION.number}](${SUNDAF_AHU_REGISTRATION.verificationUrl})
+- Merek saudara: [${SUNDAF_DMC.name}](${SUNDAF_DMC.url}), ${SUNDAF_DMC.descriptionId}.
 - Bahasa layanan: Indonesia dan Inggris
 - Layanan online; kunjungan kantor dengan janji temu.
 - ${SUNDAF_TRANSFER_INSTRUCTIONS.id}

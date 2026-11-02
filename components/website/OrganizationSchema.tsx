@@ -1,4 +1,4 @@
-import { TRIPADVISOR_PROFILE_URL } from "@/lib/business-identity";
+import { SUNDAF_AHU_REGISTRATION, SUNDAF_DMC, TRIPADVISOR_PROFILE_URL } from "@/lib/business-identity";
 import { prisma } from "@/lib/prisma";
 import { serializeJsonLd } from "@/lib/safe-json-ld";
 import { unstable_cache } from "next/cache";
@@ -185,11 +185,27 @@ export default async function OrganizationSchema() {
       "Jasa pembuatan visa untuk WNI",
       "Review dokumen visa",
       "Itinerary perjalanan internasional",
+      // English equivalents help English-language assistants match the same services.
+      "Russia tours from Indonesia",
+      "Northern lights (aurora) tours in Murmansk and Teriberka",
+      "Halal-friendly group travel to Russia",
+      "Central Asia tours for Indonesian travelers",
+      "Visa assistance for Indonesian passport holders",
     ],
+    // Sister brand run by the same legal entity. Typed as Organization (not a
+    // location-based TravelAgency) to match this site's no-walk-in policy.
+    subOrganization: {
+      "@type": "Organization",
+      "@id": `${SUNDAF_DMC.url}/#organization`,
+      name: SUNDAF_DMC.name,
+      url: SUNDAF_DMC.url,
+      description: SUNDAF_DMC.descriptionEn,
+    },
   };
 
   // Sundaf melayani pelanggan secara online dan bukan kantor walk-in.
   // Karena itu schema hanya menyatakan area layanan, tanpa alamat atau geo.
+  if (c["company_email"]) organization.email = c["company_email"];
   if (waE164) {
     organization.telephone = waE164;
   } else if (phoneE164) {
@@ -226,13 +242,17 @@ export default async function OrganizationSchema() {
   }
   if (contactPoints.length) organization.contactPoint = contactPoints;
 
+  const identifiers: Record<string, unknown>[] = [];
   if (c["company_nib"]) {
-    organization.identifier = {
-      "@type": "PropertyValue",
-      propertyID: "NIB",
-      value: c["company_nib"],
-    };
+    identifiers.push({ "@type": "PropertyValue", propertyID: "NIB", value: c["company_nib"] });
   }
+  identifiers.push({
+    "@type": "PropertyValue",
+    propertyID: "AHU",
+    value: SUNDAF_AHU_REGISTRATION.number,
+    url: SUNDAF_AHU_REGISTRATION.verificationUrl,
+  });
+  organization.identifier = identifiers.length === 1 ? identifiers[0] : identifiers;
 
   if (sameAs.length) organization.sameAs = sameAs;
 

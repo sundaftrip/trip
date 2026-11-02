@@ -6,6 +6,15 @@ export const APPOINTMENT_ONLY_OFFICE_ADDRESS =
 
 export const APPOINTMENT_ONLY_LABEL = "Appointment only";
 
+// Sister brand operated by the same legal entity (CV Sundaf Holiday Group):
+// inbound Indonesia journeys for foreign tour operators and travel agents.
+export const SUNDAF_DMC = {
+  name: "SUNDAF DMC",
+  url: "https://sundafdmc.com",
+  descriptionEn: "Inbound destination management company (DMC) for Indonesia, serving foreign tour operators and travel agents",
+  descriptionId: "destination management company (DMC) untuk perjalanan masuk ke Indonesia, melayani tour operator dan agen perjalanan luar negeri",
+} as const;
+
 // The certificate QR opens this public AHU record; its registration details
 // were matched with the issued certificate before publication.
 export const SUNDAF_AHU_REGISTRATION = {
