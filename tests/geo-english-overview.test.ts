@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { englishCountry, englishDepartureDate, englishDuration, formatIdrEnglish } from "../lib/english-overview";
+import { englishCountry, englishDepartureDate, englishDuration, englishRoute, formatIdrEnglish } from "../lib/english-overview";
 import { itineraryFromCityHighlight } from "../lib/tour-itinerary-schema";
 import { CRAWL_PROFILE } from "../lib/crawl-catalog";
 
@@ -19,6 +19,9 @@ test("English overview formats durations, countries, dates and IDR prices", () =
   assert.equal(englishDepartureDate(new Date("2027-01-13T17:00:00.000Z")), "14 January 2027");
   assert.equal(englishDepartureDate(null), "Private trip, dates on request");
   assert.equal(formatIdrEnglish(29500000), "IDR 29,500,000");
+  assert.equal(englishRoute("Moskow•, St Petersburg•, Murmansk•, Moskow"), "Moskow – St Petersburg – Murmansk – Moskow");
+  assert.equal(englishRoute("Hanoi – Ninh Binh"), "Hanoi – Ninh Binh");
+  assert.equal(englishRoute(null), null);
 });
 
 test("tour itinerary keeps the travelled order and drops separators and back-to-back duplicates", () => {

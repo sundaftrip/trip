@@ -3,6 +3,7 @@
 // search crawlers never see English text without a server-rendered page.
 import { resolveCanadaRockiesAddOns } from "./canada-catalog-preview";
 import { canonicalTourPath } from "./seo-routes";
+import { itineraryFromCityHighlight } from "./tour-itinerary-schema";
 import { getCommerceTourStatus, mandatoryAddOnsTotal } from "./tour-commerce";
 import { parseTourHotelRoomPricing, resolveTourStartingPrice } from "./tour-room-pricing";
 
@@ -72,6 +73,13 @@ export function englishDepartureDate(date: Date | null) {
   return date ? DATE_EN.format(date) : "Private trip, dates on request";
 }
 
+/** "Moskow•, St Petersburg•, Murmansk" -> "Moskow – St Petersburg – Murmansk". */
+export function englishRoute(cityHighlight: string | null | undefined) {
+  const places = itineraryFromCityHighlight(cityHighlight)?.itemListElement.map((entry) => entry.item.name);
+  if (places?.length) return places.join(" – ");
+  return cityHighlight?.replace(/•/g, "").replace(/\s+/g, " ").trim() || null;
+}
+
 export function englishTourFacts(tour: EnglishOverviewTour, now = new Date()) {
   const addOns = resolveCanadaRockiesAddOns(tour.addOns, tour.slug);
   const mandatoryTotal = mandatoryAddOnsTotal(addOns);
@@ -86,7 +94,7 @@ export function englishTourFacts(tour: EnglishOverviewTour, now = new Date()) {
     title: tour.title,
     path: canonicalTourPath(tour),
     country: englishCountry(tour.country),
-    route: tour.cityHighlight?.replace(/•/g, "").replace(/\s+,/g, ",").trim() || null,
+    route: englishRoute(tour.cityHighlight),
     departure: englishDepartureDate(tour.tripDate),
     duration: englishDuration(tour.duration),
     fromPrice: headlinePrice > 0 ? mandatoryTotalPrice : null,
