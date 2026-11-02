@@ -316,8 +316,8 @@ export function describeTourChanges(before: Record<string, unknown>, after: Reco
   return details.join(" · ") || "Tanpa perubahan isi";
 }
 
-// Model Tour — expenseToken sengaja TIDAK masuk: token link pelaporan TL,
-// dikelola khusus oleh lib/keuangan/actions.ts (bukan lewat form tour).
+// Model Tour — expenseToken sengaja TIDAK masuk: kolom warisan modul keuangan
+// (sudah dihapus dari aplikasi; data lama tetap tersimpan di database).
 export const TOUR_INPUT_FIELDS = [
   "title", "slug", "country", "cityHighlight",
   "price", "promoPrice", "priceLandTour", "seatsLeft",

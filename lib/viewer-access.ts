@@ -8,7 +8,6 @@ const PUBLIC_WRITE_API_PATHS = new Set([
   "/api/b2b-catalog/login",
   "/api/b2b-catalog/logout",
   "/api/inquiries",
-  "/api/lapor/upload",
   "/api/pool",
 ]);
 

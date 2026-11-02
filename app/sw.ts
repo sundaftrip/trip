@@ -23,7 +23,6 @@ const SENSITIVE_PATH_PREFIXES = [
   "/admin",
   "/api",
   "/b2b-russia-catalog",
-  "/lapor",
 ] as const;
 
 const PAGE_CACHE_NAMES = new Set([

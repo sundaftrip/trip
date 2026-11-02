@@ -8,7 +8,6 @@ export type AdminModuleKey =
   | "b2b"
   | "inquiries"
   | "receipts"
-  | "finance"
   | "blog"
   | "scraper"
   | "geo"
@@ -50,7 +49,6 @@ export const ADMIN_MODULES: readonly AdminModule[] = [
 
   { key: "inquiries", href: "/admin/inquiries", label: "Lead Masuk", group: "Penjualan", permissions: ["inquiry_view", "inquiry_edit"] },
   { key: "receipts", href: "/admin/receipts", label: "Receipt", group: "Penjualan", permissions: ["receipt_view", "receipt_create", "receipt_edit", "receipt_delete"] },
-  { key: "finance", href: "/admin/keuangan", label: "Keuangan", group: "Penjualan", permissions: ["finance_view", "finance_edit"] },
 
   { key: "blog", href: "/admin/blog", label: "Blog", group: "Konten", permissions: ["blog_create", "blog_edit", "blog_delete", "blog_publish"], demoVisible: true },
   { key: "scraper", href: "/admin/scraper", label: "Scraper Blog", group: "Konten", permissions: ["scraper_view", "scraper_run", "scraper_rewrite"], hiddenInNav: true },

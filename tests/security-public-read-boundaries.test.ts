@@ -162,15 +162,3 @@ test("receipt pages authorize before querying customer payment data", () => {
     ]);
   }
 });
-
-test("finance data authorizes finance_view before any Prisma query", () => {
-  const source = readSource("lib/keuangan/data.ts");
-  const fetchAll = sourceBetween(source, "async function fetchAll", "type AllData");
-
-  assertInOrder(fetchAll, [
-    "const session = await auth()",
-    "if (!session?.user)",
-    'checkPermission(session, "finance_view")',
-    "prisma.tour.findMany",
-  ]);
-});

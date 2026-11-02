@@ -30,15 +30,14 @@ test("the catalog preset can create, edit, and publish tours but nothing else", 
   assert.deepEqual(enabled.sort(), ["tour_create", "tour_edit", "tour_status"]);
   assert.equal(ACCESS_PRESETS.catalog.role, "EDITOR");
   assert.equal(ACCESS_PRESETS.catalog.permissions.tour_delete, false);
-  assert.equal(ACCESS_PRESETS.catalog.permissions.finance_view, false);
   assert.equal(ACCESS_PRESETS.catalog.permissions.inquiry_view, false);
 });
 
 test("stored permissions override role defaults and presets are recognised", () => {
-  assert.equal(resolvePermissionMap("SUPERADMIN", {}).finance_edit, true);
+  assert.equal(resolvePermissionMap("SUPERADMIN", {}).tour_delete, true);
   assert.equal(resolvePermissionMap("EDITOR", null).tour_status, false);
   assert.equal(resolvePermissionMap("EDITOR", { tour_status: true }).tour_status, true);
-  assert.equal(resolvePermissionMap("ADMIN", { finance_view: false }).finance_view, false);
+  assert.equal(resolvePermissionMap("ADMIN", { inquiry_view: false }).inquiry_view, false);
 
   assert.equal(detectAccessPreset("EDITOR", ACCESS_PRESETS.catalog.permissions), "catalog");
   assert.equal(detectAccessPreset("ADMIN", ACCESS_PRESETS.catalog.permissions), null);
@@ -49,7 +48,7 @@ test("stored permissions override role defaults and presets are recognised", () 
 });
 
 test("removed modules no longer have permission keys and new modules do", () => {
-  for (const removed of ["visa_discussion_view", "visa_discussion_moderate", "color_edit"]) {
+  for (const removed of ["visa_discussion_view", "visa_discussion_moderate", "color_edit", "finance_view", "finance_edit"]) {
     assert.equal(ALL_PERMISSION_KEYS.includes(removed), false, removed);
   }
   for (const added of ["inquiry_view", "inquiry_edit", "visa_edit", "testimonial_edit"]) {
@@ -71,7 +70,8 @@ test("module access follows role and permissions", () => {
 
   const admin = { role: "ADMIN", permissions: resolvePermissionMap("ADMIN", null) };
   const adminVisible = ADMIN_MODULES.filter((module) => canOpenAdminModule(module, admin)).map((module) => module.key);
-  assert.ok(adminVisible.includes("finance"));
+  assert.ok(adminVisible.includes("receipts"));
+  assert.ok(!adminVisible.includes("finance" as never));
   assert.ok(!adminVisible.includes("users"));
   assert.ok(!adminVisible.includes("settings"));
 
@@ -86,7 +86,7 @@ test("module access follows role and permissions", () => {
 test("admin paths map to the most specific module", () => {
   assert.equal(adminModuleForPath("/admin")?.key, "dashboard");
   assert.equal(adminModuleForPath("/admin/tours/abc")?.key, "tours");
-  assert.equal(adminModuleForPath("/admin/keuangan/jurnal")?.key, "finance");
+  assert.equal(adminModuleForPath("/admin/receipts/abc")?.key, "receipts");
   assert.equal(adminModuleForPath("/admin/login"), null);
 });
 

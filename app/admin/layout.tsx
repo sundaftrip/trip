@@ -11,9 +11,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
 
-  // Modul Keuangan punya shell sendiri (dark terminal) — lihat
-  // app/admin/keuangan/layout.tsx. Lewati AdminShell standar.
-  const isKeuangan = pathname.startsWith("/admin/keuangan");
   // Halaman auth publik (boleh tanpa login) — jaga selaras dengan
   // daftar isPublicAuthPage di proxy.ts.
   const isPublicAuthPage = pathname === "/admin/login";
@@ -26,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   // Defense-in-depth: proxy.ts sudah redirect berdasarkan cookie, tapi layout
   // tetap memverifikasi sesi sungguhan untuk SEMUA path /admin (termasuk
-  // halaman cetak & keuangan). Tiap halaman juga memanggil requireAdminModule
+  // halaman cetak). Tiap halaman juga memanggil requireAdminModule
   // karena layout tidak dirender ulang saat navigasi di dalam CMS.
   const viewer = await getAdminViewer();
   if (!viewer) redirect("/admin/login");
@@ -34,7 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const currentModule = adminModuleForPath(pathname);
   if (currentModule && !canOpenAdminModule(currentModule, viewer)) redirect("/admin?akses=ditolak");
 
-  if (isShellless || isKeuangan) {
+  if (isShellless) {
     return <AdminProviders>{children}</AdminProviders>;
   }
 

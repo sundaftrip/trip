@@ -4,7 +4,6 @@ export const PERMISSION_SECTIONS = [
   "Tour",
   "Lead",
   "Receipt",
-  "Keuangan",
   "Blog",
   "GEO",
   "Konten",
@@ -24,8 +23,6 @@ export const PERMISSION_LABELS: Record<string, { label: string; section: string 
   receipt_create:   { label: "Buat receipt",                                section: "Receipt" },
   receipt_edit:     { label: "Edit receipt",                                section: "Receipt" },
   receipt_delete:   { label: "Hapus receipt",                               section: "Receipt" },
-  finance_view:     { label: "Lihat keuangan",                              section: "Keuangan" },
-  finance_edit:     { label: "Edit keuangan",                               section: "Keuangan" },
   blog_create:      { label: "Buat artikel",                                section: "Blog" },
   blog_edit:        { label: "Edit artikel",                                section: "Blog" },
   blog_delete:      { label: "Hapus artikel",                               section: "Blog" },
@@ -65,7 +62,7 @@ export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
     "scraper_view",
   ]),
   // Akun demo: hanya melihat. Lead (data pelanggan) tidak ikut terlihat.
-  VIEWER: only(["receipt_view", "finance_view", "b2b_catalog_view", "scraper_view"]),
+  VIEWER: only(["receipt_view", "b2b_catalog_view", "scraper_view"]),
 };
 
 export type AccessPresetKey = "catalog";
@@ -73,7 +70,7 @@ export type AccessPresetKey = "catalog";
 /**
  * Paket izin siap pakai saat membuat akun. "Admin Katalog" untuk tim yang
  * rutin memperbarui katalog: buat & edit tour serta ubah status, tanpa hapus,
- * keuangan, lead, pengguna, atau pengaturan.
+ * lead, pengguna, atau pengaturan.
  */
 export const ACCESS_PRESETS: Record<AccessPresetKey, {
   label: string;
@@ -83,7 +80,7 @@ export const ACCESS_PRESETS: Record<AccessPresetKey, {
 }> = {
   catalog: {
     label: "Admin Katalog",
-    description: "Buat & edit tour, harga, foto, itinerary, dan status. Tidak bisa menghapus tour atau membuka keuangan, lead, pengguna, dan pengaturan.",
+    description: "Buat & edit tour, harga, foto, itinerary, dan status. Tidak bisa menghapus tour atau membuka lead, pengguna, dan pengaturan.",
     role: "EDITOR",
     permissions: only(["tour_create", "tour_edit", "tour_status"]),
   },

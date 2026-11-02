@@ -11,26 +11,18 @@ import {
   shouldBlockViewerMutation,
 } from "../lib/viewer-access";
 
-test("finance permissions are registered and default-deny for editors", () => {
-  assert.ok(ALL_PERMISSION_KEYS.includes("finance_view"));
-  assert.ok(ALL_PERMISSION_KEYS.includes("finance_edit"));
-  assert.equal(PERMISSION_LABELS.finance_view.section, "Keuangan");
-  assert.equal(PERMISSION_LABELS.finance_edit.section, "Keuangan");
-
-  assert.equal(DEFAULT_PERMISSIONS.ADMIN.finance_view, true);
-  assert.equal(DEFAULT_PERMISSIONS.ADMIN.finance_edit, true);
-  assert.equal(DEFAULT_PERMISSIONS.EDITOR.finance_view, false);
-  assert.equal(DEFAULT_PERMISSIONS.EDITOR.finance_edit, false);
+test("finance module is removed: no finance permissions remain", () => {
+  assert.equal(ALL_PERMISSION_KEYS.includes("finance_view"), false);
+  assert.equal(ALL_PERMISSION_KEYS.includes("finance_edit"), false);
+  assert.equal(Object.values(PERMISSION_LABELS).some((entry) => entry.section === "Keuangan"), false);
 });
 
 test("viewer defaults are read-only but can open overview modules", () => {
   assert.ok(ALL_PERMISSION_KEYS.includes("b2b_catalog_view"));
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.receipt_view, true);
-  assert.equal(DEFAULT_PERMISSIONS.VIEWER.finance_view, true);
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.scraper_view, true);
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.b2b_catalog_view, true);
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.b2b_catalog_edit, false);
-  assert.equal(DEFAULT_PERMISSIONS.VIEWER.finance_edit, false);
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.tour_create, false);
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.blog_publish, false);
   assert.equal(DEFAULT_PERMISSIONS.VIEWER.scraper_run, false);
