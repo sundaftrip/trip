@@ -34,6 +34,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.6 },
     // Brand/entity page untuk query "Sundaf Trip", "Sundaftrip", dan "Trip Sundaf".
     { url: `${base}/sundaf-trip`, changeFrequency: "monthly", priority: 0.9 },
+    // English overview, server-rendered (the ID/EN toggle is client-side only).
+    { url: `${base}/en`, changeFrequency: "weekly", priority: 0.8 },
     // Halaman bukti sosial dan rujukan resmi untuk memperkuat entity Sundaf Trip.
     { url: `${base}/reviews`, changeFrequency: "weekly", priority: 0.78 },
     { url: `${base}/media-kit`, changeFrequency: "monthly", priority: 0.76 },
