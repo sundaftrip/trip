@@ -158,6 +158,7 @@ export default async function OrganizationSchema() {
     subjectOf: [
       { "@id": `${SITE_URL}/sundaf-trip#webpage` },
       { "@id": `${SITE_URL}/about#webpage` },
+      { "@id": `${SITE_URL}/en#webpage` },
       { "@id": `${SITE_URL}/reviews#webpage` },
       { "@id": `${SITE_URL}/media-kit#webpage` },
       { "@id": `${SITE_URL}/legalitas-dan-keamanan#webpage` },

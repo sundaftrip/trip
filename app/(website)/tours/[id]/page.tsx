@@ -1,4 +1,5 @@
 import { getMetadataTitleAlias } from "@/lib/metadata-title-aliases";
+import { itineraryFromCityHighlight } from "@/lib/tour-itinerary-schema";
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import type React from "react";
@@ -708,6 +709,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
   const durationDays = displayDuration?.match(/(\d+)\s*hari/i)?.[1];
   const isoDuration = durationDays ? `P${durationDays}D` : null;
   const canonicalTourUrl = `${siteUrl}${canonicalTourPath(tour)}`;
+  const tourItinerary = itineraryFromCityHighlight(displayCityHighlight);
   const offerCostDescription = `${tourSubtotalLabel(mandatoryTotal > 0)}. ${formatPackageCostDisclosure(displayExclusions, mandatoryTotal > 0)}`;
   const tourJsonLd = {
     "@context": "https://schema.org",
@@ -718,6 +720,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     image: [absoluteProductHeroImage],
     ...(tour.tripDate ? { startDate: tour.tripDate.toISOString() } : {}),
     ...(isoDuration ? { duration: isoDuration } : {}),
+    ...(tourItinerary ? { itinerary: tourItinerary } : {}),
     ...(startingTotal > 0 ? {
       offers: {
         "@type": "Offer",
