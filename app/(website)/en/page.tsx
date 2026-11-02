@@ -107,6 +107,30 @@ const BOOKING_STEPS = [
   SUNDAF_TRANSFER_INSTRUCTIONS.en,
 ];
 
+// Faithful English versions of the homepage booking FAQ (same facts, no new claims).
+const FAQS = [
+  {
+    question: "Is Sundaf Trip a registered company, and how can I check?",
+    answer: `Yes. Sundaf Trip is operated by CV Sundaf Holiday Group, business registration number (NIB) 1601260060842, registered with the Indonesian Ministry of Law under ${SUNDAF_AHU_REGISTRATION.number}. Before you pay, you receive a trip confirmation, a cost breakdown and payment instructions through an official Sundaf Trip channel.`,
+  },
+  {
+    question: "Which bank account does Sundaf Trip use?",
+    answer: `${SUNDAF_TRANSFER_INSTRUCTIONS.en} Sundaf Trip does not use any other bank account for company transfers. If a payment instruction looks different, confirm it through an official Sundaf Trip contact before paying.`,
+  },
+  {
+    question: "What do the listed prices include?",
+    answer: "The package price, mandatory costs and optional extras are shown separately so they are easy to check. The final amount follows your choices and is confirmed in writing before payment.",
+  },
+  {
+    question: "How far does Sundaf Trip help with visas?",
+    answer: "The team checks the document list, explains the application process and prepares the travel requirements. Visa decisions rest with the embassy or the relevant authority, so approval cannot be guaranteed.",
+  },
+  {
+    question: "What if the dates do not suit me or my plans change?",
+    answer: "We can help you find another date or arrange a private trip. Once a booking is under way, date changes, passenger transfers or refunds follow the tour terms and any costs already passed on to third parties.",
+  },
+];
+
 const USEFUL_PAGES = [
   { href: "/tours", label: "All departures and prices", note: "in Indonesian" },
   { href: "/open-trip-aurora-rusia", label: "Northern lights trips in Russia", note: "in Indonesian" },
@@ -165,6 +189,18 @@ export default async function EnglishOverviewPage() {
       : {}),
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${PAGE_URL}#faq`,
+    inLanguage: "en",
+    mainEntity: FAQS.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+
   return (
     <div lang="en" className={`${supportStyles.atlasPage} min-h-screen`} style={{ backgroundColor: "var(--at-bg)" }}>
       <BreadcrumbSchema
@@ -174,6 +210,7 @@ export default async function EnglishOverviewPage() {
         ]}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(pageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }} />
 
       <section className={supportStyles.hero} aria-labelledby="en-page-title">
         <p className={doc.eyebrow}>English overview / Sundaf Trip</p>
@@ -271,6 +308,18 @@ export default async function EnglishOverviewPage() {
         <ol className={supportStyles.docList}>
           {BOOKING_STEPS.map((step) => <li key={step}>{step}</li>)}
         </ol>
+      </section>
+
+      <section className={supportStyles.section} aria-labelledby="en-faq-title">
+        <h2 id="en-faq-title" className={`${doc.tag} ${supportStyles.tagBlock}`}>Questions before booking</h2>
+        <div className="grid gap-4">
+          {FAQS.map((item) => (
+            <article key={item.question} className="at-card p-5">
+              <h3 className={supportStyles.cardTitleSmall}>{item.question}</h3>
+              <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--at-subtext)" }}>{item.answer}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className={supportStyles.section} aria-labelledby="en-dmc-title">
