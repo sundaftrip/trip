@@ -229,7 +229,6 @@ export default async function EnglishOverviewPage() {
                   <tr>
                     <th scope="col">Trip</th>
                     <th scope="col">Departure</th>
-                    <th scope="col">Length</th>
                     <th scope="col">From, per person</th>
                   </tr>
                 </thead>
@@ -242,8 +241,10 @@ export default async function EnglishOverviewPage() {
                           {[tour.country, tour.route, tour.statusLabel].filter(Boolean).join(" · ")}
                         </div>
                       </td>
-                      <td>{tour.departure}</td>
-                      <td>{tour.duration ?? "See trip page"}</td>
+                      <td>
+                        {tour.departure}
+                        <div className="text-sm" style={{ color: "var(--at-subtext)" }}>{tour.duration ?? "Length on trip page"}</div>
+                      </td>
                       <td>
                         {tour.fromPrice ? formatIdrEnglish(tour.fromPrice) : "On request"}
                         {tour.includesMandatoryAddOns ? <div className="text-sm" style={{ color: "var(--at-subtext)" }}>incl. mandatory extras</div> : null}
