@@ -906,7 +906,9 @@ def build(output_path, lang, person):
 
 def main():
     build(OUTPUT_EN, lang="en", person="ferdiansah")
-    build(OUTPUT_BILLY, lang="en", person="billy")
+    # The partner download has its own editorial layout.
+    from generate_partner_profile import build as build_partner_profile
+    build_partner_profile()
     build(OUTPUT_RU, lang="ru", person="ferdiansah")
 
 
