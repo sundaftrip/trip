@@ -2,14 +2,16 @@
 """
 Sundaf Trip — Company Profile PDF generator.
 
-Builds three A4 company-profile PDFs into the website's public/ folder:
+Builds the current A4 company-profile PDFs into the website's public/ folder:
 
   sundaftrip-company-profile.pdf        English  · Ferdiansah  (→ /b2b, /company-profile EN)
+  sundaftrip-company-profile-id.pdf     Indonesian · Ferdiansah (→ /b2b ID)
   sundaftrip-company-profile-billy.pdf  English  · Billy only  (→ /partner)
   sundaftrip-company-profile-ru.pdf     Russian  · Ferdiansah  (→ /company-profile RU)
 
-The layout follows the website: DM Sans, the clean theme colours and the
-footer waves, over four pages.
+The B2B brochures use generate_b2b_profile.py and shared website copy. The
+partner brochure uses its separate editorial layout. The helpers below remain
+available to the partner generator for its established content.
 
 Run:  python3 generate_company_profile.py
 """
@@ -905,11 +907,13 @@ def build(output_path, lang, person):
 
 
 def main():
-    build(OUTPUT_EN, lang="en", person="ferdiansah")
+    # B2B downloads share the current website copy and document design.
+    from generate_b2b_profile import Brochure, PDFS
+    for language in PDFS:
+        Brochure(language).build()
     # The partner download has its own editorial layout.
     from generate_partner_profile import build as build_partner_profile
     build_partner_profile()
-    build(OUTPUT_RU, lang="ru", person="ferdiansah")
 
 
 if __name__ == "__main__":

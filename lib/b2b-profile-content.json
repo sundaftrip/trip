@@ -1,0 +1,354 @@
+{
+  "HERO": {
+    "eyebrow": {
+      "id": "Private B2B Desk",
+      "en": "Private B2B Desk",
+      "ru": "Закрытый B2B-отдел"
+    },
+    "title": {
+      "id": "Operasional land tour yang siap membawa nama travel Anda.",
+      "en": "Ground operations worthy of your travel brand.",
+      "ru": "Наземное обслуживание, достойное вашего туристического бренда."
+    },
+    "intro": {
+      "id": "Sundaf Trip menangani operasional land tour untuk travel agent dan mitra terpilih. Fokus utama kami saat ini adalah Rusia dan Asia Tengah, mulai dari desain itinerary dan negosiasi vendor hingga kontrol perjalanan di lapangan. Kami sedang membangun kapasitas dan jaringan untuk scale-up ke Skandinavia dan Kanada.",
+      "en": "Sundaf Trip manages ground operations for travel agencies and selected partners. Our current core markets are Russia and Central Asia, covering itinerary design, supplier negotiation, and on-ground control. We are building the capacity and supplier network to scale into Scandinavia and Canada.",
+      "ru": "Sundaf Trip организует наземное обслуживание для туристических агентств и избранных партнёров. Сейчас наши основные рынки — Россия и Центральная Азия: от разработки маршрута и переговоров с поставщиками до контроля программы на месте. Параллельно мы развиваем мощности и сеть поставщиков для выхода в Скандинавию и Канаду."
+    },
+    "privateNote": {
+      "id": "Halaman ini dibagikan langsung kepada pihak yang sedang menilai kapasitas operasional, rekam jejak, dan kecocokan kerja sama kami.",
+      "en": "This page is shared directly with parties assessing our operating capacity, track record, and fit for collaboration.",
+      "ru": "Эта страница предоставляется напрямую партнёрам, которые оценивают наши операционные возможности, опыт и потенциал сотрудничества."
+    },
+    "proofOne": {
+      "id": "Untuk Rusia, struktur itinerary, vendor, dan operasional di destinasi kami kendalikan langsung.",
+      "en": "For Russia, we directly control itinerary structure, suppliers, and destination operations.",
+      "ru": "По России мы напрямую контролируем структуру маршрута, поставщиков и наземные операции."
+    },
+    "proofTwo": {
+      "id": "Nama travel dan relasi klien tetap berada di tangan partner; Sundaf bekerja sebagai tim operasional di belakangnya.",
+      "en": "The travel brand and client relationship remain with our partner; Sundaf operates behind the scenes.",
+      "ru": "Бренд агентства и отношения с клиентом остаются у партнёра; Sundaf работает как операционная команда за кулисами."
+    }
+  },
+  "POSITIONING": {
+    "title": {
+      "id": "Partner memegang klien. Sundaf memegang kendali operasional.",
+      "en": "You own the client. Sundaf controls the operation.",
+      "ru": "Вы ведёте клиента. Sundaf контролирует операционную часть."
+    },
+    "desc": {
+      "id": "Kami menyusun scope, costing, vendor, dan jalur eskalasi sebelum keberangkatan. Setiap hal yang belum pasti ditandai sejak awal, bukan disamarkan di dalam paket.",
+      "en": "We define scope, costing, suppliers, and escalation lines before departure. Any unresolved item is flagged early instead of being buried inside the package.",
+      "ru": "До выезда мы фиксируем объём услуг, расчёт, поставщиков и порядок эскалации. Все неподтверждённые позиции обозначаются заранее и не скрываются внутри пакета."
+    }
+  },
+  "COVERAGE": [
+    {
+      "Icon": "Hotel",
+      "title": {
+        "id": "Hotel & rooming",
+        "en": "Hotels & rooming",
+        "ru": "Отели и размещение"
+      },
+      "desc": {
+        "id": "Seleksi lokasi, kategori kamar, rooming list, serta kebutuhan early check-in dan late check-out.",
+        "en": "Property selection, room categories, rooming lists, and early check-in or late check-out requirements.",
+        "ru": "Подбор отелей, категорий номеров, rooming list, а также ранний заезд и поздний выезд."
+      }
+    },
+    {
+      "Icon": "Bus",
+      "title": {
+        "id": "Transport & driver",
+        "en": "Transport & drivers",
+        "ru": "Транспорт и водители"
+      },
+      "desc": {
+        "id": "Jenis kendaraan, kapasitas bagasi, jam kerja sopir, parkir, dan pergerakan antarkota.",
+        "en": "Vehicle type, luggage capacity, driver hours, parking, and intercity movements.",
+        "ru": "Тип транспорта, багажная вместимость, рабочее время водителя, парковки и междугородние переезды."
+      }
+    },
+    {
+      "Icon": "Utensils",
+      "title": {
+        "id": "Meals & dietary",
+        "en": "Meals & dietary needs",
+        "ru": "Питание и особые требования"
+      },
+      "desc": {
+        "id": "Jadwal makan, kapasitas restoran, menu grup, opsi halal, alergi, dan kebutuhan khusus.",
+        "en": "Meal timing, restaurant capacity, group menus, halal options, allergies, and special requirements.",
+        "ru": "График питания, вместимость ресторанов, групповое меню, халяль, аллергии и особые требования."
+      }
+    },
+    {
+      "Icon": "Ticket",
+      "title": {
+        "id": "Admission & reservation",
+        "en": "Admissions & reservations",
+        "ru": "Билеты и бронирования"
+      },
+      "desc": {
+        "id": "Slot kunjungan, tiket atraksi, reservasi grup, dan batas waktu konfirmasi.",
+        "en": "Timed entries, attraction tickets, group reservations, and confirmation deadlines.",
+        "ru": "Временные слоты, входные билеты, групповые бронирования и сроки подтверждения."
+      }
+    },
+    {
+      "Icon": "UserCheck",
+      "title": {
+        "id": "Kontrol di lapangan",
+        "en": "On-ground control",
+        "ru": "Контроль на месте"
+      },
+      "desc": {
+        "id": "PIC operasional, tour leader berbahasa Indonesia, pengecekan harian, dan jalur eskalasi.",
+        "en": "An operations PIC, Indonesian-speaking tour leader, daily checks, and a clear escalation line.",
+        "ru": "Операционный координатор, индонезийскоязычный турлидер, ежедневные проверки и понятная эскалация."
+      }
+    },
+    {
+      "Icon": "Route",
+      "title": {
+        "id": "Itinerary engineering",
+        "en": "Itinerary engineering",
+        "ru": "Проектирование маршрута"
+      },
+      "desc": {
+        "id": "Rute diuji terhadap durasi perjalanan, jam buka, waktu tempuh, musim, dan ritme grup.",
+        "en": "Routes are tested against travel time, opening hours, seasonality, and group pace.",
+        "ru": "Маршрут проверяется с учётом времени в пути, часов работы, сезона и темпа группы."
+      }
+    }
+  ],
+  "DESTINATIONS": [
+    {
+      "region": {
+        "id": "Rusia",
+        "en": "Russia",
+        "ru": "Россия"
+      },
+      "detail": {
+        "id": "Moscow · St. Petersburg · Murmansk · rute regional",
+        "en": "Moscow · St. Petersburg · Murmansk · regional routes",
+        "ru": "Москва · Санкт-Петербург · Мурманск · региональные маршруты"
+      }
+    },
+    {
+      "region": {
+        "id": "Asia Tengah",
+        "en": "Central Asia",
+        "ru": "Центральная Азия"
+      },
+      "detail": {
+        "id": "Kazakhstan · Uzbekistan · Kyrgyzstan · Tajikistan",
+        "en": "Kazakhstan · Uzbekistan · Kyrgyzstan · Tajikistan",
+        "ru": "Казахстан · Узбекистан · Кыргызстан · Таджикистан"
+      }
+    },
+    {
+      "region": {
+        "id": "Scale-up berikutnya",
+        "en": "Next scale-up",
+        "ru": "Следующий этап роста"
+      },
+      "detail": {
+        "id": "Skandinavia · Kanada — kapasitas dan jaringan operasional sedang dikembangkan",
+        "en": "Scandinavia · Canada — operating capacity and supplier network in development",
+        "ru": "Скандинавия · Канада — развиваем операционные мощности и сеть поставщиков"
+      }
+    }
+  ],
+  "WHY": [
+    {
+      "id": "Rekam operasional 50+ grup dan 1.500+ traveler yang ditangani langsung oleh tim Sundaf.",
+      "en": "An operating record of 50+ groups and 1,500+ travelers handled directly by the Sundaf team.",
+      "ru": "Операционный опыт: более 50 групп и 1 500 путешественников, обслуженных командой Sundaf."
+    },
+    {
+      "id": "Spesialis grup 10–20 pax, dengan kapasitas dan format yang dinilai per permintaan.",
+      "en": "Specialists in groups of 10–20 passengers, with larger capacities assessed case by case.",
+      "ru": "Специализация на группах 10–20 человек; больший объём оценивается индивидуально."
+    },
+    {
+      "id": "Quotation memisahkan scope terkonfirmasi, opsi, exclusion, dan syarat pembayaran secara jelas.",
+      "en": "Quotations clearly separate confirmed scope, options, exclusions, and payment terms.",
+      "ru": "В расчёте чётко разделены подтверждённые услуги, опции, исключения и условия оплаты."
+    },
+    {
+      "id": "Satu alur kerja dari review brief hingga kontrol keberangkatan, sehingga handoff tetap terbatas.",
+      "en": "One operating line from brief review to departure control, keeping handoffs limited.",
+      "ru": "Единая рабочая линия от анализа запроса до контроля выезда с минимумом передач между командами."
+    },
+    {
+      "id": "Koordinasi white-label tersedia berdasarkan scope dan kesepakatan kerja sama.",
+      "en": "White-label coordination is available by agreed scope and terms.",
+      "ru": "White-label координация доступна в рамках согласованного объёма и условий."
+    }
+  ],
+  "STEPS": [
+    {
+      "n": "1",
+      "title": {
+        "id": "Brief operasional",
+        "en": "Operating brief",
+        "ru": "Операционный бриф"
+      },
+      "desc": {
+        "id": "Kirim rute, tanggal, jumlah pax, kelas hotel, pola makan, dan target waktu quotation.",
+        "en": "Send the route, dates, passenger count, hotel class, meal pattern, and quotation deadline.",
+        "ru": "Передайте маршрут, даты, размер группы, категорию отелей, формат питания и срок расчёта."
+      }
+    },
+    {
+      "n": "2",
+      "title": {
+        "id": "Feasibility review",
+        "en": "Feasibility review",
+        "ru": "Проверка реализуемости"
+      },
+      "desc": {
+        "id": "Kami menguji urutan rute, waktu tempuh, kapasitas, musim, dan titik risiko sebelum costing.",
+        "en": "We test route order, travel time, capacity, seasonality, and risk points before costing.",
+        "ru": "До расчёта мы проверяем логику маршрута, время в пути, вместимость, сезонность и риски."
+      }
+    },
+    {
+      "n": "3",
+      "title": {
+        "id": "Quotation & terms",
+        "en": "Quotation & terms",
+        "ru": "Расчёт и условия"
+      },
+      "desc": {
+        "id": "Penawaran merinci inclusion, exclusion, opsi, masa berlaku harga, dan termin pembayaran.",
+        "en": "The proposal details inclusions, exclusions, options, price validity, and payment schedule.",
+        "ru": "Предложение фиксирует включённые и исключённые услуги, опции, срок цены и график оплаты."
+      }
+    },
+    {
+      "n": "4",
+      "title": {
+        "id": "Pre-departure control",
+        "en": "Pre-departure control",
+        "ru": "Контроль до выезда"
+      },
+      "desc": {
+        "id": "Vendor direkonfirmasi, rooming list dikunci, kebutuhan khusus dicatat, dan PIC dipertemukan.",
+        "en": "Suppliers are reconfirmed, rooming is locked, special needs are logged, and operating PICs are connected.",
+        "ru": "Поставщики переподтверждаются, rooming list фиксируется, особые требования регистрируются, координаторы знакомятся."
+      }
+    },
+    {
+      "n": "5",
+      "title": {
+        "id": "Operation & review",
+        "en": "Operation & review",
+        "ru": "Операции и разбор"
+      },
+      "desc": {
+        "id": "Tim menjalankan program, mengelola eskalasi, lalu menutup perjalanan dengan evaluasi operasional.",
+        "en": "The team runs the program, manages escalation, and closes the trip with an operating review.",
+        "ru": "Команда ведёт программу, управляет эскалациями и завершает поездку операционным разбором."
+      }
+    }
+  ],
+  "TX": {
+    "coverageHead": {
+      "id": "Scope yang Kami Kendalikan",
+      "en": "Scope Under Our Control",
+      "ru": "Зона нашего контроля"
+    },
+    "destinationsHead": {
+      "id": "Pasar & Arah Scale-Up",
+      "en": "Markets & Next Scale-Up",
+      "ru": "Направления и следующий этап роста"
+    },
+    "whyHead": {
+      "id": "Dasar untuk Memilih Sundaf",
+      "en": "Reasons to Select Sundaf",
+      "ru": "Основания выбрать Sundaf"
+    },
+    "stepsHead": {
+      "id": "Alur Kerja Sama",
+      "en": "Engagement Process",
+      "ru": "Процесс сотрудничества"
+    },
+    "photosHead": {
+      "id": "Bukti Operasional",
+      "en": "Operating Evidence",
+      "ru": "Операционные подтверждения"
+    },
+    "photosBody": {
+      "id": "Dokumentasi dari keberangkatan yang ditangani tim Sundaf di Rusia, Asia Tengah, dan destinasi lainnya.",
+      "en": "Documentation from departures operated by the Sundaf team in Russia, Central Asia, and other destinations.",
+      "ru": "Документация поездок, проведённых командой Sundaf в России, Центральной Азии и других направлениях."
+    },
+    "b2bLead": {
+      "id": "B2B Lead",
+      "en": "B2B Lead",
+      "ru": "Руководитель B2B"
+    },
+    "ctaHead": {
+      "id": "Minta Review Operasional",
+      "en": "Request an Operating Review",
+      "ru": "Запросить операционную оценку"
+    },
+    "ctaBody": {
+      "id": "Kirim brief aktual. Kami akan mengonfirmasi kelayakan rute dan data yang masih dibutuhkan sebelum menyusun harga.",
+      "en": "Send a live brief. We will confirm route feasibility and any missing information before preparing the price.",
+      "ru": "Отправьте актуальный запрос. До расчёта мы подтвердим реализуемость маршрута и уточним недостающие данные."
+    },
+    "wa": {
+      "id": "Bahas Request via WhatsApp",
+      "en": "Discuss a Request on WhatsApp",
+      "ru": "Обсудить запрос в WhatsApp"
+    },
+    "profile": {
+      "id": "Unduh Company Profile",
+      "en": "Download Company Profile",
+      "ru": "Скачать профиль компании"
+    }
+  },
+  "FERDIANSAH": {
+    "initial": "F",
+    "name": "Ferdiansah",
+    "role": "Founder",
+    "photo": "",
+    "email": "info@sundaftrip.com",
+    "whatsappUrl": "https://wa.me/6281775202759",
+    "desc": {
+      "id": "Memimpin review brief B2B, struktur penawaran, negosiasi vendor, dan quality control sebelum program dijalankan di lapangan.",
+      "en": "Leads B2B brief reviews, proposal structure, supplier negotiation, and quality control before programs move on the ground.",
+      "ru": "Руководит анализом B2B-запросов, структурой предложений, переговорами с поставщиками и контролем качества до начала программы."
+    }
+  },
+  "FERDIANSAH_USA_PROOF": {
+    "src": "/partner/ferdiansah-world-nyc.jpg",
+    "alt": {
+      "id": "Ferdiansah bersama grup di New York, Amerika Serikat",
+      "en": "Ferdiansah with a group in New York, United States",
+      "ru": "Фердиансах с группой в Нью-Йорке, США"
+    },
+    "caption": {
+      "id": "Dokumentasi Ferdiansah bersama grup di New York, Amerika Serikat.",
+      "en": "Ferdiansah with a group in New York, United States.",
+      "ru": "Фердиансах с группой в Нью-Йорке, США."
+    }
+  },
+  "BILLY": {
+    "initial": "B",
+    "name": "Billy",
+    "role": "Co-Founder",
+    "photo": "/partner/billy.jpg",
+    "email": "partner@sundaftrip.com",
+    "whatsappUrl": "https://wa.me/79168896471",
+    "desc": {
+      "id": "Memimpin pengembangan kemitraan dan hubungan dengan travel agent, dengan pengalaman mendampingi perjalanan grup internasional.",
+      "en": "Leads partnership development and travel-agent relations, backed by experience accompanying international group journeys.",
+      "ru": "Развивает партнёрства и отношения с туристическими агентствами, опираясь на опыт сопровождения международных групп."
+    }
+  }
+}

@@ -12,7 +12,7 @@ function readSource(relativePath: string) {
 
 test("the partner page and its company profile point to the partner inbox", () => {
   for (const file of [
-    "components/website/B2BLandTour.tsx",
+    "lib/b2b-profile-content.json",
     "components/website/FooterContactList.tsx",
     "company-profile/generate_company_profile.py",
   ]) {
