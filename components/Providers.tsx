@@ -8,10 +8,11 @@ import { ThemeProvider } from "next-themes";
 // Kalau nanti ada client component yang butuh useSession, bungkus HANYA subtree
 // itu (mis. di AdminProviders), jangan di root global.
 export default function Providers({ children }: { children: React.ReactNode }) {
-  // Situs publik: terang secara bawaan, mode malam hanya bila pengunjung memilihnya.
+  // Situs publik mengikuti mode gelap/terang perangkat pengunjung. Begitu pengunjung
+  // menekan tombol bulan/matahari, pilihannya disimpan dan didahulukan.
   // Kunci penyimpanan baru supaya pilihan lama dari tema-tema terdahulu tidak terbawa.
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} enableColorScheme={false} storageKey="sundaf-night-mode">
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem enableColorScheme={false} storageKey="sundaf-night-mode">
       {children}
     </ThemeProvider>
   );
