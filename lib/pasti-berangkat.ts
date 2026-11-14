@@ -2,7 +2,11 @@
 // (URL /pastiberangkat, /2tans, /turharian) membaca dan mengirim data lewat /api/pasti-berangkat.
 // Route itu meneruskan permintaan ke Apps Script di Google Sheet "SUNDAF · Pasti Berangkat".
 // Terpisah dari pool Kazakhstan (/kazakhstan) dan Pool Trip (/pool).
-import { isAppsScriptUrl, type FetchLike } from "./pool-trip";
+export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+
+export function isAppsScriptUrl(url: string): boolean {
+  return /^https:\/\/script\.google\.com\/macros\/s\/[\w-]{20,}\/exec$/.test(url);
+}
 
 /** Web app Apps Script (URL /exec). Bukan rahasia: endpoint publik yang tidak mengembalikan nama atau nomor WA. */
 export const PB_SCRIPT_URL =

@@ -10,8 +10,6 @@
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="preconnect" href="https://script.google.com" crossorigin>
-<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <title>Pool Kazakhstan · SUNDAF Trip</title>
 <script>(function(){try{var t=JSON.parse(localStorage.getItem('sundafPool.theme'));if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -730,9 +728,10 @@ h3{font-size:1rem;font-weight:600}
 (function () {
   'use strict';
 
-  /* Opsional: kalau halaman ini dipasang di website sendiri (bukan dari Apps Script),
-     isi API_URL dengan link Web App (/exec) dari Apps Script. */
-  var API_URL = 'https://script.google.com/macros/s/AKfycbyFjxj38cKnd-cC_bv_-eChhDoL3hDZuE1vMm8YwWZctiFxrUJKjXyOzxnX2Y8Z_rwYPQ/exec';
+  /* Di sundaftrip.com halaman ini membaca dan mengirim data lewat /api/pool/kazakhstan
+     (database website). Yang diterima hanya angka per tanggal; nama dan nomor WhatsApp
+     pendaftar hanya terlihat admin di CMS. Kosong = mode contoh. */
+  var API_URL = '/api/pool/kazakhstan';
   var BOOT = /*__BOOT__*/null;
 
   var GAS = !!(window.google && google.script && google.script.run);
@@ -850,8 +849,8 @@ h3{font-size:1rem;font-weight:600}
       if (arg === undefined) r[fn](); else r[fn](arg);
     });
     if (API_URL) {
-      if (fn === 'getPools') return fetch(API_URL + (API_URL.indexOf('?') < 0 ? '?' : '&') + 'api=pools&t=' + Date.now()).then(function (r) { return r.json(); });
-      return fetch(API_URL, { method: 'POST', body: JSON.stringify(arg) }).then(function (r) { return r.json(); });
+      if (fn === 'getPools') return fetch(API_URL, { headers: { Accept: 'application/json' }, cache: 'no-store' }).then(function (r) { return r.json(); });
+      return fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(arg) }).then(function (r) { return r.json(); });
     }
     return demo(fn, arg);
   }
@@ -1078,7 +1077,7 @@ h3{font-size:1rem;font-weight:600}
     el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
     if (field) { var f = $(field); if (f) { f.setAttribute('aria-invalid', 'true'); f.focus(); } }
   }
-  /* Tombol daftar tidak boleh diam saat data belum masuk (API Apps Script bisa 2-5 detik):
+  /* Tombol daftar tidak boleh diam saat data belum masuk:
      tampilkan spinner, buka form begitu data datang, atau paling lambat 2,5 detik pakai data bawaan. */
   function jakartaToday() { return keyOf(Date.now() + 7 * 36e5); }
   function provisional() {
@@ -1729,6 +1728,8 @@ h3{font-size:1rem;font-weight:600}
     }
     load();
   }
+  /* Link dari beranda (tab "Gabung tanggal"): /kazakhstan?d=2027-03-24 langsung membuka formulir di tanggal itu. */
+  (function () { var m = /[?&]d=(\d{4}-\d{2}-\d{2})(?:&|$)/.exec(location.search); if (m) openFrom(null, m[1]); })();
   setInterval(refresh, 120000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
 })();

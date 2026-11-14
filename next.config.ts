@@ -229,13 +229,11 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      // Landing page statis pool land tour Kazakhstan (file di public/kazakhstan/).
-      // Data pendaftar tersimpan di Google Sheet SUNDAF lewat Apps Script; halaman ini
-      // tidak memakai database website. Disajikan di URL bersih /kazakhstan.
+      // Pool land tour (orang dengan tanggal tiba yang sama dikumpulkan jadi satu rombongan).
+      // Halamannya file statis; datanya dari database website lewat /api/pool (lihat docs/pool.md).
+      // /kazakhstan: halaman khusus Kazakhstan (public/kazakhstan/), API /api/pool/kazakhstan.
       { source: "/kazakhstan", destination: "/kazakhstan/index.html" },
-      // Pool Trip multi-negara (file di public/pool/). Satu halaman statis untuk daftar negara
-      // (/pool) dan halaman tiap negara (/pool/<kode>). Data dari Google Sheet "SUNDAF · Pool Trip"
-      // lewat /api/pool; terpisah dari pool Kazakhstan.
+      // /pool: daftar negara, /pool/<kode>: satu negara (public/pool/), API /api/pool.
       { source: "/pool", destination: "/pool/index.html" },
       { source: "/pool/:slug", destination: "/pool/index.html" },
       // Halaman "pasti berangkat" (file di public/<nama>/, dibuat oleh scripts/pasti-berangkat): trip Almaty,

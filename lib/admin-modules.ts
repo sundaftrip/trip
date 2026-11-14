@@ -7,6 +7,7 @@ export type AdminModuleKey =
   | "visa"
   | "b2b"
   | "inquiries"
+  | "pool"
   | "receipts"
   | "blog"
   | "scraper"
@@ -48,6 +49,7 @@ export const ADMIN_MODULES: readonly AdminModule[] = [
   { key: "b2b", href: "/admin/b2b-catalog", label: "Katalog B2B", group: "Katalog", permissions: ["b2b_catalog_view", "b2b_catalog_edit"] },
 
   { key: "inquiries", href: "/admin/inquiries", label: "Lead Masuk", group: "Penjualan", permissions: ["inquiry_view", "inquiry_edit"] },
+  { key: "pool", href: "/admin/pool", label: "Pool Trip", group: "Penjualan", permissions: ["pool_view", "pool_edit"] },
   { key: "receipts", href: "/admin/receipts", label: "Receipt", group: "Penjualan", permissions: ["receipt_view", "receipt_create", "receipt_edit", "receipt_delete"] },
 
   { key: "blog", href: "/admin/blog", label: "Blog", group: "Konten", permissions: ["blog_create", "blog_edit", "blog_delete", "blog_publish"], demoVisible: true },

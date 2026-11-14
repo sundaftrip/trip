@@ -607,7 +607,7 @@ h3{font-size:1rem;font-weight:600}
   'use strict';
 
   /* Di sundaftrip.com halaman ini membaca dan mengirim data lewat /api/pool
-     (diteruskan ke Apps Script Google Sheet "SUNDAF · Pool Trip").
+     (database website; negara, paket, dan harga diatur dari CMS /admin/pool).
      Kosong = mode contoh (data contoh, pendaftaran tidak disimpan). */
   var API_URL = '/api/pool';
   var LIVE = !!API_URL;
@@ -822,12 +822,15 @@ h3{font-size:1rem;font-weight:600}
       if (S.cat) renderIndex(true); else if (S.loadFailed) indexError();
     } else {
       S.dest = S.cat ? findDest(code) : null;
+      if (S.dest && ownUrl(S.dest)) { location.replace(ownUrl(S.dest) + location.search); return; }
       if (S.cat && !S.dest) { show('missing'); enter($('#vMissing')); document.title = 'Tujuan tidak ditemukan · SUNDAF Trip'; }
       else { show('dest'); enter($('#vDest')); loadDraft(); if (S.dest) renderDest(true); else destSkeleton(); }
     }
     updateDock();
   }
   function findDest(code) { var f = null; (S.cat.dests || []).forEach(function (d) { if (d.code === code) f = d; }); return f; }
+  /* Negara dengan halaman sendiri (mis. Kazakhstan di /kazakhstan): hanya path di situs ini. */
+  function ownUrl(d) { return d && /^\/[a-z0-9\-\/]*$/.test(String(d.url || '')) ? d.url : ''; }
 
   /* ---------------- render: country list ---------------- */
   function cheapest(d) {
@@ -852,7 +855,8 @@ h3{font-size:1rem;font-weight:600}
         chip = '<span class="chip soon">Segera</span>';
         sub = d.minat ? stack(d.minat, 4, 200 + i * 60, false, !first) + '<b class="num">' + d.minat + '</b> orang daftar minat' : 'Daftar minat, dikabari duluan';
       }
-      return '<li style="--i:' + i + '"><a class="dcard" href="' + hrefFor(d.code) + '" data-go="' + esc(d.code) + '">' +
+      var own = ownUrl(d);
+      return '<li style="--i:' + i + '"><a class="dcard" href="' + (own ? esc(own) : hrefFor(d.code)) + '"' + (own ? '' : ' data-go="' + esc(d.code) + '"') + '>' +
         '<span class="dmain"><b>' + esc(d.name) + '</b>' + chip + '</span><span class="dsub">' + sub + '</span>' + CHEV + '</a></li>';
     }).join('');
   }
@@ -1575,6 +1579,8 @@ h3{font-size:1rem;font-weight:600}
   })();
   route(false);
   load();
+  /* Link dari beranda (tab "Gabung tanggal"): /pool/<kode>?d=2027-03-24 langsung membuka formulir di tanggal itu. */
+  (function () { var m = /[?&]d=(\d{4}-\d{2}-\d{2})(?:&|$)/.exec(location.search); if (m && urlCode()) openFrom(null, m[1]); })();
   setInterval(refresh, 120000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
 })();
