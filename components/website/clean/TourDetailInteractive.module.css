@@ -673,7 +673,7 @@
 }
 
 :global(.dark) .bookingBackdrop {
-  background: rgba(31, 53, 58, 0.52);
+  background: rgba(7, 24, 28, 0.52);
 }
 
 :global(.dark) .bookingSheet {

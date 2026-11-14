@@ -551,7 +551,7 @@
 }
 
 :global(.dark) .regionImage::after {
-  background: linear-gradient(180deg, transparent 58%, rgba(30, 52, 55, 0.22));
+  background: linear-gradient(180deg, transparent 58%, rgba(5, 22, 24, 0.22));
 }
 
 :global(.dark) .regionArrow {

@@ -814,14 +814,14 @@
 }
 
 :global(.dark) .hero::before {
-  background-image: linear-gradient(rgba(29, 36, 41, 0.32) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(29, 36, 41, 0.32) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.32) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.32) 1px, transparent 1px);
 }
 
 :global(.dark) .hero::after {
-  border: 1px solid rgba(54, 61, 67, 0.15);
-  box-shadow: 0 0 0 72px rgba(29, 36, 41, 0.035),
-    0 0 0 144px rgba(29, 36, 41, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 72px rgba(255, 255, 255, 0.035),
+    0 0 0 144px rgba(255, 255, 255, 0.02);
 }
 
 :global(.dark) .eyebrow {
@@ -847,19 +847,19 @@
 }
 
 :global(.dark) .secondaryAction {
-  border: 1px solid rgba(54, 61, 67, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.44);
   color: #e7f0f7;
-  background: rgba(29, 36, 41, 0.04);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 :global(.dark) .secondaryAction:hover {
   border-color: #363d43;
-  background: rgba(29, 36, 41, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 :global(.dark) .trustPanel {
-  border: 1px solid rgba(54, 61, 67, 0.18);
-  background: rgba(36, 60, 63, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(5, 44, 49, 0.46);
   box-shadow: 0 24px 70px rgba(2, 26, 31, 0.4);
 }
 
@@ -1042,14 +1042,14 @@
 }
 
 :global(.dark) .formatCards > a {
-  border: 1px solid rgba(54, 61, 67, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #e7f0f7;
-  background: rgba(29, 36, 41, 0.055);
+  background: rgba(255, 255, 255, 0.055);
 }
 
 :global(.dark) .formatCards > a:hover {
-  border-color: rgba(54, 61, 67, 0.4);
-  background: rgba(29, 36, 41, 0.09);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 :global(.dark) .formatCards small {

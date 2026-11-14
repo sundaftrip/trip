@@ -98,6 +98,9 @@ function tint(c, max) {
 
 const MAP = {
   surface(c) {
+    // Lapisan tembus pandang di atas foto (scrim gelap, kaca putih tipis) dibiarkan.
+    if (c.a < 0.95 && c.L < 0.35) return c;
+    if (c.a <= 0.35 && c.L > 0.85) return c;
     if (c.C < NEUTRAL_C) {
       if (c.L >= 0.55) return { L: BASE_L + (1 - c.L) * 0.9, ...tint(c, 0.03), a: c.a };
       return { L: clamp(0.33 + (c.L - 0.25) * 0.35, 0.3, 0.38), ...tint(c, 0.03), a: c.a };
@@ -114,6 +117,7 @@ const MAP = {
     return { L: Math.min(c.L, 0.9), C: c.C * 0.92, h: c.h, a: c.a };
   },
   line(c) {
+    if (c.a <= 0.5 && c.L > 0.85) return c; // garis putih tipis (biasanya di atas foto)
     if (c.C < NEUTRAL_C) {
       if (c.L >= 0.6) return { L: BASE_L + 0.1 + (1 - c.L) * 0.4, ...tint(c, 0.02), a: c.a };
       return { L: 0.62, ...tint(c, 0.015), a: c.a };
@@ -315,17 +319,35 @@ function buildRule(selector, decls, resolve) {
   return `${darkSelector(selector)} {\n${lines.join("\n")}\n}`;
 }
 
-function walk(items, resolve, varRole, ctxAt = []) {
+const norm = (sel) => splitTop(sel, ",").map((x) => x.replace(/\s+/g, " ").trim()).join(", ");
+
+// Aturan malam yang ditulis manual (`:global(.dark) X { ... }`) didahulukan: properti
+// yang sudah diaturnya tidak ikut dibuat otomatis untuk selektor X.
+function collectManual(items, into) {
+  for (const it of items) {
+    if (it.decl || !it.children || SKIP_AT.test(it.prelude)) continue;
+    if (it.prelude.startsWith("@")) { collectManual(it.children, into); continue; }
+    if (!it.prelude.includes(":global(.dark)")) continue;
+    const key = norm(splitTop(it.prelude, ",").map((x) => x.replace(/^:global\(\.dark\)\s*/, "")).join(", "));
+    const props = (into[key] ||= new Set());
+    for (const c of it.children) if (c.decl) { const d = parseDecl(c.decl); if (d) props.add(d.prop); }
+  }
+}
+
+function walk(items, resolve, varRole, manual = {}, ctxAt = []) {
   const out = [];
   for (const it of items) {
     if (it.decl) continue;
     if (SKIP_AT.test(it.prelude)) continue;
+    if (it.prelude.includes(":global(.dark)")) continue;
     if (it.prelude.startsWith("@")) {
-      const inner = walk(it.children, resolve, varRole, [...ctxAt, it.prelude]);
+      const inner = walk(it.children, resolve, varRole, manual, [...ctxAt, it.prelude]);
       if (inner.length) out.push(`${it.prelude} {\n${inner.join("\n\n").replace(/^/gm, "  ")}\n}`);
       continue;
     }
-    const decls = it.children.filter((c) => c.decl).map((c) => parseDecl(c.decl)).filter(Boolean);
+    const taken = manual[norm(it.prelude)];
+    const decls = it.children.filter((c) => c.decl).map((c) => parseDecl(c.decl)).filter(Boolean)
+      .filter((d) => !taken || !taken.has(d.prop));
     const blocks = [];
     const rule = buildRule(it.prelude, decls, resolve);
     if (rule) blocks.push(rule);
@@ -381,7 +403,9 @@ for (const file of DIRS.flatMap(listFiles)) {
   const resolve = makeResolver(localDefs, globalDefs);
   const counts = {};
   varRoleCounts(items, counts);
-  const blocks = walk(items, resolve, (name) => guessVarRole(name, counts));
+  const manual = {};
+  collectManual(items, manual);
+  const blocks = walk(items, resolve, (name) => guessVarRole(name, counts), manual);
   const next = blocks.length ? `${base.trimEnd()}\n\n${START}\n${blocks.join("\n\n")}\n${END}\n` : base;
   if (next !== original) {
     changed++;

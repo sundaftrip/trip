@@ -264,6 +264,13 @@
   color: var(--home-ink);
 }
 
+/* Mode malam: tab aktif di atas foto tetap terang, tapi putih gading (tidak menyilaukan). */
+:global(.dark) .finderTab[aria-selected="true"] {
+  border-color: #dde4e8;
+  background: #dde4e8;
+  color: #172025;
+}
+
 .finderHint {
   min-height: 36px;
   margin: 0 0 0 auto;
@@ -2195,10 +2202,10 @@
 :global(.dark) .heroOverlay {
   background: linear-gradient(
     90deg,
-    rgba(31, 55, 59, 0.84) 0%,
-    rgba(31, 55, 59, 0.54) 42%,
-    rgba(31, 55, 59, 0.16) 74%,
-    rgba(31, 55, 59, 0.06) 100%
+    rgba(10, 29, 32, 0.84) 0%,
+    rgba(10, 29, 32, 0.54) 42%,
+    rgba(10, 29, 32, 0.16) 74%,
+    rgba(10, 29, 32, 0.06) 100%
   );
 }
 
@@ -2208,6 +2215,45 @@
 
 :global(.dark) .heroCopy > p:last-child {
   color: rgba(231, 240, 247, 0.9);
+}
+
+:global(.dark) .finderTab {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(4, 20, 23, 0.46);
+  color: #e7f0f7;
+}
+
+:global(.dark) .finderTab:hover {
+  background: rgba(4, 20, 23, 0.62);
+}
+
+:global(.dark) .finderHint {
+  background: rgba(4, 20, 23, 0.56);
+  color: #e7f0f7;
+}
+
+:global(.dark) .finderHintDot {
+  background: #3fbd6d;
+  box-shadow: 0 0 0 3px rgba(63, 189, 109, 0.28);
+  color: #172025;
+}
+
+:global(.dark) .finderBack {
+  border: 0;
+  background: none;
+  color: #e7f0f7;
+  text-decoration: underline;
+}
+
+:global(.dark) .finderField input[type="date"] {
+  border: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .finderField select:disabled,
+:global(.dark) .finderField input:disabled {
+  color: #98a3a8;
 }
 
 :global(.dark) .finderCard {
@@ -2282,7 +2328,7 @@
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(30, 53, 58, 0.68)
+    rgba(5, 25, 29, 0.68)
   );
 }
 
@@ -2369,7 +2415,7 @@
 }
 
 :global(.dark) .destinationShade {
-  background: linear-gradient(0deg, rgba(31, 55, 58, 0.78) 0%, rgba(31, 55, 58, 0.08) 70%);
+  background: linear-gradient(0deg, rgba(7, 29, 32, 0.78) 0%, rgba(7, 29, 32, 0.08) 70%);
 }
 
 :global(.dark) .destinationLabel {
@@ -2548,9 +2594,9 @@
   :global(.dark) .heroOverlay {
     background: linear-gradient(
         180deg,
-        rgba(31, 55, 59, 0.72) 0%,
-        rgba(31, 55, 59, 0.28) 56%,
-        rgba(31, 55, 59, 0.66) 100%
+        rgba(10, 29, 32, 0.72) 0%,
+        rgba(10, 29, 32, 0.28) 56%,
+        rgba(10, 29, 32, 0.66) 100%
       );
   }
   

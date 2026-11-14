@@ -182,7 +182,7 @@
 
 :global(.dark) .heroPhoto figcaption {
   color: #e7f0f7;
-  background: linear-gradient(transparent, rgba(41, 58, 70, 0.851));
+  background: linear-gradient(transparent, rgba(19, 43, 58, 0.851));
 }
 
 :global(.dark) .primaryButton {
