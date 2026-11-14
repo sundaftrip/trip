@@ -343,3 +343,104 @@
     transition: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .lede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .searchIcon {
+  color: #a7b2b8;
+}
+
+:global(.dark) .search {
+  border: 0;
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .search::placeholder {
+  color: #a7b2b8;
+}
+
+:global(.dark) .search:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .chip {
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .chip:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .results {
+  color: #c2cbd3;
+}
+
+:global(.dark) .sectionNote {
+  color: #c2cbd3;
+}
+
+:global(.dark) .item {
+  background: #262e2c;
+}
+
+:global(.dark) .item:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .toggle {
+  border: 0;
+  background: none;
+  color: #ced8df;
+}
+
+:global(.dark) .toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .chevron {
+  color: #8dceb2;
+}
+
+:global(.dark) .answer {
+  color: #c2cbd3;
+}
+
+:global(.dark) .related > span:first-child {
+  color: #a7b2b8;
+}
+
+:global(.dark) .empty {
+  color: #c2cbd3;
+}
+
+:global(.dark) .empty strong {
+  color: #ced8df;
+}
+
+:global(.dark) .ctaTitle.ctaTitle.ctaTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .ctaBody {
+  color: #c2cbd3;
+}
+
+:global(.dark) .ctaSecondary {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .ctaSecondary:hover {
+  color: #8dceb2;
+}
+/* ── night:end ── */

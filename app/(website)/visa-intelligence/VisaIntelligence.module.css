@@ -784,3 +784,321 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  color: #d8e3ea;
+  background: #1d2429;
+}
+
+:global(.dark) .page {
+  --vi-ink: #d8e3ea;
+  --vi-copy: #b2bdc3;
+  --vi-muted: #95a0a5;
+  --vi-teal: #7dcdd4;
+  --vi-teal-dark: #8acbd1;
+  --vi-aurora: #39b6b3;
+  --vi-line: #3c4746;
+  --vi-soft: #232a2f;
+  --vi-warm: #302d25;
+}
+
+:global(.dark) .page :where(a, button):focus-visible {
+  outline: 3px solid color-mix(in srgb, #3db6b3 58%, transparent);
+}
+
+:global(.dark) .hero {
+  color: #e7f0f7;
+  background: radial-gradient(circle at 82% 12%, rgba(54, 173, 170, 0.28), transparent 34%),
+    linear-gradient(138deg, #273a44 0%, #15575c 62%, #10464a 100%);
+}
+
+:global(.dark) .hero::before {
+  background-image: linear-gradient(rgba(29, 36, 41, 0.32) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 36, 41, 0.32) 1px, transparent 1px);
+}
+
+:global(.dark) .hero::after {
+  border: 1px solid rgba(54, 61, 67, 0.15);
+  box-shadow: 0 0 0 72px rgba(29, 36, 41, 0.035),
+    0 0 0 144px rgba(29, 36, 41, 0.02);
+}
+
+:global(.dark) .eyebrow {
+  color: #7dcdd4;
+}
+
+:global(.dark) .hero .eyebrow {
+  color: rgba(231, 240, 247, 0.7);
+}
+
+:global(.dark) .heroTitle {
+  color: #e7f0f7;
+}
+
+:global(.dark) .heroLede {
+  color: rgba(231, 240, 247, 0.8);
+}
+
+:global(.dark) .primaryAction {
+  border: 1px solid #363d43;
+  color: #8acbd1;
+  background: #1d2429;
+}
+
+:global(.dark) .secondaryAction {
+  border: 1px solid rgba(54, 61, 67, 0.44);
+  color: #e7f0f7;
+  background: rgba(29, 36, 41, 0.04);
+}
+
+:global(.dark) .secondaryAction:hover {
+  border-color: #363d43;
+  background: rgba(29, 36, 41, 0.1);
+}
+
+:global(.dark) .trustPanel {
+  border: 1px solid rgba(54, 61, 67, 0.18);
+  background: rgba(36, 60, 63, 0.46);
+  box-shadow: 0 24px 70px rgba(2, 26, 31, 0.4);
+}
+
+:global(.dark) .trustIcon,
+:global(.dark) .machineIcon {
+  color: #8acbd1;
+  background: #1d2429;
+}
+
+:global(.dark) .trustKicker {
+  color: rgba(231, 240, 247, 0.64);
+}
+
+:global(.dark) .trustPanel h2 {
+  color: #e7f0f7;
+}
+
+:global(.dark) .trustPanel > p:last-of-type {
+  color: rgba(231, 240, 247, 0.76);
+}
+
+:global(.dark) .inlineLink {
+  color: #e7f0f7;
+}
+
+:global(.dark) .statsGrid {
+  border: 1px solid #3c4746;
+  background: #1d2429;
+  box-shadow: 0 18px 50px rgba(6, 68, 73, 0.176);
+}
+
+:global(.dark) .statCard {
+  border-bottom: 1px solid #3c4746;
+}
+
+:global(.dark) .statCard:last-child {
+  border-bottom: 0;
+}
+
+:global(.dark) .statCard span {
+  color: #7dcdd4;
+}
+
+:global(.dark) .statCard p {
+  color: #95a0a5;
+}
+
+:global(.dark) .sectionTitle {
+  color: #d8e3ea;
+}
+
+:global(.dark) .sectionIntro {
+  color: #b2bdc3;
+}
+
+:global(.dark) .recordCard {
+  border: 1px solid #3c4746;
+  background: #1d2429;
+}
+
+:global(.dark) .recordCard:hover {
+  border-color: color-mix(in srgb, #2e6e73 34%, #3c4746);
+  box-shadow: 0 16px 38px rgba(5, 72, 77, 0.128);
+}
+
+:global(.dark) .flag {
+  border: 1px solid #3c4746;
+  background: #232a2f;
+}
+
+:global(.dark) .countryIdentity h3 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .countryIdentity p {
+  color: #95a0a5;
+}
+
+:global(.dark) .statusBadge {
+  border: 1px solid color-mix(in srgb, #2e6e73 20%, #3c4746);
+  color: #7dcdd4;
+  background: #232a2f;
+}
+
+:global(.dark) .recordFacts dt {
+  color: #95a0a5;
+}
+
+:global(.dark) .recordFacts dd {
+  color: #d8e3ea;
+}
+
+:global(.dark) .recordNotes {
+  color: #b2bdc3;
+}
+
+:global(.dark) .recordActions {
+  border-top: 1px solid #3c4746;
+}
+
+:global(.dark) .recordActions a,
+:global(.dark) .recordActions span,
+:global(.dark) .directoryLink a {
+  color: #7dcdd4;
+}
+
+:global(.dark) .recordActions span {
+  color: #95a0a5;
+}
+
+:global(.dark) .recordActions a:hover,
+:global(.dark) .directoryLink a:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .directoryLink a {
+  border: 1px solid #3c4746;
+  background: #1d2429;
+  text-decoration: none;
+}
+
+:global(.dark) .emptyState {
+  border: 1px dashed #3c4746;
+  color: #95a0a5;
+  background: #232a2f;
+}
+
+:global(.dark) .commentTitle {
+  color: #d8e3ea;
+}
+
+:global(.dark) .methodSection {
+  border-block: 1px solid #3c4746;
+  background: #232a2f;
+}
+
+:global(.dark) .methodGrid article {
+  border: 1px solid #3c4746;
+  background: #1d2429;
+}
+
+:global(.dark) .methodGrid article > span {
+  color: #39b6b3;
+}
+
+:global(.dark) .methodGrid h3 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .methodGrid p {
+  color: #b2bdc3;
+}
+
+:global(.dark) .warning {
+  border: 1px solid #bbac91;
+  color: #dbb87f;
+  background: #2b261a;
+}
+
+:global(.dark) .machineSection {
+  color: #e7f0f7;
+  background: #293a46;
+}
+
+:global(.dark) .machineIcon {
+  color: #e7f0f7;
+  background: #15575c;
+}
+
+:global(.dark) .machineSection .eyebrow {
+  color: #94e4de;
+}
+
+:global(.dark) .machineSection .sectionTitle {
+  color: #e7f0f7;
+}
+
+:global(.dark) .machineCopy > p:last-child {
+  color: rgba(231, 240, 247, 0.68);
+}
+
+:global(.dark) .formatCards > a {
+  border: 1px solid rgba(54, 61, 67, 0.16);
+  color: #e7f0f7;
+  background: rgba(29, 36, 41, 0.055);
+}
+
+:global(.dark) .formatCards > a:hover {
+  border-color: rgba(54, 61, 67, 0.4);
+  background: rgba(29, 36, 41, 0.09);
+}
+
+:global(.dark) .formatCards small {
+  color: rgba(231, 240, 247, 0.58);
+}
+
+:global(.dark) .ctaSection {
+  background: #302d25;
+}
+
+:global(.dark) .ctaGrid h2 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .ctaGrid > div:first-child > p:last-child {
+  color: #b2bdc3;
+}
+
+:global(.dark) .ctaActions a:first-child {
+  border: 1px solid #2e6e73;
+  color: #e7f0f7;
+  background: #15575c;
+}
+
+:global(.dark) .ctaActions a:last-child {
+  border: 1px solid color-mix(in srgb, #2e6e73 30%, #3c4746);
+  color: #7dcdd4;
+  background: #1d2429;
+}
+
+@media (min-width: 640px) {
+  :global(.dark) .statCard:nth-child(odd) {
+    border-right: 1px solid #3c4746;
+  }
+  
+  :global(.dark) .statCard:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  :global(.dark) .statCard,
+  :global(.dark) .statCard:nth-child(odd) {
+    border-right: 1px solid #3c4746;
+    border-bottom: 0;
+  }
+  
+  :global(.dark) .statCard:last-child {
+    border-right: 0;
+  }
+}
+/* ── night:end ── */

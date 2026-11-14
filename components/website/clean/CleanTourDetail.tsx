@@ -594,10 +594,10 @@ export default function CleanTourDetail({
               isOutlined
               isAtlas
               pfx="at"
-              tText="#202934"
-              tCard="#f3f6f6"
-              tBdr="#e2e7e8"
-              tSub="#606b72"
+              tText="var(--share-text, #202934)"
+              tCard="var(--share-card, #f3f6f6)"
+              tBdr="var(--share-border, #e2e7e8)"
+              tSub="var(--share-sub, #606b72)"
             />
           </div>
         </div>
@@ -670,10 +670,10 @@ export default function CleanTourDetail({
                 isOutlined
                 isAtlas
                 pfx="at"
-                tText="#202934"
-                tCard="#f3f6f6"
-                tBdr="#e2e7e8"
-                tSub="#606b72"
+                tText="var(--share-text, #202934)"
+                tCard="var(--share-card, #f3f6f6)"
+                tBdr="var(--share-border, #e2e7e8)"
+                tSub="var(--share-sub, #606b72)"
               />
             </div>
           </div>

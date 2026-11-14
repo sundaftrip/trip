@@ -209,3 +209,85 @@
     width: 100%;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .lede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .secondary {
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .secondary:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .link {
+  color: #8dceb2;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, #8dceb2 40%, transparent);
+}
+
+:global(.dark) .link:hover {
+  text-decoration-color: currentColor;
+}
+
+:global(.dark) .box {
+  background: #262e2c;
+}
+
+:global(.dark) .box:nth-child(4n + 2),
+:global(.dark) .box:nth-child(4n + 3) {
+  background: #242b30;
+}
+
+:global(.dark) .boxTitle.boxTitle.boxTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .box p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .list li {
+  color: #c2cbd3;
+}
+
+:global(.dark) .list li::before {
+  background: #30604d;
+}
+
+:global(.dark) .faqRow {
+  background: #262e2c;
+}
+
+:global(.dark) .faqRow:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .faqRow summary {
+  color: #ced8df;
+}
+
+:global(.dark) .faqRow p {
+  color: #c2cbd3;
+}
+
+@media (max-width: 760px) {
+  :global(.dark) .box:nth-child(4n + 2),
+  :global(.dark) .box:nth-child(4n + 3) {
+    background: #262e2c;
+  }
+  
+  :global(.dark) .box:nth-child(even) {
+    background: #242b30;
+  }
+}
+/* ── night:end ── */

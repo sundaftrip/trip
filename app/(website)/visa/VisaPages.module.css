@@ -1341,3 +1341,517 @@ textarea.formField {
     transition-duration: 0.01ms;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .page {
+  --visa-ink: #ced8df;
+  --visa-ink-soft: #c2cbd3;
+  --visa-muted: #a7b2b8;
+  --visa-primary: #8dceb2;
+  --visa-primary-strong: #26503c;
+  --visa-accent: #3d6f5b;
+  --visa-surface: #1d2429;
+  --visa-soft: #242b30;
+  --visa-sage: #262e2c;
+  --visa-line: rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .skipLink {
+  color: #e7f0f7;
+  background: #26503c;
+}
+
+:global(.dark) .eyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .hero {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .heroTitle.heroTitle.heroTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .heroLede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .primaryAction {
+  border: 0;
+  color: #e7f0f7;
+  background: #30604d;
+}
+
+:global(.dark) .secondaryAction {
+  border: 0;
+  color: #ced8df;
+  background: #242b30;
+}
+
+:global(.dark) .primaryAction:hover {
+  background: #26503c;
+}
+
+:global(.dark) .secondaryAction:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .heroFact {
+  background: #262e2c;
+}
+
+:global(.dark) .heroFact:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .heroFact dt {
+  color: #8dceb2;
+}
+
+:global(.dark) .heroFact dd {
+  color: #ced8df;
+}
+
+:global(.dark) .sectionLede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .serviceCard {
+  border: 0;
+  color: inherit;
+  background: #262e2c;
+  box-shadow: none;
+}
+
+:global(.dark) .serviceCard:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .serviceCard:hover {
+  background: #29332e;
+}
+
+:global(.dark) .statusBadge,
+:global(.dark) .factChip {
+  border: 0;
+  color: #8dceb2;
+  background: #1d2429;
+}
+
+:global(.dark) .serviceName.serviceName.serviceName {
+  color: #ced8df;
+}
+
+:global(.dark) .serviceEnglish {
+  color: #a7b2b8;
+}
+
+:global(.dark) .serviceFacts dt {
+  color: #8dceb2;
+}
+
+:global(.dark) .serviceFacts dd {
+  color: #ced8df;
+}
+
+:global(.dark) .cardAction {
+  color: #8dceb2;
+}
+
+:global(.dark) .stepCard,
+:global(.dark) .documentCard {
+  border: 0;
+  background: #262e2c;
+}
+
+:global(.dark) .stepCard:nth-child(even),
+:global(.dark) .documentCard:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .stepNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .stepCard h3,
+:global(.dark) .documentCard h3 {
+  color: #ced8df;
+}
+
+:global(.dark) .stepCard p,
+:global(.dark) .documentCard p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .documentSection {
+  background: #1d2429;
+}
+
+:global(.dark) .databaseSection {
+  background: #1d2429;
+}
+
+:global(.dark) .directoryToolbar {
+  border: 0;
+  background: #242b30;
+  box-shadow: none;
+}
+
+:global(.dark) .fieldLabel {
+  color: #ced8df;
+}
+
+:global(.dark) .searchInputWrap svg {
+  color: #a7b2b8;
+}
+
+:global(.dark) .searchInput {
+  border: 1px solid #48483e;
+  outline: 0;
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .searchButton {
+  border: 1px solid #3d6f5b;
+  color: #e7f0f7;
+  background: #30604d;
+}
+
+:global(.dark) .resetButton,
+:global(.dark) .loadMore {
+  border: 0;
+  color: #ced8df;
+  background: #242b30;
+}
+
+:global(.dark) .filterField select {
+  border: 1px solid #48483e;
+  outline: 0;
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .searchInput:focus-visible,
+:global(.dark) .searchButton:focus-visible,
+:global(.dark) .resetButton:focus-visible,
+:global(.dark) .loadMore:focus-visible,
+:global(.dark) .filterField select:focus-visible,
+:global(.dark) .countryCard:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 42%, transparent);
+}
+
+:global(.dark) .resultCount {
+  color: #c2cbd3;
+}
+
+:global(.dark) .countryCard {
+  border: 0;
+  color: inherit;
+  background: #262e2c;
+}
+
+:global(.dark) .countryCard:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .countryCard:hover {
+  background: #29332e;
+}
+
+:global(.dark) .countryName.countryName.countryName {
+  color: #ced8df;
+}
+
+:global(.dark) .countryEnglish {
+  color: #a7b2b8;
+}
+
+:global(.dark) .countryFacts dt {
+  color: #8dceb2;
+}
+
+:global(.dark) .countryFacts dd {
+  color: #ced8df;
+}
+
+:global(.dark) .verified {
+  color: #a7b2b8;
+}
+
+:global(.dark) .emptyState {
+  border: 0;
+  color: #c2cbd3;
+  background: #242b30;
+}
+
+:global(.dark) .databaseFrame :global(.sticky) {
+  border-color: rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .databaseFrame :global(a):focus-visible,
+:global(.dark) .databaseFrame :global(button):focus-visible,
+:global(.dark) .databaseFrame :global(input):focus-visible,
+:global(.dark) .databaseFrame :global(select):focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 42%, transparent);
+}
+
+:global(.dark) .faqItem {
+  border: 0;
+  background: #262e2c;
+}
+
+:global(.dark) .faqItem:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .faqSummary {
+  color: #ced8df;
+}
+
+:global(.dark) .faqSummary svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .faqAnswer {
+  color: #c2cbd3;
+}
+
+:global(.dark) .cta {
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .ctaGrid {
+  background: #262e2c;
+}
+
+:global(.dark) .ctaTitle.ctaTitle.ctaTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .ctaCopy {
+  color: #c2cbd3;
+}
+
+:global(.dark) .cta .secondaryAction {
+  background: #1d2429;
+}
+
+:global(.dark) .detailHero {
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .backLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .backLink:hover {
+  color: #93cdaf;
+}
+
+:global(.dark) .detailEyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .detailTitle.detailTitle.detailTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .detailSubtitle {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailChip {
+  border: 0;
+  color: #ced8df;
+  background: #242b30;
+}
+
+:global(.dark) .detailMeta {
+  border: 0;
+  background: #262e2c;
+}
+
+:global(.dark) .detailMeta p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .sourceLink {
+  color: #8dceb2;
+  text-decoration: underline;
+}
+
+:global(.dark) .detailNav {
+  border-block: 1px solid rgba(126, 136, 142, 0.13);
+  background: rgba(29, 36, 41, 0.96);
+}
+
+:global(.dark) .detailNavLink {
+  border-bottom: 2px solid transparent;
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailNavLink:hover,
+:global(.dark) .detailNavLink:focus-visible {
+  border-color: #3d6f5b;
+  color: #8dceb2;
+}
+
+:global(.dark) .detailSection {
+  border: 0;
+  border-bottom: 1px solid rgba(126, 136, 142, 0.13);
+  background: #1d2429;
+}
+
+:global(.dark) .boxHeading.boxHeading.boxHeading {
+  color: #ced8df;
+}
+
+:global(.dark) .detailSection > h2,
+:global(.dark) .detailSection h2 {
+  color: #ced8df;
+}
+
+:global(.dark) .detailSection :where(p, li, dd) {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailSection :global(.bg-white),
+:global(.dark) .detailSection :global(.dark\:bg-gray-900) {
+  background: #242b30;
+}
+
+:global(.dark) .detailSection :global(.border-gray-200),
+:global(.dark) .detailSection :global(.dark\:border-gray-800) {
+  border-color: transparent;
+}
+
+:global(.dark) .orderAside > div {
+  border-color: transparent;
+  background: #242b30;
+  box-shadow: none;
+}
+
+:global(.dark) .consultationCard {
+  border: 0;
+  background: #242b30;
+  box-shadow: none;
+}
+
+:global(.dark) .formEyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .formPrice {
+  color: #ced8df;
+}
+
+:global(.dark) .formHint {
+  color: #a7b2b8;
+}
+
+:global(.dark) .formLabel,
+:global(.dark) .formLegend {
+  color: #ced8df;
+}
+
+:global(.dark) .formField {
+  border: 1px solid #48483e;
+  outline: 0;
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .formField:focus-visible,
+:global(.dark) .stepperButton:focus-visible,
+:global(.dark) .formSubmit:focus-visible,
+:global(.dark) .faqSummary:focus-visible,
+:global(.dark) .primaryAction:focus-visible,
+:global(.dark) .secondaryAction:focus-visible,
+:global(.dark) .intelligenceLink:focus-visible,
+:global(.dark) .detailNavLink:focus-visible,
+:global(.dark) .serviceCard:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 42%, transparent);
+}
+
+:global(.dark) .radioCard {
+  border: 1px solid #48483e;
+  background: #1d2429;
+}
+
+:global(.dark) .radioCard:has(input:checked) {
+  border-color: #3d6f5b;
+  background: #262e2c;
+}
+
+:global(.dark) .radioCard input {
+  accent-color: #8dceb2;
+}
+
+:global(.dark) .radioName {
+  color: #ced8df;
+}
+
+:global(.dark) .radioMeta,
+:global(.dark) .radioPrice {
+  color: #a7b2b8;
+}
+
+:global(.dark) .radioPrice {
+  color: #ced8df;
+}
+
+:global(.dark) .stepper {
+  border: 1px solid #48483e;
+  background: #1d2429;
+}
+
+:global(.dark) .stepperText strong {
+  color: #ced8df;
+}
+
+:global(.dark) .stepperText span {
+  color: #a7b2b8;
+}
+
+:global(.dark) .stepperButton {
+  border: 1px solid rgba(126, 136, 142, 0.13);
+  color: #ced8df;
+  background: #1d2429;
+}
+
+:global(.dark) .stepperValue {
+  color: #ced8df;
+}
+
+:global(.dark) .formHelp {
+  color: #a7b2b8;
+}
+
+:global(.dark) .formError {
+  color: #f7a598;
+}
+
+:global(.dark) .formSubmit {
+  border: 0;
+  color: #e7f0f7;
+  background: #30604d;
+}
+
+:global(.dark) .formSubmit:hover {
+  background: #26503c;
+}
+
+:global(.dark) .formDisclaimer {
+  color: #a7b2b8;
+}
+/* ── night:end ── */

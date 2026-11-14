@@ -114,6 +114,7 @@
 .menuButton,
 .searchButton,
 .languageButton,
+.themeButton,
 .drawerClose,
 .destinationToggle {
   appearance: none;
@@ -125,6 +126,7 @@
 .menuButton,
 .searchButton,
 .languageButton,
+.themeButton,
 .drawerClose {
   width: 44px;
   height: 44px;
@@ -143,6 +145,7 @@
 .menuButton:hover,
 .searchButton:hover,
 .languageButton:hover,
+.themeButton:hover,
 .drawerClose:hover {
   background: var(--shell-ice);
   color: var(--shell-primary);
@@ -160,6 +163,39 @@
   width: 22px;
   height: 22px;
   stroke-width: 1.6;
+}
+
+.themeButton svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.7;
+  transition: transform 600ms var(--site-motion-ease, ease);
+}
+
+.themeButton:active svg {
+  transform: rotate(-18deg) scale(0.94);
+}
+
+.themeIconSun,
+:global(.dark) .themeIconMoon {
+  display: none;
+}
+
+:global(.dark) .themeIconSun {
+  display: block;
+}
+
+/* Logo versi malam (teks terang) hanya tampil saat mode malam aktif. */
+.logoNight {
+  display: none;
+}
+
+:global(.dark) .logoDay {
+  display: none;
+}
+
+:global(.dark) .logoNight {
+  display: block;
 }
 
 .languageButton {
@@ -1109,3 +1145,368 @@
     transition-delay: 0s !important;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .header,
+:global(.dark) .footer {
+  color: #d8e3ea;
+}
+
+:global(.dark) .header,
+:global(.dark) .footer {
+  --shell-ink: #d8e3ea;
+  --shell-ink-soft: #b4bfc6;
+  --shell-muted: #98a3a8;
+  --shell-primary: #7dcdd4;
+  --shell-primary-strong: #3b6d71;
+  --shell-aurora: #3db6b3;
+  --shell-ice: #242b30;
+  --shell-line: #3e454b;
+  --shell-paper: #1d2429;
+  --shell-white: #1d2429;
+}
+
+:global(.dark) .skipLink {
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .header {
+  background: #1d2429;
+}
+
+:global(.dark) .header::after {
+  background: #2e353b;
+}
+
+:global(.dark) .menuButton,
+:global(.dark) .searchButton,
+:global(.dark) .languageButton,
+:global(.dark) .themeButton,
+:global(.dark) .drawerClose,
+:global(.dark) .destinationToggle {
+  border: 0;
+}
+
+:global(.dark) .menuButton,
+:global(.dark) .searchButton,
+:global(.dark) .languageButton,
+:global(.dark) .themeButton,
+:global(.dark) .drawerClose {
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .menuButton:hover,
+:global(.dark) .searchButton:hover,
+:global(.dark) .languageButton:hover,
+:global(.dark) .themeButton:hover,
+:global(.dark) .drawerClose:hover {
+  background: #242b30;
+  color: #7dcdd4;
+}
+
+:global(.dark) .languageButton {
+  border: 1px solid #3e454b;
+}
+
+:global(.dark) .searchBackdrop {
+  border: 0;
+  background: rgba(32, 52, 56, 0.58);
+}
+
+:global(.dark) .searchDialog {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+  box-shadow: 0 28px 80px rgba(7, 22, 25, 0.448);
+}
+
+:global(.dark) .searchDialogHeader p {
+  color: #7dcdd4;
+}
+
+:global(.dark) .searchDialogHeader h2 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .searchClose {
+  border: 0;
+  background: #242b30;
+  color: #d8e3ea;
+}
+
+:global(.dark) .searchForm {
+  border: 1px solid #404948;
+  background: #1f262b;
+}
+
+:global(.dark) .searchForm > svg {
+  color: #91c9d0;
+}
+
+:global(.dark) .searchForm input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .searchForm input::placeholder {
+  color: #8f9aa0;
+}
+
+:global(.dark) .searchPrompt,
+:global(.dark) .searchEmpty {
+  color: #98a3a8;
+}
+
+:global(.dark) .searchPrompt svg {
+  color: #8e9b9c;
+}
+
+:global(.dark) .searchEmpty button,
+:global(.dark) .searchSuggestion button {
+  border: 0;
+  background: transparent;
+  color: #7dcdd4;
+  text-decoration: underline;
+}
+
+:global(.dark) .searchSuggestion {
+  color: #98a3a8;
+}
+
+:global(.dark) .searchGroup h3 {
+  color: #98a3a8;
+}
+
+:global(.dark) .searchNotice {
+  background: #23292f;
+  color: #98a3a8;
+}
+
+:global(.dark) .searchResultButton {
+  border: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .searchResultButton:hover {
+  background: #242b30;
+  color: #7dcdd4;
+}
+
+:global(.dark) .searchResultFeatured {
+  border: 1px solid #3e4746;
+  background: #21272d;
+}
+
+:global(.dark) .searchResultIcon {
+  background: #262d32;
+  color: #91c9d0;
+}
+
+:global(.dark) .searchResultButton > svg {
+  color: #97a1a4;
+}
+
+:global(.dark) .searchResultButton strong {
+  color: inherit;
+}
+
+:global(.dark) .searchResultButton small {
+  color: #98a3a8;
+}
+
+:global(.dark) .searchAllResults {
+  border: 1px solid #2e6e73;
+  background: #1d2429;
+  color: #7dcdd4;
+}
+
+:global(.dark) .drawerBackdrop {
+  border: 0;
+  background: rgba(32, 52, 56, 0.45);
+}
+
+:global(.dark) .drawer {
+  background: #1d2429;
+  box-shadow: -20px 0 48px rgba(7, 22, 25, 0.288);
+}
+
+:global(.dark) .drawerHeader {
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .drawerPrimary {
+  border: 1px solid #2e6e73;
+  background: #15575c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .drawerPrimary:hover {
+  border-color: #3b6d71;
+  background: #0f4347;
+}
+
+:global(.dark) .mobileNav {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .destinationToggle,
+:global(.dark) .mobileLink {
+  border-bottom: 1px solid #3e454b;
+  color: #d8e3ea;
+}
+
+:global(.dark) .destinationToggle {
+  background: transparent;
+}
+
+:global(.dark) .destinationToggleOpen {
+  background: #242b30;
+  color: #7dcdd4;
+}
+
+:global(.dark) .destinationToggle svg {
+  color: #98a3a8;
+}
+
+:global(.dark) .destinationLinks {
+  border-bottom: 1px solid #3e454b;
+  background: color-mix(in srgb, #242b30 76%, #1d2429);
+}
+
+:global(.dark) .destinationLinks a {
+  border-bottom: 1px solid color-mix(in srgb, #3e454b 70%, transparent);
+  color: #b4bfc6;
+}
+
+:global(.dark) .destinationLinks a:hover {
+  color: #7dcdd4;
+}
+
+:global(.dark) .mobileNav > .mobileLink:last-child {
+  border-bottom: 0;
+}
+
+:global(.dark) .mobileLink:hover,
+:global(.dark) .mobileLink[aria-current="page"] {
+  background: #242b30;
+  color: #7dcdd4;
+}
+
+:global(.dark) .drawerWhatsApp {
+  border: 1px solid #2e6e73;
+  background: #1d2429;
+  color: #7dcdd4;
+}
+
+:global(.dark) .drawerWhatsApp:hover {
+  background: #242b30;
+  border-color: #3b6d71;
+  color: #8acbd1;
+}
+
+:global(.dark) .drawerNote {
+  color: #98a3a8;
+}
+
+:global(.dark) .footer {
+  border-top: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .footerDescription {
+  color: #b4bfc6;
+}
+
+:global(.dark) .companyBlock {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .companyBlock strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .companyBlock address {
+  color: #98a3a8;
+}
+
+:global(.dark) .appointmentLabel {
+  color: #b4bfc6;
+}
+
+:global(.dark) .footerGroup h2 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .footerGroup a {
+  color: #98a3a8;
+}
+
+:global(.dark) .footerGroup a:hover {
+  color: #7dcdd4;
+}
+
+:global(.dark) .footerBottom {
+  border-top: 1px solid #3e454b;
+  color: #98a3a8;
+}
+
+:global(.dark) .footerLegal a {
+  color: inherit;
+}
+
+:global(.dark) .footerLegal a:hover {
+  color: #7dcdd4;
+}
+
+:global(.dark) .logoLink:focus-visible,
+:global(.dark) .drawerLogo:focus-visible,
+:global(.dark) .menuButton:focus-visible,
+:global(.dark) .searchButton:focus-visible,
+:global(.dark) .languageButton:focus-visible,
+:global(.dark) .searchClose:focus-visible,
+:global(.dark) .searchForm:focus-within,
+:global(.dark) .searchResultButton:focus-visible,
+:global(.dark) .searchAllResults:focus-visible,
+:global(.dark) .drawerClose:focus-visible,
+:global(.dark) .desktopNav a:focus-visible,
+:global(.dark) .desktopAction:focus-visible,
+:global(.dark) .drawerPrimary:focus-visible,
+:global(.dark) .destinationToggle:focus-visible,
+:global(.dark) .destinationLinks a:focus-visible,
+:global(.dark) .mobileLink:focus-visible,
+:global(.dark) .drawerWhatsApp:focus-visible,
+:global(.dark) .footer a:focus-visible {
+  outline: 3px solid #3db6b3;
+}
+
+@media (max-width: 759px) {
+  :global(.dark) .searchDialog {
+    border: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  :global(.dark) .desktopNav a {
+    color: #b4bfc6;
+    text-decoration: none;
+  }
+  
+  :global(.dark) .desktopNav a:hover,
+  :global(.dark) .desktopNav a[aria-current="page"] {
+    color: #7dcdd4;
+  }
+  
+  :global(.dark) .desktopNav a[aria-current="page"]::after {
+    background: currentColor;
+  }
+  
+  :global(.dark) .desktopNav a:focus-visible {
+    outline: 2px solid #2e6e73;
+  }
+}
+/* ── night:end ── */

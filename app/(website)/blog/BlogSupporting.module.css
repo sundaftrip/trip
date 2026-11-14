@@ -478,3 +478,160 @@
     transition-duration: 0.01ms;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .atlasPanel {
+  border: 1px solid var(--at-border, #464a50);
+  color: var(--at-text, #dce1ec);
+  background-color: var(--at-card, #1d2429);
+  background-image: linear-gradient(var(--at-grid, rgba(42, 50, 65, 0.07)) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, var(--at-grid, rgba(42, 50, 65, 0.07)) 0.5px, transparent 0.5px);
+  box-shadow: 0 1px 4px var(--at-shadow, rgba(17, 24, 39, 0.128));
+}
+
+:global(.dark) .eyebrow {
+  color: var(--at-subtext, #c4cad4);
+}
+
+:global(.dark) .filterTitle,
+:global(.dark) .tocTitle {
+  color: var(--at-text, #dce1ec);
+}
+
+:global(.dark) .resultCount {
+  color: var(--at-subtext, #c4cad4);
+}
+
+:global(.dark) .filterLink {
+  border: 1px solid var(--at-border, #464a50);
+  color: var(--at-text, #dce1ec);
+  background: var(--at-card, #1d2429);
+  text-decoration: none;
+}
+
+:global(.dark) .filterLink:hover {
+  background: var(--at-muted, #242b31);
+}
+
+:global(.dark) .filterLink[aria-pressed="true"] {
+  border-color: var(--at-text, #828690);
+  color: var(--at-bg, #e7f0f7);
+  background: var(--at-text, #2a3241);
+}
+
+:global(.dark) .filterLink:focus-visible,
+:global(.dark) .tocLink:focus-visible,
+:global(.dark) .tocSummary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--site-accent, #2e6e73) 68%, transparent);
+}
+
+:global(.dark) .filterCount {
+  border: 1px solid currentColor;
+}
+
+:global(.dark) .tocIcon {
+  color: var(--at-subtext, #c4cad4);
+}
+
+:global(.dark) .tocMeta {
+  color: var(--at-subtext, #c4cad4);
+}
+
+:global(.dark) .tocChevron {
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+}
+
+:global(.dark) .tocNav {
+  border-top: 1px solid var(--at-border, #464a50);
+  background: color-mix(in srgb, var(--at-card, #1d2429) 88%, transparent);
+}
+
+:global(.dark) .tocLink {
+  color: var(--at-subtext, #c4cad4);
+  text-decoration: none;
+}
+
+:global(.dark) .tocLink::before {
+  color: var(--at-subtext, #c4cad4);
+}
+
+:global(.dark) .tocLink:hover {
+  color: var(--at-text, #dce1ec);
+  background: var(--at-muted, #242b31);
+}
+
+:global(.dark) .articleBody :global(h2[id]:target),
+:global(.dark) .articleBody :global(h3[id]:target) {
+  text-decoration-line: underline;
+  text-decoration-color: var(--site-accent, #7dcdd4);
+  text-decoration-thickness: 0.12em;
+}
+
+:global(.dark) .docFilterTitle.docFilterTitle.docFilterTitle {
+  color: #8dceb2;
+}
+
+:global(.dark) .docResultCount {
+  color: #a7b2b8;
+}
+
+:global(.dark) .docChip {
+  border: 0;
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .docChip:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .docChip[aria-pressed="true"] {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .docChip:focus-visible,
+:global(.dark) .docTocLink:focus-visible,
+:global(.dark) .docTocSummary:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .docChipCount {
+  color: #a7b2b8;
+}
+
+:global(.dark) .docChip[aria-pressed="true"] .docChipCount {
+  color: rgba(231, 240, 247, 0.8);
+}
+
+:global(.dark) .docToc {
+  background: #242b30;
+}
+
+:global(.dark) .docTocSummary {
+  color: #ced8df;
+}
+
+:global(.dark) .docTocTitle {
+  color: #8dceb2;
+}
+
+:global(.dark) .docTocMeta {
+  color: #a7b2b8;
+}
+
+:global(.dark) .docTocLink {
+  color: #c2cbd3;
+  text-decoration: none;
+}
+
+:global(.dark) .docTocLink::before {
+  color: #8dceb2;
+}
+
+:global(.dark) .docTocLink:hover {
+  color: #ced8df;
+  text-decoration: underline;
+}
+/* ── night:end ── */

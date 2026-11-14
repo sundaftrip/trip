@@ -192,3 +192,82 @@
     transition: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .back {
+  color: #8dceb2;
+}
+
+:global(.dark) .lede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .sectionNote {
+  color: #c2cbd3;
+}
+
+:global(.dark) .item {
+  background: #262e2c;
+}
+
+:global(.dark) .item:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .summary {
+  color: #ced8df;
+}
+
+:global(.dark) .plus {
+  color: #8dceb2;
+}
+
+:global(.dark) .answer {
+  color: #c2cbd3;
+}
+
+:global(.dark) .answer :global(li)::marker {
+  color: #8dceb2;
+}
+
+:global(.dark) .answer :global(b),
+:global(.dark) .answer :global(strong) {
+  color: #ced8df;
+}
+
+:global(.dark) .answer a {
+  color: #8dceb2;
+  text-decoration: underline;
+}
+
+:global(.dark) .cta {
+  border-top: 1px solid rgba(126, 136, 142, 0.14);
+}
+
+:global(.dark) .ctaButton {
+  border: 0;
+  background: none;
+  color: #8dceb2;
+}
+
+:global(.dark) .ctaButton:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .preview {
+  background: #1d2429;
+}
+
+:global(.dark) .boxTitle.boxTitle.boxTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .box p {
+  color: #c2cbd3;
+}
+/* ── night:end ── */

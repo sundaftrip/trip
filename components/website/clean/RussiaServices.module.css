@@ -526,3 +526,82 @@
   0%, 100% { opacity: 0.75; transform: scaleX(1); }
   50% { opacity: 0.35; transform: scaleX(0.78); }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page {
+  --ink: #ced8df;
+  --text: #c2cbd3;
+  --primary: #8dceb2;
+  --line: #43453e;
+}
+
+:global(.dark) .breadcrumb {
+  color: #98a3a8;
+}
+
+:global(.dark) .breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:global(.dark) .page a:focus-visible {
+  outline: 3px solid #49b6a9;
+}
+
+:global(.dark) .skyline {
+  color: #d4dfe0;
+}
+
+:global(.dark) .sectionIntro {
+  color: #c2cbd3;
+}
+
+:global(.dark) .serviceGrid article {
+  background: #262e2c;
+}
+
+:global(.dark) .serviceGrid article:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .serviceGrid article[data-motion]::before {
+  background: #1d2429;
+}
+
+:global(.dark) .page .serviceGrid .serviceTitle h2 {
+  color: var(--card-heading);
+}
+
+:global(.dark) .serviceGrid article[data-motion] .serviceTitle h2::after {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M3 5C42 0 104 2 196 4M12 10C68 6 127 10 182 7' fill='none' stroke='%23d5a63d' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+:global(.dark) .serviceGrid article > p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .serviceLink,
+:global(.dark) .comingSoon {
+  color: #8dceb2;
+  text-decoration: none;
+}
+
+:global(.dark) .serviceLink::after {
+  background: currentColor;
+}
+
+:global(.dark) .comingSoon {
+  color: #98a3a8;
+}
+
+:global(.dark) .breadcrumb a:hover,
+:global(.dark) .serviceLink:hover {
+  color: #8dceb2;
+  text-decoration: underline;
+}
+/* ── night:end ── */

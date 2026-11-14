@@ -478,3 +478,155 @@
     transition: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page {
+  --destination-ink: #ced8df;
+  --destination-copy: #c2cbd3;
+  --destination-muted: #a7b2b8;
+  --destination-primary: #8dceb2;
+  --destination-primary-strong: #26503c;
+  --destination-line: #43453e;
+  --destination-mist: #262e2c;
+  --destination-sand: #242b30;
+}
+
+:global(.dark) .hero {
+  background: #1d2429;
+}
+
+:global(.dark) .heroLead {
+  color: #c2cbd3;
+}
+
+:global(.dark) .primaryAction,
+:global(.dark) .secondaryAction {
+  border: 1px solid transparent;
+}
+
+:global(.dark) .primaryAction {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .secondaryAction {
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .heroTile {
+  background: #262e2c;
+}
+
+:global(.dark) .sectionHeading > p,
+:global(.dark) .guideIntro > p,
+:global(.dark) .cta div > p:last-child {
+  color: #c2cbd3;
+}
+
+:global(.dark) .photoCredits {
+  color: #c2cbd3;
+  text-decoration: underline;
+}
+
+:global(.dark) .photoCredits:focus-visible {
+  outline: 3px solid #35a791;
+}
+
+:global(.dark) .regionCard {
+  background: #1d2429;
+}
+
+:global(.dark) .regionLink {
+  color: inherit;
+}
+
+:global(.dark) .regionImage {
+  background: #262e2c;
+}
+
+:global(.dark) .regionImage::after {
+  background: linear-gradient(180deg, transparent 58%, rgba(30, 52, 55, 0.22));
+}
+
+:global(.dark) .regionArrow {
+  background: rgba(29, 36, 41, 0.93);
+  color: #8dceb2;
+  box-shadow: 0 8px 24px rgba(4, 23, 25, 0.224);
+}
+
+:global(.dark) .regionMeta {
+  color: #8dceb2;
+}
+
+:global(.dark) .regionTitle.regionTitle.regionTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .regionBody > p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .textLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .guideLayout {
+  background: #262e2c;
+}
+
+:global(.dark) .guideLinks {
+  border-top: 1px solid rgba(126, 136, 142, 0.14);
+}
+
+:global(.dark) .guideLinks a {
+  border-bottom: 1px solid rgba(126, 136, 142, 0.14);
+  color: #ced8df;
+}
+
+:global(.dark) .guideLinks a svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .guideLinks small {
+  color: #8dceb2;
+}
+
+:global(.dark) .cta .shell {
+  background: #242b30;
+}
+
+:global(.dark) .cta a {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .primaryAction:hover,
+:global(.dark) .cta a:hover {
+  background: #26503c;
+}
+
+:global(.dark) .secondaryAction:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .regionLink:focus-visible,
+:global(.dark) .guideLinks a:focus-visible,
+:global(.dark) .primaryAction:focus-visible,
+:global(.dark) .secondaryAction:focus-visible,
+:global(.dark) .cta a:focus-visible {
+  outline: 3px solid #35a791;
+}
+
+@media (hover: hover) {
+  :global(.dark) .regionLink:hover .textLink,
+  :global(.dark) .guideLinks a:hover strong {
+    text-decoration: underline;
+  }
+}
+/* ── night:end ── */

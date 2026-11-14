@@ -635,3 +635,222 @@
     transform: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .atlasPage {
+  background: #1d2429 !important;
+  background-image: none !important;
+  color: #ced8df;
+}
+
+:global(.dark) .atlasPage {
+  --support-ink: #ced8df;
+  --support-ink-soft: #c2cbd3;
+  --support-muted: #a7b2b8;
+  --support-primary: #8dceb2;
+  --support-primary-strong: #26503c;
+  --support-aurora: #39b6b3;
+  --support-line: #43453e;
+  --support-soft: #242b30;
+  --support-paper: #1d2429;
+  --support-canvas: #1d2429;
+}
+
+:global(.dark) .atlasPage :where(h1, h2, h3) {
+  color: #ced8df;
+}
+
+:global(.dark) .atlasPage :where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 46%, transparent);
+}
+
+:global(.dark) .atlasPage :global(.at-grid-bg) {
+  background-image: none;
+}
+
+:global(.dark) .atlasPage :global(.at-card) {
+  border: 0;
+  background: #242b30;
+  box-shadow: none;
+}
+
+:global(.dark) .atlasPage :global(.grid > .at-card:nth-child(even)) {
+  background: #262e2c;
+}
+
+:global(.dark) .atlasPage :global(.at-card:hover) {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+:global(.dark) .atlasPage :global(a.at-card:hover) {
+  background: #29332e;
+}
+
+:global(.dark) .atlasPage :global(.at-pill) {
+  border: 0;
+  background: #262e2c;
+  color: #8dceb2 !important;
+}
+
+:global(.dark) .hero::after {
+  background: #33352f;
+}
+
+:global(.dark) .title {
+  color: #ced8df;
+}
+
+:global(.dark) .lede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .label {
+  color: #8dceb2;
+}
+
+:global(.dark) .cardTitle.cardTitle.cardTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .cardTitleSmall.cardTitleSmall.cardTitleSmall {
+  color: #ced8df;
+}
+
+:global(.dark) .docList > li {
+  color: #c2cbd3;
+}
+
+:global(.dark) .docList > li::before {
+  background: #30604d;
+}
+
+:global(.dark) .aboutTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .aboutTitleHighlight {
+  color: #e7f0f7;
+}
+
+:global(.dark) .aboutTitleHighlight::before {
+  background: rgba(21, 87, 92, 0.9);
+}
+
+:global(.dark) .reviewTitleHighlight {
+  background: linear-gradient(transparent 12%, #c99759 12%, #c99759 92%, transparent 92%);
+  color: #172025;
+}
+
+:global(.dark) .aboutLede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .surface {
+  border: 0 !important;
+  background: #262e2c !important;
+  box-shadow: none !important;
+}
+
+:global(.dark) .softSurface {
+  border: 0 !important;
+  background: #242b30 !important;
+  box-shadow: none !important;
+}
+
+:global(.dark) .divider {
+  border-top: 1px solid #43453e !important;
+}
+
+:global(.dark) .iconTile {
+  border: 1px solid #43453e !important;
+  background: #242b30 !important;
+}
+
+:global(.dark) .actions :where(a:first-child, button:first-child) {
+  border-color: #3d6f5b !important;
+  background: #30604d !important;
+  color: #e7f0f7 !important;
+}
+
+:global(.dark) .actions :where(a:first-child, button:first-child):hover {
+  background: #26503c !important;
+}
+
+:global(.dark) .languageLink {
+  border: 0;
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .languageLinkActive {
+  border-color: #3d6f5b;
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .proseCard {
+  border: 0;
+  background: transparent;
+  color: #c2cbd3;
+  box-shadow: none;
+}
+
+:global(.dark) .proseContent {
+  color: #c2cbd3;
+}
+
+:global(.dark) .proseContent.proseContent :global(h2) {
+  background: #c99759;
+  color: #1e3645;
+}
+
+:global(.dark) .proseContent.proseContent :global(h3) {
+  color: #8dceb2;
+}
+
+:global(.dark) .proseContent :global(li)::marker {
+  color: #8dceb2;
+}
+
+:global(.dark) .proseContent :global(strong) {
+  color: #ced8df;
+}
+
+:global(.dark) .proseContent :global(a) {
+  color: #8dceb2;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+:global(.dark) .proseContent :global(th),
+:global(.dark) .proseContent :global(td) {
+  border: 0;
+}
+
+:global(.dark) .proseContent :global(thead th),
+:global(.dark) .proseContent :global(tr:first-child > th) {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .proseContent :global(tbody tr) {
+  background: #262e2c;
+}
+
+:global(.dark) .proseContent :global(tbody tr:nth-child(even)) {
+  background: #242b30;
+}
+
+:global(.dark) .contactDoc {
+  background: #1d2429;
+}
+
+:global(.dark) .contactBank {
+  color: #c2cbd3;
+}
+
+:global(.dark) .contactBankNumber {
+  color: #ced8df;
+}
+/* ── night:end ── */

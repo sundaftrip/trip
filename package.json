@@ -17,7 +17,9 @@
     "update:vietnam-tour-photos": "tsx scripts/update-vietnam-tour-photos.ts",
     "upload:vietnam-catalog-images": "tsx scripts/upload-vietnam-catalog-images.ts",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "night:css": "node scripts/night-css.mjs",
+    "night:check": "node scripts/night-css.mjs --check"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

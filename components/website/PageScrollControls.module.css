@@ -68,3 +68,23 @@
     display: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .button {
+  border: 1px solid #3d444a;
+  background: #1d2429;
+  color: #d8e3ea;
+  box-shadow: 0 4px 18px rgba(19, 43, 58, 0.144);
+}
+
+:global(.dark) .button:focus-visible {
+  outline: 2px solid #2e6e73;
+}
+
+@media (hover: hover) {
+  :global(.dark) .button:hover {
+    background: #242b2a;
+    color: #7dcdd4;
+  }
+}
+/* ── night:end ── */

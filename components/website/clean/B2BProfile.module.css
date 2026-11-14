@@ -130,3 +130,212 @@
   .closing { padding: 28px 22px; margin-bottom: 42px; }
   .closing h2 { font-size: 28px; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page {
+  --b2b-ink: #ced8df;
+  --b2b-body: #c2cbd3;
+  --b2b-green: #8dceb2;
+  --b2b-sage: #262e2c;
+  --b2b-sand: #242b30;
+  --b2b-line: #3e4743;
+}
+
+:global(.dark) .page a {
+  text-decoration: none;
+}
+
+:global(.dark) .page a:focus-visible {
+  outline: 3px solid #3d6f5b;
+}
+
+:global(.dark) .eyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .languages a {
+  color: #c2cbd3;
+}
+
+:global(.dark) .languages a:hover,
+:global(.dark) .languages a[aria-current="page"] {
+  color: #e7f0f7;
+  background: #30604d;
+}
+
+:global(.dark) .intro {
+  color: #c2cbd3;
+}
+
+:global(.dark) .privateNote {
+  color: #a7b2b8;
+}
+
+:global(.dark) .heroPhoto {
+  background: #262e2c;
+}
+
+:global(.dark) .heroPhoto figcaption {
+  color: #e7f0f7;
+  background: linear-gradient(transparent, rgba(41, 58, 70, 0.851));
+}
+
+:global(.dark) .primaryButton {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .primaryButton:hover {
+  background: #26503c;
+}
+
+:global(.dark) .downloadLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .downloadLink:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .positioning {
+  border-top: 1px solid #3e4743;
+  border-bottom: 1px solid #3e4743;
+}
+
+:global(.dark) .positioning p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .positioning a {
+  color: #8dceb2;
+}
+
+:global(.dark) .sectionTitle.sectionTitle.sectionTitle {
+  background: #c99759;
+  color: #1e3645;
+}
+
+:global(.dark) .service {
+  background: #242b30;
+}
+
+:global(.dark) .service:nth-child(even) {
+  background: #262e2c;
+}
+
+:global(.dark) .service > svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .service p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .marketSection {
+  background: #262e2c;
+}
+
+:global(.dark) .sectionIntro {
+  color: #c2cbd3;
+}
+
+:global(.dark) .markets article {
+  border-bottom: 1px solid #3e4b45;
+}
+
+:global(.dark) .markets article:last-child {
+  border: 0;
+}
+
+:global(.dark) .markets svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .markets p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .reasons li {
+  border-bottom: 1px solid #3e4743;
+}
+
+:global(.dark) .reasons li:last-child {
+  border: 0;
+}
+
+:global(.dark) .reasons svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .reasons p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .processSection {
+  border-top: 1px solid #3e4743;
+  border-bottom: 1px solid #3e4743;
+}
+
+:global(.dark) .steps li {
+  border-bottom: 1px solid #3e4743;
+}
+
+:global(.dark) .steps li:last-child {
+  border: 0;
+}
+
+:global(.dark) .stepNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .steps p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .galleryIntro {
+  color: #c2cbd3;
+}
+
+:global(.dark) .gallery img {
+  background: #242b30;
+}
+
+:global(.dark) .lead {
+  border-top: 1px solid #3e4743;
+}
+
+:global(.dark) .initial {
+  color: #8dceb2;
+  background: #262e2c;
+}
+
+:global(.dark) .leadPhoto img {
+  background: #242b30;
+}
+
+:global(.dark) .leadPhoto figcaption {
+  color: #a7b2b8;
+}
+
+:global(.dark) .closing {
+  background: #242b30;
+}
+
+:global(.dark) .closing p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .contactDetails {
+  border-top: 1px solid #3e4743;
+  color: #a7b2b8;
+}
+
+:global(.dark) .contactDetails a {
+  color: #8dceb2;
+}
+/* ── night:end ── */

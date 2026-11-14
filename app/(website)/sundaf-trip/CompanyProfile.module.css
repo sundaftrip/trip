@@ -181,3 +181,211 @@
 @media (forced-colors: active) {
   .inlineLink, .markerText { background-image: none; outline: 1px solid LinkText; outline-offset: 2px; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page {
+  --ink: #ced8df;
+  --muted: #c2cbd3;
+  --teal: #8dceb2;
+  --line: rgba(126, 136, 142, 0.13);
+  --paper: #242b30;
+}
+
+:global(.dark) .page :where(h1, h2, h3) {
+  color: #ced8df;
+}
+
+:global(.dark) .page :where(a, summary):focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .page :where(a) {
+  text-decoration: none;
+}
+
+:global(.dark) .hero {
+  background: #1d2429;
+  border-bottom: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .breadcrumb {
+  color: #c2cbd3;
+}
+
+:global(.dark) .breadcrumb a:hover {
+  color: #8dceb2;
+}
+
+:global(.dark) .breadcrumb > span[aria-hidden] {
+  color: #8f989c;
+}
+
+:global(.dark) .eyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .heroDescription {
+  color: #c2cbd3;
+}
+
+:global(.dark) .primaryButton {
+  background: #30604d;
+  color: #e7f0f7;
+  border: 1px solid #3d6f5b;
+}
+
+:global(.dark) .primaryButton:hover {
+  background: #26503c;
+  border-color: #426e58;
+}
+
+:global(.dark) .secondaryLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .contents {
+  background: #262e2c;
+  color: #ced8df;
+}
+
+:global(.dark) .contentsLabel {
+  color: #8dceb2;
+}
+
+:global(.dark) .contents li {
+  border-top: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .contents li a {
+  color: #ced8df;
+}
+
+:global(.dark) .contentsNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .contents li a:hover {
+  color: #8dceb2;
+}
+
+:global(.dark) .sectionIntro {
+  color: #c2cbd3;
+}
+
+:global(.dark) .item {
+  border-bottom: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .item:last-child {
+  border-bottom: 0;
+}
+
+:global(.dark) .itemContent p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .inlineLink {
+  color: #ced8df;
+}
+
+:global(.dark) .inlineLink,
+:global(.dark) .markerText {
+  background-image: linear-gradient(transparent 12%, #c99759 12%, #c99759 92%, transparent 92%);
+  color: #172025;
+}
+
+:global(.dark) .inlineLink:hover,
+:global(.dark) a:hover > .markerText {
+  color: #8dceb2;
+}
+
+:global(.dark) .support {
+  background: #262e2c;
+}
+
+:global(.dark) .support .item {
+  border-color: rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .preparation .sectionInner {
+  border-bottom: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .stepNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .identity .itemContent h3 {
+  color: #8dceb2;
+}
+
+:global(.dark) .reviewsHeader {
+  border-top: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .quoteMark {
+  color: #8dceb2;
+}
+
+:global(.dark) .quote {
+  background: #262e2c;
+}
+
+:global(.dark) .quote:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .quote blockquote {
+  color: #ced8df;
+}
+
+:global(.dark) .quote figcaption {
+  border-top: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .quote figcaption span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .faq {
+  border-top: 1px solid rgba(126, 136, 142, 0.13);
+}
+
+:global(.dark) .question {
+  background: #262e2c;
+}
+
+:global(.dark) .question:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .question summary {
+  color: #ced8df;
+}
+
+:global(.dark) .question summary svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .question p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .closing {
+  background: #242b30;
+  border: 0;
+}
+
+@media (forced-colors: active) {
+  :global(.dark) .inlineLink,
+  :global(.dark) .markerText {
+    background-image: none;
+    outline: 1px solid LinkText;
+  }
+}
+/* ── night:end ── */

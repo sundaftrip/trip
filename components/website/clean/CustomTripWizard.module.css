@@ -487,3 +487,159 @@
     transition-duration: .01ms;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .breadcrumb {
+  color: #a1abb1;
+}
+
+:global(.dark) .breadcrumb a {
+  color: #8dceb2;
+}
+
+:global(.dark) .heroCopy > span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .heroPhoto {
+  background: #262e2c;
+}
+
+:global(.dark) .heroAction {
+  background: #30604d;
+  color: #e7f0f7;
+  text-decoration: none;
+}
+
+:global(.dark) .heroAction:hover {
+  background: #26503c;
+}
+
+:global(.dark) .heroAction:focus-visible,
+:global(.dark) .wizard:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .wizard {
+  border: 0;
+  background: #242b30;
+  box-shadow: none;
+}
+
+:global(.dark) .progressHeader div > span,
+:global(.dark) .progressHeader > span {
+  color: #8dceb2;
+}
+
+:global(.dark) .progressHeader strong {
+  color: #ced8df;
+}
+
+:global(.dark) .progressTrack {
+  background: rgba(45, 62, 74, 0.1);
+}
+
+:global(.dark) .progressTrack span {
+  background: #30604d;
+}
+
+:global(.dark) .wizard.wizard .stepBody h2 {
+  color: #ced8df;
+}
+
+:global(.dark) .stepBody > p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .choiceGrid {
+  border: 0;
+}
+
+:global(.dark) .choiceGrid label {
+  border: 1px solid #48483e;
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .choiceGrid label[data-selected="true"] {
+  border-color: #3d6f5b;
+  background: #262e2c;
+  color: #8dceb2;
+}
+
+:global(.dark) .field > span,
+:global(.dark) .counterGrid label > span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .field input,
+:global(.dark) .field select,
+:global(.dark) .field textarea,
+:global(.dark) .counterGrid input {
+  border: 1px solid #48483e;
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .field input[aria-invalid="true"] {
+  border-color: #ad3024;
+}
+
+:global(.dark) .error {
+  color: #f7a598;
+}
+
+:global(.dark) .summary {
+  background: #262e2c;
+}
+
+:global(.dark) .summary dt {
+  color: #a7b2b8;
+}
+
+:global(.dark) .summary dd {
+  color: #ced8df;
+}
+
+:global(.dark) .wizardFooter {
+  border-top: 1px solid rgba(126, 136, 142, 0.12);
+}
+
+:global(.dark) .wizardFooter button,
+:global(.dark) .wizardFooter a {
+  border: 0;
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .wizardFooter button:last-child,
+:global(.dark) .wizardFooter a {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .aftercare li {
+  background: #262e2c;
+}
+
+:global(.dark) .aftercare li:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .aftercare li > strong {
+  color: #8dceb2;
+}
+
+:global(.dark) .aftercare li span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .aftercare li b {
+  color: #ced8df;
+}
+/* ── night:end ── */

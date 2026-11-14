@@ -29,3 +29,62 @@
 .notes strong { color: var(--doc-navy, #1e3645); }
 
 @media (max-width: 639px) { .section { padding-inline: 16px; } .scrollHint { display: block; } }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .section {
+  color: #ced8df;
+}
+
+:global(.dark) .intro,
+:global(.dark) .note,
+:global(.dark) .empty {
+  color: #c2cbd3;
+}
+
+:global(.dark) .scrollHint {
+  color: #a7b2b8;
+}
+
+:global(.dark) .scroll:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .scroll thead {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .scroll tbody {
+  background: #262e2c;
+}
+
+:global(.dark) .scroll tbody:nth-of-type(even) {
+  background: #242b30;
+}
+
+:global(.dark) .scroll tbody + tbody {
+  border-top: 3px solid #363d43;
+}
+
+:global(.dark) .scroll td span,
+:global(.dark) .scroll th span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .section a {
+  color: #8dceb2;
+  text-decoration: underline;
+}
+
+:global(.dark) .section a:hover {
+  color: #93cdaf;
+}
+
+:global(.dark) .notes td {
+  color: #c2cbd3;
+}
+
+:global(.dark) .notes strong {
+  color: #ced8df;
+}
+/* ── night:end ── */

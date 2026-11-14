@@ -4,3 +4,21 @@
 .nav a { font-size: .875rem; line-height: 1.7; text-decoration: underline; text-underline-offset: 4px; }
 .nav a:hover { color: var(--site-accent); }
 .nav a:focus-visible { outline: 2px solid var(--site-accent); outline-offset: 4px; }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .nav {
+  color: var(--site-text, #d9e3eb);
+}
+
+:global(.dark) .nav a {
+  text-decoration: underline;
+}
+
+:global(.dark) .nav a:hover {
+  color: var(--site-accent);
+}
+
+:global(.dark) .nav a:focus-visible {
+  outline: 2px solid var(--site-accent);
+}
+/* ── night:end ── */

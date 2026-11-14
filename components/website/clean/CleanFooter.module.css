@@ -1,3 +1,5 @@
+/* night:skip · Footer sudah berdesain gelap. Di mode malam hanya latarnya yang
+   dibuat sedikit lebih gelap dari halaman (lihat aturan :global(.dark) di bawah). */
 .footer {
   --footer-ink: #f5f7fc;
   --footer-text: #b7c0d0;
@@ -17,6 +19,11 @@
 
 .footer,
 .footer * { box-sizing: border-box; }
+
+:global(.dark) .footer {
+  --footer-bg: #161c20;
+  --footer-line: #2c353c;
+}
 
 .footer a { text-decoration: none; }
 .footer a:focus-visible { outline: 3px solid #f6c773; outline-offset: 4px; border-radius: 5px; }

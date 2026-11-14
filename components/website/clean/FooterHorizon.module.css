@@ -1,3 +1,4 @@
+/* night:skip · Gelombang mengikuti warna footer (--footer-bg), aman untuk mode malam. */
 /* Wave transition at the top of the footer. Above the waves the footer is
    transparent, so the page colour shows through; the front wave takes the
    footer colour and the footer background starts 1px under it, so there is

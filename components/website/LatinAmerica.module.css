@@ -253,3 +253,488 @@
   .modeCoverage { padding: 14px; }
   .airBadge { white-space: normal; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page h1,
+:global(.dark) .page h2,
+:global(.dark) .page h3,
+:global(.dark) .collection h2 {
+  color: inherit;
+}
+
+:global(.dark) .eyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .catalogHero {
+  color: #e7f0f7;
+  background: #293a46;
+}
+
+:global(.dark) .heroBackdrop::after {
+  background: linear-gradient(90deg, rgba(33, 55, 62, 0.95) 0%, rgba(33, 55, 62, 0.8) 40%, rgba(33, 55, 62, 0.12) 100%);
+}
+
+:global(.dark) .catalogHero h1 span {
+  color: #e7b16f;
+}
+
+:global(.dark) .catalogHero .eyebrow {
+  color: #e7b16f;
+}
+
+:global(.dark) .catalogHero .lead {
+  color: #e7f0f7;
+}
+
+:global(.dark) .status {
+  border: 1px solid #42504a;
+  background: #242a30;
+  color: #95ccb7;
+}
+
+:global(.dark) .primary {
+  background: #30604d;
+  color: #e7f0f7;
+  border: 1px solid #3d6f5b;
+}
+
+:global(.dark) .secondary {
+  color: #ced8df;
+  border: 1px solid transparent;
+  background: #242b30;
+}
+
+:global(.dark) .catalogHero .primary {
+  color: #ced8df;
+  background: #1d2429;
+  border-color: #363d43;
+}
+
+:global(.dark) .catalogHero .secondary {
+  color: #e7f0f7;
+  background: rgba(33, 55, 62, 0.35);
+  border-color: rgba(54, 61, 67, 0.65);
+}
+
+:global(.dark) .primary:hover {
+  background: #26503c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .secondary:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .catalogHero .secondary:hover {
+  background: #293a46;
+}
+
+:global(.dark) .caption {
+  color: #a7b2b8;
+}
+
+:global(.dark) .catalogHero .caption {
+  color: #dfeae9;
+}
+
+:global(.dark) .sectionIntro > p:not(.eyebrow) {
+  color: #c2cbd3;
+}
+
+:global(.dark) .card {
+  border: 0;
+  background: #242b30;
+}
+
+:global(.dark) .card:nth-child(even) {
+  background: #262e2c;
+}
+
+:global(.dark) .cardArrow {
+  color: #8dceb2;
+  background: #1d2429;
+}
+
+:global(.dark) .cardBody > p:not(.eyebrow) {
+  color: #c2cbd3;
+}
+
+:global(.dark) .cardBottom span {
+  color: #a7b2b8;
+}
+
+:global(.dark) .textLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .textLink:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .planning {
+  background: #242b30;
+}
+
+:global(.dark) .steps span,
+:global(.dark) .stageNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .steps p,
+:global(.dark) .planning p,
+:global(.dark) .stages p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailHero {
+  background: #1d2429;
+}
+
+:global(.dark) .back {
+  color: #c2cbd3;
+}
+
+:global(.dark) .heroPhoto figcaption {
+  background: linear-gradient(transparent,rgba(40, 47, 53, 0.8));
+  color: #e7f0f7;
+}
+
+:global(.dark) .heroPhoto figcaption a {
+  text-decoration: underline;
+}
+
+:global(.dark) .route {
+  border-block: 1px solid #3e4645;
+}
+
+:global(.dark) .route span {
+  color: #8dceb2;
+  background: #262e2c;
+}
+
+:global(.dark) .note {
+  background: #262e2c;
+  border: 0;
+  color: #c2cbd3;
+}
+
+:global(.dark) .faq details {
+  background: #262e2c;
+}
+
+:global(.dark) .faq details:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .faq summary {
+  color: #ced8df;
+}
+
+:global(.dark) .faq p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .trade {
+  background: #262e2c;
+  color: #ced8df;
+}
+
+:global(.dark) .trade .eyebrow,
+:global(.dark) .trade .textLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .trade p:not(.eyebrow) {
+  color: #c2cbd3;
+}
+
+:global(.dark) .finalCta p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .credits {
+  color: #c2cbd3;
+}
+
+:global(.dark) .credits a {
+  text-decoration: underline;
+}
+
+:global(.dark) .collection {
+  background: #262e2c;
+  color: #ced8df;
+}
+
+:global(.dark) .collection .eyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .collection.collection.collection h2 {
+  color: #ced8df;
+}
+
+:global(.dark) .collection p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .collection .primary {
+  background: #30604d;
+  border-color: #3d6f5b;
+}
+
+:global(.dark) .collection .primary:hover {
+  background: #26503c;
+}
+
+:global(.dark) .page a:focus-visible,
+:global(.dark) .page summary:focus-visible,
+:global(.dark) .collection a:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+@media (max-width: 760px) {
+  :global(.dark) .heroBackdrop::after {
+    background: linear-gradient(90deg,rgba(33, 55, 62, 0.92),rgba(33, 55, 62, 0.56));
+  }
+}
+
+:global(.dark) .tripFacts {
+  color: #c2cbd3;
+}
+
+:global(.dark) .tripFacts svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .heroPrice > span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .heroPrice strong {
+  color: #8dceb2;
+}
+
+:global(.dark) .heroPrice small {
+  color: #c2cbd3;
+}
+
+:global(.dark) .packageNav {
+  background: #1d2429;
+  border-bottom: 1px solid #3e4645;
+}
+
+:global(.dark) .packageNav a {
+  color: #c2cbd3;
+}
+
+:global(.dark) .packageNav a:hover {
+  color: #8dceb2;
+  text-decoration: underline;
+}
+
+:global(.dark) .itinerary {
+  border-top: 1px solid #3e4645;
+}
+
+:global(.dark) .itinerary details {
+  border-bottom: 1px solid #3e4645;
+}
+
+:global(.dark) .dayNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .dayToggle {
+  color: #8dceb2;
+}
+
+:global(.dark) .dayContent p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .dayContent > span,
+:global(.dark) .dayContent small {
+  color: #8dceb2;
+}
+
+:global(.dark) .gallery figcaption {
+  color: #a7b2b8;
+}
+
+:global(.dark) .gallery figcaption strong {
+  color: #ced8df;
+}
+
+:global(.dark) .gallery figcaption a {
+  text-decoration: underline;
+}
+
+:global(.dark) .pricePanel {
+  background: #242b30;
+  border: 0;
+}
+
+:global(.dark) .priceHeading h2 {
+  color: #ced8df;
+}
+
+:global(.dark) .priceHeading p:not(.eyebrow) {
+  color: #c2cbd3;
+}
+
+:global(.dark) .airBadge {
+  background: #1d2429;
+  color: #8dceb2;
+}
+
+:global(.dark) .priceBasis {
+  color: #c2cbd3;
+}
+
+:global(.dark) .optionList {
+  border: 0;
+}
+
+:global(.dark) .optionList legend > span {
+  color: #a7b2b8;
+}
+
+:global(.dark) .option {
+  background: #1d2429;
+  border: 1px solid #48483e;
+}
+
+:global(.dark) .option:has(input:checked) {
+  border-color: #3d6f5b;
+  background: #262e2c;
+}
+
+:global(.dark) .option input {
+  accent-color: #8dceb2;
+}
+
+:global(.dark) .option small {
+  color: #a7b2b8;
+}
+
+:global(.dark) .priceTotal {
+  border-top: 1px solid rgba(126, 136, 142, 0.14);
+}
+
+:global(.dark) .priceTotal span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .priceFootnote {
+  color: #c2cbd3;
+}
+
+:global(.dark) .includedList li {
+  color: #c2cbd3;
+}
+
+:global(.dark) .includedList svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .excludedList li {
+  color: #c2cbd3;
+}
+
+:global(.dark) .excludedList li::before {
+  background: #6e6251;
+}
+
+:global(.dark) .hotelGrid article {
+  border: 0;
+  background: #262e2c;
+}
+
+:global(.dark) .hotelGrid article:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .hotelGrid article > span {
+  color: #8dceb2;
+}
+
+:global(.dark) .hotelGrid p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .flightSection {
+  background: #262e2c;
+}
+
+:global(.dark) .flightSection p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .flightRoute {
+  color: #8dceb2 !important;
+}
+
+:global(.dark) .cardBottom .catalogPrice {
+  color: #8dceb2;
+}
+
+:global(.dark) .page input:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .groupList {
+  border: 0;
+}
+
+:global(.dark) .groupChoice > span {
+  border: 1px solid #48483e;
+  background: #1d2429;
+}
+
+:global(.dark) .groupChoice small {
+  color: #c2cbd3;
+}
+
+:global(.dark) .groupChoice input:checked + span {
+  border-color: #3d6f5b;
+  box-shadow: 0 0 0 1px #2e6751;
+  background: #262e2c;
+}
+
+:global(.dark) .groupChoice input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .roomNote {
+  color: #ced8df;
+}
+
+:global(.dark) .modeList {
+  border: 0;
+}
+
+:global(.dark) .modeCoverage {
+  border: 0;
+  background: #1d2429;
+  color: #c2cbd3;
+}
+
+:global(.dark) .packageComparison {
+  background: #262e2c;
+  border: 0;
+}
+
+:global(.dark) .packageComparison p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .landStartingPrice {
+  color: #8dceb2;
+}
+/* ── night:end ── */

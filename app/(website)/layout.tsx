@@ -93,15 +93,19 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     <style>{`
       :root { ${cssVars} }
       .dark {
-        --site-accent: #20B8B5;
-        --site-hero: #ffffff;
-        --site-heading: #f9fafb;
-        --site-tour-title: #f3f4f6;
-        --site-blog-title: #f3f4f6;
-        --site-eyebrow: #8DE5DF;
-        --site-bg: color-mix(in srgb, var(--site-accent) 10%, #0b2024);
-        --site-bg-soft: color-mix(in srgb, var(--site-accent) 14%, #102a2e);
-        --site-accent-ink: #8EF4F2;
+        /* Mode malam lembut: slate kebiruan, teks gading, teal diredam. */
+        --site-accent: #23807D; /* cukup gelap untuk tombol bertulisan putih */
+        --site-hero: #E2E9EE;
+        --site-heading: #E2E9EE;
+        --site-tour-title: #DCE4E9;
+        --site-blog-title: #DCE4E9;
+        --site-eyebrow: #8FD3CF;
+        --site-bg: #1D2429;
+        --site-bg-soft: #232B30;
+        --site-surface: #232B30;
+        --site-accent-ink: #7DCDD4;
+        --background: #1D2429;
+        --foreground: #D8E3EA;
       }
     `}</style>
   );
