@@ -8,6 +8,8 @@ import { Clock, Calendar } from "lucide-react";
 import { formatDate, cldOptimize } from "@/lib/utils";
 import BreadcrumbSchema from "@/components/website/BreadcrumbSchema";
 import CleanBlogIndex from "@/components/website/clean/CleanBlogIndex";
+import { orderPostsWithPins } from "@/lib/blog-pins";
+import { getPinnedBlogIds } from "@/lib/blog-pins-server";
 import BlogCategoryFilter, {
   type BlogCategoryOption,
 } from "./BlogCategoryFilter";
@@ -46,10 +48,13 @@ async function getSiteTheme() {
 }
 
 export default async function BlogPage() {
-  const [posts, theme] = await Promise.all([
+  const [publishedPosts, theme, pinnedIds] = await Promise.all([
     prisma.blog.findMany({ where: { published: true }, orderBy: { date: "desc" } }),
     getSiteTheme(),
+    getPinnedBlogIds(),
   ]);
+  // Artikel tersemat (maks 3) selalu tampil paling atas, sisanya urut tanggal.
+  const posts = orderPostsWithPins(publishedPosts, pinnedIds);
 
   const categoryCounts = posts.reduce((counts, post) => {
     const category = post.category?.trim();

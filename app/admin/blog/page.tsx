@@ -4,17 +4,29 @@ import { Plus, Pencil, Sparkles } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 import { requireAdminModule } from "@/lib/admin-access";
+import BlogPinButton from "@/components/admin/BlogPinButton";
+import { MAX_PINNED_POSTS, orderPostsWithPins } from "@/lib/blog-pins";
+import { getPinnedBlogIds } from "@/lib/blog-pins-server";
 
 export default async function BlogAdminPage() {
   await requireAdminModule("blog");
-  const posts = await prisma.blog.findMany({ orderBy: { date: "desc" } });
+  const [allPosts, pinnedIds] = await Promise.all([
+    prisma.blog.findMany({ orderBy: { date: "desc" } }),
+    getPinnedBlogIds(),
+  ]);
+  // Sematan untuk artikel yang sudah dihapus/di-draft tidak dihitung.
+  const activePinnedIds = pinnedIds.filter((id) => allPosts.some((post) => post.id === id && post.published));
+  const posts = orderPostsWithPins(allPosts, activePinnedIds);
+  const pinnedCount = posts.filter((post) => post.pinned).length;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Blog</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{posts.length} artikel</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {posts.length} artikel · {pinnedCount}/{MAX_PINNED_POSTS} disematkan di atas Jurnal (ikon pin)
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -54,7 +66,14 @@ export default async function BlogAdminPage() {
             {posts.map((post) => (
               <tr key={post.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[280px]">{post.title}</p>
+                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[280px]">
+                    {post.pinned && (
+                      <span className="mr-1.5 inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                        Disematkan
+                      </span>
+                    )}
+                    {post.title}
+                  </p>
                   <p className="text-xs text-gray-400">/{post.slug}</p>
                 </td>
                 <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{post.category ?? "-"}</td>
@@ -67,6 +86,7 @@ export default async function BlogAdminPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-2">
+                    <BlogPinButton id={post.id} pinnedIds={activePinnedIds} published={post.published} />
                     <Link href={`/admin/blog/${post.id}`} className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
                       <Pencil size={15} />
                     </Link>
