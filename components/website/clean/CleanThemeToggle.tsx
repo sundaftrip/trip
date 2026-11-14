@@ -37,10 +37,19 @@ export default function CleanThemeToggle({ className = "" }: { className?: strin
 
     const doc = document as ViewTransitionDocument;
     if (typeof doc.startViewTransition === "function") {
+      let applied = false;
+      const applyOnce = () => {
+        if (applied) return;
+        applied = true;
+        apply();
+      };
+      const done = () => root.classList.remove("theme-switching");
       root.classList.add("theme-switching");
-      doc
-        .startViewTransition(apply)
-        .finished.finally(() => root.classList.remove("theme-switching"));
+      doc.startViewTransition(applyOnce).finished.then(done, done);
+      // Cadangan: bila browser menunda transisi (mis. tab sedang tidak dirender),
+      // tema tetap berganti tanpa menunggu.
+      window.setTimeout(applyOnce, 400);
+      window.setTimeout(done, 1500);
       return;
     }
 
