@@ -1010,7 +1010,7 @@
 
 :global(.dark) .body :global(hr) {
   border: 0;
-  background: rgba(45, 62, 74, 0.14);
+  background: rgba(30, 54, 69, 0.14);
 }
 
 :global(.dark) .body :global(h2[id]:target) {

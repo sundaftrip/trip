@@ -2466,7 +2466,7 @@
 }
 
 :global(.dark) .heroShade {
-  background: linear-gradient(90deg, rgba(35, 49, 52, 0.84) 0%, rgba(35, 49, 52, 0.58) 52%, rgba(35, 49, 52, 0.12) 78%), linear-gradient(0deg, rgba(35, 49, 52, 0.7) 0%, transparent 52%);
+  background: linear-gradient(90deg, rgba(7, 17, 19, 0.84) 0%, rgba(7, 17, 19, 0.58) 52%, rgba(7, 17, 19, 0.12) 78%), linear-gradient(0deg, rgba(7, 17, 19, 0.7) 0%, transparent 52%);
 }
 
 :global(.dark) .heroEyebrow,
@@ -2570,7 +2570,7 @@
 }
 
 :global(.dark) .tourPhotoShade {
-  background: linear-gradient(to bottom, transparent, rgba(30, 53, 58, 0.78));
+  background: linear-gradient(to bottom, transparent, rgba(5, 25, 29, 0.78));
 }
 
 :global(.dark) .tourStatus {
@@ -2660,7 +2660,7 @@
 }
 
 :global(.dark) .destinationGrid > a::after {
-  background: linear-gradient(0deg, rgba(36, 49, 52, 0.72), transparent 58%);
+  background: linear-gradient(0deg, rgba(8, 18, 20, 0.72), transparent 58%);
 }
 
 :global(.dark) .review {
@@ -2681,7 +2681,7 @@
 }
 
 :global(.dark) .reviewControls button {
-  border: 1px solid rgba(54, 61, 67, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   background: transparent;
   color: #e7f0f7;
 }
@@ -2696,7 +2696,7 @@
 }
 
 :global(.dark) .reviewControls button:disabled {
-  border-color: rgba(54, 61, 67, 0.14);
+  border-color: rgba(255, 255, 255, 0.14);
   color: rgba(231, 240, 247, 0.32);
 }
 
@@ -3616,7 +3616,7 @@
 
 @media (max-width: 700px) {
   :global(.dark) .heroShade {
-    background: linear-gradient(0deg, rgba(35, 49, 52, 0.86) 0%, rgba(35, 49, 52, 0.34) 82%);
+    background: linear-gradient(0deg, rgba(7, 17, 19, 0.86) 0%, rgba(7, 17, 19, 0.34) 82%);
   }
   
   :global(.dark) .finderField {

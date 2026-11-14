@@ -36,4 +36,8 @@ if (process.env.VERCEL_ENV === "preview") {
   run("tsx prisma/seed.ts");
 }
 
+// Mode malam: blok night:start di CSS module selalu dibuat ulang dari CSS sumber,
+// jadi gaya baru dari branch mana pun otomatis punya versi malamnya saat deploy.
+run("node scripts/night-css.mjs");
+
 run("next build --webpack");

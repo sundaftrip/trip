@@ -1212,7 +1212,7 @@
 
 :global(.dark) .searchBackdrop {
   border: 0;
-  background: rgba(32, 52, 56, 0.58);
+  background: rgba(7, 22, 25, 0.58);
 }
 
 :global(.dark) .searchDialog {
@@ -1326,7 +1326,7 @@
 
 :global(.dark) .drawerBackdrop {
   border: 0;
-  background: rgba(32, 52, 56, 0.45);
+  background: rgba(7, 22, 25, 0.45);
 }
 
 :global(.dark) .drawer {

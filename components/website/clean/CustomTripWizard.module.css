@@ -541,7 +541,7 @@
 }
 
 :global(.dark) .progressTrack {
-  background: rgba(45, 62, 74, 0.1);
+  background: rgba(30, 54, 69, 0.1);
 }
 
 :global(.dark) .progressTrack span {

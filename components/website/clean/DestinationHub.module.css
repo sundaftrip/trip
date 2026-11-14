@@ -373,7 +373,7 @@
 }
 
 :global(.dark) .hero > div[aria-hidden="true"] {
-  background: linear-gradient(0deg, rgba(31, 49, 54, 0.88), rgba(31, 49, 54, 0.08) 72%);
+  background: linear-gradient(0deg, rgba(4, 17, 20, 0.88), rgba(4, 17, 20, 0.08) 72%);
 }
 
 :global(.dark) .hero .shell > p {
