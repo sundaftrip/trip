@@ -2017,3 +2017,429 @@
   0%, 100% { opacity: 0.75; transform: scaleX(1); }
   50% { opacity: 0.5; transform: scaleX(0.9); }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .home {
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .home {
+  --home-ink: #d8e3ea;
+  --home-ink-soft: #b4bfc6;
+  --home-muted: #98a3a8;
+  --home-primary: #7dcdd4;
+  --home-primary-strong: #0f4347;
+  --home-accent: #7dcdd4;
+  --home-aurora: #39b6b3;
+  --home-ice: #242b30;
+  --home-sand: #302d25;
+  --home-paper: #1d2429;
+  --home-white: #e7f0f7;
+  --home-line: #3e454b;
+  --home-success: #83d2a7;
+}
+
+:global(.dark) .home :where(a, button, select):focus-visible {
+  outline: 3px solid #49b6a9;
+}
+
+:global(.dark) .skipLink {
+  background: #293a46;
+  color: #e7f0f7;
+}
+
+:global(.dark) .heroNote {
+  --hero-note-ink-start: #34c2a3;
+  --hero-note-ink-middle: #6eccec;
+  --hero-note-ink-end: #b5b6fd;
+}
+
+:global(.dark) .hero {
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .heroAurora {
+  background: radial-gradient(42% 46% at 34% 46%, rgba(54, 173, 170, 0.55), rgba(54, 173, 170, 0) 72%),
+    radial-gradient(34% 40% at 66% 30%, rgba(87, 184, 134, 0.45), rgba(87, 184, 134, 0) 72%),
+    radial-gradient(30% 34% at 84% 48%, rgba(96, 148, 234, 0.24), rgba(96, 148, 234, 0) 72%);
+}
+
+:global(.dark) .heroOverlay {
+  background: linear-gradient(
+    90deg,
+    rgba(31, 55, 59, 0.84) 0%,
+    rgba(31, 55, 59, 0.54) 42%,
+    rgba(31, 55, 59, 0.16) 74%,
+    rgba(31, 55, 59, 0.06) 100%
+  );
+}
+
+:global(.dark) .eyebrowLight {
+  color: rgba(231, 240, 247, 0.84);
+}
+
+:global(.dark) .heroCopy > p:last-child {
+  color: rgba(231, 240, 247, 0.9);
+}
+
+:global(.dark) .finderCard {
+  border: 1px solid rgba(54, 61, 67, 0.8);
+  background: linear-gradient(110deg, #1d2429 0%, #20262c 60%, #272d29 100%);
+  box-shadow: 0 8px 28px rgba(4, 20, 23, 0.256);
+}
+
+:global(.dark) .finderField {
+  border: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .finderField + .finderField {
+  border-left: 1px solid #3e454b;
+}
+
+:global(.dark) .finderField small {
+  color: #98a3a8;
+}
+
+:global(.dark) .finderField select {
+  border: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .finderCard > button {
+  border: 0;
+  background: #15575c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .finderCard > button:hover {
+  background: #0f4347;
+}
+
+:global(.dark) .sectionHeading > p:last-child {
+  color: #c2cbd3;
+}
+
+:global(.dark) .desktopSectionLink,
+:global(.dark) .mobileSectionLink,
+:global(.dark) .reviewLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .tourSection {
+  background: #1d2429;
+}
+
+:global(.dark) .tourCard {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .tourLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+:global(.dark) .tourLink:focus-visible {
+  outline: 3px solid #2e6e73;
+}
+
+:global(.dark) .tourMedia {
+  background: #242b30;
+}
+
+:global(.dark) .tourMediaShade {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(30, 53, 58, 0.68)
+  );
+}
+
+:global(.dark) .tourMedia::before,
+:global(.dark) .destinationMosaic > a::before,
+:global(.dark) .journalMedia::before {
+  background: linear-gradient(150deg, rgba(54, 173, 170, 0.22) 0%, rgba(54, 173, 170, 0) 40%);
+}
+
+:global(.dark) .tourMediaTitle {
+  color: #e7f0f7;
+  text-shadow: 0 2px 12px rgba(4, 20, 23, 0.672);
+}
+
+:global(.dark) .tourBadge {
+  border: 1px solid rgba(54, 61, 67, 0.58);
+  background: rgba(29, 36, 41, 0.76);
+  color: #8acbd1;
+  box-shadow: 0 4px 16px rgba(8, 33, 36, 0.128);
+}
+
+:global(.dark) .tourCard[data-state="sold"] .tourBadge {
+  background: #293a46;
+  color: #e7f0f7;
+}
+
+:global(.dark) .tourBody {
+  background: #1d2429;
+}
+
+:global(.dark) .tourMeta {
+  color: #7dcdd4;
+}
+
+:global(.dark) .routeLine,
+:global(.dark) .departureLine {
+  color: #b4bfc6;
+}
+
+:global(.dark) .routeLine svg,
+:global(.dark) .departureLine svg {
+  color: #7dcdd4;
+}
+
+:global(.dark) .tourPrice {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .tourPrice > span {
+  color: #98a3a8;
+}
+
+:global(.dark) .tourPrice strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .tourPrice small {
+  color: #98a3a8;
+}
+
+:global(.dark) .tourPrice .tourMandatoryNote {
+  color: #98a3a8;
+}
+
+:global(.dark) .emptyState {
+  border: 1px solid #3e454b;
+  background: #242b30;
+}
+
+:global(.dark) .emptyState p {
+  color: #b4bfc6;
+}
+
+:global(.dark) .emptyState a {
+  color: #7dcdd4;
+}
+
+:global(.dark) .destinationSection {
+  background: #1d2429;
+}
+
+:global(.dark) .destinationMosaic > a {
+  background: #0f4347;
+}
+
+:global(.dark) .destinationShade {
+  background: linear-gradient(0deg, rgba(31, 55, 58, 0.78) 0%, rgba(31, 55, 58, 0.08) 70%);
+}
+
+:global(.dark) .destinationLabel {
+  color: #e7f0f7;
+}
+
+:global(.dark) .destinationLabel small {
+  color: rgba(231, 240, 247, 0.84);
+}
+
+:global(.dark) .benefitSection {
+  background: #1d2429;
+}
+
+:global(.dark) .benefitGrid article {
+  background: #262e2c;
+}
+
+:global(.dark) .benefitGrid article:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .benefitGrid.benefitGrid .benefitTitle h3 {
+  color: #8dceb2;
+}
+
+:global(.dark) .benefitGrid p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .reviewSection {
+  background: #1d2429;
+}
+
+:global(.dark) .faqSection {
+  background: #1d2429;
+}
+
+:global(.dark) .reviewCard {
+  background: #242b30;
+}
+
+:global(.dark) .reviewCard:nth-child(even) {
+  background: #262e2c;
+}
+
+:global(.dark) .reviewTopline {
+  color: #98a3a8;
+}
+
+:global(.dark) .reviewRating {
+  color: #f7bd34;
+}
+
+:global(.dark) .reviewRating svg {
+  fill: none;
+}
+
+:global(.dark) .reviewRating svg[data-filled="true"] {
+  fill: currentColor;
+}
+
+:global(.dark) .reviewCard blockquote {
+  color: #ced8df;
+}
+
+:global(.dark) .reviewMore {
+  color: #8dceb2;
+  text-decoration: none;
+}
+
+:global(.dark) .reviewer {
+  border-top: 1px solid rgba(126, 136, 142, 0.1);
+}
+
+:global(.dark) .reviewerAvatar {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .reviewer strong {
+  color: #ced8df;
+}
+
+:global(.dark) .reviewer small {
+  color: #a7b2b8;
+}
+
+:global(.dark) .faqLede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .faqItem {
+  background: #262e2c;
+}
+
+:global(.dark) .faqItem:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .faqItem h3 > button {
+  border: 0;
+  background: transparent;
+  color: #ced8df;
+}
+
+:global(.dark) .faqItem h3 > button svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .faqPanel p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .journalSection {
+  background: #1d2429;
+}
+
+:global(.dark) .journalLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+:global(.dark) .journalMedia {
+  background: #262e2c;
+}
+
+:global(.dark) .journalPlaceholder {
+  color: #8dceb2;
+}
+
+:global(.dark) .journalMeta {
+  color: #8dceb2;
+}
+
+:global(.dark) .journalBody.journalBody.journalBody h3 {
+  color: #ced8df;
+}
+
+:global(.dark) .journalExcerpt {
+  color: #c2cbd3;
+}
+
+:global(.dark) .journalBody time {
+  color: #a7b2b8;
+}
+
+:global(.dark) .journalLink:hover .journalBody.journalBody.journalBody h3 {
+  color: #8dceb2;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  :global(.dark) .desktopSectionLink:hover {
+    color: #93cdaf;
+  }
+  
+  :global(.dark) .tourCard:hover .tourMediaTitle,
+  :global(.dark) .destinationMosaic > a:hover .destinationLabel strong {
+    color: #e6f1ef;
+  }
+  
+  :global(.dark) .tourCard:hover .tourPrice strong {
+    color: #7dcdd4;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :global(.dark) .tourCard:hover {
+    border-color: rgba(41, 110, 120, 0.38);
+    box-shadow: 0 3px 8px -3px rgba(18, 51, 55, 0.112),
+        0 12px 22px -9px rgba(18, 51, 55, 0.144);
+  }
+}
+
+@media (max-width: 759px) {
+  :global(.dark) .heroOverlay {
+    background: linear-gradient(
+        180deg,
+        rgba(31, 55, 59, 0.72) 0%,
+        rgba(31, 55, 59, 0.28) 56%,
+        rgba(31, 55, 59, 0.66) 100%
+      );
+  }
+  
+  :global(.dark) .destinationSection .shell {
+    border-top: 1px solid #3e454b;
+  }
+  
+  :global(.dark) .tourAllTile {
+    border: 1px solid #3e454b;
+    background: linear-gradient(160deg, #252c2b 0%, #1d2429 62%);
+    color: #8acbd1;
+  }
+  
+  :global(.dark) .tourAllTile svg {
+    color: #7dcdd4;
+  }
+}
+/* ── night:end ── */

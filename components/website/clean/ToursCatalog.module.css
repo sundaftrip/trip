@@ -967,3 +967,340 @@
     animation: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .page {
+  --catalog-ink: #d8e3ea;
+  --catalog-navy: #dae2eb;
+  --catalog-muted: #9ea8af;
+  --catalog-line: #3e454b;
+  --catalog-soft: #1d2429;
+  --catalog-primary: #7dcdd4;
+}
+
+:global(.dark) .hero {
+  background: #1d2429;
+}
+
+:global(.dark) .breadcrumb {
+  color: #9ea8af;
+}
+
+:global(.dark) .breadcrumb a:hover {
+  color: #7dcdd4;
+}
+
+:global(.dark) .heroLede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .hero h1,
+:global(.dark) .headingRow h2,
+:global(.dark) .faqLayout h2,
+:global(.dark) .consultation h2 {
+  color: #dae2eb;
+}
+
+:global(.dark) .trustCounts a {
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .trustCounts a:nth-child(even) {
+  background: #262e2c;
+}
+
+:global(.dark) .trustCounts a:hover {
+  background: #29332e;
+}
+
+:global(.dark) .trustCounts a[aria-current="page"] {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .trustCounts span {
+  color: inherit;
+}
+
+:global(.dark) .trustCounts strong {
+  color: inherit;
+}
+
+:global(.dark) .trustCounts small {
+  color: #c2cbd3;
+}
+
+:global(.dark) .trustCounts a[aria-current="page"] small {
+  color: rgba(231, 240, 247, 0.86);
+}
+
+:global(.dark) .customOffer h3 {
+  color: #dae2eb;
+}
+
+:global(.dark) .customOffer > p:not([class]) {
+  color: #9ea8af;
+}
+
+:global(.dark) .customOffer > span {
+  color: #9ea8af;
+}
+
+:global(.dark) .privatePreviewHeading h2 {
+  color: #dae2eb;
+}
+
+:global(.dark) .tabs {
+  border-bottom: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .tabs a {
+  color: #9ea8af;
+}
+
+:global(.dark) .tabs a::after {
+  background: transparent;
+}
+
+:global(.dark) .tabs a[aria-current="page"] {
+  background: #1d2429;
+  color: #7dcdd4;
+}
+
+:global(.dark) .tabs a[aria-current="page"] span {
+  background: #1d2429;
+}
+
+:global(.dark) .tabs a[aria-current="page"] small {
+  background: #2b3838;
+}
+
+:global(.dark) .tabs a[aria-current="page"]::after {
+  background: #15575c;
+}
+
+:global(.dark) .tabs small {
+  background: #292f35;
+}
+
+:global(.dark) .resultsToolbar {
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .resultsToolbar > div {
+  color: #9ea8af;
+}
+
+:global(.dark) .resultsToolbar strong {
+  color: #dae2eb;
+}
+
+:global(.dark) .resultsToolbar > button {
+  border: 0;
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .resultsToolbar button span {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .activeFilters button {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+  color: #7dcdd4;
+}
+
+:global(.dark) .activeFilters .clearFilters {
+  border-color: transparent;
+  background: transparent;
+  color: #9ea8af;
+  text-decoration: underline;
+}
+
+:global(.dark) .headingRow > p {
+  color: #9ea8af;
+}
+
+:global(.dark) .empty button,
+:global(.dark) .empty a {
+  border: 1px solid #2e6e73;
+  background: #15575c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .loadMore span {
+  color: #9ea8af;
+}
+
+:global(.dark) .empty h3 {
+  color: #dae2eb;
+}
+
+:global(.dark) .empty p {
+  color: #9ea8af;
+}
+
+:global(.dark) .empty a {
+  border-color: #424c4c;
+  background: #1d2429;
+  color: #dae2eb;
+}
+
+:global(.dark) .faqSection {
+  background: #1d2429;
+}
+
+:global(.dark) .faqs {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .faqs details {
+  border-bottom: 1px solid #404949;
+}
+
+:global(.dark) .faqs summary {
+  color: #dae2eb;
+}
+
+:global(.dark) .faqs summary:focus-visible {
+  outline: 3px solid #3c4c4b;
+}
+
+:global(.dark) .faqs p {
+  color: #9ea8af;
+}
+
+:global(.dark) .consultation {
+  background: #1d2429;
+}
+
+:global(.dark) .consultation p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .sheetLayer {
+  background: rgba(32, 52, 56, 0.5);
+}
+
+:global(.dark) .sheetLayer {
+  --catalog-ink: #d8e3ea;
+  --catalog-navy: #dae2eb;
+  --catalog-muted: #9ea8af;
+  --catalog-line: #3e454b;
+  --catalog-soft: #1d2429;
+  --catalog-primary: #7dcdd4;
+}
+
+:global(.dark) .sheet {
+  background: #1d2429;
+  box-shadow: 0 -24px 60px rgba(7, 22, 25, 0.288);
+}
+
+:global(.dark) .sheetHandle {
+  background: #3d4747;
+}
+
+:global(.dark) .sheetHeader {
+  border-bottom: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .sheetHeader p {
+  color: #7dcdd4;
+}
+
+:global(.dark) .sheetHeader h2 {
+  color: #dae2eb;
+}
+
+:global(.dark) .sheetHeader button {
+  border: 0;
+  background: #1d2429;
+  color: #dae2eb;
+}
+
+:global(.dark) .selectGroup,
+:global(.dark) .filterGroup {
+  border: 0;
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .selectGroup > span,
+:global(.dark) .filterGroup legend {
+  color: #dae2eb;
+}
+
+:global(.dark) .selectGroup select {
+  border: 1px solid #434d4d;
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .radioGrid label {
+  border: 1px solid #3e454b;
+  color: #9ea8af;
+}
+
+:global(.dark) .radioGrid label:has(input:checked) {
+  border-color: #2e6e73;
+  background: #232c2b;
+  color: #7dcdd4;
+}
+
+:global(.dark) .radioGrid input {
+  accent-color: #7dcdd4;
+}
+
+:global(.dark) .sheetFooter {
+  border-top: 1px solid #3e454b;
+  background: #1d2429;
+  box-shadow: 0 -12px 28px rgba(22, 40, 42, 0.096);
+}
+
+:global(.dark) .sheetFooter button {
+  border: 0;
+  background: transparent;
+  color: #7dcdd4;
+}
+
+:global(.dark) .sheetFooter button:last-child {
+  background: #15575c;
+  color: #e7f0f7;
+}
+
+@media (max-width: 700px) {
+  :global(.dark) .trustCounts {
+    border-top: 0;
+  }
+  
+  :global(.dark) .trustCounts a,
+  :global(.dark) .trustCounts a:nth-child(even) {
+    border: 0;
+    background: #242b30;
+    color: #ced8df;
+  }
+  
+  :global(.dark) .trustCounts a[aria-current="page"] {
+    background: #30604d;
+    color: #e7f0f7;
+  }
+  
+  :global(.dark) .trustCounts a[aria-current="page"] span,
+  :global(.dark) .trustCounts a[aria-current="page"] strong {
+    color: #e7f0f7;
+  }
+  
+  :global(.dark) .resultsSection .shell {
+    border: 0 !important;
+  }
+}
+/* ── night:end ── */

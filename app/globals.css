@@ -2546,7 +2546,7 @@ html:has(.public-site-shell) {
 }
 
 /* Destination pages must stay readable even when the global site theme is dark. */
-.destination-light-surface {
+:root:not(.dark) .destination-light-surface {
   --site-accent-ink: #075d63;
   --tr-bg: color-mix(in srgb, var(--site-accent, #075d63) 4%, #FFFFFF);
   --tr-card: #ffffff;
@@ -2599,18 +2599,18 @@ html:has(.public-site-shell) {
   color: #132b3a;
 }
 
-.destination-light-surface.dark\:bg-slate-950,
-.destination-light-surface .dark\:bg-slate-950,
-.destination-light-surface .dark\:bg-slate-900 {
+:root:not(.dark) .destination-light-surface.dark\:bg-slate-950,
+:root:not(.dark) .destination-light-surface .dark\:bg-slate-950,
+:root:not(.dark) .destination-light-surface .dark\:bg-slate-900 {
   background-color: #ffffff !important;
 }
 
-.destination-light-surface .dark\:bg-slate-800 {
+:root:not(.dark) .destination-light-surface .dark\:bg-slate-800 {
   background-color: #f3f4f6 !important;
 }
 
-.destination-light-surface .dark\:border-slate-800,
-.destination-light-surface .dark\:border-slate-700 {
+:root:not(.dark) .destination-light-surface .dark\:border-slate-800,
+:root:not(.dark) .destination-light-surface .dark\:border-slate-700 {
   border-color: #e5e7eb !important;
 }
 
@@ -2641,19 +2641,101 @@ html:has(.public-site-shell) {
   }
 }
 
-.destination-light-surface .dark\:text-white {
+:root:not(.dark) .destination-light-surface .dark\:text-white {
   color: #111827 !important;
 }
 
-.destination-light-surface .dark\:text-gray-100,
-.destination-light-surface .dark\:text-gray-200,
-.destination-light-surface .dark\:text-gray-300,
-.destination-light-surface .dark\:text-gray-400,
-.destination-light-surface .dark\:text-gray-500,
-.destination-light-surface .dark\:text-gray-600 {
+:root:not(.dark) .destination-light-surface .dark\:text-gray-100,
+:root:not(.dark) .destination-light-surface .dark\:text-gray-200,
+:root:not(.dark) .destination-light-surface .dark\:text-gray-300,
+:root:not(.dark) .destination-light-surface .dark\:text-gray-400,
+:root:not(.dark) .destination-light-surface .dark\:text-gray-500,
+:root:not(.dark) .destination-light-surface .dark\:text-gray-600 {
   color: #374151 !important;
 }
 
-.destination-light-surface .dark\:text-green-400 {
+:root:not(.dark) .destination-light-surface .dark\:text-green-400 {
   color: #15803d !important;
+}
+
+/* ── Mode malam lembut (situs publik) ─────────────────────────────
+   Latar slate kebiruan (bukan hitam pekat), teks gading (bukan putih murni),
+   foto sedikit diredupkan. Warna komponen Clean ada di blok night:start di
+   setiap CSS module, dibuat oleh scripts/night-css.mjs (npm run night:css). */
+html.dark:has(.public-site-shell) {
+  --background: #1d2429;
+  --foreground: #d8e3ea;
+  color-scheme: dark;
+}
+
+.dark .public-site-shell {
+  --doc-amber: #d8a669;
+  --doc-green: #8ccbb0;
+  --doc-sage: #252f2e;
+  --doc-sand: #2a2e2f;
+  --doc-navy: #d8e3ea;
+  --doc-ink: #c4ced4;
+  --doc-slate: #a2adb3;
+  /* Kelas Tailwind dark:bg-gray-900 dst. ikut palet yang sama. */
+  --color-gray-950: #171d21;
+  --color-gray-900: #1d2429;
+  --color-gray-800: #262e34;
+  --color-gray-700: #343d44;
+  --color-gray-600: #7a868e;
+  --color-slate-950: #171d21;
+  --color-slate-900: #1d2429;
+  --color-slate-800: #262e34;
+  --color-slate-700: #343d44;
+  /* Tombol bagikan di halaman tur (warna dikirim lewat props inline). */
+  --share-text: #d8e3ea;
+  --share-card: #262e34;
+  --share-border: #3e454b;
+  --share-sub: #a2adb3;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.dark .public-site-shell .at-btn-solid { color: #f4f8f9; }
+
+.dark .public-site-shell main img:not([src*="logo"]) {
+  filter: brightness(0.9) saturate(0.95);
+}
+
+/* Halaman lama berbasis Tailwind (destinasi, visa, dll.): utilitas warna terang
+   ikut palet malam. Sengaja di luar @layer supaya mengalahkan utilitas Tailwind. */
+.dark .public-site-shell main :is(.bg-white, .bg-gray-50, .bg-slate-50) { background-color: #232b30; }
+.dark .public-site-shell main :is(.bg-gray-100, .bg-slate-100, .bg-gray-200) { background-color: #2a3238; }
+.dark .public-site-shell main :is(.border-gray-100, .border-gray-200, .border-gray-300, .border-slate-200) { border-color: #3a4349; }
+.dark .public-site-shell main :is(.text-gray-900, .text-gray-800, .text-slate-900, .text-slate-800) { color: #e2e9ee; }
+.dark .public-site-shell main :is(.text-gray-700, .text-gray-600, .text-slate-700, .text-slate-600) { color: #bcc6cc; }
+.dark .public-site-shell main :is(.text-gray-500, .text-slate-500) { color: #9aa5ab; }
+/* Blok yang sengaja dibalik putih di mode gelap dibuat putih gading, tidak menyilaukan. */
+.dark .public-site-shell main .dark\:bg-white { background-color: #dde4e8; }
+
+.dark .public-site-shell .prose { color: #c4ced4; }
+.dark .public-site-shell .prose :where(h1, h2, h3, h4, strong) { color: #e2e9ee; }
+.dark .public-site-shell .prose a { color: #7dcdd4; }
+.dark .public-site-shell .prose figcaption { color: #98a3a8; }
+.dark .public-site-shell .prose :where(hr, th, td) { border-color: #3e454b; }
+
+/* Pergantian terang ↔ malam memudar pelan. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-switching::view-transition-old(root),
+  html.theme-switching::view-transition-new(root) {
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html.theme-fade,
+  html.theme-fade *,
+  html.theme-fade *::before,
+  html.theme-fade *::after {
+    transition:
+      background-color 600ms ease,
+      color 600ms ease,
+      border-color 600ms ease,
+      fill 600ms ease,
+      stroke 600ms ease,
+      box-shadow 600ms ease !important;
+  }
 }

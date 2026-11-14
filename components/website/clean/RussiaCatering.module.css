@@ -950,3 +950,277 @@
     animation: none !important;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page {
+  --ink: #ced8df;
+  --text: #c2cbd3;
+  --muted: #a7b2b8;
+  --primary: #8dceb2;
+  --primary-strong: #26503c;
+  --control-border: #48483e;
+}
+
+:global(.dark) .page :where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #3d6f5b;
+}
+
+:global(.dark) .page :where(a, button) {
+  color: inherit;
+}
+
+:global(.dark) .page a {
+  text-decoration: none;
+}
+
+:global(.dark) .page .breadcrumb {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .breadcrumb a:hover,
+:global(.dark) .page .back-to-services a:hover,
+:global(.dark) .page .hub-service a:hover {
+  color: #8dceb2;
+  text-decoration: underline;
+}
+
+:global(.dark) .page .hero-copy,
+:global(.dark) .page .menu-section {
+  background: #1d2429;
+}
+
+:global(.dark) .page .eyebrow,
+:global(.dark) .page .hub-label {
+  color: #8dceb2;
+}
+
+:global(.dark) .page em {
+  background: linear-gradient(transparent 14%, #c99759 14%, #c99759 90%, transparent 90%);
+  color: #172025;
+}
+
+:global(.dark) .page .intro {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .cities {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .price-label {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .price-note {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .button {
+  border: 1px solid transparent;
+}
+
+:global(.dark) .page .primary {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .page .primary:hover {
+  background: #26503c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .page .secondary {
+  border-color: #48483e;
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page .secondary:hover {
+  border-color: #3d6f5b;
+}
+
+:global(.dark) .page .image-caption {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .service-strip {
+  background: #1d2429;
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .section-heading > p {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .rail-hint {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .menu-rail {
+  background: #1d2429;
+}
+
+:global(.dark) .page .menu-rail:focus-visible {
+  outline: 3px solid #3d6f5b;
+}
+
+:global(.dark) .page .menu-item {
+  border: 0;
+  background: #242b30;
+}
+
+:global(.dark) .page .menu-item:nth-child(even) {
+  background: #262e2c;
+}
+
+:global(.dark) .page .menu-item:hover {
+  background: #29332e;
+}
+
+:global(.dark) .page .menu-photo {
+  background: #1d2429;
+}
+
+:global(.dark) .page .menu-type {
+  background: #1d2429;
+  color: #8dceb2;
+}
+
+:global(.dark) .page .product-body {
+  background: #1d2429;
+}
+
+:global(.dark) .page .menu-description {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .menu-benefit {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .menu-price small {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .product-action {
+  border: 0;
+  background: #1d2429;
+  color: #8dceb2;
+}
+
+:global(.dark) .page .product-action:focus-visible {
+  outline: none;
+}
+
+:global(.dark) .page .product-action:focus-visible::after {
+  outline: 3px solid #3d6f5b;
+}
+
+:global(.dark) .page .menu-bottom-note {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .gallery-section {
+  background: #1d2429;
+}
+
+:global(.dark) .page .delivery-note p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .delivery-note p.delivery-cost {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .gallery-grid figcaption {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .inquiry-section {
+  background: #1d2429;
+}
+
+:global(.dark) .page .inquiry-intro > p:not(.eyebrow) {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .inquiry-detail {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .inquiry-panel,
+:global(.dark) .page .inquiry-panel form {
+  background: #1d2429;
+}
+
+:global(.dark) .page label span {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page :where(input, select, textarea) {
+  border: 1px solid #48483e;
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .page :where(input, textarea)::placeholder {
+  color: #909aa0;
+}
+
+:global(.dark) .page .form-privacy {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .draft-result {
+  background: #1d2429;
+}
+
+:global(.dark) .page .form-status {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .ruble-tease {
+  background: #1d2429;
+}
+
+:global(.dark) .page .ruble-tease > p {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .coming-soon {
+  color: #a7b2b8;
+}
+
+:global(.dark) .page .back-to-services a {
+  color: #8dceb2;
+}
+
+:global(.dark) .page .hub-intro > p:last-child {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .hub-grid {
+  background: #1d2429;
+}
+
+:global(.dark) .page .hub-service {
+  background: #1d2429;
+}
+
+:global(.dark) .page .hub-service p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .page .hub-service a {
+  color: #8dceb2;
+}
+
+:global(.dark) .page .hub-service-featured .button {
+  color: #e7f0f7;
+}
+/* ── night:end ── */

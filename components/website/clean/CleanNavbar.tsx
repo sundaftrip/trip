@@ -11,6 +11,7 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { buildWhatsAppHref, cldFit } from "@/lib/utils";
 import CleanGlobalSearch from "./CleanGlobalSearch";
+import CleanThemeToggle from "./CleanThemeToggle";
 import styles from "./CleanShell.module.css";
 
 const destinationLinks = [
@@ -259,7 +260,8 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
     <header className={`${styles.header} ${showHairline ? styles.headerHairline : ""}`}>
       <div ref={headerShellRef} className={styles.headerShell}>
         <Link className={styles.logoLink} href="/" aria-label="Sundaf Trip, beranda" scroll={false}>
-          <Image className={styles.logoImage} src={logoSrc} alt="Sundaf Trip" width={180} height={50} priority />
+          <Image className={`${styles.logoImage} ${styles.logoDay}`} src={logoSrc} alt="Sundaf Trip" width={180} height={50} priority />
+          <Image className={`${styles.logoImage} ${styles.logoNight}`} src="/logo-night.png" alt="Sundaf Trip" width={180} height={50} loading="eager" />
         </Link>
 
         <div className={styles.desktopArea}>
@@ -280,6 +282,7 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
 
         <div className={styles.headerActions}>
           <CleanGlobalSearch />
+          <CleanThemeToggle />
           {showGlobalLanguageButton ? (
             <>
               <span
@@ -348,7 +351,8 @@ export default function CleanNavbar({ logo, whatsapp }: { logo?: string; whatsap
         >
           <div className={styles.drawerHeader}>
             <Link className={styles.drawerLogo} href="/" aria-label="Sundaf Trip, beranda" scroll={false} onClick={closeDrawer}>
-              <Image className={styles.logoImage} src={logoSrc} alt="Sundaf Trip" width={180} height={50} />
+              <Image className={`${styles.logoImage} ${styles.logoDay}`} src={logoSrc} alt="Sundaf Trip" width={180} height={50} />
+              <Image className={`${styles.logoImage} ${styles.logoNight}`} src="/logo-night.png" alt="Sundaf Trip" width={180} height={50} />
             </Link>
             <h2 id="clean-mobile-drawer-title" className="sr-only">Menu utama</h2>
             <button

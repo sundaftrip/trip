@@ -2378,3 +2378,1313 @@
   .tourCardCatalog .price small { font-size: 10px; white-space: nowrap; }
   .tourCardCatalog .priceNote { margin-top: 4px; font-size: 9.5px; line-height: 1.3; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .home,
+:global(.dark) .catalogPage,
+:global(.dark) .tourDetail,
+:global(.dark) .footer,
+:global(.dark) .header {
+  color: #d8e3ea;
+}
+
+:global(.dark) .home,
+:global(.dark) .catalogPage,
+:global(.dark) .tourDetail,
+:global(.dark) .footer,
+:global(.dark) .header {
+  --clean-ink: #d8e3ea;
+  --clean-navy: #d8e3ea;
+  --clean-muted: #9ea8af;
+  --clean-line: #3e454b;
+  --clean-paper: #1d2429;
+  --clean-soft: #1d2429;
+  --clean-teal: #7dcdd4;
+  --clean-teal-dark: #8acbd1;
+  --clean-teal-pale: #213234;
+}
+
+:global(.dark) .skipLink {
+  color: #e7f0f7;
+  background: #293a46;
+}
+
+:global(.dark) .header {
+  border-bottom: 1px solid rgba(62, 69, 75, 0.82);
+  background: rgba(29, 36, 41, 0.98);
+  color: #d8e3ea;
+}
+
+:global(.dark) .desktopNav a {
+  color: inherit;
+}
+
+:global(.dark) .desktopNav a:hover,
+:global(.dark) .desktopNav a[aria-current="page"] {
+  color: #7dcdd4;
+}
+
+:global(.dark) .desktopNav a[aria-current="page"]::after {
+  background: currentColor;
+}
+
+:global(.dark) .headerAction,
+:global(.dark) .mobileAction {
+  background: #293a46;
+  color: #e7f0f7;
+}
+
+:global(.dark) .headerAction:hover,
+:global(.dark) .mobileAction:hover {
+  background: #0f4347;
+}
+
+:global(.dark) .menuButton {
+  border: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .mobilePanel {
+  background: #1d2429;
+}
+
+:global(.dark) .mobilePanel nav a {
+  border-bottom: 1px solid #3e454b;
+  color: #d8e3ea;
+}
+
+:global(.dark) .home,
+:global(.dark) .catalogPage,
+:global(.dark) .tourDetail {
+  background: #1d2429;
+}
+
+:global(.dark) .hero {
+  background: #2b3e41;
+  color: #e7f0f7;
+}
+
+:global(.dark) .heroShade {
+  background: linear-gradient(90deg, rgba(35, 49, 52, 0.84) 0%, rgba(35, 49, 52, 0.58) 52%, rgba(35, 49, 52, 0.12) 78%), linear-gradient(0deg, rgba(35, 49, 52, 0.7) 0%, transparent 52%);
+}
+
+:global(.dark) .heroEyebrow,
+:global(.dark) .sectionKicker,
+:global(.dark) .reviewKicker {
+  color: #8acbd1;
+}
+
+:global(.dark) .heroEyebrow {
+  color: rgba(231, 240, 247, 0.82);
+}
+
+:global(.dark) .hero h1 {
+  color: #e7f0f7;
+}
+
+:global(.dark) .heroLede {
+  color: rgba(231, 240, 247, 0.88);
+}
+
+:global(.dark) .tourFinder {
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .finderField {
+  border-right: 1px solid #3e454b;
+}
+
+:global(.dark) .finderField label {
+  color: #a0aab1;
+}
+
+:global(.dark) .finderField select {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #d8e3ea;
+}
+
+:global(.dark) .finderSubmit {
+  border: 0;
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .finderSubmit:hover {
+  background: #15575c;
+}
+
+:global(.dark) .heroNote {
+  color: rgba(231, 240, 247, 0.78);
+}
+
+:global(.dark) .heroNote::before {
+  background: #45b6ac;
+  color: #172025;
+}
+
+:global(.dark) .trust {
+  border-bottom: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .trustItem {
+  border-right: 1px solid #3e454b;
+}
+
+:global(.dark) .trustItem:last-child {
+  border-right: 0;
+}
+
+:global(.dark) .trustItem strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .trustItem span {
+  color: #9ea8af;
+}
+
+:global(.dark) .section h2,
+:global(.dark) .why h2,
+:global(.dark) .finalCta h2,
+:global(.dark) .catalogPage h2 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .sectionHeading > p:last-child,
+:global(.dark) .sectionCopy {
+  color: #9ea8af;
+}
+
+:global(.dark) .tourCard {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .tourPhoto {
+  background: #2f3838;
+}
+
+:global(.dark) .tourPhotoShade {
+  background: linear-gradient(to bottom, transparent, rgba(30, 53, 58, 0.78));
+}
+
+:global(.dark) .tourStatus {
+  border: 1px solid rgba(54, 61, 67, 0.58);
+  background: rgba(29, 36, 41, 0.76);
+  color: #d8e3ea;
+  box-shadow: 0 4px 14px rgba(8, 33, 36, 0.128);
+}
+
+:global(.dark) .tourMeta {
+  color: #9ea8af;
+}
+
+:global(.dark) .tourMeta small {
+  color: #9ea8af;
+}
+
+:global(.dark) .tourTitle {
+  color: #e7f0f7;
+  text-shadow: 0 2px 12px rgba(4, 20, 23, 0.704);
+}
+
+:global(.dark) .tourFacts {
+  color: #9ea8af;
+}
+
+:global(.dark) .priceRow {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .priceLabel {
+  color: #9ea8af;
+}
+
+:global(.dark) .price {
+  color: #d8e3ea;
+}
+
+:global(.dark) .price small {
+  color: #9ea8af;
+}
+
+:global(.dark) .priceNote {
+  color: #9ea8af;
+}
+
+:global(.dark) .sectionLink {
+  color: #8acbd1;
+}
+
+:global(.dark) .sectionLink:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .empty {
+  border: 1px solid #3e454b;
+  color: #9ea8af;
+}
+
+:global(.dark) .why {
+  background: #1d2429;
+}
+
+:global(.dark) .why h2 em {
+  color: #7dcdd4;
+}
+
+:global(.dark) .reasons article {
+  border-top: 1px solid #424b4c;
+}
+
+:global(.dark) .reasons article > span {
+  color: #7dcdd4;
+}
+
+:global(.dark) .reasons h3 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .reasons p {
+  color: #9ea8af;
+}
+
+:global(.dark) .destinationGrid > a {
+  background: #2e444a;
+  color: #e7f0f7;
+}
+
+:global(.dark) .destinationGrid > a::after {
+  background: linear-gradient(0deg, rgba(36, 49, 52, 0.72), transparent 58%);
+}
+
+:global(.dark) .review {
+  background: #2a3945;
+  color: #e7f0f7;
+}
+
+:global(.dark) .reviewKicker {
+  color: #92d9de;
+}
+
+:global(.dark) .reviewHeading h2 {
+  color: #e7f0f7;
+}
+
+:global(.dark) .reviewIntro {
+  color: rgba(231, 240, 247, 0.67);
+}
+
+:global(.dark) .reviewControls button {
+  border: 1px solid rgba(54, 61, 67, 0.3);
+  background: transparent;
+  color: #e7f0f7;
+}
+
+:global(.dark) .reviewControls button:hover {
+  border-color: #77bbc1;
+  color: #92d9de;
+}
+
+:global(.dark) .reviewControls button:focus-visible {
+  outline: 2px solid #77bbc1;
+}
+
+:global(.dark) .reviewControls button:disabled {
+  border-color: rgba(54, 61, 67, 0.14);
+  color: rgba(231, 240, 247, 0.32);
+}
+
+:global(.dark) .reviewTrack:focus-visible {
+  outline: 2px solid #77bbc1;
+}
+
+:global(.dark) .reviewSlide {
+  border: 0;
+  background: #302b23;
+  box-shadow: 0 28px 80px rgba(4, 12, 17, 0.384);
+  color: #d8e3ea;
+}
+
+:global(.dark) .reviewCardMeta {
+  border-bottom: 1px solid #514a3f;
+}
+
+:global(.dark) .reviewRating {
+  color: #8acbd1;
+}
+
+:global(.dark) .reviewRating small {
+  color: #9199a1;
+}
+
+:global(.dark) .reviewCount {
+  color: #9b988f;
+}
+
+:global(.dark) .reviewSlide blockquote {
+  color: #d8e2ea;
+}
+
+:global(.dark) .reviewToggle {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: #8acbd1;
+}
+
+:global(.dark) .reviewToggle:focus-visible {
+  outline: 2px solid #2e6e73;
+}
+
+:global(.dark) .reviewPerson {
+  border-top: 1px solid #514a3f;
+}
+
+:global(.dark) .reviewAvatar {
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .reviewIdentity strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .reviewIdentity > span {
+  color: #959e98;
+}
+
+:global(.dark) .reviewFooter {
+  color: rgba(231, 240, 247, 0.62);
+}
+
+:global(.dark) .reviewFooter a {
+  color: #e7f0f7;
+}
+
+:global(.dark) .finalCta {
+  background: #1d2429;
+}
+
+:global(.dark) .ctaPanel {
+  background: #213234;
+}
+
+:global(.dark) .ctaPanel p {
+  color: #9ea8af;
+}
+
+:global(.dark) .ctaPanel > a,
+:global(.dark) .supportRow > a {
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .footer {
+  border-top: 1px solid #3e454b;
+  background: #21282e;
+}
+
+:global(.dark) .footerBrand > p {
+  color: #9ea8af;
+}
+
+:global(.dark) .footerBrand > strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .footerBrand address {
+  color: #9ea8af;
+}
+
+:global(.dark) .footerContact a {
+  color: #8acbd1;
+}
+
+:global(.dark) .footerColumn h3 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .footerColumn a {
+  color: #9ea8af;
+}
+
+:global(.dark) .footerColumn a:hover {
+  color: #8acbd1;
+}
+
+:global(.dark) .footerBottom {
+  border-top: 1px solid #3e454b;
+  color: #9ea8af;
+}
+
+:global(.dark) .footerBottom a:hover {
+  color: #8acbd1;
+}
+
+:global(.dark) .catalogHero {
+  border-bottom: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .breadcrumb {
+  color: #9ea8af;
+}
+
+:global(.dark) .breadcrumb a:hover {
+  color: #8acbd1;
+}
+
+:global(.dark) .catalogHero h1 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .catalogHeroLayout > div:first-child > p:last-child {
+  color: #9ea8af;
+}
+
+:global(.dark) .catalogSummary {
+  border-top: 1px solid #414c4d;
+}
+
+:global(.dark) .catalogSummary > div {
+  border-bottom: 1px solid #414c4d;
+}
+
+:global(.dark) .catalogSummary strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .catalogSummary span {
+  color: #9ea8af;
+}
+
+:global(.dark) .catalogTopline > p {
+  color: #9ea8af;
+}
+
+:global(.dark) .catalogTopline > p strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .catalogTools {
+  border-top: 1px solid #3e454b;
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .filterRow button {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+  color: #9ea8af;
+}
+
+:global(.dark) .filterRow button[aria-pressed="true"] {
+  border-color: #3b6d71;
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .monthFilter {
+  color: #9ea8af;
+}
+
+:global(.dark) .monthFilter select {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .archiveSection {
+  background: #1d2429;
+}
+
+:global(.dark) .archiveHeading > div > p:last-child {
+  color: #9ea8af;
+}
+
+:global(.dark) .archiveHeading > strong {
+  background: #1d2429;
+  color: #9ea8af;
+}
+
+:global(.dark) .pagination span {
+  color: #9ea8af;
+}
+
+:global(.dark) .pagination button {
+  border: 1px solid #434c4d;
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .catalogSupport {
+  background: #293a46;
+  color: #e7f0f7;
+}
+
+:global(.dark) .supportRow h2 {
+  color: #e7f0f7;
+}
+
+:global(.dark) .supportRow p {
+  color: rgba(231, 240, 247, 0.7);
+}
+
+:global(.dark) .supportRow > a {
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .tourDetail {
+  --doc-amber: #c99759;
+  --doc-green: #8dceb2;
+  --doc-sage: #262e2c;
+  --doc-sand: #242b30;
+  --doc-navy: #ced8df;
+  --doc-ink: #c2cbd3;
+  --doc-slate: #a7b2b8;
+}
+
+:global(.dark) .detailHero {
+  background: #1d2429;
+}
+
+:global(.dark) .detailBreadcrumb {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBreadcrumb a:hover {
+  color: #8acbd1;
+}
+
+:global(.dark) .detailBreadcrumb span:last-child {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailEyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .tourDetail.tourDetail .detailHero h1 {
+  color: #ced8df;
+}
+
+:global(.dark) .detailHeroPrice {
+  color: #ced8df;
+}
+
+:global(.dark) .detailHeroPrice > small {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailHeroPrice > span {
+  color: #8dceb2;
+}
+
+:global(.dark) .detailHeroPrice > .detailHeroStatusUnavailable {
+  color: #f8a59a;
+}
+
+:global(.dark) .detailHeroFacts {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .detailHeroFacts dt {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailHeroFacts dd {
+  color: #ced8df;
+}
+
+:global(.dark) .tourDetail.tourDetail .detailSectionTitle {
+  background: #c99759;
+  color: #1e3645;
+}
+
+:global(.dark) .detailIntro p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailIntro p:first-child {
+  color: #ced8df;
+}
+
+:global(.dark) .detailDestinationLink {
+  color: #8dceb2;
+}
+
+:global(.dark) .detailDestinationLink:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .detailDay {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailDay + .detailDay {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .tourDetail.tourDetail .detailDay h3 {
+  color: #ced8df;
+}
+
+:global(.dark) .detailDayMeta {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailDayMeta time::before,
+:global(.dark) .detailDayMeta dl > div::before {
+  color: #b8c2c6;
+}
+
+:global(.dark) .detailIncludedBox,
+:global(.dark) .detailExcludedBox {
+  background: #262e2c;
+}
+
+:global(.dark) .detailExcludedBox {
+  background: #242b30;
+}
+
+:global(.dark) .tourDetail.tourDetail .detailIncludedBox h3,
+:global(.dark) .tourDetail.tourDetail .detailExcludedBox h3,
+:global(.dark) .tourDetail.tourDetail .detailSubsection h3 {
+  color: #8dceb2;
+}
+
+:global(.dark) .tourDetail.tourDetail .detailExcludedBox h3 {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailIncludedList li {
+  color: #ced8df;
+}
+
+:global(.dark) .detailIncludedList li::marker {
+  color: #8dceb2;
+}
+
+:global(.dark) .detailExcludedList li::marker {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailExcludedList .detailExcludedService::marker {
+  color: #e8b275;
+}
+
+:global(.dark) .detailExcludedService a {
+  color: #edaf7a;
+  text-decoration: underline;
+  text-decoration-color: rgba(237, 175, 122, 0.4);
+  text-decoration-thickness: 1px;
+}
+
+:global(.dark) .detailExcludedService a:hover {
+  color: #ecb079;
+  text-decoration-color: currentColor;
+}
+
+:global(.dark) .detailExcludedService a:focus-visible {
+  outline: 2px solid #925719;
+}
+
+:global(.dark) .detailSubsection p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailDocTable thead th {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .detailDocTable tbody tr {
+  background: #262e2c;
+}
+
+:global(.dark) .detailDocTable tbody tr:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .detailDocTable tbody th,
+:global(.dark) .detailDocTable td {
+  color: #ced8df;
+}
+
+:global(.dark) .detailRoomPriceGrid {
+  border: 0;
+}
+
+:global(.dark) .detailRoomPriceLegend {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .detailRoomPriceGrid label {
+  background: #262e2c;
+  color: inherit;
+}
+
+:global(.dark) .detailRoomPriceGrid label:nth-of-type(even) {
+  background: #242b30;
+}
+
+:global(.dark) .detailRoomPriceGrid label::before {
+  border: 2px solid #3d6f5b;
+  background: #1d2429;
+}
+
+:global(.dark) .detailRoomPriceGrid label:hover {
+  background: #26352f;
+}
+
+:global(.dark) .detailRoomPriceGrid label[data-selected="true"] {
+  background: #273a33;
+  box-shadow: inset 0 0 0 2px #2e6751;
+}
+
+:global(.dark) .detailRoomPriceGrid label[data-selected="true"]::before {
+  background: radial-gradient(circle, #30604d 0 4px, #1d2429 4.5px);
+}
+
+:global(.dark) .detailRoomPriceGrid label:focus-within {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 35%, transparent);
+}
+
+:global(.dark) .detailRoomPriceGrid label > span {
+  color: #ced8df;
+}
+
+:global(.dark) .tourDetail.tourDetail .detailRoomPriceGrid h3 {
+  color: #ced8df;
+}
+
+:global(.dark) .detailRoomPriceGrid label > p {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailRoomPriceGrid dl {
+  border-top: 1px solid rgba(126, 136, 142, 0.14);
+}
+
+:global(.dark) .detailRoomPriceGrid dl > div {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailRoomPriceGrid dd {
+  color: #ced8df;
+}
+
+:global(.dark) .detailRecommendedAddOn {
+  border: 1px solid #404f4e;
+  background: #22282e;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-grouped="true"] {
+  border: 0;
+  background: transparent;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-flat="true"] {
+  border: 0;
+  background: transparent;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-flat="true"] .detailRecommendedAddOnCopy small {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-included="true"] {
+  border-color: #3b6d71;
+  background: #213234;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-flat="true"][data-included="true"] {
+  background: transparent;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-grouped="true"][data-included="true"] {
+  background: transparent;
+}
+
+:global(.dark) .detailRecommendedAddOnCopy strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailRecommendedAddOnCopy small {
+  color: #8acbd1;
+}
+
+:global(.dark) .detailRecommendedAddOnAction > span:first-child {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingCard .detailRecommendedAddOnSwitch input {
+  border: 0;
+}
+
+:global(.dark) .detailRecommendedAddOnSwitch > span {
+  background: #4f5c5e;
+}
+
+:global(.dark) .detailRecommendedAddOnSwitch > span::after {
+  background: #1d2429;
+  box-shadow: 0 1px 4px rgba(19, 43, 58, 0.384);
+}
+
+:global(.dark) .detailRecommendedAddOnSwitch input:checked + span {
+  background: #0f4347;
+}
+
+:global(.dark) .detailRecommendedAddOnSwitch input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, #2e6e73 35%, transparent);
+}
+
+:global(.dark) .detailVisaServices {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .detailVisaServices[data-grouped="true"] {
+  border: 0;
+  background: transparent;
+}
+
+:global(.dark) .detailVisaServices[data-flat="true"] {
+  border: 0;
+  background: transparent;
+}
+
+:global(.dark) .detailRecommendedAddOn[data-grouped="true"] +
+.detailVisaServices[data-grouped="true"] {
+  border-top: 1px solid #3b4847;
+}
+
+:global(.dark) .detailVisaServicesIntro {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailVisaServicesIntro strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailVisaServiceList > label {
+  border: 1px solid #3e4b4b;
+  background: #20272c;
+}
+
+:global(.dark) .detailVisaServices[data-grouped="true"] .detailVisaServiceList > label {
+  border: 0;
+  background: transparent;
+}
+
+:global(.dark) .detailVisaServices[data-flat="true"] .detailVisaServiceList > label {
+  border: 0;
+  background: transparent;
+}
+
+:global(.dark) .detailVisaServices[data-grouped="true"] .detailVisaServiceList > label + label {
+  border-top: 1px solid #3b4847;
+}
+
+:global(.dark) .detailVisaServiceList > label[data-included="true"] {
+  border-color: #3b6d71;
+  background: #213234;
+}
+
+:global(.dark) .detailVisaServices[data-grouped="true"] .detailVisaServiceList > label[data-included="true"] {
+  background: transparent;
+}
+
+:global(.dark) .detailVisaServices[data-flat="true"] .detailVisaServiceList > label[data-included="true"] {
+  background: transparent;
+}
+
+:global(.dark) .detailVisaServiceCopy strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailVisaServiceCopy small {
+  color: #8acbd1;
+}
+
+:global(.dark) .detailHotelList > div {
+  background: #262e2c;
+}
+
+:global(.dark) .detailHotelList > div:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .detailHotelList dt {
+  color: #ced8df;
+}
+
+:global(.dark) .detailHotelList dd {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailPayment > p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .detailPaymentTotal span {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailPaymentTotal strong {
+  color: #ced8df;
+}
+
+:global(.dark) .detailFinePrint,
+:global(.dark) .detailPayment > .detailFinePrint {
+  color: #a7b2b8;
+}
+
+:global(.dark) .detailReviewHeading > span {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailReviewHeading > span strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailReviewHeading > span svg {
+  fill: #d5ab48;
+  color: #d5ab48;
+}
+
+:global(.dark) .detailReviewGrid article {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .detailReviewGrid article svg {
+  color: #c7d0d7;
+}
+
+:global(.dark) .detailReviewGrid article svg.detailStarActive {
+  fill: #d5ab48;
+  color: #d5ab48;
+}
+
+:global(.dark) .detailReviewGrid blockquote {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailReviewGrid article > p {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailReviewGrid article > p strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailBookingCard {
+  border: 1px solid #3f464c;
+  background: #1d2429;
+}
+
+:global(.dark) .detailStock {
+  background: #213234;
+  color: #8acbd1;
+}
+
+:global(.dark) .detailStockUnavailable {
+  background: #372e2c;
+  color: #f6a69d;
+}
+
+:global(.dark) .detailBookingLabel {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingPrice {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailBookingPrice small {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailOriginalPrice {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailOriginalPrice s {
+  text-decoration: line-through;
+}
+
+:global(.dark) .detailLandPrice {
+  color: #8acbd1;
+}
+
+:global(.dark) .detailPriceBreakdown {
+  border-top: 1px solid #3e454b;
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .detailPriceBreakdown > div {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailPriceBreakdown strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailPriceBreakdown small {
+  color: #8acbd1;
+}
+
+:global(.dark) .detailPriceBreakdown > .detailPriceTotal {
+  border-top: 1px solid #3e454b;
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailSidebarRoomPrices {
+  background: #1d2429;
+}
+
+:global(.dark) .detailSidebarRoomPrices > strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailSidebarRoomPrices > button {
+  border: 0;
+  background: transparent;
+  color: #9ea8af;
+}
+
+:global(.dark) .detailSidebarRoomPrices > button:hover,
+:global(.dark) .detailSidebarRoomPrices > button[data-selected="true"] {
+  background: #1d2429;
+  color: #8acbd1;
+}
+
+:global(.dark) .detailSidebarRoomPrices > button:focus-visible {
+  outline: 2px solid #2e6e73;
+}
+
+:global(.dark) .detailSidebarRoomPrices b {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailSidebarRoomPrices small {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingPrimary {
+  border: 0;
+  background: #0f4347;
+  color: #e7f0f7;
+}
+
+:global(.dark) .detailBookingPrimary:hover {
+  background: #293a46;
+}
+
+:global(.dark) .detailBookingPdf {
+  border: 1px solid #424c4d;
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailBookingPdf:hover {
+  border-color: #3b6d71;
+  color: #8acbd1;
+}
+
+:global(.dark) .detailPdfRecovery {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailPdfRecovery a {
+  color: #8acbd1;
+  text-decoration: underline;
+}
+
+:global(.dark) .detailUnavailableCta {
+  background: #1d2429;
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingNote {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingFacts {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .detailBookingFacts > div {
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .detailBookingFacts dt {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingFacts dd {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailBookingDisclosure {
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .detailBookingDisclosure summary {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailBookingDisclosure summary span {
+  background: #1d2429;
+}
+
+:global(.dark) .detailBookingDisclosure article {
+  border-top: 1px solid #3e454b;
+}
+
+:global(.dark) .detailBookingDisclosure article p {
+  color: #d8e3ea;
+}
+
+:global(.dark) .detailBookingDisclosure article small {
+  color: #9ea8af;
+}
+
+:global(.dark) .detailBookingDisclosure article a {
+  color: #8acbd1;
+}
+
+:global(.dark) .detailShare :global(.at-pill),
+:global(.dark) .detailMobileShare :global(.at-pill) {
+  border: 1px solid #3e454b;
+}
+
+:global(.dark) .detailRelated {
+  border-top: 1px solid #3e454b;
+  background: #22292e;
+}
+
+:global(.dark) .detailRelatedHeading > a {
+  color: #8dceb2;
+}
+
+:global(.dark) .detailRelatedHeading > a:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  :global(.dark) .tourCard:hover .tourTitle {
+    color: #e6f1ef;
+  }
+  
+  :global(.dark) .tourCard:hover .price {
+    color: #7dcdd4;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :global(.dark) .tourCard:hover {
+    border-color: rgba(36, 126, 137, 0.42);
+    box-shadow: 0 12px 24px rgba(18, 51, 55, 0.144);
+  }
+}
+
+@media (max-width: 920px) {
+  :global(.dark) .trustItem {
+    border-right: 0;
+    border-bottom: 1px solid #3e454b;
+  }
+  
+  :global(.dark) .trustItem:last-child {
+    border-bottom: 0;
+  }
+  
+  :global(.dark) .catalogSummary > div {
+    border-right: 1px solid #414c4d;
+  }
+  
+  :global(.dark) .catalogSummary > div:last-child {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  :global(.dark) .heroShade {
+    background: linear-gradient(0deg, rgba(35, 49, 52, 0.86) 0%, rgba(35, 49, 52, 0.34) 82%);
+  }
+  
+  :global(.dark) .finderField {
+    border-right: 0;
+    border-bottom: 1px solid #3e454b;
+  }
+  
+  :global(.dark) .trustItem {
+    border-right: 1px solid #3e454b;
+    border-bottom: 0;
+  }
+  
+  :global(.dark) .trustItem:last-child {
+    border-right: 0;
+  }
+  
+  :global(.dark) .catalogSummary > div {
+    border-right: 0;
+  }
+  
+  :global(.dark) .detailHeroFacts > div {
+    border-bottom: 1px solid #3e454b;
+  }
+  
+  :global(.dark) .detailHeroFacts > div:last-child {
+    border-bottom: 0;
+  }
+  
+  :global(.dark) .detailMobilePdf > a {
+    border: 1px solid #7e888e;
+    color: #d8e3ea;
+  }
+  
+  :global(.dark) .detailMobileAddOns {
+    border-top: 1px solid #3e454b;
+  }
+  
+  :global(.dark) .detailMobileAddOns summary {
+    color: #d8e3ea;
+  }
+  
+  :global(.dark) .detailMobileAddOns summary span {
+    background: #262d33;
+  }
+  
+  :global(.dark) .detailMobileAddOns summary::after {
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+  }
+  
+  :global(.dark) .detailMobileAddOns article {
+    border-top: 1px solid #3e454b;
+  }
+  
+  :global(.dark) .detailMobileAddOns article p {
+    color: #d8e3ea;
+  }
+  
+  :global(.dark) .detailMobileAddOns article small {
+    color: #9ea8af;
+  }
+  
+  :global(.dark) .detailMobileAddOns article a {
+    color: #7dcdd4;
+  }
+}
+
+:global(.dark) .tourPhoto::before {
+  background: linear-gradient(150deg, rgba(54, 173, 170, 0.22) 0%, rgba(54, 173, 170, 0) 40%);
+}
+/* ── night:end ── */

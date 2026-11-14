@@ -572,3 +572,215 @@
     transition-duration: .01ms !important;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .tabBar {
+  border-block: 1px solid #3e454b;
+  background: rgba(29, 36, 41, 0.96);
+}
+
+:global(.dark) .dateCard {
+  border: 0;
+  background: #242b30;
+  box-shadow: none;
+}
+
+:global(.dark) .dateCard[data-unavailable="true"] {
+  background: #2f2928;
+}
+
+:global(.dark) .dateCardTop {
+  border-bottom: 1px solid rgba(126, 136, 142, 0.14);
+}
+
+:global(.dark) .dateCardTop > span {
+  background: #283730;
+  color: #8dceb2;
+}
+
+:global(.dark) .dateCard[data-unavailable="true"] .dateCardTop > span {
+  background: #372e2c;
+  color: #f6a69d;
+}
+
+:global(.dark) .dateCardTop > strong {
+  color: #ced8df;
+}
+
+:global(.dark) .dateCard dt,
+:global(.dark) .dateCard dd {
+  color: #98a3a8;
+}
+
+:global(.dark) .dateCard dd {
+  color: #d8e3ea;
+}
+
+:global(.dark) .dateCard dt small {
+  background: #432f2b;
+  color: #f7a598;
+}
+
+:global(.dark) .dateTotal {
+  border-top: 1px solid rgba(126, 136, 142, 0.14);
+}
+
+:global(.dark) .dateTotal dt {
+  color: #8dceb2;
+}
+
+:global(.dark) .dateCard .dateTotal dd {
+  color: #ced8df;
+}
+
+:global(.dark) .tabBar a {
+  color: #98a3a8;
+}
+
+:global(.dark) .tabBar a::after {
+  background: #15575c;
+}
+
+:global(.dark) .tabBar a[aria-current="location"] {
+  color: #7dcdd4;
+}
+
+:global(.dark) .mobileBookingBar {
+  border-top: 1px solid #3e454b;
+  background: rgba(29, 36, 41, 0.97);
+  box-shadow: 0 -12px 34px rgba(23, 32, 41, 0.192);
+}
+
+:global(.dark) .sectionBookingAction {
+  border: 0;
+  background: #15575c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .mobileBookingBar span {
+  color: #98a3a8;
+}
+
+:global(.dark) .mobileBookingBar strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .mobileBookingBar > button,
+:global(.dark) .mobileBookingBar > a {
+  border: 0;
+  background: #15575c;
+  color: #e7f0f7;
+}
+
+:global(.dark) .bookingBackdrop {
+  background: rgba(31, 53, 58, 0.52);
+}
+
+:global(.dark) .bookingSheet {
+  background: #1d2429;
+  box-shadow: 0 -24px 70px rgba(7, 24, 28, 0.384);
+}
+
+:global(.dark) .sheetHandle {
+  background: #3d4645;
+}
+
+:global(.dark) .bookingSheetHeader {
+  border-bottom: 1px solid #3e454b;
+}
+
+:global(.dark) .bookingSheetHeader p {
+  color: #7dcdd4;
+}
+
+:global(.dark) .bookingSheetHeader h2 {
+  color: #d8e3ea;
+}
+
+:global(.dark) .bookingSheetHeader button {
+  border: 1px solid #3e454b;
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .bookingIntro {
+  color: #98a3a8;
+}
+
+:global(.dark) .departureOptions {
+  border: 0;
+}
+
+:global(.dark) .departureOptions legend,
+:global(.dark) .bookingField > span,
+:global(.dark) .travelerGrid label > span {
+  color: #b4bfc6;
+}
+
+:global(.dark) .departureOptions label {
+  border: 1px solid #3e454b;
+}
+
+:global(.dark) .departureOptions label[data-selected="true"] {
+  border-color: #2e6e73;
+  background: #242b30;
+}
+
+:global(.dark) .departureOptions svg {
+  color: #7dcdd4;
+}
+
+:global(.dark) .departureOptions strong {
+  color: #d8e3ea;
+}
+
+:global(.dark) .departureOptions small {
+  color: #a1abb1;
+}
+
+:global(.dark) .travelerGrid select,
+:global(.dark) .bookingField input,
+:global(.dark) .bookingField select {
+  border: 1px solid #424c4b;
+  background: #1d2429;
+  color: #d8e3ea;
+}
+
+:global(.dark) .travelerGrid label > svg {
+  color: #98a3a8;
+}
+
+:global(.dark) .bookingField input[aria-invalid="true"] {
+  border-color: #ad3024;
+}
+
+:global(.dark) .fieldError {
+  color: #f7a598;
+}
+
+:global(.dark) .bookingSummary {
+  background: #242b30;
+}
+
+:global(.dark) .bookingSummary dt {
+  color: #a1abb1;
+}
+
+:global(.dark) .bookingSummary dd {
+  color: #d8e3ea;
+}
+
+:global(.dark) .bookingSheetFooter {
+  border-top: 1px solid #3e454b;
+  background: #1d2429;
+}
+
+:global(.dark) .bookingSheetFooter p {
+  color: #a1abb1;
+}
+
+:global(.dark) .bookingSheetFooter a {
+  background: #15575c;
+  color: #e7f0f7;
+}
+/* ── night:end ── */

@@ -852,3 +852,198 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .heroLede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .empty {
+  color: #c2cbd3;
+}
+
+:global(.dark) .cardLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+:global(.dark) .cardImage {
+  background: #262e2c;
+}
+
+:global(.dark) .cardEyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .cardPinned {
+  background: #c99759;
+  color: #1e3645;
+}
+
+:global(.dark) .cardTitle.cardTitle.cardTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .cardExcerpt {
+  color: #c2cbd3;
+}
+
+:global(.dark) .cardMeta {
+  color: #a7b2b8;
+}
+
+:global(.dark) .cardLink:hover .cardTitle {
+  color: #8dceb2;
+}
+
+:global(.dark) .cardLink:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+@media (min-width: 901px) {
+  :global(.dark) .grid > .card:first-child .cardBody {
+    background: #242b30;
+  }
+  
+  :global(.dark) :global([data-filtered="true"]) .grid > .card:first-child .cardBody {
+    background: none;
+  }
+}
+
+:global(.dark) .eyebrowLink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, #8dceb2 40%, transparent);
+}
+
+:global(.dark) .eyebrowLink:hover {
+  text-decoration-color: currentColor;
+}
+
+:global(.dark) .articleMeta {
+  color: #a7b2b8;
+}
+
+:global(.dark) .articleMeta > * + *::before {
+  color: rgba(206, 216, 223, 0.3);
+}
+
+:global(.dark) .cover {
+  background: #262e2c;
+}
+
+:global(.dark) .body {
+  color: #c2cbd3;
+}
+
+:global(.dark) .body.body.body :global(h2) {
+  background: #c99759;
+  color: #1e3645;
+}
+
+:global(.dark) .body.body.body :global(h3) {
+  color: #8dceb2;
+}
+
+:global(.dark) .body.body.body :global(h4) {
+  color: #ced8df;
+}
+
+:global(.dark) .body :global(li)::marker {
+  color: #8dceb2;
+}
+
+:global(.dark) .body :global(a) {
+  color: #8dceb2;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, #8dceb2 40%, transparent);
+}
+
+:global(.dark) .body :global(a:hover) {
+  text-decoration-color: currentColor;
+}
+
+:global(.dark) .body :global(strong),
+:global(.dark) .body :global(b) {
+  color: #ced8df;
+}
+
+:global(.dark) .body :global(mark) {
+  background: linear-gradient(transparent 14%, rgba(201, 151, 89, 0.7) 14%, rgba(201, 151, 89, 0.7) 90%, transparent 90%);
+  color: #172025;
+}
+
+:global(.dark) .body :global(figcaption) {
+  color: #a7b2b8;
+}
+
+:global(.dark) .body :global(thead th),
+:global(.dark) .body :global(table > tr:first-child > th) {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .body :global(tbody tr) {
+  background: #262e2c;
+}
+
+:global(.dark) .body :global(tbody tr:nth-child(even)) {
+  background: #242b30;
+}
+
+:global(.dark) .body :global(td),
+:global(.dark) .body :global(tbody th) {
+  border: 0;
+  color: #ced8df;
+}
+
+:global(.dark) .body :global(blockquote) {
+  border: 0;
+  background: #262e2c;
+  color: #ced8df;
+}
+
+:global(.dark) .body :global(hr) {
+  border: 0;
+  background: rgba(45, 62, 74, 0.14);
+}
+
+:global(.dark) .body :global(h2[id]:target) {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 30%, transparent);
+}
+
+:global(.dark) .share {
+  background: #242b30;
+}
+
+:global(.dark) .shareLabel {
+  color: #8dceb2;
+}
+
+:global(.dark) .shareButton {
+  border: 0;
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .shareButton:hover {
+  color: #8dceb2;
+}
+
+:global(.dark) .shareButton:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .note {
+  color: #c2cbd3;
+}
+
+:global(.dark) .tourMore > p:not([class]) {
+  color: #c2cbd3;
+}
+/* ── night:end ── */

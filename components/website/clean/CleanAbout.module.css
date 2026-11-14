@@ -206,3 +206,68 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .nib {
+  color: #a7b2b8;
+}
+
+:global(.dark) .stats > div {
+  background: #262e2c;
+}
+
+:global(.dark) .stats > div:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .stats dt {
+  color: #c2cbd3;
+}
+
+:global(.dark) .stats dd {
+  color: #ced8df;
+}
+
+:global(.dark) .prose p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .note {
+  color: #c2cbd3;
+}
+
+:global(.dark) .values p,
+:global(.dark) .profile p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .form :global(input),
+:global(.dark) .form :global(select),
+:global(.dark) .form :global(textarea) {
+  border: 1px solid #48483e !important;
+  background: #1d2429 !important;
+  color: #ced8df !important;
+}
+
+:global(.dark) .form :global(button[type="submit"]) {
+  background: #30604d !important;
+}
+
+:global(.dark) .cta > p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .secondary {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .secondary:hover {
+  color: #8dceb2;
+}
+/* ── night:end ── */

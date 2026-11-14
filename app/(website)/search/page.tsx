@@ -183,7 +183,7 @@ export default async function SearchPage({
             <button
               type="submit"
               className="px-5 py-3 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "var(--site-accent-ink,#075d63)" }}
+              style={{ background: "var(--site-accent,#075d63)" }}
             >
               Cari
             </button>
@@ -394,7 +394,7 @@ function NoResults({ q }: { q: string }) {
         <Link
           href="/tours"
           className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-white"
-          style={{ background: "var(--site-accent-ink,#075d63)" }}
+          style={{ background: "var(--site-accent,#075d63)" }}
         >
           Semua Paket Tour <ArrowRight size={12} />
         </Link>

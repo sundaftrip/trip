@@ -361,3 +361,94 @@
     width: 100%;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .hero {
+  color: #e7f0f7;
+}
+
+:global(.dark) .hero > div[aria-hidden="true"] {
+  background: linear-gradient(0deg, rgba(31, 49, 54, 0.88), rgba(31, 49, 54, 0.08) 72%);
+}
+
+:global(.dark) .hero .shell > p {
+  color: #e7b16f;
+}
+
+:global(.dark) .heroTitle.heroTitle.heroTitle {
+  color: #e7f0f7;
+}
+
+:global(.dark) .hero .shell > span {
+  color: rgba(231, 240, 247, 0.82);
+}
+
+:global(.dark) .hero a {
+  background: #1d2429;
+  color: #8dceb2;
+}
+
+:global(.dark) .boxTitle.boxTitle.boxTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .factGrid p,
+:global(.dark) .sectionCopy,
+:global(.dark) .cta span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .empty p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .practical li {
+  border-bottom: 1px solid rgba(126, 136, 142, 0.14);
+  color: #c2cbd3;
+}
+
+:global(.dark) .articleGrid article {
+  background: #262e2c;
+}
+
+:global(.dark) .articleGrid article:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .articleGrid p {
+  color: #8dceb2;
+}
+
+:global(.dark) .articleTitle.articleTitle.articleTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .articleTitle a:hover {
+  color: #8dceb2;
+}
+
+:global(.dark) .articleGrid span {
+  color: #c2cbd3;
+}
+
+:global(.dark) .faqs details {
+  background: #262e2c;
+}
+
+:global(.dark) .faqs details:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .faqs summary {
+  color: #ced8df;
+}
+
+:global(.dark) .faqs p {
+  color: #c2cbd3;
+}
+/* ── night:end ── */

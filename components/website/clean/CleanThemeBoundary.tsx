@@ -1,18 +1,28 @@
 "use client";
 
 import { useLayoutEffect } from "react";
+import { useTheme } from "next-themes";
 
 export default function CleanThemeBoundary({ children }: { children: React.ReactNode }) {
+  const { resolvedTheme } = useTheme();
+
+  // Mode malam: ikuti pilihan pengunjung (tersimpan oleh next-themes). Bawaannya terang.
+  useLayoutEffect(() => {
+    if (!resolvedTheme) return;
+    const root = document.documentElement;
+    const night = resolvedTheme === "dark";
+    root.classList.toggle("dark", night);
+    root.classList.toggle("light", !night);
+    root.style.colorScheme = night ? "dark" : "light";
+  }, [resolvedTheme]);
+
   useLayoutEffect(() => {
     const root = document.documentElement;
     const interactiveSelector =
       'a[href], button:not(:disabled), summary, [role="button"]:not([aria-disabled="true"])';
 
     function applyPublicTheme() {
-      root.classList.remove("dark");
-      root.classList.add("light");
       root.classList.add("public-site-active");
-      root.style.colorScheme = "light";
     }
 
     function animatePress(target: EventTarget | null) {
@@ -46,13 +56,7 @@ export default function CleanThemeBoundary({ children }: { children: React.React
     document.addEventListener("animationend", handleAnimationEnd);
 
     const observer = new MutationObserver(() => {
-      if (
-        root.classList.contains("dark") ||
-        !root.classList.contains("light") ||
-        !root.classList.contains("public-site-active")
-      ) {
-        applyPublicTheme();
-      }
+      if (!root.classList.contains("public-site-active")) applyPublicTheme();
     });
     observer.observe(root, { attributes: true, attributeFilter: ["class"] });
 

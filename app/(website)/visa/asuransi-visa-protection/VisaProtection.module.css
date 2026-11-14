@@ -283,3 +283,95 @@
     transition: none;
   }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .page {
+  background: #1d2429;
+  color: #ced8df;
+}
+
+:global(.dark) .back {
+  color: #8dceb2;
+}
+
+:global(.dark) .lede {
+  color: #c2cbd3;
+}
+
+:global(.dark) .secondary {
+  background: #242b30;
+  color: #ced8df;
+}
+
+:global(.dark) .secondary:hover {
+  background: #262e2c;
+}
+
+:global(.dark) .box p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .box .strong {
+  color: #ced8df;
+}
+
+:global(.dark) .boxTitle.boxTitle.boxTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .benefitTitle.benefitTitle.benefitTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .steps li {
+  background: #262e2c;
+}
+
+:global(.dark) .steps li:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .stepNumber {
+  color: #8dceb2;
+}
+
+:global(.dark) .stepTitle.stepTitle.stepTitle {
+  color: #ced8df;
+}
+
+:global(.dark) .steps p {
+  color: #c2cbd3;
+}
+
+:global(.dark) .list li {
+  color: #c2cbd3;
+}
+
+:global(.dark) .list li::before {
+  background: #30604d;
+}
+
+:global(.dark) .listMuted li::before {
+  background: #8e493f;
+}
+
+:global(.dark) .faqRow {
+  background: #262e2c;
+}
+
+:global(.dark) .faqRow:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .faqRow summary {
+  color: #ced8df;
+}
+
+:global(.dark) .faqRow summary svg {
+  color: #8dceb2;
+}
+
+:global(.dark) .faqRow p {
+  color: #c2cbd3;
+}
+/* ── night:end ── */

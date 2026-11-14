@@ -157,3 +157,81 @@
   .table tbody th,
   .table td { padding: 9px 10px; }
 }
+
+/* ── night:start · dibuat otomatis oleh scripts/night-css.mjs, jangan diedit manual ── */
+:global(.dark) .eyebrow {
+  color: #8dceb2;
+}
+
+:global(.dark) .title.title.title {
+  color: #ced8df;
+}
+
+:global(.dark) .tag.tag.tag {
+  background: #c99759;
+  color: #1e3645;
+}
+
+:global(.dark) .subhead.subhead.subhead {
+  color: #8dceb2;
+}
+
+:global(.dark) .mark {
+  background: linear-gradient(transparent 12%, #c99759 12%, #c99759 92%, transparent 92%);
+  color: #172025;
+}
+
+:global(.dark) .lead {
+  color: #c2cbd3;
+}
+
+:global(.dark) .boxSage {
+  background: #262e2c;
+}
+
+:global(.dark) .boxSand {
+  background: #242b30;
+}
+
+:global(.dark) .table thead th {
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .table tbody tr {
+  background: #262e2c;
+}
+
+:global(.dark) .table tbody tr:nth-child(even) {
+  background: #242b30;
+}
+
+:global(.dark) .table tbody th,
+:global(.dark) .table td {
+  color: #ced8df;
+}
+
+:global(.dark) .button {
+  border: 0;
+  background: #30604d;
+  color: #e7f0f7;
+}
+
+:global(.dark) .button:hover {
+  background: #26503c;
+}
+
+:global(.dark) .button:focus-visible {
+  outline: 3px solid color-mix(in srgb, #3d6f5b 40%, transparent);
+}
+
+:global(.dark) .textLink {
+  color: #8dceb2;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, #8dceb2 40%, transparent);
+}
+
+:global(.dark) .textLink:hover {
+  text-decoration-color: currentColor;
+}
+/* ── night:end ── */
