@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Pin } from "lucide-react";
 import Link from "./PreserveScrollLink";
 import { cldOptimize, formatDate } from "@/lib/utils";
 import styles from "./CleanBlog.module.css";
@@ -11,6 +12,8 @@ export type CleanBlogPost = {
   category?: string | null;
   readTime?: string | null;
   date: Date | string;
+  /** Disematkan di atas halaman Jurnal (lihat lib/blog-pins.ts). */
+  pinned?: boolean;
 };
 
 /** Journal card in the document format: photo, green category, bold title. */
@@ -52,7 +55,16 @@ export default function CleanBlogCard({
           ) : null}
         </div>
         <div className={styles.cardBody}>
-          {category && <p className={styles.cardEyebrow}>{category}</p>}
+          {(post.pinned || category) && (
+            <p className={styles.cardEyebrow}>
+              {post.pinned && (
+                <span className={styles.cardPinned}>
+                  <Pin size={11} aria-hidden="true" /> Disematkan
+                </span>
+              )}
+              {category}
+            </p>
+          )}
           <Heading className={styles.cardTitle}>{post.title}</Heading>
           {post.excerpt && <p className={styles.cardExcerpt}>{post.excerpt}</p>}
           <p className={styles.cardMeta}>
