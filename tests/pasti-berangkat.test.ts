@@ -6,11 +6,12 @@ import {
   PB_PAGES,
   PB_SCRIPT_URL,
   forwardSignup,
+  isAppsScriptUrl,
   parseSignup,
   pbScriptUrl,
   readPools,
+  type FetchLike,
 } from "../lib/pasti-berangkat";
-import { isAppsScriptUrl, type FetchLike } from "../lib/pool-trip";
 import { PAGE_KEYS, buildPage } from "../scripts/pasti-berangkat/build.mjs";
 
 const EXEC = "https://script.google.com/macros/s/AKfycbTESTtestTESTtestTESTtest_456/exec";

@@ -19,6 +19,7 @@ import HomeFaqs from "./home/HomeFaqs";
 import HomeBenefitGrid from "./home/HomeBenefitGrid";
 import RussiaServiceIllustration from "./RussiaServiceIllustration";
 import HomeReviews from "./home/HomeReviews";
+import HomeFinderTabs from "./home/HomeFinderTabs";
 import HomeSearchForm, { type HomeSearchOption } from "./home/HomeSearchForm";
 import HomeTourRail from "./home/HomeTourRail";
 import HeroChalkNote from "./home/HeroChalkNote";
@@ -277,10 +278,12 @@ export default function CleanHome({
             </div>
             <div className={styles.finderZone}>
               <div className={styles.shell}>
-                <HomeSearchForm
-                  destinations={destinationOptions}
-                  months={monthOptions}
-                />
+                <HomeFinderTabs>
+                  <HomeSearchForm
+                    destinations={destinationOptions}
+                    months={monthOptions}
+                  />
+                </HomeFinderTabs>
               </div>
             </div>
           </section>

@@ -1,35 +1,32 @@
-import { NextRequest, NextResponse } from "next/server";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { forwardSubmission, parseSubmission, poolScriptUrl, readCatalog } from "@/lib/pool-trip";
+import { NextRequest } from "next/server";
+import { catalogPayload, cleanText, isDateKey } from "@/lib/pool/core";
+import { POOL_PUBLIC_CACHE, isBotSubmission, poolRead, poolWrite, readPoolForm } from "@/lib/pool/http";
+import { loadBundles, publicContext, submitGeneric } from "@/lib/pool/store";
 
-// Halaman /pool (public/pool/index.html) membaca dan mengirim data Pool Trip lewat route ini.
-// Apps Script bisa butuh beberapa detik, jadi data publik di-cache CDN sebentar.
+// Halaman /pool (public/pool/index.html) membaca dan mengirim data lewat route ini.
+// Data disimpan di database website. Yang dikirim ke pengunjung hanya angka per
+// tanggal; nama dan nomor WhatsApp pendaftar hanya terlihat di CMS (/admin/pool).
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
-const PUBLIC_CACHE = "public, s-maxage=30, stale-while-revalidate=300";
-
-// GET publik: isi tiap negara dan jumlah peserta per tanggal. Tanpa nama dan nomor WA.
+// GET publik: isi tiap negara dan jumlah peserta per tanggal.
 export async function GET() {
-  const result = await readCatalog(poolScriptUrl());
-  return NextResponse.json(result.body, {
-    status: result.status,
-    headers: { "Cache-Control": result.cacheable ? PUBLIC_CACHE : "no-store" },
-  });
+  return poolRead(async () => {
+    const ctx = await publicContext();
+    return catalogPayload(await loadBundles(ctx.today), ctx);
+  }, POOL_PUBLIC_CACHE);
 }
 
 // POST publik: pendaftaran pool atau daftar minat dari formulir di /pool/<kode>.
 export async function POST(req: NextRequest) {
-  if (!rateLimit(`pool:${clientIp(req)}`, 8, 60_000)) {
-    return NextResponse.json(
-      { ok: false, error: "Terlalu banyak percobaan. Coba lagi sebentar." },
-      { status: 429, headers: { "Retry-After": "60", "Cache-Control": "no-store" } },
-    );
+  const form = await readPoolForm(req, "pool");
+  if (!form.ok) return form.response;
+  if (isBotSubmission(form.value)) {
+    const d = isDateKey(form.value.d) ? form.value.d : "";
+    return poolWrite(async () => ({
+      ok: true, kode: "OK-0000", updated: false, dest: cleanText(form.value.dest, 40), group: "", wa: "", share: "",
+      kind: "minat", prev: 0, minat: 0, pool: { d, n: 0, by: {}, px: 0, r: 0 },
+    }));
   }
-  const parsed = parseSubmission(await req.text());
-  if (!parsed.ok) {
-    return NextResponse.json({ ok: false, error: parsed.error }, { status: parsed.status, headers: { "Cache-Control": "no-store" } });
-  }
-  const result = await forwardSubmission(poolScriptUrl(), parsed.body);
-  return NextResponse.json(result.body, { status: result.status, headers: { "Cache-Control": "no-store" } });
+  return poolWrite(() => submitGeneric(form.value));
 }

@@ -3,6 +3,7 @@
 export const PERMISSION_SECTIONS = [
   "Tour",
   "Lead",
+  "Pool",
   "Receipt",
   "Blog",
   "GEO",
@@ -19,6 +20,8 @@ export const PERMISSION_LABELS: Record<string, { label: string; section: string 
   tour_delete:      { label: "Hapus tour",                                  section: "Tour" },
   inquiry_view:     { label: "Lihat lead masuk",                            section: "Lead" },
   inquiry_edit:     { label: "Ubah status & hapus lead",                    section: "Lead" },
+  pool_view:        { label: "Lihat pendaftar pool (nama & nomor WhatsApp)", section: "Pool" },
+  pool_edit:        { label: "Kelola pendaftar, negara, harga, dan kuota pool", section: "Pool" },
   receipt_view:     { label: "Lihat receipt",                               section: "Receipt" },
   receipt_create:   { label: "Buat receipt",                                section: "Receipt" },
   receipt_edit:     { label: "Edit receipt",                                section: "Receipt" },
@@ -49,8 +52,11 @@ function only(enabled: readonly string[]): Record<string, boolean> {
   return Object.fromEntries(ALL_PERMISSION_KEYS.map((key) => [key, allowed.has(key)]));
 }
 
+/** Data pendaftar pool (nama & WhatsApp): bawaan hanya Super Admin. Akun lain harus diberi izin satu per satu. */
+export const OWNER_ONLY_PERMISSION_KEYS: readonly string[] = ["pool_view", "pool_edit"];
+
 export const DEFAULT_PERMISSIONS: Record<string, Record<string, boolean>> = {
-  ADMIN: only(ALL_PERMISSION_KEYS),
+  ADMIN: only(ALL_PERMISSION_KEYS.filter((key) => !OWNER_ONLY_PERMISSION_KEYS.includes(key))),
   // Editor lama: konten + receipt. Status tour tetap butuh izin terpisah.
   EDITOR: only([
     "tour_edit",

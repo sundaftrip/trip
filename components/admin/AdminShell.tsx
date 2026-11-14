@@ -9,7 +9,7 @@ import { useTheme } from "next-themes";
 import {
   Activity, BookOpen, CircleHelp, Database, ExternalLink, FileText, Globe2, Inbox, Info,
   LayoutDashboard, LogOut, Map, Menu, MessageSquareQuote, Moon, Receipt, Settings, Shield,
-  Sun, Type, User, Users, X, type LucideIcon,
+  Sun, Type, User, Users, UsersRound, X, type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ADMIN_MODULE_GROUPS, adminModuleForPath, type AdminModuleGroup, type AdminModuleKey } from "@/lib/admin-modules";
@@ -28,6 +28,7 @@ const ICONS: Record<AdminModuleKey, LucideIcon> = {
   visa: Database,
   b2b: FileText,
   inquiries: Inbox,
+  pool: UsersRound,
   receipts: Receipt,
   blog: BookOpen,
   scraper: BookOpen,

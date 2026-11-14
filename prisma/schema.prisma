@@ -842,3 +842,101 @@ model Translation {
 
   @@index([target])
 }
+
+// ============================================================================
+// Pool land tour: orang dengan tanggal tiba yang sama dikumpulkan jadi satu
+// rombongan. Menggantikan Google Sheet + Apps Script (Pool Kazakhstan, Pool Trip).
+// Data publik hanya angka per tanggal. Nama dan nomor WhatsApp (PoolSignup)
+// hanya dibaca dari CMS oleh akun dengan izin pool_view.
+// ============================================================================
+
+model PoolDestination {
+  id         String   @id @default(cuid())
+  code       String   @unique // bagian URL: /pool/<code>
+  name       String
+  status     String   @default("draf") // buka | segera | draf | tutup
+  engine     String   @default("generic") // generic = /pool/<code>, kazakhstan = /kazakhstan
+  city       String   @default("") // kota tiba
+  title      String   @default("")
+  lede       String   @default("")
+  cap        String   @default("") // keterangan harga
+  milestones Json     @default("[6]") // jumlah orang: grup WA dibuka, lalu titik harga turun
+  minDays    Int      @default(30) // tanggal tiba paling cepat = hari ini + minDays
+  maxPax     Int      @default(10) // orang per pendaftaran
+  quota      Int      @default(0) // kursi per tanggal; 0 = tanpa batas
+  content    Json     @default("{}") // incl, excl, notes, pay, meet, route, addons
+  settings   Json     @default("{}") // khusus engine kazakhstan: joinMax, kurs, meet, meetTime, night
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  packages PoolPackage[]
+  dates    PoolDate[]
+  signups  PoolSignup[]
+}
+
+model PoolPackage {
+  id            String   @id @default(cuid())
+  destinationId String
+  code          String // dipakai di formulir, mis. "5"
+  name          String // "5 hari 4 malam"
+  days          Int      @default(0)
+  summary       String   @default("")
+  tiers         Json     @default("[]") // [{ n: jumlah orang, p: harga per orang }]
+  single        Int      @default(0) // tambahan kamar sendiri
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  destination PoolDestination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@unique([destinationId, code])
+}
+
+// Pengaturan admin untuk satu tanggal: kuota khusus dan link grup WhatsApp.
+model PoolDate {
+  id            String   @id @default(cuid())
+  destinationId String
+  date          String // YYYY-MM-DD, tanggal tiba rombongan
+  quota         Int? // kosong = kuota negara, 0 = tanggal ditutup
+  groupLink     String   @default("")
+  note          String   @default("")
+  updatedAt     DateTime @updatedAt
+
+  destination PoolDestination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@unique([destinationId, date])
+}
+
+model PoolSignup {
+  id            String   @id @default(cuid())
+  kode          String   @unique // kode pendaftaran, mis. KZ-7Q4M
+  destinationId String
+  poolDate      String // YYYY-MM-DD: tanggal rombongan tempat orang ini dihitung
+  arrivalDate   String // YYYY-MM-DD: tanggal ia tiba (beda dari poolDate kalau menyusul)
+  interest      Boolean  @default(false) // daftar minat, tidak dihitung di pool
+  pkg           String   @default("") // "5", "5,8", "KG", atau "minat"
+  pax           Int
+  flex          Boolean  @default(false)
+  name          String
+  whatsapp      String // angka saja, awalan negara (62...)
+  arrivalTime   String   @default("")
+  via           String   @default("") // pesawat | darat | lokal
+  flight        String   @default("")
+  hotel         String   @default("") // paket | sendiri
+  hotelName     String   @default("")
+  kgPlan        Json? // { kz, x, kgd } untuk Kazakhstan + Kirgistan
+  note          String   @default("") // catatan dari pendaftar
+  adminNote     String   @default("")
+  status        String   @default("aktif") // aktif | batal
+  source        String   @default("web") // web | impor | admin
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Restrict: negara yang sudah punya pendaftar tidak bisa dihapus (cukup ditutup).
+  destination PoolDestination @relation(fields: [destinationId], references: [id], onDelete: Restrict)
+
+  @@index([destinationId, poolDate])
+  @@index([destinationId, whatsapp])
+  @@index([createdAt])
+}

@@ -2,6 +2,7 @@
 
 export type SundafAnalyticsEvent =
   | "home_search_submit"
+  | "home_pool_submit"
   | "tour_filter_open"
   | "tour_filter_apply"
   | "tour_card_click"

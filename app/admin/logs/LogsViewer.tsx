@@ -26,7 +26,7 @@ const ACTION_COLORS: Record<string, string> = {
 
 const RESOURCE_LABELS: Record<string, string> = {
   TOUR: "Tour", RECEIPT: "Receipt", BLOG: "Blog", GEO: "GEO", FAQ: "FAQ Visa", TERMS: "Syarat & Ketentuan",
-  TESTIMONIAL: "Testimoni", INQUIRY: "Lead", VISA: "Database Visa", B2B_CATALOG: "Katalog B2B",
+  TESTIMONIAL: "Testimoni", INQUIRY: "Lead", POOL: "Pool Trip", VISA: "Database Visa", B2B_CATALOG: "Katalog B2B",
   SCRAPER: "Scraper", TEXTS: "Teks Beranda", SETTINGS: "Pengaturan", USER: "Pengguna",
   PERMISSIONS: "Izin Akses", AUTH: "Login",
 };
